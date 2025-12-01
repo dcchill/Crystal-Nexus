@@ -1,0 +1,262 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 1,
+    "width": 176,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "image",
+        "data": {
+          "image": "growth_chamber_guibg.png",
+          "use1Xscale": false,
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankfull.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankDone"
+          },
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank34.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankThree"
+          },
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank12.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankTwo"
+          },
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank14.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankOne"
+          },
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankNone"
+          },
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": ""
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 0,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "onTakenFromSlot": {
+            "name": "CrystalPurifierBlockAdded"
+          },
+          "x": 204,
+          "y": 53,
+          "locked": false
+        }
+      },
+      {
+        "type": "outputslot",
+        "data": {
+          "id": 1,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 204,
+          "y": 89,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "0progress.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "PurifierNone"
+          },
+          "x": 197,
+          "y": 82,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "1progress.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "PurifierOne"
+          },
+          "x": 197,
+          "y": 82,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "2progress.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "PurifierTwo"
+          },
+          "x": 197,
+          "y": 82,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "3progress.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "PurifierThree"
+          },
+          "x": 197,
+          "y": 82,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "4progress.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "PurifierDone"
+          },
+          "x": 197,
+          "y": 82,
+          "locked": false
+        }
+      },
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "batterylevelsmall.png",
+          "spritesCount": 11,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "EnergyDisplay"
+          },
+          "x": 236,
+          "y": 61,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_proc_growth_chamber_off_on_tick",
+          "text": {
+            "fixedValue": "",
+            "name": "GrowthChamberOffOnTickUpdate"
+          },
+          "width": 24,
+          "height": 24,
+          "x": 240,
+          "y": 65,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_proc_get_block_name_for_gui",
+          "text": {
+            "fixedValue": "[Growth Chamber]"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 197,
+          "y": 27,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "nameaddon.png",
+          "use1Xscale": false,
+          "x": 176,
+          "y": 22,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

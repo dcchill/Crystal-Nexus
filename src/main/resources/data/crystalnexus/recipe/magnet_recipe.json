@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a b",
+    "a b",
+    "acb"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "b": {
+      "item": "crystalnexus:chlorophyte_ingot"
+    },
+    "c": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystalized_alloy_magnet",
+    "count": 1
+  }
+}

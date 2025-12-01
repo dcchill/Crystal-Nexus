@@ -1,0 +1,36 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "reactor_multiblock_guide",
+    "result": {
+      "value": "CUSTOM:ReactorComputer"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:ReactorComputer"
+      },
+      {
+        "value": "CUSTOM:ReactorEnergyOutput"
+      },
+      {
+        "value": "CUSTOM:ReactorFluidInput"
+      },
+      {
+        "value": "CUSTOM:ReactorBlock"
+      },
+      {
+        "value": "CUSTOM:ReactorCore"
+      }
+    ],
+    "integers": [
+      1,
+      1,
+      1,
+      23
+    ],
+    "strings": [],
+    "recipetype": "ReactorMultiblockGuide"
+  }
+}

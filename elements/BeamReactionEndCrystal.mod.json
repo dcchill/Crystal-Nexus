@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "beam_reaction_recipe",
+    "result": {
+      "value": "Items.END_CRYSTAL"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "BeamReactionRecipe"
+  }
+}

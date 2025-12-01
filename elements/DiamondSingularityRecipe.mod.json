@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "singularity_compression",
+    "result": {
+      "value": "CUSTOM:DiamondSingularity"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.DIAMOND"
+      }
+    ],
+    "integers": [
+      10000
+    ],
+    "strings": [],
+    "recipetype": "SingularityCompression"
+  }
+}

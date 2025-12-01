@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "beam_reaction_recipe",
+    "result": {
+      "value": "Blocks.SKULL#1"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Blocks.SKULL#0"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "BeamReactionRecipe"
+  }
+}

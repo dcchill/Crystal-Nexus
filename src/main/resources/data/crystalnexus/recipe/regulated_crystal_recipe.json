@@ -1,0 +1,19 @@
+{
+  "type": "crystalnexus:purification",
+  "ingredients": [
+    {
+      "item": "crystalnexus:controlled_crystal"
+    },
+    {
+      "item": "crystalnexus:controlled_crystal"
+    }
+  ],
+  "integers": [
+    1,
+    1
+  ],
+  "output": {
+    "id": "crystalnexus:regulated_crystal",
+    "count": 1
+  }
+}

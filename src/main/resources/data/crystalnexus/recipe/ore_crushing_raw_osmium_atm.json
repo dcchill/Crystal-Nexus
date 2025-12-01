@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_osmium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:osmium_dust",
+    "count": 2
+  }
+}

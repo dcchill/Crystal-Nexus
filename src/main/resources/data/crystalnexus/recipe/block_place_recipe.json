@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "eee"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:dropper"
+    },
+    "b": {
+      "item": "minecraft:piston"
+    },
+    "c": {
+      "item": "minecraft:gold_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "e": {
+      "tag": "c:stones"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:block_placer",
+    "count": 1
+  }
+}

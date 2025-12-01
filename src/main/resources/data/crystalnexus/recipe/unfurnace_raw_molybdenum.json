@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:molybdenum_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_molybdenum",
+    "count": 1
+  }
+}

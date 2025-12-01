@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:copper_dust"
+    }
+  ],
+  "output": {
+    "id": "minecraft:copper_nugget",
+    "count": 12
+  }
+}

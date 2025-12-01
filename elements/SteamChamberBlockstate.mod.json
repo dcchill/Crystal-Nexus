@@ -1,0 +1,61 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "SteamChamber",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "steam_chamber_top",
+        "textureLeft": "turbine_sides",
+        "textureFront": "turbine_sides",
+        "textureRight": "turbine_sides",
+        "textureBack": "turbine_sides",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "steam_chamber_top",
+        "textureLeft": "turbine_side_bottom_on_connected",
+        "textureFront": "turbine_side_bottom_on_connected",
+        "textureRight": "turbine_side_bottom_on_connected",
+        "textureBack": "turbine_side_bottom_on_connected",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "steam_chamber_top",
+        "textureLeft": "turbine_sides_connected_bottom",
+        "textureFront": "turbine_sides_connected_bottom",
+        "textureRight": "turbine_sides_connected_bottom",
+        "textureBack": "turbine_sides_connected_bottom",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "steam_chamber_top",
+        "textureLeft": "turbine_side_on",
+        "textureFront": "turbine_side_on",
+        "textureRight": "turbine_side_on",
+        "textureBack": "turbine_side_on",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

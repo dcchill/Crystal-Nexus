@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "abc",
+    "bdb",
+    "efe"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:chlorophyte_ingot"
+    },
+    "b": {
+      "item": "minecraft:iron_ingot"
+    },
+    "c": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "d": {
+      "item": "crystalnexus:crystalized_alloy_magnet"
+    },
+    "e": {
+      "tag": "c:stones"
+    },
+    "f": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:item_collector",
+    "count": 1
+  }
+}

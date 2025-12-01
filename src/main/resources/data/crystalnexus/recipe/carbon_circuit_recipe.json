@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:energized_silicon"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:carbon_chip",
+    "count": 1
+  }
+}

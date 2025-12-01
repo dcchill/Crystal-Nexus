@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:silicon"
+    },
+    "c": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "d": {
+      "item": "minecraft:lectern"
+    },
+    "e": {
+      "item": "crystalnexus:machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:multiblock_research_station",
+    "count": 1
+  }
+}

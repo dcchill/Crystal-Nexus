@@ -1,0 +1,8 @@
+{
+  "parent": "block/template_wall_side",
+  "textures": {
+    "wall": "crystalnexus:block/smooth_tarrock",
+    "particle": "crystalnexus:block/smooth_tarrock"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,33 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "reaction_multiblock_guide",
+    "result": {
+      "value": "CUSTOM:ReactionChamberComputer"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:ReactionChamberComputer"
+      },
+      {
+        "value": "CUSTOM:ReactionEnergyInput"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberCore"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      }
+    ],
+    "integers": [
+      1,
+      1,
+      1,
+      23
+    ],
+    "strings": [],
+    "recipetype": "ReactionMultiblockGuide"
+  }
+}

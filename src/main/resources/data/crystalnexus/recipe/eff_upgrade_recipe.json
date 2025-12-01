@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blank_chip"
+    },
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:efficiency_upgrade",
+    "count": 1
+  }
+}

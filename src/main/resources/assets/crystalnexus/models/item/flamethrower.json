@@ -1,0 +1,15 @@
+{
+  "parent": "crystalnexus:custom/flamethrower",
+  "textures": {
+    "0": "crystalnexus:block/textureft",
+    "particle": "crystalnexus:item/chlorophytedust"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "crystalnexus:item/flamethrower_0"
+    }
+  ]
+}

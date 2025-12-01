@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:spruce_sapling"
+    }
+  ],
+  "output": {
+    "id": "minecraft:spruce_log",
+    "count": 6
+  }
+}

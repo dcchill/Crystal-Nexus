@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:chlorophyte_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:chlorophyte_nugget",
+    "count": 12
+  }
+}

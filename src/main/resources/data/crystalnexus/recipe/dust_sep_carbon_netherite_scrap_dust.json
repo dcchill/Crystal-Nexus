@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:netherite_scrap_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:raw_carbon",
+    "count": 12
+  }
+}

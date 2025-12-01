@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:extractination",
+  "ingredients": [
+    { "item": "minecraft:soul_sand" }
+  ],
+  "results": [
+    { "id": "minecraft:gold_nugget", "count": 1 },
+    { "id": "minecraft:netherite_scrap", "count": 1 }
+  ]
+}

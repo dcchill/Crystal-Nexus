@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:destabilized_crystal"
+    }
+  ],
+  "result": {
+    "id": "minecraft:end_crystal",
+    "count": 1
+  }
+}

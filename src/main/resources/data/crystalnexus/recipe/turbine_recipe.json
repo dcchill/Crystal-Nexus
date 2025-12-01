@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "minecraft:redstone"
+    },
+    "c": {
+      "item": "crystalnexus:ancient_crystal"
+    },
+    "d": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "e": {
+      "tag": "c:stones"
+    },
+    "f": {
+      "item": "crystalnexus:turbine_blade"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:turbine",
+    "count": 1
+  }
+}

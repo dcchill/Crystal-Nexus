@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:godlike_crystal"
+    },
+    "title": {
+      "translate": "advancements.godlike_crystal_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.godlike_crystal_advancement.descr"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "godlike_crystal_advancement_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "crystalnexus:godlike_crystal"
+            ],
+            "count": {
+              "min": 1,
+              "max": 64
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:matter_trans_advancement"
+}

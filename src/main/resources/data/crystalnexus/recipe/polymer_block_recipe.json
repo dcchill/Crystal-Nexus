@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:polymer_block",
+    "count": 4
+  }
+}

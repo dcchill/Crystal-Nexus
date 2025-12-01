@@ -1,0 +1,47 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "chemical_reaction_chamber_jei.png",
+    "width": 173,
+    "height": 80,
+    "icon": {
+      "value": "CUSTOM:ChemicalReactionChamber"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:ChemicalReactionChamber"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Chemical Reaction",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 34,
+        "y": 35,
+        "slotid": 0
+      },
+      {
+        "type": "INPUT",
+        "x": 52,
+        "y": 26,
+        "slotid": 1
+      },
+      {
+        "type": "INPUT",
+        "x": 52,
+        "y": 44,
+        "slotid": 2
+      },
+      {
+        "type": "OUTPUT",
+        "x": 115,
+        "y": 35,
+        "slotid": 0
+      }
+    ]
+  }
+}

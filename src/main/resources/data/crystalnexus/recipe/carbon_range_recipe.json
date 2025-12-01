@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "crystalnexus:ultimate_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:carbon_range_upgrade",
+    "count": 1
+  }
+}

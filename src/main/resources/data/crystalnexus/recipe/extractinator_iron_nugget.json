@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:extractination",
+  "ingredients": [
+    { "tag": "c:sands" }
+  ],
+  "results": [
+    { "id": "minecraft:iron_nugget", "count": 1 },
+    { "id": "crystalnexus:ancient_crystal", "count": 1 }
+  ]
+}

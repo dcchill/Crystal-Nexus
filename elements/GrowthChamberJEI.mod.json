@@ -1,0 +1,14 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:GrowthChamberOff"
+      }
+    ],
+    "information": [
+      "Uses Crystal Gloop and FE to duplicate crystals."
+    ]
+  }
+}

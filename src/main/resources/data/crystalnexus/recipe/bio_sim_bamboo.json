@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:bamboo"
+    }
+  ],
+  "output": {
+    "id": "minecraft:bamboo_block",
+    "count": 6
+  }
+}

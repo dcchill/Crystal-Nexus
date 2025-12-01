@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:AccelerationUpgrade"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:BlankChip"
+      },
+      {
+        "value": "Items.COPPER_INGOT"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

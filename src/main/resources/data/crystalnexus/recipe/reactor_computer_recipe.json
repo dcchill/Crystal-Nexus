@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "dbd"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:invertium_crystal"
+    },
+    "b": {
+      "item": "crystalnexus:reactor_block"
+    },
+    "c": {
+      "tag": "c:silicon"
+    },
+    "d": {
+      "item": "crystalnexus:invertium_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_computer",
+    "count": 1
+  }
+}

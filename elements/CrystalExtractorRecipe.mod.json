@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "Items.DIAMOND_PICKAXE"
+      },
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      },
+      {
+        "value": "Items.REDSTONE"
+      },
+      {
+        "value": "Items.COPPER_INGOT"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "Items.COPPER_INGOT"
+      },
+      {
+        "value": "Items.COPPER_INGOT"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:CrystalExtractor"
+    },
+    "name": "crystal_extractor_recipe",
+    "namespace": "mod"
+  }
+}

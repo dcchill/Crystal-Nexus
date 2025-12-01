@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/reactionchamberblock",
+    "particle": "crystalnexus:block/reactionchamberblock"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "CUSTOM:CystalizedAlloy"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "CUSTOM:CrystalizedAlloyMagnet"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "Blocks.HOPPER"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ItemCollector"
+    },
+    "name": "item_collector_recipe",
+    "namespace": "mod"
+  }
+}

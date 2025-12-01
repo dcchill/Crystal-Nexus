@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "crystalnexus:block/tarrock_slab"
+    },
+    "type=top": {
+      "model": "crystalnexus:block/tarrock_slab_top"
+    },
+    "type=double": {
+      "model": "crystalnexus:block/tarrock_slab_full"
+    }
+  }
+}

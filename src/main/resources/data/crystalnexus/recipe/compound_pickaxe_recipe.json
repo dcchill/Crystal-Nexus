@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    " e "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:compound_e"
+    },
+    "c": {
+      "item": "crystalnexus:ee_matter"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    "e": {
+      "item": "crystalnexus:synthetic_rubber"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:compound_pickaxe",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:dark_oak_sapling"
+    }
+  ],
+  "output": {
+    "id": "minecraft:dark_oak_log",
+    "count": 6
+  }
+}

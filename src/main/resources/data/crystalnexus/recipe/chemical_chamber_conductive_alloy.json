@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    {
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:conductive_alloy",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:raw_iron"
+    }
+  ],
+  "output": {
+    "id": "alltheores:iron_dust",
+    "count": 2
+  }
+}

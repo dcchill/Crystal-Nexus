@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:gas_fuel_cell"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_jetpack_chestplate"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_jetpack_chestplate",
+    "count": 1
+  }
+}

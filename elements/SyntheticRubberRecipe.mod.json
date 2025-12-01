@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:SyntheticRubber"
+    },
+    "count": 2,
+    "ingredients": [
+      {
+        "value": "CUSTOM:OilFuelCell"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      },
+      {
+        "value": "TAG:c:slimeballs"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

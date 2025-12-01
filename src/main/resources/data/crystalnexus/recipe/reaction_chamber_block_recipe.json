@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_nugget"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reaction_chamber_block",
+    "count": 4
+  }
+}

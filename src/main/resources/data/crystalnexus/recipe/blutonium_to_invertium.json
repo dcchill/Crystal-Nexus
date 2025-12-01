@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blutonium_ingot"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:invertium_ingot",
+    "count": 1
+  }
+}

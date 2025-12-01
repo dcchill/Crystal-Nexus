@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:beam_reaction_recipe",
+  "ingredients": [
+    {
+      "item": "crystalnexus:crystalized_alloy_block"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:chlorophyte_block",
+    "count": 1
+  }
+}

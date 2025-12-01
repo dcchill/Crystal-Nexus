@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    },
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:crude_oil_bucket",
+    "count": 1
+  }
+}

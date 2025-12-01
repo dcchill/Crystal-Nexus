@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a a",
+    "b b"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:synthetic_rubber"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_boots",
+    "count": 1
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:extractination",
+  "ingredients": [
+    { "item": "minecraft:cobblestone" }
+  ],
+  "results": [
+    { "id": "minecraft:iron_nugget", "count": 1 },
+    { "id": "minecraft:gold_nugget", "count": 1 },
+    { "id": "minecraft:diamond", "count": 1 }
+  ]
+}

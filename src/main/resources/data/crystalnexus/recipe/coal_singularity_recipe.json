@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:singularity_compression",
+  "ingredients": [
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "integers": [
+    10368
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:coal_singularity",
+    "count": 1
+  }
+}

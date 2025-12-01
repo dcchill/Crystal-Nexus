@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:iron_singularity",
+    "crystalnexus:diamond_singularity",
+    "crystalnexus:gold_singularity",
+    "crystalnexus:quartz_singularity",
+    "crystalnexus:copper_singularity",
+    "crystalnexus:redstone_singularity",
+    "crystalnexus:energy_singularity",
+    "crystalnexus:coal_singularity"
+  ]
+}

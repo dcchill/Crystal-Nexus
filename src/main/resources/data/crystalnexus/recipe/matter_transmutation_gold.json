@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "output": {
+    "id": "minecraft:gold_ingot",
+    "count": 1
+  }
+}

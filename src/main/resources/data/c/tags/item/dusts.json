@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:blutonium_dust",
+    "crystalnexus:netherite_scrap_dust",
+    "crystalnexus:chlorophyte_dust",
+    "crystalnexus:polyacrylonitrile_dust"
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:crystalized_alloy"
+    },
+    "title": {
+      "translate": "advancements.crystal_alloy_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.crystal_alloy_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "crystal_alloy_advancement_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "crystalnexus:crystalized_alloy"
+            ],
+            "count": {
+              "min": 1,
+              "max": 64
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:more_crystals"
+}

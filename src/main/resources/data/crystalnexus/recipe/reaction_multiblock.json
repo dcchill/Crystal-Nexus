@@ -1,0 +1,21 @@
+{
+  "type": "crystalnexus:reaction_multiblock_guide",
+  "ingredients": [
+    {
+      "item": "crystalnexus:reaction_chamber_computer"
+    },
+    {
+      "item": "crystalnexus:reaction_energy_input"
+    },
+    {
+      "item": "crystalnexus:reaction_chamber_core"
+    },
+    {
+      "item": "crystalnexus:reaction_chamber_block"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:reaction_chamber_computer",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:piston_generator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:empty_fuel_cell",
+    "count": 1
+  }
+}

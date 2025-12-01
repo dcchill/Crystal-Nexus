@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/energy_refractor"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/energy_refractor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/energy_refractor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/energy_refractor",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "crystalnexus:block/energy_refractor",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "crystalnexus:block/energy_refractor",
+      "x": 90
+    }
+  }
+}

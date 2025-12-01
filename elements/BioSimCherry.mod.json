@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_simulation",
+    "result": {
+      "value": "Blocks.CHERRY_LOG"
+    },
+    "count": 6,
+    "ingredients": [
+      {
+        "value": "Blocks.CHERRY_SAPLING"
+      }
+    ],
+    "integers": [
+      1
+    ],
+    "strings": [],
+    "recipetype": "BiomaticSimulation"
+  }
+}

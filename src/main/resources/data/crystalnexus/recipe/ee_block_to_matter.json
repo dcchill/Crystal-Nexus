@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter_block"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:ee_matter",
+    "count": 9
+  }
+}

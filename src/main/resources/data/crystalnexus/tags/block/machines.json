@@ -1,0 +1,22 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:invertium_smelter",
+    "crystalnexus:chemical_reaction_chamber",
+    "crystalnexus:crystal_crusher",
+    "crystalnexus:singularity_compressor",
+    "crystalnexus:growth_chamber",
+    "crystalnexus:crystal_smelter",
+    "crystalnexus:inverter",
+    "crystalnexus:circuit_press",
+    "crystalnexus:crystal_purifier",
+    "crystalnexus:extractinator",
+    "crystalnexus:iron_smelter",
+    "crystalnexus:energy_extractor",
+    "crystalnexus:metallurgic_recrystallizer",
+    "crystalnexus:chlorophyte_smelter",
+    "crystalnexus:ore_processor",
+    "crystalnexus:dust_separator",
+    "crystalnexus:ultima_smelter"
+  ]
+}

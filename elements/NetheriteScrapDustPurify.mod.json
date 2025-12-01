@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "purification",
+    "result": {
+      "value": "Items.NETHERITE_SCRAP"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      },
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      }
+    ],
+    "integers": [
+      1,
+      1
+    ],
+    "strings": [],
+    "recipetype": "Purification"
+  }
+}

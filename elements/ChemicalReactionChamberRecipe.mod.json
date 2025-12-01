@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:CrystalAlloyNugget"
+      },
+      {
+        "value": "CUSTOM:TurbineBlade"
+      },
+      {
+        "value": "CUSTOM:CrystalAlloyNugget"
+      },
+      {
+        "value": "CUSTOM:BlutoniumIngot"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "CUSTOM:BlutoniumIngot"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:BlutoniumIngot"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ChemicalReactionChamber"
+    },
+    "name": "chemical_reaction_chamber_recipe",
+    "namespace": "mod"
+  }
+}

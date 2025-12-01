@@ -1,0 +1,14 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:CrystalAccepter"
+      }
+    ],
+    "information": [
+      "Gathers FE from End Crystals in range of the block.  Generates more FE/t depending on tier of crystal used.  Also creates Crystal Gloop as byproduct."
+    ]
+  }
+}

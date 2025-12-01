@@ -1,0 +1,17 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:DragonCrystal"
+      },
+      {
+        "value": "CUSTOM:CrystalExtractor"
+      }
+    ],
+    "information": [
+      "Dragon crystal obtained when using the Crystal Extractor on an End Crystals summoned by the ender dragon."
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:unstable_ee_matter"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:unstable_ee_matter"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:compound_e",
+    "count": 1
+  }
+}

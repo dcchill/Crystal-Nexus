@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:cadmium_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_cadmium",
+    "count": 1
+  }
+}

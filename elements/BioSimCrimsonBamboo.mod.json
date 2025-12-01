@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_simulation",
+    "result": {
+      "value": "Blocks.BAMBOO_BLOCK"
+    },
+    "count": 6,
+    "ingredients": [
+      {
+        "value": "Blocks.BAMBOO"
+      }
+    ],
+    "integers": [
+      1
+    ],
+    "strings": [],
+    "recipetype": "BiomaticSimulation"
+  }
+}

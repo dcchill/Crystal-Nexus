@@ -1,0 +1,9 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "desert",
+    "badlands"
+  ],
+  "features": "crystalnexus:oil_spill",
+  "step": "lakes"
+}

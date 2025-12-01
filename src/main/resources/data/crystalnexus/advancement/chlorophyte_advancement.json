@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:chlorophyte_ingot"
+    },
+    "title": {
+      "translate": "advancements.chlorophyte_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.chlorophyte_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "chlorophyte_advancement_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "crystalnexus:chlorophyte_ingot"
+            ],
+            "count": {
+              "min": 1,
+              "max": 64
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:crysal_guide_advancement"
+}

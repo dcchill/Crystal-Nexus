@@ -1,0 +1,65 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "extractionatorjei.png",
+    "width": 176,
+    "height": 80,
+    "icon": {
+      "value": "CUSTOM:Extractinator"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:Extractinator"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Extractination",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 79,
+        "y": 17,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 61,
+        "y": 44,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 79,
+        "y": 44,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 97,
+        "y": 44,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 61,
+        "y": 62,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 79,
+        "y": 62,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 97,
+        "y": 62,
+        "slotid": 0
+      }
+    ]
+  }
+}

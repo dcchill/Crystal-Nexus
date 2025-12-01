@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:raw_blutonium"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:blutonium_dust",
+    "count": 2
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/lensback",
+    "up": "crystalnexus:block/lensback",
+    "north": "crystalnexus:block/conductiveenergyguide",
+    "east": "crystalnexus:block/lensside2",
+    "south": "crystalnexus:block/lensback",
+    "west": "crystalnexus:block/lensside1",
+    "particle": "crystalnexus:block/lensback"
+  },
+  "render_type": "solid"
+}

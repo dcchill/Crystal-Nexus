@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/paintballgun",
+  "textures": {
+    "0": "crystalnexus:block/pbtexture",
+    "particle": "minecraft:item/breeze_rod"
+  }
+}

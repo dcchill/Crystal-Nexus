@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "Container",
+    "blockstateList": [
+      {
+        "texture": "container_bottom",
+        "textureTop": "container_top",
+        "textureLeft": "container_side",
+        "textureFront": "container_side",
+        "textureRight": "container_side",
+        "textureBack": "container_side",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "container_bottom",
+        "textureTop": "container_top_open",
+        "textureLeft": "container_side",
+        "textureFront": "container_side",
+        "textureRight": "container_side",
+        "textureBack": "container_side",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

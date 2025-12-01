@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:biomatic_composting",
+  "ingredients": [
+    {
+      "tag": "c:crops"
+    }
+  ],
+  "integers": [
+    16
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:biomass",
+    "count": 1
+  }
+}

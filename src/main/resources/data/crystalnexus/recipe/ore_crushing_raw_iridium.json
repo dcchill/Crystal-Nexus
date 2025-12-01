@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_iridium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:iridium_dust",
+    "count": 2
+  }
+}

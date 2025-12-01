@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:crimson_fungus"
+    }
+  ],
+  "output": {
+    "id": "minecraft:crimson_stem",
+    "count": 6
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:pipe_junction"
+    },
+    "c": {
+      "item": "crystalnexus:turbine"
+    },
+    "d": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:turbine_blade"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:steam_collector",
+    "count": 1
+  }
+}

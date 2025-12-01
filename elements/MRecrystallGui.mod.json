@@ -1,0 +1,297 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 1,
+    "width": 176,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": ""
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 0,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "onTakenFromSlot": {
+            "name": "CrystalPurifierBlockAdded"
+          },
+          "x": 159,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "outputslot",
+        "data": {
+          "id": 1,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 249,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": "TAG:mod:machine_upgrades"
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 2,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 305,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_new.png",
+          "use1Xscale": false,
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "RecryNone"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay1.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry1"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay2.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry2"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay3.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry3"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay4.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry4"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay5.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry5"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay6.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry6"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay7.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry7"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "m_recrystall_gui_overlay8.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "Recry8"
+          },
+          "x": 126,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": "CUSTOM:InvertiumCrystal"
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 3,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 205,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "upgradeslot.png",
+          "use1Xscale": false,
+          "x": 299,
+          "y": 37,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "battery_addon.png",
+          "use1Xscale": false,
+          "x": 93,
+          "y": 36,
+          "locked": false
+        }
+      },
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "batterylevelsmall.png",
+          "spritesCount": 11,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "EnergyDisplay"
+          },
+          "x": 101,
+          "y": 42,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_proc_metallurgic_recrystallizer",
+          "text": {
+            "fixedValue": "",
+            "name": "MetallurgicRecrystallizerOnTickUpdate"
+          },
+          "width": 24,
+          "height": 24,
+          "x": 105,
+          "y": 45,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_proc_get_block_name_for_gui",
+          "text": {
+            "fixedValue": "[Recrystallizer]"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 198,
+          "y": 27,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "nameaddon.png",
+          "use1Xscale": false,
+          "x": 176,
+          "y": 22,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

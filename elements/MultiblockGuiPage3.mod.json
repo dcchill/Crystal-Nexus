@@ -1,0 +1,246 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 0,
+    "width": 320,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "ultimasmeltersprite.png",
+          "spritesCount": 3,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+          },
+          "x": 60,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "multiblock_gui_page_1_overlay.png",
+          "use1Xscale": false,
+          "x": 54,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty",
+          "text": ">",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchNextPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 150,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty1",
+          "text": "<",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchPrevPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 69,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark",
+          "image": "tab_dark.png",
+          "hoveredImage": "tab.png",
+          "onClick": {
+            "name": "ZeroPointMultiGuiOpen"
+          },
+          "x": 339,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark1",
+          "image": "tab_orepro_dark.png",
+          "hoveredImage": "tab_orepro.png",
+          "onClick": {
+            "name": "OreProMultiGuiOpen"
+          },
+          "x": 306,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark2",
+          "image": "tab_reaction_dark.png",
+          "hoveredImage": "tab_reaction.png",
+          "onClick": {
+            "name": "ReactionMultiGuiOpen"
+          },
+          "x": 240,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark3",
+          "image": "tab_reactor_dark.png",
+          "hoveredImage": "tab_reactor.png",
+          "onClick": {
+            "name": "ReactorMultiGuiOpen"
+          },
+          "x": 207,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tab_ultimasmelter.png",
+          "use1Xscale": false,
+          "x": 273,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_blutonium_reactor",
+          "text": {
+            "fixedValue": "Ultima Smelter"
+          },
+          "color": {
+            "value": -3407668,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_uses_water_and_blutonium_ingots",
+          "text": {
+            "fixedValue": "Uses FE to smelt large amounts of"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_items",
+          "text": {
+            "fixedValue": "items."
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_can_smelt_four_stacks_at_once",
+          "text": {
+            "fixedValue": "Can smelt four stacks at once!"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 89,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_the_energy_input_can_be_placed",
+          "text": {
+            "fixedValue": "The energy input can be placed on"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 107,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_any_side_in_the_middle_row_of_bl",
+          "text": {
+            "fixedValue": "any side in the middle row."
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 116,
+          "locked": false
+        }
+      }
+    ],
+    "onTick": {
+      "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+    },
+    "onClosed": {
+      "name": "MultiblockGuiPage1ThisGUIIsClosed"
+    },
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": true
+    }
+  }
+}

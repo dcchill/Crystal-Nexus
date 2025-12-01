@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "crystal_purifier_gui_jei.png",
+    "width": 176,
+    "height": 80,
+    "icon": {
+      "value": "CUSTOM:CrystalPurifier"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:CrystalPurifier"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Single Purification",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 61,
+        "y": 17,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 79,
+        "y": 53,
+        "slotid": 0
+      }
+    ]
+  }
+}

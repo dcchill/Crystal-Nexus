@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:singularity_compression",
+  "ingredients": [
+    {
+      "item": "minecraft:diamond"
+    }
+  ],
+  "integers": [
+    10368
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:diamond_singularity",
+    "count": 1
+  }
+}

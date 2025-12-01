@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:aluminum_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:aluminum_nugget",
+    "count": 12
+  }
+}

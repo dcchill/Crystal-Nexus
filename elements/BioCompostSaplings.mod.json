@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_composting",
+    "result": {
+      "value": "CUSTOM:Biomass"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Blocks.SAPLING"
+      }
+    ],
+    "integers": [
+      24
+    ],
+    "strings": [],
+    "recipetype": "BiomaticComposting"
+  }
+}

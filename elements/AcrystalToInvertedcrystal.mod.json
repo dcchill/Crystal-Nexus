@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "inverter_jei",
+    "result": {
+      "value": "CUSTOM:InvertiumCrystal"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "InverterJei"
+  }
+}

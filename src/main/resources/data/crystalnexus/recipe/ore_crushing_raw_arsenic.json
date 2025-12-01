@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_arsenic"
+    }
+  ],
+  "output": {
+    "id": "alltheores:arsenic_dust",
+    "count": 2
+  }
+}

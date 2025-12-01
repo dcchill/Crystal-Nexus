@@ -1,0 +1,10 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "particle": "crystalnexus:block/smooth_tarrock",
+    "bottom": "crystalnexus:block/smooth_tarrock",
+    "top": "crystalnexus:block/smooth_tarrock",
+    "side": "crystalnexus:block/smooth_tarrock"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ada"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_block"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_machine_frame"
+    },
+    "d": {
+      "item": "crystalnexus:godlike_crystal"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:metallurgic_recrystallizer",
+    "count": 1
+  }
+}

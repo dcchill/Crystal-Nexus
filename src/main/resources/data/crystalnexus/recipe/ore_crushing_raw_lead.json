@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "mekanism:raw_lead"
+    }
+  ],
+  "output": {
+    "id": "mekanism:dust_lead",
+    "count": 2
+  }
+}

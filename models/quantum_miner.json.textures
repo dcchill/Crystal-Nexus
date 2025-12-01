@@ -1,0 +1,16 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "pureside",
+        "1": "purebottom",
+        "2": "puretop",
+        "3": "carbon_machine_frame",
+        "4": "digiminer",
+        "5": "superenergyanimoff",
+        "missing": ""
+      },
+      "name": "default"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/blutoniumore",
+    "particle": "crystalnexus:block/blutoniumore"
+  },
+  "render_type": "solid"
+}

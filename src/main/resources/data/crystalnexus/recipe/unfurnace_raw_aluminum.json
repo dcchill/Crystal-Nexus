@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:aluminum_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_aluminum",
+    "count": 1
+  }
+}

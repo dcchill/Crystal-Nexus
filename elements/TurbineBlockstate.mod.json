@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "Turbine",
+    "blockstateList": [
+      {
+        "texture": "turbine_bottomoff",
+        "textureTop": "puretop",
+        "textureLeft": "turbine_sides",
+        "textureFront": "turbine_sides",
+        "textureRight": "turbine_sides",
+        "textureBack": "turbine_sides",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "turbine_on",
+        "textureTop": "puretop",
+        "textureLeft": "turbine_side_on",
+        "textureFront": "turbine_side_on",
+        "textureRight": "turbine_side_on",
+        "textureBack": "turbine_side_on",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

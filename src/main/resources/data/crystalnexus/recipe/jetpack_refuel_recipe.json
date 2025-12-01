@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:gas_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:jet_pack_chestplate"
+    },
+    {
+      "item": "crystalnexus:gas_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:gas_fuel_cell"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:jet_pack_chestplate",
+    "count": 1
+  }
+}

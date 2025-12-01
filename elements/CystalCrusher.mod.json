@@ -1,0 +1,14 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:CrystalCrusher"
+      }
+    ],
+    "information": [
+      "Converts Raw Ores into Dusts. (2 by default, 4 with Efficiency Upgrade)"
+    ]
+  }
+}

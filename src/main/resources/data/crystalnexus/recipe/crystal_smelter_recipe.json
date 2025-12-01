@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystal_alloy_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "c": {
+      "item": "crystalnexus:crystal_machine_frame"
+    },
+    "d": {
+      "tag": "c:stones"
+    },
+    "e": {
+      "item": "crystalnexus:iron_smelter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystal_smelter",
+    "count": 1
+  }
+}

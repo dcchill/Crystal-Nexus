@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/accepter",
+    "north": "crystalnexus:block/growthchamber",
+    "east": "crystalnexus:block/growthchamber",
+    "south": "crystalnexus:block/growthchamber",
+    "west": "crystalnexus:block/growthchamber",
+    "particle": "crystalnexus:block/purebottom"
+  },
+  "render_type": "solid"
+}

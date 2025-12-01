@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:invertium_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:invertium_nugget",
+    "count": 9
+  }
+}

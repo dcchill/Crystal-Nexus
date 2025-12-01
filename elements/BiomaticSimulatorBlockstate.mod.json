@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "BiomaticSimulator",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "biosim",
+        "textureFront": "biosim",
+        "textureRight": "biosim",
+        "textureBack": "biosim",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "biosim_anim_on",
+        "textureFront": "biosim_anim_on",
+        "textureRight": "biosim_anim_on",
+        "textureBack": "biosim_anim_on",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 12,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

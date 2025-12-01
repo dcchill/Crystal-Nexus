@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_machine_frame"
+    },
+    "c": {
+      "item": "crystalnexus:gasoline_bucket"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_chestplate"
+    },
+    "e": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "f": {
+      "item": "crystalnexus:jet_pack_chestplate"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_jetpack_chestplate",
+    "count": 1
+  }
+}

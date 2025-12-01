@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "abc",
+    "bdb",
+    "cba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:chlorophyte_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:reaction_chamber_block"
+    },
+    "c": {
+      "item": "crystalnexus:crystal_alloy_nugget"
+    },
+    "d": {
+      "item": "crystalnexus:blutonium_crystal"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reaction_chamber_core",
+    "count": 1
+  }
+}

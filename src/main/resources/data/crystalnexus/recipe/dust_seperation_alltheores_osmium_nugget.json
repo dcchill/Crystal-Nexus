@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:osmium_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:osmium_nugget",
+    "count": 12
+  }
+}

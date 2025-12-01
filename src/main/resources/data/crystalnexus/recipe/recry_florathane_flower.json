@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:fertilizer"
+    },
+    {
+      "tag": "minecraft:flowers"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:florathane",
+    "count": 1
+  }
+}

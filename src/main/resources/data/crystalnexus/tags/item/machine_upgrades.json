@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:acceleration_upgrade",
+    "crystalnexus:efficiency_upgrade",
+    "crystalnexus:carbon_acceleration_upgrade",
+    "crystalnexus:range_upgrade",
+    "crystalnexus:carbon_range_upgrade",
+    "crystalnexus:carbon_efficiency_upgrade"
+  ]
+}

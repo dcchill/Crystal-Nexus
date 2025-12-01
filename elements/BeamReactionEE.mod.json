@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "beam_reaction_recipe",
+    "result": {
+      "value": "CUSTOM:UnstableEEMatter"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:EEMatter"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "BeamReactionRecipe"
+  }
+}

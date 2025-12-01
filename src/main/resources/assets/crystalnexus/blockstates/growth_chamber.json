@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "blockstate=0": {
+      "model": "crystalnexus:block/growth_chamber"
+    },
+    "blockstate=1": {
+      "model": "crystalnexus:block/growth_chamber_blockstate_blockstate_0"
+    },
+    "blockstate=2": {
+      "model": "crystalnexus:block/growth_chamber_blockstate_blockstate_1"
+    }
+  }
+}

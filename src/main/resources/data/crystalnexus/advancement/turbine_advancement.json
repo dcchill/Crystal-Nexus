@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:turbine"
+    },
+    "title": {
+      "translate": "advancements.turbine_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.turbine_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "turbine_advancement_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "crystalnexus:turbine"
+            ],
+            "count": {
+              "min": 1,
+              "max": 1
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:radioactive_advancement"
+}

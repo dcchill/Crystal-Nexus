@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:coal"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:coal"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:coal"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "output": {
+    "id": "minecraft:iron_ingot",
+    "count": 1
+  }
+}

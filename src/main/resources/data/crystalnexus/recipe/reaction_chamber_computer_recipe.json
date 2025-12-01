@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "dbd"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:chlorophyte_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:reaction_chamber_block"
+    },
+    "c": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "d": {
+      "item": "crystalnexus:crystalized_alloy"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reaction_chamber_computer",
+    "count": 1
+  }
+}

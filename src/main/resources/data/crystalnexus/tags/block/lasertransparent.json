@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:conductive_energy_splitter",
+    "crystalnexus:energy_splitter",
+    "minecraft:air"
+  ]
+}

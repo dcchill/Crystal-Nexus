@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:beam_reaction_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:cobblestone"
+    }
+  ],
+  "output": {
+    "id": "minecraft:end_stone",
+    "count": 1
+  }
+}

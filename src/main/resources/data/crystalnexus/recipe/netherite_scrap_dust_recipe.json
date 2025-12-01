@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_scrap"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:netherite_scrap_dust",
+    "count": 2
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "OreProcessor",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "multiblock_block",
+        "textureLeft": "multiblock_block",
+        "textureFront": "ore_processor",
+        "textureRight": "multiblock_block",
+        "textureBack": "multiblock_block",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "multiblock_block",
+        "textureLeft": "multiblock_block",
+        "textureFront": "oreprocessoranim",
+        "textureRight": "multiblock_block",
+        "textureBack": "multiblock_block",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 14,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

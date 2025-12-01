@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "inverter_jei",
+    "result": {
+      "value": "Items.ENDER_PEARL"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.SNOWBALL"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "InverterJei"
+  }
+}

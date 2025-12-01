@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "dust_seperation",
+    "result": {
+      "value": "CUSTOM:BlutoniumNugget"
+    },
+    "count": 12,
+    "ingredients": [
+      {
+        "value": "CUSTOM:BlutoniumDust"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "DustSeperation"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "minecraft:heart_of_the_sea"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:reactor_upgrade_permafrost",
+    "count": 1
+  }
+}

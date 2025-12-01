@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "beam_reaction_recipe",
+    "result": {
+      "value": "CUSTOM:ChlorophyteBlock"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CrystalizedAlloyBlock"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "BeamReactionRecipe"
+  }
+}

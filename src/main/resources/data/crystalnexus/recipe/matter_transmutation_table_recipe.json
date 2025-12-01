@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    },
+    "b": {
+      "tag": "c:silicon"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:matter_transmutation_table",
+    "count": 1
+  }
+}

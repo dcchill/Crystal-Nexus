@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:beam_reaction_recipe",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ancient_crystal"
+    }
+  ],
+  "output": {
+    "id": "minecraft:end_crystal",
+    "count": 1
+  }
+}

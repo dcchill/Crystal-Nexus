@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:antimony_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_antimony",
+    "count": 1
+  }
+}

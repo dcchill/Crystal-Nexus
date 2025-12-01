@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "Blocks.OBSIDIAN"
+    },
+    "count": 16,
+    "ingredients": [
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "Blocks.COBBLESTONE"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "Blocks.COBBLESTONE"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

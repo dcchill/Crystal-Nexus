@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:Carbon.boots"
+    },
+    "name": "carbon_boots_recipe",
+    "namespace": "mod"
+  }
+}

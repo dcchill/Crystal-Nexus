@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:singularity_compression",
+  "ingredients": [
+    {
+      "item": "minecraft:copper_ingot"
+    }
+  ],
+  "integers": [
+    10368
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:copper_singularity",
+    "count": 1
+  }
+}

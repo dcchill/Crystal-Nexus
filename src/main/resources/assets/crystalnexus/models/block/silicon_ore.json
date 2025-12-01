@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/silicon_ore",
+    "particle": "crystalnexus:block/silicon_ore"
+  },
+  "render_type": "solid"
+}

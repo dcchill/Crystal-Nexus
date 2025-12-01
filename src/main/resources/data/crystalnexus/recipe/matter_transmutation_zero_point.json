@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:copper_singularity"
+    },
+    {
+      "item": "crystalnexus:iron_singularity"
+    },
+    {
+      "item": "crystalnexus:gold_singularity"
+    },
+    {
+      "item": "crystalnexus:redstone_singularity"
+    },
+    {
+      "item": "crystalnexus:diamond_singularity"
+    },
+    {
+      "item": "crystalnexus:quartz_singularity"
+    },
+    {
+      "item": "crystalnexus:energy_singularity"
+    },
+    {
+      "item": "crystalnexus:coal_singularity"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:zero_point",
+    "count": 1
+  }
+}

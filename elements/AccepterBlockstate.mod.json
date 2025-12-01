@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "CrystalAccepter",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "accepter",
+        "textureFront": "accepter",
+        "textureRight": "accepter",
+        "textureBack": "accepter",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "accepteranim",
+        "textureFront": "accepteranim",
+        "textureRight": "accepteranim",
+        "textureBack": "accepteranim",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 5,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

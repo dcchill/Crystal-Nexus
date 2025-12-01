@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "eee"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:nitrile"
+    },
+    "b": {
+      "item": "crystalnexus:turbine_blade"
+    },
+    "c": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "d": {
+      "item": "crystalnexus:silicon"
+    },
+    "e": {
+      "item": "crystalnexus:machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:steam_chamber",
+    "count": 1
+  }
+}

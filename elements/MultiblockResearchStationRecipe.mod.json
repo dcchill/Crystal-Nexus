@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:Silicon"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:CystalizedAlloy"
+      },
+      {
+        "value": "Blocks.LECTERN"
+      },
+      {
+        "value": "CUSTOM:CystalizedAlloy"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:MultiblockResearchStation"
+    },
+    "name": "multiblock_research_station_recipe",
+    "namespace": "mod"
+  }
+}

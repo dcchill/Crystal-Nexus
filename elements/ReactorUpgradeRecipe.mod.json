@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:ReactorUpgrade"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CarbonChip"
+      },
+      {
+        "value": "CUSTOM:GodlikeCrystal"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_crystal"
+    },
+    "c": {
+      "item": "crystalnexus:florathane"
+    },
+    "d": {
+      "item": "crystalnexus:invertium_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:biomatic_simulator",
+    "count": 1
+  }
+}

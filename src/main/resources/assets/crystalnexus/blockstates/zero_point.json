@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "blockstate=0": {
+      "model": "crystalnexus:block/zero_point"
+    },
+    "blockstate=1": {
+      "model": "crystalnexus:block/zero_point_blockstate_blockstate_0"
+    },
+    "blockstate=2": {
+      "model": "crystalnexus:block/zero_point_blockstate_blockstate_1"
+    }
+  }
+}

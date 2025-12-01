@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:blutonium_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:blutonium_ingot",
+    "count": 9
+  }
+}

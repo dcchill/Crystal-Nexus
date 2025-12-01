@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "Extractinator",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "extractinator",
+        "textureLeft": "pureside",
+        "textureFront": "extractinatorfront",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "extractinator",
+        "textureLeft": "pureside",
+        "textureFront": "extractinatoranim",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

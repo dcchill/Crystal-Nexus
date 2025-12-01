@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "Items.NETHER_STAR"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/turbine_bottomoff",
+    "up": "crystalnexus:block/puretop",
+    "north": "crystalnexus:block/turbine_sides",
+    "east": "crystalnexus:block/turbine_sides",
+    "south": "crystalnexus:block/turbine_sides",
+    "west": "crystalnexus:block/turbine_sides",
+    "particle": "crystalnexus:block/turbine_bottomoff"
+  },
+  "render_type": "solid"
+}

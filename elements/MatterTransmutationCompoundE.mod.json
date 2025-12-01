@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:CompoundE"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:UnstableEEMatter"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

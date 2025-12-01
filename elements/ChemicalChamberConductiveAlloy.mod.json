@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:ConductiveAlloy"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "Items.REDSTONE"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

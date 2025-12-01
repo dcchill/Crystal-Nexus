@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:invertium_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_ingot"
+    },
+    "c": {
+      "item": "crystalnexus:invertium_machine_frame"
+    },
+    "d": {
+      "tag": "c:stones"
+    },
+    "e": {
+      "item": "crystalnexus:crystal_smelter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:invertium_smelter",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:single_purification",
+  "ingredients": [
+    {
+      "item": "minecraft:bone_block"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:nitrile",
+    "count": 1
+  }
+}

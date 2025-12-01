@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:platinum_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_platinum",
+    "count": 1
+  }
+}

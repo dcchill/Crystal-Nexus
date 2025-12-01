@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "ChlorophyteSmelter",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "chlorophytesmelter",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "chlorophytesmelteractive",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 15,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "c": {
+      "item": "crystalnexus:machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:machineblock",
+    "count": 4
+  }
+}

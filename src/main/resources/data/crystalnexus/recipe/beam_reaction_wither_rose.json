@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:beam_reaction_recipe",
+  "ingredients": [
+    {
+      "item": "minecraft:poppy"
+    }
+  ],
+  "output": {
+    "id": "minecraft:wither_rose",
+    "count": 1
+  }
+}

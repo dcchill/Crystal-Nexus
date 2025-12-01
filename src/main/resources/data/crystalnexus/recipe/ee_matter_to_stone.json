@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    }
+  },
+  "result": {
+    "id": "minecraft:stone",
+    "count": 32
+  }
+}

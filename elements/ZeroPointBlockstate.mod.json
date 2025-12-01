@@ -1,0 +1,289 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "ZeroPoint",
+    "blockstateList": [
+      {
+        "texture": "zeropoint_off",
+        "textureTop": "",
+        "textureLeft": "",
+        "textureFront": "",
+        "textureRight": "",
+        "textureBack": "",
+        "particleTexture": "carbon_machine_frame",
+        "renderType": 2,
+        "customModelName": "zero_point:default",
+        "luminance": 0,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 14.0,
+            "mz": 2.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 0.0,
+            "mz": 2.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 2.0,
+            "Mx": 2.0,
+            "My": 16.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 2.0,
+            "Mx": 2.0,
+            "My": 2.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 2.0,
+            "mz": 0.0,
+            "Mx": 2.0,
+            "My": 14.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 2.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 14.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 2.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 14.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 2.0,
+            "mz": 14.0,
+            "Mx": 2.0,
+            "My": 14.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 14.0,
+            "mz": 14.0,
+            "Mx": 2.0,
+            "My": 2.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 3.0,
+            "my": 3.0,
+            "mz": 3.0,
+            "Mx": 13.0,
+            "My": 13.0,
+            "Mz": 13.0,
+            "subtract": false
+          }
+        ]
+      },
+      {
+        "texture": "zeropoint_on",
+        "textureTop": "",
+        "textureLeft": "",
+        "textureFront": "",
+        "textureRight": "",
+        "textureBack": "",
+        "particleTexture": "carbon_machine_frame",
+        "renderType": 2,
+        "customModelName": "zero_point_on:default",
+        "luminance": 15,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 14.0,
+            "mz": 2.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 0.0,
+            "mz": 2.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 2.0,
+            "Mx": 2.0,
+            "My": 16.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 2.0,
+            "Mx": 2.0,
+            "My": 2.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 2.0,
+            "mz": 0.0,
+            "Mx": 2.0,
+            "My": 14.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 2.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 14.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 2.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 2.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 14.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 14.0,
+            "mz": 14.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 2.0,
+            "mz": 14.0,
+            "Mx": 2.0,
+            "My": 14.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 14.0,
+            "my": 14.0,
+            "mz": 14.0,
+            "Mx": 2.0,
+            "My": 2.0,
+            "Mz": 2.0,
+            "subtract": false
+          },
+          {
+            "mx": 3.0,
+            "my": 3.0,
+            "mz": 3.0,
+            "Mx": 13.0,
+            "My": 13.0,
+            "Mz": 13.0,
+            "subtract": false
+          }
+        ]
+      }
+    ]
+  }
+}

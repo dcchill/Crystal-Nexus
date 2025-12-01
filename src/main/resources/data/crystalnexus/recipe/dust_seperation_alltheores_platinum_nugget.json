@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:platinum_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:platinum_nugget",
+    "count": 12
+  }
+}

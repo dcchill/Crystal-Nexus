@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:pipe_straight"
+    },
+    "c": {
+      "item": "crystalnexus:polymer_sheet"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:pipe_junction",
+    "count": 4
+  }
+}

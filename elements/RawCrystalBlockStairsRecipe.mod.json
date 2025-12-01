@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 4,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      },
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      },
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      },
+      {
+        "value": "CUSTOM:RawCrystalBlock"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:RawCrystalBlockStairs"
+    },
+    "name": "raw_crystal_block_stairs_recipe",
+    "namespace": "mod"
+  }
+}

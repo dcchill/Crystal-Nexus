@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/multiblock_research_station_open",
+  "textures": {
+    "all": "crystalnexus:block/researchstation",
+    "particle": "crystalnexus:block/puretop",
+    "0": "crystalnexus:block/researchstation"
+  },
+  "render_type": "solid"
+}

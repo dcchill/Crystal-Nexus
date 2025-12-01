@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:tungsten_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_tungsten",
+    "count": 1
+  }
+}

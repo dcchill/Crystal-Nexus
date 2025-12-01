@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "minecraft:ender_pearl"
+    },
+    "c": {
+      "item": "crystalnexus:invertium_block"
+    },
+    "d": {
+      "item": "crystalnexus:invertium_machine_frame"
+    },
+    "e": {
+      "item": "minecraft:ender_chest"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:inverter",
+    "count": 1
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:destabilized_crystal"
+    },
+    {
+      "item": "crystalnexus:stable_crystal"
+    },
+    {
+      "item": "crystalnexus:controlled_crystal"
+    },
+    {
+      "item": "crystalnexus:regulated_crystal"
+    },
+    {
+      "item": "crystalnexus:ultimate_crystal"
+    },
+    {
+      "item": "crystalnexus:blutonium_crystal"
+    },
+    {
+      "item": "crystalnexus:dragon_crystal"
+    },
+    {
+      "item": "minecraft:end_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:godlike_crystal",
+    "count": 1
+  }
+}

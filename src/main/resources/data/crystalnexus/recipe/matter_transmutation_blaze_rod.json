@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:netherrack"
+    }
+  ],
+  "output": {
+    "id": "minecraft:blaze_rod",
+    "count": 32
+  }
+}

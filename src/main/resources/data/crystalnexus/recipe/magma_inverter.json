@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:packed_ice"
+    }
+  ],
+  "output": {
+    "id": "minecraft:magma_block",
+    "count": 1
+  }
+}

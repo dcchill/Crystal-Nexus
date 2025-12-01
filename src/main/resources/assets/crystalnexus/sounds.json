@@ -1,0 +1,20 @@
+{
+  "reactor_failure": {
+    "subtitle": "subtitles.reactor_failure",
+    "sounds": [
+      {
+        "name": "crystalnexus:reactor_fail",
+        "stream": false
+      }
+    ]
+  },
+  "zero_point_active": {
+    "subtitle": "subtitles.zero_point_active",
+    "sounds": [
+      {
+        "name": "crystalnexus:zero_point",
+        "stream": false
+      }
+    ]
+  }
+}

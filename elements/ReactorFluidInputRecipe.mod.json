@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:ReactorBlock"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:ReactorBlock"
+      },
+      {
+        "value": "Items.BUCKET"
+      },
+      {
+        "value": "CUSTOM:ReactorBlock"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:ReactorBlock"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ReactorFluidInput"
+    },
+    "name": "reactor_fluid_input_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "parent": "block/outer_stairs",
+  "textures": {
+    "particle": "crystalnexus:block/rawcrystalblock",
+    "bottom": "crystalnexus:block/rawcrystalblock",
+    "top": "crystalnexus:block/rawcrystalblock",
+    "side": "crystalnexus:block/rawcrystalblock"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      },
+      {
+        "value": "CUSTOM:CrystalAlloyNugget"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      },
+      {
+        "value": "CUSTOM:BlutoniumCrystal"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      },
+      {
+        "value": "CUSTOM:CrystalAlloyNugget"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ReactionChamberCore"
+    },
+    "name": "reaction_chamber_core_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cde",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:machineblock"
+    },
+    "c": {
+      "item": "crystalnexus:chlorophyte_smelter"
+    },
+    "d": {
+      "item": "crystalnexus:compound_e"
+    },
+    "e": {
+      "item": "crystalnexus:invertium_smelter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ultima_smelter",
+    "count": 1
+  }
+}

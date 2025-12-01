@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": "CUSTOM:CompoundE"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:CompoundSword"
+    },
+    "name": "compound_sword_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "Items.REDSTONE"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "CUSTOM:RawAncientCrystal"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:TurbineBlade"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:Turbine"
+    },
+    "name": "turbine_recipe",
+    "namespace": "mod"
+  }
+}

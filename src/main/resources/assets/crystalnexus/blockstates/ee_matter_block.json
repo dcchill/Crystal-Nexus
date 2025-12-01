@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crystalnexus:block/ee_matter_block"
+    }
+  }
+}

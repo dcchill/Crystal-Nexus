@@ -1,0 +1,310 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 0,
+    "width": 320,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "zeropoint_sprite.png",
+          "spritesCount": 3,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+          },
+          "x": 60,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "multiblock_gui_page_1_overlay.png",
+          "use1Xscale": false,
+          "x": 54,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty",
+          "text": ">",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchNextPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 150,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty1",
+          "text": "<",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchPrevPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 69,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark",
+          "image": "tab_orepro_dark.png",
+          "hoveredImage": "tab_orepro.png",
+          "onClick": {
+            "name": "OreProMultiGuiOpen"
+          },
+          "x": 306,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark1",
+          "image": "tab_ultimasmelter_dark.png",
+          "hoveredImage": "tab_ultimasmelter.png",
+          "onClick": {
+            "name": "UltimaSmelterMultiGuiOpen"
+          },
+          "x": 273,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark2",
+          "image": "tab_reaction_dark.png",
+          "hoveredImage": "tab_reaction.png",
+          "onClick": {
+            "name": "ReactionMultiGuiOpen"
+          },
+          "x": 240,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark3",
+          "image": "tab_reactor_dark.png",
+          "hoveredImage": "tab_reactor.png",
+          "onClick": {
+            "name": "ReactorMultiGuiOpen"
+          },
+          "x": 207,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tab.png",
+          "use1Xscale": false,
+          "x": 339,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_blutonium_reactor",
+          "text": {
+            "fixedValue": "Zero Point"
+          },
+          "color": {
+            "value": -3407668,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_uses_water_and_blutonium_ingots",
+          "text": {
+            "fixedValue": "Ultimate Endgame Energy."
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_can_smelt_four_stacks_at_once",
+          "text": {
+            "fixedValue": "Generates FE with no requirements."
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 89,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_any_side_in_the_middle_row_of_bl",
+          "text": {
+            "fixedValue": "Material List"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 107,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_automatically_combines_nuggets",
+          "text": {
+            "fixedValue": "174 x Carbon Fiber Blocks"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 125,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_into_ingots",
+          "text": {
+            "fixedValue": "15 x Carbon Fiber Glass"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 143,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_52x_carbon_machine_frames",
+          "text": {
+            "fixedValue": "52 x Carbon Machine Frames"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 134,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_1_x_zero_point",
+          "text": {
+            "fixedValue": "1 x Zero Point"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 152,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_diameter_of_25_blocks",
+          "text": {
+            "fixedValue": "(Diameter of 25 blocks)"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 161,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_massive_multiblock",
+          "text": {
+            "fixedValue": "Massive Multiblock"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 80,
+          "locked": false
+        }
+      }
+    ],
+    "onTick": {
+      "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+    },
+    "onClosed": {
+      "name": "MultiblockGuiPage1ThisGUIIsClosed"
+    },
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

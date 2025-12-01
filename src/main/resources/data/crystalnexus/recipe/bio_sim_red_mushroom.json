@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:red_mushroom"
+    }
+  ],
+  "output": {
+    "id": "minecraft:red_mushroom_block",
+    "count": 6
+  }
+}

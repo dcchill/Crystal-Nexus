@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:crystalized_alloy",
+    "crystalnexus:blutonium_ingot",
+    "crystalnexus:invertium_ingot",
+    "crystalnexus:chlorophyte_ingot"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "c": {
+      "item": "crystalnexus:battery"
+    },
+    "d": {
+      "item": "crystalnexus:silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:battery_monitor",
+    "count": 1
+  }
+}

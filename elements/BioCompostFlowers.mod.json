@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_composting",
+    "result": {
+      "value": "CUSTOM:Biomass"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Blocks.RED_FLOWER"
+      }
+    ],
+    "integers": [
+      32
+    ],
+    "strings": [],
+    "recipetype": "BiomaticComposting"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ultimate_crystal"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    }
+  ],
+  "output": {
+    "id": "minecraft:nether_star",
+    "count": 1
+  }
+}

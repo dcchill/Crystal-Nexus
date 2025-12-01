@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/crystal_guide"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/crystal_guide",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/crystal_guide",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/crystal_guide",
+      "y": 270
+    },
+    "facing=up": {
+      "model": "crystalnexus:block/crystal_guide",
+      "x": 270
+    },
+    "facing=down": {
+      "model": "crystalnexus:block/crystal_guide",
+      "x": 90
+    }
+  }
+}

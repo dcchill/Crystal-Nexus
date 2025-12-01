@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:reactor_block",
+    "crystalnexus:reactor_fluid_input",
+    "crystalnexus:reactor_energy_output"
+  ]
+}

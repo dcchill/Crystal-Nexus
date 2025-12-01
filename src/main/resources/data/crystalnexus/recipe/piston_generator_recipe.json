@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "bbb",
+    "cdc"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "b": {
+      "item": "minecraft:piston"
+    },
+    "c": {
+      "tag": "c:stones"
+    },
+    "d": {
+      "item": "crystalnexus:crystal_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:piston_generator",
+    "count": 1
+  }
+}

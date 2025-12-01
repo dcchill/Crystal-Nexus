@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:biomatic_composting",
+  "ingredients": [
+    {
+      "tag": "minecraft:saplings"
+    }
+  ],
+  "integers": [
+    24
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:biomass",
+    "count": 1
+  }
+}

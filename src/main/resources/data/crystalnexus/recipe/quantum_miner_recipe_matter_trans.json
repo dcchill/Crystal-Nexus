@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "tag": "crystalnexus:singularities"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "tag": "crystalnexus:singularities"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:quantum_miner",
+    "count": 1
+  }
+}

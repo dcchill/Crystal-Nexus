@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blank_chip"
+    },
+    {
+      "item": "minecraft:redstone_torch"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:link_card",
+    "count": 1
+  }
+}

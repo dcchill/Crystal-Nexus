@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a b",
+    "cde",
+    "a f"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "c": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "d": {
+      "item": "minecraft:fire_charge"
+    },
+    "e": {
+      "item": "crystalnexus:turbine_blade"
+    },
+    "f": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:flamethrower",
+    "count": 1
+  }
+}

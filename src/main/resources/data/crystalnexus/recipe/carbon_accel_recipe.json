@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "crystalnexus:invertium_ingot"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:carbon_acceleration_upgrade",
+    "count": 1
+  }
+}

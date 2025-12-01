@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:Fertilizer"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "Items.DYE#15"
+      },
+      {
+        "value": "CUSTOM:Biomass"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

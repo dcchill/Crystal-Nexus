@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:raw_crystal_block"
+  },
+  "result": {
+    "id": "crystalnexus:raw_crystal_block_stairs",
+    "count": 1
+  }
+}

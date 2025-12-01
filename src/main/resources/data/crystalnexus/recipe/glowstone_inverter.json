@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone"
+    }
+  ],
+  "output": {
+    "id": "minecraft:glowstone_dust",
+    "count": 1
+  }
+}

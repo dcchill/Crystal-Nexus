@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crystalnexus:block/reactor_fluid_input"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_antimony"
+    }
+  ],
+  "output": {
+    "id": "alltheores:antimony_dust",
+    "count": 2
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/battery_top",
+    "north": "crystalnexus:block/battery_side_6",
+    "east": "crystalnexus:block/battery_side_6",
+    "south": "crystalnexus:block/battery_side_6",
+    "west": "crystalnexus:block/battery_side_6",
+    "particle": "crystalnexus:block/purebottom"
+  },
+  "render_type": "solid"
+}

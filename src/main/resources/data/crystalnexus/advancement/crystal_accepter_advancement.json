@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:crystal_accepter"
+    },
+    "title": {
+      "translate": "advancements.crystal_accepter_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.crystal_accepter_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "crystal_accepter_advancement_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "crystalnexus:crystal_accepter"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:machine_frame_advancement"
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:tarrock"
+  },
+  "result": {
+    "id": "crystalnexus:tarrock_wall",
+    "count": 1
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/crystalore",
+    "particle": "crystalnexus:block/crystalore"
+  },
+  "render_type": "solid"
+}

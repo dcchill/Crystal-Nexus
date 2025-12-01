@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "BiomaticConstructor",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "biomatic_constructer",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "biomatic_constructor_on",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 5,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

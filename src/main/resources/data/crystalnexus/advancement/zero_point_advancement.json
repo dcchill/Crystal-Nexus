@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:zero_point"
+    },
+    "title": {
+      "translate": "advancements.zero_point_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.zero_point_advancement.descr"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "zero_point_advancement_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "crystalnexus:zero_point"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:compressor_advancement"
+}

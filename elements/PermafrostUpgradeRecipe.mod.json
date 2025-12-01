@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:ReactorUpgradePermafrost"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CarbonChip"
+      },
+      {
+        "value": "Items.HEART_OF_THE_SEA"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

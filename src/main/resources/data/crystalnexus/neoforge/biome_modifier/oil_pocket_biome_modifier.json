@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "deep_dark",
+  "features": "crystalnexus:oil_pocket",
+  "step": "underground_structures"
+}

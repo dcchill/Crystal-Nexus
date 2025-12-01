@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:CarbonRangeUpgrade"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CarbonChip"
+      },
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "PistonGenerator",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "generator",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          }
+        ]
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "generator_on",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 10,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          }
+        ]
+      }
+    ]
+  }
+}

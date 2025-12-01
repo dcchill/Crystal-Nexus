@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:delta_feature",
+  "config": {
+    "contents": {
+      "Name": "crystalnexus:crude_oil"
+    },
+    "rim": {
+      "Name": "minecraft:magma_block"
+    },
+    "size": {
+      "type": "uniform",
+      "min_inclusive": 3,
+      "max_inclusive": 10
+    },
+    "rim_size": {
+      "type": "uniform",
+      "min_inclusive": 1,
+      "max_inclusive": 3
+    }
+  }
+}

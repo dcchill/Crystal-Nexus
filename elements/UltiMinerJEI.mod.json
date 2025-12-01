@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "crystal_purify",
+    "result": {
+      "value": "CUSTOM:UltiMiner"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      },
+      {
+        "value": "Items.NETHERITE_PICKAXE"
+      }
+    ]
+  }
+}

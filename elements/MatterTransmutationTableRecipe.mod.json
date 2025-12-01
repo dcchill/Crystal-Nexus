@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "TAG:c:silicon"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:CarbonMachineFrame"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:MatterTransmutationTable"
+    },
+    "name": "matter_transmutation_table_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:PolymerSheet"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

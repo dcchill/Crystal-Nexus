@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:singularity_compression",
+  "ingredients": [
+    {
+      "item": "minecraft:gold_ingot"
+    }
+  ],
+  "integers": [
+    10368
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:gold_singularity",
+    "count": 1
+  }
+}

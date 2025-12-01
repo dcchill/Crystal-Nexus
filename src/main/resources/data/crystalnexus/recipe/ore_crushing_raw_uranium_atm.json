@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_uranium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:uranium_dust",
+    "count": 2
+  }
+}

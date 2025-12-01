@@ -1,0 +1,47 @@
+{
+  "_fv": 79,
+  "_type": "tool",
+  "definition": {
+    "toolType": "Shield",
+    "renderType": 1,
+    "blockingRenderType": 1,
+    "texture": "chlorophytedust",
+    "customModelName": "flamethrower:default",
+    "blockingModelName": "flamethrower_ads:default",
+    "guiTexture": "",
+    "name": "Flamethrower",
+    "specialInformation": {
+      "fixedValue": [
+        "§5Shift-Right Click on lava to refuel."
+      ]
+    },
+    "creativeTabs": [
+      {
+        "value": "CUSTOM:CrystalNexusTab"
+      },
+      {
+        "value": "COMBAT"
+      }
+    ],
+    "efficiency": 4.0,
+    "attackSpeed": 1.0,
+    "enchantability": 2,
+    "damageVsEntity": 4.0,
+    "usageCount": 2048,
+    "glowCondition": {
+      "fixedValue": false
+    },
+    "repairItems": [],
+    "immuneToFire": true,
+    "blockDropsTier": "WOOD",
+    "blocksAffected": [],
+    "stayInGridWhenCrafting": false,
+    "damageOnCrafting": false,
+    "onRightClickedOnBlock": {
+      "name": "FlamethrowerRefuel"
+    },
+    "onItemInUseTick": {
+      "name": "FlamethrowerRightclickedOnBlock"
+    }
+  }
+}

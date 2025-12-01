@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:turbine"
+    },
+    "c": {
+      "item": "crystalnexus:reactor_block"
+    },
+    "d": {
+      "item": "crystalnexus:invertium_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_core",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:rhodium_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_rhodium",
+    "count": 1
+  }
+}

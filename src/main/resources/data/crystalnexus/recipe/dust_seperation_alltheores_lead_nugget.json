@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:lead_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:lead_nugget",
+    "count": 12
+  }
+}

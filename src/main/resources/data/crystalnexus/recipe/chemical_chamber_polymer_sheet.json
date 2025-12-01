@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    },
+    {
+      "item": "crystalnexus:synthetic_rubber"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:polymer_sheet",
+    "count": 1
+  }
+}

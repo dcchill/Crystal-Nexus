@@ -1,0 +1,19 @@
+{
+  "type": "crystalnexus:purification",
+  "ingredients": [
+    {
+      "item": "crystalnexus:stable_crystal"
+    },
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  ],
+  "integers": [
+    1,
+    16
+  ],
+  "output": {
+    "id": "crystalnexus:crystalized_alloy",
+    "count": 16
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_cobalt"
+    }
+  ],
+  "output": {
+    "id": "alltheores:cobalt_dust",
+    "count": 2
+  }
+}

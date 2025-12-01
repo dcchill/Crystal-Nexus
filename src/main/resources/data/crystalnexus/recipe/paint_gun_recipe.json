@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "c d"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "b": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "c": {
+      "item": "minecraft:bucket"
+    },
+    "d": {
+      "item": "minecraft:stick"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:paint_gun",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_vanadium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:vanadium_dust",
+    "count": 2
+  }
+}

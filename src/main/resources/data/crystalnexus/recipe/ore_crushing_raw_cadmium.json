@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_cadmium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:cadmium_dust",
+    "count": 2
+  }
+}

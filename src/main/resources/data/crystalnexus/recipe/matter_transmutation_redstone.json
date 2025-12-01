@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "tag": "crystalnexus:jei_empty_tag"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "tag": "crystalnexus:jei_empty_tag"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "tag": "crystalnexus:jei_empty_tag"
+    },
+    {
+      "item": "minecraft:netherrack"
+    },
+    {
+      "tag": "crystalnexus:jei_empty_tag"
+    }
+  ],
+  "output": {
+    "id": "minecraft:redstone",
+    "count": 16
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_manganese"
+    }
+  ],
+  "output": {
+    "id": "alltheores:manganese_dust",
+    "count": 2
+  }
+}

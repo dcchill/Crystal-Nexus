@@ -1,0 +1,56 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "reactionstructure_jei.png",
+    "width": 200,
+    "height": 135,
+    "icon": {
+      "value": "CUSTOM:ReactionChamberComputer"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:ReactionEnergyInput"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberComputer"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberCore"
+      },
+      {
+        "value": "CUSTOM:ReactionChamberBlock"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Reactor Multiblock Guide",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 1400,
+        "y": 1400,
+        "slotid": 0
+      },
+      {
+        "type": "INPUT",
+        "x": 1400,
+        "y": 1400,
+        "slotid": 1
+      },
+      {
+        "type": "INPUT",
+        "x": 1400,
+        "y": 1400,
+        "slotid": 2
+      },
+      {
+        "type": "INPUT",
+        "x": 1400,
+        "y": 1400,
+        "slotid": 3
+      }
+    ]
+  }
+}

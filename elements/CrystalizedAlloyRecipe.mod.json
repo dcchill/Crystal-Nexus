@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "purification",
+    "result": {
+      "value": "CUSTOM:CystalizedAlloy"
+    },
+    "count": 16,
+    "ingredients": [
+      {
+        "value": "CUSTOM:StableCrystal"
+      },
+      {
+        "value": "Items.IRON_INGOT"
+      }
+    ],
+    "integers": [
+      1,
+      16
+    ],
+    "strings": [],
+    "recipetype": "Purification"
+  }
+}

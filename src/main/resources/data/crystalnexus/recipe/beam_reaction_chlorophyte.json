@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:beam_reaction_recipe",
+  "ingredients": [
+    {
+      "item": "crystalnexus:crystalized_alloy"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:chlorophyte_ingot",
+    "count": 1
+  }
+}

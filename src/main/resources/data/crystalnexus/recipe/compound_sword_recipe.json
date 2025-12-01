@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    " e "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:ee_matter"
+    },
+    "c": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "d": {
+      "item": "crystalnexus:compound_e"
+    },
+    "e": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:compound_sword",
+    "count": 1
+  }
+}

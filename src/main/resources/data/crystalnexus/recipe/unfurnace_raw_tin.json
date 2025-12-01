@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "alltheores:tin_ingot"
+    }
+  ],
+  "output": {
+    "id": "alltheores:raw_tin",
+    "count": 1
+  }
+}

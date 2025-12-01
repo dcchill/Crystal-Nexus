@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/conductivelensrefractor",
+    "up": "crystalnexus:block/conductivelensrefractor",
+    "north": "crystalnexus:block/conductiveenergyrefractor",
+    "east": "crystalnexus:block/conductivelensrefractor",
+    "south": "crystalnexus:block/conductivelensrefractor",
+    "west": "crystalnexus:block/conductivelensrefractor",
+    "particle": "crystalnexus:block/conductivelensrefractor"
+  },
+  "render_type": "solid"
+}

@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:matter_transmutation_table"
+    },
+    "title": {
+      "translate": "advancements.matter_trans_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.matter_trans_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "matter_trans_advancement_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "crystalnexus:matter_transmutation_table"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:ee_matter_advancement"
+}

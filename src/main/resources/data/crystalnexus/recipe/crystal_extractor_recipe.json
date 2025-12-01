@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ab ",
+    "bcd",
+    " dd"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:diamond_pickaxe"
+    },
+    "b": {
+      "item": "crystalnexus:ancient_crystal"
+    },
+    "c": {
+      "item": "minecraft:redstone"
+    },
+    "d": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystal_extractor",
+    "count": 1
+  }
+}

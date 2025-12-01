@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:EfficiencyUpgrade"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:BlankChip"
+      },
+      {
+        "value": "Items.DYE#4"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

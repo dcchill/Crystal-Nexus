@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:battery"
+    },
+    "c": {
+      "item": "crystalnexus:chlorophyte_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:energy_extractor",
+    "count": 1
+  }
+}

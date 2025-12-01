@@ -1,0 +1,14 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:MetallurgicRecrystallizer"
+      }
+    ],
+    "information": [
+      "Converts Ingots into Raw Ores. Put an Invertium Crystal in the middle slot. (1 by default, 2 with Efficiency Upgrade)"
+    ]
+  }
+}

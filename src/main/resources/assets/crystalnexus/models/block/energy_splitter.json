@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/lensrefractor",
+    "up": "crystalnexus:block/lensrefractor",
+    "north": "crystalnexus:block/energyrefractor",
+    "east": "crystalnexus:block/lensrefractor",
+    "south": "crystalnexus:block/lensrefractor",
+    "west": "crystalnexus:block/lensrefractor",
+    "particle": "crystalnexus:block/lensrefractor"
+  },
+  "render_type": "solid"
+}

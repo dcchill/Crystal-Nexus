@@ -1,0 +1,21 @@
+{
+  "description": {
+    "translate": "enchantment.crystalnexus.hazmat"
+  },
+  "supported_items": "#minecraft:enchantable/chest_armor",
+  "weight": 7,
+  "max_level": 1,
+  "min_cost": {
+    "base": 1,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 6,
+    "per_level_above_first": 10
+  },
+  "anvil_cost": 1,
+  "slots": [
+    "chest"
+  ],
+  "exclusive_set": []
+}

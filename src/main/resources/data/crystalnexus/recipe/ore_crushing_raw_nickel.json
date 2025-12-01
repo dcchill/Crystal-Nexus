@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_nickel"
+    }
+  ],
+  "output": {
+    "id": "alltheores:nickel_dust",
+    "count": 2
+  }
+}

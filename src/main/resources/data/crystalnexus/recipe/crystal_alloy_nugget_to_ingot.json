@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "aaa",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystal_alloy_nugget"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystalized_alloy",
+    "count": 1
+  }
+}

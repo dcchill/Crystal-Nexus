@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "  a",
+    "a  "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    }
+  },
+  "result": {
+    "id": "minecraft:quartz",
+    "count": 32
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:EnergyRefractor"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "TAG:c:glass_panes"
+      },
+      {
+        "value": "CUSTOM:CystalizedAlloy"
+      },
+      {
+        "value": "TAG:c:glass_panes"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:EnergyRefractor"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:EnergySplitter"
+    },
+    "name": "energy_splitter_recipe",
+    "namespace": "mod"
+  }
+}

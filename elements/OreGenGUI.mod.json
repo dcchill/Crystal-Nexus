@@ -1,0 +1,190 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 1,
+    "width": 176,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": true,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank14.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "OreTankOne"
+          },
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank12.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "OreTankTwo"
+          },
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank34.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "OreTankThree"
+          },
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankfull.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "OreTankDone"
+          },
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "OreTankNone"
+          },
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "upgradeslot.png",
+          "use1Xscale": false,
+          "x": 299,
+          "y": 37,
+          "locked": false
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": "CUSTOM:AccelerationUpgrade"
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 0,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 305,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tooltip.png",
+          "use1Xscale": false,
+          "x": 132,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_fill_with_crystal_gloop_and_powe",
+          "text": {
+            "fixedValue": "Fill with Crystal Gloop and power to start generating ores."
+          },
+          "width": 24,
+          "height": 24,
+          "x": 127,
+          "y": 42,
+          "locked": false
+        }
+      },
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "batterylevelsmall.png",
+          "spritesCount": 11,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "EnergyDisplay"
+          },
+          "x": 101,
+          "y": 42,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "battery_addon.png",
+          "use1Xscale": false,
+          "x": 93,
+          "y": 36,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_proc_get_block_name_for_gui",
+          "text": {
+            "fixedValue": "[Ore Generator]"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 176,
+          "y": 43,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

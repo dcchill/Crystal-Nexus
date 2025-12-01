@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "single_purification",
+    "result": {
+      "value": "CUSTOM:Nitrile"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Blocks.BONE_BLOCK"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "SinglePurification"
+  }
+}

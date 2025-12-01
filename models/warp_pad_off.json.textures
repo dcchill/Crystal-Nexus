@@ -1,0 +1,10 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "wpad_off"
+      },
+      "name": "default"
+    }
+  }
+}

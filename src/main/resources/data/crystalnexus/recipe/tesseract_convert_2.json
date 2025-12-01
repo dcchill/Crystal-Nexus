@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:tesseract"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:tesseract_output",
+    "count": 1
+  }
+}

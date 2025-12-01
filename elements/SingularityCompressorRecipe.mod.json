@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "Blocks.PISTON"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EEMatterBlock"
+      },
+      {
+        "value": "CUSTOM:CarbonMachineFrame"
+      },
+      {
+        "value": "CUSTOM:EEMatterBlock"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "Blocks.PISTON"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:SingularityCompressor"
+    },
+    "name": "singularity_compressor_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "tag": "c:silicon"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:energized_silicon",
+    "count": 1
+  }
+}

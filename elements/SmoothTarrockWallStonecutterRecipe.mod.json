@@ -1,0 +1,23 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Stone cutting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "stoneCuttingInputStack": {
+      "value": "CUSTOM:SmoothTarrock"
+    },
+    "stoneCuttingReturnStack": {
+      "value": "CUSTOM:SmoothTarrockWall"
+    },
+    "name": "smooth_tarrock_wall_stonecutter_recipe",
+    "namespace": "mod"
+  }
+}

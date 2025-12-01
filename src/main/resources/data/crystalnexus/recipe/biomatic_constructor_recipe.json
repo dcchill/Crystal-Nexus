@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "c": {
+      "item": "crystalnexus:chlorophyte_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:chlorophyte_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:biomatic_constructor",
+    "count": 1
+  }
+}

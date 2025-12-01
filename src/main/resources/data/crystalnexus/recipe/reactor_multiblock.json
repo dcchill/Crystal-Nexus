@@ -1,0 +1,24 @@
+{
+  "type": "crystalnexus:reactor_multiblock_guide",
+  "ingredients": [
+    {
+      "item": "crystalnexus:reactor_computer"
+    },
+    {
+      "item": "crystalnexus:reactor_energy_output"
+    },
+    {
+      "item": "crystalnexus:reactor_fluid_input"
+    },
+    {
+      "item": "crystalnexus:reactor_block"
+    },
+    {
+      "item": "crystalnexus:reactor_core"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:reactor_computer",
+    "count": 1
+  }
+}

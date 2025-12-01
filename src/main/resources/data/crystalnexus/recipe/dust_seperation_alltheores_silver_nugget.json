@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:silver_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:silver_nugget",
+    "count": 12
+  }
+}

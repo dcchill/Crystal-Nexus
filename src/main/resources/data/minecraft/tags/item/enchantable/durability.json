@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:godlike_crystal",
+    "crystalnexus:ultimate_crystal",
+    "crystalnexus:stable_crystal",
+    "crystalnexus:controlled_crystal",
+    "crystalnexus:dragon_crystal",
+    "crystalnexus:crystal_extractor",
+    "crystalnexus:blutonium_crystal",
+    "crystalnexus:regulated_crystal"
+  ]
+}

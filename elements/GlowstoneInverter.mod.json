@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "inverter_jei",
+    "result": {
+      "value": "Items.GLOWSTONE_DUST"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.REDSTONE"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "InverterJei"
+  }
+}

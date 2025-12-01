@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:raw_crystal_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:raw_crystal_block_slab",
+    "count": 6
+  }
+}

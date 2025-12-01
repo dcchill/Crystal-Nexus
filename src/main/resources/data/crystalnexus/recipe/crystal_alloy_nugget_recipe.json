@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:crystalized_alloy"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:crystal_alloy_nugget",
+    "count": 9
+  }
+}

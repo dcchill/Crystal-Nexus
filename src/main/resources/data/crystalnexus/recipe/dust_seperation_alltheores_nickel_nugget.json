@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:nickel_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:nickel_nugget",
+    "count": 12
+  }
+}

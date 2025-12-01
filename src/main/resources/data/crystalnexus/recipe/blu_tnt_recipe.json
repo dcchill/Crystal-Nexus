@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "b": {
+      "item": "minecraft:gunpowder"
+    },
+    "c": {
+      "item": "crystalnexus:polyacrylonitrile_dust"
+    },
+    "d": {
+      "item": "minecraft:tnt"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:blu_tnt",
+    "count": 1
+  }
+}

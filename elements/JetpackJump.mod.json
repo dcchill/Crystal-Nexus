@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "SPACE",
+    "keyBindingName": "Jetpack Jump",
+    "keyBindingCategoryKey": "misc",
+    "onKeyPressed": {
+      "name": "JetpackJumpOnKeyPressed"
+    },
+    "onKeyReleased": {
+      "name": "JetpackJumpOnKeyReleased"
+    }
+  }
+}

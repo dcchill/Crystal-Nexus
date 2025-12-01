@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    {
+      "item": "crystalnexus:energized_silicon"
+    },
+    {
+      "item": "crystalnexus:invertium_block"
+    },
+    {
+      "item": "crystalnexus:invertium_crystal"
+    },
+    {
+      "item": "crystalnexus:invertium_block"
+    },
+    {
+      "item": "crystalnexus:energized_silicon"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:warp_pad",
+    "count": 1
+  }
+}

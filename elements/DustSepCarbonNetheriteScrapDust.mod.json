@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "dust_seperation",
+    "result": {
+      "value": "CUSTOM:RawCarbon"
+    },
+    "count": 12,
+    "ingredients": [
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "DustSeperation"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "crystalnexus:godlike_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:reactor_upgrade",
+    "count": 1
+  }
+}

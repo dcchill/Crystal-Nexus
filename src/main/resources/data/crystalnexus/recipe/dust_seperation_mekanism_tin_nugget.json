@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "mekanism:dust_tin"
+    }
+  ],
+  "output": {
+    "id": "mekanism:nugget_tin",
+    "count": 12
+  }
+}

@@ -1,0 +1,213 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 1,
+    "width": 176,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": true,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": ""
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 0,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 204,
+          "y": 71,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_crystal_here",
+          "text": {
+            "fixedValue": "Place End Crystals in range, and one energy crystal in the slot to create FE."
+          },
+          "width": 24,
+          "height": 24,
+          "x": 128,
+          "y": 39,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tooltip.png",
+          "use1Xscale": false,
+          "x": 132,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "upgradeslot.png",
+          "use1Xscale": false,
+          "x": 299,
+          "y": 37,
+          "locked": false
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": "CUSTOM:RangeUpgrade"
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 1,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "onTakenFromSlot": {
+            "name": "CrystalAccepterDefaultRange"
+          },
+          "x": 305,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankfull.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankDone"
+          },
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank34.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankThree"
+          },
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank12.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankTwo"
+          },
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tank14.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankOne"
+          },
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tankmt.png",
+          "use1Xscale": false,
+          "displayCondition": {
+            "name": "TankNone"
+          },
+          "x": 258,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_proc_crystal_purifier_on_tick_up",
+          "text": {
+            "fixedValue": "",
+            "name": "CrystalAccepterOnTickUpdate"
+          },
+          "width": 24,
+          "height": 24,
+          "x": 254,
+          "y": 66,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_proc_get_block_name_for_gui",
+          "text": {
+            "fixedValue": "[Crystal Acceptor]"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 191,
+          "y": 27,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "nameaddon.png",
+          "use1Xscale": false,
+          "x": 176,
+          "y": 22,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

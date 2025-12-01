@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/blutntbottom",
+    "up": "crystalnexus:block/blutnttop",
+    "north": "crystalnexus:block/blutntside",
+    "east": "crystalnexus:block/blutntside",
+    "south": "crystalnexus:block/blutntside",
+    "west": "crystalnexus:block/blutntside",
+    "particle": "crystalnexus:block/blutntbottom"
+  },
+  "render_type": "solid"
+}

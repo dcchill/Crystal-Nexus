@@ -1,0 +1,24 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:tarrock",
+    "crystalnexus:ancient_crystal_ore",
+    "crystalnexus:smooth_tarrock_wall",
+    "crystalnexus:tarrock_soil",
+    "crystalnexus:machine_core",
+    "crystalnexus:tarrock_button",
+    "crystalnexus:tarrock_brick_wall",
+    "crystalnexus:tarrock_stairs",
+    "crystalnexus:tarrock_wall",
+    "crystalnexus:smooth_tarrock_stairs",
+    "crystalnexus:machine_energy_input",
+    "crystalnexus:smooth_tarrock_slab",
+    "crystalnexus:smooth_tarrock",
+    "crystalnexus:silicon_ore",
+    "crystalnexus:tarrock_bricks",
+    "crystalnexus:ancient_crystal_ore_stone",
+    "crystalnexus:tarrock_brick_stairs",
+    "crystalnexus:tarrock_brick_slab",
+    "crystalnexus:tarrock_slab"
+  ]
+}

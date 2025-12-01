@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:smooth_tarrock_slab",
+    "crystalnexus:tarrock_brick_slab",
+    "crystalnexus:raw_crystal_block_slab",
+    "crystalnexus:tarrock_slab"
+  ]
+}

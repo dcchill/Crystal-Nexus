@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:chlorophyte_block",
+    "crystalnexus:invertium_block",
+    "crystalnexus:crystalized_alloy_block",
+    "crystalnexus:blutonium_block",
+    "crystalnexus:raw_crystal_block"
+  ]
+}

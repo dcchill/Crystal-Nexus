@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:EnergizedSilicon"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "TAG:c:silicon"
+      },
+      {
+        "value": "CUSTOM:ConductiveAlloy"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:ConductiveAlloy"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:ConductiveAlloy"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:ConductiveAlloy"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

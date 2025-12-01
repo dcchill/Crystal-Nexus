@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:compound_pickaxe",
+    "crystalnexus:invertium_pickaxe",
+    "crystalnexus:polymer_pickaxe",
+    "crystalnexus:chlorophyte_pickaxe",
+    "crystalnexus:cystalized_pickaxe"
+  ]
+}

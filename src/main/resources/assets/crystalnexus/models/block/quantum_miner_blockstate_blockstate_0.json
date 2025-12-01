@@ -1,0 +1,15 @@
+{
+  "parent": "crystalnexus:custom/quantum_miner",
+  "textures": {
+    "all": "crystalnexus:block/superenergyanimoff",
+    "particle": "crystalnexus:block/puretop",
+    "0": "crystalnexus:block/pureside",
+    "1": "crystalnexus:block/purebottom",
+    "2": "crystalnexus:block/puretop",
+    "3": "crystalnexus:block/carbon_machine_frame",
+    "4": "crystalnexus:block/digiminer",
+    "5": "crystalnexus:block/superenergyanimoff",
+    "missing": "crystalnexus:block/"
+  },
+  "render_type": "solid"
+}

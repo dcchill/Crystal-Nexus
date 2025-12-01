@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:crystalized_alloy_magnet"
+    },
+    "c": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "d": {
+      "item": "crystalnexus:crystal_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:crystalized_alloy"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:extractinator",
+    "count": 1
+  }
+}

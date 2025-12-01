@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:Tesseract"
+      },
+      {
+        "value": "CUSTOM:StableCrystal"
+      },
+      {
+        "value": "CUSTOM:TesseractOutput"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:EnergizedSilicon"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:Tesseract"
+      },
+      {
+        "value": "CUSTOM:StableCrystal"
+      },
+      {
+        "value": "CUSTOM:TesseractOutput"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:FactoryController"
+    },
+    "name": "factory_controller_recipe",
+    "namespace": "mod"
+  }
+}

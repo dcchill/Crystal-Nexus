@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "minecraft:hopper"
+    },
+    "c": {
+      "item": "crystalnexus:regulated_crystal"
+    },
+    "d": {
+      "tag": "c:silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:factory_output_controller",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:zinc_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:zinc_nugget",
+    "count": 12
+  }
+}

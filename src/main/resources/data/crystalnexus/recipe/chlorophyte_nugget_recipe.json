@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:chlorophyte_ingot"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:chlorophyte_nugget",
+    "count": 9
+  }
+}

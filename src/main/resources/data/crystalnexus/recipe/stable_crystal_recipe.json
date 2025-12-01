@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:single_purification",
+  "ingredients": [
+    {
+      "item": "crystalnexus:destabilized_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:stable_crystal",
+    "count": 1
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:InvertiumCrystal"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:Florathane"
+      },
+      {
+        "value": "CUSTOM:InvertiumMachineFrame"
+      },
+      {
+        "value": "CUSTOM:Florathane"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:InvertiumCrystal"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:BiomaticSimulator"
+    },
+    "name": "biomatic_simulator_recipe",
+    "namespace": "mod"
+  }
+}

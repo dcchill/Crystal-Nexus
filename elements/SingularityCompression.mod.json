@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "singularityjei.png",
+    "width": 158,
+    "height": 74,
+    "icon": {
+      "value": "CUSTOM:SingularityCompressor"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:SingularityCompressor"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": true,
+    "enableStringList": true,
+    "title": "Singularity Compression",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 38,
+        "y": 21,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 105,
+        "y": 21,
+        "slotid": 0
+      }
+    ]
+  }
+}

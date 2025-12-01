@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_simulation",
+    "result": {
+      "value": "Blocks.BROWN_MUSHROOM_BLOCK"
+    },
+    "count": 6,
+    "ingredients": [
+      {
+        "value": "Blocks.BROWN_MUSHROOM"
+      }
+    ],
+    "integers": [
+      1
+    ],
+    "strings": [],
+    "recipetype": "BiomaticSimulation"
+  }
+}

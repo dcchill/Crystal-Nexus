@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "mekanism:raw_tin"
+    }
+  ],
+  "output": {
+    "id": "mekanism:dust_tin",
+    "count": 2
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:GodlikeCrystal"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:DestabilizedCrystal"
+      },
+      {
+        "value": "CUSTOM:StableCrystal"
+      },
+      {
+        "value": "CUSTOM:ControlledCrystal"
+      },
+      {
+        "value": "CUSTOM:RegulatedCrystal"
+      },
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      },
+      {
+        "value": "CUSTOM:BlutoniumCrystal"
+      },
+      {
+        "value": "CUSTOM:DragonCrystal"
+      },
+      {
+        "value": "Items.END_CRYSTAL"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

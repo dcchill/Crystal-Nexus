@@ -1,0 +1,14 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "crystalnexus:item/florathanewand"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "crystalnexus:item/florathane_wand_0"
+    }
+  ]
+}

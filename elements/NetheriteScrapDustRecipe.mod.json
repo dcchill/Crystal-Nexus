@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "ore_crushing_jei",
+    "result": {
+      "value": "CUSTOM:NetheriteScrapDust"
+    },
+    "count": 2,
+    "ingredients": [
+      {
+        "value": "Items.NETHERITE_SCRAP"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "OreCrushingJei"
+  }
+}

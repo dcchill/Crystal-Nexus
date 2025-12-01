@@ -1,0 +1,38 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "beamreactionjei.png",
+    "width": 256,
+    "height": 100,
+    "icon": {
+      "value": "CUSTOM:CrystalGuide"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:CrystalGuide"
+      },
+      {
+        "value": "Items.END_CRYSTAL"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Beam Reaction",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 121,
+        "y": 39,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 121,
+        "y": 65,
+        "slotid": 0
+      }
+    ]
+  }
+}

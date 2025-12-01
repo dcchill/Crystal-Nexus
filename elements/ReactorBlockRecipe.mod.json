@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "CUSTOM:BlutoniumIngot"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ReactorBlock"
+    },
+    "name": "reactor_block_recipe",
+    "namespace": "mod"
+  }
+}

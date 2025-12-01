@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_rhodium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:rhodium_dust",
+    "count": 2
+  }
+}

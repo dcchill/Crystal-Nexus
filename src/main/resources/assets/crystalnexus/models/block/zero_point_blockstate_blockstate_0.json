@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/zero_point",
+  "textures": {
+    "all": "crystalnexus:block/zeropoint_off",
+    "particle": "crystalnexus:block/carbon_machine_frame",
+    "0": "crystalnexus:block/zeropoint_off"
+  },
+  "render_type": "solid"
+}

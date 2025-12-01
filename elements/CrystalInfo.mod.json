@@ -1,0 +1,29 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:StableCrystal"
+      },
+      {
+        "value": "CUSTOM:ControlledCrystal"
+      },
+      {
+        "value": "CUSTOM:RegulatedCrystal"
+      },
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      },
+      {
+        "value": "CUSTOM:BlutoniumCrystal"
+      },
+      {
+        "value": "CUSTOM:GodlikeCrystal"
+      }
+    ],
+    "information": [
+      "Used to generate FE.  Place a Crystal in the Crystal Siphon, and surround the Siphon in End Crystals to take their power."
+    ]
+  }
+}

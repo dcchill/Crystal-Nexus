@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "itemextension",
+  "definition": {
+    "item": {
+      "value": "CUSTOM:CoalSingularity"
+    },
+    "enableFuel": true,
+    "fuelPower": {
+      "fixedValue": 1.65888E7
+    },
+    "hasDispenseBehavior": false,
+    "compostLayerChance": 0.0
+  }
+}

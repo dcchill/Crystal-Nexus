@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "eee"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:controlled_crystal"
+    },
+    "c": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "d": {
+      "item": "crystalnexus:crystal_machine_frame"
+    },
+    "e": {
+      "tag": "c:stones"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:dust_separator",
+    "count": 1
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "Items.BLAZE_ROD"
+    },
+    "count": 32,
+    "ingredients": [
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

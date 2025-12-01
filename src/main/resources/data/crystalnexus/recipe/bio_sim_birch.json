@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:biomatic_simulation",
+  "ingredients": [
+    {
+      "item": "minecraft:birch_sapling"
+    }
+  ],
+  "output": {
+    "id": "minecraft:birch_log",
+    "count": 6
+  }
+}

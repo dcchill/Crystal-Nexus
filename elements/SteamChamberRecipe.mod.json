@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:Nitrile"
+      },
+      {
+        "value": "CUSTOM:TurbineBlade"
+      },
+      {
+        "value": "CUSTOM:Nitrile"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:Silicon"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:SteamChamber"
+    },
+    "name": "steam_chamber_recipe",
+    "namespace": "mod"
+  }
+}

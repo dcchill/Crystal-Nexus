@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "ece"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:crystal_alloy_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:turbine_blade"
+    },
+    "c": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "e": {
+      "tag": "c:stones"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:chemical_reaction_chamber",
+    "count": 1
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    },
+    {
+      "item": "crystalnexus:netherite_scrap_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:carbon_fiber",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:chlorophyte_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:chlorophyte_ingot"
+    },
+    "c": {
+      "item": "crystalnexus:chlorophyte_machine_frame"
+    },
+    "d": {
+      "tag": "c:stones"
+    },
+    "e": {
+      "item": "crystalnexus:crystal_smelter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:chlorophyte_smelter",
+    "count": 1
+  }
+}

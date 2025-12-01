@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:blaze_rod"
+    }
+  ],
+  "output": {
+    "id": "minecraft:breeze_rod",
+    "count": 1
+  }
+}

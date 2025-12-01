@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blank_chip"
+    },
+    {
+      "item": "crystalnexus:destabilized_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:range_upgrade",
+    "count": 1
+  }
+}

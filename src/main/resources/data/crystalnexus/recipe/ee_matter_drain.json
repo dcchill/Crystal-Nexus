@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:energy_extraction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:unstable_ee_matter",
+    "count": 1
+  }
+}

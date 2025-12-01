@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:coffee"
+    },
+    {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    {
+      "item": "crystalnexus:blutonium_ingot"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:atomic_coffee",
+    "count": 1
+  }
+}

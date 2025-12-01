@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    }
+  ],
+  "output": {
+    "id": "minecraft:netherite_scrap",
+    "count": 1
+  }
+}

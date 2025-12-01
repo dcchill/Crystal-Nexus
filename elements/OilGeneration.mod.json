@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "piston_generator_jei",
+    "result": {
+      "value": "CUSTOM:EmptyFuelCell"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:OilFuelCell"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "PistonGeneratorJEI"
+  }
+}

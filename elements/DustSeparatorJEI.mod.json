@@ -1,0 +1,14 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:DustSeparator"
+      }
+    ],
+    "information": [
+      "Converts Dusts into Nuggets. (12 by default, 15 with Efficiency Upgrade)"
+    ]
+  }
+}

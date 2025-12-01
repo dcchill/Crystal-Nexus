@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 4,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": true,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:EmptyFuelCell"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:EmptyFuelCell"
+      },
+      {
+        "value": "CUSTOM:Gasoline.bucket"
+      },
+      {
+        "value": "CUSTOM:EmptyFuelCell"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:EmptyFuelCell"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:GasFuelCell"
+    },
+    "name": "gas_fuel_cell_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "separator_gui_jei.png",
+    "width": 176,
+    "height": 85,
+    "icon": {
+      "value": "CUSTOM:BiomaticSimulator"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:BiomaticSimulator"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Biomatic Simulation",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 52,
+        "y": 34,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 115,
+        "y": 34,
+        "slotid": 0
+      }
+    ]
+  }
+}

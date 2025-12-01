@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "mekanism:dust_osmium"
+    }
+  ],
+  "output": {
+    "id": "mekanism:nugget_osmium",
+    "count": 12
+  }
+}

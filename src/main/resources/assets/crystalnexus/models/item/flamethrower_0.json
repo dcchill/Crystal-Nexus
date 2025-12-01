@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/flamethrower_ads",
+  "textures": {
+    "0": "crystalnexus:block/",
+    "particle": "crystalnexus:item/chlorophytedust"
+  }
+}

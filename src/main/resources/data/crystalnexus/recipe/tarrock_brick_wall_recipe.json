@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:tarrock_bricks"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:tarrock_brick_wall",
+    "count": 6
+  }
+}

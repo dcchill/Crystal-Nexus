@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:smooth_tarrock"
+  },
+  "result": {
+    "id": "crystalnexus:smooth_tarrock_stairs",
+    "count": 1
+  }
+}

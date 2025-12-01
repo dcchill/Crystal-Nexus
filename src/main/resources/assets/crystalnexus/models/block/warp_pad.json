@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/warp_pad",
+  "textures": {
+    "all": "crystalnexus:block/wpad",
+    "particle": "crystalnexus:block/carbon_plate_block",
+    "0": "crystalnexus:block/wpad"
+  },
+  "render_type": "solid"
+}

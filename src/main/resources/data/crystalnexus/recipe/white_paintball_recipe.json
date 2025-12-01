@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:white_dye"
+    },
+    "b": {
+      "item": "crystalnexus:nitrile"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:white_paintball",
+    "count": 16
+  }
+}

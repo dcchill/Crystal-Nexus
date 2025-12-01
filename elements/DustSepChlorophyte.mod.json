@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "dust_seperation",
+    "result": {
+      "value": "CUSTOM:ChlorophyteNugget"
+    },
+    "count": 12,
+    "ingredients": [
+      {
+        "value": "CUSTOM:ChlorophyteDust"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "DustSeperation"
+  }
+}

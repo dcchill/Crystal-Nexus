@@ -1,0 +1,21 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "biomatic_simulation",
+    "result": {
+      "value": "Blocks.LOG#0"
+    },
+    "count": 6,
+    "ingredients": [
+      {
+        "value": "Blocks.SAPLING#0"
+      }
+    ],
+    "integers": [
+      1
+    ],
+    "strings": [],
+    "recipetype": "BiomaticSimulation"
+  }
+}

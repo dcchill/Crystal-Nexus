@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "ore_crushing_jei",
+    "result": {
+      "value": "CUSTOM:RawCarbon"
+    },
+    "count": 2,
+    "ingredients": [
+      {
+        "value": "Items.COAL#0"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "OreCrushingJei"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cde",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:machineblock"
+    },
+    "c": {
+      "item": "crystalnexus:crystal_crusher"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:dust_separator"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ore_processor",
+    "count": 1
+  }
+}

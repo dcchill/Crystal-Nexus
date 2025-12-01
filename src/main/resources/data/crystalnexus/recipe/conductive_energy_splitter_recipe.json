@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "c": {
+      "item": "crystalnexus:energy_splitter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:conductive_energy_splitter",
+    "count": 1
+  }
+}

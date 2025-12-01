@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:reaction_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:fe_placeholder"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:ee_matter",
+    "count": 1
+  }
+}

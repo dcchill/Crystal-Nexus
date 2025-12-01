@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "minecraft:quartz"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    },
+    {
+      "tag": "minecraft:sand"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:silicon",
+    "count": 1
+  }
+}

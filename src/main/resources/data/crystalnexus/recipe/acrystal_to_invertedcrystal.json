@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ancient_crystal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:invertium_crystal",
+    "count": 1
+  }
+}

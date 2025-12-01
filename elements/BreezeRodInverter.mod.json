@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "inverter_jei",
+    "result": {
+      "value": "Items.BREEZE_ROD"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.BLAZE_ROD"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "InverterJei"
+  }
+}

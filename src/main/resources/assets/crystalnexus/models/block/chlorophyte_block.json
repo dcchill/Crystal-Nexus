@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/chlorophyteblocknew",
+    "particle": "crystalnexus:block/chlorophyteblocknew"
+  },
+  "render_type": "solid"
+}

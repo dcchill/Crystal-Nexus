@@ -1,0 +1,46 @@
+{
+  "variants": {
+    "blockstate=0": {
+      "model": "crystalnexus:block/battery"
+    },
+    "blockstate=1": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_0"
+    },
+    "blockstate=2": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_1"
+    },
+    "blockstate=3": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_2"
+    },
+    "blockstate=4": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_3"
+    },
+    "blockstate=5": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_4"
+    },
+    "blockstate=6": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_5"
+    },
+    "blockstate=7": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_6"
+    },
+    "blockstate=8": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_7"
+    },
+    "blockstate=9": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_8"
+    },
+    "blockstate=10": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_9"
+    },
+    "blockstate=11": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_10"
+    },
+    "blockstate=12": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_11"
+    },
+    "blockstate=13": {
+      "model": "crystalnexus:block/battery_blockstate_blockstate_12"
+    }
+  }
+}

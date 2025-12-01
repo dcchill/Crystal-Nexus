@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "reaction_jei.png",
+    "width": 174,
+    "height": 82,
+    "icon": {
+      "value": "CUSTOM:ReactionChamberComputer"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:ReactionChamberComputer"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Reaction Chamber",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 9999,
+        "y": 9999,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 115,
+        "y": 34,
+        "slotid": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "c c",
+    "c c"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    "b": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_leggings",
+    "count": 1
+  }
+}

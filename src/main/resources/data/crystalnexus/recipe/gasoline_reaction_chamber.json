@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:oil_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:biomass"
+    },
+    {
+      "item": "minecraft:blaze_powder"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:gas_fuel_cell",
+    "count": 1
+  }
+}

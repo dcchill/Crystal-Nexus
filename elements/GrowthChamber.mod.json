@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteMachineFrame"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "TAG:c:stones"
+      },
+      {
+        "value": "TAG:c:stones"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:GrowthChamberOff"
+    },
+    "name": "growth_chamber",
+    "namespace": "mod"
+  }
+}

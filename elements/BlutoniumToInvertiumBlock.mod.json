@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "inverter_jei",
+    "result": {
+      "value": "CUSTOM:InvertiumBlock"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:BlutoniumBlock"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "InverterJei"
+  }
+}

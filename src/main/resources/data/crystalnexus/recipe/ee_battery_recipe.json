@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "c": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "d": {
+      "item": "crystalnexus:battery"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ee_battery",
+    "count": 1
+  }
+}

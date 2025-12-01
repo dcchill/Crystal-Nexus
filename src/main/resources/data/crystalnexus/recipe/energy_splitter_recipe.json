@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:energy_refractor"
+    },
+    "c": {
+      "tag": "c:glass_panes"
+    },
+    "d": {
+      "item": "crystalnexus:crystalized_alloy"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:energy_splitter",
+    "count": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystalized_alloy",
+    "count": 12
+  }
+}

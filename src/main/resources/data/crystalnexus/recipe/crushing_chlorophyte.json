@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:raw_chlorophyte"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:chlorophyte_dust",
+    "count": 2
+  }
+}

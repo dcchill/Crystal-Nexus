@@ -1,0 +1,31 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:singularity_compressor"
+    },
+    "title": {
+      "translate": "advancements.compressor_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.compressor_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "compressor_advancement_0": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "crystalnexus:singularity_compressor"
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:ee_matter_advancement"
+}

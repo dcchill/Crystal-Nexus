@@ -1,0 +1,262 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 0,
+    "width": 320,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": false,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "reactionsprite.png",
+          "spritesCount": 3,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+          },
+          "x": 60,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty",
+          "text": ">",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchNextPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 150,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "button",
+        "data": {
+          "name": "button_empty1",
+          "text": "<",
+          "isUndecorated": false,
+          "onClick": {
+            "name": "MultiblockResearchPrevPage"
+          },
+          "width": 30,
+          "height": 20,
+          "x": 69,
+          "y": 179,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "multiblock_gui_page_1_overlay.png",
+          "use1Xscale": false,
+          "x": 54,
+          "y": 37,
+          "locked": true
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark",
+          "image": "tab_dark.png",
+          "hoveredImage": "tab.png",
+          "onClick": {
+            "name": "ZeroPointMultiGuiOpen"
+          },
+          "x": 339,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark1",
+          "image": "tab_orepro_dark.png",
+          "hoveredImage": "tab_orepro.png",
+          "onClick": {
+            "name": "OreProMultiGuiOpen"
+          },
+          "x": 306,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark2",
+          "image": "tab_ultimasmelter_dark.png",
+          "hoveredImage": "tab_ultimasmelter.png",
+          "onClick": {
+            "name": "UltimaSmelterMultiGuiOpen"
+          },
+          "x": 273,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "imagebutton",
+        "data": {
+          "name": "imagebutton_tab_dark3",
+          "image": "tab_reactor_dark.png",
+          "hoveredImage": "tab_reactor.png",
+          "onClick": {
+            "name": "ReactorMultiGuiOpen"
+          },
+          "x": 207,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tab_reaction.png",
+          "use1Xscale": false,
+          "x": 240,
+          "y": 14,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_blutonium_reactor",
+          "text": {
+            "fixedValue": "Reaction Chamber"
+          },
+          "color": {
+            "value": -3407668,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 44,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_uses_water_and_blutonium_ingots",
+          "text": {
+            "fixedValue": "Uses FE to create EE-Matter"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_the_fluid_input_and_energy_outpu",
+          "text": {
+            "fixedValue": "One EE-Matter costs 10,240,000 FE"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 80,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_use_the_energy_input_block_to_po",
+          "text": {
+            "fixedValue": "Use the Energy Input block to"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 98,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_power_this_machine_it_doesnt",
+          "text": {
+            "fixedValue": "power this machine.  It doesn't"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 107,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_matter_what_side_the_input_is_on",
+          "text": {
+            "fixedValue": "matter what side the input is on,"
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 116,
+          "locked": false
+        }
+      },
+      {
+        "type": "label",
+        "data": {
+          "name": "label_as_long_as_it_is_in_the_center_r",
+          "text": {
+            "fixedValue": "as long as it's in the center row."
+          },
+          "color": {
+            "value": -12829636,
+            "falpha": 0.0
+          },
+          "x": 195,
+          "y": 125,
+          "locked": false
+        }
+      }
+    ],
+    "onTick": {
+      "name": "MultiblockGuiPage1WhileThisGUIIsOpenTick"
+    },
+    "onClosed": {
+      "name": "MultiblockGuiPage1ThisGUIIsClosed"
+    },
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": true
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "crystalnexus:oil_depths",
+  "features": "crystalnexus:oil_lake",
+  "step": "lakes"
+}

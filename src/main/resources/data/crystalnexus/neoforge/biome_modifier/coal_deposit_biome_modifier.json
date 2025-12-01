@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "crystalnexus:oil_depths",
+  "features": "crystalnexus:coal_deposit",
+  "step": "underground_structures"
+}

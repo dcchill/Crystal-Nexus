@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "minecraft:piston"
+    },
+    "c": {
+      "item": "crystalnexus:ee_matter_block"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:singularity_compressor",
+    "count": 1
+  }
+}

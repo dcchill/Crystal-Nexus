@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "ore_crushing_jei",
+    "result": {
+      "value": "CUSTOM:BlutoniumDust"
+    },
+    "count": 2,
+    "ingredients": [
+      {
+        "value": "CUSTOM:RawBlutonium"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "OreCrushingJei"
+  }
+}

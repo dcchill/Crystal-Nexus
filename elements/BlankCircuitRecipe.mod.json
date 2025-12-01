@@ -1,0 +1,22 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "circuit_pressing",
+    "result": {
+      "value": "CUSTOM:BlankChip"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "TAG:c:silicon"
+      },
+      {
+        "value": "Items.REDSTONE"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "CircuitPressing"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      },
+      {
+        "value": "CUSTOM:CrystalMachineFrame"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteNugget"
+      },
+      {
+        "value": "CUSTOM:ChlorophyteIngot"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ChlorophyteMachineFrame"
+    },
+    "name": "chlorophyte_machine_frame_recipe",
+    "namespace": "mod"
+  }
+}

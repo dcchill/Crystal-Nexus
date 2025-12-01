@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "c": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:machine_core",
+    "count": 1
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "alltheores:tin_dust"
+    }
+  ],
+  "output": {
+    "id": "alltheores:tin_nugget",
+    "count": 12
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "mekanism:ingot_osmium"
+    }
+  ],
+  "output": {
+    "id": "mekanism:raw_osmium",
+    "count": 1
+  }
+}

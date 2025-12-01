@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "reaction_jei",
+    "result": {
+      "value": "CUSTOM:EEMatter"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:FEPlaceholder"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ReactionJEI"
+  }
+}

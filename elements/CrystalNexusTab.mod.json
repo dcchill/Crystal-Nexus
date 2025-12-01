@@ -1,0 +1,11 @@
+{
+  "_fv": 79,
+  "_type": "tab",
+  "definition": {
+    "name": "Crystal Nexus",
+    "icon": {
+      "value": "CUSTOM:GodlikeCrystal"
+    },
+    "showSearch": false
+  }
+}

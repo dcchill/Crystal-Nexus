@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipetype",
+  "definition": {
+    "textureSelector": "m_recrystall_gui_new_jei.png",
+    "width": 177,
+    "height": 86,
+    "icon": {
+      "value": "CUSTOM:MetallurgicRecrystallizer"
+    },
+    "craftingtables": [
+      {
+        "value": "CUSTOM:MetallurgicRecrystallizer"
+      }
+    ],
+    "enableCraftingtable": true,
+    "enableIntList": false,
+    "enableStringList": false,
+    "title": "Recrystallizing",
+    "slotList": [
+      {
+        "type": "INPUT",
+        "x": 34,
+        "y": 35,
+        "slotid": 0
+      },
+      {
+        "type": "OUTPUT",
+        "x": 124,
+        "y": 35,
+        "slotid": 0
+      }
+    ]
+  }
+}

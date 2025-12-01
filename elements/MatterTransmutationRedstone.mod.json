@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "Items.REDSTONE"
+    },
+    "count": 16,
+    "ingredients": [
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      },
+      {
+        "value": "Blocks.NETHERRACK"
+      },
+      {
+        "value": "TAG:mod:jei_empty_tag"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

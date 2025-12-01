@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:turbine_blade"
+    },
+    "c": {
+      "item": "crystalnexus:invertium_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:piston_generator"
+    },
+    "e": {
+      "tag": "c:stones"
+    },
+    "f": {
+      "item": "crystalnexus:invertium_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:invert_piston_generator",
+    "count": 1
+  }
+}

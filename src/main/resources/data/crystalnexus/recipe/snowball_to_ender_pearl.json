@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:inverter_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:snowball"
+    }
+  ],
+  "output": {
+    "id": "minecraft:ender_pearl",
+    "count": 1
+  }
+}

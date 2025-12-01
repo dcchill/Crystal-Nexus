@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:extractination",
+  "ingredients": [
+    { "item": "minecraft:gravel" }
+  ],
+  "results": [
+    { "id": "minecraft:raw_copper", "count": 1 },
+    { "id": "minecraft:coal", "count": 1 }
+  ]
+}

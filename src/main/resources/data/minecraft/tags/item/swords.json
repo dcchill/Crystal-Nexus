@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:compound_pickaxe",
+    "crystalnexus:polymer_sword",
+    "crystalnexus:cystalized_sword",
+    "crystalnexus:invertium_sword",
+    "crystalnexus:chlorophyte_sword"
+  ]
+}

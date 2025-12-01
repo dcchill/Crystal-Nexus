@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_molybdenum"
+    }
+  ],
+  "output": {
+    "id": "alltheores:molybdenum_dust",
+    "count": 2
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ancient_crystal"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:raw_crystal_block",
+    "count": 4
+  }
+}

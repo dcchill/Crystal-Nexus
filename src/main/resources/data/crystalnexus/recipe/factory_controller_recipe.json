@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "abc",
+    "ded",
+    "abc"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:tesseract"
+    },
+    "b": {
+      "item": "crystalnexus:stable_crystal"
+    },
+    "c": {
+      "item": "crystalnexus:tesseract_output"
+    },
+    "d": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "e": {
+      "item": "crystalnexus:energized_silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:factory_controller",
+    "count": 1
+  }
+}

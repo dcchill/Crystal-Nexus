@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:dust_seperation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blutonium_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:blutonium_nugget",
+    "count": 12
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "ReactionChamberComputer",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "reactionchamberblock",
+        "textureLeft": "reactionchamberblock",
+        "textureFront": "reactionchambercontrolleroff",
+        "textureRight": "reactionchamberblock",
+        "textureBack": "reactionchamberblock",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "reactionchamberblock",
+        "textureLeft": "reactionchamberblock",
+        "textureFront": "reactionchambercontroller",
+        "textureRight": "reactionchamberblock",
+        "textureBack": "reactionchamberblock",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 15,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "ore_crushing_jei",
+    "result": {
+      "value": "CUSTOM:ChlorophyteDust"
+    },
+    "count": 2,
+    "ingredients": [
+      {
+        "value": "CUSTOM:RawChlorophyte"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "OreCrushingJei"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:WarpPad"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CompoundE"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EnergizedSilicon"
+      },
+      {
+        "value": "CUSTOM:InvertiumBlock"
+      },
+      {
+        "value": "CUSTOM:InvertiumCrystal"
+      },
+      {
+        "value": "CUSTOM:InvertiumBlock"
+      },
+      {
+        "value": "CUSTOM:EnergizedSilicon"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

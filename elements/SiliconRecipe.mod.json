@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:Silicon"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.QUARTZ"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      },
+      {
+        "value": "Blocks.SAND"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

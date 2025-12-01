@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "bcd",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:stones"
+    },
+    "b": {
+      "item": "crystalnexus:stable_crystal"
+    },
+    "c": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "d": {
+      "tag": "c:glass_panes"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crystal_energy_guide",
+    "count": 1
+  }
+}

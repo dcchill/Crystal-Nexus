@@ -1,0 +1,35 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "BluTNT",
+    "blockstateList": [
+      {
+        "texture": "blutntbottom",
+        "textureTop": "blutnttop",
+        "textureLeft": "blutntside",
+        "textureFront": "blutntside",
+        "textureRight": "blutntside",
+        "textureBack": "blutntside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 0,
+        "boundingBoxes": []
+      },
+      {
+        "texture": "blutntflickerbottom",
+        "textureTop": "blutntflickertop",
+        "textureLeft": "blutntflickerside",
+        "textureFront": "blutntflickerside",
+        "textureRight": "blutntflickerside",
+        "textureBack": "blutntflickerside",
+        "particleTexture": "",
+        "renderType": 0,
+        "customModelName": "Normal",
+        "luminance": 15,
+        "boundingBoxes": []
+      }
+    ]
+  }
+}

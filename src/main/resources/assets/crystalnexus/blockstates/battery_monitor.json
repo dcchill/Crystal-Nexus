@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/battery_monitor"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/battery_monitor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/battery_monitor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/battery_monitor",
+      "y": 270
+    }
+  }
+}

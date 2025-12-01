@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "alltheores:raw_germanium"
+    }
+  ],
+  "output": {
+    "id": "alltheores:germanium_dust",
+    "count": 2
+  }
+}

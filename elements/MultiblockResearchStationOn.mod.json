@@ -1,0 +1,109 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "MultiblockResearchStation",
+    "blockstateList": [
+      {
+        "texture": "researchstation",
+        "textureTop": "",
+        "textureLeft": "",
+        "textureFront": "",
+        "textureRight": "",
+        "textureBack": "",
+        "particleTexture": "",
+        "renderType": 2,
+        "customModelName": "multiblock_research_station:default",
+        "luminance": 0,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 15.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 0.0,
+            "my": 15.0,
+            "mz": 0.0,
+            "Mx": 8.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 8.0,
+            "my": 15.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 16.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 2.0,
+            "my": 14.5,
+            "mz": 8.0,
+            "Mx": 14.0,
+            "My": 15.5,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 2.0,
+            "my": 14.5,
+            "mz": 2.0,
+            "Mx": 14.0,
+            "My": 15.5,
+            "Mz": 6.0,
+            "subtract": false
+          }
+        ]
+      },
+      {
+        "texture": "researchstation",
+        "textureTop": "",
+        "textureLeft": "",
+        "textureFront": "",
+        "textureRight": "",
+        "textureBack": "",
+        "particleTexture": "",
+        "renderType": 2,
+        "customModelName": "multiblock_research_station_open:default",
+        "luminance": 0,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 15.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": -1.0,
+            "my": 15.0,
+            "mz": 0.0,
+            "Mx": 0.0,
+            "My": 23.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 16.0,
+            "my": 15.0,
+            "mz": 0.0,
+            "Mx": 17.0,
+            "My": 23.0,
+            "Mz": 16.0,
+            "subtract": false
+          }
+        ]
+      }
+    ]
+  }
+}
