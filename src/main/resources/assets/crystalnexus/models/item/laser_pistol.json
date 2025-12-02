@@ -1,0 +1,15 @@
+{
+  "parent": "crystalnexus:custom/laser_pistol",
+  "textures": {
+    "0": "crystalnexus:block/pistol_texture",
+    "particle": "crystalnexus:item/carbonfiberrod"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "crystalnexus:item/laser_pistol_0"
+    }
+  ]
+}

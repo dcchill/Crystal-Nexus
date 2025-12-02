@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "projectile",
+  "definition": {
+    "projectileItem": {
+      "value": "CUSTOM:PaintballPlaceholder"
+    },
+    "showParticles": false,
+    "actionSound": {
+      "value": "entity.arrow.shoot"
+    },
+    "igniteFire": false,
+    "disableGravity": false,
+    "power": 4.0,
+    "damage": 7.0,
+    "knockback": 5,
+    "entityModel": "Modellaser_beam",
+    "customModelTexture": "laser.png",
+    "modelWidth": 0.5,
+    "modelHeight": 0.5,
+    "onHitsBlock": {
+      "name": "LaserBeamProjectileHitsBlock"
+    }
+  }
+}

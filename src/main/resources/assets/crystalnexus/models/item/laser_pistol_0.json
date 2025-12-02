@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/laser_pistol_ads",
+  "textures": {
+    "0": "crystalnexus:block/pistol_texture",
+    "particle": "crystalnexus:item/carbonfiberrod"
+  }
+}

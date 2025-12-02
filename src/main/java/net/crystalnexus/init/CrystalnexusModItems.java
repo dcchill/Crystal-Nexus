@@ -60,6 +60,7 @@ import net.crystalnexus.item.LinkCardItem;
 import net.crystalnexus.item.LimePaintballItem;
 import net.crystalnexus.item.LightGrayPaintballItem;
 import net.crystalnexus.item.LightBluePaintballItem;
+import net.crystalnexus.item.LaserPistolItem;
 import net.crystalnexus.item.JetPackItem;
 import net.crystalnexus.item.IronSingularityItem;
 import net.crystalnexus.item.InvertiumSwordItem;
@@ -357,6 +358,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> PIPE_JUNCTION = block(CrystalnexusModBlocks.PIPE_JUNCTION);
 	public static final DeferredItem<Item> STEAM_COLLECTOR = block(CrystalnexusModBlocks.STEAM_COLLECTOR);
 	public static final DeferredItem<Item> STEAM_CHAMBER = block(CrystalnexusModBlocks.STEAM_CHAMBER);
+	public static final DeferredItem<Item> LASER_PISTOL = REGISTRY.register("laser_pistol", LaserPistolItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items
@@ -376,6 +378,7 @@ public class CrystalnexusModItems {
 			event.enqueueWork(() -> {
 				ItemProperties.register(FLORATHANE_WAND.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
 				ItemProperties.register(FLAMETHROWER.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
+				ItemProperties.register(LASER_PISTOL.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
 			});
 		}
 	}

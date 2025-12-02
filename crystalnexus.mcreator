@@ -13977,6 +13977,105 @@
         ]
       },
       "path": "~/SteamGen"
+    },
+    {
+      "name": "LaserBeam",
+      "type": "projectile",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_beam",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/renderer/LaserBeamRenderer.java",
+          "src/main/java/net/crystalnexus/entity/LaserBeamEntity.java"
+        ]
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "LaserBeamProjectileHitsBlock",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_beam_projectile_hits_block",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/LaserBeamProjectileHitsBlockProcedure.java"
+        ]
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "LaserPistolRightclicked",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_pistol_rightclicked",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/LaserPistolRightclickedProcedure.java"
+        ]
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "LaserPistol",
+      "type": "tool",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_pistol",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/LaserPistolItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/laser_pistol.json",
+          "src/main/resources/assets/crystalnexus/models/item/laser_pistol_0.json"
+        ]
+      },
+      "path": "~/Laser Weapons"
     }
   ],
   "variable_elements": [
@@ -14631,7 +14730,8 @@
       "AtomicCoffee",
       "JetPack",
       "Carbon",
-      "CarbonJetpack"
+      "CarbonJetpack",
+      "LaserPistol"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -15154,7 +15254,8 @@
       "block.crystalnexus.steam_chamber.description_1": "§5Sends Steam to Steam Collectors placed above this block.",
       "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
       "block.crystalnexus.steam_chamber": "Steam Chamber",
-      "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]"
+      "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
+      "item.crystalnexus.laser_pistol": "Laser Pistol"
     }
   },
   "metadata": {
@@ -15305,6 +15406,10 @@
       },
       {
         "name": "SteamGen",
+        "children": []
+      },
+      {
+        "name": "Laser Weapons",
         "children": []
       }
     ]

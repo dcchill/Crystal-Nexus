@@ -487,5 +487,6 @@
   "block.crystalnexus.steam_chamber.description_1": "§5Sends Steam to Steam Collectors placed above this block.",
   "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
   "block.crystalnexus.steam_chamber": "Steam Chamber",
-  "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]"
+  "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
+  "item.crystalnexus.laser_pistol": "Laser Pistol"
 }
