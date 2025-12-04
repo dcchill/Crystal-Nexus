@@ -27,12 +27,12 @@ public class LaserPistolRightclickedProcedure {
 			return;
 		double cooldown = 0;
 		double damage = 0;
-		damage = 5;
-		cooldown = 5;
-		if (CrystalnexusModItems.LASER_PISTOL.get() == (entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY).getItem()) {
-			if ((entity instanceof Player _plrCldRem3 ? _plrCldRem3.getCooldowns().getCooldownPercent(itemstack.getItem(), 0f) * 100 : 0) == 0) {
-				if (itemstack.getDamageValue() < 48) {
-					if (entity instanceof LivingEntity _livEnt6 && _livEnt6.isBlocking()) {
+		if (!entity.isShiftKeyDown()) {
+			damage = 5;
+			cooldown = 2;
+			if (CrystalnexusModItems.MINING_LASER.get() == (entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY).getItem()) {
+				if ((entity instanceof Player _plrCldRem4 ? _plrCldRem4.getCooldowns().getCooldownPercent(itemstack.getItem(), 0f) * 100 : 0) == 0) {
+					if (entity instanceof LivingEntity _livEnt5 && _livEnt5.isBlocking()) {
 						{
 							Entity _shootFrom = entity;
 							Level projectileLevel = _shootFrom.level();
@@ -40,7 +40,7 @@ public class LaserPistolRightclickedProcedure {
 								Projectile _entityToSpawn = initArrowProjectile(new LaserBeamEntity(CrystalnexusModEntities.LASER_BEAM.get(), 0, 0, 0, projectileLevel, createArrowWeaponItemStack(projectileLevel, 0, (byte) 255)), entity,
 										(float) damage, true, false, false, AbstractArrow.Pickup.DISALLOWED);
 								_entityToSpawn.setPos(_shootFrom.getX(), _shootFrom.getEyeY() - 0.1, _shootFrom.getZ());
-								_entityToSpawn.shoot(_shootFrom.getLookAngle().x, _shootFrom.getLookAngle().y, _shootFrom.getLookAngle().z, 7, 0);
+								_entityToSpawn.shoot(_shootFrom.getLookAngle().x, _shootFrom.getLookAngle().y, _shootFrom.getLookAngle().z, 12, 0);
 								projectileLevel.addFreshEntity(_entityToSpawn);
 							}
 						}

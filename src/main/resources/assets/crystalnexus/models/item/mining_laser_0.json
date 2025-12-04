@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/mining_laser_ads",
+  "textures": {
+    "0": "crystalnexus:block/mining_laser",
+    "particle": "crystalnexus:item/ultiminer"
+  }
+}

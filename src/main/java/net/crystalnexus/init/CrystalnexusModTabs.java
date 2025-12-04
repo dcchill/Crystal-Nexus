@@ -237,7 +237,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
-				tabData.accept(CrystalnexusModItems.LASER_PISTOL.get());
 			}).build());
 
 	@SubscribeEvent

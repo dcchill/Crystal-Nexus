@@ -14001,6 +14001,10 @@
       "metadata": {
         "dependencies": [
           {
+            "name": "immediatesourceentity",
+            "type": "entity"
+          },
+          {
             "name": "x",
             "type": "number"
           },
@@ -14063,16 +14067,16 @@
       "path": "~/Laser Weapons"
     },
     {
-      "name": "LaserPistol",
+      "name": "MiningLaser",
       "type": "tool",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "laser_pistol",
+      "registry_name": "mining_laser",
       "metadata": {
         "files": [
-          "src/main/java/net/crystalnexus/item/LaserPistolItem.java",
-          "src/main/resources/assets/crystalnexus/models/item/laser_pistol.json",
-          "src/main/resources/assets/crystalnexus/models/item/laser_pistol_0.json"
+          "src/main/java/net/crystalnexus/item/MiningLaserItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/mining_laser.json",
+          "src/main/resources/assets/crystalnexus/models/item/mining_laser_0.json"
         ]
       },
       "path": "~/Laser Weapons"
@@ -14730,8 +14734,7 @@
       "AtomicCoffee",
       "JetPack",
       "Carbon",
-      "CarbonJetpack",
-      "LaserPistol"
+      "CarbonJetpack"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -15255,7 +15258,7 @@
       "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
       "block.crystalnexus.steam_chamber": "Steam Chamber",
       "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
-      "item.crystalnexus.laser_pistol": "Laser Pistol"
+      "item.crystalnexus.mining_laser": "Mining Laser"
     }
   },
   "metadata": {

@@ -11,15 +11,18 @@
     },
     "igniteFire": false,
     "disableGravity": false,
-    "power": 4.0,
-    "damage": 7.0,
-    "knockback": 5,
+    "power": 8.0,
+    "damage": 1.0,
+    "knockback": 0,
     "entityModel": "Modellaser_beam",
     "customModelTexture": "laser.png",
     "modelWidth": 0.5,
     "modelHeight": 0.5,
     "onHitsBlock": {
       "name": "LaserBeamProjectileHitsBlock"
+    },
+    "onFlyingTick": {
+      "name": "LaserBeamWhileProjectileFlyingTick"
     }
   }
 }

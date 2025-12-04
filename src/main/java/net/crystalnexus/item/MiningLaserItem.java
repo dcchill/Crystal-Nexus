@@ -8,9 +8,9 @@ import net.minecraft.world.entity.Entity;
 
 import net.crystalnexus.procedures.LaserPistolRightclickedProcedure;
 
-public class LaserPistolItem extends ShieldItem {
-	public LaserPistolItem() {
-		super(new Item.Properties().durability(48));
+public class MiningLaserItem extends ShieldItem {
+	public MiningLaserItem() {
+		super(new Item.Properties().durability(2048));
 	}
 
 	@Override

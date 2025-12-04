@@ -488,5 +488,5 @@
   "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
   "block.crystalnexus.steam_chamber": "Steam Chamber",
   "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
-  "item.crystalnexus.laser_pistol": "Laser Pistol"
+  "item.crystalnexus.mining_laser": "Mining Laser"
 }

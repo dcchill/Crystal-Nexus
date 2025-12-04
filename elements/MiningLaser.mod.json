@@ -5,24 +5,20 @@
     "toolType": "Shield",
     "renderType": 1,
     "blockingRenderType": 1,
-    "texture": "carbonfiberrod",
-    "customModelName": "laser_pistol:default",
-    "blockingModelName": "laser_pistol_ads:default",
+    "texture": "ultiminer",
+    "customModelName": "mining_laser:default",
+    "blockingModelName": "mining_laser_ads:default",
     "guiTexture": "",
-    "name": "Laser Pistol",
+    "name": "Mining Laser",
     "specialInformation": {
       "fixedValue": []
     },
-    "creativeTabs": [
-      {
-        "value": "CUSTOM:CrystalNexusTab"
-      }
-    ],
+    "creativeTabs": [],
     "efficiency": 4.0,
     "attackSpeed": 1.0,
     "enchantability": 1,
     "damageVsEntity": 4.0,
-    "usageCount": 48,
+    "usageCount": 2048,
     "glowCondition": {
       "fixedValue": false
     },
