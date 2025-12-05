@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a  ",
+    "bcd",
+    "ae "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "d": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "e": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:mining_laser",
+    "count": 1
+  }
+}

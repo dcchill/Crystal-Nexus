@@ -27,6 +27,8 @@ public class LaserPistolRightclickedProcedure {
 			return;
 		double cooldown = 0;
 		double damage = 0;
+		double slotCheck = 0;
+		slotCheck = 0;
 		if (!entity.isShiftKeyDown()) {
 			damage = 5;
 			cooldown = 2;
@@ -55,7 +57,7 @@ public class LaserPistolRightclickedProcedure {
 							_player.getCooldowns().addCooldown(itemstack.getItem(), (int) cooldown);
 						if (!(entity instanceof Player _plr ? _plr.getAbilities().instabuild : false)) {
 							if (world instanceof ServerLevel _level) {
-								itemstack.hurtAndBreak(1, _level, null, _stkprov -> {
+								(entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY).hurtAndBreak(1, _level, null, _stkprov -> {
 								});
 							}
 						}

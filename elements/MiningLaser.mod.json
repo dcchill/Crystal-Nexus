@@ -13,7 +13,11 @@
     "specialInformation": {
       "fixedValue": []
     },
-    "creativeTabs": [],
+    "creativeTabs": [
+      {
+        "value": "CUSTOM:CrystalNexusTab"
+      }
+    ],
     "efficiency": 4.0,
     "attackSpeed": 1.0,
     "enchantability": 1,
@@ -22,7 +26,14 @@
     "glowCondition": {
       "fixedValue": false
     },
-    "repairItems": [],
+    "repairItems": [
+      {
+        "value": "CUSTOM:UltimateCrystal"
+      },
+      {
+        "value": "CUSTOM:BlutoniumCrystal"
+      }
+    ],
     "immuneToFire": false,
     "blockDropsTier": "WOOD",
     "blocksAffected": [],
