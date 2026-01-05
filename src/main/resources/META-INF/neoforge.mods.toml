@@ -14,7 +14,7 @@ authors="Dcchill"
 # Start of user code block mod configuration
 # End of user code block mod configuration
 
-    [[mixins]]
+[[mixins]]
     config = "crystalnexus.mixins.json"
 
 # Start of user code block custom mixins

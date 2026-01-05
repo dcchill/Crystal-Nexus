@@ -12,6 +12,6 @@ public class AtomicCoffeePlayerFinishesUsingItemProcedure {
 		if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
 			_entity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 12000, 1, false, true));
 		if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
-			_entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 12000, 1, false, true));
+			_entity.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 6000, 1, false, true));
 	}
 }

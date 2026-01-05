@@ -62,6 +62,9 @@ import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalEnergyGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 import net.crystalnexus.block.entity.CrystalAccepterBlockEntity;
+import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
+import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
+import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
 import net.crystalnexus.block.entity.ContainerBlockEntity;
 import net.crystalnexus.block.entity.ConductiveEnergySplitterBlockEntity;
 import net.crystalnexus.block.entity.ConductiveEnergyRefractorBlockEntity;
@@ -156,6 +159,9 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PipeJunctionBlockEntity>> PIPE_JUNCTION = register("pipe_junction", CrystalnexusModBlocks.PIPE_JUNCTION, PipeJunctionBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamCollectorBlockEntity>> STEAM_COLLECTOR = register("steam_collector", CrystalnexusModBlocks.STEAM_COLLECTOR, SteamCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamChamberBlockEntity>> STEAM_CHAMBER = register("steam_chamber", CrystalnexusModBlocks.STEAM_CHAMBER, SteamChamberBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyerBeltBlockEntity>> CONVEYER_BELT = register("conveyer_belt", CrystalnexusModBlocks.CONVEYER_BELT, ConveyerBeltBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyerBeltInputBlockEntity>> CONVEYER_BELT_INPUT = register("conveyer_belt_input", CrystalnexusModBlocks.CONVEYER_BELT_INPUT, ConveyerBeltInputBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyerBeltOutputBlockEntity>> CONVEYER_BELT_OUTPUT = register("conveyer_belt_output", CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT, ConveyerBeltOutputBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -279,5 +285,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_COLLECTOR.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_COLLECTOR.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_CHAMBER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_INPUT.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_OUTPUT.get(), SidedInvWrapper::new);
 	}
 }

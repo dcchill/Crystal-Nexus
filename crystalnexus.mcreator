@@ -14082,20 +14082,6 @@
       "path": "~/Laser Weapons"
     },
     {
-      "name": "MiningLaserGui",
-      "type": "gui",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "mining_laser_gui",
-      "metadata": {
-        "files": [
-          "src/main/java/net/crystalnexus/client/gui/MiningLaserGuiScreen.java",
-          "src/main/java/net/crystalnexus/world/inventory/MiningLaserGuiMenu.java"
-        ]
-      },
-      "path": "~/Laser Weapons"
-    },
-    {
       "name": "MiningLaserRecipe",
       "type": "recipe",
       "compiles": true,
@@ -14109,16 +14095,142 @@
       "path": "~/Laser Weapons"
     },
     {
-      "name": "MiningLaserInventoryCapability",
-      "type": "code",
+      "name": "GetCooldown",
+      "type": "procedure",
       "compiles": true,
-      "locked_code": true,
-      "registry_name": "mining_laser_inventory_capability",
+      "locked_code": false,
+      "registry_name": "get_cooldown",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "number",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/GetCooldownProcedure.java"
+        ]
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "LaserBatteryOverlay",
+      "type": "overlay",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_battery_overlay",
       "metadata": {
         "files": [
-          "src/main/java/net/crystalnexus/MiningLaserInventoryCapability.java"
+          "src/main/java/net/crystalnexus/client/screens/LaserBatteryOverlayOverlay.java"
         ]
-      }
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "LaserBatteryOverlayChecker",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_battery_overlay_checker",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "return_type": "logic",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/LaserBatteryOverlayCheckerProcedure.java"
+        ]
+      },
+      "path": "~/Laser Weapons"
+    },
+    {
+      "name": "ConveyerBelt",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyer_belt",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/conveyer_belt.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/conveyer_belt.json",
+          "src/main/resources/assets/crystalnexus/models/item/conveyer_belt.json",
+          "src/main/resources/assets/crystalnexus/models/block/conveyer_belt.json",
+          "src/main/java/net/crystalnexus/block/ConveyerBeltBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/ConveyerBeltBlockEntity.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyerBeltOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "conveyer_belt_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ConveyerBeltOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyerBeltInput",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyer_belt_input",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/conveyer_belt_input.json",
+          "src/main/resources/assets/crystalnexus/blockstates/conveyer_belt_input.json",
+          "src/main/resources/assets/crystalnexus/models/item/conveyer_belt_input.json",
+          "src/main/java/net/crystalnexus/block/entity/ConveyerBeltInputBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/conveyer_belt_input.json",
+          "src/main/java/net/crystalnexus/block/ConveyerBeltInputBlock.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyerBeltOutput",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyer_belt_output",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/conveyer_belt_output.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/conveyer_belt_output.json",
+          "src/main/resources/assets/crystalnexus/blockstates/conveyer_belt_output.json",
+          "src/main/java/net/crystalnexus/block/ConveyerBeltOutputBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/ConveyerBeltOutputBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/block/conveyer_belt_output.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
     }
   ],
   "variable_elements": [
@@ -14747,13 +14859,14 @@
       "FlorathaneWand",
       "CompoundPickaxe",
       "CompoundSword",
-      "Flamethrower",
-      "PaintGun",
       "CrudeOil",
       "Gasoline",
       "EmptyFuelCell",
       "OilFuelCell",
       "GasFuelCell",
+      "Flamethrower",
+      "MiningLaser",
+      "PaintGun",
       "WhitePaintball",
       "LightGrayPaintball",
       "GrayPaintball",
@@ -14774,7 +14887,9 @@
       "JetPack",
       "Carbon",
       "CarbonJetpack",
-      "MiningLaser"
+      "ConveyerBelt",
+      "ConveyerBeltInput",
+      "ConveyerBeltOutput"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -15298,7 +15413,10 @@
       "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
       "block.crystalnexus.steam_chamber": "Steam Chamber",
       "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
-      "item.crystalnexus.mining_laser": "Mining Laser"
+      "item.crystalnexus.mining_laser": "Mining Laser",
+      "block.crystalnexus.conveyer_belt": "Conveyor Belt",
+      "block.crystalnexus.conveyer_belt_input": "Input Conveyor Belt",
+      "block.crystalnexus.conveyer_belt_output": "Output Conveyor Belt"
     }
   },
   "metadata": {
@@ -15453,6 +15571,10 @@
       },
       {
         "name": "Laser Weapons",
+        "children": []
+      },
+      {
+        "name": "conveyerBelts",
         "children": []
       }
     ]

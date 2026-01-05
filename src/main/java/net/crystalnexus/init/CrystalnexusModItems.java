@@ -359,6 +359,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> STEAM_COLLECTOR = block(CrystalnexusModBlocks.STEAM_COLLECTOR);
 	public static final DeferredItem<Item> STEAM_CHAMBER = block(CrystalnexusModBlocks.STEAM_CHAMBER);
 	public static final DeferredItem<Item> MINING_LASER = REGISTRY.register("mining_laser", MiningLaserItem::new);
+	public static final DeferredItem<Item> CONVEYER_BELT = block(CrystalnexusModBlocks.CONVEYER_BELT);
+	public static final DeferredItem<Item> CONVEYER_BELT_INPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_INPUT);
+	public static final DeferredItem<Item> CONVEYER_BELT_OUTPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT);
 
 	// Start of user code block custom items
 	// End of user code block custom items

@@ -488,5 +488,8 @@
   "block.crystalnexus.steam_chamber.description_0": "§5Creates Steam with Energy Crystals",
   "block.crystalnexus.steam_chamber": "Steam Chamber",
   "gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui": "[Steam Chamber]",
-  "item.crystalnexus.mining_laser": "Mining Laser"
+  "item.crystalnexus.mining_laser": "Mining Laser",
+  "block.crystalnexus.conveyer_belt": "Conveyor Belt",
+  "block.crystalnexus.conveyer_belt_input": "Input Conveyor Belt",
+  "block.crystalnexus.conveyer_belt_output": "Output Conveyor Belt"
 }

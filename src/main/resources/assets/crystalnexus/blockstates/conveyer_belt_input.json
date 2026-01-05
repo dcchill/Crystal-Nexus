@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/conveyer_belt_input"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/conveyer_belt_input",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/conveyer_belt_input",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/conveyer_belt_input",
+      "y": 270
+    }
+  }
+}

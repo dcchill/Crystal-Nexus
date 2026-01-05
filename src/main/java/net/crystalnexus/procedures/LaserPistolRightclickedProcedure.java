@@ -31,7 +31,7 @@ public class LaserPistolRightclickedProcedure {
 		slotCheck = 0;
 		if (!entity.isShiftKeyDown()) {
 			damage = 5;
-			cooldown = 2;
+			cooldown = 10;
 			if (CrystalnexusModItems.MINING_LASER.get() == (entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY).getItem()) {
 				if ((entity instanceof Player _plrCldRem4 ? _plrCldRem4.getCooldowns().getCooldownPercent(itemstack.getItem(), 0f) * 100 : 0) == 0) {
 					if (entity instanceof LivingEntity _livEnt5 && _livEnt5.isBlocking()) {

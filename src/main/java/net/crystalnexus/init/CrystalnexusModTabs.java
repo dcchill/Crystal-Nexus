@@ -207,13 +207,14 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.FLORATHANE_WAND.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_PICKAXE.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
-				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
-				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
 				tabData.accept(CrystalnexusModItems.CRUDE_OIL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.GASOLINE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.EMPTY_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OIL_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.GAS_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
+				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
+				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
 				tabData.accept(CrystalnexusModItems.WHITE_PAINTBALL.get());
 				tabData.accept(CrystalnexusModItems.LIGHT_GRAY_PAINTBALL.get());
 				tabData.accept(CrystalnexusModItems.GRAY_PAINTBALL.get());
@@ -237,7 +238,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
-				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
+				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().asItem());
 			}).build());
 
 	@SubscribeEvent

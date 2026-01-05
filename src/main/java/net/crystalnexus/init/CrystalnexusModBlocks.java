@@ -88,6 +88,9 @@ import net.crystalnexus.block.CrystalEnergyGuideBlock;
 import net.crystalnexus.block.CrystalCrusherBlock;
 import net.crystalnexus.block.CrystalAccepterBlock;
 import net.crystalnexus.block.CrudeOilBlock;
+import net.crystalnexus.block.ConveyerBeltOutputBlock;
+import net.crystalnexus.block.ConveyerBeltInputBlock;
+import net.crystalnexus.block.ConveyerBeltBlock;
 import net.crystalnexus.block.ContainerBlock;
 import net.crystalnexus.block.ConductiveEnergySplitterBlock;
 import net.crystalnexus.block.ConductiveEnergyRefractorBlock;
@@ -222,6 +225,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> STEAM = REGISTRY.register("steam", SteamBlock::new);
 	public static final DeferredBlock<Block> STEAM_COLLECTOR = REGISTRY.register("steam_collector", SteamCollectorBlock::new);
 	public static final DeferredBlock<Block> STEAM_CHAMBER = REGISTRY.register("steam_chamber", SteamChamberBlock::new);
+	public static final DeferredBlock<Block> CONVEYER_BELT = REGISTRY.register("conveyer_belt", ConveyerBeltBlock::new);
+	public static final DeferredBlock<Block> CONVEYER_BELT_INPUT = REGISTRY.register("conveyer_belt_input", ConveyerBeltInputBlock::new);
+	public static final DeferredBlock<Block> CONVEYER_BELT_OUTPUT = REGISTRY.register("conveyer_belt_output", ConveyerBeltOutputBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }
