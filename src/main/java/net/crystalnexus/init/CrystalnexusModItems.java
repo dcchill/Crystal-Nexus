@@ -362,6 +362,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CONVEYER_BELT = block(CrystalnexusModBlocks.CONVEYER_BELT);
 	public static final DeferredItem<Item> CONVEYER_BELT_INPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_INPUT);
 	public static final DeferredItem<Item> CONVEYER_BELT_OUTPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT);
+	public static final DeferredItem<Item> ITEM_ELEVATOR = block(CrystalnexusModBlocks.ITEM_ELEVATOR);
+	public static final DeferredItem<Item> ITEM_ELEVATOR_DOWN = block(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN);
+	public static final DeferredItem<Item> ADVANCED_CONVEYER_BELT = block(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT);
 
 	// Start of user code block custom items
 	// End of user code block custom items

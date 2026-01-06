@@ -1,10 +1,10 @@
 {
   "parent": "crystalnexus:custom/input_conveyer",
   "textures": {
-    "all": "crystalnexus:block/cbelt",
-    "particle": "crystalnexus:block/cbelt",
-    "0": "crystalnexus:block/cbelt",
-    "1": "crystalnexus:block/funneltexture"
+    "all": "crystalnexus:block/cbelt_anim",
+    "particle": "crystalnexus:block/cbelt_anim",
+    "0": "crystalnexus:block/cbelt_anim",
+    "1": "crystalnexus:block/funnel_texture_anim"
   },
   "render_type": "solid"
 }

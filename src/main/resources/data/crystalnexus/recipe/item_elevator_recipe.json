@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "minecraft:magma_block"
+    },
+    "c": {
+      "item": "minecraft:iron_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "e": {
+      "item": "minecraft:soul_sand"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:item_elevator",
+    "count": 1
+  }
+}

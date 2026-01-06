@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:item_elevator_down"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:item_elevator",
+    "count": 1
+  }
+}

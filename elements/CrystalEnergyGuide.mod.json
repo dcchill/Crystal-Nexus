@@ -53,7 +53,7 @@
     "immuneToFire": false,
     "creativeTabs": [
       {
-        "value": "CUSTOM:CrystalNexusTab"
+        "value": "CUSTOM:CrystalNexusLogistics"
       }
     ],
     "destroyTool": "pickaxe",

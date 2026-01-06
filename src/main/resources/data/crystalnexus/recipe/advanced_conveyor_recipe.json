@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bbb",
+    " c "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "b": {
+      "item": "crystalnexus:conveyer_belt"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:advanced_conveyer_belt",
+    "count": 3
+  }
+}

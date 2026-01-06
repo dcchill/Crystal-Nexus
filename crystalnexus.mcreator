@@ -14200,7 +14200,7 @@
       "name": "ConveyerBeltInput",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "conveyer_belt_input",
       "metadata": {
         "files": [
@@ -14218,7 +14218,7 @@
       "name": "ConveyerBeltOutput",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "conveyer_belt_output",
       "metadata": {
         "files": [
@@ -14228,6 +14228,315 @@
           "src/main/java/net/crystalnexus/block/ConveyerBeltOutputBlock.java",
           "src/main/java/net/crystalnexus/block/entity/ConveyerBeltOutputBlockEntity.java",
           "src/main/resources/assets/crystalnexus/models/block/conveyer_belt_output.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyorBeltRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyor_belt_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/conveyor_belt_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyorBeltInputRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyor_belt_input_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/conveyor_belt_input_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyorBeltOutputRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyor_belt_output_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/conveyor_belt_output_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevator",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/item_elevator.json",
+          "src/main/java/net/crystalnexus/block/entity/ItemElevatorBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/item_elevator.json",
+          "src/main/resources/assets/crystalnexus/models/block/item_elevator.json",
+          "src/main/java/net/crystalnexus/block/ItemElevatorBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/item_elevator.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ItemElevatorOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorGui",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/ItemElevatorGuiMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/ItemElevatorGuiScreen.java",
+          "src/main/java/net/crystalnexus/network/ItemElevatorGuiButtonMessage.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorDown",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_down",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/entity/ItemElevatorDownBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/item_elevator_down.json",
+          "src/main/resources/assets/crystalnexus/models/block/item_elevator_down.json",
+          "src/main/resources/assets/crystalnexus/blockstates/item_elevator_down.json",
+          "src/main/java/net/crystalnexus/block/ItemElevatorDownBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/item_elevator_down.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorSwitch",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_switch",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ItemElevatorSwitchProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorGuiDown",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_gui_down",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/ItemElevatorGuiDownScreen.java",
+          "src/main/java/net/crystalnexus/network/ItemElevatorGuiDownButtonMessage.java",
+          "src/main/java/net/crystalnexus/world/inventory/ItemElevatorGuiDownMenu.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ItemElevatorRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/item_elevator_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "CrystalNexusLogistics",
+      "type": "tab",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crystal_nexus_logistics",
+      "metadata": {
+        "files": []
+      }
+    },
+    {
+      "name": "ItemElevatorDownOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_elevator_down_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ItemElevatorDownOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "DownwardItemElevatorRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "downward_item_elevator_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/downward_item_elevator_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "DownardItemElevatorToNormal",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "downard_item_elevator_to_normal",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/downard_item_elevator_to_normal.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "AdvancedConveyerBelt",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "advanced_conveyer_belt",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/advanced_conveyer_belt.json",
+          "src/main/java/net/crystalnexus/block/AdvancedConveyerBeltBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/AdvancedConveyerBeltBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/blockstates/advanced_conveyer_belt.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/advanced_conveyer_belt.json",
+          "src/main/resources/assets/crystalnexus/models/block/advanced_conveyer_belt.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "AdvancedConveyerBeltOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "advanced_conveyer_belt_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/AdvancedConveyerBeltOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "AdvancedConveyorRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "advanced_conveyor_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/advanced_conveyor_recipe.json"
         ]
       },
       "path": "~/conveyerBelts"
@@ -14719,15 +15028,6 @@
       "ChlorophyteMachineFrame",
       "InvertiumMachineFrame",
       "CarbonMachineFrame",
-      "CrystalEnergyGuide",
-      "EnergyRefractor",
-      "EnergySplitter",
-      "ConductiveEnergyGuide",
-      "ConductiveEnergyRefractor",
-      "ConductiveEnergySplitter",
-      "BatteryMonitor",
-      "Battery",
-      "EEBattery",
       "BlockPlacer",
       "IronSmelter",
       "CrystalSmelter",
@@ -14758,12 +15058,7 @@
       "Inverter",
       "BiomaticSimulator",
       "ChemicalReactionChamber",
-      "FactoryController",
-      "FactoryItemController",
-      "FactoryOutputController",
       "MultiblockResearchStation",
-      "PipeStraight",
-      "PipeJunction",
       "ReactorBlock",
       "ReactorComputer",
       "ReactorEnergyOutput",
@@ -14813,7 +15108,6 @@
       "PolyacrylonitrileDust",
       "PolymerSheet",
       "PolymerBlock",
-      "Container",
       "Biomass",
       "NetheriteScrapDust",
       "RawCarbon",
@@ -14886,10 +15180,7 @@
       "AtomicCoffee",
       "JetPack",
       "Carbon",
-      "CarbonJetpack",
-      "ConveyerBelt",
-      "ConveyerBeltInput",
-      "ConveyerBeltOutput"
+      "CarbonJetpack"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -14920,6 +15211,30 @@
       "JetPack",
       "Carbon",
       "CarbonJetpack"
+    ],
+    "CUSTOM:CrystalNexusLogistics": [
+      "Container",
+      "ConveyerBelt",
+      "ConveyerBeltInput",
+      "ConveyerBeltOutput",
+      "ItemElevator",
+      "ItemElevatorDown",
+      "CrystalEnergyGuide",
+      "EnergyRefractor",
+      "EnergySplitter",
+      "ConductiveEnergyGuide",
+      "ConductiveEnergyRefractor",
+      "ConductiveEnergySplitter",
+      "PipeStraight",
+      "PipeJunction",
+      "Battery",
+      "EEBattery",
+      "BatteryMonitor",
+      "FactoryController",
+      "FactoryItemController",
+      "FactoryOutputController",
+      "LinkCard",
+      "AdvancedConveyerBelt"
     ]
   },
   "language_map": {
@@ -15051,7 +15366,7 @@
       "gamerule.disableMeltdowns.description": "Disables reactor meltdowns",
       "block.crystalnexus.blu_tnt": "Blu TNT",
       "block.crystalnexus.factory_controller": "Factory Energy Controller",
-      "block.crystalnexus.factory_item_controller": "Factory Input Controller",
+      "block.crystalnexus.factory_item_controller": "Factory Item Controller",
       "block.crystalnexus.factory_output_controller": "Factory Output Controller",
       "gui.crystalnexus.factory_controller_gui.label_factory_energy_controller": "[Energy Controller]",
       "gui.crystalnexus.factory_item_controller_gui.label_item_controller": "[Item Controller]",
@@ -15135,7 +15450,7 @@
       "item.crystalnexus.nitrile": "Nitrile Pellet",
       "item.crystalnexus.polyacrylonitrile_dust": "Polyacrylonitrile Dust",
       "item.crystalnexus.polymer_sheet": "Polymer Sheet",
-      "block.crystalnexus.container": "Polymer Container",
+      "block.crystalnexus.container": "Container",
       "block.crystalnexus.container.description_0": "§5Works like a shulker box",
       "gui.crystalnexus.container_gui.label_container": "[Polymer Container]",
       "gui.crystalnexus.chemical_reaction_chamber_gui.label_chemical_reaction_chamber": "[Chem. Reaction Chamber]",
@@ -15400,7 +15715,7 @@
       "item.crystalnexus.carbon_chestplate": "Carbon Chestplate",
       "item.crystalnexus.carbon_boots": "Carbon Boots",
       "item.crystalnexus.carbon_jetpack_chestplate": "Carbon Jetpack Chestplate",
-      "block.crystalnexus.pipe_straight": "Straight Pipe",
+      "block.crystalnexus.pipe_straight": "Pipe Straight",
       "block.crystalnexus.pipe_junction": "Pipe Junction",
       "block.crystalnexus.pipe_junction.description_0": "§5Works like a splitter / corner for pipes.  Does not push fluid to nearby machines or tanks.",
       "fluid_type.crystalnexus.steam": "Steam",
@@ -15416,7 +15731,15 @@
       "item.crystalnexus.mining_laser": "Mining Laser",
       "block.crystalnexus.conveyer_belt": "Conveyor Belt",
       "block.crystalnexus.conveyer_belt_input": "Input Conveyor Belt",
-      "block.crystalnexus.conveyer_belt_output": "Output Conveyor Belt"
+      "block.crystalnexus.conveyer_belt_output": "Output Conveyor Belt",
+      "block.crystalnexus.item_elevator": "Item Elevator",
+      "gui.crystalnexus.item_elevator_gui.label_item_elevator": "[Item Elevator]",
+      "gui.crystalnexus.item_elevator_gui.button_toggle_direction": "Toggle Direction",
+      "block.crystalnexus.item_elevator_down": "Downward Item Elevator",
+      "gui.crystalnexus.item_elevator_gui_down.label_item_elevator": "[Item Elevator]",
+      "gui.crystalnexus.item_elevator_gui_down.button_toggle_direction": "Toggle Direction",
+      "item_group.crystalnexus.crystal_nexus_logistics": "Crystal Nexus Logistics",
+      "block.crystalnexus.advanced_conveyer_belt": "Advanced Conveyor Belt"
     }
   },
   "metadata": {

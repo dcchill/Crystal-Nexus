@@ -1,0 +1,11 @@
+{
+  "_fv": 79,
+  "_type": "tab",
+  "definition": {
+    "name": "Crystal Nexus Logistics",
+    "icon": {
+      "value": "CUSTOM:ConveyerBelt"
+    },
+    "showSearch": false
+  }
+}

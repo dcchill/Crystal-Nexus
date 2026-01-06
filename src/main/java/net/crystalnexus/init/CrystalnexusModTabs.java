@@ -67,15 +67,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ENERGY_GUIDE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ENERGY_REFRACTOR.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ENERGY_SPLITTER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_GUIDE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_REFRACTOR.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_SPLITTER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.BATTERY_MONITOR.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.BATTERY.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.EE_BATTERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem());
@@ -106,12 +97,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.INVERTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.FACTORY_CONTROLLER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.FACTORY_ITEM_CONTROLLER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
@@ -161,7 +147,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.POLYACRYLONITRILE_DUST.get());
 				tabData.accept(CrystalnexusModItems.POLYMER_SHEET.get());
 				tabData.accept(CrystalnexusModBlocks.POLYMER_BLOCK.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.CONTAINER.get().asItem());
 				tabData.accept(CrystalnexusModItems.BIOMASS.get());
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_DUST.get());
 				tabData.accept(CrystalnexusModItems.RAW_CARBON.get());
@@ -238,10 +223,32 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
+			}).build());
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(CrystalnexusModBlocks.CONTAINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().asItem());
-			}).build());
+				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ENERGY_GUIDE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENERGY_REFRACTOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENERGY_SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_GUIDE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_REFRACTOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BATTERY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.EE_BATTERY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BATTERY_MONITOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FACTORY_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FACTORY_ITEM_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
+				tabData.accept(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT.get().asItem());
+			}).withTabsBefore(CRYSTAL_NEXUS_TAB.getId()).build());
 
 	@SubscribeEvent
 	public static void buildTabContentsVanilla(BuildCreativeModeTabContentsEvent tabData) {

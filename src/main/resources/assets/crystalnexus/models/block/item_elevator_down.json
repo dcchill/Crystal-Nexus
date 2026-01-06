@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/item_elevator_top",
+    "up": "crystalnexus:block/iron_top",
+    "north": "crystalnexus:block/item_elevator_out",
+    "east": "crystalnexus:block/item_elevator_down",
+    "south": "crystalnexus:block/item_elevator_down",
+    "west": "crystalnexus:block/item_elevator_down",
+    "particle": "crystalnexus:block/item_elevator_top"
+  },
+  "render_type": "solid"
+}

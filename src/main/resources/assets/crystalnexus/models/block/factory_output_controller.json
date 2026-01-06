@@ -5,7 +5,7 @@
     "up": "crystalnexus:block/reactorblock",
     "north": "crystalnexus:block/factoryoutputcontroller",
     "east": "crystalnexus:block/reactorblock",
-    "south": "crystalnexus:block/reactorblock",
+    "south": "minecraft:block/reactorblock",
     "west": "crystalnexus:block/reactorblock",
     "particle": "crystalnexus:block/purebottom"
   },

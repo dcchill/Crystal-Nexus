@@ -28,6 +28,8 @@ import net.crystalnexus.client.gui.MultiblockGuiPage2Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage1Screen;
 import net.crystalnexus.client.gui.MatterTransmutationGUIScreen;
 import net.crystalnexus.client.gui.MRecrystallGuiScreen;
+import net.crystalnexus.client.gui.ItemElevatorGuiScreen;
+import net.crystalnexus.client.gui.ItemElevatorGuiDownScreen;
 import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
 import net.crystalnexus.client.gui.IronSmelterGuiScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
@@ -93,6 +95,8 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.WARP_PAD_GUI.get(), WarpPadGuiScreen::new);
 		event.register(CrystalnexusModMenus.PISTON_GEN_GUI.get(), PistonGenGUIScreen::new);
 		event.register(CrystalnexusModMenus.STEAM_CHAMBER_GUI.get(), SteamChamberGUIScreen::new);
+		event.register(CrystalnexusModMenus.ITEM_ELEVATOR_GUI.get(), ItemElevatorGuiScreen::new);
+		event.register(CrystalnexusModMenus.ITEM_ELEVATOR_GUI_DOWN.get(), ItemElevatorGuiDownScreen::new);
 	}
 
 	public interface ScreenAccessor {

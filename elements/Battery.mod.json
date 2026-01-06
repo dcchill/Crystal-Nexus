@@ -53,7 +53,7 @@
     "immuneToFire": false,
     "creativeTabs": [
       {
-        "value": "CUSTOM:CrystalNexusTab"
+        "value": "CUSTOM:CrystalNexusLogistics"
       }
     ],
     "destroyTool": "pickaxe",
@@ -134,14 +134,8 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
-    "onBlockAdded": {
-      "name": "BatteryBlockAdded"
-    },
     "onTickUpdate": {
       "name": "BatteryOnTickUpdate"
-    },
-    "onDestroyedByPlayer": {
-      "name": "BatteryBlockDestroyedByPlayer"
     },
     "generateFeature": false,
     "restrictionBiomes": [],

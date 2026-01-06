@@ -59,6 +59,8 @@ import net.crystalnexus.block.MachineblockBlock;
 import net.crystalnexus.block.MachineFrameBlock;
 import net.crystalnexus.block.MachineEnergyInputBlock;
 import net.crystalnexus.block.MachineCoreBlock;
+import net.crystalnexus.block.ItemElevatorDownBlock;
+import net.crystalnexus.block.ItemElevatorBlock;
 import net.crystalnexus.block.ItemCollectorBlock;
 import net.crystalnexus.block.IronSmelterBlock;
 import net.crystalnexus.block.InvertiumSmelterBlock;
@@ -116,6 +118,7 @@ import net.crystalnexus.block.BatteryMonitorBlock;
 import net.crystalnexus.block.BatteryBlock;
 import net.crystalnexus.block.AncientCrystalOreStoneBlock;
 import net.crystalnexus.block.AncientCrystalOreBlock;
+import net.crystalnexus.block.AdvancedConveyerBeltBlock;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModBlocks {
@@ -228,6 +231,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CONVEYER_BELT = REGISTRY.register("conveyer_belt", ConveyerBeltBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT_INPUT = REGISTRY.register("conveyer_belt_input", ConveyerBeltInputBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT_OUTPUT = REGISTRY.register("conveyer_belt_output", ConveyerBeltOutputBlock::new);
+	public static final DeferredBlock<Block> ITEM_ELEVATOR = REGISTRY.register("item_elevator", ItemElevatorBlock::new);
+	public static final DeferredBlock<Block> ITEM_ELEVATOR_DOWN = REGISTRY.register("item_elevator_down", ItemElevatorDownBlock::new);
+	public static final DeferredBlock<Block> ADVANCED_CONVEYER_BELT = REGISTRY.register("advanced_conveyer_belt", AdvancedConveyerBeltBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }
