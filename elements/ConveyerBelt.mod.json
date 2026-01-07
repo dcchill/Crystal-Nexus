@@ -2,7 +2,7 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "cbelt_anim",
+    "texture": "cbelt_part",
     "textureTop": "minecraft:magenta_glazed_terracotta",
     "textureLeft": "crystalizedalloyblockanim",
     "textureFront": "crystalizedalloyblockanim",
@@ -149,6 +149,9 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
+    "onNeighbourBlockChanges": {
+      "name": "ConveyerBeltNeighbourBlockChanges"
+    },
     "onTickUpdate": {
       "name": "ConveyerBeltOnTickUpdate"
     },

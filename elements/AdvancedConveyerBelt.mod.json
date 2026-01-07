@@ -149,6 +149,9 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
+    "onNeighbourBlockChanges": {
+      "name": "ConveyerBeltNeighbourBlockChanges"
+    },
     "onTickUpdate": {
       "name": "AdvancedConveyerBeltOnTickUpdate"
     },

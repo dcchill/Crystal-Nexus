@@ -230,6 +230,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ENERGY_GUIDE.get().asItem());
@@ -247,7 +248,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FACTORY_ITEM_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
-				tabData.accept(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_TAB.getId()).build());
 
 	@SubscribeEvent

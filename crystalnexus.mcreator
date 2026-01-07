@@ -14540,6 +14540,65 @@
         ]
       },
       "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyerBeltBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyer_belt_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/conveyer_belt_blockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/conveyer_belt_blockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ConveyerBeltNeighbourBlockChanges",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "conveyer_belt_neighbour_block_changes",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ConveyerBeltNeighbourBlockChangesProcedure.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "AConveyerBeltBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "a_conveyer_belt_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/a_conveyer_belt_blockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/a_conveyer_belt_blockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
     }
   ],
   "variable_elements": [
@@ -15217,6 +15276,7 @@
       "ConveyerBelt",
       "ConveyerBeltInput",
       "ConveyerBeltOutput",
+      "AdvancedConveyerBelt",
       "ItemElevator",
       "ItemElevatorDown",
       "CrystalEnergyGuide",
@@ -15233,8 +15293,7 @@
       "FactoryController",
       "FactoryItemController",
       "FactoryOutputController",
-      "LinkCard",
-      "AdvancedConveyerBelt"
+      "LinkCard"
     ]
   },
   "language_map": {

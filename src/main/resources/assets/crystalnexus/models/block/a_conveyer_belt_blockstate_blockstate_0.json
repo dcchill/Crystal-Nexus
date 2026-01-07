@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/conveyer",
+  "textures": {
+    "all": "crystalnexus:block/a_cbelt_part",
+    "particle": "crystalnexus:block/a_cbelt_anim",
+    "0": "crystalnexus:block/cbelt_anim"
+  },
+  "render_type": "solid"
+}

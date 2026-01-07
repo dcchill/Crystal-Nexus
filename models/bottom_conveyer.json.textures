@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "cbelt_anim",
+        "1": "funneltexture"
+      },
+      "name": "default"
+    }
+  }
+}

@@ -1,8 +1,11 @@
 package net.crystalnexus.block;
 
+import org.checkerframework.checker.units.qual.s;
+
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,13 +29,23 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.procedures.ConveyerBeltOnTickUpdateProcedure;
+import net.crystalnexus.procedures.ConveyerBeltNeighbourBlockChangesProcedure;
 import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
 
 public class ConveyerBeltBlock extends Block implements EntityBlock {
+	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	public ConveyerBeltBlock() {
-		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(0.8f, 8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(0.8f, 8f).lightLevel(s -> (new Object() {
+			public int getLightLevel() {
+				if (s.getValue(BLOCKSTATE) == 1)
+					return 0;
+				if (s.getValue(BLOCKSTATE) == 2)
+					return 0;
+				return 0;
+			}
+		}.getLightLevel())).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).dynamicShape());
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
@@ -53,6 +66,26 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		if (state.getValue(BLOCKSTATE) == 1) {
+			return switch (state.getValue(FACING)) {
+				default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10));
+				case NORTH -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10));
+				case EAST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12));
+				case WEST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12));
+			};
+		}
+		if (state.getValue(BLOCKSTATE) == 2) {
+			return switch (state.getValue(FACING)) {
+				default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 14, 14, 16, 16), box(0, 14, 2, 2, 16, 14), box(14, 14, 2, 16, 16, 14), box(4.01, 14.01, 2.01, 5.99, 15.99, 13.99),
+						box(10.01, 14.01, 2.01, 11.99, 15.99, 13.99), box(14, 8, 0, 16, 16, 2), box(2, 14, 0, 14, 16, 2), box(0, 8, 0, 2, 16, 2), box(14, 8, 14, 16, 16, 16), box(0, 8, 14, 2, 16, 16));
+				case NORTH -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 0, 14, 16, 2), box(14, 14, 2, 16, 16, 14), box(0, 14, 2, 2, 16, 14), box(10.01, 14.01, 2.01, 11.99, 15.99, 13.99),
+						box(4.01, 14.01, 2.01, 5.99, 15.99, 13.99), box(0, 8, 14, 2, 16, 16), box(2, 14, 14, 14, 16, 16), box(14, 8, 14, 16, 16, 16), box(0, 8, 0, 2, 16, 2), box(14, 8, 0, 16, 16, 2));
+				case EAST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(14, 14, 2, 16, 16, 14), box(2, 14, 14, 14, 16, 16), box(2, 14, 0, 14, 16, 2), box(2.01, 14.01, 10.01, 13.99, 15.99, 11.99),
+						box(2.01, 14.01, 4.01, 13.99, 15.99, 5.99), box(0, 8, 0, 2, 16, 2), box(0, 14, 2, 2, 16, 14), box(0, 8, 14, 2, 16, 16), box(14, 8, 0, 16, 16, 2), box(14, 8, 14, 16, 16, 16));
+				case WEST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(0, 14, 2, 2, 16, 14), box(2, 14, 0, 14, 16, 2), box(2, 14, 14, 14, 16, 16), box(2.01, 14.01, 4.01, 13.99, 15.99, 5.99),
+						box(2.01, 14.01, 10.01, 13.99, 15.99, 11.99), box(14, 8, 14, 16, 16, 16), box(14, 14, 2, 16, 16, 14), box(14, 8, 0, 16, 16, 2), box(0, 8, 14, 2, 16, 16), box(0, 8, 0, 2, 16, 2));
+			};
+		}
 		return switch (state.getValue(FACING)) {
 			default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10));
 			case NORTH -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10));
@@ -64,7 +97,7 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING);
+		builder.add(FACING, BLOCKSTATE);
 	}
 
 	@Override
@@ -84,6 +117,12 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 	public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
 		super.onPlace(blockstate, world, pos, oldState, moving);
 		world.scheduleTick(pos, this, 1);
+	}
+
+	@Override
+	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
+		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
+		ConveyerBeltNeighbourBlockChangesProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override
