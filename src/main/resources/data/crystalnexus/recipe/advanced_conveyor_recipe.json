@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": [
     " a ",
-    "bcb",
-    " d "
+    "bbb",
+    " c "
   ],
   "key": {
     "a": {
@@ -14,14 +14,11 @@
       "item": "crystalnexus:conveyer_belt"
     },
     "c": {
-      "item": "crystalnexus:synthetic_rubber"
-    },
-    "d": {
       "item": "crystalnexus:polymer_sheet"
     }
   },
   "result": {
     "id": "crystalnexus:advanced_conveyer_belt",
-    "count": 2
+    "count": 3
   }
 }

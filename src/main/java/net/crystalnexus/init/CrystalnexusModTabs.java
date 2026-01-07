@@ -80,6 +80,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ACCEPTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_GUIDE.get().asItem());

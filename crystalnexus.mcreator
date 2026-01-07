@@ -14599,6 +14599,127 @@
         ]
       },
       "path": "~/conveyerBelts"
+    },
+    {
+      "name": "AutoCrafterOnTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "auto_crafter_on_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/AutoCrafterOnTickProcedure.java"
+        ]
+      },
+      "path": "~/autocrafter"
+    },
+    {
+      "name": "CraftingFactory",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crafting_factory",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/CraftingFactoryBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/crafting_factory.json",
+          "src/main/resources/assets/crystalnexus/models/item/crafting_factory.json",
+          "src/main/resources/assets/crystalnexus/models/block/crafting_factory.json",
+          "src/main/resources/assets/crystalnexus/blockstates/crafting_factory.json",
+          "src/main/java/net/crystalnexus/block/entity/CraftingFactoryBlockEntity.java"
+        ]
+      },
+      "path": "~/autocrafter"
+    },
+    {
+      "name": "CraftingFactoryGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crafting_factory_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/CraftingFactoryGUIScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/CraftingFactoryGUIMenu.java"
+        ]
+      },
+      "path": "~/autocrafter"
+    },
+    {
+      "name": "CraftingFactoryRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crafting_factory_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/crafting_factory_recipe.json"
+        ]
+      },
+      "path": "~/autocrafter"
+    },
+    {
+      "name": "CraftingFactoryBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crafting_factory_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/crafting_factory_blockstate_blockstate_0.json",
+          "src/main/resources/assets/crystalnexus/models/block/crafting_factory_blockstate_blockstate_1.json"
+        ]
+      },
+      "path": "~/autocrafter"
+    },
+    {
+      "name": "CraftingFactoryBlockstateProc",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crafting_factory_blockstate_proc",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/CraftingFactoryBlockstateProcProcedure.java"
+        ]
+      },
+      "path": "~/autocrafter"
     }
   ],
   "variable_elements": [
@@ -15100,6 +15221,7 @@
       "PistonGenerator",
       "InvertPistonGenerator",
       "CrystalAccepter",
+      "CraftingFactory",
       "CrystalCrusher",
       "DustSeparator",
       "CrystalGuide",
@@ -15798,7 +15920,12 @@
       "gui.crystalnexus.item_elevator_gui_down.label_item_elevator": "[Item Elevator]",
       "gui.crystalnexus.item_elevator_gui_down.button_toggle_direction": "Toggle Direction",
       "item_group.crystalnexus.crystal_nexus_logistics": "Crystal Nexus Logistics",
-      "block.crystalnexus.advanced_conveyer_belt": "Advanced Conveyor Belt"
+      "block.crystalnexus.advanced_conveyer_belt": "Advanced Conveyor Belt",
+      "block.crystalnexus.crafting_factory": "Crafting Factory",
+      "gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter": "Crafting Filter",
+      "gui.crystalnexus.crafting_factory_gui.label_crafting_factory": "[Crafting Factory]",
+      "block.crystalnexus.crafting_factory.description_1": "§5Treats all recipes as shapeless/stackless.",
+      "block.crystalnexus.crafting_factory.description_0": "§5Automatically crafts based on the filtered item."
     }
   },
   "metadata": {
@@ -15957,6 +16084,10 @@
       },
       {
         "name": "conveyerBelts",
+        "children": []
+      },
+      {
+        "name": "autocrafter",
         "children": []
       }
     ]

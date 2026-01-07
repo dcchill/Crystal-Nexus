@@ -90,6 +90,7 @@ import net.crystalnexus.block.CrystalEnergyGuideBlock;
 import net.crystalnexus.block.CrystalCrusherBlock;
 import net.crystalnexus.block.CrystalAccepterBlock;
 import net.crystalnexus.block.CrudeOilBlock;
+import net.crystalnexus.block.CraftingFactoryBlock;
 import net.crystalnexus.block.ConveyerBeltOutputBlock;
 import net.crystalnexus.block.ConveyerBeltInputBlock;
 import net.crystalnexus.block.ConveyerBeltBlock;
@@ -234,6 +235,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ITEM_ELEVATOR = REGISTRY.register("item_elevator", ItemElevatorBlock::new);
 	public static final DeferredBlock<Block> ITEM_ELEVATOR_DOWN = REGISTRY.register("item_elevator_down", ItemElevatorDownBlock::new);
 	public static final DeferredBlock<Block> ADVANCED_CONVEYER_BELT = REGISTRY.register("advanced_conveyer_belt", AdvancedConveyerBeltBlock::new);
+	public static final DeferredBlock<Block> CRAFTING_FACTORY = REGISTRY.register("crafting_factory", CraftingFactoryBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

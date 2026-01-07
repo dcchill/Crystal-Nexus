@@ -3,7 +3,7 @@
   "_type": "recipe",
   "definition": {
     "recipeType": "Crafting",
-    "recipeRetstackSize": 9,
+    "recipeRetstackSize": 1,
     "group": "",
     "unlockingItems": [],
     "cookingBookCategory": "MISC",
@@ -13,37 +13,37 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": ""
+        "value": "Items.IRON_INGOT"
+      },
+      {
+        "value": "CUSTOM:Silicon"
       },
       {
         "value": "Items.IRON_INGOT"
       },
       {
-        "value": ""
+        "value": "Blocks.CRAFTER"
       },
       {
-        "value": ""
+        "value": "CUSTOM:CrystalMachineFrame"
       },
       {
-        "value": "CUSTOM:SyntheticRubber"
-      },
-      {
-        "value": ""
-      },
-      {
-        "value": ""
+        "value": "Blocks.CRAFTER"
       },
       {
         "value": "Items.IRON_INGOT"
       },
       {
-        "value": ""
+        "value": "CUSTOM:Silicon"
+      },
+      {
+        "value": "Items.IRON_INGOT"
       }
     ],
     "recipeReturnStack": {
-      "value": "CUSTOM:ConveyerBelt"
+      "value": "CUSTOM:CraftingFactory"
     },
-    "name": "conveyor_belt_recipe",
+    "name": "crafting_factory_recipe",
     "namespace": "mod"
   }
 }

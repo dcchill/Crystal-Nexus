@@ -64,6 +64,7 @@ import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalEnergyGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 import net.crystalnexus.block.entity.CrystalAccepterBlockEntity;
+import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
@@ -169,6 +170,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemElevatorDownBlockEntity>> ITEM_ELEVATOR_DOWN = register("item_elevator_down", CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN, ItemElevatorDownBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AdvancedConveyerBeltBlockEntity>> ADVANCED_CONVEYER_BELT = register("advanced_conveyer_belt", CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT,
 			AdvancedConveyerBeltBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CraftingFactoryBlockEntity>> CRAFTING_FACTORY = register("crafting_factory", CrystalnexusModBlocks.CRAFTING_FACTORY, CraftingFactoryBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -298,5 +300,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR_DOWN.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ADVANCED_CONVEYER_BELT.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRAFTING_FACTORY.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRAFTING_FACTORY.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

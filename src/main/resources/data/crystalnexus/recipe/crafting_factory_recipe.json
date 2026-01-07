@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:iron_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:silicon"
+    },
+    "c": {
+      "item": "minecraft:crafter"
+    },
+    "d": {
+      "item": "crystalnexus:crystal_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:crafting_factory",
+    "count": 1
+  }
+}

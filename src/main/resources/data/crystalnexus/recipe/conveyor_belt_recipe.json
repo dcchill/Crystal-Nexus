@@ -2,19 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aaa",
-    " b "
+    "a",
+    "b",
+    "a"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:synthetic_rubber"
+      "item": "minecraft:iron_ingot"
     },
     "b": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:synthetic_rubber"
     }
   },
   "result": {
     "id": "crystalnexus:conveyer_belt",
-    "count": 8
+    "count": 9
   }
 }
