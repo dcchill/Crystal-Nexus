@@ -2,10 +2,10 @@
   "_fv": 79,
   "_type": "item",
   "definition": {
-    "renderType": 0,
+    "renderType": 1,
     "texture": "polymersheet",
-    "customModelName": "Normal",
-    "guiTexture": "",
+    "customModelName": "polymer_plate:default",
+    "guiTexture": "polymersheet",
     "customProperties": {},
     "states": [],
     "name": "Polymer Sheet",

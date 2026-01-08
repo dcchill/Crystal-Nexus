@@ -174,6 +174,90 @@ public class ReactorComputerOnTickUpdateProcedure {
 						}
 					}
 				}
+			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.PURE_BLUTONIUM.get()) {
+				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxHeat") > getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat")) {
+					if (4096000 >= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
+							if (!world.isClientSide()) {
+								BlockPos _bp = BlockPos.containing(x, y, z);
+								BlockEntity _blockEntity = world.getBlockEntity(_bp);
+								BlockState _bs = world.getBlockState(_bp);
+								if (_blockEntity != null)
+									_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
+								if (world instanceof Level _level)
+									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+							}
+							if (world instanceof ILevelExtension _ext) {
+								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+								if (_entityStorage != null)
+									_entityStorage.receiveEnergy((int) (energy * 1.75), false);
+							}
+							if (world instanceof ServerLevel _level)
+								_level.sendParticles(ParticleTypes.VAULT_CONNECTION, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.5, 0, 0.5, 0);
+						}
+						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
+							if (world instanceof ILevelExtension _ext) {
+								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+								if (_entityStorage != null)
+									_entityStorage.receiveEnergy((int) (energy * 1.75), false);
+							}
+							if (world instanceof ILevelExtension _ext) {
+								IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+								if (_fluidHandler != null)
+									_fluidHandler.drain(100, IFluidHandler.FluidAction.EXECUTE);
+							}
+							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.PURE_BLUTONIUM.get()) {
+								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+									int _slotid = 0;
+									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+									_stk.shrink(1);
+									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+								}
+							}
+							if (!world.isClientSide()) {
+								BlockPos _bp = BlockPos.containing(x, y, z);
+								BlockEntity _blockEntity = world.getBlockEntity(_bp);
+								BlockState _bs = world.getBlockState(_bp);
+								if (_blockEntity != null)
+									_blockEntity.getPersistentData().putDouble("progress", 0);
+								if (world instanceof Level _level)
+									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+							}
+							if (world instanceof Level _level) {
+								if (!_level.isClientSide()) {
+									_level.playSound(null, BlockPos.containing(x, y, z), BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.fire.extinguish")), SoundSource.BLOCKS, (float) 0.4, (float) 0.7);
+								} else {
+									_level.playLocalSound(x, y, z, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("block.fire.extinguish")), SoundSource.BLOCKS, (float) 0.4, (float) 0.7, false);
+								}
+							}
+							if (world instanceof ServerLevel _level)
+								_level.sendParticles(ParticleTypes.WARPED_SPORE, (x + 0.5), (y + 0.5), (z + 0.5), 5, 0.5, 0, 0.5, 0);
+						}
+						if (0 < getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null)) {
+							if (0 < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat")) {
+								if (!world.isClientSide()) {
+									BlockPos _bp = BlockPos.containing(x, y, z);
+									BlockEntity _blockEntity = world.getBlockEntity(_bp);
+									BlockState _bs = world.getBlockState(_bp);
+									if (_blockEntity != null)
+										_blockEntity.getPersistentData().putDouble("heat", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat") - 5));
+									if (world instanceof Level _level)
+										_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+								}
+							}
+						} else {
+							if (!world.isClientSide()) {
+								BlockPos _bp = BlockPos.containing(x, y, z);
+								BlockEntity _blockEntity = world.getBlockEntity(_bp);
+								BlockState _bs = world.getBlockState(_bp);
+								if (_blockEntity != null)
+									_blockEntity.getPersistentData().putDouble("heat", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat") + 1));
+								if (world instanceof Level _level)
+									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+							}
+						}
+					}
+				}
 			}
 		} else {
 			{

@@ -11,7 +11,7 @@
       "item": "minecraft:iron_ingot"
     },
     "b": {
-      "item": "minecraft:iron_nugget"
+      "item": "crystalnexus:iron_machine_bolt"
     }
   },
   "result": {

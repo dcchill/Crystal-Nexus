@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": {
+    "type": "neoforge:any"
+  },
+  "features": "crystalnexus:copper_node_gen",
+  "step": "raw_generation"
+}

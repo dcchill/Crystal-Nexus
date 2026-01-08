@@ -1,0 +1,10 @@
+{
+  "parent": "crystalnexus:custom/node_miner",
+  "textures": {
+    "all": "crystalnexus:block/puretop",
+    "particle": "crystalnexus:block/puretop",
+    "0": "crystalnexus:block/funnel_texture_anim",
+    "1": "crystalnexus:block/node_miner"
+  },
+  "render_type": "solid"
+}

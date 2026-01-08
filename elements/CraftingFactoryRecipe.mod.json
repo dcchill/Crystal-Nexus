@@ -13,13 +13,13 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:Silicon"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "Blocks.CRAFTER"
@@ -31,13 +31,13 @@
         "value": "Blocks.CRAFTER"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:Silicon"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       }
     ],
     "recipeReturnStack": {

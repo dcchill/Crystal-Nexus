@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     " a ",
-    "aba",
+    "bcb",
     " a "
   ],
   "key": {
@@ -11,6 +11,9 @@
       "item": "crystalnexus:carbon_fiber"
     },
     "b": {
+      "item": "crystalnexus:machine_bolt"
+    },
+    "c": {
       "item": "minecraft:glass"
     }
   },

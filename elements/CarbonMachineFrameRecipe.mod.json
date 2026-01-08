@@ -13,13 +13,13 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:SyntheticRubber"
+        "value": "CUSTOM:MachineBolt"
       },
       {
         "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": "CUSTOM:SyntheticRubber"
+        "value": "CUSTOM:MachineBolt"
       },
       {
         "value": "CUSTOM:CarbonFiber"

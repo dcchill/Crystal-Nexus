@@ -2,21 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aaa",
-    "bbb",
-    "cdc"
+    "aba",
+    "ccc",
+    "ded"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:crystalized_alloy"
+      "item": "crystalnexus:iron_machine_bolt"
     },
     "b": {
-      "item": "minecraft:piston"
+      "item": "crystalnexus:crystalized_alloy"
     },
     "c": {
-      "tag": "c:stones"
+      "item": "minecraft:piston"
     },
     "d": {
+      "tag": "c:stones"
+    },
+    "e": {
       "item": "crystalnexus:crystal_machine_frame"
     }
   },

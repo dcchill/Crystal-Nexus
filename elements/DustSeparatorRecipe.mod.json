@@ -13,13 +13,13 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:ControlledCrystal"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:CystalizedAlloy"

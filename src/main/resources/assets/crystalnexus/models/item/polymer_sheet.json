@@ -1,6 +1,31 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "crystalnexus:item/polymersheet"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "crystalnexus:custom/polymer_plate",
+    "textures": {
+      "0": "crystalnexus:block/polymer_plate_model",
+      "particle": "crystalnexus:item/polymersheet"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/polymersheet"
+      }
+    },
+    "fixed": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/polymersheet"
+      }
+    },
+    "ground": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/polymersheet"
+      }
+    }
   }
 }

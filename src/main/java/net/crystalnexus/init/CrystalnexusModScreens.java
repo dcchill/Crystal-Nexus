@@ -21,6 +21,7 @@ import net.crystalnexus.client.gui.QuantumMinerGUIScreen;
 import net.crystalnexus.client.gui.PistonGenGUIScreen;
 import net.crystalnexus.client.gui.OreProGUIScreen;
 import net.crystalnexus.client.gui.OreGenGUIScreen;
+import net.crystalnexus.client.gui.NodeMinerGUIScreen;
 import net.crystalnexus.client.gui.MultiblockGuiPage5Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage4Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage3Screen;
@@ -99,6 +100,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.ITEM_ELEVATOR_GUI.get(), ItemElevatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ITEM_ELEVATOR_GUI_DOWN.get(), ItemElevatorGuiDownScreen::new);
 		event.register(CrystalnexusModMenus.CRAFTING_FACTORY_GUI.get(), CraftingFactoryGUIScreen::new);
+		event.register(CrystalnexusModMenus.NODE_MINER_GUI.get(), NodeMinerGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

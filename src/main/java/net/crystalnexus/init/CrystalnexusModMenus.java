@@ -28,6 +28,7 @@ import net.crystalnexus.world.inventory.QuantumMinerGUIMenu;
 import net.crystalnexus.world.inventory.PistonGenGUIMenu;
 import net.crystalnexus.world.inventory.OreProGUIMenu;
 import net.crystalnexus.world.inventory.OreGenGUIMenu;
+import net.crystalnexus.world.inventory.NodeMinerGUIMenu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage5Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage4Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage3Menu;
@@ -108,6 +109,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemElevatorGuiMenu>> ITEM_ELEVATOR_GUI = REGISTRY.register("item_elevator_gui", () -> IMenuTypeExtension.create(ItemElevatorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemElevatorGuiDownMenu>> ITEM_ELEVATOR_GUI_DOWN = REGISTRY.register("item_elevator_gui_down", () -> IMenuTypeExtension.create(ItemElevatorGuiDownMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CraftingFactoryGUIMenu>> CRAFTING_FACTORY_GUI = REGISTRY.register("crafting_factory_gui", () -> IMenuTypeExtension.create(CraftingFactoryGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<NodeMinerGUIMenu>> NODE_MINER_GUI = REGISTRY.register("node_miner_gui", () -> IMenuTypeExtension.create(NodeMinerGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

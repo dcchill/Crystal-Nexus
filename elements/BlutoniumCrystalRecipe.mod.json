@@ -2,24 +2,28 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "purification",
+    "category": "chemical_reaction",
     "result": {
       "value": "CUSTOM:BlutoniumCrystal"
     },
     "count": 1,
     "ingredients": [
       {
+        "value": "CUSTOM:PureBlutonium"
+      },
+      {
         "value": "CUSTOM:UltimateCrystal"
       },
       {
-        "value": "CUSTOM:BlutoniumIngot"
+        "value": "CUSTOM:UltimateCrystal"
       }
     ],
     "integers": [
       1,
+      1,
       1
     ],
     "strings": [],
-    "recipetype": "Purification"
+    "recipetype": "ChemicalReaction"
   }
 }

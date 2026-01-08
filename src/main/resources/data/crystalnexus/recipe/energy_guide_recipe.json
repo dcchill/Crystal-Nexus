@@ -2,21 +2,24 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aaa",
-    "bcd",
-    "aaa"
+    "aba",
+    "cde",
+    "aba"
   ],
   "key": {
     "a": {
-      "tag": "c:stones"
+      "item": "crystalnexus:iron_machine_bolt"
     },
     "b": {
-      "item": "crystalnexus:stable_crystal"
+      "tag": "c:stones"
     },
     "c": {
-      "item": "crystalnexus:crystalized_alloy"
+      "item": "crystalnexus:stable_crystal"
     },
     "d": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "e": {
       "tag": "c:glass_panes"
     }
   },

@@ -4,7 +4,7 @@
   "pattern": [
     "aba",
     "cdc",
-    "eee"
+    "efe"
   ],
   "key": {
     "a": {
@@ -20,6 +20,9 @@
       "item": "crystalnexus:silicon"
     },
     "e": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "f": {
       "item": "crystalnexus:machine_frame"
     }
   },

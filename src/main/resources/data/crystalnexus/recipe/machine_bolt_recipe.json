@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:machine_bolt",
+    "count": 4
+  }
+}

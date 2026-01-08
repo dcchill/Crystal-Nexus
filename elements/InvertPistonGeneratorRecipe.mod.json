@@ -31,13 +31,13 @@
         "value": "CUSTOM:InvertiumIngot"
       },
       {
-        "value": "TAG:c:stones"
+        "value": "CUSTOM:MachineBolt"
       },
       {
         "value": "CUSTOM:InvertiumMachineFrame"
       },
       {
-        "value": "TAG:c:stones"
+        "value": "CUSTOM:MachineBolt"
       }
     ],
     "recipeReturnStack": {

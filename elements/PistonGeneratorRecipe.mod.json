@@ -13,13 +13,13 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:CystalizedAlloy"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:CystalizedAlloy"
       },
       {
-        "value": "CUSTOM:CystalizedAlloy"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "Blocks.PISTON"

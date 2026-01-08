@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:gold_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "c": {
+      "item": "crystalnexus:crystal_machine_frame"
+    },
+    "d": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "e": {
+      "item": "minecraft:diamond_pickaxe"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:node_miner",
+    "count": 1
+  }
+}

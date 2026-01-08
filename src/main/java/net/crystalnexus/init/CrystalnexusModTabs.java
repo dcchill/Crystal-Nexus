@@ -22,6 +22,9 @@ public class CrystalnexusModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrystalnexusMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_TAB = REGISTRY.register("crystal_nexus_tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.GODLIKE_CRYSTAL.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(CrystalnexusModBlocks.IRON_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GOLD_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.COPPER_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.ANCIENT_CRYSTAL.get());
@@ -46,6 +49,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_DUST.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM.get());
 				tabData.accept(CrystalnexusModBlocks.BLUTONIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SILICON_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TARROCK_SOIL.get().asItem());
@@ -80,6 +84,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ACCEPTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.NODE_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
@@ -141,6 +146,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ULTIMATE_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.GODLIKE_CRYSTAL.get());
+				tabData.accept(CrystalnexusModItems.IRON_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.TURBINE_BLADE.get());
 				tabData.accept(CrystalnexusModItems.SYNTHETIC_RUBBER.get());
 				tabData.accept(CrystalnexusModBlocks.RUBBER_BLOCK.get().asItem());
@@ -153,6 +159,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.RAW_CARBON.get());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER.get());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER_ROD.get());
+				tabData.accept(CrystalnexusModItems.MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModBlocks.CARBON_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.EE_MATTER.get());
 				tabData.accept(CrystalnexusModItems.UNSTABLE_EE_MATTER.get());

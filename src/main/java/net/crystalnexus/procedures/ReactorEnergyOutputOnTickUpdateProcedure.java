@@ -12,7 +12,7 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double energy = 0;
 		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.WEST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024000, null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, Direction.WEST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -26,7 +26,7 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x - 1, y, z), Direction.EAST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024000, null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x - 1, y, z), (int) energy, Direction.EAST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -40,7 +40,7 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z + 1), Direction.NORTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024000, null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z + 1), (int) energy, Direction.NORTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -54,7 +54,7 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z - 1), Direction.SOUTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024000, null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z - 1), (int) energy, Direction.SOUTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);

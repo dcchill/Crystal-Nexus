@@ -2,15 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "a",
-    "b",
-    "a"
+    " a ",
+    "bcb",
+    " a "
   ],
   "key": {
     "a": {
       "item": "crystalnexus:polymer_sheet"
     },
     "b": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "c": {
       "item": "minecraft:chest"
     }
   },

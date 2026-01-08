@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/bolt",
+  "textures": {
+    "0": "crystalnexus:block/bolt_texture",
+    "particle": "crystalnexus:item/carbon_plate_block"
+  }
+}

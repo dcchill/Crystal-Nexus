@@ -16,19 +16,19 @@
         "value": "CUSTOM:SyntheticRubber"
       },
       {
-        "value": "Blocks.MAGMA"
+        "value": "Blocks.DROPPER"
       },
       {
         "value": "CUSTOM:SyntheticRubber"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "CUSTOM:MachineFrame"
+        "value": "Blocks.OBSERVER"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:SyntheticRubber"

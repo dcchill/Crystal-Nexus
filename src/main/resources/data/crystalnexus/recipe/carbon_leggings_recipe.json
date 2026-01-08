@@ -4,7 +4,7 @@
   "pattern": [
     "aba",
     "c c",
-    "c c"
+    "d d"
   ],
   "key": {
     "a": {
@@ -14,6 +14,9 @@
       "item": "crystalnexus:polymer_sheet"
     },
     "c": {
+      "item": "crystalnexus:machine_bolt"
+    },
+    "d": {
       "item": "crystalnexus:carbon_fiber"
     }
   },

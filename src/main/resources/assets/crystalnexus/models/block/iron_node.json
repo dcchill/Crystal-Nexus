@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/iron_node",
+    "particle": "crystalnexus:block/iron_node"
+  },
+  "render_type": "solid"
+}

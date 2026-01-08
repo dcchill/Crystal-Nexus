@@ -4,17 +4,20 @@
   "pattern": [
     "aba",
     "bcb",
-    "aba"
+    "dbd"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:synthetic_rubber"
+      "item": "crystalnexus:machine_bolt"
     },
     "b": {
       "item": "crystalnexus:carbon_fiber"
     },
     "c": {
       "item": "crystalnexus:invertium_machine_frame"
+    },
+    "d": {
+      "item": "crystalnexus:synthetic_rubber"
     }
   },
   "result": {

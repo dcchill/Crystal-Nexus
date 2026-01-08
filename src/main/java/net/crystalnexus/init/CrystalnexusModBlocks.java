@@ -52,6 +52,7 @@ import net.crystalnexus.block.PistonGeneratorBlock;
 import net.crystalnexus.block.PipeStraightBlock;
 import net.crystalnexus.block.PipeJunctionBlock;
 import net.crystalnexus.block.OreProcessorBlock;
+import net.crystalnexus.block.NodeMinerBlock;
 import net.crystalnexus.block.MultiblockResearchStationBlock;
 import net.crystalnexus.block.MetallurgicRecrystallizerBlock;
 import net.crystalnexus.block.MatterTransmutationTableBlock;
@@ -63,12 +64,14 @@ import net.crystalnexus.block.ItemElevatorDownBlock;
 import net.crystalnexus.block.ItemElevatorBlock;
 import net.crystalnexus.block.ItemCollectorBlock;
 import net.crystalnexus.block.IronSmelterBlock;
+import net.crystalnexus.block.IronNodeBlock;
 import net.crystalnexus.block.InvertiumSmelterBlock;
 import net.crystalnexus.block.InvertiumMachineFrameBlock;
 import net.crystalnexus.block.InvertiumBlockBlock;
 import net.crystalnexus.block.InverterBlock;
 import net.crystalnexus.block.InvertPistonGeneratorBlock;
 import net.crystalnexus.block.GrowthChamberOffBlock;
+import net.crystalnexus.block.GoldNodeBlock;
 import net.crystalnexus.block.GasolineBlock;
 import net.crystalnexus.block.FactoryOutputControllerBlock;
 import net.crystalnexus.block.FactoryItemControllerBlock;
@@ -91,6 +94,7 @@ import net.crystalnexus.block.CrystalCrusherBlock;
 import net.crystalnexus.block.CrystalAccepterBlock;
 import net.crystalnexus.block.CrudeOilBlock;
 import net.crystalnexus.block.CraftingFactoryBlock;
+import net.crystalnexus.block.CopperNodeBlock;
 import net.crystalnexus.block.ConveyerBeltOutputBlock;
 import net.crystalnexus.block.ConveyerBeltInputBlock;
 import net.crystalnexus.block.ConveyerBeltBlock;
@@ -236,6 +240,10 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ITEM_ELEVATOR_DOWN = REGISTRY.register("item_elevator_down", ItemElevatorDownBlock::new);
 	public static final DeferredBlock<Block> ADVANCED_CONVEYER_BELT = REGISTRY.register("advanced_conveyer_belt", AdvancedConveyerBeltBlock::new);
 	public static final DeferredBlock<Block> CRAFTING_FACTORY = REGISTRY.register("crafting_factory", CraftingFactoryBlock::new);
+	public static final DeferredBlock<Block> NODE_MINER = REGISTRY.register("node_miner", NodeMinerBlock::new);
+	public static final DeferredBlock<Block> IRON_NODE = REGISTRY.register("iron_node", IronNodeBlock::new);
+	public static final DeferredBlock<Block> GOLD_NODE = REGISTRY.register("gold_node", GoldNodeBlock::new);
+	public static final DeferredBlock<Block> COPPER_NODE = REGISTRY.register("copper_node", CopperNodeBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

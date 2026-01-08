@@ -1,6 +1,31 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "crystalnexus:item/carbonfiberplate"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "crystalnexus:custom/carbon_plate",
+    "textures": {
+      "0": "crystalnexus:block/carbon_plate_model",
+      "particle": "crystalnexus:item/carbonfiberplate"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/carbonfiberplate"
+      }
+    },
+    "fixed": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/carbonfiberplate"
+      }
+    },
+    "ground": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/carbonfiberplate"
+      }
+    }
   }
 }

@@ -14720,6 +14720,297 @@
         ]
       },
       "path": "~/autocrafter"
+    },
+    {
+      "name": "MachineBolt",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "machine_bolt",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/machine_bolt.json",
+          "src/main/java/net/crystalnexus/item/MachineBoltItem.java"
+        ]
+      },
+      "path": "~/bolts"
+    },
+    {
+      "name": "MachineBoltRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "machine_bolt_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/machine_bolt_recipe.json"
+        ]
+      },
+      "path": "~/bolts"
+    },
+    {
+      "name": "PureBlutonium",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "pure_blutonium",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/PureBlutoniumItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/pure_blutonium.json"
+        ]
+      },
+      "path": "~/pBlutonium"
+    },
+    {
+      "name": "PureBlutoniumRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "pure_blutonium_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/pure_blutonium_recipe.json"
+        ]
+      },
+      "path": "~/pBlutonium"
+    },
+    {
+      "name": "IronMachineBolt",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "iron_machine_bolt",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/iron_machine_bolt.json",
+          "src/main/java/net/crystalnexus/item/IronMachineBoltItem.java"
+        ]
+      },
+      "path": "~/bolts"
+    },
+    {
+      "name": "IronMachineBoltRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "iron_machine_bolt_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/iron_machine_bolt_recipe.json"
+        ]
+      },
+      "path": "~/bolts"
+    },
+    {
+      "name": "NodeMiner",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_miner",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/entity/NodeMinerBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/node_miner.json",
+          "src/main/java/net/crystalnexus/block/NodeMinerBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/node_miner.json",
+          "src/main/resources/assets/crystalnexus/models/block/node_miner.json",
+          "src/main/resources/assets/crystalnexus/blockstates/node_miner.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "IronNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "iron_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/iron_node.json",
+          "src/main/java/net/crystalnexus/block/IronNodeBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/iron_node.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/iron_node.json",
+          "src/main/resources/assets/crystalnexus/models/item/iron_node.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeMinerOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_miner_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/NodeMinerOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeMinerGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_miner_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/NodeMinerGUIMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/NodeMinerGUIScreen.java"
+        ]
+      }
+    },
+    {
+      "name": "GoldNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gold_node",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/GoldNodeBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/gold_node.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/gold_node.json",
+          "src/main/resources/assets/crystalnexus/models/block/gold_node.json",
+          "src/main/resources/assets/crystalnexus/models/item/gold_node.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "CopperNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "copper_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/copper_node.json",
+          "src/main/resources/assets/crystalnexus/models/item/copper_node.json",
+          "src/main/resources/assets/crystalnexus/models/block/copper_node.json",
+          "src/main/java/net/crystalnexus/block/CopperNodeBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/copper_node.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeMinerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_miner_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/node_miner_recipe.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "IronNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "iron_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/iron_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/iron_node_gen.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/iron_node_gen_biome_modifier.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "GoldNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gold_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/gold_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/gold_node_gen.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/gold_node_gen_biome_modifier.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "CopperNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "copper_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/copper_node_gen_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/copper_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/copper_node_gen.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "IronNodeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "iron_node_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/iron_node_recipe.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "GoldNodeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gold_node_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/gold_node_recipe.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "CopperNodeNodeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "copper_node_node_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/copper_node_node_recipe.json"
+        ]
+      },
+      "path": "~/nodeminer"
     }
   ],
   "variable_elements": [
@@ -14826,6 +15117,9 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:GoldNode",
+      "~CUSTOM:CopperNode",
+      "~CUSTOM:IronNode",
       "~CUSTOM:SteamChamber",
       "~CUSTOM:SteamCollector",
       "~CUSTOM:TarrockButton",
@@ -14933,6 +15227,7 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:GoldNode",
       "~CUSTOM:TarrockButton",
       "~CUSTOM:SmoothTarrockWall",
       "~CUSTOM:SmoothTarrockStairs",
@@ -15034,7 +15329,8 @@
     ],
     "ITEMS:mod:reactor_fuel": [
       "CUSTOM:CoalSingularity",
-      "CUSTOM:BlutoniumIngot"
+      "CUSTOM:BlutoniumIngot",
+      "CUSTOM:PureBlutonium"
     ],
     "ITEMS:mod:paintballs": [
       "CUSTOM:WhitePaintball",
@@ -15159,10 +15455,17 @@
     ],
     "ITEMS:minecraft:foot_armor": [
       "~CUSTOM:Carbon.boots"
+    ],
+    "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:IronNode",
+      "~CUSTOM:CopperNode"
     ]
   },
   "tab_element_order": {
     "CUSTOM:CrystalNexusTab": [
+      "IronNode",
+      "GoldNode",
+      "CopperNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "RawAncientCrystal",
@@ -15187,6 +15490,7 @@
       "BlutoniumDust",
       "BlutoniumNugget",
       "BlutoniumIngot",
+      "PureBlutonium",
       "BlutoniumBlock",
       "SiliconOre",
       "TarrockSoil",
@@ -15221,6 +15525,7 @@
       "PistonGenerator",
       "InvertPistonGenerator",
       "CrystalAccepter",
+      "NodeMiner",
       "CraftingFactory",
       "CrystalCrusher",
       "DustSeparator",
@@ -15282,6 +15587,7 @@
       "UltimateCrystal",
       "BlutoniumCrystal",
       "GodlikeCrystal",
+      "IronMachineBolt",
       "TurbineBlade",
       "SyntheticRubber",
       "RubberBlock",
@@ -15294,6 +15600,7 @@
       "RawCarbon",
       "CarbonFiber",
       "CarbonFiberRod",
+      "MachineBolt",
       "CarbonBlock",
       "EEMatter",
       "UnstableEEMatter",
@@ -15925,7 +16232,18 @@
       "gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter": "Crafting Filter",
       "gui.crystalnexus.crafting_factory_gui.label_crafting_factory": "[Crafting Factory]",
       "block.crystalnexus.crafting_factory.description_1": "§5Treats all recipes as shapeless/stackless.",
-      "block.crystalnexus.crafting_factory.description_0": "§5Automatically crafts based on the filtered item."
+      "block.crystalnexus.crafting_factory.description_0": "§5Automatically crafts based on the filtered item.",
+      "item.crystalnexus.machine_bolt": "Carbon Machine Bolt",
+      "item.crystalnexus.pure_blutonium": "Pure Blutonium",
+      "item.crystalnexus.pure_blutonium.description_0": "§575% more efficient than normal blutonium.",
+      "item.crystalnexus.iron_machine_bolt": "Iron Machine Bolt",
+      "block.crystalnexus.tarrock.description_0": "§5Can be generated by flowing Oil into Lava",
+      "block.crystalnexus.node_miner": "Node Miner",
+      "block.crystalnexus.iron_node": "Iron Node",
+      "gui.crystalnexus.node_miner_gui.label_quantum_miner": "[Node Miner]",
+      "block.crystalnexus.gold_node": "Gold Node",
+      "block.crystalnexus.copper_node": "Copper Node",
+      "block.crystalnexus.node_miner.description_0": "§5Place on an ore node to start mining."
     }
   },
   "metadata": {
@@ -16088,6 +16406,18 @@
       },
       {
         "name": "autocrafter",
+        "children": []
+      },
+      {
+        "name": "pBlutonium",
+        "children": []
+      },
+      {
+        "name": "bolts",
+        "children": []
+      },
+      {
+        "name": "nodeminer",
         "children": []
       }
     ]

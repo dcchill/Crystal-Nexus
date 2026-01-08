@@ -41,6 +41,7 @@ import net.crystalnexus.item.RawAncientCrystalItem;
 import net.crystalnexus.item.RangeUpgradeItem;
 import net.crystalnexus.item.QuartzSingularityItem;
 import net.crystalnexus.item.PurplePaintballItem;
+import net.crystalnexus.item.PureBlutoniumItem;
 import net.crystalnexus.item.PolymerSwordItem;
 import net.crystalnexus.item.PolymerShovelItem;
 import net.crystalnexus.item.PolymerSheetItem;
@@ -57,12 +58,14 @@ import net.crystalnexus.item.NitrileItem;
 import net.crystalnexus.item.NetheriteScrapDustItem;
 import net.crystalnexus.item.MiningLaserItem;
 import net.crystalnexus.item.MagentaPaintballItem;
+import net.crystalnexus.item.MachineBoltItem;
 import net.crystalnexus.item.LinkCardItem;
 import net.crystalnexus.item.LimePaintballItem;
 import net.crystalnexus.item.LightGrayPaintballItem;
 import net.crystalnexus.item.LightBluePaintballItem;
 import net.crystalnexus.item.JetPackItem;
 import net.crystalnexus.item.IronSingularityItem;
+import net.crystalnexus.item.IronMachineBoltItem;
 import net.crystalnexus.item.InvertiumSwordItem;
 import net.crystalnexus.item.InvertiumShovelItem;
 import net.crystalnexus.item.InvertiumPickaxeItem;
@@ -366,6 +369,13 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ITEM_ELEVATOR_DOWN = block(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN);
 	public static final DeferredItem<Item> ADVANCED_CONVEYER_BELT = block(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT);
 	public static final DeferredItem<Item> CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRAFTING_FACTORY);
+	public static final DeferredItem<Item> MACHINE_BOLT = REGISTRY.register("machine_bolt", MachineBoltItem::new);
+	public static final DeferredItem<Item> PURE_BLUTONIUM = REGISTRY.register("pure_blutonium", PureBlutoniumItem::new);
+	public static final DeferredItem<Item> IRON_MACHINE_BOLT = REGISTRY.register("iron_machine_bolt", IronMachineBoltItem::new);
+	public static final DeferredItem<Item> NODE_MINER = block(CrystalnexusModBlocks.NODE_MINER);
+	public static final DeferredItem<Item> IRON_NODE = block(CrystalnexusModBlocks.IRON_NODE);
+	public static final DeferredItem<Item> GOLD_NODE = block(CrystalnexusModBlocks.GOLD_NODE);
+	public static final DeferredItem<Item> COPPER_NODE = block(CrystalnexusModBlocks.COPPER_NODE);
 
 	// Start of user code block custom items
 	// End of user code block custom items

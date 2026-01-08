@@ -1,16 +1,15 @@
 {
-  "type": "crystalnexus:purification",
+  "type": "crystalnexus:chemical_reaction",
   "ingredients": [
+    {
+      "item": "crystalnexus:pure_blutonium"
+    },
     {
       "item": "crystalnexus:ultimate_crystal"
     },
     {
-      "item": "crystalnexus:blutonium_ingot"
+      "item": "crystalnexus:ultimate_crystal"
     }
-  ],
-  "integers": [
-    1,
-    1
   ],
   "output": {
     "id": "crystalnexus:blutonium_crystal",

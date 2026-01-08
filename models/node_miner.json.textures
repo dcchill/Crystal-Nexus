@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "funnel_texture_anim",
+        "1": "node_miner"
+      },
+      "name": "default"
+    }
+  }
+}

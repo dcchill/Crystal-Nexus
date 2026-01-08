@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "Items.GOLD_INGOT"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "Items.GOLD_INGOT"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "CUSTOM:CrystalMachineFrame"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": "Items.DIAMOND_PICKAXE"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:NodeMiner"
+    },
+    "name": "node_miner_recipe",
+    "namespace": "mod"
+  }
+}

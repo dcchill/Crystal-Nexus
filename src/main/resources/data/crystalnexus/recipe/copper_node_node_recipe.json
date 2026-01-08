@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "aba",
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:ee_matter"
+    },
+    "b": {
+      "item": "minecraft:raw_copper_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:copper_node",
+    "count": 1
+  }
+}

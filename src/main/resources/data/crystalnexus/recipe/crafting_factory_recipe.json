@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:iron_machine_bolt"
     },
     "b": {
       "item": "crystalnexus:silicon"

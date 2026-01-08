@@ -2,10 +2,10 @@
   "_fv": 79,
   "_type": "item",
   "definition": {
-    "renderType": 0,
+    "renderType": 1,
     "texture": "carbonfiberplate",
-    "customModelName": "Normal",
-    "guiTexture": "",
+    "customModelName": "carbon_plate:default",
+    "guiTexture": "carbonfiberplate",
     "customProperties": {},
     "states": [],
     "name": "Carbon Fiber",

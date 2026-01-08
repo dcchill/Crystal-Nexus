@@ -11,13 +11,13 @@
       "item": "crystalnexus:synthetic_rubber"
     },
     "b": {
-      "item": "minecraft:magma_block"
+      "item": "minecraft:dropper"
     },
     "c": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:iron_machine_bolt"
     },
     "d": {
-      "item": "crystalnexus:machine_frame"
+      "item": "minecraft:observer"
     },
     "e": {
       "item": "minecraft:soul_sand"
