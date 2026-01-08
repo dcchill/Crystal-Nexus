@@ -109,6 +109,8 @@ public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+		if (index == 9)
+			return false;
 		return true;
 	}
 

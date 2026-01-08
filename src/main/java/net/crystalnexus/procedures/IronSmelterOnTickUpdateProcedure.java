@@ -9,6 +9,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -28,6 +29,7 @@ public class IronSmelterOnTickUpdateProcedure {
 		String registry_name_no_namespace = "";
 		String registry_name_nugget = "";
 		String registry_name = "";
+		outputAmount = 1;
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
 			{
 				int _value = 1;
@@ -63,7 +65,10 @@ public class IronSmelterOnTickUpdateProcedure {
 		}
 		if (true == (world instanceof Level _level9 && _level9.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _level9).isPresent())) {
 			if (1024 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount()) {
+				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() && ((world instanceof Level _lvlSmeltResult
+						? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
+								.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
+						: ItemStack.EMPTY).getItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() || Blocks.AIR.asItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem())) {
 					if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 						if (!world.isClientSide()) {
 							BlockPos _bp = BlockPos.containing(x, y, z);
