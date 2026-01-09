@@ -7574,7 +7574,7 @@
       "name": "ChemicalReactionChamberOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "chemical_reaction_chamber_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -15011,6 +15011,144 @@
         ]
       },
       "path": "~/nodeminer"
+    },
+    {
+      "name": "SteamEngine",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/SteamEngineBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/SteamEngineBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/steam_engine.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/steam_engine.json",
+          "src/main/resources/assets/crystalnexus/blockstates/steam_engine.json",
+          "src/main/resources/assets/crystalnexus/models/block/steam_engine.json"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/SteamEngineOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/SteamEngineGUIScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/SteamEngineGUIMenu.java"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineUpgrade",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_upgrade",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/steam_engine_upgrade.json",
+          "src/main/resources/assets/crystalnexus/blockstates/steam_engine_upgrade.json",
+          "src/main/java/net/crystalnexus/block/SteamEngineUpgradeBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/steam_engine_upgrade.json",
+          "src/main/java/net/crystalnexus/block/entity/SteamEngineUpgradeBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/steam_engine_upgrade.json"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineUpgradeOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_upgrade_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/SteamEngineUpgradeOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/steam_engine_recipe.json"
+        ]
+      },
+      "path": "~/SteamGen"
+    },
+    {
+      "name": "SteamEngineUpgradeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "steam_engine_upgrade_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/steam_engine_upgrade_recipe.json"
+        ]
+      },
+      "path": "~/SteamGen"
     }
   ],
   "variable_elements": [
@@ -15668,7 +15806,9 @@
       "AtomicCoffee",
       "JetPack",
       "Carbon",
-      "CarbonJetpack"
+      "CarbonJetpack",
+      "SteamEngine",
+      "SteamEngineUpgrade"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16243,7 +16383,14 @@
       "gui.crystalnexus.node_miner_gui.label_quantum_miner": "[Node Miner]",
       "block.crystalnexus.gold_node": "Gold Node",
       "block.crystalnexus.copper_node": "Copper Node",
-      "block.crystalnexus.node_miner.description_0": "§5Place on an ore node to start mining."
+      "block.crystalnexus.node_miner.description_0": "§5Place on an ore node to start mining.",
+      "gui.crystalnexus.steam_chamber_gui.tooltip_water_bucket": "Water Bucket",
+      "gui.crystalnexus.steam_chamber_gui.tooltip_energy_crystal": "Energy Crystal",
+      "block.crystalnexus.steam_engine": "Steam Engine",
+      "gui.crystalnexus.steam_engine_gui.tooltip_water_bucket": "Water Bucket",
+      "gui.crystalnexus.steam_engine_gui.tooltip_energy_crystal": "Energy Crystal",
+      "gui.crystalnexus.steam_engine_gui.label_proc_get_block_name_for_gui": "[Steam Engine]",
+      "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine"
     }
   },
   "metadata": {

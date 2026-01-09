@@ -515,5 +515,12 @@
   "gui.crystalnexus.node_miner_gui.label_quantum_miner": "[Node Miner]",
   "block.crystalnexus.gold_node": "Gold Node",
   "block.crystalnexus.copper_node": "Copper Node",
-  "block.crystalnexus.node_miner.description_0": "§5Place on an ore node to start mining."
+  "block.crystalnexus.node_miner.description_0": "§5Place on an ore node to start mining.",
+  "gui.crystalnexus.steam_chamber_gui.tooltip_water_bucket": "Water Bucket",
+  "gui.crystalnexus.steam_chamber_gui.tooltip_energy_crystal": "Energy Crystal",
+  "block.crystalnexus.steam_engine": "Steam Engine",
+  "gui.crystalnexus.steam_engine_gui.tooltip_water_bucket": "Water Bucket",
+  "gui.crystalnexus.steam_engine_gui.tooltip_energy_crystal": "Energy Crystal",
+  "gui.crystalnexus.steam_engine_gui.label_proc_get_block_name_for_gui": "[Steam Engine]",
+  "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine"
 }

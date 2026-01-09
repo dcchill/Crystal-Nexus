@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/steam_engine_upgrade"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/steam_engine_upgrade",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/steam_engine_upgrade",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/steam_engine_upgrade",
+      "y": 270
+    }
+  }
+}

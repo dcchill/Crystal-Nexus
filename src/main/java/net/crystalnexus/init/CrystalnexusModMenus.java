@@ -19,6 +19,7 @@ import net.crystalnexus.world.inventory.WarpPadGuiMenu;
 import net.crystalnexus.world.inventory.UltimaSmelterGuiMenu;
 import net.crystalnexus.world.inventory.TurbineGUIMenu;
 import net.crystalnexus.world.inventory.TesseractGuiMenu;
+import net.crystalnexus.world.inventory.SteamEngineGUIMenu;
 import net.crystalnexus.world.inventory.SteamChamberGUIMenu;
 import net.crystalnexus.world.inventory.SingularityCompressorGUIMenu;
 import net.crystalnexus.world.inventory.SeparatorGuiMenu;
@@ -110,6 +111,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemElevatorGuiDownMenu>> ITEM_ELEVATOR_GUI_DOWN = REGISTRY.register("item_elevator_gui_down", () -> IMenuTypeExtension.create(ItemElevatorGuiDownMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CraftingFactoryGUIMenu>> CRAFTING_FACTORY_GUI = REGISTRY.register("crafting_factory_gui", () -> IMenuTypeExtension.create(CraftingFactoryGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<NodeMinerGUIMenu>> NODE_MINER_GUI = REGISTRY.register("node_miner_gui", () -> IMenuTypeExtension.create(NodeMinerGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineGUIMenu>> STEAM_ENGINE_GUI = REGISTRY.register("steam_engine_gui", () -> IMenuTypeExtension.create(SteamEngineGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

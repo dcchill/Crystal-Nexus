@@ -12,6 +12,7 @@ import net.crystalnexus.client.gui.WarpPadGuiScreen;
 import net.crystalnexus.client.gui.UltimaSmelterGuiScreen;
 import net.crystalnexus.client.gui.TurbineGUIScreen;
 import net.crystalnexus.client.gui.TesseractGuiScreen;
+import net.crystalnexus.client.gui.SteamEngineGUIScreen;
 import net.crystalnexus.client.gui.SteamChamberGUIScreen;
 import net.crystalnexus.client.gui.SingularityCompressorGUIScreen;
 import net.crystalnexus.client.gui.SeparatorGuiScreen;
@@ -101,6 +102,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.ITEM_ELEVATOR_GUI_DOWN.get(), ItemElevatorGuiDownScreen::new);
 		event.register(CrystalnexusModMenus.CRAFTING_FACTORY_GUI.get(), CraftingFactoryGUIScreen::new);
 		event.register(CrystalnexusModMenus.NODE_MINER_GUI.get(), NodeMinerGUIScreen::new);
+		event.register(CrystalnexusModMenus.STEAM_ENGINE_GUI.get(), SteamEngineGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

@@ -231,6 +231,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
+				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

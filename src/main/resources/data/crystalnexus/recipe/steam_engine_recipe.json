@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:turbine"
+    },
+    "c": {
+      "item": "crystalnexus:crystalized_alloy"
+    },
+    "d": {
+      "item": "minecraft:copper_block"
+    },
+    "e": {
+      "item": "crystalnexus:pipe_junction"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:steam_engine",
+    "count": 1
+  }
+}

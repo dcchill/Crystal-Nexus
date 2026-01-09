@@ -2,16 +2,18 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "a",
-    "b",
-    "a"
+    "aba",
+    " c "
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:machine_bolt"
     },
     "b": {
-      "item": "crystalnexus:synthetic_rubber"
+      "item": "minecraft:iron_ingot"
+    },
+    "c": {
+      "tag": "c:stones"
     }
   },
   "result": {

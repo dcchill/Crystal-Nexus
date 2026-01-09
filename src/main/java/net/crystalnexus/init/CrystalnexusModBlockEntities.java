@@ -22,6 +22,8 @@ import net.crystalnexus.block.entity.UltimaSmelterBlockEntity;
 import net.crystalnexus.block.entity.TurbineBlockEntity;
 import net.crystalnexus.block.entity.TesseractOutputBlockEntity;
 import net.crystalnexus.block.entity.TesseractBlockEntity;
+import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
+import net.crystalnexus.block.entity.SteamEngineBlockEntity;
 import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
 import net.crystalnexus.block.entity.SteamChamberBlockEntity;
 import net.crystalnexus.block.entity.SingularityCompressorBlockEntity;
@@ -173,6 +175,8 @@ public class CrystalnexusModBlockEntities {
 			AdvancedConveyerBeltBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CraftingFactoryBlockEntity>> CRAFTING_FACTORY = register("crafting_factory", CrystalnexusModBlocks.CRAFTING_FACTORY, CraftingFactoryBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeMinerBlockEntity>> NODE_MINER = register("node_miner", CrystalnexusModBlocks.NODE_MINER, NodeMinerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = register("steam_engine", CrystalnexusModBlocks.STEAM_ENGINE, SteamEngineBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineUpgradeBlockEntity>> STEAM_ENGINE_UPGRADE = register("steam_engine_upgrade", CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE, SteamEngineUpgradeBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -306,5 +310,11 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRAFTING_FACTORY.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_MINER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NODE_MINER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_ENGINE.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STEAM_ENGINE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE.get(), (blockEntity, side) -> blockEntity.getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 	}
 }

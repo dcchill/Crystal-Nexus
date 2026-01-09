@@ -24,6 +24,8 @@ import net.crystalnexus.block.TarrockBrickWallBlock;
 import net.crystalnexus.block.TarrockBrickStairsBlock;
 import net.crystalnexus.block.TarrockBrickSlabBlock;
 import net.crystalnexus.block.TarrockBlock;
+import net.crystalnexus.block.SteamEngineUpgradeBlock;
+import net.crystalnexus.block.SteamEngineBlock;
 import net.crystalnexus.block.SteamCollectorBlock;
 import net.crystalnexus.block.SteamChamberBlock;
 import net.crystalnexus.block.SteamBlock;
@@ -244,6 +246,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> IRON_NODE = REGISTRY.register("iron_node", IronNodeBlock::new);
 	public static final DeferredBlock<Block> GOLD_NODE = REGISTRY.register("gold_node", GoldNodeBlock::new);
 	public static final DeferredBlock<Block> COPPER_NODE = REGISTRY.register("copper_node", CopperNodeBlock::new);
+	public static final DeferredBlock<Block> STEAM_ENGINE = REGISTRY.register("steam_engine", SteamEngineBlock::new);
+	public static final DeferredBlock<Block> STEAM_ENGINE_UPGRADE = REGISTRY.register("steam_engine_upgrade", SteamEngineUpgradeBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

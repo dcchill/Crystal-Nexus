@@ -376,6 +376,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> IRON_NODE = block(CrystalnexusModBlocks.IRON_NODE);
 	public static final DeferredItem<Item> GOLD_NODE = block(CrystalnexusModBlocks.GOLD_NODE);
 	public static final DeferredItem<Item> COPPER_NODE = block(CrystalnexusModBlocks.COPPER_NODE);
+	public static final DeferredItem<Item> STEAM_ENGINE = block(CrystalnexusModBlocks.STEAM_ENGINE);
+	public static final DeferredItem<Item> STEAM_ENGINE_UPGRADE = block(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE);
 
 	// Start of user code block custom items
 	// End of user code block custom items

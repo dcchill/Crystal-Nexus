@@ -2,15 +2,15 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "turbine_bottomoff",
-    "textureTop": "puretop",
-    "textureLeft": "turbine_sides",
-    "textureFront": "turbine_sides",
-    "textureRight": "turbine_sides",
-    "textureBack": "turbine_sides",
+    "texture": "purebottom",
+    "textureTop": "steam_top",
+    "textureLeft": "steam_side",
+    "textureFront": "steam_engine_mk2",
+    "textureRight": "steam_side",
+    "textureBack": "pureside",
     "renderType": 10,
     "customModelName": "Normal",
-    "rotationMode": 0,
+    "rotationMode": 1,
     "enablePitch": false,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
@@ -36,15 +36,12 @@
       }
     ],
     "customProperties": [],
-    "name": "Turbine",
+    "name": "High Pressure Steam Engine",
     "specialInformation": {
-      "fixedValue": [
-        "§5Generates FE from steam.",
-        "§6Create steam by dropping Blutonium in water, bigger stacks = more energy!"
-      ]
+      "fixedValue": []
     },
-    "hardness": 1.1,
-    "resistance": 13.0,
+    "hardness": 2.0,
+    "resistance": 15.5,
     "hasGravity": false,
     "isWaterloggable": false,
     "hasBlockItem": true,
@@ -56,13 +53,13 @@
         "value": "CUSTOM:CrystalNexusTab"
       }
     ],
-    "destroyTool": "pickaxe",
+    "destroyTool": "Not specified",
     "customDrop": {
       "value": ""
     },
     "dropAmount": 1,
     "useLootTableForDrops": false,
-    "requiresCorrectTool": true,
+    "requiresCorrectTool": false,
     "enchantPowerBonus": 0.0,
     "plantsGrowOn": false,
     "canRedstoneConnect": false,
@@ -119,23 +116,21 @@
       "fixedValue": 7.0
     },
     "hasInventory": true,
-    "guiBoundTo": "TurbineGUI",
+    "guiBoundTo": "SteamEngineGUI",
     "openGUIOnRightClick": true,
     "inventorySize": 1,
     "inventoryStackSize": 99,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,
     "inventoryOutSlotIDs": [],
-    "inventoryInSlotIDs": [
-      1
-    ],
+    "inventoryInSlotIDs": [],
     "hasEnergyStorage": true,
     "energyInitial": 0,
-    "energyCapacity": 10480,
+    "energyCapacity": 40960,
     "energyMaxReceive": 4096,
     "energyMaxExtract": 8192,
-    "isFluidTank": false,
-    "fluidCapacity": 16000,
+    "isFluidTank": true,
+    "fluidCapacity": 8000,
     "fluidRestrictions": [
       {
         "value": "CUSTOM:Steam"
@@ -145,7 +140,7 @@
       }
     ],
     "onTickUpdate": {
-      "name": "TurbineEnergy"
+      "name": "SteamEngineUpgradeOnTickUpdate"
     },
     "generateFeature": false,
     "restrictionBiomes": [],

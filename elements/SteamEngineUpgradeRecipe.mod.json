@@ -3,7 +3,7 @@
   "_type": "recipe",
   "definition": {
     "recipeType": "Crafting",
-    "recipeRetstackSize": 9,
+    "recipeRetstackSize": 1,
     "group": "",
     "unlockingItems": [],
     "cookingBookCategory": "MISC",
@@ -13,37 +13,37 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": ""
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": ""
+        "value": "CUSTOM:PolymerSheet"
       },
       {
-        "value": ""
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "CUSTOM:MachineBolt"
+        "value": "CUSTOM:PolymerSheet"
       },
       {
-        "value": "Items.IRON_INGOT"
+        "value": "CUSTOM:SteamEngine"
       },
       {
-        "value": "CUSTOM:MachineBolt"
+        "value": "CUSTOM:PolymerSheet"
       },
       {
-        "value": ""
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "TAG:c:stones"
+        "value": "CUSTOM:PolymerSheet"
       },
       {
-        "value": ""
+        "value": "CUSTOM:IronMachineBolt"
       }
     ],
     "recipeReturnStack": {
-      "value": "CUSTOM:ConveyerBelt"
+      "value": "CUSTOM:SteamEngineUpgrade"
     },
-    "name": "conveyor_belt_recipe",
+    "name": "steam_engine_upgrade_recipe",
     "namespace": "mod"
   }
 }

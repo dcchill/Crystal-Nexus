@@ -1,6 +1,5 @@
 package net.crystalnexus.world.inventory;
 
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -11,7 +10,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -25,7 +23,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.network.SteamChamberGUISlotMessage;
 import net.crystalnexus.init.CrystalnexusModMenus;
 
 import java.util.function.Supplier;
@@ -33,11 +30,11 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
-public class SteamChamberGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+public class SteamEngineGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
-			if (!this.containsKey(key) && this.size() >= 10)
+			if (!this.containsKey(key) && this.size() >= 7)
 				return null;
 			return super.put(key, value);
 		}
@@ -53,11 +50,11 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 	private Entity boundEntity = null;
 	private BlockEntity boundBlockEntity = null;
 
-	public SteamChamberGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(CrystalnexusModMenus.STEAM_CHAMBER_GUI.get(), id);
+	public SteamEngineGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+		super(CrystalnexusModMenus.STEAM_ENGINE_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(4);
+		this.internal = new ItemStackHandler(1);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -94,42 +91,10 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 26, 39) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 180, 8) {
 			private final int slot = 0;
-			private int x = SteamChamberGUIMenu.this.x;
-			private int y = SteamChamberGUIMenu.this.y;
-
-			@Override
-			public void onTake(Player entity, ItemStack stack) {
-				super.onTake(entity, stack);
-				slotChanged(0, 1, stack.getCount());
-			}
-
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return Items.WATER_BUCKET == stack.getItem();
-			}
-		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 80, 21) {
-			private final int slot = 2;
-			private int x = SteamChamberGUIMenu.this.x;
-			private int y = SteamChamberGUIMenu.this.y;
-
-			@Override
-			public void onTake(Player entity, ItemStack stack) {
-				super.onTake(entity, stack);
-				slotChanged(2, 1, stack.getCount());
-			}
-
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:energy_crystals")));
-			}
-		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
-			private final int slot = 3;
-			private int x = SteamChamberGUIMenu.this.x;
-			private int y = SteamChamberGUIMenu.this.y;
+			private int x = SteamEngineGUIMenu.this.x;
+			private int y = SteamEngineGUIMenu.this.y;
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
@@ -163,16 +128,16 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 3) {
-				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
+			if (index < 1) {
+				if (!this.moveItemStackTo(itemstack1, 1, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
-				if (index < 3 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 3 + 27, this.slots.size(), true))
+			} else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
+				if (index < 1 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 1 + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 3, 3 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, 1, 1 + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;
@@ -266,13 +231,6 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 						ihm.setStackInSlot(i, ItemStack.EMPTY);
 				}
 			}
-		}
-	}
-
-	private void slotChanged(int slotid, int ctype, int meta) {
-		if (this.world != null && this.world.isClientSide()) {
-			PacketDistributor.sendToServer(new SteamChamberGUISlotMessage(slotid, x, y, z, ctype, meta));
-			SteamChamberGUISlotMessage.handleSlotAction(entity, slotid, ctype, meta, x, y, z);
 		}
 	}
 
