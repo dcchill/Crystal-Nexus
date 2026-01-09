@@ -4,33 +4,33 @@
   "definition": {
     "category": "matter_transmutation",
     "result": {
-      "value": "CUSTOM:QuantumMiner"
+      "value": "CUSTOM:OmegaChip"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "TAG:mod:singularities"
+        "value": "CUSTOM:ReactorUpgrade"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:ConductiveAlloy"
       },
       {
-        "value": "CUSTOM:CompoundE"
+        "value": "CUSTOM:CarbonChip"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:EnergizedSilicon"
       },
       {
-        "value": "CUSTOM:OmegaChip"
+        "value": "CUSTOM:EnergySingularity"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:ConductiveAlloy"
       },
       {
-        "value": "CUSTOM:CompoundE"
+        "value": "CUSTOM:CarbonChip"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:EnergizedSilicon"
       }
     ],
     "integers": [],

@@ -2,6 +2,7 @@
   "replace": false,
   "values": [
     "crystalnexus:chlorophyte_ore",
+    "crystalnexus:ancient_debris_node",
     "crystalnexus:blutonium_ore"
   ]
 }

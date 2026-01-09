@@ -63,6 +63,7 @@
     "crystalnexus:factory_controller",
     "crystalnexus:silicon_ore",
     "crystalnexus:iron_smelter",
+    "crystalnexus:ancient_debris_node",
     "crystalnexus:ancient_crystal_ore_stone",
     "crystalnexus:chlorophyte_accelerator",
     "crystalnexus:factory_output_controller",

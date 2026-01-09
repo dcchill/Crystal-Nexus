@@ -1,0 +1,10 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "upgraded_carbon_plate_model"
+      },
+      "name": "default"
+    }
+  }
+}

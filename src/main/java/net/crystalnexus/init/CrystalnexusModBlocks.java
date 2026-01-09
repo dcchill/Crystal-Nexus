@@ -123,6 +123,7 @@ import net.crystalnexus.block.BiomaticConstructorBlock;
 import net.crystalnexus.block.BiomaticComposterBlock;
 import net.crystalnexus.block.BatteryMonitorBlock;
 import net.crystalnexus.block.BatteryBlock;
+import net.crystalnexus.block.AncientDebrisNodeBlock;
 import net.crystalnexus.block.AncientCrystalOreStoneBlock;
 import net.crystalnexus.block.AncientCrystalOreBlock;
 import net.crystalnexus.block.AdvancedConveyerBeltBlock;
@@ -248,6 +249,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> COPPER_NODE = REGISTRY.register("copper_node", CopperNodeBlock::new);
 	public static final DeferredBlock<Block> STEAM_ENGINE = REGISTRY.register("steam_engine", SteamEngineBlock::new);
 	public static final DeferredBlock<Block> STEAM_ENGINE_UPGRADE = REGISTRY.register("steam_engine_upgrade", SteamEngineUpgradeBlock::new);
+	public static final DeferredBlock<Block> ANCIENT_DEBRIS_NODE = REGISTRY.register("ancient_debris_node", AncientDebrisNodeBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

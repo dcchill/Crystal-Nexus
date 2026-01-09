@@ -5,7 +5,11 @@
     "recipeType": "Crafting",
     "recipeRetstackSize": 1,
     "group": "",
-    "unlockingItems": [],
+    "unlockingItems": [
+      {
+        "value": "CUSTOM:NetheriteScrapPellet"
+      }
+    ],
     "cookingBookCategory": "MISC",
     "xpReward": 0.0,
     "cookingTime": 200,
@@ -13,37 +17,37 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:NetheriteScrapPellet"
       },
       {
-        "value": "CUSTOM:EEMatter"
-      },
-      {
-        "value": "CUSTOM:CarbonFiber"
-      },
-      {
-        "value": "CUSTOM:SyntheticRubber"
-      },
-      {
-        "value": "CUSTOM:CompoundE"
-      },
-      {
-        "value": "CUSTOM:SyntheticRubber"
+        "value": "CUSTOM:NetheriteScrapPellet"
       },
       {
         "value": ""
       },
       {
-        "value": "Items.NETHERITE_INGOT"
+        "value": "CUSTOM:NetheriteScrapPellet"
+      },
+      {
+        "value": "CUSTOM:NetheriteScrapPellet"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
       },
       {
         "value": ""
       }
     ],
     "recipeReturnStack": {
-      "value": "CUSTOM:CompoundSword"
+      "value": "Items.NETHERITE_SCRAP"
     },
-    "name": "compound_sword_recipe",
+    "name": "netherite_scrap_recipe",
     "namespace": "mod"
   }
 }

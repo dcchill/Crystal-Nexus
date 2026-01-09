@@ -1,13 +1,19 @@
 {
   "variants": {
-    "blockstate=0": {
+    "facing=north": {
       "model": "crystalnexus:block/item_elevator"
     },
-    "blockstate=1": {
-      "model": "crystalnexus:block/item_elevator_blockstate_blockstate_0"
+    "facing=east": {
+      "model": "crystalnexus:block/item_elevator",
+      "y": 90
     },
-    "blockstate=2": {
-      "model": "crystalnexus:block/item_elevator_blockstate_blockstate_1"
+    "facing=south": {
+      "model": "crystalnexus:block/item_elevator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/item_elevator",
+      "y": 270
     }
   }
 }

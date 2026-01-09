@@ -22,9 +22,10 @@ public class CrystalnexusModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrystalnexusMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_TAB = REGISTRY.register("crystal_nexus_tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.GODLIKE_CRYSTAL.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(CrystalnexusModBlocks.COPPER_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.GOLD_NODE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.COPPER_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.ANCIENT_CRYSTAL.get());
@@ -81,6 +82,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TURBINE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.STEAM_COLLECTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.STEAM_CHAMBER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ACCEPTER.get().asItem());
@@ -231,8 +234,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
-				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE.get().asItem());
+				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
+				tabData.accept(CrystalnexusModItems.OMEGA_CHIP.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

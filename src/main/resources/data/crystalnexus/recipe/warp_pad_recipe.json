@@ -2,7 +2,7 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:compound_e"
+      "item": "crystalnexus:omega_chip"
     },
     {
       "item": "crystalnexus:carbon_fiber"

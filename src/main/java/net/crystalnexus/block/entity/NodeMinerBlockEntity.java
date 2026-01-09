@@ -124,7 +124,7 @@ public class NodeMinerBlockEntity extends RandomizableContainerBlockEntity imple
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(25600, 8192, 2048, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(25600, 16384, 8192, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

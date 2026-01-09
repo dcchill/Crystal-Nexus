@@ -7026,7 +7026,7 @@
       "name": "MatterTransmutationZeroPoint",
       "type": "jeirecipe",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "matter_transmutation_zero_point",
       "metadata": {
         "files": [
@@ -9828,18 +9828,6 @@
       "metadata": {
         "files": [
           "src/main/resources/data/crystalnexus/recipe/netherite_scrap_dust_recipe.json"
-        ]
-      }
-    },
-    {
-      "name": "DustSepCarbonNetheriteScrapDust",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "dust_sep_carbon_netherite_scrap_dust",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/dust_sep_carbon_netherite_scrap_dust.json"
         ]
       }
     },
@@ -15149,6 +15137,101 @@
         ]
       },
       "path": "~/SteamGen"
+    },
+    {
+      "name": "AncientDebrisNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ancient_debris_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/ancient_debris_node.json",
+          "src/main/resources/assets/crystalnexus/models/item/ancient_debris_node.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/ancient_debris_node.json",
+          "src/main/resources/assets/crystalnexus/models/block/ancient_debris_node.json",
+          "src/main/java/net/crystalnexus/block/AncientDebrisNodeBlock.java"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "AncientDebrisNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ancient_debris_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/ancient_debris_node_gen_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/ancient_debris_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/ancient_debris_node_gen.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NetheriteScrapPellet",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "netherite_scrap_pellet",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/NetheriteScrapPelletItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/netherite_scrap_pellet.json"
+        ]
+      }
+    },
+    {
+      "name": "ScrapPelletRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "scrap_pellet_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/scrap_pellet_recipe.json"
+        ]
+      }
+    },
+    {
+      "name": "NetheriteScrapRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "netherite_scrap_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/advancement/recipes/netherite_scrap_recipe.json",
+          "src/main/resources/data/crystalnexus/recipe/netherite_scrap_recipe.json"
+        ]
+      }
+    },
+    {
+      "name": "OmegaChip",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "omega_chip",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/OmegaChipItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/omega_chip.json"
+        ]
+      }
+    },
+    {
+      "name": "OmegaChipRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "omega_chip_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/omega_chip_recipe.json"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -15255,6 +15338,7 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:AncientDebrisNode",
       "~CUSTOM:GoldNode",
       "~CUSTOM:CopperNode",
       "~CUSTOM:IronNode",
@@ -15405,6 +15489,7 @@
       "CUSTOM:BlutoniumNugget"
     ],
     "BLOCKS:minecraft:needs_diamond_tool": [
+      "~CUSTOM:AncientDebrisNode",
       "~CUSTOM:ChlorophyteOre",
       "~CUSTOM:BlutoniumOre"
     ],
@@ -15601,9 +15686,10 @@
   },
   "tab_element_order": {
     "CUSTOM:CrystalNexusTab": [
+      "CopperNode",
       "IronNode",
       "GoldNode",
-      "CopperNode",
+      "AncientDebrisNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "RawAncientCrystal",
@@ -15660,6 +15746,8 @@
       "Turbine",
       "SteamCollector",
       "SteamChamber",
+      "SteamEngine",
+      "SteamEngineUpgrade",
       "PistonGenerator",
       "InvertPistonGenerator",
       "CrystalAccepter",
@@ -15807,8 +15895,8 @@
       "JetPack",
       "Carbon",
       "CarbonJetpack",
-      "SteamEngine",
-      "SteamEngineUpgrade"
+      "NetheriteScrapPellet",
+      "OmegaChip"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16390,7 +16478,10 @@
       "gui.crystalnexus.steam_engine_gui.tooltip_water_bucket": "Water Bucket",
       "gui.crystalnexus.steam_engine_gui.tooltip_energy_crystal": "Energy Crystal",
       "gui.crystalnexus.steam_engine_gui.label_proc_get_block_name_for_gui": "[Steam Engine]",
-      "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine"
+      "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine",
+      "block.crystalnexus.ancient_debris_node": "Ancient Debris Node",
+      "item.crystalnexus.netherite_scrap_pellet": "Netherite Scrap Pellet",
+      "item.crystalnexus.omega_chip": "Omega Chip"
     }
   },
   "metadata": {

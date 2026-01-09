@@ -2,15 +2,15 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "item_elevator_top",
-    "textureTop": "iron_top",
-    "textureLeft": "item_elevator_down",
-    "textureFront": "item_elevator_out",
-    "textureRight": "item_elevator_down",
-    "textureBack": "item_elevator_down",
-    "renderType": 10,
-    "customModelName": "Normal",
-    "rotationMode": 1,
+    "texture": "debris_node",
+    "textureTop": "",
+    "textureLeft": "",
+    "textureFront": "",
+    "textureRight": "",
+    "textureBack": "",
+    "renderType": 11,
+    "customModelName": "Single texture",
+    "rotationMode": 0,
     "enablePitch": false,
     "emissiveRendering": false,
     "displayFluidOverlay": false,
@@ -36,12 +36,12 @@
       }
     ],
     "customProperties": [],
-    "name": "Downward Item Elevator",
+    "name": "Ancient Debris Node",
     "specialInformation": {
       "fixedValue": []
     },
-    "hardness": 1.4000000000000001,
-    "resistance": 12.0,
+    "hardness": 8.0,
+    "resistance": 75.0,
     "hasGravity": false,
     "isWaterloggable": false,
     "hasBlockItem": true,
@@ -50,21 +50,21 @@
     "immuneToFire": false,
     "creativeTabs": [
       {
-        "value": "CUSTOM:CrystalNexusLogistics"
+        "value": "CUSTOM:CrystalNexusTab"
       }
     ],
-    "destroyTool": "Not specified",
+    "destroyTool": "pickaxe",
     "customDrop": {
-      "value": ""
+      "value": "Blocks.ANCIENT_DEBRIS"
     },
-    "dropAmount": 1,
+    "dropAmount": 3,
     "useLootTableForDrops": false,
-    "requiresCorrectTool": false,
+    "requiresCorrectTool": true,
     "enchantPowerBonus": 0.0,
     "plantsGrowOn": false,
     "canRedstoneConnect": false,
     "lightOpacity": 15,
-    "tickRate": 2,
+    "tickRate": 0,
     "tickRandomly": false,
     "isReplaceable": false,
     "canProvidePower": false,
@@ -89,7 +89,7 @@
     "isNotColidable": false,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "METAL"
+      "value": "STONE"
     },
     "breakSound": {
       "value": ""
@@ -108,17 +108,16 @@
     },
     "luminance": 0,
     "unbreakable": false,
-    "vanillaToolTier": "NONE",
+    "vanillaToolTier": "DIAMOND",
     "isBonemealable": false,
     "sensitiveToVibration": false,
     "vibrationalEvents": [],
     "vibrationSensitivityRadius": {
       "fixedValue": 7.0
     },
-    "hasInventory": true,
-    "guiBoundTo": "ItemElevatorGuiDown",
-    "openGUIOnRightClick": true,
-    "inventorySize": 1,
+    "hasInventory": false,
+    "openGUIOnRightClick": false,
+    "inventorySize": 9,
     "inventoryStackSize": 99,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,
@@ -132,9 +131,6 @@
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
-    "onTickUpdate": {
-      "name": "ItemElevatorDownOnTickUpdate"
-    },
     "generateFeature": false,
     "restrictionBiomes": [],
     "blocksToReplace": [

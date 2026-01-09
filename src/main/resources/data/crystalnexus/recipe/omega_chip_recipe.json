@@ -1,0 +1,33 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:reactor_upgrade"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "crystalnexus:energized_silicon"
+    },
+    {
+      "item": "crystalnexus:energy_singularity"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:carbon_chip"
+    },
+    {
+      "item": "crystalnexus:energized_silicon"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:omega_chip",
+    "count": 1
+  }
+}

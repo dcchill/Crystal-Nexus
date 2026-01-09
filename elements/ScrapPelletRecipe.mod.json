@@ -2,18 +2,21 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "dust_seperation",
+    "category": "circuit_pressing",
     "result": {
-      "value": "CUSTOM:RawCarbon"
+      "value": "CUSTOM:NetheriteScrapPellet"
     },
-    "count": 12,
+    "count": 1,
     "ingredients": [
       {
         "value": "CUSTOM:NetheriteScrapDust"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "DustSeperation"
+    "recipetype": "CircuitPressing"
   }
 }

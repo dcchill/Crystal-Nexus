@@ -71,168 +71,220 @@ public class NodeMinerOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		slotnumbercheck = 0;
-		if (1024 >= extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024, null)) {
-			if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.IRON_NODE.get()) {
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-					}
-					if (world instanceof ServerLevel _level)
-						_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+		if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.IRON_NODE.get() && 1024 <= extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024, null)) {
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 				}
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-					for (int index0 = 0; index0 < 3; index0++) {
-						if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-								|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_IRON)
-								&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = new ItemStack(Items.RAW_IRON).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-								_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-							}
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							slotnumbercheck = 1;
-							break;
-						} else {
-							slotnumbercheck = 1 + slotnumbercheck;
+				if (world instanceof ServerLevel _level)
+					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+			}
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+				for (int index0 = 0; index0 < 3; index0++) {
+					if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_IRON)
+							&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
+						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							ItemStack _setstack = new ItemStack(Items.RAW_IRON).copy();
+							_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
+							_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
 						}
-					}
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", 0);
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(1024, false);
-					}
-				}
-			} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.COPPER_NODE.get()) {
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-					}
-					if (world instanceof ServerLevel _level)
-						_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-				}
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-					for (int index1 = 0; index1 < 3; index1++) {
-						if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-								|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_COPPER)
-								&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = new ItemStack(Items.RAW_COPPER).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-								_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-							}
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							slotnumbercheck = 1;
-							break;
-						} else {
-							slotnumbercheck = 1 + slotnumbercheck;
+						if (!world.isClientSide()) {
+							BlockPos _bp = BlockPos.containing(x, y, z);
+							BlockEntity _blockEntity = world.getBlockEntity(_bp);
+							BlockState _bs = world.getBlockState(_bp);
+							if (_blockEntity != null)
+								_blockEntity.getPersistentData().putDouble("progress", 0);
+							if (world instanceof Level _level)
+								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
-					}
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", 0);
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(1024, false);
+						slotnumbercheck = 1;
+						break;
+					} else {
+						slotnumbercheck = 1 + slotnumbercheck;
 					}
 				}
-			} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.GOLD_NODE.get()) {
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-					}
-					if (world instanceof ServerLevel _level)
-						_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", 0);
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 				}
-				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-					for (int index2 = 0; index2 < 3; index2++) {
-						if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-								|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_GOLD)
-								&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = new ItemStack(Items.RAW_GOLD).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-								_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-							}
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							slotnumbercheck = 1;
-							break;
-						} else {
-							slotnumbercheck = 1 + slotnumbercheck;
+				if (world instanceof ILevelExtension _ext) {
+					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+					if (_entityStorage != null)
+						_entityStorage.extractEnergy(1024, false);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.COPPER_NODE.get() && 1024 <= extractEnergySimulate(world, BlockPos.containing(x, y, z), 1024, null)) {
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ServerLevel _level)
+					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+			}
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+				for (int index1 = 0; index1 < 3; index1++) {
+					if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_COPPER)
+							&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
+						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							ItemStack _setstack = new ItemStack(Items.RAW_COPPER).copy();
+							_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
+							_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
 						}
+						if (!world.isClientSide()) {
+							BlockPos _bp = BlockPos.containing(x, y, z);
+							BlockEntity _blockEntity = world.getBlockEntity(_bp);
+							BlockState _bs = world.getBlockState(_bp);
+							if (_blockEntity != null)
+								_blockEntity.getPersistentData().putDouble("progress", 0);
+							if (world instanceof Level _level)
+								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+						}
+						slotnumbercheck = 1;
+						break;
+					} else {
+						slotnumbercheck = 1 + slotnumbercheck;
 					}
-					if (!world.isClientSide()) {
-						BlockPos _bp = BlockPos.containing(x, y, z);
-						BlockEntity _blockEntity = world.getBlockEntity(_bp);
-						BlockState _bs = world.getBlockState(_bp);
-						if (_blockEntity != null)
-							_blockEntity.getPersistentData().putDouble("progress", 0);
-						if (world instanceof Level _level)
-							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", 0);
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ILevelExtension _ext) {
+					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+					if (_entityStorage != null)
+						_entityStorage.extractEnergy(1024, false);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.GOLD_NODE.get() && 2048 <= extractEnergySimulate(world, BlockPos.containing(x, y, z), 2048, null)) {
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ServerLevel _level)
+					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+			}
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+				for (int index2 = 0; index2 < 3; index2++) {
+					if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_GOLD)
+							&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
+						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							ItemStack _setstack = new ItemStack(Items.RAW_GOLD).copy();
+							_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
+							_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
+						}
+						if (!world.isClientSide()) {
+							BlockPos _bp = BlockPos.containing(x, y, z);
+							BlockEntity _blockEntity = world.getBlockEntity(_bp);
+							BlockState _bs = world.getBlockState(_bp);
+							if (_blockEntity != null)
+								_blockEntity.getPersistentData().putDouble("progress", 0);
+							if (world instanceof Level _level)
+								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+						}
+						slotnumbercheck = 1;
+						break;
+					} else {
+						slotnumbercheck = 1 + slotnumbercheck;
 					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(1024, false);
+				}
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", 0);
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ILevelExtension _ext) {
+					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+					if (_entityStorage != null)
+						_entityStorage.extractEnergy(2048, false);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE.get() && 8192 <= extractEnergySimulate(world, BlockPos.containing(x, y, z), 8192, null)) {
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ServerLevel _level)
+					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
+			}
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+				for (int index3 = 0; index3 < 3; index3++) {
+					if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.NETHERITE_SCRAP_DUST.get())
+							&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount) {
+						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							ItemStack _setstack = new ItemStack(CrystalnexusModItems.NETHERITE_SCRAP_DUST.get()).copy();
+							_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
+							_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
+						}
+						if (!world.isClientSide()) {
+							BlockPos _bp = BlockPos.containing(x, y, z);
+							BlockEntity _blockEntity = world.getBlockEntity(_bp);
+							BlockState _bs = world.getBlockState(_bp);
+							if (_blockEntity != null)
+								_blockEntity.getPersistentData().putDouble("progress", 0);
+							if (world instanceof Level _level)
+								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+						}
+						slotnumbercheck = 1;
+						break;
+					} else {
+						slotnumbercheck = 1 + slotnumbercheck;
 					}
+				}
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("progress", 0);
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
+				if (world instanceof ILevelExtension _ext) {
+					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+					if (_entityStorage != null)
+						_entityStorage.extractEnergy(8192, false);
 				}
 			}
 		}

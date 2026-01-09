@@ -522,5 +522,8 @@
   "gui.crystalnexus.steam_engine_gui.tooltip_water_bucket": "Water Bucket",
   "gui.crystalnexus.steam_engine_gui.tooltip_energy_crystal": "Energy Crystal",
   "gui.crystalnexus.steam_engine_gui.label_proc_get_block_name_for_gui": "[Steam Engine]",
-  "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine"
+  "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine",
+  "block.crystalnexus.ancient_debris_node": "Ancient Debris Node",
+  "item.crystalnexus.netherite_scrap_pellet": "Netherite Scrap Pellet",
+  "item.crystalnexus.omega_chip": "Omega Chip"
 }

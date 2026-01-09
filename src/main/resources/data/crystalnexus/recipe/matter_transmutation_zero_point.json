@@ -2,7 +2,7 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:copper_singularity"
+      "item": "crystalnexus:omega_chip"
     },
     {
       "item": "crystalnexus:iron_singularity"
@@ -20,7 +20,7 @@
       "item": "crystalnexus:quartz_singularity"
     },
     {
-      "item": "crystalnexus:energy_singularity"
+      "item": "crystalnexus:copper_singularity"
     },
     {
       "item": "crystalnexus:coal_singularity"

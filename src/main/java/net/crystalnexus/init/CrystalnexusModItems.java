@@ -53,8 +53,10 @@ import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
 import net.crystalnexus.item.OrangePaintballItem;
+import net.crystalnexus.item.OmegaChipItem;
 import net.crystalnexus.item.OilFuelCellItem;
 import net.crystalnexus.item.NitrileItem;
+import net.crystalnexus.item.NetheriteScrapPelletItem;
 import net.crystalnexus.item.NetheriteScrapDustItem;
 import net.crystalnexus.item.MiningLaserItem;
 import net.crystalnexus.item.MagentaPaintballItem;
@@ -378,6 +380,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> COPPER_NODE = block(CrystalnexusModBlocks.COPPER_NODE);
 	public static final DeferredItem<Item> STEAM_ENGINE = block(CrystalnexusModBlocks.STEAM_ENGINE);
 	public static final DeferredItem<Item> STEAM_ENGINE_UPGRADE = block(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE);
+	public static final DeferredItem<Item> ANCIENT_DEBRIS_NODE = block(CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE);
+	public static final DeferredItem<Item> NETHERITE_SCRAP_PELLET = REGISTRY.register("netherite_scrap_pellet", NetheriteScrapPelletItem::new);
+	public static final DeferredItem<Item> OMEGA_CHIP = REGISTRY.register("omega_chip", OmegaChipItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

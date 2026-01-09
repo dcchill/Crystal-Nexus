@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:netherite_scrap_dust"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:netherite_scrap_pellet",
+    "count": 1
+  }
+}
