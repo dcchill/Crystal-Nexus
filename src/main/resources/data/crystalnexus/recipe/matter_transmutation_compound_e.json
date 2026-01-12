@@ -2,7 +2,7 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:unstable_ee_matter"
+      "item": "crystalnexus:ee_matter"
     },
     {
       "item": "crystalnexus:carbon_fiber"
@@ -14,7 +14,7 @@
       "item": "crystalnexus:carbon_fiber"
     },
     {
-      "item": "crystalnexus:unstable_ee_matter"
+      "item": "crystalnexus:ee_matter"
     },
     {
       "item": "crystalnexus:carbon_fiber"

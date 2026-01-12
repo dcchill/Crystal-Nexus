@@ -24,14 +24,15 @@
       "value": ""
     },
     "destroyAnyBlock": false,
-    "immuneToFire": false,
+    "immuneToFire": true,
     "stayInGridWhenCrafting": false,
     "damageOnCrafting": false,
     "enableMeleeDamage": false,
     "damageVsEntity": 0.0,
     "specialInformation": {
       "fixedValue": [
-        "§6My gummy melted :("
+        "§6My gummy melted :(",
+        "§5EE-Matter waste"
       ]
     },
     "glowCondition": {
@@ -39,6 +40,9 @@
     },
     "inventorySize": 9,
     "inventoryStackSize": 99,
+    "onItemInInventoryTick": {
+      "name": "BlutoniumIngotItemInInventoryTick"
+    },
     "enableRanged": false,
     "shootConstantly": false,
     "rangedItemChargesPower": false,

@@ -4,44 +4,44 @@
   "definition": {
     "category": "matter_transmutation",
     "result": {
-      "value": "CUSTOM:OmegaChip"
+      "value": "CUSTOM:SingularityMatrix"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "Items.REDSTONE"
+        "value": "TAG:mod:singularities"
       },
       {
-        "value": "Items.GOLD_INGOT"
+        "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "CUSTOM:ConductiveAlloy"
+        "value": "CUSTOM:CompoundE"
       },
       {
-        "value": "Items.GOLD_INGOT"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:CarbonChip"
+        "value": "CUSTOM:OmegaChip"
       },
       {
-        "value": "Items.GOLD_INGOT"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:ConductiveAlloy"
+        "value": "CUSTOM:CompoundE"
       },
       {
-        "value": "Items.GOLD_INGOT"
+        "value": "CUSTOM:MachineBolt"
       }
     ],
     "integers": [
-      64,
-      16,
-      8,
-      16,
       1,
-      16,
       8,
-      16
+      2,
+      4,
+      1,
+      4,
+      2,
+      8
     ],
     "strings": [],
     "recipetype": "MatterTransmutation"

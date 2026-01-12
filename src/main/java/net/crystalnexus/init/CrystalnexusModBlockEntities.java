@@ -26,6 +26,7 @@ import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
 import net.crystalnexus.block.entity.SteamEngineBlockEntity;
 import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
 import net.crystalnexus.block.entity.SteamChamberBlockEntity;
+import net.crystalnexus.block.entity.SingularityMatrixBlockEntity;
 import net.crystalnexus.block.entity.SingularityCompressorBlockEntity;
 import net.crystalnexus.block.entity.ReactorFluidInputBlockEntity;
 import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
@@ -177,6 +178,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeMinerBlockEntity>> NODE_MINER = register("node_miner", CrystalnexusModBlocks.NODE_MINER, NodeMinerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = register("steam_engine", CrystalnexusModBlocks.STEAM_ENGINE, SteamEngineBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineUpgradeBlockEntity>> STEAM_ENGINE_UPGRADE = register("steam_engine_upgrade", CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE, SteamEngineUpgradeBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SingularityMatrixBlockEntity>> SINGULARITY_MATRIX = register("singularity_matrix", CrystalnexusModBlocks.SINGULARITY_MATRIX, SingularityMatrixBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -316,5 +318,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SINGULARITY_MATRIX.get(), SidedInvWrapper::new);
 	}
 }

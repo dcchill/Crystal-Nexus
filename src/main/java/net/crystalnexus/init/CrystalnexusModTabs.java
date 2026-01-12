@@ -126,6 +126,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.WARP_PAD.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.QUANTUM_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CARBON_GLASS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SINGULARITY_MATRIX.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ZERO_POINT.get().asItem());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
@@ -140,6 +141,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());
+				tabData.accept(CrystalnexusModItems.OMEGA_CHIP.get());
 				tabData.accept(CrystalnexusModItems.CRYSTAL_GLOOP_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.DRAGON_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.DESTABILIZED_CRYSTAL.get());
@@ -170,6 +172,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.EE_MATTER_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.FLORATHANE.get());
 				tabData.accept(CrystalnexusModItems.CONDUCTIVE_ALLOY.get());
+				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
 				tabData.accept(CrystalnexusModItems.IRON_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.DIAMOND_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.GOLD_SINGULARITY.get());
@@ -234,8 +237,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
-				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
-				tabData.accept(CrystalnexusModItems.OMEGA_CHIP.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

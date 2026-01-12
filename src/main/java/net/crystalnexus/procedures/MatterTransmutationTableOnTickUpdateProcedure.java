@@ -26,256 +26,182 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 public class MatterTransmutationTableOnTickUpdateProcedure {
+
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		double craftCount = 0;
-		double outputAmount = 0;
-		double cookTime = 0;
-		String registry_name_no_namespace = "";
-		String registry_name_nugget = "";
-		String registry_name = "";
-		outputAmount = (new Object() {
-			public ItemStack getResult() {
-				if (world instanceof Level _lvl) {
-					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-					List<MatterTransmutationRecipe> recipes = rm.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-					for (MatterTransmutationRecipe recipe : recipes) {
-						NonNullList<Ingredient> ingredients = recipe.getIngredients();
-						if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-							continue;
-						if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-							continue;
-						if (!ingredients.get(2).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-							continue;
-						if (!ingredients.get(3).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())))
-							continue;
-						if (!ingredients.get(4).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).copy())))
-							continue;
-						if (!ingredients.get(5).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())))
-							continue;
-						if (!ingredients.get(6).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())))
-							continue;
-						if (!ingredients.get(7).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy())))
-							continue;
-						return recipe.getResultItem(null);
-					}
-				}
-				return ItemStack.EMPTY;
-			}
-		}.getResult()).getCount();
-		cookTime = 100;
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+		BlockPos pos = BlockPos.containing(x, y, z);
+
+		// tweakables
+		final int cookTime = 100;
+		final int energyCost = 1024;
+		final int inputSlots = 8;
+		final int outputSlot = 8;
+
+		// Keep maxProgress updated
+		setBlockNBT(world, pos, "maxProgress", cookTime);
+
+		// Find a matching recipe ONCE (and require correct counts)
+		MatterTransmutationRecipe recipe = findMatchingRecipe(world, pos, inputSlots);
+		if (recipe == null) {
+			// no valid recipe -> reset progress slowly/instantly as you prefer
+			setBlockNBT(world, pos, "progress", 0);
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
-		if (!(Blocks.AIR.asItem() == (new Object() {
-			public ItemStack getResult() {
-				if (world instanceof Level _lvl) {
-					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-					List<MatterTransmutationRecipe> recipes = rm.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-					for (MatterTransmutationRecipe recipe : recipes) {
-						NonNullList<Ingredient> ingredients = recipe.getIngredients();
-						if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-							continue;
-						if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-							continue;
-						if (!ingredients.get(2).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-							continue;
-						if (!ingredients.get(3).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())))
-							continue;
-						if (!ingredients.get(4).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).copy())))
-							continue;
-						if (!ingredients.get(5).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())))
-							continue;
-						if (!ingredients.get(6).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())))
-							continue;
-						if (!ingredients.get(7).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy())))
-							continue;
-						return recipe.getResultItem(null);
-					}
-				}
-				return ItemStack.EMPTY;
-			}
-		}.getResult()).getItem())) {
-			if (1024 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 8).getCount() + (new Object() {
-					public ItemStack getResult() {
-						if (world instanceof Level _lvl) {
-							net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-							List<MatterTransmutationRecipe> recipes = rm.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-							for (MatterTransmutationRecipe recipe : recipes) {
-								NonNullList<Ingredient> ingredients = recipe.getIngredients();
-								if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-									continue;
-								if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-									continue;
-								if (!ingredients.get(2).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-									continue;
-								if (!ingredients.get(3).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())))
-									continue;
-								if (!ingredients.get(4).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).copy())))
-									continue;
-								if (!ingredients.get(5).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())))
-									continue;
-								if (!ingredients.get(6).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())))
-									continue;
-								if (!ingredients.get(7).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy())))
-									continue;
-								return recipe.getResultItem(null);
-							}
-						}
-						return ItemStack.EMPTY;
-					}
-				}.getResult()).getCount()) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 8).copy()).getItem() == (new Object() {
-						public ItemStack getResult() {
-							if (world instanceof Level _lvl) {
-								net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-								List<MatterTransmutationRecipe> recipes = rm.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-								for (MatterTransmutationRecipe recipe : recipes) {
-									NonNullList<Ingredient> ingredients = recipe.getIngredients();
-									if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-										continue;
-									if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-										continue;
-									if (!ingredients.get(2).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-										continue;
-									if (!ingredients.get(3).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())))
-										continue;
-									if (!ingredients.get(4).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).copy())))
-										continue;
-									if (!ingredients.get(5).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())))
-										continue;
-									if (!ingredients.get(6).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())))
-										continue;
-									if (!ingredients.get(7).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy())))
-										continue;
-									return recipe.getResultItem(null);
-								}
-							}
-							return ItemStack.EMPTY;
-						}
-					}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 8).copy()).getItem() == Blocks.AIR.asItem()) {
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							if (world instanceof ServerLevel _level)
-								_level.sendParticles(ParticleTypes.ELECTRIC_SPARK, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-						}
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = (new Object() {
-									public ItemStack getResult() {
-										if (world instanceof Level _lvl) {
-											net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-											List<MatterTransmutationRecipe> recipes = rm.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-											for (MatterTransmutationRecipe recipe : recipes) {
-												NonNullList<Ingredient> ingredients = recipe.getIngredients();
-												if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-													continue;
-												if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-													continue;
-												if (!ingredients.get(2).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-													continue;
-												if (!ingredients.get(3).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())))
-													continue;
-												if (!ingredients.get(4).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).copy())))
-													continue;
-												if (!ingredients.get(5).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())))
-													continue;
-												if (!ingredients.get(6).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())))
-													continue;
-												if (!ingredients.get(7).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy())))
-													continue;
-												return recipe.getResultItem(null);
-											}
-										}
-										return ItemStack.EMPTY;
-									}
-								}.getResult()).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 8).getCount() + outputAmount));
-								_itemHandlerModifiable.setStackInSlot(8, _setstack);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 0;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 1;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 2;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 3;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 4;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 5;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 6;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 7;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.extractEnergy(1024, false);
-							}
-						}
-					}
-				}
-			}
+
+		// Must have energy
+		if (getEnergyStored(world, pos, null) < energyCost) {
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+
+		// Output must be able to fit
+		ItemStack result = recipe.getResultItem(null);
+		if (result.isEmpty() || result.getItem() == Blocks.AIR.asItem()) {
+			setBlockNBT(world, pos, "progress", 0);
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+		}
+
+		if (!canOutputAccept(world, pos, outputSlot, result)) {
+			// can't fit output -> don't advance
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+		}
+
+		// Tick progress
+		double progress = getBlockNBTNumber(world, pos, "progress");
+		if (progress < 0) progress = 0;
+
+		if (progress < cookTime) {
+			setBlockNBT(world, pos, "progress", progress + 1);
+
+			if (world instanceof ServerLevel level)
+				level.sendParticles(ParticleTypes.ELECTRIC_SPARK, x + 0.5, y + 0.5, z + 0.5, 1, 0.25, 0, 0.25, 0);
+
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+		}
+
+		// Craft complete -> add output, consume inputs by JEI counts, drain energy, reset progress
+		addToOutput(world, pos, outputSlot, result);
+		consumeInputs(world, pos, recipe, inputSlots);
+		extractEnergy(world, pos, energyCost);
+		setBlockNBT(world, pos, "progress", 0);
+
+		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 	}
+
+	/* ------------------------------------------------------------ */
+	/* Recipe matching with counts                                  */
+	/* ------------------------------------------------------------ */
+
+	private static MatterTransmutationRecipe findMatchingRecipe(LevelAccessor world, BlockPos pos, int inputSlots) {
+		if (!(world instanceof Level lvl)) return null;
+
+		List<MatterTransmutationRecipe> recipes =
+			lvl.getRecipeManager()
+				.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE)
+				.stream()
+				.map(RecipeHolder::value)
+				.collect(Collectors.toList());
+
+		for (MatterTransmutationRecipe recipe : recipes) {
+			if (recipeMatchesWithCounts(world, pos, recipe, inputSlots)) {
+				return recipe;
+			}
+		}
+		return null;
+	}
+
+	private static boolean recipeMatchesWithCounts(LevelAccessor world, BlockPos pos, MatterTransmutationRecipe recipe, int inputSlots) {
+		NonNullList<Ingredient> ings = recipe.getIngredients();
+		if (ings == null || ings.size() < inputSlots) return false;
+
+		for (int i = 0; i < inputSlots; i++) {
+			Ingredient ing = ings.get(i);
+			ItemStack inSlot = itemFromBlockInventory(world, pos, i);
+
+			// must match ingredient
+			if (!ing.test(inSlot.copy())) return false;
+
+			// must have enough count for this slot
+			int required = recipe.getInputCount(i);
+			if (inSlot.getCount() < required) return false;
+		}
+		return true;
+	}
+
+	/* ------------------------------------------------------------ */
+	/* Output handling                                              */
+	/* ------------------------------------------------------------ */
+
+	private static boolean canOutputAccept(LevelAccessor world, BlockPos pos, int outSlot, ItemStack toAdd) {
+		ItemStack out = itemFromBlockInventory(world, pos, outSlot);
+
+		if (out.isEmpty() || out.getItem() == Blocks.AIR.asItem()) {
+			return toAdd.getCount() <= toAdd.getMaxStackSize();
+		}
+
+		// must be same item + same components (NBT)
+		if (!ItemStack.isSameItemSameComponents(out, toAdd)) return false;
+
+		return out.getCount() + toAdd.getCount() <= out.getMaxStackSize();
+	}
+
+	private static void addToOutput(LevelAccessor world, BlockPos pos, int outSlot, ItemStack toAdd) {
+		if (!(world instanceof ILevelExtension ext)) return;
+		if (!(ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv)) return;
+
+		ItemStack out = inv.getStackInSlot(outSlot).copy();
+		if (out.isEmpty() || out.getItem() == Blocks.AIR.asItem()) {
+			ItemStack set = toAdd.copy();
+			inv.setStackInSlot(outSlot, set);
+			return;
+		}
+
+		out.grow(toAdd.getCount());
+		inv.setStackInSlot(outSlot, out);
+	}
+
+	/* ------------------------------------------------------------ */
+	/* Input consumption using JEI counts                           */
+	/* ------------------------------------------------------------ */
+
+	private static void consumeInputs(LevelAccessor world, BlockPos pos, MatterTransmutationRecipe recipe, int inputSlots) {
+		if (!(world instanceof ILevelExtension ext)) return;
+		if (!(ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv)) return;
+
+		for (int i = 0; i < inputSlots; i++) {
+			int required = recipe.getInputCount(i);
+			if (required <= 0) required = 1;
+
+			ItemStack stk = inv.getStackInSlot(i).copy();
+			stk.shrink(required);
+			inv.setStackInSlot(i, stk);
+		}
+	}
+
+	/* ------------------------------------------------------------ */
+	/* Energy + NBT helpers                                         */
+	/* ------------------------------------------------------------ */
+
+	private static void extractEnergy(LevelAccessor world, BlockPos pos, int amount) {
+		if (world instanceof ILevelExtension ext) {
+			IEnergyStorage storage = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+			if (storage != null) storage.extractEnergy(amount, false);
+		}
+	}
+
+	private static void setBlockNBT(LevelAccessor world, BlockPos pos, String tag, double value) {
+		if (world.isClientSide()) return;
+
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be == null) return;
+
+		BlockState bs = world.getBlockState(pos);
+		be.getPersistentData().putDouble(tag, value);
+		if (world instanceof Level level)
+			level.sendBlockUpdated(pos, bs, bs, 3);
+	}
+
+	/* ------------------------------------------------------------ */
+	/* Your existing helpers (kept as-is)                           */
+	/* ------------------------------------------------------------ */
 
 	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
 		if (world instanceof ILevelExtension ext) {

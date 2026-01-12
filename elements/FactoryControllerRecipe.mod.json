@@ -13,31 +13,31 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
+        "value": "CUSTOM:EEBattery"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:EEBattery"
+      },
+      {
         "value": "CUSTOM:Tesseract"
       },
       {
-        "value": "CUSTOM:StableCrystal"
+        "value": "CUSTOM:OmegaChip"
       },
       {
         "value": "CUSTOM:TesseractOutput"
-      },
-      {
-        "value": "CUSTOM:PolymerSheet"
       },
       {
         "value": "CUSTOM:EnergizedSilicon"
       },
       {
-        "value": "CUSTOM:PolymerSheet"
+        "value": "CUSTOM:CarbonMachineFrame"
       },
       {
-        "value": "CUSTOM:Tesseract"
-      },
-      {
-        "value": "CUSTOM:StableCrystal"
-      },
-      {
-        "value": "CUSTOM:TesseractOutput"
+        "value": "CUSTOM:EnergizedSilicon"
       }
     ],
     "recipeReturnStack": {

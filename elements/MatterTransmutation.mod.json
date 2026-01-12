@@ -14,8 +14,8 @@
       }
     ],
     "enableCraftingtable": true,
-    "enableIntList": false,
-    "enableStringList": false,
+    "enableIntList": true,
+    "enableStringList": true,
     "title": "Matter Transmutation",
     "slotList": [
       {

@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "singularity_matrix",
+        "1": "singularity_matrix_e"
+      },
+      "name": "default"
+    }
+  }
+}

@@ -148,7 +148,7 @@
   "item.crystalnexus.carbon_fiber_rod": "Carbon Fiber Rod",
   "item.crystalnexus.compound_e": "Compound-E",
   "item.crystalnexus.compound_pickaxe": "Compound Paxel",
-  "item.crystalnexus.unstable_ee_matter.description_1": "§5Matter created from purge energy",
+  "item.crystalnexus.unstable_ee_matter.description_1": "§5EE-Matter waste",
   "item.crystalnexus.unstable_ee_matter": "Unstable EE-Matter",
   "item.crystalnexus.unstable_ee_matter.description_0": "§6My gummy melted :(",
   "block.crystalnexus.ultima_smelter": "Ultima Smelter",
@@ -525,5 +525,9 @@
   "block.crystalnexus.steam_engine_upgrade": "High Pressure Steam Engine",
   "block.crystalnexus.ancient_debris_node": "Ancient Debris Node",
   "item.crystalnexus.netherite_scrap_pellet": "Netherite Scrap Pellet",
-  "item.crystalnexus.omega_chip": "Omega Chip"
+  "item.crystalnexus.omega_chip": "Omega Chip",
+  "block.crystalnexus.singularity_matrix": "Singularity Matrix",
+  "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
+  "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
+  "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE"
 }

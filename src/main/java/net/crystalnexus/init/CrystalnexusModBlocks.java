@@ -33,6 +33,7 @@ import net.crystalnexus.block.SmoothTarrockWallBlock;
 import net.crystalnexus.block.SmoothTarrockStairsBlock;
 import net.crystalnexus.block.SmoothTarrockSlabBlock;
 import net.crystalnexus.block.SmoothTarrockBlock;
+import net.crystalnexus.block.SingularityMatrixBlock;
 import net.crystalnexus.block.SingularityCompressorBlock;
 import net.crystalnexus.block.SiliconOreBlock;
 import net.crystalnexus.block.RubberBlockBlock;
@@ -250,6 +251,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> STEAM_ENGINE = REGISTRY.register("steam_engine", SteamEngineBlock::new);
 	public static final DeferredBlock<Block> STEAM_ENGINE_UPGRADE = REGISTRY.register("steam_engine_upgrade", SteamEngineUpgradeBlock::new);
 	public static final DeferredBlock<Block> ANCIENT_DEBRIS_NODE = REGISTRY.register("ancient_debris_node", AncientDebrisNodeBlock::new);
+	public static final DeferredBlock<Block> SINGULARITY_MATRIX = REGISTRY.register("singularity_matrix", SingularityMatrixBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

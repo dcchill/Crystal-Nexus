@@ -13,31 +13,31 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:PolymerSheet"
-      },
-      {
-        "value": "CUSTOM:RegulatedCrystal"
-      },
-      {
-        "value": "CUSTOM:PolymerSheet"
+        "value": "CUSTOM:MachineBolt"
       },
       {
         "value": "Blocks.HOPPER"
       },
       {
-        "value": "TAG:c:silicon"
+        "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "Blocks.HOPPER"
+        "value": "CUSTOM:Container"
       },
       {
-        "value": "CUSTOM:PolymerSheet"
+        "value": "CUSTOM:SingularityMatrix"
       },
       {
-        "value": "CUSTOM:RegulatedCrystal"
+        "value": "CUSTOM:Container"
       },
       {
-        "value": "CUSTOM:PolymerSheet"
+        "value": "CUSTOM:CarbonFiber"
+      },
+      {
+        "value": "CUSTOM:CarbonMachineFrame"
+      },
+      {
+        "value": "CUSTOM:CarbonFiber"
       }
     ],
     "recipeReturnStack": {

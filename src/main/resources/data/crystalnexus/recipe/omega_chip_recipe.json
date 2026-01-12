@@ -2,30 +2,41 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:reactor_upgrade"
+      "item": "minecraft:redstone"
+    },
+    {
+      "item": "minecraft:gold_ingot"
     },
     {
       "item": "crystalnexus:conductive_alloy"
     },
     {
+      "item": "minecraft:gold_ingot"
+    },
+    {
       "item": "crystalnexus:carbon_chip"
     },
     {
-      "item": "crystalnexus:energized_silicon"
-    },
-    {
-      "item": "crystalnexus:energy_singularity"
+      "item": "minecraft:gold_ingot"
     },
     {
       "item": "crystalnexus:conductive_alloy"
     },
     {
-      "item": "crystalnexus:carbon_chip"
-    },
-    {
-      "item": "crystalnexus:energized_silicon"
+      "item": "minecraft:gold_ingot"
     }
   ],
+  "integers": [
+    64,
+    16,
+    8,
+    16,
+    1,
+    16,
+    8,
+    16
+  ],
+  "strings": [],
   "output": {
     "id": "crystalnexus:omega_chip",
     "count": 1

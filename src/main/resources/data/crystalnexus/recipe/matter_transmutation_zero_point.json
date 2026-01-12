@@ -2,7 +2,7 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:omega_chip"
+      "item": "crystalnexus:singularity_matrix"
     },
     {
       "item": "crystalnexus:iron_singularity"

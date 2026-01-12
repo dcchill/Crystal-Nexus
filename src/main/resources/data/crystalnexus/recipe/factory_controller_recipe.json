@@ -2,25 +2,31 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "abc",
-    "ded",
-    "abc"
+    "aba",
+    "cde",
+    "fgf"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:tesseract"
+      "item": "crystalnexus:ee_battery"
     },
     "b": {
-      "item": "crystalnexus:stable_crystal"
+      "item": "crystalnexus:carbon_fiber"
     },
     "c": {
-      "item": "crystalnexus:tesseract_output"
+      "item": "crystalnexus:tesseract"
     },
     "d": {
-      "item": "crystalnexus:polymer_sheet"
+      "item": "crystalnexus:omega_chip"
     },
     "e": {
+      "item": "crystalnexus:tesseract_output"
+    },
+    "f": {
       "item": "crystalnexus:energized_silicon"
+    },
+    "g": {
+      "item": "crystalnexus:carbon_machine_frame"
     }
   },
   "result": {

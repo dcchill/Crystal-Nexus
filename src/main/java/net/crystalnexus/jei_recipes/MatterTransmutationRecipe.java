@@ -1,11 +1,7 @@
 package net.crystalnexus.jei_recipes;
 
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,36 +12,73 @@ import net.minecraft.core.HolderLookup;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Codec;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
-	private final ItemStack output;
-	private final NonNullList<Ingredient> recipeItems;
 
-	public MatterTransmutationRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
+	private final ItemStack output;
+	private final NonNullList<Ingredient> ingredients;
+	private final List<Integer> integers;
+
+	/* ------------------------------------------------------------ */
+	/* Constructor + normalization                                 */
+	/* ------------------------------------------------------------ */
+
+	public MatterTransmutationRecipe(ItemStack output,
+	                                 NonNullList<Ingredient> ingredients,
+	                                 List<Integer> integers) {
 		this.output = output;
-		this.recipeItems = recipeItems;
+		this.ingredients = ingredients;
+
+		// Normalize integers -> same length as ingredients, default 1
+		int size = ingredients.size();
+		List<Integer> normalized = new ArrayList<>(size);
+		for (int i = 0; i < size; i++) {
+			int v = (integers != null && i < integers.size())
+				? Math.max(1, integers.get(i))
+				: 1;
+			normalized.add(v);
+		}
+		this.integers = normalized;
 	}
 
-	@Override
-	public boolean matches(RecipeInput pContainer, Level pLevel) {
-		if (pLevel.isClientSide()) {
-			return false;
-		}
-		return false;
+	/* ------------------------------------------------------------ */
+	/* Helpers                                                      */
+	/* ------------------------------------------------------------ */
+
+	public int getInputCount(int index) {
+		if (index < 0 || index >= integers.size()) return 1;
+		return Math.max(1, integers.get(index));
+	}
+
+	public List<Integer> integers() {
+		return integers;
 	}
 
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
-		return recipeItems;
+		return ingredients;
+	}
+
+	/* ------------------------------------------------------------ */
+	/* Vanilla Recipe stuff                                         */
+	/* ------------------------------------------------------------ */
+
+	@Override
+	public boolean matches(RecipeInput input, Level level) {
+		return false;
 	}
 
 	@Override
-	public ItemStack assemble(RecipeInput input, HolderLookup.Provider holder) {
-		return output;
+	public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) {
+		return output.copy();
 	}
 
 	@Override
-	public boolean canCraftInDimensions(int pWidth, int pHeight) {
+	public boolean canCraftInDimensions(int w, int h) {
 		return true;
 	}
 
@@ -64,31 +97,47 @@ public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
 		return Serializer.INSTANCE;
 	}
 
+	/* ------------------------------------------------------------ */
+	/* Type                                                         */
+	/* ------------------------------------------------------------ */
+
 	public static class Type implements RecipeType<MatterTransmutationRecipe> {
-		private Type() {}
-		public static final RecipeType<MatterTransmutationRecipe> INSTANCE = new Type();
+		public static final Type INSTANCE = new Type();
 	}
 
+	/* ------------------------------------------------------------ */
+	/* Serializer                                                   */
+	/* ------------------------------------------------------------ */
+
 	public static class Serializer implements RecipeSerializer<MatterTransmutationRecipe> {
+
 		public static final Serializer INSTANCE = new Serializer();
 
-		private static final MapCodec<MatterTransmutationRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
-			builder.group(
-				ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
-				Ingredient.CODEC.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
-					Ingredient[] arr = ingredients.toArray(Ingredient[]::new);
-					if (arr.length == 0) {
-						return DataResult.error(() -> "No ingredients found in custom recipe");
-					} else {
-						// Allow explicit EMPTY slots
-						return DataResult.success(NonNullList.of(Ingredient.EMPTY, arr));
-					}
-				}, DataResult::success).forGetter(recipe -> recipe.recipeItems)
-			).apply(builder, MatterTransmutationRecipe::new)
-		);
+		private static final MapCodec<MatterTransmutationRecipe> CODEC =
+			RecordCodecBuilder.mapCodec(builder -> builder.group(
 
-		public static final StreamCodec<RegistryFriendlyByteBuf, MatterTransmutationRecipe> STREAM_CODEC =
-				StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
+				ItemStack.STRICT_CODEC.fieldOf("output")
+					.forGetter(r -> r.output),
+
+				Ingredient.CODEC.listOf().fieldOf("ingredients")
+					.flatXmap(list -> {
+						if (list.isEmpty())
+							return DataResult.error(() -> "No ingredients");
+						return DataResult.success(
+							NonNullList.of(Ingredient.EMPTY,
+								list.toArray(Ingredient[]::new))
+						);
+					}, DataResult::success)
+					.forGetter(r -> r.ingredients),
+
+				Codec.INT.listOf()
+					.optionalFieldOf("integers", List.of())
+					.forGetter(r -> r.integers)
+
+			).apply(builder, MatterTransmutationRecipe::new));
+
+		public static final StreamCodec<RegistryFriendlyByteBuf, MatterTransmutationRecipe>
+			STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
 		@Override
 		public MapCodec<MatterTransmutationRecipe> codec() {
@@ -102,25 +151,39 @@ public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
 
 		private static MatterTransmutationRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
 			int size = buf.readVarInt();
-			NonNullList<Ingredient> inputs = NonNullList.withSize(size, Ingredient.EMPTY);
+
+			NonNullList<Ingredient> inputs =
+				NonNullList.withSize(size, Ingredient.EMPTY);
 			for (int i = 0; i < size; i++) {
-				Ingredient ing = Ingredient.CONTENTS_STREAM_CODEC.decode(buf);
-				inputs.set(i, ing);
+				inputs.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
 			}
-			ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
-			return new MatterTransmutationRecipe(result, inputs);
+
+			List<Integer> ints = new ArrayList<>(size);
+			for (int i = 0; i < size; i++) {
+				ints.add(Math.max(1, buf.readVarInt()));
+			}
+
+			ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+			return new MatterTransmutationRecipe(output, inputs, ints);
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buf, MatterTransmutationRecipe recipe) {
-			buf.writeVarInt(recipe.getIngredients().size());
-			for (Ingredient ing : recipe.getIngredients()) {
-				if (ing.isEmpty() || (ing.getItems().length > 0 && ing.getItems()[0].getItem() == Items.AIR)) {
+			buf.writeVarInt(recipe.ingredients.size());
+
+			for (Ingredient ing : recipe.ingredients) {
+				ItemStack[] items = ing.getItems();
+				if (ing.isEmpty() || items.length == 0 || items[0].getItem() == Items.AIR) {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buf, Ingredient.EMPTY);
 				} else {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ing);
 				}
 			}
-			ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItem(null));
+
+			for (int i = 0; i < recipe.ingredients.size(); i++) {
+				buf.writeVarInt(recipe.getInputCount(i));
+			}
+
+			ItemStack.STREAM_CODEC.encode(buf, recipe.output);
 		}
 	}
 }

@@ -383,6 +383,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ANCIENT_DEBRIS_NODE = block(CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE);
 	public static final DeferredItem<Item> NETHERITE_SCRAP_PELLET = REGISTRY.register("netherite_scrap_pellet", NetheriteScrapPelletItem::new);
 	public static final DeferredItem<Item> OMEGA_CHIP = REGISTRY.register("omega_chip", OmegaChipItem::new);
+	public static final DeferredItem<Item> SINGULARITY_MATRIX = block(CrystalnexusModBlocks.SINGULARITY_MATRIX, new Item.Properties().rarity(Rarity.EPIC));
 
 	// Start of user code block custom items
 	// End of user code block custom items

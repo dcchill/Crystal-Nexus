@@ -26,6 +26,19 @@
       "item": "minecraft:gold_ingot"
     }
   ],
+  "integers": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "strings": [
+    " "
+  ],
   "output": {
     "id": "minecraft:diamond",
     "count": 1

@@ -4,20 +4,26 @@
   "pattern": [
     "aba",
     "cdc",
-    "aba"
+    "efe"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:polymer_sheet"
+      "item": "crystalnexus:machine_bolt"
     },
     "b": {
-      "item": "crystalnexus:regulated_crystal"
-    },
-    "c": {
       "item": "minecraft:hopper"
     },
+    "c": {
+      "item": "crystalnexus:container"
+    },
     "d": {
-      "tag": "c:silicon"
+      "item": "crystalnexus:singularity_matrix"
+    },
+    "e": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "f": {
+      "item": "crystalnexus:carbon_machine_frame"
     }
   },
   "result": {
