@@ -27,6 +27,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import javax.annotation.Nullable;
 
 import net.crystalnexus.procedures.ConveyerBeltOnTickUpdateProcedure;
 import net.crystalnexus.procedures.ConveyerBeltNeighbourBlockChangesProcedure;
@@ -58,6 +62,14 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		return 0;
 	}
+@Override
+public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return (lvl, pos, st, be) -> {
+        if (!lvl.isClientSide && be instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt) {
+            belt.serverTick();
+        }
+    };
+}
 
 	@Override
 	public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
@@ -123,13 +135,6 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
 		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
 		ConveyerBeltNeighbourBlockChangesProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	@Override
-	public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
-		super.tick(blockstate, world, pos, random);
-		ConveyerBeltOnTickUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
-		world.scheduleTick(pos, this, 1);
 	}
 
 	@Override
