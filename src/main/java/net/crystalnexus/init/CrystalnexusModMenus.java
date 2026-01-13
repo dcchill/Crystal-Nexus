@@ -49,6 +49,7 @@ import net.crystalnexus.world.inventory.FactoryItemControllerGuiMenu;
 import net.crystalnexus.world.inventory.FactoryControllerGuiMenu;
 import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
 import net.crystalnexus.world.inventory.EnergyExtractorGUIMenu;
+import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.world.inventory.CrystalPurifierGUIMenu;
 import net.crystalnexus.world.inventory.CrusherGuiMenu;
 import net.crystalnexus.world.inventory.CraftingFactoryGUIMenu;
@@ -114,6 +115,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<NodeMinerGUIMenu>> NODE_MINER_GUI = REGISTRY.register("node_miner_gui", () -> IMenuTypeExtension.create(NodeMinerGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineGUIMenu>> STEAM_ENGINE_GUI = REGISTRY.register("steam_engine_gui", () -> IMenuTypeExtension.create(SteamEngineGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityMatrixGUIMenu>> SINGULARITY_MATRIX_GUI = REGISTRY.register("singularity_matrix_gui", () -> IMenuTypeExtension.create(SingularityMatrixGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<DepotMenu>> DEPOT = REGISTRY.register("depot", () -> IMenuTypeExtension.create(DepotMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

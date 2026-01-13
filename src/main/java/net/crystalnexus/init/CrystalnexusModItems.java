@@ -6,6 +6,8 @@ package net.crystalnexus.init;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -21,6 +23,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 
+import net.crystalnexus.item.inventory.DepotUplinkInventoryCapability;
 import net.crystalnexus.item.YellowPaintballItem;
 import net.crystalnexus.item.WhitePaintballItem;
 import net.crystalnexus.item.UnstableEEMatterItem;
@@ -95,6 +98,7 @@ import net.crystalnexus.item.EEMatterItem;
 import net.crystalnexus.item.DragonCrystalItem;
 import net.crystalnexus.item.DiamondSingularityItem;
 import net.crystalnexus.item.DestabilizedCrystalItem;
+import net.crystalnexus.item.DepotUplinkItem;
 import net.crystalnexus.item.CystalizedSwordItem;
 import net.crystalnexus.item.CystalizedShovelItem;
 import net.crystalnexus.item.CystalizedPickaxeItem;
@@ -143,6 +147,7 @@ import net.crystalnexus.item.AtomicCoffeeItem;
 import net.crystalnexus.item.AccelerationUpgradeItem;
 import net.crystalnexus.CrystalnexusMod;
 
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class CrystalnexusModItems {
 	public static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(CrystalnexusMod.MODID);
 	public static final DeferredItem<Item> CRYSTAL_EXTRACTOR = REGISTRY.register("crystal_extractor", CrystalExtractorItem::new);
@@ -383,9 +388,16 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> NETHERITE_SCRAP_PELLET = REGISTRY.register("netherite_scrap_pellet", NetheriteScrapPelletItem::new);
 	public static final DeferredItem<Item> OMEGA_CHIP = REGISTRY.register("omega_chip", OmegaChipItem::new);
 	public static final DeferredItem<Item> SINGULARITY_MATRIX = block(CrystalnexusModBlocks.SINGULARITY_MATRIX, new Item.Properties().rarity(Rarity.EPIC));
+	public static final DeferredItem<Item> DEPOT_UPLINK = REGISTRY.register("depot_uplink", DepotUplinkItem::new);
+	public static final DeferredItem<Item> DEPOT_UPLOADER = block(CrystalnexusModBlocks.DEPOT_UPLOADER);
 
 	// Start of user code block custom items
 	// End of user code block custom items
+	@SubscribeEvent
+	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new DepotUplinkInventoryCapability(stack), DEPOT_UPLINK.get());
+	}
+
 	private static DeferredItem<Item> block(DeferredHolder<Block, Block> block) {
 		return block(block, new Item.Properties());
 	}

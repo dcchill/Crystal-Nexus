@@ -62,6 +62,7 @@ import net.crystalnexus.block.entity.EnergyRefractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
+import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
 import net.crystalnexus.block.entity.CrystalSmelterBlockEntity;
 import net.crystalnexus.block.entity.CrystalPurifierBlockEntity;
 import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
@@ -176,6 +177,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = register("steam_engine", CrystalnexusModBlocks.STEAM_ENGINE, SteamEngineBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineUpgradeBlockEntity>> STEAM_ENGINE_UPGRADE = register("steam_engine_upgrade", CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE, SteamEngineUpgradeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SingularityMatrixBlockEntity>> SINGULARITY_MATRIX = register("singularity_matrix", CrystalnexusModBlocks.SINGULARITY_MATRIX, SingularityMatrixBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotUploaderBlockEntity>> DEPOT_UPLOADER = register("depot_uploader", CrystalnexusModBlocks.DEPOT_UPLOADER, DepotUploaderBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -315,5 +317,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SINGULARITY_MATRIX.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_UPLOADER.get(), SidedInvWrapper::new);
 	}
 }

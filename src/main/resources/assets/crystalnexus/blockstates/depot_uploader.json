@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/depot_uploader"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/depot_uploader",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/depot_uploader",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/depot_uploader",
+      "y": 270
+    }
+  }
+}

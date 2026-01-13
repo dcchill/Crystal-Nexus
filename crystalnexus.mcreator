@@ -15201,6 +15201,53 @@
         ]
       },
       "path": "~/singMatrix"
+    },
+    {
+      "name": "DepotUplink",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_uplink",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/inventory/DepotUplinkInventoryCapability.java",
+          "src/main/java/net/crystalnexus/item/DepotUplinkItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/depot_uplink.json"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "Depot",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "depot",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/DepotScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/DepotMenu.java"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "DepotUploader",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "depot_uploader",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/depot_uploader.json",
+          "src/main/resources/assets/crystalnexus/models/item/depot_uploader.json",
+          "src/main/java/net/crystalnexus/block/DepotUploaderBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/DepotUploaderBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/blockstates/depot_uploader.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/depot_uploader.json"
+        ]
+      },
+      "path": "~/depot"
     }
   ],
   "variable_elements": [
@@ -15866,7 +15913,9 @@
       "AtomicCoffee",
       "JetPack",
       "Carbon",
-      "CarbonJetpack"
+      "CarbonJetpack",
+      "DepotUplink",
+      "DepotUploader"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16453,7 +16502,9 @@
       "block.crystalnexus.singularity_matrix": "Singularity Matrix",
       "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
       "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
-      "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE"
+      "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
+      "item.crystalnexus.depot_uplink": "Depot Uplink",
+      "block.crystalnexus.depot_uploader": "Depot Uploader"
     }
   },
   "metadata": {
@@ -16632,6 +16683,10 @@
       },
       {
         "name": "singMatrix",
+        "children": []
+      },
+      {
+        "name": "depot",
         "children": []
       }
     ]

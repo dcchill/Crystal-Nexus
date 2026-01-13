@@ -528,5 +528,7 @@
   "block.crystalnexus.singularity_matrix": "Singularity Matrix",
   "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
   "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
-  "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE"
+  "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
+  "item.crystalnexus.depot_uplink": "Depot Uplink",
+  "block.crystalnexus.depot_uploader": "Depot Uploader"
 }

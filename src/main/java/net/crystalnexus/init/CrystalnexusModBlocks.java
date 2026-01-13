@@ -86,6 +86,7 @@ import net.crystalnexus.block.EnergyExtractorBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
 import net.crystalnexus.block.EEBatteryBlock;
 import net.crystalnexus.block.DustSeparatorBlock;
+import net.crystalnexus.block.DepotUploaderBlock;
 import net.crystalnexus.block.CrystalizedAlloyBlockBlock;
 import net.crystalnexus.block.CrystalSmelterBlock;
 import net.crystalnexus.block.CrystalPurifierBlock;
@@ -250,6 +251,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> STEAM_ENGINE_UPGRADE = REGISTRY.register("steam_engine_upgrade", SteamEngineUpgradeBlock::new);
 	public static final DeferredBlock<Block> ANCIENT_DEBRIS_NODE = REGISTRY.register("ancient_debris_node", AncientDebrisNodeBlock::new);
 	public static final DeferredBlock<Block> SINGULARITY_MATRIX = REGISTRY.register("singularity_matrix", SingularityMatrixBlock::new);
+	public static final DeferredBlock<Block> DEPOT_UPLOADER = REGISTRY.register("depot_uploader", DepotUploaderBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

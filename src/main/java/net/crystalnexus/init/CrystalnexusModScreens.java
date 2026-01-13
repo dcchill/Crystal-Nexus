@@ -42,6 +42,7 @@ import net.crystalnexus.client.gui.FactoryItemControllerGuiScreen;
 import net.crystalnexus.client.gui.FactoryControllerGuiScreen;
 import net.crystalnexus.client.gui.ExtractinatorGuiScreen;
 import net.crystalnexus.client.gui.EnergyExtractorGUIScreen;
+import net.crystalnexus.client.gui.DepotScreen;
 import net.crystalnexus.client.gui.CrystalPurifierGUIScreen;
 import net.crystalnexus.client.gui.CrusherGuiScreen;
 import net.crystalnexus.client.gui.CraftingFactoryGUIScreen;
@@ -105,6 +106,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.NODE_MINER_GUI.get(), NodeMinerGUIScreen::new);
 		event.register(CrystalnexusModMenus.STEAM_ENGINE_GUI.get(), SteamEngineGUIScreen::new);
 		event.register(CrystalnexusModMenus.SINGULARITY_MATRIX_GUI.get(), SingularityMatrixGUIScreen::new);
+		event.register(CrystalnexusModMenus.DEPOT.get(), DepotScreen::new);
 	}
 
 	public interface ScreenAccessor {
