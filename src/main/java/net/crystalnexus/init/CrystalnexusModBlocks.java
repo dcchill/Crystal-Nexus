@@ -127,7 +127,6 @@ import net.crystalnexus.block.BatteryBlock;
 import net.crystalnexus.block.AncientDebrisNodeBlock;
 import net.crystalnexus.block.AncientCrystalOreStoneBlock;
 import net.crystalnexus.block.AncientCrystalOreBlock;
-import net.crystalnexus.block.AdvancedConveyerBeltBlock;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModBlocks {
@@ -242,7 +241,6 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CONVEYER_BELT_OUTPUT = REGISTRY.register("conveyer_belt_output", ConveyerBeltOutputBlock::new);
 	public static final DeferredBlock<Block> ITEM_ELEVATOR = REGISTRY.register("item_elevator", ItemElevatorBlock::new);
 	public static final DeferredBlock<Block> ITEM_ELEVATOR_DOWN = REGISTRY.register("item_elevator_down", ItemElevatorDownBlock::new);
-	public static final DeferredBlock<Block> ADVANCED_CONVEYER_BELT = REGISTRY.register("advanced_conveyer_belt", AdvancedConveyerBeltBlock::new);
 	public static final DeferredBlock<Block> CRAFTING_FACTORY = REGISTRY.register("crafting_factory", CraftingFactoryBlock::new);
 	public static final DeferredBlock<Block> NODE_MINER = REGISTRY.register("node_miner", NodeMinerBlock::new);
 	public static final DeferredBlock<Block> IRON_NODE = REGISTRY.register("iron_node", IronNodeBlock::new);

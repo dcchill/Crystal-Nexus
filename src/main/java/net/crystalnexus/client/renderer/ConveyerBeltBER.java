@@ -36,30 +36,44 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
             ItemStack stack = be.getSegment(i);
             if (stack.isEmpty()) continue;
 
-            // 0..1 progression along belt
-            float t = (i + 0.5f) / (float) ConveyerBeltBaseBlockEntity.SEGMENTS;
+            // Smooth progression along belt (interpolated)
+            float progress = be.getRenderProgress(partialTick); // 0..1, holds at 1
+            float segPos = i + progress;
 
-            // start at block center
-            double x = 0.5;
-            double z = 0.5;
+            // EDGE-BASED mapping:
+            // t=0 near back edge, t=1 near front edge (reduces between-block jump)
+            float t = segPos / (float) ConveyerBeltBaseBlockEntity.SEGMENTS;
+            if (t < 0f) t = 0f;
+            if (t > 1f) t = 1f;
 
-            // spread along facing direction, slightly compressed so it stays within the block
-            double along = (t - 0.5) * 0.85;
-            x += facing.getStepX() * along;
-            z += facing.getStepZ() * along;
+            // Travel across most of the block (0.90 means ~0.05..0.95)
+            double travel = 0.95;
+            double along = (t - 0.5) * travel;
+
+            // start at block center then move along facing direction
+            double x = 0.5 + facing.getStepX() * along;
+            double z = 0.5 + facing.getStepZ() * along;
 
             poseStack.pushPose();
-            poseStack.translate(x, 0.40, z);
+            poseStack.translate(x, 0.55, z);
 
-            // rotate the item so it faces the belt direction a bit (optional)
-            // poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-facing.toYRot()));
+            // Lay flat
+            poseStack.mulPose(com.mojang.math.Axis.XP.rotationDegrees(90));
+
+            // Your special axis fix (kept)
+            if (facing.getAxis() == Direction.Axis.X) {
+                poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(90));
+            }
+
+            // Align with belt direction
+            poseStack.mulPose(com.mojang.math.Axis.YP.rotationDegrees(-facing.toYRot()));
 
             // scale down so it fits nicely
-            poseStack.scale(0.66f, 0.66f, 0.66f);
+            poseStack.scale(0.45f, 0.45f, 0.45f);
 
             itemRenderer.renderStatic(
                     stack,
-                    ItemDisplayContext.GROUND,
+                    ItemDisplayContext.FIXED,
                     packedLight,
                     packedOverlay,
                     poseStack,

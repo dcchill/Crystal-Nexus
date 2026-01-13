@@ -499,7 +499,6 @@
   "gui.crystalnexus.item_elevator_gui_down.label_item_elevator": "[Item Elevator]",
   "gui.crystalnexus.item_elevator_gui_down.button_toggle_direction": "Toggle Direction",
   "item_group.crystalnexus.crystal_nexus_logistics": "Crystal Nexus Logistics",
-  "block.crystalnexus.advanced_conveyer_belt": "Advanced Conveyor Belt",
   "block.crystalnexus.crafting_factory": "Crafting Factory",
   "gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter": "Crafting Filter",
   "gui.crystalnexus.crafting_factory_gui.label_crafting_factory": "[Crafting Factory]",

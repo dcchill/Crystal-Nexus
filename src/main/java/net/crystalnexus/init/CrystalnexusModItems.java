@@ -369,7 +369,6 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CONVEYER_BELT_OUTPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT);
 	public static final DeferredItem<Item> ITEM_ELEVATOR = block(CrystalnexusModBlocks.ITEM_ELEVATOR);
 	public static final DeferredItem<Item> ITEM_ELEVATOR_DOWN = block(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN);
-	public static final DeferredItem<Item> ADVANCED_CONVEYER_BELT = block(CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT);
 	public static final DeferredItem<Item> CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRAFTING_FACTORY);
 	public static final DeferredItem<Item> MACHINE_BOLT = REGISTRY.register("machine_bolt", MachineBoltItem::new);
 	public static final DeferredItem<Item> PURE_BLUTONIUM = REGISTRY.register("pure_blutonium", PureBlutoniumItem::new);

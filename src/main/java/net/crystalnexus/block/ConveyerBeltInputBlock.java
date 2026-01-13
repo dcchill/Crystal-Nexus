@@ -28,6 +28,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import javax.annotation.Nullable;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.procedures.ConveyerBeltOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
@@ -76,6 +84,39 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 					box(-1, 8, 2, 1, 16, 14));
 		};
 	}
+public net.minecraft.world.InteractionResult useWithoutItem(
+        BlockState state,
+        Level level,
+        BlockPos pos,
+        Player player,
+        BlockHitResult hit
+) {
+	    if (!player.getMainHandItem().isEmpty())
+        return InteractionResult.PASS;
+    if (level.isClientSide) return net.minecraft.world.InteractionResult.SUCCESS;
+
+    if (!(level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity be))
+        return net.minecraft.world.InteractionResult.PASS;
+
+    boolean takeAll = player.isShiftKeyDown();
+    int amount = takeAll ? 64 : 1;
+
+    for (int i = net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity.SEGMENTS - 1; i >= 0; i--) {
+        ItemStack stack = be.getItem(i);
+        if (stack.isEmpty()) continue;
+
+        ItemStack taken = stack.split(Math.min(amount, stack.getCount()));
+        be.setItem(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
+
+        if (!player.getInventory().add(taken)) {
+            player.drop(taken, false);
+        }
+
+        return net.minecraft.world.InteractionResult.CONSUME;
+    }
+
+    return net.minecraft.world.InteractionResult.PASS;
+}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

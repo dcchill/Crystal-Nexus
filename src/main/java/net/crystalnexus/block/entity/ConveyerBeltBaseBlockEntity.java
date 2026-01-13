@@ -23,19 +23,51 @@ import java.util.stream.IntStream;
 
 public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements WorldlyContainer {
 
-    public static final int SEGMENTS = 6;
+    public static final int SEGMENTS = 4;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
+	private static final int GAP_SEGMENTS = 1; // 1 = one empty slot between items (recommended)
+    // movement speed control
+    private int moveCooldown = 1;
+
+    // Lower = faster, Higher = slower (runs once every N ticks)
+    private static final int TICKS_PER_MOVE = 4;
+    private long lastMoveGameTime = 0L;
+// 0..1 progress between discrete moves (client uses this for smooth rendering)
+private float renderProgress = 0f;
+
+public float getRenderProgress(float partialTick) {
+    if (level == null) return 0f;
+    float dt = (float)((level.getGameTime() - lastMoveGameTime) + partialTick);
+    float p = dt / (float) TICKS_PER_MOVE;
+    if (p < 0f) p = 0f;
+    if (p > 1f) p = 1f;
+    return p;
+}
+
 
     protected ConveyerBeltBaseBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         for (int i = 0; i < SEGMENTS; i++) belt[i] = ItemStack.EMPTY;
     }
 
-    // ======== Belt Simulation (server) ========
-    public void serverTick() {
-        if (level == null || level.isClientSide) return;
+    // For renderer access
+    public ItemStack getSegment(int idx) {
+        if (idx < 0 || idx >= SEGMENTS) return ItemStack.EMPTY;
+        return belt[idx];
+    }
 
-        BlockState state = getBlockState();
+    // ======== Belt Simulation (server) ========
+public void serverTick() {
+    if (level == null) return;
+    if (level.isClientSide) return;
+
+    if (++moveCooldown < TICKS_PER_MOVE) return;
+    moveCooldown = 0;
+
+    // mark the moment this belt step starts (used for smooth rendering)
+    lastMoveGameTime = level.getGameTime();
+
+    BlockState state = getBlockState();
         if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return;
 
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
@@ -63,7 +95,7 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
             }
         }
 
-        // 2) try to hand off tail into the next belt (this makes belt chains work)
+        // 2) try to hand off tail into the next belt (belt chains)
         changed |= tryMoveToNextBelt(facing);
 
         // 3) output belt pulls from inventory behind into segment 0
@@ -87,6 +119,15 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     protected boolean isInputBelt() {
         return getBlockState().getBlock() == CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get();
     }
+private boolean hasGapAtHead() {
+    // Require belt[0] empty and next few segments empty too
+    for (int i = 0; i <= GAP_SEGMENTS; i++) {
+        if (i >= SEGMENTS) break;
+        if (!belt[i].isEmpty()) return false;
+    }
+    return true;
+}
+
 
     // ======== Belt -> Belt handoff ========
 
@@ -144,6 +185,8 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
         if (level == null) return false;
 
         if (!canAccept(belt[0], 1)) return false;
+		// Enforce spacing: only pull if head has a gap
+		if (!hasGapAtHead()) return false;
 
         BlockPos inputPos = worldPosition.relative(back);
 
@@ -219,11 +262,6 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
         }
     }
 
-    // ======== Container / WorldlyContainer (for MCreator compatibility) ========
-    public ItemStack getSegment(int idx) {
-    if (idx < 0 || idx >= SEGMENTS) return ItemStack.EMPTY;
-    return belt[idx];
-}
 
     @Override public int getContainerSize() { return SEGMENTS; }
 
@@ -291,15 +329,20 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     }
 
     // ======== NBT + Client Sync ========
-    @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
-        super.saveAdditional(tag, lookup);
-        CompoundTag beltTag = new CompoundTag();
-        for (int i = 0; i < SEGMENTS; i++) {
-            if (!belt[i].isEmpty()) beltTag.put("s" + i, belt[i].save(lookup));
-        }
-        tag.put("Belt", beltTag);
+@Override
+protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
+    super.saveAdditional(tag, lookup);
+
+    CompoundTag beltTag = new CompoundTag();
+    for (int i = 0; i < SEGMENTS; i++) {
+        if (!belt[i].isEmpty()) beltTag.put("s" + i, belt[i].save(lookup));
     }
+    tag.put("Belt", beltTag);
+
+    // ✅ ADD THIS LINE
+    tag.putLong("LastMove", lastMoveGameTime);
+}
+
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
@@ -315,6 +358,9 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
                 }
             }
         }
+           // ✅ ADD THIS LINE
+    if (tag.contains("LastMove"))
+        lastMoveGameTime = tag.getLong("LastMove");
     }
 
     @Override

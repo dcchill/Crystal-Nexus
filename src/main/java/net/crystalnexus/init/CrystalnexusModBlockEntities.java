@@ -87,7 +87,6 @@ import net.crystalnexus.block.entity.BiomaticConstructorBlockEntity;
 import net.crystalnexus.block.entity.BiomaticComposterBlockEntity;
 import net.crystalnexus.block.entity.BatteryMonitorBlockEntity;
 import net.crystalnexus.block.entity.BatteryBlockEntity;
-import net.crystalnexus.block.entity.AdvancedConveyerBeltBlockEntity;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -172,8 +171,6 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ConveyerBeltOutputBlockEntity>> CONVEYER_BELT_OUTPUT = register("conveyer_belt_output", CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT, ConveyerBeltOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemElevatorBlockEntity>> ITEM_ELEVATOR = register("item_elevator", CrystalnexusModBlocks.ITEM_ELEVATOR, ItemElevatorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemElevatorDownBlockEntity>> ITEM_ELEVATOR_DOWN = register("item_elevator_down", CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN, ItemElevatorDownBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AdvancedConveyerBeltBlockEntity>> ADVANCED_CONVEYER_BELT = register("advanced_conveyer_belt", CrystalnexusModBlocks.ADVANCED_CONVEYER_BELT,
-			AdvancedConveyerBeltBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CraftingFactoryBlockEntity>> CRAFTING_FACTORY = register("crafting_factory", CrystalnexusModBlocks.CRAFTING_FACTORY, CraftingFactoryBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeMinerBlockEntity>> NODE_MINER = register("node_miner", CrystalnexusModBlocks.NODE_MINER, NodeMinerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = register("steam_engine", CrystalnexusModBlocks.STEAM_ENGINE, SteamEngineBlockEntity::new);
@@ -307,7 +304,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_OUTPUT.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR_DOWN.get(), SidedInvWrapper::new);
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ADVANCED_CONVEYER_BELT.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRAFTING_FACTORY.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRAFTING_FACTORY.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_MINER.get(), SidedInvWrapper::new);

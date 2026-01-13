@@ -14456,68 +14456,6 @@
       "path": "~/conveyerBelts"
     },
     {
-      "name": "AdvancedConveyerBelt",
-      "type": "block",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "advanced_conveyer_belt",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/crystalnexus/models/item/advanced_conveyer_belt.json",
-          "src/main/java/net/crystalnexus/block/AdvancedConveyerBeltBlock.java",
-          "src/main/java/net/crystalnexus/block/entity/AdvancedConveyerBeltBlockEntity.java",
-          "src/main/resources/assets/crystalnexus/blockstates/advanced_conveyer_belt.json",
-          "src/main/resources/data/crystalnexus/loot_table/blocks/advanced_conveyer_belt.json",
-          "src/main/resources/assets/crystalnexus/models/block/advanced_conveyer_belt.json"
-        ]
-      },
-      "path": "~/conveyerBelts"
-    },
-    {
-      "name": "AdvancedConveyerBeltOnTickUpdate",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "advanced_conveyer_belt_on_tick_update",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "x",
-            "type": "number"
-          },
-          {
-            "name": "y",
-            "type": "number"
-          },
-          {
-            "name": "z",
-            "type": "number"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/AdvancedConveyerBeltOnTickUpdateProcedure.java"
-        ]
-      },
-      "path": "~/conveyerBelts"
-    },
-    {
-      "name": "AdvancedConveyorRecipe",
-      "type": "recipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "advanced_conveyor_recipe",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/advanced_conveyor_recipe.json"
-        ]
-      },
-      "path": "~/conveyerBelts"
-    },
-    {
       "name": "ConveyerBeltBlockstate",
       "type": "blockstates",
       "compiles": true,
@@ -16010,7 +15948,6 @@
       "ConveyerBelt",
       "ConveyerBeltInput",
       "ConveyerBeltOutput",
-      "AdvancedConveyerBelt",
       "ItemElevator",
       "ItemElevatorDown",
       "CrystalEnergyGuide",
@@ -16532,7 +16469,6 @@
       "gui.crystalnexus.item_elevator_gui_down.label_item_elevator": "[Item Elevator]",
       "gui.crystalnexus.item_elevator_gui_down.button_toggle_direction": "Toggle Direction",
       "item_group.crystalnexus.crystal_nexus_logistics": "Crystal Nexus Logistics",
-      "block.crystalnexus.advanced_conveyer_belt": "Advanced Conveyor Belt",
       "block.crystalnexus.crafting_factory": "Crafting Factory",
       "gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter": "Crafting Filter",
       "gui.crystalnexus.crafting_factory_gui.label_crafting_factory": "[Crafting Factory]",
