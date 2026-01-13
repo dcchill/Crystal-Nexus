@@ -30,7 +30,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.ItemElevatorGuiDownMenu;
-import net.crystalnexus.procedures.ItemElevatorDownOnTickUpdateProcedure;
+import net.crystalnexus.procedures.ItemElevatorOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.ItemElevatorDownBlockEntity;
 
 import io.netty.buffer.Unpooled;
@@ -76,7 +76,7 @@ public class ItemElevatorDownBlock extends Block implements EntityBlock {
 	@Override
 	public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
 		super.tick(blockstate, world, pos, random);
-		ItemElevatorDownOnTickUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+		ItemElevatorOnTickUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
 		world.scheduleTick(pos, this, 2);
 	}
 

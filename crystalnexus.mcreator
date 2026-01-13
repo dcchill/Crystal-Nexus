@@ -14269,7 +14269,7 @@
       "name": "ItemElevatorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "item_elevator_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -14399,37 +14399,6 @@
       }
     },
     {
-      "name": "ItemElevatorDownOnTickUpdate",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "item_elevator_down_on_tick_update",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "x",
-            "type": "number"
-          },
-          {
-            "name": "y",
-            "type": "number"
-          },
-          {
-            "name": "z",
-            "type": "number"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/ItemElevatorDownOnTickUpdateProcedure.java"
-        ]
-      },
-      "path": "~/conveyerBelts"
-    },
-    {
       "name": "DownwardItemElevatorRecipe",
       "type": "recipe",
       "compiles": true,
@@ -14496,20 +14465,6 @@
         ],
         "files": [
           "src/main/java/net/crystalnexus/procedures/ConveyerBeltNeighbourBlockChangesProcedure.java"
-        ]
-      },
-      "path": "~/conveyerBelts"
-    },
-    {
-      "name": "AConveyerBeltBlockstate",
-      "type": "blockstates",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "a_conveyer_belt_blockstate",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/crystalnexus/models/block/a_conveyer_belt_blockstate_blockstate_1.json",
-          "src/main/resources/assets/crystalnexus/models/block/a_conveyer_belt_blockstate_blockstate_0.json"
         ]
       },
       "path": "~/conveyerBelts"

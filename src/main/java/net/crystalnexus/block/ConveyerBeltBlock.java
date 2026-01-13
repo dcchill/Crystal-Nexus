@@ -154,9 +154,11 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 }
 
 	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-		return super.getStateForPlacement(context).setValue(FACING, context.getHorizontalDirection().getOpposite());
-	}
+public BlockState getStateForPlacement(BlockPlaceContext context) {
+    return this.defaultBlockState()
+        .setValue(FACING, context.getHorizontalDirection());
+}
+
 
 	public BlockState rotate(BlockState state, Rotation rot) {
 		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));

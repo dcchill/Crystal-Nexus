@@ -133,7 +133,7 @@
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
     "onTickUpdate": {
-      "name": "ItemElevatorDownOnTickUpdate"
+      "name": "ItemElevatorOnTickUpdate"
     },
     "generateFeature": false,
     "restrictionBiomes": [],
