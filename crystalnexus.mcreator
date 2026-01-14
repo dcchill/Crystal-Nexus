@@ -15248,6 +15248,111 @@
         ]
       },
       "path": "~/depot"
+    },
+    {
+      "name": "DepotUplinkRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_uplink_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/depot_uplink_recipe.json"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "DepotDownloader",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_downloader",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/depot_downloader.json",
+          "src/main/java/net/crystalnexus/block/entity/DepotDownloaderBlockEntity.java",
+          "src/main/java/net/crystalnexus/block/DepotDownloaderBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/depot_downloader.json",
+          "src/main/resources/assets/crystalnexus/models/item/depot_downloader.json",
+          "src/main/resources/assets/crystalnexus/blockstates/depot_downloader.json"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "HyperMachineFrame",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hyper_machine_frame",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/hyper_machine_frame.json",
+          "src/main/resources/assets/crystalnexus/blockstates/hyper_machine_frame.json",
+          "src/main/resources/assets/crystalnexus/models/block/hyper_machine_frame.json",
+          "src/main/java/net/crystalnexus/block/HyperMachineFrameBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/hyper_machine_frame.json"
+        ]
+      },
+      "path": "~/hyperframe"
+    },
+    {
+      "name": "HyperMachineFrameRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hyper_machine_frame_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/hyper_machine_frame_recipe.json"
+        ]
+      },
+      "path": "~/hyperframe"
+    },
+    {
+      "name": "DepotDownloaderRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_downloader_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/depot_downloader_recipe.json"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "DepotUploaderRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_uploader_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/depot_uploader_recipe.json"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "EnergyCable",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "energy_cable",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/entity/EnergyCableBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/energy_cable.json",
+          "src/main/resources/assets/crystalnexus/models/item/energy_cable.json",
+          "src/main/resources/assets/crystalnexus/blockstates/energy_cable.json",
+          "src/main/resources/assets/crystalnexus/models/block/energy_cable.json",
+          "src/main/java/net/crystalnexus/block/EnergyCableBlock.java"
+        ]
+      },
+      "path": "~/cables"
     }
   ],
   "variable_elements": [
@@ -15354,6 +15459,8 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:HyperMachineFrame",
+      "~CUSTOM:DepotDownloader",
       "~CUSTOM:AncientDebrisNode",
       "~CUSTOM:GoldNode",
       "~CUSTOM:CopperNode",
@@ -15465,6 +15572,8 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:HyperMachineFrame",
+      "~CUSTOM:DepotDownloader",
       "~CUSTOM:GoldNode",
       "~CUSTOM:TarrockButton",
       "~CUSTOM:SmoothTarrockWall",
@@ -15915,7 +16024,9 @@
       "Carbon",
       "CarbonJetpack",
       "DepotUplink",
-      "DepotUploader"
+      "DepotUploader",
+      "DepotDownloader",
+      "HyperMachineFrame"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16310,7 +16421,7 @@
       "item.crystalnexus.energy_singularity": "Energy Singularity",
       "item.crystalnexus.florathane.description_0": "§5Powerful Biofuel",
       "jei.crystalnexus.ee_matter_fe": "§fCreated from §a10,240,000 FE",
-      "jei.crystalnexus.energy_singularity_fe": "§fCreated from §a106,168,320,000 FE §f(§310368x EE Matter§f)",
+      "jei.crystalnexus.energy_singularity_fe": "§fCreated from §a17,694,720,000 FE §f(§31728x EE Matter§f)",
       "block.crystalnexus.raw_crystal_block_slab": "Ancient Crystal Slab",
       "block.crystalnexus.raw_crystal_block_stairs": "Ancient Crystal Stairs",
       "block.crystalnexus.biomatic_composter": "Biomatic Composter",
@@ -16503,8 +16614,11 @@
       "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
       "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
       "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
-      "item.crystalnexus.depot_uplink": "Depot Uplink",
-      "block.crystalnexus.depot_uploader": "Depot Uploader"
+      "item.crystalnexus.depot_uplink": "Dimensional Depot Uplink",
+      "block.crystalnexus.depot_uploader": "Dimensional Depot Uploader",
+      "block.crystalnexus.depot_downloader": "Dimensional Depot Downloader",
+      "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
+      "block.crystalnexus.energy_cable": "Energy Cable"
     }
   },
   "metadata": {
@@ -16687,6 +16801,14 @@
       },
       {
         "name": "depot",
+        "children": []
+      },
+      {
+        "name": "hyperframe",
+        "children": []
+      },
+      {
+        "name": "cables",
         "children": []
       }
     ]

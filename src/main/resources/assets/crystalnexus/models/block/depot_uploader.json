@@ -1,6 +1,10 @@
 {
-  "parent": "minecraft:block/cube_all",
+  "parent": "crystalnexus:custom/d_depot",
   "textures": {
-    "all": "crystalnexus:block/container_top"
-  }
+    "all": "crystalnexus:block/invertedframe",
+    "particle": "crystalnexus:block/invertedframe",
+    "0": "crystalnexus:block/d_depot",
+    "1": "crystalnexus:block/d_depot_e"
+  },
+  "render_type": "translucent"
 }

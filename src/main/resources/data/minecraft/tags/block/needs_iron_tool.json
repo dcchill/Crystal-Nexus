@@ -15,11 +15,13 @@
     "crystalnexus:gold_node",
     "crystalnexus:smooth_tarrock_slab",
     "crystalnexus:smooth_tarrock",
+    "crystalnexus:depot_downloader",
     "crystalnexus:silicon_ore",
     "crystalnexus:tarrock_bricks",
     "crystalnexus:ancient_crystal_ore_stone",
     "crystalnexus:tarrock_brick_stairs",
     "crystalnexus:tarrock_brick_slab",
+    "crystalnexus:hyper_machine_frame",
     "crystalnexus:tarrock_slab"
   ]
 }

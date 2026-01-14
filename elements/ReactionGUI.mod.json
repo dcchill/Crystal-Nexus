@@ -99,7 +99,7 @@
         "type": "inputslot",
         "data": {
           "inputLimit": {
-            "value": "CUSTOM:AccelerationUpgrade"
+            "value": "TAG:mod:machine_upgrades"
           },
           "disablePlacement": {
             "fixedValue": false

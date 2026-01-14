@@ -29,7 +29,7 @@ public class DepotUplinkItem extends Item {
 			serverPlayer.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Depot Uplink");
+					return Component.literal("Dimensional Depot Uplink");
 				}
 
 				@Override

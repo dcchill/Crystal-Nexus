@@ -49,7 +49,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 				BlockEntity _blockEntity = world.getBlockEntity(_bp);
 				BlockState _bs = world.getBlockState(_bp);
 				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 100);
+					_blockEntity.getPersistentData().putDouble("maxProgress", 25);
 				if (world instanceof Level _level)
 					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 			}
@@ -59,7 +59,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 				BlockEntity _blockEntity = world.getBlockEntity(_bp);
 				BlockState _bs = world.getBlockState(_bp);
 				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 50);
+					_blockEntity.getPersistentData().putDouble("maxProgress", 5);
 				if (world instanceof Level _level)
 					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 			}
@@ -69,7 +69,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 				BlockEntity _blockEntity = world.getBlockEntity(_bp);
 				BlockState _bs = world.getBlockState(_bp);
 				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 150);
+					_blockEntity.getPersistentData().putDouble("maxProgress", 50);
 				if (world instanceof Level _level)
 					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 			}

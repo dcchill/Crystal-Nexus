@@ -1,0 +1,44 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:machine_bolt"
+    },
+    {
+      "item": "crystalnexus:pure_blutonium"
+    },
+    {
+      "item": "crystalnexus:machine_bolt"
+    },
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:machine_bolt"
+    },
+    {
+      "item": "crystalnexus:pure_blutonium"
+    },
+    {
+      "item": "crystalnexus:machine_bolt"
+    }
+  ],
+  "integers": [
+    1,
+    4,
+    2,
+    4,
+    1,
+    4,
+    2,
+    4
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:hyper_machine_frame",
+    "count": 1
+  }
+}

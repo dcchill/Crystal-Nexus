@@ -73,6 +73,7 @@ import net.crystalnexus.block.InvertiumMachineFrameBlock;
 import net.crystalnexus.block.InvertiumBlockBlock;
 import net.crystalnexus.block.InverterBlock;
 import net.crystalnexus.block.InvertPistonGeneratorBlock;
+import net.crystalnexus.block.HyperMachineFrameBlock;
 import net.crystalnexus.block.GrowthChamberOffBlock;
 import net.crystalnexus.block.GoldNodeBlock;
 import net.crystalnexus.block.GasolineBlock;
@@ -83,10 +84,12 @@ import net.crystalnexus.block.ExtractinatorBlock;
 import net.crystalnexus.block.EnergySplitterBlock;
 import net.crystalnexus.block.EnergyRefractorBlock;
 import net.crystalnexus.block.EnergyExtractorBlock;
+import net.crystalnexus.block.EnergyCableBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
 import net.crystalnexus.block.EEBatteryBlock;
 import net.crystalnexus.block.DustSeparatorBlock;
 import net.crystalnexus.block.DepotUploaderBlock;
+import net.crystalnexus.block.DepotDownloaderBlock;
 import net.crystalnexus.block.CrystalizedAlloyBlockBlock;
 import net.crystalnexus.block.CrystalSmelterBlock;
 import net.crystalnexus.block.CrystalPurifierBlock;
@@ -252,6 +255,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ANCIENT_DEBRIS_NODE = REGISTRY.register("ancient_debris_node", AncientDebrisNodeBlock::new);
 	public static final DeferredBlock<Block> SINGULARITY_MATRIX = REGISTRY.register("singularity_matrix", SingularityMatrixBlock::new);
 	public static final DeferredBlock<Block> DEPOT_UPLOADER = REGISTRY.register("depot_uploader", DepotUploaderBlock::new);
+	public static final DeferredBlock<Block> DEPOT_DOWNLOADER = REGISTRY.register("depot_downloader", DepotDownloaderBlock::new);
+	public static final DeferredBlock<Block> HYPER_MACHINE_FRAME = REGISTRY.register("hyper_machine_frame", HyperMachineFrameBlock::new);
+	public static final DeferredBlock<Block> ENERGY_CABLE = REGISTRY.register("energy_cable", EnergyCableBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

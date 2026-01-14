@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "b": {
+      "item": "crystalnexus:depot_downloader"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:depot_uplink",
+    "count": 1
+  }
+}

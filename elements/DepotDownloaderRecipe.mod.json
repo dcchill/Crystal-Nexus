@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": "CUSTOM:LinkCard"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": "CUSTOM:HyperMachineFrame"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      },
+      {
+        "value": "CUSTOM:Container"
+      },
+      {
+        "value": "CUSTOM:SyntheticRubber"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:DepotDownloader"
+    },
+    "name": "depot_downloader_recipe",
+    "namespace": "mod"
+  }
+}

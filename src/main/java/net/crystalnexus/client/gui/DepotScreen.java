@@ -19,6 +19,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.lwjgl.glfw.GLFW;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -42,6 +43,8 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     private static final int ROW_H = 20;
     private static final int LIST_ROWS = 10;
     private static final int LIST_W = 214;
+	private static final int HEADER_H = 44;  
+	private static final int FOOTER_H = 18;   
 
     // Scrollbar
     private static final int SCROLL_W = 6;
@@ -51,7 +54,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     public DepotScreen(DepotMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
         this.imageWidth = 232;
-        this.imageHeight = 288;
+        this.imageHeight = PAD + HEADER_H + (LIST_ROWS * ROW_H) + FOOTER_H + PAD;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
 		this.clearWidgets();
 		
 		this.leftPos = (this.width - this.imageWidth) / 2;
- 		this.topPos  = (this.height - this.imageHeight) / 2;
+		this.topPos  = (this.height - this.imageHeight) / 2;
         this.searchBox = new EditBox(this.font,
                 leftPos + PAD, topPos + PAD + 12,
                 160, 16,
@@ -86,7 +89,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
         super.containerTick();
 
         // Don’t spam while typing
-        if (searchBox != null && searchBox.isFocused()) return;
+
 
         // Light polling so uploader changes show up
         refreshTicks++;
@@ -97,23 +100,37 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (this.searchBox != null && this.searchBox.isFocused()) {
-            // Enter = apply search (reset scroll/page)
-            if (keyCode == 257 || keyCode == 335) {
-                this.page = 0;
-                this.scrollRow = 0;
-                requestPage();
-                return true;
-            }
+public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    if (this.searchBox != null && this.searchBox.isFocused()) {
+
+        // Block inventory-close key while typing
+        if (keyCode == GLFW.GLFW_KEY_E) {
+            return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+
+        // (Optional) ESC unfocus instead of closing the menu
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            this.searchBox.setFocused(false);
+            return true;
+        }
+
+        // Enter applies search
+        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+            page = 0;
+            scrollRow = 0;
+            requestPage();
+            return true;
+        }
     }
+
+    return super.keyPressed(keyCode, scanCode, modifiers);
+}
+
 
 @Override
 public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
     int listX = leftPos + PAD;
-    int listY = topPos + PAD + 60;
+    int listY = topPos + PAD + HEADER_H; 
 
     if (mouseX >= listX && mouseX <= listX + LIST_W + SCROLL_W
             && mouseY >= listY && mouseY <= listY + (LIST_ROWS * ROW_H)) {
@@ -166,7 +183,7 @@ public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int listX = leftPos + PAD;
-        int listY = topPos + PAD + 60;
+        int listY = topPos + PAD + HEADER_H; 
 
         if (mouseX >= listX && mouseX <= listX + LIST_W
                 && mouseY >= listY && mouseY <= listY + (LIST_ROWS * ROW_H)) {
@@ -217,7 +234,7 @@ if (idx < 0 || idx >= entries.size()) return true;
         g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xCC101010);
 
         int listX = leftPos + PAD;
-        int listY = topPos + PAD + 60;
+        int listY = topPos + PAD + HEADER_H; 
 
         // List background
         g.fill(listX, listY, listX + LIST_W, listY + (LIST_ROWS * ROW_H), 0xAA000000);
@@ -279,8 +296,9 @@ protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
     g.drawString(font, this.title, PAD, 4, 0xFFFFFF);
 
     // Put helper line under the list area
-    int helperY = PAD + 60 + (LIST_ROWS * ROW_H) + 6;
-    g.drawString(font, Component.literal("Click:1  Shift:64  Ctrl:All"), PAD, helperY, 0x888888);
+    int listY = PAD + HEADER_H;
+int helperY = listY + (LIST_ROWS * ROW_H) + 4;
+g.drawString(font, Component.literal("Click:1  Shift:64  Ctrl:All"), PAD, helperY, 0x888888);
 }
 
 

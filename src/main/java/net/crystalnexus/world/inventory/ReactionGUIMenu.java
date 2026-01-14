@@ -17,12 +17,13 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModMenus;
-import net.crystalnexus.init.CrystalnexusModItems;
 
 import java.util.function.Supplier;
 import java.util.Map;
@@ -102,7 +103,7 @@ public class ReactionGUIMenu extends AbstractContainerMenu implements Crystalnex
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem();
+				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
 			}
 		}));
 		for (int si = 0; si < 3; ++si)

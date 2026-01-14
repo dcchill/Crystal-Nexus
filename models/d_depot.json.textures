@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "d_depot",
+        "1": "d_depot_e"
+      },
+      "name": "default"
+    }
+  }
+}

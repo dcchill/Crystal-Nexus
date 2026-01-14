@@ -336,7 +336,7 @@
   "item.crystalnexus.energy_singularity": "Energy Singularity",
   "item.crystalnexus.florathane.description_0": "§5Powerful Biofuel",
   "jei.crystalnexus.ee_matter_fe": "§fCreated from §a10,240,000 FE",
-  "jei.crystalnexus.energy_singularity_fe": "§fCreated from §a106,168,320,000 FE §f(§310368x EE Matter§f)",
+  "jei.crystalnexus.energy_singularity_fe": "§fCreated from §a17,694,720,000 FE §f(§31728x EE Matter§f)",
   "block.crystalnexus.raw_crystal_block_slab": "Ancient Crystal Slab",
   "block.crystalnexus.raw_crystal_block_stairs": "Ancient Crystal Stairs",
   "block.crystalnexus.biomatic_composter": "Biomatic Composter",
@@ -529,6 +529,9 @@
   "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
   "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
   "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
-  "item.crystalnexus.depot_uplink": "Depot Uplink",
-  "block.crystalnexus.depot_uploader": "Depot Uploader"
+  "item.crystalnexus.depot_uplink": "Dimensional Depot Uplink",
+  "block.crystalnexus.depot_uploader": "Dimensional Depot Uploader",
+  "block.crystalnexus.depot_downloader": "Dimensional Depot Downloader",
+  "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
+  "block.crystalnexus.energy_cable": "Energy Cable"
 }

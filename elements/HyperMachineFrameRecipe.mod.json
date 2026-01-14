@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:HyperMachineFrame"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:CompoundE"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": "CUSTOM:PureBlutonium"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": "CUSTOM:CompoundE"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": "CUSTOM:PureBlutonium"
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      }
+    ],
+    "integers": [
+      1,
+      4,
+      2,
+      4,
+      1,
+      4,
+      2,
+      4
+    ],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

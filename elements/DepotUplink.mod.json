@@ -2,13 +2,13 @@
   "_fv": 79,
   "_type": "item",
   "definition": {
-    "renderType": 0,
-    "texture": "depot_remot",
-    "customModelName": "Normal",
+    "renderType": 1,
+    "texture": "invertium_crystal",
+    "customModelName": "d_remote:default",
     "guiTexture": "",
     "customProperties": {},
     "states": [],
-    "name": "Depot Uplink",
+    "name": "Dimensional Depot Uplink",
     "rarity": "COMMON",
     "creativeTabs": [
       {

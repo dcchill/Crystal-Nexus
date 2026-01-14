@@ -21,6 +21,7 @@ public class DepotUploaderBlock extends Block implements EntityBlock {
     public DepotUploaderBlock() {
         super(BlockBehaviour.Properties.of()
                 .strength(2.0f, 6.0f)
+                .noOcclusion()
         );
     }
 

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:singularity_matrix"
+    },
+    "c": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "d": {
+      "item": "crystalnexus:hyper_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:container"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:depot_uploader",
+    "count": 1
+  }
+}

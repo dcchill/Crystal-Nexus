@@ -8,7 +8,13 @@
       "item": "crystalnexus:machine_bolt"
     },
     {
-      "item": "crystalnexus:compound_e"
+      "item": "crystalnexus:omega_chip"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    {
+      "item": "crystalnexus:hyper_machine_frame"
     },
     {
       "item": "crystalnexus:carbon_fiber_rod"
@@ -17,23 +23,17 @@
       "item": "crystalnexus:omega_chip"
     },
     {
-      "item": "crystalnexus:carbon_fiber_rod"
-    },
-    {
-      "item": "crystalnexus:compound_e"
-    },
-    {
       "item": "crystalnexus:machine_bolt"
     }
   ],
   "integers": [
     1,
     8,
-    2,
+    1,
     4,
     1,
     4,
-    2,
+    1,
     8
   ],
   "strings": [],

@@ -7,6 +7,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.registries.BuiltInRegistries;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +23,7 @@ public class DepotSavedData extends SavedData {
     private final Object2LongMap<ResourceLocation> counts = new Object2LongOpenHashMap<>();
 
     public record Entry(ResourceLocation itemId, long count) {}
+    private static final Map<ResourceLocation, String> SEARCH_CACHE = new ConcurrentHashMap<>();
 
     public static DepotSavedData get(ServerLevel level) {
         return level.getDataStorage().computeIfAbsent(
@@ -43,7 +48,20 @@ public class DepotSavedData extends SavedData {
         counts.object2LongEntrySet().forEach(e -> items.putLong(e.getKey().toString(), e.getLongValue()));
         tag.put("items", items);
         return tag;
-    }
+    } 
+
+    private static String searchKey(ResourceLocation id) {
+    return SEARCH_CACHE.computeIfAbsent(id, key -> {
+        var item = BuiltInRegistries.ITEM.get(key);
+        if (item == null) return (key.getNamespace() + " " + key.getPath()).toLowerCase(Locale.ROOT);
+
+        // Display name is language-dependent; that's fine for "search by name"
+        String display = new ItemStack(item).getHoverName().getString();
+
+        // Include namespace for mod searching and registry path as fallback
+        return (display + " " + key.getNamespace() + " " + key.getPath()).toLowerCase(Locale.ROOT);
+    });
+}
 
     public long getCount(ResourceLocation itemId) {
         return counts.getLong(itemId);
@@ -69,25 +87,58 @@ public class DepotSavedData extends SavedData {
         return take;
     }
 
-    public List<Entry> page(String search, int page, int pageSize) {
-        String s = (search == null ? "" : search).toLowerCase(Locale.ROOT);
+public List<Entry> page(String search, int page, int pageSize) {
+    String raw = (search == null ? "" : search).trim().toLowerCase(Locale.ROOT);
 
-        List<Entry> all = new ArrayList<>();
-        counts.object2LongEntrySet().forEach(e -> {
-            if (e.getLongValue() <= 0) return;
-            String idStr = e.getKey().toString().toLowerCase(Locale.ROOT);
-            if (idStr.contains(s)) all.add(new Entry(e.getKey(), e.getLongValue()));
-        });
+    // Support "@modid" filters (can be combined with text: "@minecraft stone")
+    String modFilter = null;
+    String textFilter = raw;
 
-        all.sort(Comparator
-            .comparingLong(DepotSavedData.Entry::count).reversed()
-            .thenComparing(e -> e.itemId().toString()));
-
-
-        int start = Math.max(0, page) * pageSize;
-        if (start >= all.size()) return List.of();
-
-        int end = Math.min(all.size(), start + pageSize);
-        return all.subList(start, end);
+    if (raw.contains("@")) {
+        String[] parts = raw.split("\\s+");
+        StringBuilder rest = new StringBuilder();
+        for (String p : parts) {
+            if (p.startsWith("@") && p.length() > 1 && modFilter == null) {
+                modFilter = p.substring(1);
+            } else if (!p.isBlank()) {
+                if (rest.length() > 0) rest.append(' ');
+                rest.append(p);
+            }
+        }
+        textFilter = rest.toString();
     }
+
+    List<Entry> all = new ArrayList<>();
+
+    // ✅ No lambda: avoids "effectively final" headaches
+    for (var e : counts.object2LongEntrySet()) {
+        long count = e.getLongValue();
+        if (count <= 0) continue;
+
+        ResourceLocation id = e.getKey();
+
+        if (modFilter != null && !id.getNamespace().toLowerCase(Locale.ROOT).contains(modFilter)) {
+            continue;
+        }
+
+        if (!textFilter.isEmpty()) {
+            String key = searchKey(id); // display + namespace + path
+            if (!key.contains(textFilter)) continue;
+        }
+
+        all.add(new Entry(id, count));
+    }
+
+    // Sort by amount desc, then stable by id
+    all.sort(Comparator
+            .comparingLong(DepotSavedData.Entry::count).reversed()
+            .thenComparing(a -> a.itemId().toString()));
+
+    int start = Math.max(0, page) * pageSize;
+    if (start >= all.size()) return List.of();
+
+    int end = Math.min(all.size(), start + pageSize);
+    return all.subList(start, end);
+}
+
 }

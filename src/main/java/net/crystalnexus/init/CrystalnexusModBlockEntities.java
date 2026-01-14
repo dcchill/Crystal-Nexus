@@ -60,9 +60,11 @@ import net.crystalnexus.block.entity.ExtractinatorBlockEntity;
 import net.crystalnexus.block.entity.EnergySplitterBlockEntity;
 import net.crystalnexus.block.entity.EnergyRefractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
+import net.crystalnexus.block.entity.EnergyCableBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
 import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
+import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
 import net.crystalnexus.block.entity.CrystalSmelterBlockEntity;
 import net.crystalnexus.block.entity.CrystalPurifierBlockEntity;
 import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
@@ -178,6 +180,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineUpgradeBlockEntity>> STEAM_ENGINE_UPGRADE = register("steam_engine_upgrade", CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE, SteamEngineUpgradeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SingularityMatrixBlockEntity>> SINGULARITY_MATRIX = register("singularity_matrix", CrystalnexusModBlocks.SINGULARITY_MATRIX, SingularityMatrixBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotUploaderBlockEntity>> DEPOT_UPLOADER = register("depot_uploader", CrystalnexusModBlocks.DEPOT_UPLOADER, DepotUploaderBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotDownloaderBlockEntity>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE = register("energy_cable", CrystalnexusModBlocks.ENERGY_CABLE, EnergyCableBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -318,5 +322,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SINGULARITY_MATRIX.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_UPLOADER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_DOWNLOADER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

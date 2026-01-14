@@ -1,6 +1,7 @@
 {
-  "parent": "item/generated",
+  "parent": "crystalnexus:custom/d_remote",
   "textures": {
-    "layer0": "crystalnexus:item/depot_remot"
+    "0": "crystalnexus:block/d_remote_texture",
+    "particle": "crystalnexus:item/invertium_crystal"
   }
 }

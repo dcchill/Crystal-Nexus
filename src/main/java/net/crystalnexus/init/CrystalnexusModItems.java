@@ -390,6 +390,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> SINGULARITY_MATRIX = block(CrystalnexusModBlocks.SINGULARITY_MATRIX, new Item.Properties().rarity(Rarity.EPIC));
 	public static final DeferredItem<Item> DEPOT_UPLINK = REGISTRY.register("depot_uplink", DepotUplinkItem::new);
 	public static final DeferredItem<Item> DEPOT_UPLOADER = block(CrystalnexusModBlocks.DEPOT_UPLOADER);
+	public static final DeferredItem<Item> DEPOT_DOWNLOADER = block(CrystalnexusModBlocks.DEPOT_DOWNLOADER);
+	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
+	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
 
 	// Start of user code block custom items
 	// End of user code block custom items
