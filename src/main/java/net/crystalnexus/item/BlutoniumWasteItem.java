@@ -9,7 +9,7 @@ import net.crystalnexus.procedures.BlutoniumIngotItemInInventoryTickProcedure;
 
 public class BlutoniumWasteItem extends Item {
 	public BlutoniumWasteItem() {
-		super(new Item.Properties());
+		super(new Item.Properties().fireResistant());
 	}
 
 	@Override

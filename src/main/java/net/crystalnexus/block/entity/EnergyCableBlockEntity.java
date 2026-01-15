@@ -60,9 +60,16 @@ public class EnergyCableBlockEntity extends BlockEntity implements WorldlyContai
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+// Track neighbor energy over time to detect true generators/sources.
+// Key is packed relative position offset (dx,dy,dz) into a small int.
+private final int[] lastNeighborEnergy = new int[6]; // one per Direction.ordinal()
+
+private int dirIndex(Direction d) {
+    return d.ordinal(); // DOWN(0) UP(1) NORTH(2) SOUTH(3) WEST(4) EAST(5)
+}
 
 	// ----------------------------
-	// Receiver finding: TRUST SIMULATION (works for your blocks + Mekanism)
+	// Capability helpers
 	// ----------------------------
 
 	private @Nullable IEnergyStorage findReceiverBySim(ILevelExtension ext, BlockPos pos, Direction fromCableToNeighbor, int offer) {
@@ -86,80 +93,165 @@ public class EnergyCableBlockEntity extends BlockEntity implements WorldlyContai
 
 		return null;
 	}
+private boolean isLikelyProducer(ILevelExtension ext, Level lvl, BlockPos nPos, Direction dir) {
+    IEnergyStorage nNull = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
+    IEnergyStorage nSide = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, dir.getOpposite());
+    IEnergyStorage n = (nSide != null ? nSide : nNull);
+    if (n == null) return false;
+
+    int now = n.getEnergyStored();
+    int prev = lastNeighborEnergy[dirIndex(dir)];
+
+    // Producer heuristic:
+    // If energy rose since last tick, it is producing (or being filled).
+    // That makes it safe to pull from.
+    return (now - prev) >= 32; // only treat as producer if it rose by at least 32 FE in a tick
+}
+
+	private @Nullable IEnergyStorage findExtractorBySim(ILevelExtension ext, BlockPos pos, Direction fromCableToNeighbor, int want) {
+		// 1) Try face looking back at cable (common)
+		Direction fromNeighbor = fromCableToNeighbor.getOpposite();
+		IEnergyStorage s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, fromNeighbor);
+		if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
+			return s;
+
+		// 2) Try NULL (your blocks often expose here)
+		s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+		if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
+			return s;
+
+		// 3) Try all sides
+		for (Direction d : Direction.values()) {
+			s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
+			if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
+				return s;
+		}
+
+		return null;
+	}
 
 	/**
 	 * Call from your block ticker on the server.
-	 * - Pushes energy into neighboring machines/cubes.
-	 * - Equalizes with neighboring cables so energy travels down lines.
+	 *
+	 * Order matters:
+	 * 1) PULL from producers (reactors/generators)
+	 * 2) EQUALIZE with adjacent cables (moves energy along the line)
+	 * 3) PUSH into consumers (machines/cubes)
 	 */
-	public void serverTick() {
-		Level lvl = level;
-		if (lvl == null || lvl.isClientSide) return;
-		if (!(lvl instanceof ILevelExtension ext)) return;
+public void serverTick() {
+    Level lvl = level;
+    if (lvl == null || lvl.isClientSide) return;
+    if (!(lvl instanceof ILevelExtension ext)) return;
 
-		// ----------------------------
-		// 1) PUSH: cable -> non-cable neighbors
-		// ----------------------------
-		if (energyStorage.getEnergyStored() > 0) {
-			for (Direction dir : Direction.values()) {
-				if (energyStorage.getEnergyStored() <= 0) break;
+    // ----------------------------
+    // 1) PULL: only from likely producers (energy rising since LAST tick)
+    // ----------------------------
+    int space = energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored();
+    if (space > 0) {
+        for (Direction dir : Direction.values()) {
+            if (space <= 0) break;
 
-				BlockPos nPos = worldPosition.relative(dir);
+            BlockPos nPos = worldPosition.relative(dir);
 
-				// Don't push into other cables here (handled by equalize section)
-				BlockEntity nBe = lvl.getBlockEntity(nPos);
-				if (nBe instanceof EnergyCableBlockEntity) continue;
+            // Never pull from other cables (prevents loops)
+            BlockEntity be = lvl.getBlockEntity(nPos);
+            if (be instanceof EnergyCableBlockEntity) continue;
 
-				int offer = Math.min(MAX_IO_PER_TICK, energyStorage.getEnergyStored());
-				if (offer <= 0) break;
+            // Producer heuristic uses last tick's snapshot
+            if (!isLikelyProducer(ext, lvl, nPos, dir)) continue;
 
-				IEnergyStorage receiver = findReceiverBySim(ext, nPos, dir, offer);
-				if (receiver == null) continue;
+            // Prefer sided for mods like Mekanism, fallback to null for your blocks
+            IEnergyStorage src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, dir.getOpposite());
+            if (src == null) src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
+            if (src == null || !src.canExtract()) continue;
 
-				int acceptedSim = receiver.receiveEnergy(offer, true);
-				if (acceptedSim <= 0) continue;
+            int want = Math.min(MAX_IO_PER_TICK, space);
+            int pulledSim = src.extractEnergy(want, true);
+            if (pulledSim <= 0) continue;
 
-				int extracted = energyStorage.extractEnergy(acceptedSim, false);
-				if (extracted > 0) {
-					receiver.receiveEnergy(extracted, false);
-				}
-			}
-		}
+            int accepted = energyStorage.receiveEnergy(pulledSim, false);
+            if (accepted > 0) {
+                src.extractEnergy(accepted, false);
+                space -= accepted;
+            }
+        }
+    }
 
-		// ----------------------------
-		// 2) EQUALIZE: cable <-> cable
-		// Moves energy along cable lines without ping-pong.
-		// ----------------------------
-		for (Direction dir : Direction.values()) {
-			int myStored = energyStorage.getEnergyStored();
-			if (myStored <= 1) break;
+    // ----------------------------
+    // 2) EQUALIZE: cable <-> cable
+    // ----------------------------
+    for (Direction dir : Direction.values()) {
+        int myStored = energyStorage.getEnergyStored();
+        if (myStored <= 1) break;
 
-			BlockPos nPos = worldPosition.relative(dir);
-			BlockEntity be = lvl.getBlockEntity(nPos);
-			if (!(be instanceof EnergyCableBlockEntity otherCable)) continue;
+        BlockPos nPos = worldPosition.relative(dir);
+        BlockEntity be = lvl.getBlockEntity(nPos);
+        if (!(be instanceof EnergyCableBlockEntity otherCable)) continue;
 
-			IEnergyStorage other = otherCable.getEnergyStorage();
-			int otherStored = other.getEnergyStored();
+        IEnergyStorage other = otherCable.getEnergyStorage();
+        int otherStored = other.getEnergyStored();
 
-			// Only move from higher -> lower
-			if (otherStored >= myStored) continue;
+        if (otherStored >= myStored) continue;
 
-			int diff = myStored - otherStored;
-			int move = diff / 2;
-			if (move <= 0) continue;
+        int diff = myStored - otherStored;
+        int move = diff / 2;
+        if (move <= 0) continue;
 
-			move = Math.min(move, MAX_IO_PER_TICK);
+        move = Math.min(move, MAX_IO_PER_TICK);
 
-			int otherSpace = other.getMaxEnergyStored() - otherStored;
-			move = Math.min(move, otherSpace);
-			if (move <= 0) continue;
+        int otherSpace = other.getMaxEnergyStored() - otherStored;
+        move = Math.min(move, otherSpace);
+        if (move <= 0) continue;
 
-			int extracted = energyStorage.extractEnergy(move, false);
-			if (extracted > 0) {
-				other.receiveEnergy(extracted, false);
-			}
-		}
-	}
+        int extracted = energyStorage.extractEnergy(move, false);
+        if (extracted > 0) {
+            other.receiveEnergy(extracted, false);
+        }
+    }
+
+    // ----------------------------
+    // 3) PUSH: cable -> non-cable neighbors
+    // ----------------------------
+    if (energyStorage.getEnergyStored() > 0) {
+        for (Direction dir : Direction.values()) {
+            if (energyStorage.getEnergyStored() <= 0) break;
+
+            BlockPos nPos = worldPosition.relative(dir);
+
+            // Don't push into other cables here (handled by equalize)
+            BlockEntity nBe = lvl.getBlockEntity(nPos);
+            if (nBe instanceof EnergyCableBlockEntity) continue;
+
+            int offer = Math.min(MAX_IO_PER_TICK, energyStorage.getEnergyStored());
+            if (offer <= 0) break;
+
+            IEnergyStorage receiver = findReceiverBySim(ext, nPos, dir, offer);
+            if (receiver == null) continue;
+
+            int acceptedSim = receiver.receiveEnergy(offer, true);
+            if (acceptedSim <= 0) continue;
+
+            int extracted = energyStorage.extractEnergy(acceptedSim, false);
+            if (extracted > 0) {
+                receiver.receiveEnergy(extracted, false);
+            }
+        }
+    }
+
+    // ----------------------------
+    // 4) SNAPSHOT neighbors for NEXT tick (must be last!)
+    // ----------------------------
+    for (Direction dir : Direction.values()) {
+        BlockPos nPos = worldPosition.relative(dir);
+
+        IEnergyStorage nNull = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
+        IEnergyStorage nSide = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, dir.getOpposite());
+        IEnergyStorage n = (nSide != null ? nSide : nNull);
+
+        lastNeighborEnergy[dirIndex(dir)] = (n == null) ? 0 : n.getEnergyStored();
+    }
+}
+
 
 	// ----------------------------
 	// NBT (MCreator-style)
