@@ -26,6 +26,8 @@
       "item": "crystalnexus:carbon_fiber"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "crystalnexus:quantum_miner",
     "count": 1

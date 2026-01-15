@@ -57,6 +57,7 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/reactorupgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/waste_slot.png"), this.leftPos + 173, this.topPos + 34, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 105, this.topPos + 15, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), this.leftPos + 6, this.topPos + 16, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 71, this.topPos + 7, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);

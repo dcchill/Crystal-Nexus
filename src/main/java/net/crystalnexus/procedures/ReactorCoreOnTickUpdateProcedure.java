@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -11,25 +13,29 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
+import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
 public class ReactorCoreOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		BlockState computer = Blocks.AIR.defaultBlockState();
-		BlockState input = Blocks.AIR.defaultBlockState();
-		BlockState output = Blocks.AIR.defaultBlockState();
 		double computerX = 0;
 		double computerZ = 0;
 		double mbPt = 0;
 		double fePt = 0;
 		double energy = 0;
 		double fluid = 0;
+		BlockState computer = Blocks.AIR.defaultBlockState();
+		BlockState input = Blocks.AIR.defaultBlockState();
+		BlockState output = Blocks.AIR.defaultBlockState();
+		BlockState waste = Blocks.AIR.defaultBlockState();
 		computer = CrystalnexusModBlocks.REACTOR_COMPUTER.get().defaultBlockState();
 		input = CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().defaultBlockState();
 		output = CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().defaultBlockState();
+		waste = CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().defaultBlockState();
 		mbPt = 100;
 		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == computer.getBlock()) {
 			computerX = 1;
@@ -178,6 +184,211 @@ public class ReactorCoreOnTickUpdateProcedure {
 				}
 			}
 		}
+		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == waste.getBlock()
+				&& (itemFromBlockInventory(world, BlockPos.containing(x + computerX, y, z + computerZ), 2).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_WASTE.get()) {
+			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(0, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(1, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(2, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(3, _setstack);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == waste.getBlock()
+				&& (itemFromBlockInventory(world, BlockPos.containing(x + computerX, y, z + computerZ), 2).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_WASTE.get()) {
+			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x - 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(0, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x - 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(1, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x - 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(2, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x - 1, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(3, _setstack);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == waste.getBlock()
+				&& (itemFromBlockInventory(world, BlockPos.containing(x + computerX, y, z + computerZ), 2).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_WASTE.get()) {
+			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z + 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(0, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z + 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(1, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z + 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(2, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z + 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(3, _setstack);
+				}
+			}
+		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == waste.getBlock()
+				&& (itemFromBlockInventory(world, BlockPos.containing(x + computerX, y, z + computerZ), 2).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_WASTE.get()) {
+			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z - 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(0, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z - 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(1, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z - 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(2, _setstack);
+				}
+			} else if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() != 64) {
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					int _slotid = 2;
+					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
+					_stk.shrink(1);
+					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
+				}
+				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z - 1), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+					ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+					_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + 1);
+					_itemHandlerModifiable.setStackInSlot(3, _setstack);
+				}
+			}
+		}
 	}
 
 	private static int fillTankSimulate(LevelAccessor level, BlockPos pos, int amount, Direction direction, Fluid fluid) {
@@ -250,5 +461,14 @@ public class ReactorCoreOnTickUpdateProcedure {
 				return energyStorage.getEnergyStored();
 		}
 		return 0;
+	}
+
+	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
+		if (world instanceof ILevelExtension ext) {
+			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+			if (itemHandler != null)
+				return itemHandler.getStackInSlot(slot);
+		}
+		return ItemStack.EMPTY;
 	}
 }

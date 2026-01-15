@@ -2,7 +2,7 @@
   "parent": "crystalnexus:custom/conveyer",
   "textures": {
     "all": "crystalnexus:block/cbelt_part",
-    "particle": "crystalnexus:block/cbelt_anim",
+    "particle": "crystalnexus:block/cbelt_part",
     "0": "crystalnexus:block/cbelt_anim"
   },
   "render_type": "solid"

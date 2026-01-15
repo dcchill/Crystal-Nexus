@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.client.Minecraft;
 
+import net.crystalnexus.world.inventory.WasteOutputGuiMenu;
 import net.crystalnexus.world.inventory.WarpPadGuiMenu;
 import net.crystalnexus.world.inventory.UltimaSmelterGuiMenu;
 import net.crystalnexus.world.inventory.TurbineGUIMenu;
@@ -116,6 +117,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineGUIMenu>> STEAM_ENGINE_GUI = REGISTRY.register("steam_engine_gui", () -> IMenuTypeExtension.create(SteamEngineGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityMatrixGUIMenu>> SINGULARITY_MATRIX_GUI = REGISTRY.register("singularity_matrix_gui", () -> IMenuTypeExtension.create(SingularityMatrixGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<DepotMenu>> DEPOT = REGISTRY.register("depot", () -> IMenuTypeExtension.create(DepotMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<WasteOutputGuiMenu>> WASTE_OUTPUT_GUI = REGISTRY.register("waste_output_gui", () -> IMenuTypeExtension.create(WasteOutputGuiMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

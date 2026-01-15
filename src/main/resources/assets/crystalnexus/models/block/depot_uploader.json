@@ -1,8 +1,8 @@
 {
   "parent": "crystalnexus:custom/d_depot",
   "textures": {
-    "all": "crystalnexus:block/invertedframe",
-    "particle": "crystalnexus:block/invertedframe",
+    "all": "crystalnexus:block/hyper_frame",
+    "particle": "crystalnexus:block/hyper_frame",
     "0": "crystalnexus:block/d_depot",
     "1": "crystalnexus:block/d_depot_e"
   },

@@ -117,7 +117,7 @@
     },
     "hasInventory": true,
     "openGUIOnRightClick": false,
-    "inventorySize": 2,
+    "inventorySize": 3,
     "inventoryStackSize": 99,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,

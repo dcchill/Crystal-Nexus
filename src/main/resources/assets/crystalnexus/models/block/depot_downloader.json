@@ -1,8 +1,13 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube",
   "textures": {
-    "all": "crystalnexus:block/hyper_frame",
-    "particle": "crystalnexus:block/hyper_frame"
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/puretop",
+    "north": "crystalnexus:block/d_depot_downloader_front",
+    "east": "crystalnexus:block/d_depot_downloader",
+    "south": "crystalnexus:block/d_depot_downloader",
+    "west": "crystalnexus:block/d_depot_downloader",
+    "particle": "crystalnexus:block/purebottom"
   },
   "render_type": "solid"
 }

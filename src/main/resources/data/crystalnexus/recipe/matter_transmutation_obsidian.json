@@ -26,6 +26,8 @@
       "tag": "crystalnexus:jei_empty_tag"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "minecraft:obsidian",
     "count": 16

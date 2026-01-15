@@ -24,10 +24,10 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 public class EnergyCableBlockEntity extends BlockEntity implements WorldlyContainer {
 
 	// Tune these
-	private static final int BUFFER_CAPACITY = 100000;
-	private static final int MAX_IO_PER_TICK = 50000;
+	private static final int BUFFER_CAPACITY = 102400;
+	private static final int MAX_IO_PER_TICK = 51200;
 
-	// MCreator-style EnergyStorage (serializeNBT/deserializeNBT uses IntTag)
+
 	private final EnergyStorage energyStorage = new EnergyStorage(BUFFER_CAPACITY, MAX_IO_PER_TICK, MAX_IO_PER_TICK, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -56,7 +56,7 @@ public class EnergyCableBlockEntity extends BlockEntity implements WorldlyContai
 		super(CrystalnexusModBlockEntities.ENERGY_CABLE.get(), pos, state);
 	}
 
-	// MCreator locked capability registration calls this
+
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}

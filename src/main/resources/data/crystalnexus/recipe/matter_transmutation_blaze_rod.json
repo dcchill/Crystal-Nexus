@@ -26,6 +26,8 @@
       "item": "minecraft:netherrack"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "minecraft:blaze_rod",
     "count": 32

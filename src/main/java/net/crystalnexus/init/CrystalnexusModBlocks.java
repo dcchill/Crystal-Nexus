@@ -37,6 +37,7 @@ import net.crystalnexus.block.SingularityMatrixBlock;
 import net.crystalnexus.block.SingularityCompressorBlock;
 import net.crystalnexus.block.SiliconOreBlock;
 import net.crystalnexus.block.RubberBlockBlock;
+import net.crystalnexus.block.ReactorWasteOutputBlock;
 import net.crystalnexus.block.ReactorFluidInputBlock;
 import net.crystalnexus.block.ReactorEnergyOutputBlock;
 import net.crystalnexus.block.ReactorCoreBlock;
@@ -258,6 +259,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> DEPOT_DOWNLOADER = REGISTRY.register("depot_downloader", DepotDownloaderBlock::new);
 	public static final DeferredBlock<Block> HYPER_MACHINE_FRAME = REGISTRY.register("hyper_machine_frame", HyperMachineFrameBlock::new);
 	public static final DeferredBlock<Block> ENERGY_CABLE = REGISTRY.register("energy_cable", EnergyCableBlock::new);
+	public static final DeferredBlock<Block> REACTOR_WASTE_OUTPUT = REGISTRY.register("reactor_waste_output", ReactorWasteOutputBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

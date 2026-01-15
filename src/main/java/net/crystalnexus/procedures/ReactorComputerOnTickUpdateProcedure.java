@@ -81,7 +81,7 @@ public class ReactorComputerOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory") == true) {
+		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory") == true && itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() != 64) {
 			{
 				int _value = 2;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -120,7 +120,7 @@ public class ReactorComputerOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_fluidHandler != null)
-									_fluidHandler.drain(100, IFluidHandler.FluidAction.EXECUTE);
+									_fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
 							}
 							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_INGOT.get()) {
 								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
@@ -138,6 +138,11 @@ public class ReactorComputerOnTickUpdateProcedure {
 									_blockEntity.getPersistentData().putDouble("progress", 0);
 								if (world instanceof Level _level)
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+							}
+							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+								ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+								_setstack.setCount(1 + itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount());
+								_itemHandlerModifiable.setStackInSlot(2, _setstack);
 							}
 							if (world instanceof Level _level) {
 								if (!_level.isClientSide()) {
@@ -204,7 +209,7 @@ public class ReactorComputerOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_fluidHandler != null)
-									_fluidHandler.drain(100, IFluidHandler.FluidAction.EXECUTE);
+									_fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
 							}
 							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.PURE_BLUTONIUM.get()) {
 								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
@@ -213,6 +218,11 @@ public class ReactorComputerOnTickUpdateProcedure {
 									_stk.shrink(1);
 									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 								}
+							}
+							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+								ItemStack _setstack = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get()).copy();
+								_setstack.setCount(1 + itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount());
+								_itemHandlerModifiable.setStackInSlot(2, _setstack);
 							}
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);

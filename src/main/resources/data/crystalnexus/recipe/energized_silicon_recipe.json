@@ -26,6 +26,8 @@
       "item": "crystalnexus:conductive_alloy"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "crystalnexus:energized_silicon",
     "count": 1

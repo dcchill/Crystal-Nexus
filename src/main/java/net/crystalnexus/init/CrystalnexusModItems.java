@@ -99,6 +99,7 @@ import net.crystalnexus.item.DragonCrystalItem;
 import net.crystalnexus.item.DiamondSingularityItem;
 import net.crystalnexus.item.DestabilizedCrystalItem;
 import net.crystalnexus.item.DepotUplinkItem;
+import net.crystalnexus.item.DepotStorageUpgradeItem;
 import net.crystalnexus.item.CystalizedSwordItem;
 import net.crystalnexus.item.CystalizedShovelItem;
 import net.crystalnexus.item.CystalizedPickaxeItem;
@@ -395,6 +396,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
 	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
 	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);
+	public static final DeferredItem<Item> REACTOR_WASTE_OUTPUT = block(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT);
+	public static final DeferredItem<Item> DEPOT_STORAGE_UPGRADE = REGISTRY.register("depot_storage_upgrade", DepotStorageUpgradeItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

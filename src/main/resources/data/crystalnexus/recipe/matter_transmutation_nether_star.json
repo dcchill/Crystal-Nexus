@@ -26,6 +26,8 @@
       "item": "crystalnexus:ee_matter"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "minecraft:nether_star",
     "count": 1

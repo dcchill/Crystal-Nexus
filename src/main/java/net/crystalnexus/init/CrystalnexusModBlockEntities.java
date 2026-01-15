@@ -28,6 +28,7 @@ import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
 import net.crystalnexus.block.entity.SteamChamberBlockEntity;
 import net.crystalnexus.block.entity.SingularityMatrixBlockEntity;
 import net.crystalnexus.block.entity.SingularityCompressorBlockEntity;
+import net.crystalnexus.block.entity.ReactorWasteOutputBlockEntity;
 import net.crystalnexus.block.entity.ReactorFluidInputBlockEntity;
 import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
 import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
@@ -182,6 +183,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotUploaderBlockEntity>> DEPOT_UPLOADER = register("depot_uploader", CrystalnexusModBlocks.DEPOT_UPLOADER, DepotUploaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotDownloaderBlockEntity>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE = register("energy_cable", CrystalnexusModBlocks.ENERGY_CABLE, EnergyCableBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorWasteOutputBlockEntity>> REACTOR_WASTE_OUTPUT = register("reactor_waste_output", CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT, ReactorWasteOutputBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -325,5 +327,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_DOWNLOADER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_WASTE_OUTPUT.get(), SidedInvWrapper::new);
 	}
 }

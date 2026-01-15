@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public ReactorComputerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.REACTOR_COMPUTER.get(), position, state);

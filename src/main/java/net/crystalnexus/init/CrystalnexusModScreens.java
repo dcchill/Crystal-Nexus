@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
+import net.crystalnexus.client.gui.WasteOutputGuiScreen;
 import net.crystalnexus.client.gui.WarpPadGuiScreen;
 import net.crystalnexus.client.gui.UltimaSmelterGuiScreen;
 import net.crystalnexus.client.gui.TurbineGUIScreen;
@@ -107,6 +108,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.STEAM_ENGINE_GUI.get(), SteamEngineGUIScreen::new);
 		event.register(CrystalnexusModMenus.SINGULARITY_MATRIX_GUI.get(), SingularityMatrixGUIScreen::new);
 		event.register(CrystalnexusModMenus.DEPOT.get(), DepotScreen::new);
+		event.register(CrystalnexusModMenus.WASTE_OUTPUT_GUI.get(), WasteOutputGuiScreen::new);
 	}
 
 	public interface ScreenAccessor {

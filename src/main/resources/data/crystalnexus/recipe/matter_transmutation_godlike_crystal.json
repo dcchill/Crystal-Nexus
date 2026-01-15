@@ -26,6 +26,8 @@
       "item": "minecraft:end_crystal"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "crystalnexus:godlike_crystal",
     "count": 1

@@ -531,8 +531,11 @@
   "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
   "item.crystalnexus.depot_uplink": "Dimensional Depot Uplink",
   "block.crystalnexus.depot_uploader": "Dimensional Depot Uploader",
-  "block.crystalnexus.depot_downloader": "Dimensional Depot Downloader",
+  "block.crystalnexus.depot_downloader": "Depot Downloader",
   "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
   "block.crystalnexus.energy_cable": "Energy Cable",
-  "item.crystalnexus.blutonium_waste": "Blutonium Waste"
+  "item.crystalnexus.blutonium_waste": "Blutonium Waste",
+  "block.crystalnexus.reactor_waste_output": "Reactor Waste Output",
+  "gui.crystalnexus.waste_output_gui.label_waste_output": "[Waste Output]",
+  "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade"
 }

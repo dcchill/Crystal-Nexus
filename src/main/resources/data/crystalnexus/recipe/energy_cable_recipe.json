@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:chlorophyte_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:energy_cable",
+    "count": 8
+  }
+}

@@ -15367,6 +15367,78 @@
         ]
       },
       "path": "~/blutoniumwaste"
+    },
+    {
+      "name": "EnergyCableRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "energy_cable_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/energy_cable_recipe.json"
+        ]
+      },
+      "path": "~/cables"
+    },
+    {
+      "name": "ReactorWasteOutput",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reactor_waste_output",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/entity/ReactorWasteOutputBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reactor_waste_output.json",
+          "src/main/resources/assets/crystalnexus/blockstates/reactor_waste_output.json",
+          "src/main/resources/assets/crystalnexus/models/block/reactor_waste_output.json",
+          "src/main/java/net/crystalnexus/block/ReactorWasteOutputBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/reactor_waste_output.json"
+        ]
+      },
+      "path": "~/Reactor"
+    },
+    {
+      "name": "WasteOutputGui",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "waste_output_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/WasteOutputGuiMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/WasteOutputGuiScreen.java"
+        ]
+      },
+      "path": "~/Reactor"
+    },
+    {
+      "name": "DepotStorageUpgrade",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "depot_storage_upgrade",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/depot_storage_upgrade.json",
+          "src/main/java/net/crystalnexus/item/DepotStorageUpgradeItem.java"
+        ]
+      },
+      "path": "~/depot"
+    },
+    {
+      "name": "DepotStorageUpgradeRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "depot_storage_upgrade_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/depot_storage_upgrade_recipe.json"
+        ]
+      },
+      "path": "~/depot"
     }
   ],
   "variable_elements": [
@@ -15473,11 +15545,12 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:ReactorWasteOutput",
       "~CUSTOM:HyperMachineFrame",
       "~CUSTOM:DepotDownloader",
       "~CUSTOM:AncientDebrisNode",
-      "~CUSTOM:GoldNode",
       "~CUSTOM:CopperNode",
+      "~CUSTOM:GoldNode",
       "~CUSTOM:IronNode",
       "~CUSTOM:SteamChamber",
       "~CUSTOM:SteamCollector",
@@ -15654,7 +15727,8 @@
     "BLOCKS:mod:reactorblocks": [
       "CUSTOM:ReactorBlock",
       "CUSTOM:ReactorEnergyOutput",
-      "CUSTOM:ReactorFluidInput"
+      "CUSTOM:ReactorFluidInput",
+      "CUSTOM:ReactorWasteOutput"
     ],
     "ITEMS:mod:radioactive": [
       "CUSTOM:BlutoniumIngot",
@@ -15819,8 +15893,8 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
-      "~CUSTOM:IronNode",
-      "~CUSTOM:CopperNode"
+      "~CUSTOM:CopperNode",
+      "~CUSTOM:IronNode"
     ]
   },
   "tab_element_order": {
@@ -16041,7 +16115,9 @@
       "DepotUploader",
       "DepotDownloader",
       "HyperMachineFrame",
-      "BlutoniumWaste"
+      "BlutoniumWaste",
+      "ReactorWasteOutput",
+      "DepotStorageUpgrade"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16631,10 +16707,13 @@
       "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
       "item.crystalnexus.depot_uplink": "Dimensional Depot Uplink",
       "block.crystalnexus.depot_uploader": "Dimensional Depot Uploader",
-      "block.crystalnexus.depot_downloader": "Dimensional Depot Downloader",
+      "block.crystalnexus.depot_downloader": "Depot Downloader",
       "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
       "block.crystalnexus.energy_cable": "Energy Cable",
-      "item.crystalnexus.blutonium_waste": "Blutonium Waste"
+      "item.crystalnexus.blutonium_waste": "Blutonium Waste",
+      "block.crystalnexus.reactor_waste_output": "Reactor Waste Output",
+      "gui.crystalnexus.waste_output_gui.label_waste_output": "[Waste Output]",
+      "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade"
     }
   },
   "metadata": {

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/reactorblock",
+    "up": "crystalnexus:block/reactorblock",
+    "north": "crystalnexus:block/reactorwaste_output",
+    "east": "crystalnexus:block/reactorwaste_output",
+    "south": "crystalnexus:block/reactorwaste_output",
+    "west": "crystalnexus:block/reactorwaste_output",
+    "particle": "crystalnexus:block/reactorblock"
+  },
+  "render_type": "solid"
+}

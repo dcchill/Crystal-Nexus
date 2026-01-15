@@ -26,6 +26,8 @@
       "item": "minecraft:sand"
     }
   ],
+  "integers": [],
+  "strings": [],
   "output": {
     "id": "minecraft:soul_sand",
     "count": 16

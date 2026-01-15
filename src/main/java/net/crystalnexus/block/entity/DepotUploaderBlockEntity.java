@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyContainer {
 
-    private static final int SIZE = 9;
+    private static final int SIZE = 1;
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
 
     private int tickCounter = 0;
@@ -40,21 +40,42 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
 
         DepotSavedData data = DepotSavedData.get(serverLevel);
 
+        boolean changed = false;
+
         for (int i = 0; i < be.getContainerSize(); i++) {
             ItemStack stack = be.getItem(i);
             if (stack.isEmpty()) continue;
 
-            int toMove = Math.min(64, stack.getCount());
-            ItemStack extracted = be.removeItem(i, toMove);
-            if (extracted.isEmpty()) continue;
+            // Try to move up to 64 per slot per cycle
+            int want = Math.min(64, stack.getCount());
 
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(extracted.getItem());
-            if (itemId != null) {
-                data.add(itemId, extracted.getCount());
+            ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            if (itemId == null) continue;
+
+            // ✅ IMPORTANT: only accept what fits
+            long acceptedLong = data.addCapped(itemId, want);
+            int accepted = (int) Math.min(Integer.MAX_VALUE, acceptedLong);
+
+            if (accepted <= 0) {
+                // Depot full (or no space). Optional: stop early to avoid looping.
+                break;
             }
+
+            // ✅ Remove only what was accepted
+            stack.shrink(accepted);
+            if (stack.isEmpty()) {
+                be.items.set(i, ItemStack.EMPTY);
+            }
+
+            changed = true;
+
+            // Optional: if depot is full now, stop early
+            if (data.getFree() <= 0) break;
         }
 
-        be.setChanged();
+        if (changed) {
+            be.setChanged();
+        }
     }
 
     // ---- WorldlyContainer (sided inventory) ----
@@ -66,13 +87,13 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         return slots;
     }
 
-    // ✅ input-only: allow inserting from any side
+    // input-only: allow inserting from any side
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
         return true;
     }
 
-    // ✅ input-only: deny extracting from any side
+    // input-only: deny extracting from any side
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
         return false;

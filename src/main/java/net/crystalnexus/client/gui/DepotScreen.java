@@ -14,13 +14,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.lwjgl.glfw.GLFW;
 
+import org.lwjgl.glfw.GLFW;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -39,12 +38,17 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     // Latest entries for the current server page
     private final List<S2C_SendPage.Entry> entries = new ArrayList<>();
 
+    // ✅ UI stats from server
+    private int uiUpgradeLevel = 0;
+    private long uiUsed = 0L;
+    private long uiCapacity = 0L;
+
     private static final int PAD = 8;
     private static final int ROW_H = 20;
     private static final int LIST_ROWS = 10;
     private static final int LIST_W = 214;
-	private static final int HEADER_H = 44;  
-	private static final int FOOTER_H = 18;   
+    private static final int HEADER_H = 44;
+    private static final int FOOTER_H = 18;
 
     // Scrollbar
     private static final int SCROLL_W = 6;
@@ -60,10 +64,11 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     @Override
     protected void init() {
         super.init();
-		this.clearWidgets();
-		
-		this.leftPos = (this.width - this.imageWidth) / 2;
-		this.topPos  = (this.height - this.imageHeight) / 2;
+        this.clearWidgets();
+
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos  = (this.height - this.imageHeight) / 2;
+
         this.searchBox = new EditBox(this.font,
                 leftPos + PAD, topPos + PAD + 12,
                 160, 16,
@@ -71,11 +76,6 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
         this.searchBox.setMaxLength(64);
         this.searchBox.setValue("");
         this.addRenderableWidget(this.searchBox);
-
-        // Keep a manual refresh button (nice for debugging)
-        this.addRenderableWidget(Button.builder(Component.literal("Refresh"), b -> requestPage())
-                .bounds(leftPos + PAD + 166, topPos + PAD + 12, 58, 16)
-                .build());
 
         // Start at top
         this.page = 0;
@@ -88,9 +88,6 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     public void containerTick() {
         super.containerTick();
 
-        // Don’t spam while typing
-
-
         // Light polling so uploader changes show up
         refreshTicks++;
         if (refreshTicks >= 8) { // ~2.5x/sec
@@ -100,112 +97,104 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     }
 
     @Override
-public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-    if (this.searchBox != null && this.searchBox.isFocused()) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.searchBox != null && this.searchBox.isFocused()) {
 
-        // Block inventory-close key while typing
-        if (keyCode == GLFW.GLFW_KEY_E) {
-            return true;
+            // Block inventory-close key while typing
+            if (keyCode == GLFW.GLFW_KEY_E) {
+                return true;
+            }
+
+            // ESC unfocus instead of closing the menu
+            if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+                this.searchBox.setFocused(false);
+                return true;
+            }
+
+            // Enter applies search
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+                page = 0;
+                scrollRow = 0;
+                requestPage();
+                return true;
+            }
         }
 
-        // (Optional) ESC unfocus instead of closing the menu
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            this.searchBox.setFocused(false);
-            return true;
-        }
-
-        // Enter applies search
-        if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-            page = 0;
-            scrollRow = 0;
-            requestPage();
-            return true;
-        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    return super.keyPressed(keyCode, scanCode, modifiers);
-}
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        int listX = leftPos + PAD;
+        int listY = topPos + PAD + HEADER_H;
 
+        if (mouseX >= listX && mouseX <= listX + LIST_W + SCROLL_W
+                && mouseY >= listY && mouseY <= listY + (LIST_ROWS * ROW_H)) {
 
-@Override
-public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-    int listX = leftPos + PAD;
-    int listY = topPos + PAD + HEADER_H; 
+            int dir = (deltaY > 0) ? -1 : 1;
 
-    if (mouseX >= listX && mouseX <= listX + LIST_W + SCROLL_W
-            && mouseY >= listY && mouseY <= listY + (LIST_ROWS * ROW_H)) {
+            // If we are on the last page (entries not full), clamp within that page.
+            boolean canGoNextPage = entries.size() >= DepotMenu.PAGE_SIZE;
 
-        int dir = (deltaY > 0) ? -1 : 1;
+            int rowOffsetInPage = scrollRow % LIST_ROWS;
 
-        // If we are on the last page (entries not full), clamp within that page.
-        boolean canGoNextPage = entries.size() >= DepotMenu.PAGE_SIZE;
+            if (dir > 0) {
+                // scrolling DOWN
+                int maxOffsetThisPage = Math.max(0, entries.size() - 1);
+                int maxRowOffsetThisPage = Math.min(LIST_ROWS - 1, maxOffsetThisPage);
 
-        int rowOffsetInPage = scrollRow % LIST_ROWS;
-
-        if (dir > 0) {
-            // scrolling DOWN
-            // allow moving down within loaded entries
-            int maxOffsetThisPage = Math.max(0, entries.size() - 1); // max index we have
-            int maxRowOffsetThisPage = Math.min(LIST_ROWS - 1, maxOffsetThisPage);
-
-            if (rowOffsetInPage < maxRowOffsetThisPage) {
-                scrollRow++;
-            } else {
-                // We're at bottom of visible slice for this page.
-                // Only go to next server page if we believe there are more.
-                if (canGoNextPage) {
-                    page++;
-                    scrollRow = page * LIST_ROWS; // keep offset at 0 for the new page
-                    requestPage();
-                }
-            }
-        } else {
-            // scrolling UP
-            if (scrollRow > 0) {
-                // if we're at the top of a page, move to previous page
-                if (rowOffsetInPage == 0 && page > 0) {
-                    page--;
-                    scrollRow = page * LIST_ROWS + (LIST_ROWS - 1);
-                    requestPage();
+                if (rowOffsetInPage < maxRowOffsetThisPage) {
+                    scrollRow++;
                 } else {
-                    scrollRow--;
+                    if (canGoNextPage) {
+                        page++;
+                        scrollRow = page * LIST_ROWS;
+                        requestPage();
+                    }
+                }
+            } else {
+                // scrolling UP
+                if (scrollRow > 0) {
+                    if (rowOffsetInPage == 0 && page > 0) {
+                        page--;
+                        scrollRow = page * LIST_ROWS + (LIST_ROWS - 1);
+                        requestPage();
+                    } else {
+                        scrollRow--;
+                    }
                 }
             }
+
+            return true;
         }
 
-        return true;
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
-
-    return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
-}
-
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int listX = leftPos + PAD;
-        int listY = topPos + PAD + HEADER_H; 
+        int listY = topPos + PAD + HEADER_H;
 
         if (mouseX >= listX && mouseX <= listX + LIST_W
                 && mouseY >= listY && mouseY <= listY + (LIST_ROWS * ROW_H)) {
 
             int rowOnScreen = (int) ((mouseY - listY) / ROW_H);
-int rowOffsetInPage = scrollRow % LIST_ROWS;
-int idx = rowOffsetInPage + rowOnScreen;
+            int rowOffsetInPage = scrollRow % LIST_ROWS;
+            int idx = rowOffsetInPage + rowOnScreen;
 
-if (idx < 0 || idx >= entries.size()) return true;
- {
-                S2C_SendPage.Entry e = entries.get(idx);
+            if (idx < 0 || idx >= entries.size()) return true;
 
-                int amount;
-                if (Screen.hasControlDown()) amount = Integer.MAX_VALUE;
-                else if (Screen.hasShiftDown()) amount = 64;
-                else amount = 1;
+            S2C_SendPage.Entry e = entries.get(idx);
 
-                PacketDistributor.sendToServer(new C2S_Withdraw(e.itemId(), amount));
-                // After withdraw, ask for updated data (instant feeling)
-                requestPage();
-                return true;
-            }
+            int amount;
+            if (Screen.hasControlDown()) amount = Integer.MAX_VALUE;
+            else if (Screen.hasShiftDown()) amount = 64;
+            else amount = 1;
+
+            PacketDistributor.sendToServer(new C2S_Withdraw(e.itemId(), amount));
+            requestPage();
+            return true;
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
@@ -217,12 +206,14 @@ if (idx < 0 || idx >= entries.size()) return true;
     }
 
     /** Called by DepotScreenHooks when S2C_SendPage arrives. */
-    public void setEntries(List<S2C_SendPage.Entry> newEntries) {
+    public void setPage(S2C_SendPage packet) {
         this.entries.clear();
-        this.entries.addAll(newEntries);
+        this.entries.addAll(packet.entries());
 
-        // If we scrolled past the end of the last page, clamp the scrollRow a bit.
-        // This prevents “jumping” if the page shrinks due to search or withdrawals.
+        this.uiUpgradeLevel = packet.upgradeLevel();
+        this.uiUsed = packet.used();
+        this.uiCapacity = packet.capacity();
+
         int rowOffsetInPage = scrollRow % LIST_ROWS;
         if (rowOffsetInPage >= entries.size() && !entries.isEmpty()) {
             scrollRow = (page * LIST_ROWS) + Math.max(0, entries.size() - 1);
@@ -234,7 +225,7 @@ if (idx < 0 || idx >= entries.size()) return true;
         g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xCC101010);
 
         int listX = leftPos + PAD;
-        int listY = topPos + PAD + HEADER_H; 
+        int listY = topPos + PAD + HEADER_H;
 
         // List background
         g.fill(listX, listY, listX + LIST_W, listY + (LIST_ROWS * ROW_H), 0xAA000000);
@@ -259,48 +250,56 @@ if (idx < 0 || idx >= entries.size()) return true;
             ItemStack icon = toIconStack(e.itemId());
             g.renderItem(icon, listX + 2, y);
 
-            // ✅ Display name (not registry id)
             String name = icon.getHoverName().getString();
             String label = shorten(name, 20) + "  x" + e.count();
             g.drawString(font, label, listX + 24, y + 4, 0xFFFFFF);
         }
 
-        // Draw scrollbar (simple)
         drawScrollBar(g, listX + LIST_W + 2, listY, LIST_ROWS * ROW_H);
     }
 
-private void drawScrollBar(GuiGraphics g, int x, int y, int h) {
-    // Track
-    g.fill(x, y, x + SCROLL_W, y + h, 0x55000000);
+    private void drawScrollBar(GuiGraphics g, int x, int y, int h) {
+        g.fill(x, y, x + SCROLL_W, y + h, 0x55000000);
 
-    boolean hasMoreBelow = entries.size() >= DepotMenu.PAGE_SIZE;
-    int rowOffsetInPage = scrollRow % LIST_ROWS;
+        boolean hasMoreBelow = entries.size() >= DepotMenu.PAGE_SIZE;
+        int rowOffsetInPage = scrollRow % LIST_ROWS;
 
-    // Thumb size: larger if no more below (end), smaller if more below
-    int thumbH = hasMoreBelow ? Math.max(12, h / 6) : Math.max(22, h / 3);
+        int thumbH = hasMoreBelow ? Math.max(12, h / 6) : Math.max(22, h / 3);
 
-    float t = (float) rowOffsetInPage / (float) (LIST_ROWS - 1);
-    int thumbY = y + (int) ((h - thumbH) * t);
+        float t = (float) rowOffsetInPage / (float) (LIST_ROWS - 1);
+        int thumbY = y + (int) ((h - thumbH) * t);
 
-    g.fill(x, thumbY, x + SCROLL_W, thumbY + thumbH, 0xAAFFFFFF);
+        g.fill(x, thumbY, x + SCROLL_W, thumbY + thumbH, 0xAAFFFFFF);
 
-    // Optional: little indicator that there's more below
-    if (hasMoreBelow) {
-        g.fill(x, y + h - 2, x + SCROLL_W, y + h, 0xAAFFFFFF);
+        if (hasMoreBelow) {
+            g.fill(x, y + h - 2, x + SCROLL_W, y + h, 0xAAFFFFFF);
+        }
     }
-}
-
 
 @Override
 protected void renderLabels(GuiGraphics g, int mouseX, int mouseY) {
     g.drawString(font, this.title, PAD, 4, 0xFFFFFF);
 
-    // Put helper line under the list area
+    // ✅ Depot stats on the RIGHT side of header (won't overlap search)
+    int statsX = PAD + 166; // same X region as refresh button area
+    int y0 = 4;             // keep in the very top line area
+
+    g.drawString(font, Component.literal("Upg: " + uiUpgradeLevel), statsX, y0, 0xAAAAAA);
+    g.drawString(font, Component.literal("Used: " + fmt(uiUsed)), statsX, y0 + 10, 0xAAAAAA);
+
+    long free = Math.max(0L, uiCapacity - uiUsed);
+    g.drawString(font, Component.literal("Free: " + fmt(free)), statsX, y0 + 20, 0xAAAAAA);
+    g.drawString(font, Component.literal("Max: " + fmt(uiCapacity)), statsX, y0 + 30, 0xAAAAAA);
+
     int listY = PAD + HEADER_H;
-int helperY = listY + (LIST_ROWS * ROW_H) + 4;
-g.drawString(font, Component.literal("Click:1  Shift:64  Ctrl:All"), PAD, helperY, 0x888888);
+    int helperY = listY + (LIST_ROWS * ROW_H) + 4;
+    g.drawString(font, Component.literal("Click:1  Shift:64  Ctrl:All"), PAD, helperY, 0x888888);
 }
 
+
+    private static String fmt(long v) {
+        return String.format("%,d", v);
+    }
 
     private static ItemStack toIconStack(ResourceLocation itemId) {
         Item item = BuiltInRegistries.ITEM.get(itemId);

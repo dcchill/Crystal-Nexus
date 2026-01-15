@@ -2,6 +2,7 @@
   "parent": "block/block",
   "textures": {
     "texture": "crystalnexus:block/electrical_cable"
+    "particle": "crystalnexus:block/electrical_cable"
   },
   "elements": [
     {

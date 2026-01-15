@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "crystalnexus:block/reactor_waste_output"
+    }
+  }
+}
