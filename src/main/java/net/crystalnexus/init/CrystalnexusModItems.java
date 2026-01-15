@@ -135,6 +135,7 @@ import net.crystalnexus.item.CarbonFiberItem;
 import net.crystalnexus.item.CarbonEfficiencyUpgradeItem;
 import net.crystalnexus.item.CarbonChipItem;
 import net.crystalnexus.item.CarbonAccelerationUpgradeItem;
+import net.crystalnexus.item.BlutoniumWasteItem;
 import net.crystalnexus.item.BlutoniumNuggetItem;
 import net.crystalnexus.item.BlutoniumIngotItem;
 import net.crystalnexus.item.BlutoniumDustItem;
@@ -393,6 +394,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEPOT_DOWNLOADER = block(CrystalnexusModBlocks.DEPOT_DOWNLOADER);
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
 	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
+	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

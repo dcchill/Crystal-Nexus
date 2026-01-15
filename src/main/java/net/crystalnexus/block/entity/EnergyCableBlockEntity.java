@@ -23,224 +23,219 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class EnergyCableBlockEntity extends BlockEntity implements WorldlyContainer {
 
-    // Tune these
-    private static final int BUFFER_CAPACITY = 100000;
-    private static final int MAX_IO_PER_TICK = 5000;
+	// Tune these
+	private static final int BUFFER_CAPACITY = 100000;
+	private static final int MAX_IO_PER_TICK = 50000;
 
-    // MCreator-style EnergyStorage + proper update notifications
-    private final EnergyStorage energyStorage = new EnergyStorage(
-        BUFFER_CAPACITY,
-        MAX_IO_PER_TICK,
-        MAX_IO_PER_TICK,
-        0
-    ) {
-        @Override
-        public int receiveEnergy(int maxReceive, boolean simulate) {
-            int ret = super.receiveEnergy(maxReceive, simulate);
-            if (!simulate && ret > 0) markEnergyChanged();
-            return ret;
-        }
+	// MCreator-style EnergyStorage (serializeNBT/deserializeNBT uses IntTag)
+	private final EnergyStorage energyStorage = new EnergyStorage(BUFFER_CAPACITY, MAX_IO_PER_TICK, MAX_IO_PER_TICK, 0) {
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate) {
+			int ret = super.receiveEnergy(maxReceive, simulate);
+			if (!simulate && ret > 0) {
+				setChanged();
+				if (level != null)
+					level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			}
+			return ret;
+		}
 
-        @Override
-        public int extractEnergy(int maxExtract, boolean simulate) {
-            int ret = super.extractEnergy(maxExtract, simulate);
-            if (!simulate && ret > 0) markEnergyChanged();
-            return ret;
-        }
-    };
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate) {
+			int ret = super.extractEnergy(maxExtract, simulate);
+			if (!simulate && ret > 0) {
+				setChanged();
+				if (level != null)
+					level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			}
+			return ret;
+		}
+	};
 
-    private void markEnergyChanged() {
-        setChanged();
-        if (level != null) {
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
-        }
-    }
+	public EnergyCableBlockEntity(BlockPos pos, BlockState state) {
+		super(CrystalnexusModBlockEntities.ENERGY_CABLE.get(), pos, state);
+	}
 
-    public EnergyCableBlockEntity(BlockPos pos, BlockState state) {
-        super(CrystalnexusModBlockEntities.ENERGY_CABLE.get(), pos, state);
-    }
+	// MCreator locked capability registration calls this
+	public EnergyStorage getEnergyStorage() {
+		return energyStorage;
+	}
 
-    // MCreator registers this capability in the locked file
-    public IEnergyStorage getEnergyStorage() {
-        return energyStorage;
-    }
+	// ----------------------------
+	// Receiver finding: TRUST SIMULATION (works for your blocks + Mekanism)
+	// ----------------------------
 
-    // -----------------------
-    // Capability lookup helpers
-    // -----------------------
+	private @Nullable IEnergyStorage findReceiverBySim(ILevelExtension ext, BlockPos pos, Direction fromCableToNeighbor, int offer) {
+		// 1) Try face looking back at cable (common for Mek and most mods)
+		Direction intoNeighbor = fromCableToNeighbor.getOpposite();
+		IEnergyStorage s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, intoNeighbor);
+		if (s != null && s.canReceive() && s.receiveEnergy(offer, true) > 0)
+			return s;
 
-    /** For YOUR blocks: null-side FIRST (matches your working TestProcedure). */
-    private @Nullable IEnergyStorage getEnergyNullFirst(ILevelExtension ext, BlockPos pos, @Nullable Direction sided) {
-        IEnergyStorage s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        if (s != null) return s;
+		// 2) Try NULL (your MCreator blocks often accept this way)
+		s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+		if (s != null && s.canReceive() && s.receiveEnergy(offer, true) > 0)
+			return s;
 
-        if (sided != null) {
-            s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, sided);
-            if (s != null) return s;
-        }
+		// 3) Try all sides (covers weird wrappers)
+		for (Direction d : Direction.values()) {
+			s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
+			if (s != null && s.canReceive() && s.receiveEnergy(offer, true) > 0)
+				return s;
+		}
 
-        for (Direction d : Direction.values()) {
-            s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
-            if (s != null) return s;
-        }
-        return null;
-    }
+		return null;
+	}
 
-    /** For OTHER mods: sided FIRST (some mods care about face). */
-    private @Nullable IEnergyStorage getEnergySideFirst(ILevelExtension ext, BlockPos pos, @Nullable Direction sided) {
-        IEnergyStorage s = null;
+	/**
+	 * Call from your block ticker on the server.
+	 * - Pushes energy into neighboring machines/cubes.
+	 * - Equalizes with neighboring cables so energy travels down lines.
+	 */
+	public void serverTick() {
+		Level lvl = level;
+		if (lvl == null || lvl.isClientSide) return;
+		if (!(lvl instanceof ILevelExtension ext)) return;
 
-        if (sided != null) {
-            s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, sided);
-            if (s != null) return s;
-        }
+		// ----------------------------
+		// 1) PUSH: cable -> non-cable neighbors
+		// ----------------------------
+		if (energyStorage.getEnergyStored() > 0) {
+			for (Direction dir : Direction.values()) {
+				if (energyStorage.getEnergyStored() <= 0) break;
 
-        s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        if (s != null) return s;
+				BlockPos nPos = worldPosition.relative(dir);
 
-        for (Direction d : Direction.values()) {
-            s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
-            if (s != null) return s;
-        }
-        return null;
-    }
+				// Don't push into other cables here (handled by equalize section)
+				BlockEntity nBe = lvl.getBlockEntity(nPos);
+				if (nBe instanceof EnergyCableBlockEntity) continue;
 
-    private boolean isCable(BlockEntity be) {
-        return be instanceof EnergyCableBlockEntity;
-    }
+				int offer = Math.min(MAX_IO_PER_TICK, energyStorage.getEnergyStored());
+				if (offer <= 0) break;
 
-    /**
-     * Server tick:
-     * 1) Pull into our buffer (side-first, good for generators / modded outputs)
-     * 2) Push out of our buffer (null-first, good for your MCreator machines)
-     * 3) Allow cable->cable propagation without ping-pong (deterministic direction rule)
-     */
-public void serverTick() {
-    Level lvl = level;
-    if (lvl == null || lvl.isClientSide) return;
-    if (!(lvl instanceof ILevelExtension ext)) return;
+				IEnergyStorage receiver = findReceiverBySim(ext, nPos, dir, offer);
+				if (receiver == null) continue;
 
-    // ----------------------------
-    // 1) PULL into this cable
-    //    ONLY from "sources": canExtract && !canReceive
-    // ----------------------------
-    int space = energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored();
-    if (space > 0) {
-        for (Direction dir : Direction.values()) {
-            if (space <= 0) break;
+				int acceptedSim = receiver.receiveEnergy(offer, true);
+				if (acceptedSim <= 0) continue;
 
-            BlockPos nPos = worldPosition.relative(dir);
+				int extracted = energyStorage.extractEnergy(acceptedSim, false);
+				if (extracted > 0) {
+					receiver.receiveEnergy(extracted, false);
+				}
+			}
+		}
 
-            // sided-first for other mods, then null for your stuff
-            IEnergyStorage src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, dir.getOpposite());
-            if (src == null) src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
-            if (src == null) continue;
+		// ----------------------------
+		// 2) EQUALIZE: cable <-> cable
+		// Moves energy along cable lines without ping-pong.
+		// ----------------------------
+		for (Direction dir : Direction.values()) {
+			int myStored = energyStorage.getEnergyStored();
+			if (myStored <= 1) break;
 
-            // IMPORTANT: don't drain machines/batteries; only drain true sources
-            if (!src.canExtract() || src.canReceive()) continue;
+			BlockPos nPos = worldPosition.relative(dir);
+			BlockEntity be = lvl.getBlockEntity(nPos);
+			if (!(be instanceof EnergyCableBlockEntity otherCable)) continue;
 
-            int want = Math.min(MAX_IO_PER_TICK, space);
-            int pulledSim = src.extractEnergy(want, true);
-            if (pulledSim <= 0) continue;
+			IEnergyStorage other = otherCable.getEnergyStorage();
+			int otherStored = other.getEnergyStored();
 
-            int accepted = energyStorage.receiveEnergy(pulledSim, false);
-            if (accepted > 0) {
-                src.extractEnergy(accepted, false);
-                space -= accepted;
-            }
-        }
-    }
+			// Only move from higher -> lower
+			if (otherStored >= myStored) continue;
 
-    // Nothing to do if empty
-    if (energyStorage.getEnergyStored() <= 0) return;
+			int diff = myStored - otherStored;
+			int move = diff / 2;
+			if (move <= 0) continue;
 
-    // ----------------------------
-    // 2) PUSH to MACHINES FIRST (non-cable neighbors)
-    //    Use YOUR proven null-capability pattern
-    // ----------------------------
-    for (Direction dir : Direction.values()) {
-        if (energyStorage.getEnergyStored() <= 0) break;
+			move = Math.min(move, MAX_IO_PER_TICK);
 
-        BlockPos nPos = worldPosition.relative(dir);
-        BlockEntity be = lvl.getBlockEntity(nPos);
+			int otherSpace = other.getMaxEnergyStored() - otherStored;
+			move = Math.min(move, otherSpace);
+			if (move <= 0) continue;
 
-        // Skip other cables in this phase
-        if (be instanceof EnergyCableBlockEntity) continue;
+			int extracted = energyStorage.extractEnergy(move, false);
+			if (extracted > 0) {
+				other.receiveEnergy(extracted, false);
+			}
+		}
+	}
 
-        IEnergyStorage sink = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
-        if (sink == null || !sink.canReceive()) continue;
+	// ----------------------------
+	// NBT (MCreator-style)
+	// ----------------------------
 
-        int offer = Math.min(MAX_IO_PER_TICK, energyStorage.getEnergyStored());
-        int acceptedSim = sink.receiveEnergy(offer, true);
-        if (acceptedSim <= 0) continue;
+	@Override
+	protected void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+		super.loadAdditional(compound, lookupProvider);
+		if (compound.get("energyStorage") instanceof IntTag intTag) {
+			energyStorage.deserializeNBT(lookupProvider, intTag);
+		}
+	}
 
-        int extracted = energyStorage.extractEnergy(acceptedSim, false);
-        if (extracted > 0) {
-            sink.receiveEnergy(extracted, false);
-        }
-    }
+	@Override
+	protected void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
+		super.saveAdditional(compound, lookupProvider);
+		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
+	}
 
-    // ----------------------------
-    // 3) EQUALIZE with NEIGHBOR CABLES (propagate down lines)
-    // ----------------------------
-    for (Direction dir : Direction.values()) {
-        int stored = energyStorage.getEnergyStored();
-        if (stored <= 1) break;
+	// ----------------------------
+	// WorldlyContainer (empty inventory)
+	// Exists ONLY to satisfy MCreator's auto ItemHandler registration.
+	// ----------------------------
 
-        BlockPos nPos = worldPosition.relative(dir);
-        BlockEntity be = lvl.getBlockEntity(nPos);
-        if (!(be instanceof EnergyCableBlockEntity otherCable)) continue;
+	@Override
+	public int[] getSlotsForFace(Direction side) {
+		return new int[0];
+	}
 
-        IEnergyStorage other = otherCable.getEnergyStorage();
+	@Override
+	public boolean canPlaceItemThroughFace(int index, ItemStack stack, @Nullable Direction direction) {
+		return false;
+	}
 
-        int otherStored = other.getEnergyStored();
-        if (otherStored >= stored) continue;
+	@Override
+	public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
+		return false;
+	}
 
-        int diff = stored - otherStored;
-        int move = Math.min(MAX_IO_PER_TICK, diff / 2);
-        if (move <= 0) continue;
+	@Override
+	public int getContainerSize() {
+		return 0;
+	}
 
-        int otherSpace = other.getMaxEnergyStored() - otherStored;
-        move = Math.min(move, otherSpace);
-        if (move <= 0) continue;
+	@Override
+	public boolean isEmpty() {
+		return true;
+	}
 
-        int extracted = energyStorage.extractEnergy(move, false);
-        if (extracted > 0) {
-            other.receiveEnergy(extracted, false);
-        }
-    }
-}
+	@Override
+	public ItemStack getItem(int index) {
+		return ItemStack.EMPTY;
+	}
 
+	@Override
+	public ItemStack removeItem(int index, int count) {
+		return ItemStack.EMPTY;
+	}
 
+	@Override
+	public ItemStack removeItemNoUpdate(int index) {
+		return ItemStack.EMPTY;
+	}
 
-    // ---- NBT (MATCHES MCreator STYLE) ----
+	@Override
+	public void setItem(int index, ItemStack stack) {
+		// no-op
+	}
 
-    @Override
-    protected void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        super.loadAdditional(compound, lookupProvider);
-        if (compound.get("energyStorage") instanceof IntTag intTag) {
-            energyStorage.deserializeNBT(lookupProvider, intTag);
-        }
-    }
+	@Override
+	public boolean stillValid(Player player) {
+		return true;
+	}
 
-    @Override
-    protected void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
-        super.saveAdditional(compound, lookupProvider);
-        compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
-    }
-
-    // ---- WorldlyContainer (empty inventory) ----
-    // This exists ONLY to satisfy MCreator's auto ItemHandler registration.
-
-    @Override public int[] getSlotsForFace(Direction side) { return new int[0]; }
-    @Override public boolean canPlaceItemThroughFace(int i, ItemStack s, Direction d) { return false; }
-    @Override public boolean canTakeItemThroughFace(int i, ItemStack s, Direction d) { return false; }
-    @Override public int getContainerSize() { return 0; }
-    @Override public boolean isEmpty() { return true; }
-    @Override public ItemStack getItem(int i) { return ItemStack.EMPTY; }
-    @Override public ItemStack removeItem(int i, int c) { return ItemStack.EMPTY; }
-    @Override public ItemStack removeItemNoUpdate(int i) { return ItemStack.EMPTY; }
-    @Override public void setItem(int i, ItemStack s) {}
-    @Override public boolean stillValid(Player p) { return true; }
-    @Override public void clearContent() {}
+	@Override
+	public void clearContent() {
+		// no-op
+	}
 }

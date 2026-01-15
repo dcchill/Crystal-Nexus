@@ -15353,6 +15353,20 @@
         ]
       },
       "path": "~/cables"
+    },
+    {
+      "name": "BlutoniumWaste",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blutonium_waste",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/BlutoniumWasteItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/blutonium_waste.json"
+        ]
+      },
+      "path": "~/blutoniumwaste"
     }
   ],
   "variable_elements": [
@@ -16026,7 +16040,8 @@
       "DepotUplink",
       "DepotUploader",
       "DepotDownloader",
-      "HyperMachineFrame"
+      "HyperMachineFrame",
+      "BlutoniumWaste"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16618,7 +16633,8 @@
       "block.crystalnexus.depot_uploader": "Dimensional Depot Uploader",
       "block.crystalnexus.depot_downloader": "Dimensional Depot Downloader",
       "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
-      "block.crystalnexus.energy_cable": "Energy Cable"
+      "block.crystalnexus.energy_cable": "Energy Cable",
+      "item.crystalnexus.blutonium_waste": "Blutonium Waste"
     }
   },
   "metadata": {
@@ -16809,6 +16825,10 @@
       },
       {
         "name": "cables",
+        "children": []
+      },
+      {
+        "name": "blutoniumwaste",
         "children": []
       }
     ]
