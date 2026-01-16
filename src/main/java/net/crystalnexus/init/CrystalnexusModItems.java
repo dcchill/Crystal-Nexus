@@ -24,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 
 import net.crystalnexus.item.inventory.DepotUplinkInventoryCapability;
+import net.crystalnexus.item.ZeroPointCoreItem;
 import net.crystalnexus.item.YellowPaintballItem;
 import net.crystalnexus.item.WhitePaintballItem;
 import net.crystalnexus.item.UnstableEEMatterItem;
@@ -398,6 +399,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);
 	public static final DeferredItem<Item> REACTOR_WASTE_OUTPUT = block(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT);
 	public static final DeferredItem<Item> DEPOT_STORAGE_UPGRADE = REGISTRY.register("depot_storage_upgrade", DepotStorageUpgradeItem::new);
+	public static final DeferredItem<Item> ENERGY_CABLE_MK_2 = block(CrystalnexusModBlocks.ENERGY_CABLE_MK_2);
+	public static final DeferredItem<Item> BASIC_ENERGY_CABLE = block(CrystalnexusModBlocks.BASIC_ENERGY_CABLE);
+	public static final DeferredItem<Item> ZERO_POINT_CORE = REGISTRY.register("zero_point_core", ZeroPointCoreItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

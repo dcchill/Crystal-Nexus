@@ -7014,7 +7014,7 @@
       "name": "MatterTransmutationZeroPoint",
       "type": "jeirecipe",
       "compiles": true,
-      "locked_code": true,
+      "locked_code": false,
       "registry_name": "matter_transmutation_zero_point",
       "metadata": {
         "files": [
@@ -15439,6 +15439,105 @@
         ]
       },
       "path": "~/depot"
+    },
+    {
+      "name": "WasteRecycle",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "waste_recycle",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/waste_recycle.json"
+        ]
+      }
+    },
+    {
+      "name": "EnergyCableMk2",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "energy_cable_mk_2",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/energy_cable_mk_2.json",
+          "src/main/resources/assets/crystalnexus/blockstates/energy_cable_mk_2.json",
+          "src/main/java/net/crystalnexus/block/entity/EnergyCableMk2BlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/energy_cable_mk_2.json",
+          "src/main/java/net/crystalnexus/block/EnergyCableMk2Block.java",
+          "src/main/resources/assets/crystalnexus/models/block/energy_cable_mk_2.json"
+        ]
+      },
+      "path": "~/cables"
+    },
+    {
+      "name": "BasicEnergyCable",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "basic_energy_cable",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/basic_energy_cable.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/basic_energy_cable.json",
+          "src/main/resources/assets/crystalnexus/models/item/basic_energy_cable.json",
+          "src/main/java/net/crystalnexus/block/BasicEnergyCableBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/BasicEnergyCableBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/block/basic_energy_cable.json"
+        ]
+      },
+      "path": "~/cables"
+    },
+    {
+      "name": "BasicEnergyCableRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "basic_energy_cable_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/basic_energy_cable_recipe.json"
+        ]
+      },
+      "path": "~/cables"
+    },
+    {
+      "name": "EnergyCableMk2Recipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "energy_cable_mk_2_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/energy_cable_mk_2_recipe.json"
+        ]
+      },
+      "path": "~/cables"
+    },
+    {
+      "name": "ZeroPointCore",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "zero_point_core",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/ZeroPointCoreItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/zero_point_core.json"
+        ]
+      }
+    },
+    {
+      "name": "ZeroPointCoreRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "zero_point_core_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/zero_point_core_recipe.json"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -16117,7 +16216,8 @@
       "HyperMachineFrame",
       "BlutoniumWaste",
       "ReactorWasteOutput",
-      "DepotStorageUpgrade"
+      "DepotStorageUpgrade",
+      "ZeroPointCore"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16156,6 +16256,9 @@
       "ConveyerBeltOutput",
       "ItemElevator",
       "ItemElevatorDown",
+      "BasicEnergyCable",
+      "EnergyCable",
+      "EnergyCableMk2",
       "CrystalEnergyGuide",
       "EnergyRefractor",
       "EnergySplitter",
@@ -16713,7 +16816,10 @@
       "item.crystalnexus.blutonium_waste": "Blutonium Waste",
       "block.crystalnexus.reactor_waste_output": "Reactor Waste Output",
       "gui.crystalnexus.waste_output_gui.label_waste_output": "[Waste Output]",
-      "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade"
+      "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade",
+      "block.crystalnexus.energy_cable_mk_2": "Energy Cable Mk 2",
+      "block.crystalnexus.basic_energy_cable": "Basic Energy Cable",
+      "item.crystalnexus.zero_point_core": "Zero Point Core"
     }
   },
   "metadata": {

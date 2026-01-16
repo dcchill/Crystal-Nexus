@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:energy_cable_mk_2",
+    "count": 8
+  }
+}

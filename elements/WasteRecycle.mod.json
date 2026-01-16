@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "unfurnace",
+    "result": {
+      "value": "CUSTOM:BlutoniumNugget"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:BlutoniumWaste"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "Unfurnace"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "crystalnexus:block/energy_cable_down",
+  "textures": {
+    "texture": "crystalnexus:block/energy_cable_mk_2"
+  }
+}

@@ -118,7 +118,7 @@
     "hasInventory": true,
     "guiBoundTo": "ExtractinatorGui",
     "openGUIOnRightClick": true,
-    "inventorySize": 9,
+    "inventorySize": 8,
     "inventoryStackSize": 64,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,

@@ -537,5 +537,8 @@
   "item.crystalnexus.blutonium_waste": "Blutonium Waste",
   "block.crystalnexus.reactor_waste_output": "Reactor Waste Output",
   "gui.crystalnexus.waste_output_gui.label_waste_output": "[Waste Output]",
-  "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade"
+  "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade",
+  "block.crystalnexus.energy_cable_mk_2": "Energy Cable Mk 2",
+  "block.crystalnexus.basic_energy_cable": "Basic Energy Cable",
+  "item.crystalnexus.zero_point_core": "Zero Point Core"
 }

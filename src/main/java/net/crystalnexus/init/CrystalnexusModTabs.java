@@ -244,6 +244,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_WASTE.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
+				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -253,6 +254,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BASIC_ENERGY_CABLE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ENERGY_GUIDE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_REFRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_SPLITTER.get().asItem());

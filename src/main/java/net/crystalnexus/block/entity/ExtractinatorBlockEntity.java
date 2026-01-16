@@ -29,7 +29,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
 
 	public ExtractinatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.EXTRACTINATOR.get(), position, state);

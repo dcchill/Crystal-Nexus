@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:unfurnace",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blutonium_waste"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:blutonium_nugget",
+    "count": 1
+  }
+}

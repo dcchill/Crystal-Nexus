@@ -61,6 +61,7 @@ import net.crystalnexus.block.entity.ExtractinatorBlockEntity;
 import net.crystalnexus.block.entity.EnergySplitterBlockEntity;
 import net.crystalnexus.block.entity.EnergyRefractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
+import net.crystalnexus.block.entity.EnergyCableMk2BlockEntity;
 import net.crystalnexus.block.entity.EnergyCableBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
@@ -91,6 +92,7 @@ import net.crystalnexus.block.entity.BiomaticConstructorBlockEntity;
 import net.crystalnexus.block.entity.BiomaticComposterBlockEntity;
 import net.crystalnexus.block.entity.BatteryMonitorBlockEntity;
 import net.crystalnexus.block.entity.BatteryBlockEntity;
+import net.crystalnexus.block.entity.BasicEnergyCableBlockEntity;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -184,6 +186,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DepotDownloaderBlockEntity>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableBlockEntity>> ENERGY_CABLE = register("energy_cable", CrystalnexusModBlocks.ENERGY_CABLE, EnergyCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorWasteOutputBlockEntity>> REACTOR_WASTE_OUTPUT = register("reactor_waste_output", CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT, ReactorWasteOutputBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableMk2BlockEntity>> ENERGY_CABLE_MK_2 = register("energy_cable_mk_2", CrystalnexusModBlocks.ENERGY_CABLE_MK_2, EnergyCableMk2BlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BasicEnergyCableBlockEntity>> BASIC_ENERGY_CABLE = register("basic_energy_cable", CrystalnexusModBlocks.BASIC_ENERGY_CABLE, BasicEnergyCableBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -328,5 +332,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_WASTE_OUTPUT.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE_MK_2.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BASIC_ENERGY_CABLE.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

@@ -2,31 +2,40 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "tag": "crystalnexus:singularities"
+      "item": "crystalnexus:hyper_machine_frame"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:machine_bolt"
     },
     {
-      "item": "crystalnexus:compound_e"
+      "item": "crystalnexus:carbon_fiber_rod"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:machine_bolt"
     },
     {
-      "item": "crystalnexus:omega_chip"
+      "item": "crystalnexus:singularity_matrix"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:machine_bolt"
     },
     {
-      "item": "crystalnexus:compound_e"
+      "item": "crystalnexus:carbon_fiber_rod"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:machine_bolt"
     }
   ],
-  "integers": [],
+  "integers": [
+    1,
+    8,
+    4,
+    8,
+    1,
+    8,
+    4,
+    8
+  ],
   "strings": [],
   "output": {
     "id": "crystalnexus:quantum_miner",

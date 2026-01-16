@@ -9,31 +9,40 @@
     "count": 1,
     "ingredients": [
       {
-        "value": "TAG:mod:singularities"
+        "value": "CUSTOM:HyperMachineFrame"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "CUSTOM:CompoundE"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "CUSTOM:OmegaChip"
+        "value": "CUSTOM:SingularityMatrix"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "CUSTOM:CompoundE"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:MachineBolt"
       }
     ],
-    "integers": [],
+    "integers": [
+      1,
+      8,
+      4,
+      8,
+      1,
+      8,
+      4,
+      8
+    ],
     "strings": [],
     "recipetype": "MatterTransmutation"
   }

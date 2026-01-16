@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "matter_transmutation",
+    "result": {
+      "value": "CUSTOM:ZeroPointCore"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:EnergySingularity"
+      },
+      {
+        "value": "CUSTOM:IronSingularity"
+      },
+      {
+        "value": "CUSTOM:DiamondSingularity"
+      },
+      {
+        "value": "CUSTOM:GoldSingularity"
+      },
+      {
+        "value": "CUSTOM:CopperSingularity"
+      },
+      {
+        "value": "CUSTOM:RedstoneSingularity"
+      },
+      {
+        "value": "CUSTOM:QuartzSingularity"
+      },
+      {
+        "value": "CUSTOM:CoalSingularity"
+      }
+    ],
+    "integers": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "strings": [],
+    "recipetype": "MatterTransmutation"
+  }
+}

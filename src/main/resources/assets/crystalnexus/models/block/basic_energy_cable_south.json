@@ -1,0 +1,6 @@
+{
+  "parent": "crystalnexus:block/energy_cable_south",
+  "textures": {
+    "texture": "crystalnexus:block/basic_energy_cable"
+  }
+}

@@ -85,6 +85,7 @@ import net.crystalnexus.block.ExtractinatorBlock;
 import net.crystalnexus.block.EnergySplitterBlock;
 import net.crystalnexus.block.EnergyRefractorBlock;
 import net.crystalnexus.block.EnergyExtractorBlock;
+import net.crystalnexus.block.EnergyCableMk2Block;
 import net.crystalnexus.block.EnergyCableBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
 import net.crystalnexus.block.EEBatteryBlock;
@@ -129,6 +130,7 @@ import net.crystalnexus.block.BiomaticConstructorBlock;
 import net.crystalnexus.block.BiomaticComposterBlock;
 import net.crystalnexus.block.BatteryMonitorBlock;
 import net.crystalnexus.block.BatteryBlock;
+import net.crystalnexus.block.BasicEnergyCableBlock;
 import net.crystalnexus.block.AncientDebrisNodeBlock;
 import net.crystalnexus.block.AncientCrystalOreStoneBlock;
 import net.crystalnexus.block.AncientCrystalOreBlock;
@@ -260,6 +262,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> HYPER_MACHINE_FRAME = REGISTRY.register("hyper_machine_frame", HyperMachineFrameBlock::new);
 	public static final DeferredBlock<Block> ENERGY_CABLE = REGISTRY.register("energy_cable", EnergyCableBlock::new);
 	public static final DeferredBlock<Block> REACTOR_WASTE_OUTPUT = REGISTRY.register("reactor_waste_output", ReactorWasteOutputBlock::new);
+	public static final DeferredBlock<Block> ENERGY_CABLE_MK_2 = REGISTRY.register("energy_cable_mk_2", EnergyCableMk2Block::new);
+	public static final DeferredBlock<Block> BASIC_ENERGY_CABLE = REGISTRY.register("basic_energy_cable", BasicEnergyCableBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

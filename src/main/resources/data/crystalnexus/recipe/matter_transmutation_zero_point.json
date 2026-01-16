@@ -2,30 +2,41 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
+      "item": "crystalnexus:singularity_matrix"
+    },
+    {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    {
       "item": "crystalnexus:hyper_machine_frame"
     },
     {
-      "item": "crystalnexus:iron_singularity"
+      "item": "crystalnexus:carbon_fiber_rod"
     },
     {
-      "item": "crystalnexus:gold_singularity"
+      "item": "crystalnexus:zero_point_core"
     },
     {
-      "item": "crystalnexus:redstone_singularity"
+      "item": "crystalnexus:carbon_fiber_rod"
     },
     {
-      "item": "crystalnexus:diamond_singularity"
+      "item": "crystalnexus:hyper_machine_frame"
     },
     {
-      "item": "crystalnexus:quartz_singularity"
-    },
-    {
-      "item": "crystalnexus:copper_singularity"
-    },
-    {
-      "item": "crystalnexus:coal_singularity"
+      "item": "crystalnexus:carbon_fiber_rod"
     }
   ],
+  "integers": [
+    1,
+    4,
+    4,
+    4,
+    1,
+    4,
+    4,
+    4
+  ],
+  "strings": [],
   "output": {
     "id": "crystalnexus:zero_point",
     "count": 1

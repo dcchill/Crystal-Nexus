@@ -1,0 +1,12 @@
+{
+  "multipart": [
+    { "apply": { "model": "crystalnexus:block/energy_cable_mk_2_core" } },
+
+    { "when": { "north": "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_north" } },
+    { "when": { "south": "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_south" } },
+    { "when": { "east":  "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_east"  } },
+    { "when": { "west":  "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_west"  } },
+    { "when": { "up":    "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_up"    } },
+    { "when": { "down":  "true" }, "apply": { "model": "crystalnexus:block/energy_cable_mk_2_down"  } }
+  ]
+}

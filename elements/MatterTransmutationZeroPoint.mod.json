@@ -9,31 +9,40 @@
     "count": 1,
     "ingredients": [
       {
-        "value": "CUSTOM:CopperSingularity"
+        "value": "CUSTOM:SingularityMatrix"
       },
       {
-        "value": "CUSTOM:IronSingularity"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:GoldSingularity"
+        "value": "CUSTOM:HyperMachineFrame"
       },
       {
-        "value": "CUSTOM:RedstoneSingularity"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:DiamondSingularity"
+        "value": "CUSTOM:ZeroPointCore"
       },
       {
-        "value": "CUSTOM:QuartzSingularity"
+        "value": "CUSTOM:CarbonFiberRod"
       },
       {
-        "value": "CUSTOM:EnergySingularity"
+        "value": "CUSTOM:HyperMachineFrame"
       },
       {
-        "value": "CUSTOM:CoalSingularity"
+        "value": "CUSTOM:CarbonFiberRod"
       }
     ],
-    "integers": [],
+    "integers": [
+      1,
+      4,
+      4,
+      4,
+      1,
+      4,
+      4,
+      4
+    ],
     "strings": [],
     "recipetype": "MatterTransmutation"
   }
