@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "node_miner",
+        "1": "pipe"
+      },
+      "name": "default"
+    }
+  }
+}

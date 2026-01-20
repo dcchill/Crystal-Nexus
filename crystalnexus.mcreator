@@ -14748,7 +14748,8 @@
           "src/main/java/net/crystalnexus/world/inventory/NodeMinerGUIMenu.java",
           "src/main/java/net/crystalnexus/client/gui/NodeMinerGUIScreen.java"
         ]
-      }
+      },
+      "path": "~/nodeminer"
     },
     {
       "name": "GoldNode",
@@ -15538,6 +15539,284 @@
           "src/main/resources/data/crystalnexus/recipe/zero_point_core_recipe.json"
         ]
       }
+    },
+    {
+      "name": "OilNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "oil_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/oil_node.json",
+          "src/main/java/net/crystalnexus/block/OilNodeBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/oil_node.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/oil_node.json",
+          "src/main/resources/assets/crystalnexus/blockstates/oil_node.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "LavaNode",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lava_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/lava_node.json",
+          "src/main/java/net/crystalnexus/block/LavaNodeBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/lava_node.json",
+          "src/main/resources/assets/crystalnexus/models/block/lava_node.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/lava_node.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "OilNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "oil_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/oil_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/oil_node_gen.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/oil_node_gen_biome_modifier.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "LavaNodeGen",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lava_node_gen",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/lava_node_gen.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/lava_node_gen.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/lava_node_gen_biome_modifier.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeExtractor",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_extractor",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/node_extractor.json",
+          "src/main/resources/assets/crystalnexus/models/block/node_extractor.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/node_extractor.json",
+          "src/main/java/net/crystalnexus/block/NodeExtractorBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/NodeExtractorBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/node_extractor.json"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeExtractorOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_extractor_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/NodeExtractorOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "NodeExtractorGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "node_extractor_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/NodeExtractorGUIScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/NodeExtractorGUIMenu.java"
+        ]
+      },
+      "path": "~/nodeminer"
+    },
+    {
+      "name": "Tank",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "tank",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/tank.json",
+          "src/main/resources/assets/crystalnexus/models/block/tank.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/tank.json",
+          "src/main/java/net/crystalnexus/block/TankBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/tank.json",
+          "src/main/java/net/crystalnexus/block/entity/TankBlockEntity.java"
+        ]
+      },
+      "path": "~/pipes"
+    },
+    {
+      "name": "TankNetwork",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "tank_network",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/TankNetwork.java"
+        ]
+      }
+    },
+    {
+      "name": "FluidTankRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_tank_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/fluid_tank_recipe.json"
+        ]
+      },
+      "path": "~/pipes"
+    },
+    {
+      "name": "FluidPackager",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_packager",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/fluid_packager.json",
+          "src/main/resources/assets/crystalnexus/models/block/fluid_packager.json",
+          "src/main/java/net/crystalnexus/block/entity/FluidPackagerBlockEntity.java",
+          "src/main/java/net/crystalnexus/block/FluidPackagerBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/fluid_packager.json",
+          "src/main/resources/assets/crystalnexus/models/item/fluid_packager.json"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "FluidPackagerGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_packager_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/FluidPackagerGUIButtonMessage.java",
+          "src/main/java/net/crystalnexus/network/FluidPackagerGUISlotMessage.java",
+          "src/main/java/net/crystalnexus/world/inventory/FluidPackagerGUIMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/FluidPackagerGUIScreen.java"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "FluidPackagerOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "fluid_packager_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/FluidPackagerOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "DumpFluid",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dump_fluid",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/DumpFluidProcedure.java"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "FluidPackagerJEIInfo",
+      "type": "jeiinformation",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_packager_jei_info",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/fluid packager"
     }
   ],
   "variable_elements": [
@@ -15644,6 +15923,11 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:FluidPackager",
+      "~CUSTOM:NodeExtractor",
+      "~CUSTOM:NodeMiner",
+      "~CUSTOM:LavaNode",
+      "~CUSTOM:OilNode",
       "~CUSTOM:ReactorWasteOutput",
       "~CUSTOM:HyperMachineFrame",
       "~CUSTOM:DepotDownloader",
@@ -15758,6 +16042,8 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:NodeExtractor",
+      "~CUSTOM:NodeMiner",
       "~CUSTOM:HyperMachineFrame",
       "~CUSTOM:DepotDownloader",
       "~CUSTOM:GoldNode",
@@ -15992,6 +16278,7 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:OilNode",
       "~CUSTOM:CopperNode",
       "~CUSTOM:IronNode"
     ]
@@ -16217,7 +16504,11 @@
       "BlutoniumWaste",
       "ReactorWasteOutput",
       "DepotStorageUpgrade",
-      "ZeroPointCore"
+      "ZeroPointCore",
+      "OilNode",
+      "LavaNode",
+      "NodeExtractor",
+      "FluidPackager"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16265,6 +16556,7 @@
       "ConductiveEnergyGuide",
       "ConductiveEnergyRefractor",
       "ConductiveEnergySplitter",
+      "Tank",
       "PipeStraight",
       "PipeJunction",
       "Battery",
@@ -16819,7 +17111,17 @@
       "item.crystalnexus.depot_storage_upgrade": "Depot Storage Upgrade",
       "block.crystalnexus.energy_cable_mk_2": "Energy Cable Mk 2",
       "block.crystalnexus.basic_energy_cable": "Basic Energy Cable",
-      "item.crystalnexus.zero_point_core": "Zero Point Core"
+      "item.crystalnexus.zero_point_core": "Zero Point Core",
+      "block.crystalnexus.oil_node": "Oil Node",
+      "block.crystalnexus.lava_node": "Lava Node",
+      "block.crystalnexus.node_extractor.description_0": "§5Place on a fluid node to start extracting.",
+      "block.crystalnexus.node_extractor": "Node Extractor",
+      "gui.crystalnexus.node_extractor_gui.label_quantum_miner": "[Node Extractor]",
+      "block.crystalnexus.tank": "Fluid Tank",
+      "block.crystalnexus.fluid_packager": "Fluid Packager",
+      "gui.crystalnexus.fluid_packager_gui.label_proc_get_block_name_for_gui": "[Fluid Packager]",
+      "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
+      "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically."
     }
   },
   "metadata": {
@@ -17014,6 +17316,10 @@
       },
       {
         "name": "blutoniumwaste",
+        "children": []
+      },
+      {
+        "name": "fluid packager",
         "children": []
       }
     ]

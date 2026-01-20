@@ -24,6 +24,7 @@ import net.crystalnexus.block.TarrockBrickWallBlock;
 import net.crystalnexus.block.TarrockBrickStairsBlock;
 import net.crystalnexus.block.TarrockBrickSlabBlock;
 import net.crystalnexus.block.TarrockBlock;
+import net.crystalnexus.block.TankBlock;
 import net.crystalnexus.block.SteamEngineUpgradeBlock;
 import net.crystalnexus.block.SteamEngineBlock;
 import net.crystalnexus.block.SteamCollectorBlock;
@@ -56,7 +57,9 @@ import net.crystalnexus.block.PistonGeneratorBlock;
 import net.crystalnexus.block.PipeStraightBlock;
 import net.crystalnexus.block.PipeJunctionBlock;
 import net.crystalnexus.block.OreProcessorBlock;
+import net.crystalnexus.block.OilNodeBlock;
 import net.crystalnexus.block.NodeMinerBlock;
+import net.crystalnexus.block.NodeExtractorBlock;
 import net.crystalnexus.block.MultiblockResearchStationBlock;
 import net.crystalnexus.block.MetallurgicRecrystallizerBlock;
 import net.crystalnexus.block.MatterTransmutationTableBlock;
@@ -64,6 +67,7 @@ import net.crystalnexus.block.MachineblockBlock;
 import net.crystalnexus.block.MachineFrameBlock;
 import net.crystalnexus.block.MachineEnergyInputBlock;
 import net.crystalnexus.block.MachineCoreBlock;
+import net.crystalnexus.block.LavaNodeBlock;
 import net.crystalnexus.block.ItemElevatorDownBlock;
 import net.crystalnexus.block.ItemElevatorBlock;
 import net.crystalnexus.block.ItemCollectorBlock;
@@ -78,6 +82,7 @@ import net.crystalnexus.block.HyperMachineFrameBlock;
 import net.crystalnexus.block.GrowthChamberOffBlock;
 import net.crystalnexus.block.GoldNodeBlock;
 import net.crystalnexus.block.GasolineBlock;
+import net.crystalnexus.block.FluidPackagerBlock;
 import net.crystalnexus.block.FactoryOutputControllerBlock;
 import net.crystalnexus.block.FactoryItemControllerBlock;
 import net.crystalnexus.block.FactoryControllerBlock;
@@ -264,6 +269,11 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_WASTE_OUTPUT = REGISTRY.register("reactor_waste_output", ReactorWasteOutputBlock::new);
 	public static final DeferredBlock<Block> ENERGY_CABLE_MK_2 = REGISTRY.register("energy_cable_mk_2", EnergyCableMk2Block::new);
 	public static final DeferredBlock<Block> BASIC_ENERGY_CABLE = REGISTRY.register("basic_energy_cable", BasicEnergyCableBlock::new);
+	public static final DeferredBlock<Block> OIL_NODE = REGISTRY.register("oil_node", OilNodeBlock::new);
+	public static final DeferredBlock<Block> LAVA_NODE = REGISTRY.register("lava_node", LavaNodeBlock::new);
+	public static final DeferredBlock<Block> NODE_EXTRACTOR = REGISTRY.register("node_extractor", NodeExtractorBlock::new);
+	public static final DeferredBlock<Block> TANK = REGISTRY.register("tank", TankBlock::new);
+	public static final DeferredBlock<Block> FLUID_PACKAGER = REGISTRY.register("fluid_packager", FluidPackagerBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "b": {
+      "tag": "c:glass_blocks"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:tank",
+    "count": 2
+  }
+}

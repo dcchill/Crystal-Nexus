@@ -37,5 +37,7 @@ public class CrystalnexusModJeiInformation implements IModPlugin {
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.INVERTIUM_CRYSTAL.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.portal_inversion_crystal"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EE_MATTER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.ee_matter_fe"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.energy_singularity_fe"));
+		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EMPTY_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.OIL_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.GAS_FUEL_CELL.get()),
+				new ItemStack(CrystalnexusModBlocks.FLUID_PACKAGER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.fluid_packager_jei_info"));
 	}
 }

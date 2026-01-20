@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/fluid_packager"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/fluid_packager",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/fluid_packager",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/fluid_packager",
+      "y": 270
+    }
+  }
+}

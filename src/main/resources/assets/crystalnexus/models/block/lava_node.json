@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/lava_node",
+    "particle": "crystalnexus:block/lava_node"
+  },
+  "render_type": "solid"
+}

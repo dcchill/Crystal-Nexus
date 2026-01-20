@@ -1,0 +1,23 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:EmptyFuelCell"
+      },
+      {
+        "value": "CUSTOM:OilFuelCell"
+      },
+      {
+        "value": "CUSTOM:GasFuelCell"
+      },
+      {
+        "value": "CUSTOM:FluidPackager"
+      }
+    ],
+    "information": [
+      "Use the Fluid Packager to fill Fluid Cells automatically."
+    ]
+  }
+}

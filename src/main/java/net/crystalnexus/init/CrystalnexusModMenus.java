@@ -32,6 +32,7 @@ import net.crystalnexus.world.inventory.PistonGenGUIMenu;
 import net.crystalnexus.world.inventory.OreProGUIMenu;
 import net.crystalnexus.world.inventory.OreGenGUIMenu;
 import net.crystalnexus.world.inventory.NodeMinerGUIMenu;
+import net.crystalnexus.world.inventory.NodeExtractorGUIMenu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage5Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage4Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage3Menu;
@@ -45,6 +46,7 @@ import net.crystalnexus.world.inventory.ItemCollectorGUIMenu;
 import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.world.inventory.InverterGuiMenu;
 import net.crystalnexus.world.inventory.GrowthChamberGuiMenu;
+import net.crystalnexus.world.inventory.FluidPackagerGUIMenu;
 import net.crystalnexus.world.inventory.FluidInputGuiMenu;
 import net.crystalnexus.world.inventory.FactoryItemControllerGuiMenu;
 import net.crystalnexus.world.inventory.FactoryControllerGuiMenu;
@@ -118,6 +120,8 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityMatrixGUIMenu>> SINGULARITY_MATRIX_GUI = REGISTRY.register("singularity_matrix_gui", () -> IMenuTypeExtension.create(SingularityMatrixGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<DepotMenu>> DEPOT = REGISTRY.register("depot", () -> IMenuTypeExtension.create(DepotMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<WasteOutputGuiMenu>> WASTE_OUTPUT_GUI = REGISTRY.register("waste_output_gui", () -> IMenuTypeExtension.create(WasteOutputGuiMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<NodeExtractorGUIMenu>> NODE_EXTRACTOR_GUI = REGISTRY.register("node_extractor_gui", () -> IMenuTypeExtension.create(NodeExtractorGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<FluidPackagerGUIMenu>> FLUID_PACKAGER_GUI = REGISTRY.register("fluid_packager_gui", () -> IMenuTypeExtension.create(FluidPackagerGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

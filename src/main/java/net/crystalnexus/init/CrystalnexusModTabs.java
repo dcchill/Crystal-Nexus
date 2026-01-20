@@ -245,6 +245,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
+				tabData.accept(CrystalnexusModBlocks.OIL_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LAVA_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLUID_PACKAGER.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -263,6 +267,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_GUIDE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_REFRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONDUCTIVE_ENERGY_SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TANK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BATTERY.get().asItem());

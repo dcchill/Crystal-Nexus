@@ -1,0 +1,12 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "nether_wastes",
+    "crystalnexus:oil_depths",
+    "basalt_deltas",
+    "crimson_forest",
+    "warped_forest"
+  ],
+  "features": "crystalnexus:lava_node_gen",
+  "step": "underground_decoration"
+}

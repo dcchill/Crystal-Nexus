@@ -3,6 +3,7 @@
   "values": [
     "crystalnexus:tarrock",
     "crystalnexus:ancient_crystal_ore",
+    "crystalnexus:node_extractor",
     "crystalnexus:smooth_tarrock_wall",
     "crystalnexus:tarrock_soil",
     "crystalnexus:machine_core",
@@ -16,6 +17,7 @@
     "crystalnexus:smooth_tarrock_slab",
     "crystalnexus:smooth_tarrock",
     "crystalnexus:depot_downloader",
+    "crystalnexus:node_miner",
     "crystalnexus:silicon_ore",
     "crystalnexus:tarrock_bricks",
     "crystalnexus:ancient_crystal_ore_stone",

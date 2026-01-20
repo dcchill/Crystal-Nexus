@@ -25,6 +25,7 @@ import net.crystalnexus.client.gui.PistonGenGUIScreen;
 import net.crystalnexus.client.gui.OreProGUIScreen;
 import net.crystalnexus.client.gui.OreGenGUIScreen;
 import net.crystalnexus.client.gui.NodeMinerGUIScreen;
+import net.crystalnexus.client.gui.NodeExtractorGUIScreen;
 import net.crystalnexus.client.gui.MultiblockGuiPage5Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage4Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage3Screen;
@@ -38,6 +39,7 @@ import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
 import net.crystalnexus.client.gui.IronSmelterGuiScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
 import net.crystalnexus.client.gui.GrowthChamberGuiScreen;
+import net.crystalnexus.client.gui.FluidPackagerGUIScreen;
 import net.crystalnexus.client.gui.FluidInputGuiScreen;
 import net.crystalnexus.client.gui.FactoryItemControllerGuiScreen;
 import net.crystalnexus.client.gui.FactoryControllerGuiScreen;
@@ -109,6 +111,8 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.SINGULARITY_MATRIX_GUI.get(), SingularityMatrixGUIScreen::new);
 		event.register(CrystalnexusModMenus.DEPOT.get(), DepotScreen::new);
 		event.register(CrystalnexusModMenus.WASTE_OUTPUT_GUI.get(), WasteOutputGuiScreen::new);
+		event.register(CrystalnexusModMenus.NODE_EXTRACTOR_GUI.get(), NodeExtractorGUIScreen::new);
+		event.register(CrystalnexusModMenus.FLUID_PACKAGER_GUI.get(), FluidPackagerGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

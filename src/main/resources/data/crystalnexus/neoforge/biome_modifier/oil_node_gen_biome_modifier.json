@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "desert",
+  "features": "crystalnexus:oil_node_gen",
+  "step": "raw_generation"
+}

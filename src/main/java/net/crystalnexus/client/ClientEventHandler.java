@@ -17,5 +17,5 @@ public class ClientEventHandler {
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.CONVEYER_BELT.get(), ConveyerBeltBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.CONVEYER_BELT_INPUT.get(), ConveyerBeltBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.CONVEYER_BELT_OUTPUT.get(), ConveyerBeltBER::new);
-    }
-}
+        event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.TANK.get(),net.crystalnexus.client.renderer.TankBER::new);
+}}

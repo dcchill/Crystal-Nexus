@@ -25,7 +25,7 @@ public class BasicEnergyCableBlockEntity extends BlockEntity implements WorldlyC
 
 	// Tune these
 	private static final int BUFFER_CAPACITY = 10240;
-	private static final int MAX_IO_PER_TICK = 5120;
+	private static final int MAX_IO_PER_TICK = 1024;
 
 
 	private final EnergyStorage energyStorage = new EnergyStorage(BUFFER_CAPACITY, MAX_IO_PER_TICK, MAX_IO_PER_TICK, 0) {

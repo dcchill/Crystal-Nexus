@@ -22,6 +22,7 @@ import net.crystalnexus.block.entity.UltimaSmelterBlockEntity;
 import net.crystalnexus.block.entity.TurbineBlockEntity;
 import net.crystalnexus.block.entity.TesseractOutputBlockEntity;
 import net.crystalnexus.block.entity.TesseractBlockEntity;
+import net.crystalnexus.block.entity.TankBlockEntity;
 import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
 import net.crystalnexus.block.entity.SteamEngineBlockEntity;
 import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
@@ -40,6 +41,7 @@ import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.PipeJunctionBlockEntity;
 import net.crystalnexus.block.entity.OreProcessorBlockEntity;
 import net.crystalnexus.block.entity.NodeMinerBlockEntity;
+import net.crystalnexus.block.entity.NodeExtractorBlockEntity;
 import net.crystalnexus.block.entity.MultiblockResearchStationBlockEntity;
 import net.crystalnexus.block.entity.MetallurgicRecrystallizerBlockEntity;
 import net.crystalnexus.block.entity.MatterTransmutationTableBlockEntity;
@@ -54,6 +56,7 @@ import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
 import net.crystalnexus.block.entity.InverterBlockEntity;
 import net.crystalnexus.block.entity.InvertPistonGeneratorBlockEntity;
 import net.crystalnexus.block.entity.GrowthChamberOffBlockEntity;
+import net.crystalnexus.block.entity.FluidPackagerBlockEntity;
 import net.crystalnexus.block.entity.FactoryOutputControllerBlockEntity;
 import net.crystalnexus.block.entity.FactoryItemControllerBlockEntity;
 import net.crystalnexus.block.entity.FactoryControllerBlockEntity;
@@ -188,6 +191,9 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorWasteOutputBlockEntity>> REACTOR_WASTE_OUTPUT = register("reactor_waste_output", CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT, ReactorWasteOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyCableMk2BlockEntity>> ENERGY_CABLE_MK_2 = register("energy_cable_mk_2", CrystalnexusModBlocks.ENERGY_CABLE_MK_2, EnergyCableMk2BlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BasicEnergyCableBlockEntity>> BASIC_ENERGY_CABLE = register("basic_energy_cable", CrystalnexusModBlocks.BASIC_ENERGY_CABLE, BasicEnergyCableBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeExtractorBlockEntity>> NODE_EXTRACTOR = register("node_extractor", CrystalnexusModBlocks.NODE_EXTRACTOR, NodeExtractorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankBlockEntity>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPackagerBlockEntity>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -336,5 +342,13 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BASIC_ENERGY_CABLE.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_EXTRACTOR.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> blockEntity.getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TANK.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TANK.get(), (blockEntity, side) -> blockEntity.getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FLUID_PACKAGER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 	}
 }

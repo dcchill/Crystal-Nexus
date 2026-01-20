@@ -402,6 +402,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ENERGY_CABLE_MK_2 = block(CrystalnexusModBlocks.ENERGY_CABLE_MK_2);
 	public static final DeferredItem<Item> BASIC_ENERGY_CABLE = block(CrystalnexusModBlocks.BASIC_ENERGY_CABLE);
 	public static final DeferredItem<Item> ZERO_POINT_CORE = REGISTRY.register("zero_point_core", ZeroPointCoreItem::new);
+	public static final DeferredItem<Item> OIL_NODE = block(CrystalnexusModBlocks.OIL_NODE);
+	public static final DeferredItem<Item> LAVA_NODE = block(CrystalnexusModBlocks.LAVA_NODE);
+	public static final DeferredItem<Item> NODE_EXTRACTOR = block(CrystalnexusModBlocks.NODE_EXTRACTOR);
+	public static final DeferredItem<Item> TANK = block(CrystalnexusModBlocks.TANK);
+	public static final DeferredItem<Item> FLUID_PACKAGER = block(CrystalnexusModBlocks.FLUID_PACKAGER);
 
 	// Start of user code block custom items
 	// End of user code block custom items
