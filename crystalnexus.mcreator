@@ -15817,6 +15817,45 @@
         "files": []
       },
       "path": "~/fluid packager"
+    },
+    {
+      "name": "FluidPackagerblockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_packagerblockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/fluid_packagerblockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/fluid_packagerblockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "FluidPackagerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "fluid_packager_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/fluid_packager_recipe.json"
+        ]
+      },
+      "path": "~/fluid packager"
+    },
+    {
+      "name": "PolymerSheetAltRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "polymer_sheet_alt_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/polymer_sheet_alt_recipe.json"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -16289,6 +16328,8 @@
       "IronNode",
       "GoldNode",
       "AncientDebrisNode",
+      "OilNode",
+      "LavaNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "RawAncientCrystal",
@@ -16347,10 +16388,12 @@
       "SteamChamber",
       "SteamEngine",
       "SteamEngineUpgrade",
+      "FluidPackager",
       "PistonGenerator",
       "InvertPistonGenerator",
       "CrystalAccepter",
       "NodeMiner",
+      "NodeExtractor",
       "CraftingFactory",
       "CrystalCrusher",
       "DustSeparator",
@@ -16374,6 +16417,7 @@
       "ReactorComputer",
       "ReactorEnergyOutput",
       "ReactorFluidInput",
+      "ReactorWasteOutput",
       "ReactorCore",
       "BluTNT",
       "ReactionChamberBlock",
@@ -16390,6 +16434,12 @@
       "QuantumMiner",
       "CarbonGlass",
       "SingularityMatrix",
+      "HyperMachineFrame",
+      "DepotUplink",
+      "DepotUploader",
+      "DepotDownloader",
+      "DepotStorageUpgrade",
+      "ZeroPointCore",
       "ZeroPoint",
       "Silicon",
       "EnergizedSilicon",
@@ -16497,18 +16547,7 @@
       "JetPack",
       "Carbon",
       "CarbonJetpack",
-      "DepotUplink",
-      "DepotUploader",
-      "DepotDownloader",
-      "HyperMachineFrame",
-      "BlutoniumWaste",
-      "ReactorWasteOutput",
-      "DepotStorageUpgrade",
-      "ZeroPointCore",
-      "OilNode",
-      "LavaNode",
-      "NodeExtractor",
-      "FluidPackager"
+      "BlutoniumWaste"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16779,7 +16818,7 @@
       "item.crystalnexus.iron_singularity.description_0": "§5Provides Resistance",
       "block.crystalnexus.chemical_reaction_chamber": "Chemical Reaction Chamber",
       "item.crystalnexus.nitrile": "Nitrile Pellet",
-      "item.crystalnexus.polyacrylonitrile_dust": "Polyacrylonitrile Dust",
+      "item.crystalnexus.polyacrylonitrile_dust": "Polymer Dust",
       "item.crystalnexus.polymer_sheet": "Polymer Sheet",
       "block.crystalnexus.container": "Container",
       "block.crystalnexus.container.description_0": "§5Works like a shulker box",

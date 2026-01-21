@@ -1,0 +1,25 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "chemical_reaction",
+    "result": {
+      "value": "CUSTOM:PolymerSheet"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "CUSTOM:OilFuelCell"
+      },
+      {
+        "value": "Items.QUARTZ"
+      },
+      {
+        "value": "Items.CLAY_BALL"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "ChemicalReaction"
+  }
+}

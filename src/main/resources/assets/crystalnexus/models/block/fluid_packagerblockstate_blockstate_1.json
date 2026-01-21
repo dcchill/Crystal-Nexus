@@ -3,7 +3,7 @@
   "textures": {
     "down": "crystalnexus:block/purebottom",
     "up": "crystalnexus:block/puretop",
-    "north": "crystalnexus:block/fluid_packager",
+    "north": "crystalnexus:block/fluid_packager_on",
     "east": "crystalnexus:block/pureside",
     "south": "crystalnexus:block/pureside",
     "west": "crystalnexus:block/pureside",

@@ -1,7 +1,12 @@
 package net.crystalnexus.block;
 
+import org.checkerframework.checker.units.qual.s;
+
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
@@ -38,10 +43,19 @@ import net.crystalnexus.block.entity.FluidPackagerBlockEntity;
 import io.netty.buffer.Unpooled;
 
 public class FluidPackagerBlock extends Block implements EntityBlock {
+	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
 	public FluidPackagerBlock() {
-		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).requiresCorrectToolForDrops().instrument(NoteBlockInstrument.COW_BELL));
+		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
+			public int getLightLevel() {
+				if (s.getValue(BLOCKSTATE) == 1)
+					return 0;
+				if (s.getValue(BLOCKSTATE) == 2)
+					return 0;
+				return 0;
+			}
+		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
@@ -51,9 +65,19 @@ public class FluidPackagerBlock extends Block implements EntityBlock {
 	}
 
 	@Override
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+		return switch (state.getValue(FACING)) {
+			default -> box(0, 0, 0, 16, 16, 16);
+			case NORTH -> box(0, 0, 0, 16, 16, 16);
+			case EAST -> box(0, 0, 0, 16, 16, 16);
+			case WEST -> box(0, 0, 0, 16, 16, 16);
+		};
+	}
+
+	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING);
+		builder.add(FACING, BLOCKSTATE);
 	}
 
 	@Override

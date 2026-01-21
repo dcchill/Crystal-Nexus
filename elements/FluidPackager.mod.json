@@ -5,7 +5,7 @@
     "texture": "purebottom",
     "textureTop": "puretop",
     "textureLeft": "pureside",
-    "textureFront": "circuitpress",
+    "textureFront": "fluid_packager",
     "textureRight": "pureside",
     "textureBack": "pureside",
     "renderType": 10,

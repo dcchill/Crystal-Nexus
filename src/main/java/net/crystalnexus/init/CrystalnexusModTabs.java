@@ -26,6 +26,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.IRON_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.GOLD_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.OIL_NODE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LAVA_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.ANCIENT_CRYSTAL.get());
@@ -84,10 +86,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.STEAM_CHAMBER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLUID_PACKAGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_ACCEPTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_MINER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
@@ -111,6 +115,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLU_TNT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_BLOCK.get().asItem());
@@ -127,6 +132,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.QUANTUM_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CARBON_GLASS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SINGULARITY_MATRIX.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HYPER_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModItems.DEPOT_UPLINK.get());
+				tabData.accept(CrystalnexusModBlocks.DEPOT_UPLOADER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.DEPOT_DOWNLOADER.get().asItem());
+				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
+				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 				tabData.accept(CrystalnexusModBlocks.ZERO_POINT.get().asItem());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
@@ -237,18 +248,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
-				tabData.accept(CrystalnexusModItems.DEPOT_UPLINK.get());
-				tabData.accept(CrystalnexusModBlocks.DEPOT_UPLOADER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.DEPOT_DOWNLOADER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.HYPER_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_WASTE.get());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
-				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
-				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
-				tabData.accept(CrystalnexusModBlocks.OIL_NODE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.LAVA_NODE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.FLUID_PACKAGER.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

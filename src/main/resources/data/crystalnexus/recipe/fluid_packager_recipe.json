@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "c": {
+      "item": "minecraft:piston"
+    },
+    "d": {
+      "item": "minecraft:copper_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:fluid_packager",
+    "count": 1
+  }
+}

@@ -1,7 +1,7 @@
 {
   "format_version": "1.9.0",
   "credit": "Made with Blockbench",
-  "parent": "node_miner",
+  "parent": "node_extractor",
   "texture_size": [
     64,
     64
@@ -940,7 +940,7 @@
       ],
       "rotation": {
         "angle": 0,
-        "axis": "x",
+        "axis": "y",
         "origin": [
           8,
           8,
@@ -1021,7 +1021,7 @@
       ],
       "rotation": {
         "angle": 0,
-        "axis": "x",
+        "axis": "y",
         "origin": [
           8,
           7,
@@ -1083,7 +1083,7 @@
       ],
       "rotation": {
         "angle": 0,
-        "axis": "x",
+        "axis": "y",
         "origin": [
           8,
           10,
