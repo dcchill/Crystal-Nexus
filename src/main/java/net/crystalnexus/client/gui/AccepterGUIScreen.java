@@ -9,16 +9,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.AccepterGUIMenu;
-import net.crystalnexus.procedures.TankTwoProcedure;
-import net.crystalnexus.procedures.TankThreeProcedure;
-import net.crystalnexus.procedures.TankOneProcedure;
-import net.crystalnexus.procedures.TankNoneProcedure;
-import net.crystalnexus.procedures.TankDoneProcedure;
-import net.crystalnexus.procedures.CrystalAccepterOnTickUpdateProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
-
-import java.util.stream.Collectors;
-import java.util.Arrays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -55,13 +46,6 @@ public class AccepterGUIScreen extends AbstractContainerScreen<AccepterGUIMenu> 
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.accepter_gui.tooltip_crystal_here"), mouseX, mouseY);
 			customTooltipShown = true;
 		}
-		if (mouseX > leftPos + 128 && mouseX < leftPos + 152 && mouseY > topPos + 29 && mouseY < topPos + 53) {
-			String hoverText = CrystalAccepterOnTickUpdateProcedure.execute(world, x, y, z);
-			if (hoverText != null) {
-				guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
-			}
-			customTooltipShown = true;
-		}
 		if (!customTooltipShown)
 			this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
@@ -74,22 +58,6 @@ public class AccepterGUIScreen extends AbstractContainerScreen<AccepterGUIMenu> 
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png"), this.leftPos + 6, this.topPos + 7, 0, 0, 16, 16, 16, 16);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tankmt.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		if (TankDoneProcedure.execute(world, x, y, z)) {
-			guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tankfull.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		}
-		if (TankThreeProcedure.execute(world, x, y, z)) {
-			guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tank34.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		}
-		if (TankTwoProcedure.execute(world, x, y, z)) {
-			guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tank12.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		}
-		if (TankOneProcedure.execute(world, x, y, z)) {
-			guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tank14.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		}
-		if (TankNoneProcedure.execute(world, x, y, z)) {
-			guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tankmt.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 16, 32, 16, 32);
-		}
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		RenderSystem.disableBlend();
 	}

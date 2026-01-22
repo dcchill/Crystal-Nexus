@@ -528,55 +528,6 @@
       }
     },
     {
-      "name": "CrystalGloop",
-      "type": "fluid",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "crystal_gloop",
-      "metadata": {
-        "files": [
-          "src/main/java/net/crystalnexus/fluid/types/CrystalGloopFluidType.java",
-          "src/main/resources/assets/crystalnexus/models/block/crystal_gloop.json",
-          "src/main/java/net/crystalnexus/fluid/CrystalGloopFluid.java",
-          "src/main/java/net/crystalnexus/item/CrystalGloopItem.java",
-          "src/main/resources/assets/crystalnexus/models/item/crystal_gloop_bucket.json",
-          "src/main/resources/assets/crystalnexus/blockstates/crystal_gloop.json",
-          "src/main/java/net/crystalnexus/block/CrystalGloopBlock.java"
-        ]
-      }
-    },
-    {
-      "name": "GrowthChamberOff",
-      "type": "block",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/loot_table/blocks/growth_chamber.json",
-          "src/main/java/net/crystalnexus/block/entity/GrowthChamberOffBlockEntity.java",
-          "src/main/resources/assets/crystalnexus/models/item/growth_chamber.json",
-          "src/main/resources/assets/crystalnexus/blockstates/growth_chamber.json",
-          "src/main/java/net/crystalnexus/block/GrowthChamberOffBlock.java",
-          "src/main/resources/assets/crystalnexus/models/block/growth_chamber.json"
-        ]
-      }
-    },
-    {
-      "name": "GrowthChamberGui",
-      "type": "gui",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber_gui",
-      "metadata": {
-        "files": [
-          "src/main/java/net/crystalnexus/world/inventory/GrowthChamberGuiMenu.java",
-          "src/main/java/net/crystalnexus/client/gui/GrowthChamberGuiScreen.java",
-          "src/main/java/net/crystalnexus/network/GrowthChamberGuiSlotMessage.java"
-        ]
-      }
-    },
-    {
       "name": "TankNone",
       "type": "procedure",
       "compiles": true,
@@ -605,8 +556,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/TankNoneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "TankOne",
@@ -637,8 +587,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/TankOneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "TankDone",
@@ -669,8 +618,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/TankDoneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "TankTwo",
@@ -701,8 +649,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/TankTwoProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "TankThree",
@@ -732,51 +679,6 @@
         "return_type": "logic",
         "files": [
           "src/main/java/net/crystalnexus/procedures/TankThreeProcedure.java"
-        ]
-      },
-      "path": "~/growthChamberDisplays"
-    },
-    {
-      "name": "GrowthChamberOffOnTickUpdate",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber_off_on_tick_update",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "x",
-            "type": "number"
-          },
-          {
-            "name": "y",
-            "type": "number"
-          },
-          {
-            "name": "z",
-            "type": "number"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "return_type": "string",
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/GrowthChamberOffOnTickUpdateProcedure.java"
-        ]
-      }
-    },
-    {
-      "name": "GrowthChamberBlockstate",
-      "type": "blockstates",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber_blockstate",
-      "metadata": {
-        "files": [
-          "src/main/resources/assets/crystalnexus/models/block/growth_chamber_blockstate_blockstate_0.json",
-          "src/main/resources/assets/crystalnexus/models/block/growth_chamber_blockstate_blockstate_1.json"
         ]
       }
     },
@@ -889,18 +791,6 @@
         "files": [
           "src/main/resources/assets/crystalnexus/models/block/accepter_blockstate_blockstate_0.json",
           "src/main/resources/assets/crystalnexus/models/block/accepter_blockstate_blockstate_1.json"
-        ]
-      }
-    },
-    {
-      "name": "GrowthChamber",
-      "type": "recipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/growth_chamber.json"
         ]
       }
     },
@@ -1180,16 +1070,6 @@
       }
     },
     {
-      "name": "GrowthChamberJEI",
-      "type": "jeiinformation",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "growth_chamber_jei",
-      "metadata": {
-        "files": []
-      }
-    },
-    {
       "name": "AncientCrystalOre",
       "type": "block",
       "compiles": true,
@@ -1392,8 +1272,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/OreTankNoneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "OreTankOne",
@@ -1424,8 +1303,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/OreTankOneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "OreTankDone",
@@ -1456,8 +1334,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/OreTankDoneProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "OreTankTwo",
@@ -1488,8 +1365,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/OreTankTwoProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "OreTankThree",
@@ -1520,8 +1396,7 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/OreTankThreeProcedure.java"
         ]
-      },
-      "path": "~/growthChamberDisplays"
+      }
     },
     {
       "name": "OreGeneratorGetRot",
@@ -7662,18 +7537,6 @@
         "files": [
           "src/main/resources/assets/crystalnexus/models/item/polymer_sheet.json",
           "src/main/java/net/crystalnexus/item/PolymerSheetItem.java"
-        ]
-      }
-    },
-    {
-      "name": "ChemicalChamberPolymerSheet",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "chemical_chamber_polymer_sheet",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/chemical_chamber_polymer_sheet.json"
         ]
       }
     },
@@ -15912,8 +15775,7 @@
     "BLOCKS:minecraft:replaceable": [
       "~CUSTOM:Steam",
       "~CUSTOM:Gasoline",
-      "~CUSTOM:CrudeOil",
-      "~CUSTOM:CrystalGloop"
+      "~CUSTOM:CrudeOil"
     ],
     "ITEMS:mod:jei_empty_tag": [
       "Blocks.AIR"
@@ -16324,123 +16186,100 @@
   },
   "tab_element_order": {
     "CUSTOM:CrystalNexusTab": [
-      "CopperNode",
-      "IronNode",
-      "GoldNode",
-      "AncientDebrisNode",
-      "OilNode",
-      "LavaNode",
-      "AncientCrystalOreStone",
-      "AncientCrystalOre",
-      "RawAncientCrystal",
-      "RawCrystalBlock",
-      "RawCrystalBlockStairs",
-      "RawCrystalBlockSlab",
-      "CrystalAlloyNugget",
-      "CystalizedAlloy",
-      "CrystalizedAlloyBlock",
-      "ChlorophyteOre",
-      "RawChlorophyte",
-      "ChlorophyteDust",
-      "ChlorophyteNugget",
-      "ChlorophyteIngot",
-      "ChlorophyteBlock",
-      "InvertiumCrystal",
-      "InvertiumNugget",
-      "InvertiumIngot",
-      "InvertiumBlock",
-      "BlutoniumOre",
-      "RawBlutonium",
-      "BlutoniumDust",
-      "BlutoniumNugget",
-      "BlutoniumIngot",
-      "PureBlutonium",
-      "BlutoniumBlock",
-      "SiliconOre",
-      "TarrockSoil",
-      "Tarrock",
-      "TarrockStairs",
-      "TarrockSlab",
-      "TarrockWall",
-      "TarrockButton",
-      "TarrockBricks",
-      "TarrockBrickStairs",
-      "TarrockBrickSlab",
-      "TarrockBrickWall",
-      "SmoothTarrock",
-      "SmoothTarrockStairs",
-      "SmoothTarrockSlab",
-      "SmoothTarrockWall",
+      "MultiblockResearchStation",
       "MachineFrame",
-      "CrystalMachineFrame",
-      "ChlorophyteMachineFrame",
-      "InvertiumMachineFrame",
-      "CarbonMachineFrame",
       "BlockPlacer",
       "IronSmelter",
-      "CrystalSmelter",
-      "ChlorophyteSmelter",
-      "InvertiumSmelter",
-      "UltimaSmelter",
-      "CrystalPurifier",
+      "CraftingFactory",
+      "NodeMiner",
+      "NodeExtractor",
       "Turbine",
       "SteamCollector",
       "SteamChamber",
       "SteamEngine",
       "SteamEngineUpgrade",
       "FluidPackager",
+      "RawAncientCrystal",
+      "RawCrystalBlock",
+      "RawCrystalBlockStairs",
+      "RawCrystalBlockSlab",
+      "CrystalAlloyNugget",
+      "CystalizedAlloy",
+      "CrystalMachineFrame",
+      "CrystalizedAlloyBlock",
+      "CrystalGuide",
+      "CrystalSmelter",
       "PistonGenerator",
-      "InvertPistonGenerator",
+      "Extractinator",
       "CrystalAccepter",
-      "NodeMiner",
-      "NodeExtractor",
-      "CraftingFactory",
+      "CrystalPurifier",
       "CrystalCrusher",
       "DustSeparator",
-      "CrystalGuide",
+      "ChlorophyteOre",
+      "RawChlorophyte",
+      "ChlorophyteDust",
+      "ChlorophyteNugget",
+      "ChlorophyteIngot",
+      "ChlorophyteMachineFrame",
+      "ChlorophyteBlock",
       "ItemCollector",
-      "GrowthChamberOff",
-      "Extractinator",
       "BiomaticComposter",
       "BiomaticConstructor",
       "EnergyExtractor",
       "CircuitPress",
+      "ChlorophyteSmelter",
       "ChlorophyteAccelerator",
-      "Tesseract",
-      "TesseractOutput",
+      "InvertiumCrystal",
+      "InvertiumNugget",
+      "InvertiumIngot",
+      "InvertiumMachineFrame",
+      "InvertiumBlock",
+      "InvertiumSmelter",
+      "InvertPistonGenerator",
       "MetallurgicRecrystallizer",
       "Inverter",
       "BiomaticSimulator",
+      "BlutoniumOre",
+      "RawBlutonium",
+      "BlutoniumDust",
+      "BlutoniumNugget",
+      "BlutoniumIngot",
+      "PureBlutonium",
+      "BluTNT",
+      "BlutoniumBlock",
+      "BlutoniumWaste",
       "ChemicalReactionChamber",
-      "MultiblockResearchStation",
       "ReactorBlock",
       "ReactorComputer",
       "ReactorEnergyOutput",
       "ReactorFluidInput",
       "ReactorWasteOutput",
       "ReactorCore",
-      "BluTNT",
       "ReactionChamberBlock",
       "ReactionChamberComputer",
       "ReactionEnergyInput",
       "ReactionChamberCore",
+      "CarbonMachineFrame",
+      "UltimaSmelter",
+      "Tesseract",
+      "TesseractOutput",
       "Machineblock",
       "OreProcessor",
       "MachineEnergyInput",
       "MachineCore",
       "SingularityCompressor",
       "MatterTransmutationTable",
+      "HyperMachineFrame",
       "WarpPad",
       "QuantumMiner",
       "CarbonGlass",
       "SingularityMatrix",
-      "HyperMachineFrame",
       "DepotUplink",
       "DepotUploader",
       "DepotDownloader",
       "DepotStorageUpgrade",
-      "ZeroPointCore",
       "ZeroPoint",
+      "ZeroPointCore",
       "Silicon",
       "EnergizedSilicon",
       "BlankChip",
@@ -16455,7 +16294,6 @@
       "ReactorUpgrade",
       "ReactorUpgradePermafrost",
       "OmegaChip",
-      "CrystalGloop",
       "DragonCrystal",
       "DestabilizedCrystal",
       "StableCrystal",
@@ -16494,6 +16332,12 @@
       "QuartzSingularity",
       "CoalSingularity",
       "EnergySingularity",
+      "JetPack",
+      "Carbon",
+      "CarbonJetpack",
+      "Flamethrower",
+      "MiningLaser",
+      "PaintGun",
       "CrystalExtractor",
       "CystalizedPickaxe",
       "CystalizedAxe",
@@ -16519,14 +16363,11 @@
       "FlorathaneWand",
       "CompoundPickaxe",
       "CompoundSword",
+      "GasFuelCell",
       "CrudeOil",
+      "OilFuelCell",
       "Gasoline",
       "EmptyFuelCell",
-      "OilFuelCell",
-      "GasFuelCell",
-      "Flamethrower",
-      "MiningLaser",
-      "PaintGun",
       "WhitePaintball",
       "LightGrayPaintball",
       "GrayPaintball",
@@ -16544,10 +16385,29 @@
       "PinkPaintball",
       "Coffee",
       "AtomicCoffee",
-      "JetPack",
-      "Carbon",
-      "CarbonJetpack",
-      "BlutoniumWaste"
+      "SiliconOre",
+      "TarrockSoil",
+      "Tarrock",
+      "TarrockStairs",
+      "TarrockSlab",
+      "TarrockWall",
+      "TarrockButton",
+      "TarrockBricks",
+      "TarrockBrickStairs",
+      "TarrockBrickSlab",
+      "TarrockBrickWall",
+      "SmoothTarrock",
+      "SmoothTarrockStairs",
+      "SmoothTarrockSlab",
+      "SmoothTarrockWall",
+      "CopperNode",
+      "IronNode",
+      "GoldNode",
+      "AncientDebrisNode",
+      "OilNode",
+      "LavaNode",
+      "AncientCrystalOreStone",
+      "AncientCrystalOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16628,11 +16488,6 @@
       "item.crystalnexus.ultimate_crystal.description_0": "§5Generates 4096 FE/t per crystal.",
       "item.crystalnexus.crystal_extractor.description_0": "§5Right click on an end crystal to collect its energy crystal.",
       "item.crystalnexus.range_upgrade": "Range Upgrade",
-      "fluid.crystalnexus.crystal_gloop": "Crystal Gloop",
-      "block.crystalnexus.crystal_gloop": "Crystal Gloop",
-      "fluid_type.crystalnexus.crystal_gloop": "Crystal Gloop",
-      "item.crystalnexus.crystal_gloop_bucket": "Crystal Gloop Bucket",
-      "block.crystalnexus.growth_chamber": "Growth Chamber",
       "item.crystalnexus.range_upgrade.description_0": "§5Increases Accepter range by 3 blocks",
       "item.crystalnexus.crystal_extractor.description_1": "§5Crouch+Right click to pick it up.",
       "block.crystalnexus.crystalized_alloy_block": "Crystalized Alloy Block",
@@ -16641,7 +16496,6 @@
       "item.crystalnexus.acceleration_upgrade": "Acceleration Upgrade",
       "item.crystalnexus.efficiency_upgrade": "Efficiency Upgrade",
       "jei.crystalnexus.cystal_accepter_jei": "Gathers FE from End Crystals in range of the block.  Generates more FE/t depending on tier of crystal used.  Also creates Crystal Gloop as byproduct.",
-      "jei.crystalnexus.growth_chamber_jei": "Uses Crystal Gloop and FE to duplicate crystals.",
       "block.crystalnexus.ancient_crystal_ore": "Ancient Crystal Stone Ore",
       "item.crystalnexus.ancient_crystal": "Ancient Crystal",
       "block.crystalnexus.dust_separator": "Crystal Dust Separator",
@@ -16702,7 +16556,6 @@
       "block.crystalnexus.metallurgic_recrystallizer.description_0": "§5Not OP at all...",
       "gui.crystalnexus.crystal_purifier_gui.label_proc_get_block_name_for_gui": "[Crystal Purifier]",
       "gui.crystalnexus.accepter_gui.label_proc_get_block_name_for_gui": "[Crystal Acceptor]",
-      "gui.crystalnexus.growth_chamber_gui.label_proc_get_block_name_for_gui": "[Growth Chamber]",
       "gui.crystalnexus.crusher_gui.label_proc_get_block_name_for_gui": "[Crystal Ore Crusher]",
       "gui.crystalnexus.separator_gui.label_proc_get_block_name_for_gui": "[Dust Separator]",
       "gui.crystalnexus.ore_gen_gui.label_proc_get_block_name_for_gui": "[Ore Generator]",
@@ -16817,7 +16670,7 @@
       "item.crystalnexus.quartz_singularity.description_0": "§5Protects you from hostile mobs.",
       "item.crystalnexus.iron_singularity.description_0": "§5Provides Resistance",
       "block.crystalnexus.chemical_reaction_chamber": "Chemical Reaction Chamber",
-      "item.crystalnexus.nitrile": "Nitrile Pellet",
+      "item.crystalnexus.nitrile": "Base Compound",
       "item.crystalnexus.polyacrylonitrile_dust": "Polymer Dust",
       "item.crystalnexus.polymer_sheet": "Polymer Sheet",
       "block.crystalnexus.container": "Container",
@@ -17219,10 +17072,6 @@
       },
       {
         "name": "crystalPurifierStages",
-        "children": []
-      },
-      {
-        "name": "growthChamberDisplays",
         "children": []
       },
       {

@@ -38,7 +38,6 @@ import net.crystalnexus.client.gui.ItemElevatorGuiDownScreen;
 import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
 import net.crystalnexus.client.gui.IronSmelterGuiScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
-import net.crystalnexus.client.gui.GrowthChamberGuiScreen;
 import net.crystalnexus.client.gui.FluidPackagerGUIScreen;
 import net.crystalnexus.client.gui.FluidInputGuiScreen;
 import net.crystalnexus.client.gui.FactoryItemControllerGuiScreen;
@@ -65,7 +64,6 @@ public class CrystalnexusModScreens {
 	public static void clientLoad(RegisterMenuScreensEvent event) {
 		event.register(CrystalnexusModMenus.CRYSTAL_PURIFIER_GUI.get(), CrystalPurifierGUIScreen::new);
 		event.register(CrystalnexusModMenus.ACCEPTER_GUI.get(), AccepterGUIScreen::new);
-		event.register(CrystalnexusModMenus.GROWTH_CHAMBER_GUI.get(), GrowthChamberGuiScreen::new);
 		event.register(CrystalnexusModMenus.CRUSHER_GUI.get(), CrusherGuiScreen::new);
 		event.register(CrystalnexusModMenus.SEPARATOR_GUI.get(), SeparatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);

@@ -109,7 +109,6 @@ import net.crystalnexus.item.CystalizedAxeItem;
 import net.crystalnexus.item.CystalizedAlloyItem;
 import net.crystalnexus.item.CyanPaintballItem;
 import net.crystalnexus.item.CrystalizedAlloyMagnetItem;
-import net.crystalnexus.item.CrystalGloopItem;
 import net.crystalnexus.item.CrystalExtractorItem;
 import net.crystalnexus.item.CrystalAlloyNuggetItem;
 import net.crystalnexus.item.CrudeOilItem;
@@ -164,8 +163,6 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ULTIMATE_CRYSTAL = REGISTRY.register("ultimate_crystal", UltimateCrystalItem::new);
 	public static final DeferredItem<Item> RANGE_UPGRADE = REGISTRY.register("range_upgrade", RangeUpgradeItem::new);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY = REGISTRY.register("crystalized_alloy", CystalizedAlloyItem::new);
-	public static final DeferredItem<Item> CRYSTAL_GLOOP_BUCKET = REGISTRY.register("crystal_gloop_bucket", CrystalGloopItem::new);
-	public static final DeferredItem<Item> GROWTH_CHAMBER = block(CrystalnexusModBlocks.GROWTH_CHAMBER);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_BLOCK = block(CrystalnexusModBlocks.CRYSTALIZED_ALLOY_BLOCK);
 	public static final DeferredItem<Item> CRYSTAL_CRUSHER = block(CrystalnexusModBlocks.CRYSTAL_CRUSHER);
 	public static final DeferredItem<Item> ACCELERATION_UPGRADE = REGISTRY.register("acceleration_upgrade", AccelerationUpgradeItem::new);

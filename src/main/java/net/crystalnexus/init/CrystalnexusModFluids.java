@@ -18,14 +18,11 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 
 import net.crystalnexus.fluid.SteamFluid;
 import net.crystalnexus.fluid.GasolineFluid;
-import net.crystalnexus.fluid.CrystalGloopFluid;
 import net.crystalnexus.fluid.CrudeOilFluid;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluids {
 	public static final DeferredRegister<Fluid> REGISTRY = DeferredRegister.create(BuiltInRegistries.FLUID, CrystalnexusMod.MODID);
-	public static final DeferredHolder<Fluid, FlowingFluid> CRYSTAL_GLOOP = REGISTRY.register("crystal_gloop", () -> new CrystalGloopFluid.Source());
-	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_CRYSTAL_GLOOP = REGISTRY.register("flowing_crystal_gloop", () -> new CrystalGloopFluid.Flowing());
 	public static final DeferredHolder<Fluid, FlowingFluid> CRUDE_OIL = REGISTRY.register("crude_oil", () -> new CrudeOilFluid.Source());
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_CRUDE_OIL = REGISTRY.register("flowing_crude_oil", () -> new CrudeOilFluid.Flowing());
 	public static final DeferredHolder<Fluid, FlowingFluid> GASOLINE = REGISTRY.register("gasoline", () -> new GasolineFluid.Source());
@@ -37,8 +34,6 @@ public class CrystalnexusModFluids {
 	public static class FluidsClientSideHandler {
 		@SubscribeEvent
 		public static void clientSetup(FMLClientSetupEvent event) {
-			ItemBlockRenderTypes.setRenderLayer(CRYSTAL_GLOOP.get(), RenderType.translucent());
-			ItemBlockRenderTypes.setRenderLayer(FLOWING_CRYSTAL_GLOOP.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(CRUDE_OIL.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_CRUDE_OIL.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(GASOLINE.get(), RenderType.translucent());

@@ -6,10 +6,10 @@
     "result": {
       "value": "CUSTOM:CystalizedAlloy"
     },
-    "count": 16,
+    "count": 2,
     "ingredients": [
       {
-        "value": "CUSTOM:StableCrystal"
+        "value": "CUSTOM:RawAncientCrystal"
       },
       {
         "value": "Items.IRON_INGOT"
@@ -17,7 +17,7 @@
     ],
     "integers": [
       1,
-      16
+      1
     ],
     "strings": [],
     "recipetype": "Purification"

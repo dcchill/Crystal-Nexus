@@ -136,16 +136,9 @@
     "energyCapacity": 409600,
     "energyMaxReceive": 0,
     "energyMaxExtract": 2048,
-    "isFluidTank": true,
+    "isFluidTank": false,
     "fluidCapacity": 4000,
-    "fluidRestrictions": [
-      {
-        "value": "CUSTOM:CrystalGloop"
-      },
-      {
-        "value": "CUSTOM:CrystalGloop:Flowing"
-      }
-    ],
+    "fluidRestrictions": [],
     "onTickUpdate": {
       "name": "CrystalAccepterOnTickUpdate"
     },

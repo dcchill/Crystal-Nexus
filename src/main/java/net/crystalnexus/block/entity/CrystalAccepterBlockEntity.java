@@ -1,6 +1,5 @@
 package net.crystalnexus.block.entity;
 
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -21,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.AccepterGUIMenu;
-import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 import javax.annotation.Nullable;
@@ -45,8 +43,6 @@ public class CrystalAccepterBlockEntity extends RandomizableContainerBlockEntity
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
-		if (compound.get("fluidTank") instanceof CompoundTag compoundTag)
-			fluidTank.readFromNBT(lookupProvider, compoundTag);
 	}
 
 	@Override
@@ -56,7 +52,6 @@ public class CrystalAccepterBlockEntity extends RandomizableContainerBlockEntity
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
-		compound.put("fluidTank", fluidTank.writeToNBT(lookupProvider, new CompoundTag()));
 	}
 
 	@Override
@@ -158,24 +153,5 @@ public class CrystalAccepterBlockEntity extends RandomizableContainerBlockEntity
 
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
-	}
-
-	private final FluidTank fluidTank = new FluidTank(4000, fs -> {
-		if (fs.getFluid() == CrystalnexusModFluids.CRYSTAL_GLOOP.get())
-			return true;
-		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_CRYSTAL_GLOOP.get())
-			return true;
-		return false;
-	}) {
-		@Override
-		protected void onContentsChanged() {
-			super.onContentsChanged();
-			setChanged();
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-		}
-	};
-
-	public FluidTank getFluidTank() {
-		return fluidTank;
 	}
 }

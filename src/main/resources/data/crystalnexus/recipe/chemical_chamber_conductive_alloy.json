@@ -2,13 +2,13 @@
   "type": "crystalnexus:chemical_reaction",
   "ingredients": [
     {
-      "item": "crystalnexus:polyacrylonitrile_dust"
-    },
-    {
       "item": "minecraft:redstone"
     },
     {
       "item": "crystalnexus:raw_carbon"
+    },
+    {
+      "item": "crystalnexus:nitrile"
     }
   ],
   "output": {

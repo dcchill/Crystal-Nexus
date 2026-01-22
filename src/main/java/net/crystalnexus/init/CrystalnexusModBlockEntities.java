@@ -55,7 +55,6 @@ import net.crystalnexus.block.entity.IronSmelterBlockEntity;
 import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
 import net.crystalnexus.block.entity.InverterBlockEntity;
 import net.crystalnexus.block.entity.InvertPistonGeneratorBlockEntity;
-import net.crystalnexus.block.entity.GrowthChamberOffBlockEntity;
 import net.crystalnexus.block.entity.FluidPackagerBlockEntity;
 import net.crystalnexus.block.entity.FactoryOutputControllerBlockEntity;
 import net.crystalnexus.block.entity.FactoryItemControllerBlockEntity;
@@ -103,7 +102,6 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CrystalnexusMod.MODID);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystalPurifierBlockEntity>> CRYSTAL_PURIFIER = register("crystal_purifier", CrystalnexusModBlocks.CRYSTAL_PURIFIER, CrystalPurifierBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystalAccepterBlockEntity>> CRYSTAL_ACCEPTER = register("crystal_accepter", CrystalnexusModBlocks.CRYSTAL_ACCEPTER, CrystalAccepterBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GrowthChamberOffBlockEntity>> GROWTH_CHAMBER = register("growth_chamber", CrystalnexusModBlocks.GROWTH_CHAMBER, GrowthChamberOffBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystalCrusherBlockEntity>> CRYSTAL_CRUSHER = register("crystal_crusher", CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalCrusherBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DustSeparatorBlockEntity>> DUST_SEPARATOR = register("dust_separator", CrystalnexusModBlocks.DUST_SEPARATOR, DustSeparatorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystalGuideBlockEntity>> CRYSTAL_GUIDE = register("crystal_guide", CrystalnexusModBlocks.CRYSTAL_GUIDE, CrystalGuideBlockEntity::new);
@@ -207,10 +205,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_PURIFIER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_ACCEPTER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_ACCEPTER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CRYSTAL_ACCEPTER.get(), (blockEntity, side) -> blockEntity.getFluidTank());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, GROWTH_CHAMBER.get(), SidedInvWrapper::new);
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, GROWTH_CHAMBER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, GROWTH_CHAMBER.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_CRUSHER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_CRUSHER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DUST_SEPARATOR.get(), SidedInvWrapper::new);

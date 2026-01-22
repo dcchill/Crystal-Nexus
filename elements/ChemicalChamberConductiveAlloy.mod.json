@@ -9,13 +9,13 @@
     "count": 1,
     "ingredients": [
       {
-        "value": "CUSTOM:PolyacrylonitrileDust"
-      },
-      {
         "value": "Items.REDSTONE"
       },
       {
         "value": "CUSTOM:RawCarbon"
+      },
+      {
+        "value": "CUSTOM:Nitrile"
       }
     ],
     "integers": [],

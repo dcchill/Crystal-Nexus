@@ -3,7 +3,6 @@ package net.crystalnexus.procedures;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -29,7 +28,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.CommandSource;
 
 import net.crystalnexus.init.CrystalnexusModItems;
-import net.crystalnexus.init.CrystalnexusModFluids;
 
 import java.util.Comparator;
 
@@ -102,11 +100,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 				}
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 25), IFluidHandler.FluidAction.EXECUTE);
-			}
-			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) (512 * crystalCount), false);
@@ -138,11 +131,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 						crystalCount = crystalCount + 1;
 					}
 				}
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 25), IFluidHandler.FluidAction.EXECUTE);
 			}
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
@@ -178,11 +166,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 				}
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 25), IFluidHandler.FluidAction.EXECUTE);
-			}
-			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) (2048 * crystalCount), false);
@@ -214,11 +197,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 						crystalCount = crystalCount + 1;
 					}
 				}
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 25), IFluidHandler.FluidAction.EXECUTE);
 			}
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
@@ -254,11 +232,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 				}
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 50), IFluidHandler.FluidAction.EXECUTE);
-			}
-			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) (8192 * crystalCount), false);
@@ -292,11 +265,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 				}
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 50), IFluidHandler.FluidAction.EXECUTE);
-			}
-			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) (10240 * crystalCount), false);
@@ -328,11 +296,6 @@ public class CrystalAccepterOnTickUpdateProcedure {
 						crystalCount = crystalCount + 1;
 					}
 				}
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_fluidHandler != null)
-					_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRYSTAL_GLOOP.get(), 25), IFluidHandler.FluidAction.EXECUTE);
 			}
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y - 1, z), Direction.UP);
