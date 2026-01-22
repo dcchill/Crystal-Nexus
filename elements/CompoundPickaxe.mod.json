@@ -23,7 +23,7 @@
         "value": "CUSTOM:CrystalNexusTab"
       }
     ],
-    "efficiency": 12.0,
+    "efficiency": 18.0,
     "attackSpeed": 1.0,
     "enchantability": 22,
     "damageVsEntity": 8.0,
@@ -36,12 +36,6 @@
     "blockDropsTier": "NETHERITE",
     "blocksAffected": [],
     "stayInGridWhenCrafting": false,
-    "damageOnCrafting": false,
-    "onItemInInventoryTick": {
-      "name": "CompoundPickaxeToolInInventoryTick"
-    },
-    "onBlockDestroyedWithTool": {
-      "name": "CompoundPickaxeBlockDestroyedWithTool"
-    }
+    "damageOnCrafting": false
   }
 }

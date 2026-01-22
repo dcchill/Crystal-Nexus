@@ -22,15 +22,12 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.tags.TagKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.procedures.CompoundPickaxeToolInInventoryTickProcedure;
-import net.crystalnexus.procedures.CompoundPickaxeBlockDestroyedWithToolProcedure;
 import net.crystalnexus.init.CrystalnexusModItems;
 
 import java.util.List;
@@ -45,7 +42,7 @@ public class CompoundPickaxeItem extends TieredItem {
 
 		@Override
 		public float getSpeed() {
-			return 12f;
+			return 18f;
 		}
 
 		@Override
@@ -92,13 +89,12 @@ public class CompoundPickaxeItem extends TieredItem {
 
 	@Override
 	public float getDestroySpeed(ItemStack itemstack, BlockState blockstate) {
-		return 12f;
+		return 18f;
 	}
 
 	@Override
 	public boolean mineBlock(ItemStack itemstack, Level world, BlockState blockstate, BlockPos pos, LivingEntity entity) {
 		itemstack.hurtAndBreak(1, entity, LivingEntity.getSlotForHand(entity.getUsedItemHand()));
-		CompoundPickaxeBlockDestroyedWithToolProcedure.execute(world, entity);
 		return true;
 	}
 
@@ -113,11 +109,5 @@ public class CompoundPickaxeItem extends TieredItem {
 	public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(itemstack, context, list, flag);
 		list.add(Component.translatable("item.crystalnexus.compound_pickaxe.description_0"));
-	}
-
-	@Override
-	public void inventoryTick(ItemStack itemstack, Level world, Entity entity, int slot, boolean selected) {
-		super.inventoryTick(itemstack, world, entity, slot, selected);
-		CompoundPickaxeToolInInventoryTickProcedure.execute(world, entity, itemstack);
 	}
 }

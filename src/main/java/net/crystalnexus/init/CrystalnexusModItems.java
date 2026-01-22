@@ -145,6 +145,7 @@ import net.crystalnexus.item.BluePaintballItem;
 import net.crystalnexus.item.BlankChipItem;
 import net.crystalnexus.item.BlackPaintballItem;
 import net.crystalnexus.item.BiomassItem;
+import net.crystalnexus.item.BatteryCellItem;
 import net.crystalnexus.item.AtomicCoffeeItem;
 import net.crystalnexus.item.AccelerationUpgradeItem;
 import net.crystalnexus.CrystalnexusMod;
@@ -405,6 +406,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TANK = block(CrystalnexusModBlocks.TANK);
 	public static final DeferredItem<Item> FLUID_PACKAGER = block(CrystalnexusModBlocks.FLUID_PACKAGER);
 	public static final DeferredItem<Item> SULFUR_ORE = block(CrystalnexusModBlocks.SULFUR_ORE);
+	public static final DeferredItem<Item> BATTERY_CELL = REGISTRY.register("battery_cell", BatteryCellItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

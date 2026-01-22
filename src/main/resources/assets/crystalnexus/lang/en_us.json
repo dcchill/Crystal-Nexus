@@ -544,5 +544,6 @@
   "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
   "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
   "item.crystalnexus.sulfur_dust": "Sulfur Dust",
-  "block.crystalnexus.sulfur_ore": "Sulfur Ore"
+  "block.crystalnexus.sulfur_ore": "Sulfur Ore",
+  "item.crystalnexus.battery_cell": "Battery Cell"
 }

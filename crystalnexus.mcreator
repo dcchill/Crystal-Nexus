@@ -5616,75 +5616,6 @@
       "path": "~/tools"
     },
     {
-      "name": "CompoundPickaxeBlockDestroyedWithTool",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "compound_pickaxe_block_destroyed_with_tool",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CompoundPickaxeBlockDestroyedWithToolProcedure.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
-      "name": "CompoundPickaxeToolInInventoryTick",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "compound_pickaxe_tool_in_inventory_tick",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          },
-          {
-            "name": "itemstack",
-            "type": "itemstack"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CompoundPickaxeToolInInventoryTickProcedure.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
-      "name": "CancelBlockBreak",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "cancel_block_break",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CancelBlockBreakProcedure.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
       "name": "UnstableEEMatter",
       "type": "item",
       "compiles": true,
@@ -5806,76 +5737,12 @@
       "name": "CompoundSword",
       "type": "tool",
       "compiles": true,
-      "locked_code": true,
+      "locked_code": false,
       "registry_name": "compound_sword",
       "metadata": {
         "files": [
           "src/main/resources/assets/crystalnexus/models/item/compound_sword.json",
           "src/main/java/net/crystalnexus/item/CompoundSwordItem.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
-      "name": "CompoundSwordToolInInventoryTick",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "compound_sword_tool_in_inventory_tick",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          },
-          {
-            "name": "itemstack",
-            "type": "itemstack"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CompoundSwordToolInInventoryTickProcedure.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
-      "name": "CompoundSwordOnHit",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "compound_sword_on_hit",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          },
-          {
-            "name": "world",
-            "type": "world"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CompoundSwordOnHitProcedure.java"
-        ]
-      },
-      "path": "~/tools"
-    },
-    {
-      "name": "CompoundSwordLivingEntityIsHitWithTool",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": true,
-      "registry_name": "compound_sword_living_entity_is_hit_with_tool",
-      "metadata": {
-        "dependencies": [],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CompoundSwordLivingEntityIsHitWithToolProcedure.java"
         ]
       },
       "path": "~/tools"
@@ -5992,25 +5859,6 @@
           "src/main/resources/assets/crystalnexus/models/block/energy_extractor_blockstate_blockstate_0.json"
         ]
       }
-    },
-    {
-      "name": "CancelAttack",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "cancel_attack",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "sourceentity",
-            "type": "entity"
-          }
-        ],
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/CancelAttackProcedure.java"
-        ]
-      },
-      "path": "~/tools"
     },
     {
       "name": "ReactionMultiblockGuide",
@@ -8693,7 +8541,8 @@
           "src/main/resources/data/crystalnexus/loot_table/blocks/battery.json",
           "src/main/java/net/crystalnexus/block/BatteryBlock.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "BatteryOnTickUpdate",
@@ -8723,7 +8572,8 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/BatteryOnTickUpdateProcedure.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "BatteryBlockstate",
@@ -8747,7 +8597,8 @@
           "src/main/resources/assets/crystalnexus/models/block/battery_blockstate_blockstate_10.json",
           "src/main/resources/assets/crystalnexus/models/block/battery_blockstate_blockstate_5.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EnergyBlockDisplay",
@@ -8790,7 +8641,8 @@
         "files": [
           "src/main/resources/data/crystalnexus/recipe/battery_recipe.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EEBattery",
@@ -8807,7 +8659,8 @@
           "src/main/resources/data/crystalnexus/loot_table/blocks/ee_battery.json",
           "src/main/java/net/crystalnexus/block/entity/EEBatteryBlockEntity.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EEBatteryBlockstate",
@@ -8831,7 +8684,8 @@
           "src/main/resources/assets/crystalnexus/models/block/ee_battery_blockstate_blockstate_10.json",
           "src/main/resources/assets/crystalnexus/models/block/ee_battery_blockstate_blockstate_3.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EEBatteryRecipe",
@@ -8843,7 +8697,8 @@
         "files": [
           "src/main/resources/data/crystalnexus/recipe/ee_battery_recipe.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EEBatteryOnTickUpdate",
@@ -8873,7 +8728,8 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/EEBatteryOnTickUpdateProcedure.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "ColorBlocks",
@@ -10798,7 +10654,8 @@
           "src/main/java/net/crystalnexus/block/BatteryMonitorBlock.java",
           "src/main/resources/assets/crystalnexus/models/item/battery_monitor.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "BatteryMonitorOnTickUpdate",
@@ -10829,7 +10686,8 @@
           "src/main/java/net/crystalnexus/procedures/BatteryMonitorOnTickUpdateProcedure.java"
         ],
         "return_type": "string"
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "BatteryMonitorGui",
@@ -10842,7 +10700,8 @@
           "src/main/java/net/crystalnexus/world/inventory/BatteryMonitorGuiMenu.java",
           "src/main/java/net/crystalnexus/client/gui/BatteryMonitorGuiScreen.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "InvertiumPickaxe",
@@ -11013,7 +10872,8 @@
         "files": [
           "src/main/java/net/crystalnexus/procedures/BatteryMonitorOnBlockRightClickedProcedure.java"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "BatteryMonitorRecipe",
@@ -11025,7 +10885,8 @@
         "files": [
           "src/main/resources/data/crystalnexus/recipe/battery_monitor_recipe.json"
         ]
-      }
+      },
+      "path": "~/battery"
     },
     {
       "name": "EnergyExtractorRecipe",
@@ -15742,6 +15603,44 @@
         ]
       },
       "path": "~/gasGen"
+    },
+    {
+      "name": "BatteryCell",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "battery_cell",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/battery_cell.json",
+          "src/main/java/net/crystalnexus/item/BatteryCellItem.java"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "BatteryEnergyStorage",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "battery_energy_storage",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/BatteryEnergyStorage.java"
+        ]
+      }
+    },
+    {
+      "name": "BatteryData",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "battery_data",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/BatteryData.java"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -15826,6 +15725,7 @@
       "~CUSTOM:ChlorophyteAxe"
     ],
     "ITEMS:minecraft:swords": [
+      "~CUSTOM:CompoundSword",
       "~CUSTOM:InvertiumSword",
       "~CUSTOM:PolymerSword",
       "~CUSTOM:CompoundPickaxe",
@@ -16213,6 +16113,9 @@
     ],
     "ITEMS:c:gunpowder": [
       "CUSTOM:PolyacrylonitrileDust"
+    ],
+    "ITEMS:mod:battery": [
+      "CUSTOM:BatteryCell"
     ]
   },
   "tab_element_order": {
@@ -16439,7 +16342,8 @@
       "LavaNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
-      "SulfurOre"
+      "SulfurOre",
+      "BatteryCell"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17046,7 +16950,8 @@
       "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
       "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
       "item.crystalnexus.sulfur_dust": "Sulfur Dust",
-      "block.crystalnexus.sulfur_ore": "Sulfur Ore"
+      "block.crystalnexus.sulfur_ore": "Sulfur Ore",
+      "item.crystalnexus.battery_cell": "Battery Cell"
     }
   },
   "metadata": {
@@ -17245,6 +17150,10 @@
       },
       {
         "name": "sulfur",
+        "children": []
+      },
+      {
+        "name": "battery",
         "children": []
       }
     ]
