@@ -2,7 +2,7 @@
   "type": "crystalnexus:chemical_reaction",
   "ingredients": [
     {
-      "item": "crystalnexus:polyacrylonitrile_dust"
+      "item": "crystalnexus:sulfur_dust"
     },
     {
       "item": "minecraft:bone_meal"

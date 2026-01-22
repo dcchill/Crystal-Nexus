@@ -91,7 +91,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		if (resultStack.getItem() == CrystalnexusModItems.POLYACRYLONITRILE_DUST.get()) {
+		if (resultStack.getItem() == CrystalnexusModItems.SULFUR_DUST.get()) {
 			// max stack check was 56 in your code (because you add +8)
 			if (itemFromBlockInventory(world, pos, 3).getCount() > 56) {
 				return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));

@@ -3,6 +3,7 @@
   "values": [
     "crystalnexus:copper_node",
     "crystalnexus:oil_node",
-    "crystalnexus:iron_node"
+    "crystalnexus:iron_node",
+    "crystalnexus:sulfur_ore"
   ]
 }

@@ -12,10 +12,10 @@
         "value": "CUSTOM:OilFuelCell"
       },
       {
-        "value": "CUSTOM:Biomass"
+        "value": "CUSTOM:PolyacrylonitrileDust"
       },
       {
-        "value": "Items.BLAZE_POWDER"
+        "value": "CUSTOM:Biomass"
       }
     ],
     "integers": [],

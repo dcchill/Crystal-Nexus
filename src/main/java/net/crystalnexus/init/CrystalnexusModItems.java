@@ -263,7 +263,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_MACHINE_FRAME = block(CrystalnexusModBlocks.CARBON_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
-	public static final DeferredItem<Item> POLYACRYLONITRILE_DUST = REGISTRY.register("polyacrylonitrile_dust", PolyacrylonitrileDustItem::new);
+	public static final DeferredItem<Item> SULFUR_DUST = REGISTRY.register("sulfur_dust", PolyacrylonitrileDustItem::new);
 	public static final DeferredItem<Item> POLYMER_SHEET = REGISTRY.register("polymer_sheet", PolymerSheetItem::new);
 	public static final DeferredItem<Item> CONTAINER = block(CrystalnexusModBlocks.CONTAINER, new Item.Properties().stacksTo(1));
 	public static final DeferredItem<Item> REACTOR_UPGRADE_PERMAFROST = REGISTRY.register("reactor_upgrade_permafrost", ReactorUpgradePermafrostItem::new);
@@ -404,6 +404,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> NODE_EXTRACTOR = block(CrystalnexusModBlocks.NODE_EXTRACTOR);
 	public static final DeferredItem<Item> TANK = block(CrystalnexusModBlocks.TANK);
 	public static final DeferredItem<Item> FLUID_PACKAGER = block(CrystalnexusModBlocks.FLUID_PACKAGER);
+	public static final DeferredItem<Item> SULFUR_ORE = block(CrystalnexusModBlocks.SULFUR_ORE);
 
 	// Start of user code block custom items
 	// End of user code block custom items

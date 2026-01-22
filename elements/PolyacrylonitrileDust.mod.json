@@ -3,12 +3,12 @@
   "_type": "item",
   "definition": {
     "renderType": 0,
-    "texture": "polyacrylonitrile",
+    "texture": "sulfur_dust",
     "customModelName": "Normal",
     "guiTexture": "",
     "customProperties": {},
     "states": [],
-    "name": "Polymer Dust",
+    "name": "Sulfur Dust",
     "rarity": "COMMON",
     "creativeTabs": [
       {

@@ -143,12 +143,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.SYNTHETIC_RUBBER.get());
 				tabData.accept(CrystalnexusModBlocks.RUBBER_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.NITRILE.get());
-				tabData.accept(CrystalnexusModItems.POLYACRYLONITRILE_DUST.get());
 				tabData.accept(CrystalnexusModItems.POLYMER_SHEET.get());
 				tabData.accept(CrystalnexusModBlocks.POLYMER_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.BIOMASS.get());
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_DUST.get());
 				tabData.accept(CrystalnexusModItems.RAW_CARBON.get());
+				tabData.accept(CrystalnexusModItems.SULFUR_DUST.get());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER.get());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER_ROD.get());
 				tabData.accept(CrystalnexusModItems.MACHINE_BOLT.get());
@@ -247,6 +247,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.LAVA_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

@@ -201,7 +201,6 @@
   "item.crystalnexus.iron_singularity.description_0": "§5Provides Resistance",
   "block.crystalnexus.chemical_reaction_chamber": "Chemical Reaction Chamber",
   "item.crystalnexus.nitrile": "Base Compound",
-  "item.crystalnexus.polyacrylonitrile_dust": "Polymer Dust",
   "item.crystalnexus.polymer_sheet": "Polymer Sheet",
   "block.crystalnexus.container": "Container",
   "block.crystalnexus.container.description_0": "§5Works like a shulker box",
@@ -543,5 +542,7 @@
   "block.crystalnexus.fluid_packager": "Fluid Packager",
   "gui.crystalnexus.fluid_packager_gui.label_proc_get_block_name_for_gui": "[Fluid Packager]",
   "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
-  "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically."
+  "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
+  "item.crystalnexus.sulfur_dust": "Sulfur Dust",
+  "block.crystalnexus.sulfur_ore": "Sulfur Ore"
 }

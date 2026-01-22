@@ -25,6 +25,7 @@ import net.crystalnexus.block.TarrockBrickStairsBlock;
 import net.crystalnexus.block.TarrockBrickSlabBlock;
 import net.crystalnexus.block.TarrockBlock;
 import net.crystalnexus.block.TankBlock;
+import net.crystalnexus.block.SulfurOreBlock;
 import net.crystalnexus.block.SteamEngineUpgradeBlock;
 import net.crystalnexus.block.SteamEngineBlock;
 import net.crystalnexus.block.SteamCollectorBlock;
@@ -270,6 +271,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> NODE_EXTRACTOR = REGISTRY.register("node_extractor", NodeExtractorBlock::new);
 	public static final DeferredBlock<Block> TANK = REGISTRY.register("tank", TankBlock::new);
 	public static final DeferredBlock<Block> FLUID_PACKAGER = REGISTRY.register("fluid_packager", FluidPackagerBlock::new);
+	public static final DeferredBlock<Block> SULFUR_ORE = REGISTRY.register("sulfur_ore", SulfurOreBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

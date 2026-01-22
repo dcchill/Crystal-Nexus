@@ -2,7 +2,7 @@
   "type": "crystalnexus:chemical_reaction",
   "ingredients": [
     {
-      "item": "crystalnexus:ee_matter"
+      "item": "crystalnexus:nitrile"
     },
     {
       "item": "crystalnexus:fertilizer"

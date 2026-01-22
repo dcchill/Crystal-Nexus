@@ -7507,23 +7507,11 @@
       "type": "item",
       "compiles": true,
       "locked_code": false,
-      "registry_name": "polyacrylonitrile_dust",
+      "registry_name": "sulfur_dust",
       "metadata": {
         "files": [
           "src/main/java/net/crystalnexus/item/PolyacrylonitrileDustItem.java",
-          "src/main/resources/assets/crystalnexus/models/item/polyacrylonitrile_dust.json"
-        ]
-      }
-    },
-    {
-      "name": "ChemicalChamberPolyacrylonitrileDust",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "chemical_chamber_polyacrylonitrile_dust",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/chemical_chamber_polyacrylonitrile_dust.json"
+          "src/main/resources/assets/crystalnexus/models/item/sulfur_dust.json"
         ]
       }
     },
@@ -15719,6 +15707,41 @@
           "src/main/resources/data/crystalnexus/recipe/polymer_sheet_alt_recipe.json"
         ]
       }
+    },
+    {
+      "name": "SulfurOre",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "sulfur_ore",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/sulfur_ore.json",
+          "src/main/java/net/crystalnexus/block/SulfurOreBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/sulfur_ore.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/sulfur_ore.json",
+          "src/main/resources/assets/crystalnexus/blockstates/sulfur_ore.json",
+          "src/main/resources/assets/crystalnexus/models/block/sulfur_ore.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/sulfur_ore_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/sulfur_ore.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "OilDeposit",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "oil_deposit",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/oil_deposit.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/oil_deposit_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/oil_deposit.json"
+        ]
+      },
+      "path": "~/gasGen"
     }
   ],
   "variable_elements": [
@@ -15824,9 +15847,9 @@
       "CUSTOM:CarbonAccelerationUpgrade"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:SulfurOre",
       "~CUSTOM:FluidPackager",
       "~CUSTOM:NodeExtractor",
-      "~CUSTOM:NodeMiner",
       "~CUSTOM:LavaNode",
       "~CUSTOM:OilNode",
       "~CUSTOM:ReactorWasteOutput",
@@ -15836,6 +15859,7 @@
       "~CUSTOM:CopperNode",
       "~CUSTOM:GoldNode",
       "~CUSTOM:IronNode",
+      "~CUSTOM:NodeMiner",
       "~CUSTOM:SteamChamber",
       "~CUSTOM:SteamCollector",
       "~CUSTOM:TarrockButton",
@@ -15944,10 +15968,10 @@
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
       "~CUSTOM:NodeExtractor",
-      "~CUSTOM:NodeMiner",
       "~CUSTOM:HyperMachineFrame",
       "~CUSTOM:DepotDownloader",
       "~CUSTOM:GoldNode",
+      "~CUSTOM:NodeMiner",
       "~CUSTOM:TarrockButton",
       "~CUSTOM:SmoothTarrockWall",
       "~CUSTOM:SmoothTarrockStairs",
@@ -16179,9 +16203,16 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:SulfurOre",
       "~CUSTOM:OilNode",
       "~CUSTOM:CopperNode",
       "~CUSTOM:IronNode"
+    ],
+    "ITEMS:c:dusts/sulfur": [
+      "CUSTOM:PolyacrylonitrileDust"
+    ],
+    "ITEMS:c:gunpowder": [
+      "CUSTOM:PolyacrylonitrileDust"
     ]
   },
   "tab_element_order": {
@@ -16307,12 +16338,12 @@
       "SyntheticRubber",
       "RubberBlock",
       "Nitrile",
-      "PolyacrylonitrileDust",
       "PolymerSheet",
       "PolymerBlock",
       "Biomass",
       "NetheriteScrapDust",
       "RawCarbon",
+      "PolyacrylonitrileDust",
       "CarbonFiber",
       "CarbonFiberRod",
       "MachineBolt",
@@ -16407,7 +16438,8 @@
       "OilNode",
       "LavaNode",
       "AncientCrystalOreStone",
-      "AncientCrystalOre"
+      "AncientCrystalOre",
+      "SulfurOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16671,7 +16703,6 @@
       "item.crystalnexus.iron_singularity.description_0": "§5Provides Resistance",
       "block.crystalnexus.chemical_reaction_chamber": "Chemical Reaction Chamber",
       "item.crystalnexus.nitrile": "Base Compound",
-      "item.crystalnexus.polyacrylonitrile_dust": "Polymer Dust",
       "item.crystalnexus.polymer_sheet": "Polymer Sheet",
       "block.crystalnexus.container": "Container",
       "block.crystalnexus.container.description_0": "§5Works like a shulker box",
@@ -17013,7 +17044,9 @@
       "block.crystalnexus.fluid_packager": "Fluid Packager",
       "gui.crystalnexus.fluid_packager_gui.label_proc_get_block_name_for_gui": "[Fluid Packager]",
       "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
-      "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically."
+      "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
+      "item.crystalnexus.sulfur_dust": "Sulfur Dust",
+      "block.crystalnexus.sulfur_ore": "Sulfur Ore"
     }
   },
   "metadata": {
@@ -17208,6 +17241,10 @@
       },
       {
         "name": "fluid packager",
+        "children": []
+      },
+      {
+        "name": "sulfur",
         "children": []
       }
     ]

@@ -5,10 +5,10 @@
       "item": "crystalnexus:oil_fuel_cell"
     },
     {
-      "item": "crystalnexus:biomass"
+      "item": "crystalnexus:sulfur_dust"
     },
     {
-      "item": "minecraft:blaze_powder"
+      "item": "crystalnexus:biomass"
     }
   ],
   "output": {
