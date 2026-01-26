@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:EnergizedSilicon"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:EnergizedSilicon"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ComputationCluster"
+    },
+    "name": "computation_cluster_recipe",
+    "namespace": "mod"
+  }
+}

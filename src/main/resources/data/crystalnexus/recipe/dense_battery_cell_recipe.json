@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " ab",
+    "aca",
+    "da "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    "b": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "c": {
+      "item": "crystalnexus:battery_part"
+    },
+    "d": {
+      "item": "crystalnexus:conductive_alloy"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:dense_battery_cell",
+    "count": 1
+  }
+}

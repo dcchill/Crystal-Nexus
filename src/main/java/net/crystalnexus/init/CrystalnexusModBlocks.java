@@ -35,6 +35,7 @@ import net.crystalnexus.block.SmoothTarrockWallBlock;
 import net.crystalnexus.block.SmoothTarrockStairsBlock;
 import net.crystalnexus.block.SmoothTarrockSlabBlock;
 import net.crystalnexus.block.SmoothTarrockBlock;
+import net.crystalnexus.block.SmartSplitterBlock;
 import net.crystalnexus.block.SingularityMatrixBlock;
 import net.crystalnexus.block.SingularityCompressorBlock;
 import net.crystalnexus.block.SiliconOreBlock;
@@ -115,6 +116,7 @@ import net.crystalnexus.block.ContainerBlock;
 import net.crystalnexus.block.ConductiveEnergySplitterBlock;
 import net.crystalnexus.block.ConductiveEnergyRefractorBlock;
 import net.crystalnexus.block.ConductiveEnergyGuideBlock;
+import net.crystalnexus.block.ComputationClusterBlock;
 import net.crystalnexus.block.CircuitPressBlock;
 import net.crystalnexus.block.ChlorophyteSmelterBlock;
 import net.crystalnexus.block.ChlorophyteOreBlock;
@@ -272,6 +274,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> TANK = REGISTRY.register("tank", TankBlock::new);
 	public static final DeferredBlock<Block> FLUID_PACKAGER = REGISTRY.register("fluid_packager", FluidPackagerBlock::new);
 	public static final DeferredBlock<Block> SULFUR_ORE = REGISTRY.register("sulfur_ore", SulfurOreBlock::new);
+	public static final DeferredBlock<Block> SMART_SPLITTER = REGISTRY.register("smart_splitter", SmartSplitterBlock::new);
+	public static final DeferredBlock<Block> COMPUTATION_CLUSTER = REGISTRY.register("computation_cluster", ComputationClusterBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

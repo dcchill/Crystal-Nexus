@@ -1,0 +1,10 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "computation_unit_on_fix"
+      },
+      "name": "default"
+    }
+  }
+}

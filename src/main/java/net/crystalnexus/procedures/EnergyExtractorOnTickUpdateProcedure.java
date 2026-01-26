@@ -28,258 +28,239 @@ import java.util.stream.Collectors;
 import java.util.List;
 
 public class EnergyExtractorOnTickUpdateProcedure {
+
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		double outputAmount = 0;
-		double cookTime = 0;
-		double energy = 0;
-		double energyBase = 0;
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
-			{
-				int _value = 1;
-				BlockPos _pos = BlockPos.containing(x, y, z);
-				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
-			}
-		} else {
-			{
-				int _value = 2;
-				BlockPos _pos = BlockPos.containing(x, y, z);
-				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
-			}
+
+		BlockPos pos = BlockPos.containing(x, y, z);
+
+		double cookTime;
+		double energyBase;
+		double outputAmount = 1;
+
+		// ======================
+		// VISUAL STATE
+		// ======================
+		int state = getBlockNBTNumber(world, pos, "progress") == 0 ? 1 : 2;
+		BlockState bs = world.getBlockState(pos);
+		if (bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty prop
+				&& prop.getPossibleValues().contains(state)) {
+			world.setBlock(pos, bs.setValue(prop, state), 3);
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			energyBase = 10240000;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			energyBase = 10240000;
-		} else {
-			energyBase = 10240000;
-		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
+
+		// ======================
+		// UPGRADES
+		// ======================
+		ItemStack upgrade = itemFromBlockInventory(world, pos, 1);
+
+		energyBase = 4096000;
+		cookTime = 200;
+
+		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
 			cookTime = 175;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
+		else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
 			cookTime = 100;
-		} else {
-			cookTime = 200;
-		}
-		outputAmount = 1;
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-		}
-		if (!(Blocks.AIR.asItem() == (new Object() {
-			public ItemStack getResult() {
-				if (world instanceof Level _lvl) {
-					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-					List<EnergyExtractionRecipe> recipes = rm.getAllRecipesFor(EnergyExtractionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-					for (EnergyExtractionRecipe recipe : recipes) {
-						NonNullList<Ingredient> ingredients = recipe.getIngredients();
-						if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-							continue;
-						return recipe.getResultItem(null);
-					}
-				}
-				return ItemStack.EMPTY;
-			}
-		}.getResult()).getItem())) {
-			if (getMaxEnergyStored(world, BlockPos.containing(x, y, z), null) > getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount()) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == (new Object() {
-						public ItemStack getResult() {
-							if (world instanceof Level _lvl) {
-								net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-								List<EnergyExtractionRecipe> recipes = rm.getAllRecipesFor(EnergyExtractionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-								for (EnergyExtractionRecipe recipe : recipes) {
-									NonNullList<Ingredient> ingredients = recipe.getIngredients();
-									if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-										continue;
-									return recipe.getResultItem(null);
-								}
-							}
-							return ItemStack.EMPTY;
+
+		// ======================
+		// STORE + SYNC MAX PROGRESS
+		// ======================
+		setNBTAndSync(world, pos, "maxProgress", cookTime);
+
+		// ======================
+		// RECIPE LOOKUP
+		// ======================
+		ItemStack recipeResult = getRecipeResult(world, pos);
+		boolean hasRecipe = !recipeResult.isEmpty() && recipeResult.getItem() != Blocks.AIR.asItem();
+
+		// =========================================================
+		// PRIMARY MODE – RECIPE → FE
+		// =========================================================
+		if (hasRecipe) {
+
+			if (getEnergyStored(world, pos, null) < getMaxEnergyStored(world, pos, null)) {
+
+				// output slot room + match
+				if (64 != itemFromBlockInventory(world, pos, 2).getCount()) {
+
+					ItemStack outSlot = itemFromBlockInventory(world, pos, 2).copy();
+					if (outSlot.isEmpty() || outSlot.getItem() == recipeResult.getItem()) {
+
+						double prog = getBlockNBTNumber(world, pos, "progress");
+
+						if (prog < cookTime) {
+							setNBTAndSync(world, pos, "progress", prog + 1);
+
+							if (world instanceof ServerLevel lvl)
+								lvl.sendParticles(ParticleTypes.DRAGON_BREATH,
+										x + 0.5, y + 0.5, z + 0.5,
+										1, 0.25, 0, 0.25, 0);
 						}
-					}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == Blocks.AIR.asItem()) {
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+
+						if (getBlockNBTNumber(world, pos, "progress") >= cookTime) {
+
+							// output item + consume input
+							if (world instanceof ILevelExtension ext
+									&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
+
+								ItemStack out = inv.getStackInSlot(2);
+								ItemStack newOut = recipeResult.copy();
+								newOut.setCount(out.getCount() + (int) outputAmount);
+								inv.setStackInSlot(2, newOut);
+
+								ItemStack in = inv.getStackInSlot(0);
+								in.shrink(1);
+								inv.setStackInSlot(0, in);
 							}
-							if (world instanceof ServerLevel _level)
-								_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-						}
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = (new Object() {
-									public ItemStack getResult() {
-										if (world instanceof Level _lvl) {
-											net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-											List<EnergyExtractionRecipe> recipes = rm.getAllRecipesFor(EnergyExtractionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-											for (EnergyExtractionRecipe recipe : recipes) {
-												NonNullList<Ingredient> ingredients = recipe.getIngredients();
-												if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-													continue;
-												return recipe.getResultItem(null);
-											}
-										}
-										return ItemStack.EMPTY;
-									}
-								}.getResult()).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + outputAmount));
-								_itemHandlerModifiable.setStackInSlot(2, _setstack);
+
+							// charge internal FE
+							if (world instanceof ILevelExtension ext) {
+								IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+								if (es != null)
+									es.receiveEnergy((int) energyBase, false);
 							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int _slotid = 0;
-								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
-								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-							}
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) energyBase, false);
-							}
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
+
+							// reset progress and sync
+							setNBTAndSync(world, pos, "progress", 0);
 						}
 					}
 				}
 			}
 		}
-		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.EAST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyBase / 8), null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, Direction.EAST);
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_entityStorage != null)
-					_entityStorage.extractEnergy((int) energy, false);
+
+		// =========================================================
+		// SECONDARY MODE – BATTERY → FE (drains real stack + syncs)
+		// =========================================================
+		else {
+
+			if (world instanceof ILevelExtension ext
+					&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
+
+				// REAL stack (no copy)
+				ItemStack batteryStack = inv.getStackInSlot(0);
+				IEnergyStorage battery = batteryStack.getCapability(Capabilities.EnergyStorage.ITEM);
+
+				if (battery != null && battery.canExtract()) {
+
+					int max = getMaxEnergyStored(world, pos, null);
+					int stored = getEnergyStored(world, pos, null);
+
+					if (stored < max) {
+						int rate = (int) Math.max(1, energyBase / 8);
+						int room = max - stored;
+						int request = Math.min(rate, room);
+
+						int simPull = battery.extractEnergy(request, true);
+						int simPush = receiveEnergySimulate(world, pos, simPull, null);
+						int move = Math.min(simPull, simPush);
+
+						if (move > 0) {
+							int pulled = battery.extractEnergy(move, false);
+
+							if (pulled > 0) {
+								IEnergyStorage blockES = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+								if (blockES != null)
+									blockES.receiveEnergy(pulled, false);
+
+								// IMPORTANT: re-set stack to force save/sync
+								inv.setStackInSlot(0, batteryStack);
+
+								if (world instanceof ServerLevel lvl)
+									lvl.sendParticles(ParticleTypes.END_ROD,
+											x + 0.5, y + 0.6, z + 0.5,
+											1, 0.1, 0.1, 0.1, 0);
+							}
+						}
+					}
+				}
 			}
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + 1, y, z), Direction.EAST);
-				if (_entityStorage != null)
-					_entityStorage.receiveEnergy((int) energy, false);
-			}
+
+			// battery mode keeps progress 0 and syncs it
+			if (getBlockNBTNumber(world, pos, "progress") != 0)
+				setNBTAndSync(world, pos, "progress", 0);
 		}
-		if (canReceiveEnergy(world, BlockPos.containing(x - 1, y, z), Direction.WEST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyBase / 8), null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x - 1, y, z), (int) energy, Direction.WEST);
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_entityStorage != null)
-					_entityStorage.extractEnergy((int) energy, false);
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), Direction.WEST);
-				if (_entityStorage != null)
-					_entityStorage.receiveEnergy((int) energy, false);
-			}
-		}
-		if (canReceiveEnergy(world, BlockPos.containing(x, y, z + 1), Direction.SOUTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyBase / 8), null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z + 1), (int) energy, Direction.SOUTH);
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_entityStorage != null)
-					_entityStorage.extractEnergy((int) energy, false);
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z + 1), Direction.SOUTH);
-				if (_entityStorage != null)
-					_entityStorage.receiveEnergy((int) energy, false);
-			}
-		}
-		if (canReceiveEnergy(world, BlockPos.containing(x, y, z - 1), Direction.NORTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyBase / 8), null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z - 1), (int) energy, Direction.NORTH);
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-				if (_entityStorage != null)
-					_entityStorage.extractEnergy((int) energy, false);
-			}
-			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z - 1), Direction.NORTH);
-				if (_entityStorage != null)
-					_entityStorage.receiveEnergy((int) energy, false);
-			}
-		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+
+		return new java.text.DecimalFormat("FE: ##.##")
+				.format(getEnergyStored(world, pos, null));
 	}
 
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
-	}
+	// =========================================================
+	// HELPERS
+	// =========================================================
 
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
+	private static ItemStack getRecipeResult(LevelAccessor world, BlockPos pos) {
+		if (world instanceof Level lvl) {
+			ItemStack in = itemFromBlockInventory(world, pos, 0).copy();
+			List<EnergyExtractionRecipe> recipes = lvl.getRecipeManager()
+					.getAllRecipesFor(EnergyExtractionRecipe.Type.INSTANCE)
+					.stream().map(RecipeHolder::value).collect(Collectors.toList());
+
+			for (EnergyExtractionRecipe r : recipes) {
+				NonNullList<Ingredient> ing = r.getIngredients();
+				if (!ing.get(0).test(in))
+					continue;
+				return r.getResultItem(null);
+			}
 		}
 		return ItemStack.EMPTY;
 	}
 
-	public static int getMaxEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.getMaxEnergyStored();
+	/** Write persistent NBT AND sync to client with sendBlockUpdated. */
+	private static void setNBTAndSync(LevelAccessor world, BlockPos pos, String key, double value) {
+		if (world.isClientSide())
+			return;
+
+		BlockEntity be = world.getBlockEntity(pos);
+		if (be == null)
+			return;
+
+		double old = be.getPersistentData().getDouble(key);
+		if (old == value)
+			return; // avoid spam updates
+
+		be.getPersistentData().putDouble(key, value);
+
+		if (world instanceof Level lvl) {
+			BlockState bs = world.getBlockState(pos);
+			lvl.sendBlockUpdated(pos, bs, bs, 3);
+		}
+	}
+
+	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
+		BlockEntity be = world.getBlockEntity(pos);
+		return be != null ? be.getPersistentData().getDouble(tag) : 0;
+	}
+
+	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
+		if (world instanceof ILevelExtension ext) {
+			IItemHandler h = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+			if (h != null)
+				return h.getStackInSlot(slot);
+		}
+		return ItemStack.EMPTY;
+	}
+
+	private static int getEnergyStored(LevelAccessor world, BlockPos pos, Direction dir) {
+		if (world instanceof ILevelExtension ext) {
+			IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, dir);
+			if (es != null)
+				return es.getEnergyStored();
 		}
 		return 0;
 	}
 
-	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.getEnergyStored();
+	private static int getMaxEnergyStored(LevelAccessor world, BlockPos pos, Direction dir) {
+		if (world instanceof ILevelExtension ext) {
+			IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, dir);
+			if (es != null)
+				return es.getMaxEnergyStored();
 		}
 		return 0;
 	}
 
-	private static boolean canReceiveEnergy(LevelAccessor level, BlockPos pos, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.canReceive();
-		}
-		return false;
-	}
-
-	private static int extractEnergySimulate(LevelAccessor level, BlockPos pos, int amount, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.extractEnergy(amount, true);
-		}
-		return 0;
-	}
-
-	private static int receiveEnergySimulate(LevelAccessor level, BlockPos pos, int amount, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.receiveEnergy(amount, true);
+	private static int receiveEnergySimulate(LevelAccessor world, BlockPos pos, int amount, Direction dir) {
+		if (world instanceof ILevelExtension ext) {
+			IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, dir);
+			if (es != null)
+				return es.receiveEnergy(amount, true);
 		}
 		return 0;
 	}

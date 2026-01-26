@@ -3,21 +3,18 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
+    "cac",
     "aba"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:ee_matter"
+      "item": "crystalnexus:battery"
     },
     "b": {
       "item": "crystalnexus:machine_bolt"
     },
     "c": {
-      "item": "crystalnexus:synthetic_rubber"
-    },
-    "d": {
-      "item": "crystalnexus:battery"
+      "item": "crystalnexus:ee_matter"
     }
   },
   "result": {

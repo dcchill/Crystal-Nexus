@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:computation_node"
+    },
+    "b": {
+      "item": "crystalnexus:polymer_sheet"
+    },
+    "c": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:smart_splitter",
+    "count": 1
+  }
+}

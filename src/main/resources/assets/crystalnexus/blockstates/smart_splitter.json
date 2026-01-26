@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "crystalnexus:block/smart_splitter" },
+    "facing=east":  { "model": "crystalnexus:block/smart_splitter", "y": 90 },
+    "facing=south": { "model": "crystalnexus:block/smart_splitter", "y": 180 },
+    "facing=west":  { "model": "crystalnexus:block/smart_splitter", "y": 270 }
+  }
+}

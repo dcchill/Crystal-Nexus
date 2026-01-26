@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cbc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    "b": {
+      "item": "crystalnexus:computation_node"
+    },
+    "c": {
+      "item": "crystalnexus:energized_silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:computation_cluster",
+    "count": 1
+  }
+}

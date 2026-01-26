@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "aaa",
-    "bcb"
+    "b b"
   ],
   "key": {
     "a": {
@@ -11,9 +11,6 @@
     },
     "b": {
       "item": "crystalnexus:polymer_sheet"
-    },
-    "c": {
-      "item": "crystalnexus:nitrile"
     }
   },
   "result": {

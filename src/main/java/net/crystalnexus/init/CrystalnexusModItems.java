@@ -101,6 +101,7 @@ import net.crystalnexus.item.DiamondSingularityItem;
 import net.crystalnexus.item.DestabilizedCrystalItem;
 import net.crystalnexus.item.DepotUplinkItem;
 import net.crystalnexus.item.DepotStorageUpgradeItem;
+import net.crystalnexus.item.DenseBatteryCellItem;
 import net.crystalnexus.item.CystalizedSwordItem;
 import net.crystalnexus.item.CystalizedShovelItem;
 import net.crystalnexus.item.CystalizedPickaxeItem;
@@ -115,6 +116,7 @@ import net.crystalnexus.item.CrudeOilItem;
 import net.crystalnexus.item.CopperSingularityItem;
 import net.crystalnexus.item.ControlledCrystalItem;
 import net.crystalnexus.item.ConductiveAlloyItem;
+import net.crystalnexus.item.ComputationNodeItem;
 import net.crystalnexus.item.CompoundSwordItem;
 import net.crystalnexus.item.CompoundPickaxeItem;
 import net.crystalnexus.item.CompoundEItem;
@@ -135,6 +137,7 @@ import net.crystalnexus.item.CarbonFiberRodItem;
 import net.crystalnexus.item.CarbonFiberItem;
 import net.crystalnexus.item.CarbonEfficiencyUpgradeItem;
 import net.crystalnexus.item.CarbonChipItem;
+import net.crystalnexus.item.CarbonBatteryCellItem;
 import net.crystalnexus.item.CarbonAccelerationUpgradeItem;
 import net.crystalnexus.item.BlutoniumWasteItem;
 import net.crystalnexus.item.BlutoniumNuggetItem;
@@ -145,6 +148,7 @@ import net.crystalnexus.item.BluePaintballItem;
 import net.crystalnexus.item.BlankChipItem;
 import net.crystalnexus.item.BlackPaintballItem;
 import net.crystalnexus.item.BiomassItem;
+import net.crystalnexus.item.BatteryPartItem;
 import net.crystalnexus.item.BatteryCellItem;
 import net.crystalnexus.item.AtomicCoffeeItem;
 import net.crystalnexus.item.AccelerationUpgradeItem;
@@ -407,6 +411,12 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> FLUID_PACKAGER = block(CrystalnexusModBlocks.FLUID_PACKAGER);
 	public static final DeferredItem<Item> SULFUR_ORE = block(CrystalnexusModBlocks.SULFUR_ORE);
 	public static final DeferredItem<Item> BATTERY_CELL = REGISTRY.register("battery_cell", BatteryCellItem::new);
+	public static final DeferredItem<Item> DENSE_BATTERY_CELL = REGISTRY.register("dense_battery_cell", DenseBatteryCellItem::new);
+	public static final DeferredItem<Item> CARBON_BATTERY_CELL = REGISTRY.register("carbon_battery_cell", CarbonBatteryCellItem::new);
+	public static final DeferredItem<Item> BATTERY_PART = REGISTRY.register("battery_part", BatteryPartItem::new);
+	public static final DeferredItem<Item> SMART_SPLITTER = block(CrystalnexusModBlocks.SMART_SPLITTER);
+	public static final DeferredItem<Item> COMPUTATION_NODE = REGISTRY.register("computation_node", ComputationNodeItem::new);
+	public static final DeferredItem<Item> COMPUTATION_CLUSTER = block(CrystalnexusModBlocks.COMPUTATION_CLUSTER);
 
 	// Start of user code block custom items
 	// End of user code block custom items

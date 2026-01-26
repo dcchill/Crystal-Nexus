@@ -11,10 +11,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class BatteryCellItem extends Item {
-    public static final int CAPACITY = 100_000;
-    public static final int MAX_IO = 1_000;
+    public static final int CAPACITY = 10_240;
+    public static final int MAX_IO = 1_024;
 
-    // ✅ MCreator-compatible constructor (no args)
     public BatteryCellItem() {
         super(new Item.Properties().stacksTo(1));
     }

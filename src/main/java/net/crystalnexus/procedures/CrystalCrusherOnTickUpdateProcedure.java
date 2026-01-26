@@ -29,10 +29,6 @@ import java.util.List;
 
 public class CrystalCrusherOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		String registry_name = "";
-		String registry_name_no_namespace = "";
-		String registry_name_dust = "";
-		String registry_name_ore = "";
 		double cookTime = 0;
 		double outputAmount = 0;
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {

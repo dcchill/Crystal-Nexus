@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/crystalmachineframe",
+    "up": "crystalnexus:block/smart_splitter",
+    "north": "crystalnexus:block/smart_splitter_input_side",
+    "east": "crystalnexus:block/smart_splitter_side",
+    "south": "crystalnexus:block/smart_splitter_green_side",
+    "west": "crystalnexus:block/smart_splitter_red_side",
+    "particle": "crystalnexus:block/crystalmachineframe"
+  },
+  "render_type": "solid"
+}

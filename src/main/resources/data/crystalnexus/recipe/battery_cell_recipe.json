@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    "b": {
+      "item": "crystalnexus:battery_part"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:battery_cell",
+    "count": 1
+  }
+}

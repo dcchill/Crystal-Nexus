@@ -249,6 +249,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.CARBON_BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
+				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
+				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -277,6 +282,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FACTORY_ITEM_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
+				tabData.accept(CrystalnexusModBlocks.SMART_SPLITTER.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_TAB.getId()).build());
 
 	@SubscribeEvent

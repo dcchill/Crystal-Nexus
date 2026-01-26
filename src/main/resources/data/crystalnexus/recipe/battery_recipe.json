@@ -3,20 +3,17 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
+    "bcb",
     "aba"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:conductive_alloy"
-    },
-    "b": {
       "item": "crystalnexus:synthetic_rubber"
     },
-    "c": {
-      "item": "minecraft:copper_ingot"
+    "b": {
+      "item": "crystalnexus:battery_part"
     },
-    "d": {
+    "c": {
       "item": "crystalnexus:machine_frame"
     }
   },

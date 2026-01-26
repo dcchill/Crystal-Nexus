@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:battery_cell"
+    "crystalnexus:battery_cell",
+    "crystalnexus:dense_battery_cell"
   ]
 }

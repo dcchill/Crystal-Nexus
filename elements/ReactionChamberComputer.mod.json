@@ -131,7 +131,7 @@
     "hasEnergyStorage": true,
     "energyInitial": 0,
     "energyCapacity": 10240000,
-    "energyMaxReceive": 1024000,
+    "energyMaxReceive": 512000,
     "energyMaxExtract": 10240000,
     "isFluidTank": false,
     "fluidCapacity": 16000,

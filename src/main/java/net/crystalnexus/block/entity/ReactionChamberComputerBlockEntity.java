@@ -125,7 +125,7 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(10240000, 1024000, 10240000, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(10240000, 512000, 10240000, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

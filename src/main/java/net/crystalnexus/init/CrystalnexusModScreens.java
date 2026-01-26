@@ -15,6 +15,7 @@ import net.crystalnexus.client.gui.TurbineGUIScreen;
 import net.crystalnexus.client.gui.TesseractGuiScreen;
 import net.crystalnexus.client.gui.SteamEngineGUIScreen;
 import net.crystalnexus.client.gui.SteamChamberGUIScreen;
+import net.crystalnexus.client.gui.SmartSplitterGUIScreen;
 import net.crystalnexus.client.gui.SingularityMatrixGUIScreen;
 import net.crystalnexus.client.gui.SingularityCompressorGUIScreen;
 import net.crystalnexus.client.gui.SeparatorGuiScreen;
@@ -111,6 +112,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.WASTE_OUTPUT_GUI.get(), WasteOutputGuiScreen::new);
 		event.register(CrystalnexusModMenus.NODE_EXTRACTOR_GUI.get(), NodeExtractorGUIScreen::new);
 		event.register(CrystalnexusModMenus.FLUID_PACKAGER_GUI.get(), FluidPackagerGUIScreen::new);
+		event.register(CrystalnexusModMenus.SMART_SPLITTER_GUI.get(), SmartSplitterGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

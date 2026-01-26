@@ -281,7 +281,7 @@
   "block.crystalnexus.battery.description_1": "§5Adjacent batteries combine their capacity.",
   "block.crystalnexus.ee_battery.description_0": "§5Stores 20,480,000 FE.",
   "block.crystalnexus.ee_battery.description_1": "§5Adjacent batteries combine their capacity.",
-  "block.crystalnexus.ee_battery": "Dense Battery Cell",
+  "block.crystalnexus.ee_battery": "Carbon Battery Cell",
   "item.crystalnexus.paint_gun": "Paintball Gun",
   "item.crystalnexus.white_paintball": "White Paintball",
   "item.crystalnexus.light_gray_paintball": "Light Gray Paintball",
@@ -545,5 +545,15 @@
   "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
   "item.crystalnexus.sulfur_dust": "Sulfur Dust",
   "block.crystalnexus.sulfur_ore": "Sulfur Ore",
-  "item.crystalnexus.battery_cell": "Battery Cell"
+  "item.crystalnexus.battery_cell": "Battery Cell",
+  "item.crystalnexus.dense_battery_cell": "Dense Battery Cell",
+  "item.crystalnexus.carbon_battery_cell": "Carbon Battery Cell",
+  "item.crystalnexus.battery_part": "Battery Part",
+  "block.crystalnexus.smart_splitter": "Smart Splitter",
+  "gui.crystalnexus.smart_splitter_gui.label_smart_splitte": "[Smart Splitter]",
+  "gui.crystalnexus.smart_splitter_gui.tooltip_overflow": "Overflow",
+  "gui.crystalnexus.smart_splitter_gui.tooltip_input": "Input",
+  "gui.crystalnexus.smart_splitter_gui.tooltip_empty_slots_no_filter": "Empty slots \u003d no filter",
+  "item.crystalnexus.computation_node": "Computation Node",
+  "block.crystalnexus.computation_cluster": "Computation Cluster"
 }

@@ -27,6 +27,7 @@ import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
 import net.crystalnexus.block.entity.SteamEngineBlockEntity;
 import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
 import net.crystalnexus.block.entity.SteamChamberBlockEntity;
+import net.crystalnexus.block.entity.SmartSplitterBlockEntity;
 import net.crystalnexus.block.entity.SingularityMatrixBlockEntity;
 import net.crystalnexus.block.entity.SingularityCompressorBlockEntity;
 import net.crystalnexus.block.entity.ReactorWasteOutputBlockEntity;
@@ -192,6 +193,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<NodeExtractorBlockEntity>> NODE_EXTRACTOR = register("node_extractor", CrystalnexusModBlocks.NODE_EXTRACTOR, NodeExtractorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankBlockEntity>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPackagerBlockEntity>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SmartSplitterBlockEntity>> SMART_SPLITTER = register("smart_splitter", CrystalnexusModBlocks.SMART_SPLITTER, SmartSplitterBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -344,5 +346,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FLUID_PACKAGER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMART_SPLITTER.get(), SidedInvWrapper::new);
 	}
 }

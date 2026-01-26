@@ -13,31 +13,31 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:EEMatter"
+        "value": "CUSTOM:Battery"
       },
       {
         "value": "CUSTOM:MachineBolt"
-      },
-      {
-        "value": "CUSTOM:EEMatter"
-      },
-      {
-        "value": "CUSTOM:SyntheticRubber"
       },
       {
         "value": "CUSTOM:Battery"
       },
       {
-        "value": "CUSTOM:SyntheticRubber"
+        "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:Battery"
       },
       {
         "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:Battery"
       },
       {
         "value": "CUSTOM:MachineBolt"
       },
       {
-        "value": "CUSTOM:EEMatter"
+        "value": "CUSTOM:Battery"
       }
     ],
     "recipeReturnStack": {

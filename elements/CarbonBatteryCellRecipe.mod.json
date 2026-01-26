@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:BatteryPart"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:CompoundE"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": "CUSTOM:BatteryPart"
+      },
+      {
+        "value": "CUSTOM:CarbonFiberRod"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:CarbonBatteryCell"
+    },
+    "name": "carbon_battery_cell_recipe",
+    "namespace": "mod"
+  }
+}

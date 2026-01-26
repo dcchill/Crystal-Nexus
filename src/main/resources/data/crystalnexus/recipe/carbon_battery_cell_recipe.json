@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " ab",
+    "aca",
+    "ba "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    },
+    "b": {
+      "item": "crystalnexus:battery_part"
+    },
+    "c": {
+      "item": "crystalnexus:compound_e"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_battery_cell",
+    "count": 1
+  }
+}

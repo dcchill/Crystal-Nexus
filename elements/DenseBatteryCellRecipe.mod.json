@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:PolymerSheet"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:BatteryPart"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": "CUSTOM:ConductiveAlloy"
+      },
+      {
+        "value": "CUSTOM:PolyacrylonitrileDust"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:DenseBatteryCell"
+    },
+    "name": "dense_battery_cell_recipe",
+    "namespace": "mod"
+  }
+}

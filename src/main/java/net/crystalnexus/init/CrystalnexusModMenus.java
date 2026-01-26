@@ -22,6 +22,7 @@ import net.crystalnexus.world.inventory.TurbineGUIMenu;
 import net.crystalnexus.world.inventory.TesseractGuiMenu;
 import net.crystalnexus.world.inventory.SteamEngineGUIMenu;
 import net.crystalnexus.world.inventory.SteamChamberGUIMenu;
+import net.crystalnexus.world.inventory.SmartSplitterGUIMenu;
 import net.crystalnexus.world.inventory.SingularityMatrixGUIMenu;
 import net.crystalnexus.world.inventory.SingularityCompressorGUIMenu;
 import net.crystalnexus.world.inventory.SeparatorGuiMenu;
@@ -120,6 +121,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<WasteOutputGuiMenu>> WASTE_OUTPUT_GUI = REGISTRY.register("waste_output_gui", () -> IMenuTypeExtension.create(WasteOutputGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<NodeExtractorGUIMenu>> NODE_EXTRACTOR_GUI = REGISTRY.register("node_extractor_gui", () -> IMenuTypeExtension.create(NodeExtractorGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<FluidPackagerGUIMenu>> FLUID_PACKAGER_GUI = REGISTRY.register("fluid_packager_gui", () -> IMenuTypeExtension.create(FluidPackagerGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<SmartSplitterGUIMenu>> SMART_SPLITTER_GUI = REGISTRY.register("smart_splitter_gui", () -> IMenuTypeExtension.create(SmartSplitterGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

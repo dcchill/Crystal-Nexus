@@ -5820,7 +5820,7 @@
       "name": "EnergyExtractorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "energy_extractor_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -15641,6 +15641,202 @@
           "src/main/java/net/crystalnexus/BatteryData.java"
         ]
       }
+    },
+    {
+      "name": "BatteryCellRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "battery_cell_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/battery_cell_recipe.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "DenseBatteryCell",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "dense_battery_cell",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/DenseBatteryCellItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/dense_battery_cell.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "DenseBatteryCellRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dense_battery_cell_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/dense_battery_cell_recipe.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "CarbonBatteryCell",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "carbon_battery_cell",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/CarbonBatteryCellItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/carbon_battery_cell.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "BatteryPart",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "battery_part",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/battery_part.json",
+          "src/main/java/net/crystalnexus/item/BatteryPartItem.java"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "BatteryPartRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "battery_part_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/battery_part_recipe.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "CarbonBatteryCellRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "carbon_battery_cell_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/carbon_battery_cell_recipe.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "SmartSplitter",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "smart_splitter",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/smart_splitter.json",
+          "src/main/resources/assets/crystalnexus/blockstates/smart_splitter.json",
+          "src/main/java/net/crystalnexus/block/SmartSplitterBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/smart_splitter.json",
+          "src/main/resources/assets/crystalnexus/models/block/smart_splitter.json",
+          "src/main/java/net/crystalnexus/block/entity/SmartSplitterBlockEntity.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "SmartSplitterGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "smart_splitter_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/SmartSplitterGUIMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/SmartSplitterGUIScreen.java"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "SmartSplitterRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "smart_splitter_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/smart_splitter_recipe.json"
+        ]
+      },
+      "path": "~/conveyerBelts"
+    },
+    {
+      "name": "ComputationNode",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_node",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/computation_node.json",
+          "src/main/java/net/crystalnexus/item/ComputationNodeItem.java"
+        ]
+      },
+      "path": "~/computation unit"
+    },
+    {
+      "name": "ComputationCluster",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_cluster",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/ComputationClusterBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/computation_cluster.json",
+          "src/main/resources/assets/crystalnexus/blockstates/computation_cluster.json",
+          "src/main/resources/assets/crystalnexus/models/block/computation_cluster.json",
+          "src/main/resources/assets/crystalnexus/models/item/computation_cluster.json"
+        ]
+      },
+      "path": "~/computation unit"
+    },
+    {
+      "name": "ComputationNodeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_node_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/computation_node_recipe.json"
+        ]
+      },
+      "path": "~/computation unit"
+    },
+    {
+      "name": "ComputationClusterRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_cluster_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/computation_cluster_recipe.json"
+        ]
+      },
+      "path": "~/computation unit"
     }
   ],
   "variable_elements": [
@@ -16009,7 +16205,7 @@
     ],
     "BLOCKS:mod:machines": [
       "CUSTOM:CrystalPurifier",
-      "CUSTOM:GrowthChamberOff",
+      "CUSTOM:CrystalAccepter",
       "CUSTOM:CrystalCrusher",
       "CUSTOM:DustSeparator",
       "CUSTOM:Extractinator",
@@ -16022,9 +16218,22 @@
       "CUSTOM:Inverter",
       "CUSTOM:UltimaSmelter",
       "CUSTOM:EnergyExtractor",
+      "CUSTOM:MatterTransmutationTable",
       "CUSTOM:SingularityCompressor",
       "CUSTOM:ChemicalReactionChamber",
-      "CUSTOM:OreProcessor"
+      "CUSTOM:QuantumMiner",
+      "CUSTOM:OreProcessor",
+      "CUSTOM:BiomaticComposter",
+      "CUSTOM:BiomaticConstructor",
+      "CUSTOM:BiomaticSimulator",
+      "CUSTOM:PistonGenerator",
+      "CUSTOM:InvertPistonGenerator",
+      "CUSTOM:CraftingFactory",
+      "CUSTOM:NodeMiner",
+      "CUSTOM:SteamEngine",
+      "CUSTOM:SteamEngineUpgrade",
+      "CUSTOM:NodeExtractor",
+      "CUSTOM:FluidPackager"
     ],
     "BLOCKS:minecraft:slabs": [
       "~CUSTOM:SmoothTarrockSlab",
@@ -16115,7 +16324,8 @@
       "CUSTOM:PolyacrylonitrileDust"
     ],
     "ITEMS:mod:battery": [
-      "CUSTOM:BatteryCell"
+      "CUSTOM:BatteryCell",
+      "CUSTOM:DenseBatteryCell"
     ]
   },
   "tab_element_order": {
@@ -16343,7 +16553,12 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "BatteryCell"
+      "BatteryCell",
+      "DenseBatteryCell",
+      "CarbonBatteryCell",
+      "BatteryPart",
+      "ComputationNode",
+      "ComputationCluster"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -16400,7 +16615,8 @@
       "FactoryController",
       "FactoryItemController",
       "FactoryOutputController",
-      "LinkCard"
+      "LinkCard",
+      "SmartSplitter"
     ]
   },
   "language_map": {
@@ -16687,7 +16903,7 @@
       "block.crystalnexus.battery.description_1": "§5Adjacent batteries combine their capacity.",
       "block.crystalnexus.ee_battery.description_0": "§5Stores 20,480,000 FE.",
       "block.crystalnexus.ee_battery.description_1": "§5Adjacent batteries combine their capacity.",
-      "block.crystalnexus.ee_battery": "Dense Battery Cell",
+      "block.crystalnexus.ee_battery": "Carbon Battery Cell",
       "item.crystalnexus.paint_gun": "Paintball Gun",
       "item.crystalnexus.white_paintball": "White Paintball",
       "item.crystalnexus.light_gray_paintball": "Light Gray Paintball",
@@ -16951,7 +17167,17 @@
       "jei.crystalnexus.fluid_packager_jei_info": "Use the Fluid Packager to fill Fluid Cells automatically.",
       "item.crystalnexus.sulfur_dust": "Sulfur Dust",
       "block.crystalnexus.sulfur_ore": "Sulfur Ore",
-      "item.crystalnexus.battery_cell": "Battery Cell"
+      "item.crystalnexus.battery_cell": "Battery Cell",
+      "item.crystalnexus.dense_battery_cell": "Dense Battery Cell",
+      "item.crystalnexus.carbon_battery_cell": "Carbon Battery Cell",
+      "item.crystalnexus.battery_part": "Battery Part",
+      "block.crystalnexus.smart_splitter": "Smart Splitter",
+      "gui.crystalnexus.smart_splitter_gui.label_smart_splitte": "[Smart Splitter]",
+      "gui.crystalnexus.smart_splitter_gui.tooltip_overflow": "Overflow",
+      "gui.crystalnexus.smart_splitter_gui.tooltip_input": "Input",
+      "gui.crystalnexus.smart_splitter_gui.tooltip_empty_slots_no_filter": "Empty slots \u003d no filter",
+      "item.crystalnexus.computation_node": "Computation Node",
+      "block.crystalnexus.computation_cluster": "Computation Cluster"
     }
   },
   "metadata": {
@@ -17154,6 +17380,10 @@
       },
       {
         "name": "battery",
+        "children": []
+      },
+      {
+        "name": "computation unit",
         "children": []
       }
     ]

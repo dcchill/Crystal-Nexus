@@ -127,7 +127,7 @@
     "energyInitial": 0,
     "energyCapacity": 8192000,
     "energyMaxReceive": 4096000,
-    "energyMaxExtract": 2048000,
+    "energyMaxExtract": 512000,
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],

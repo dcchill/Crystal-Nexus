@@ -86,7 +86,7 @@ public class EEBatteryBlockEntity extends RandomizableContainerBlockEntity imple
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Dense Battery Cell");
+		return Component.literal("Carbon Battery Cell");
 	}
 
 	@Override

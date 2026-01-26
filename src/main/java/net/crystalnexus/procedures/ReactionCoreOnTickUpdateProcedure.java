@@ -35,7 +35,7 @@ public class ReactionCoreOnTickUpdateProcedure {
 		}
 		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == output.getBlock()) {
 			if (getMaxEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null) != getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-				energy = extractEnergySimulate(world, BlockPos.containing(x + 1, y, z), 2048000, null);
+				energy = extractEnergySimulate(world, BlockPos.containing(x + 1, y, z), 512000, null);
 				energy = receiveEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), (int) energy, null);
 				if (energy <= getEnergyStored(world, BlockPos.containing(x + 1, y, z), null)) {
 					if (world instanceof ILevelExtension _ext) {
@@ -52,7 +52,7 @@ public class ReactionCoreOnTickUpdateProcedure {
 			}
 		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == output.getBlock()) {
 			if (getMaxEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null) != getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-				energy = extractEnergySimulate(world, BlockPos.containing(x - 1, y, z), 2048000, null);
+				energy = extractEnergySimulate(world, BlockPos.containing(x - 1, y, z), 512000, null);
 				energy = receiveEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), (int) energy, null);
 				if (energy <= getEnergyStored(world, BlockPos.containing(x - 1, y, z), null)) {
 					if (world instanceof ILevelExtension _ext) {
@@ -69,7 +69,7 @@ public class ReactionCoreOnTickUpdateProcedure {
 			}
 		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == output.getBlock()) {
 			if (getMaxEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null) != getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-				energy = extractEnergySimulate(world, BlockPos.containing(x, y, z + 1), 2048000, null);
+				energy = extractEnergySimulate(world, BlockPos.containing(x, y, z + 1), 512000, null);
 				energy = receiveEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), (int) energy, null);
 				if (energy <= getEnergyStored(world, BlockPos.containing(x, y, z + 1), null)) {
 					if (world instanceof ILevelExtension _ext) {
@@ -86,7 +86,7 @@ public class ReactionCoreOnTickUpdateProcedure {
 			}
 		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == output.getBlock()) {
 			if (getMaxEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null) != getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-				energy = extractEnergySimulate(world, BlockPos.containing(x, y, z - 1), 2048000, null);
+				energy = extractEnergySimulate(world, BlockPos.containing(x, y, z - 1), 512000, null);
 				energy = receiveEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), (int) energy, null);
 				if (energy <= getEnergyStored(world, BlockPos.containing(x, y, z - 1), null)) {
 					if (world instanceof ILevelExtension _ext) {

@@ -14,7 +14,7 @@
       "item": "crystalnexus:reactor_block"
     },
     "c": {
-      "tag": "c:silicon"
+      "item": "crystalnexus:computation_node"
     },
     "d": {
       "item": "crystalnexus:invertium_ingot"
