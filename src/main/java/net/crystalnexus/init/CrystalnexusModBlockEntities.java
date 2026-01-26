@@ -84,6 +84,7 @@ import net.crystalnexus.block.entity.ContainerBlockEntity;
 import net.crystalnexus.block.entity.ConductiveEnergySplitterBlockEntity;
 import net.crystalnexus.block.entity.ConductiveEnergyRefractorBlockEntity;
 import net.crystalnexus.block.entity.ConductiveEnergyGuideBlockEntity;
+import net.crystalnexus.block.entity.ComputationClusterBlockEntity;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteAcceleratorBlockEntity;
@@ -194,6 +195,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TankBlockEntity>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPackagerBlockEntity>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SmartSplitterBlockEntity>> SMART_SPLITTER = register("smart_splitter", CrystalnexusModBlocks.SMART_SPLITTER, SmartSplitterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ComputationClusterBlockEntity>> COMPUTATION_CLUSTER = register("computation_cluster", CrystalnexusModBlocks.COMPUTATION_CLUSTER, ComputationClusterBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -347,5 +349,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> blockEntity.getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMART_SPLITTER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, COMPUTATION_CLUSTER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COMPUTATION_CLUSTER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

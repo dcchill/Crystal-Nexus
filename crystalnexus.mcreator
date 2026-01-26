@@ -15807,6 +15807,7 @@
           "src/main/resources/data/crystalnexus/loot_table/blocks/computation_cluster.json",
           "src/main/resources/assets/crystalnexus/blockstates/computation_cluster.json",
           "src/main/resources/assets/crystalnexus/models/block/computation_cluster.json",
+          "src/main/java/net/crystalnexus/block/entity/ComputationClusterBlockEntity.java",
           "src/main/resources/assets/crystalnexus/models/item/computation_cluster.json"
         ]
       },
@@ -15834,6 +15835,165 @@
       "metadata": {
         "files": [
           "src/main/resources/data/crystalnexus/recipe/computation_cluster_recipe.json"
+        ]
+      },
+      "path": "~/computation unit"
+    },
+    {
+      "name": "ComputationClusterGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_cluster_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/ComputationClusterGUIScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/ComputationClusterGUIMenu.java"
+        ]
+      },
+      "path": "~/computation unit"
+    },
+    {
+      "name": "SSD",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ssd",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/ssd.json",
+          "src/main/java/net/crystalnexus/item/SSDItem.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "RareSSD",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "rare_ssd",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/rare_ssd.json",
+          "src/main/java/net/crystalnexus/item/RareSSDItem.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "EpicSSD",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "epic_ssd",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/epic_ssd.json",
+          "src/main/java/net/crystalnexus/item/EpicSSDItem.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "SSDItemInInventoryTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ssd_item_in_inventory_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/SSDItemInInventoryTickProcedure.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "RareSSDItemInInventoryTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "rare_ssd_item_in_inventory_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/RareSSDItemInInventoryTickProcedure.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "EpicSSDItemInInventoryTick",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "epic_ssd_item_in_inventory_tick",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/EpicSSDItemInInventoryTickProcedure.java"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "BlankSSD",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blank_ssd",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/BlankSSDItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/blank_ssd.json"
+        ]
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "ComputationClusterOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_cluster_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ComputationClusterOnTickUpdateProcedure.java"
         ]
       },
       "path": "~/computation unit"
@@ -15940,7 +16100,10 @@
       "CUSTOM:RangeUpgrade",
       "CUSTOM:CarbonEfficiencyUpgrade",
       "CUSTOM:CarbonRangeUpgrade",
-      "CUSTOM:CarbonAccelerationUpgrade"
+      "CUSTOM:CarbonAccelerationUpgrade",
+      "CUSTOM:SSD",
+      "CUSTOM:RareSSD",
+      "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
       "~CUSTOM:SulfurOre",
@@ -16558,7 +16721,11 @@
       "CarbonBatteryCell",
       "BatteryPart",
       "ComputationNode",
-      "ComputationCluster"
+      "ComputationCluster",
+      "SSD",
+      "RareSSD",
+      "EpicSSD",
+      "BlankSSD"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17177,7 +17344,15 @@
       "gui.crystalnexus.smart_splitter_gui.tooltip_input": "Input",
       "gui.crystalnexus.smart_splitter_gui.tooltip_empty_slots_no_filter": "Empty slots \u003d no filter",
       "item.crystalnexus.computation_node": "Computation Node",
-      "block.crystalnexus.computation_cluster": "Computation Cluster"
+      "block.crystalnexus.computation_cluster": "Computation Cluster",
+      "item.crystalnexus.ssd": "SSD",
+      "item.crystalnexus.ssd.description_0": "§5Can be researched at the Computation Cluster",
+      "item.crystalnexus.rare_ssd": "Rare SSD",
+      "item.crystalnexus.rare_ssd.description_0": "§5Can be researched at the Computation Cluster",
+      "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
+      "item.crystalnexus.epic_ssd": "Epic SSD",
+      "item.crystalnexus.blank_ssd": "Blank SSD",
+      "item.crystalnexus.blank_ssd.description_0": "§5Can be researched at the Computation Cluster"
     }
   },
   "metadata": {
@@ -17384,6 +17559,10 @@
       },
       {
         "name": "computation unit",
+        "children": []
+      },
+      {
+        "name": "new upgrades",
         "children": []
       }
     ]

@@ -254,6 +254,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
+				tabData.accept(CrystalnexusModItems.SSD.get());
+				tabData.accept(CrystalnexusModItems.RARE_SSD.get());
+				tabData.accept(CrystalnexusModItems.EPIC_SSD.get());
+				tabData.accept(CrystalnexusModItems.BLANK_SSD.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

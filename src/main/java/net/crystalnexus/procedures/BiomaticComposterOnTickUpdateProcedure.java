@@ -14,11 +14,14 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Mth;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
@@ -63,6 +66,42 @@ public class BiomaticComposterOnTickUpdateProcedure {
 		} else {
 			cookTime = 100;
 		}
+		double _cn_cookMult = 1.0;
+		double _cn_outputMult = 1.0;
+		boolean _cn_hasKeys = false;
+		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
+		CompoundTag _cn_data = null;
+		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
+			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
+			if (_cn_cd != null)
+				_cn_data = _cn_cd.copyTag();
+		}
+		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+			_cn_hasKeys = true;
+			if (_cn_data.contains("cook_mult"))
+				_cn_cookMult = _cn_data.getDouble("cook_mult");
+			if (_cn_data.contains("output_mult"))
+				_cn_outputMult = _cn_data.getDouble("output_mult");
+		}
+		// 2) Apply multipliers (STACK onto existing values)
+		if (_cn_hasKeys) {
+			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
+			_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
+			cookTime = cookTime * _cn_cookMult;
+			outputAmount = outputAmount * _cn_outputMult;
+		}
+		// 3) Output caps (machine cap + slot space cap)
+		double MACHINE_MAX_OUTPUT = 8; // set per machine
+		if (outputAmount > MACHINE_MAX_OUTPUT)
+			outputAmount = MACHINE_MAX_OUTPUT;
+		double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+		double _cn_spaceLeft = 64 - _cn_currentCount; // assuming stack size 64
+		if (outputAmount > _cn_spaceLeft)
+			outputAmount = _cn_spaceLeft;
+		if (outputAmount < 0)
+			outputAmount = 0;
+		if (cookTime < 1)
+			cookTime = 1;
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);

@@ -1,0 +1,122 @@
+{
+  "_fv": 79,
+  "_type": "gui",
+  "definition": {
+    "type": 1,
+    "width": 176,
+    "height": 166,
+    "inventoryOffsetX": 0,
+    "inventoryOffsetY": 0,
+    "renderBgLayer": true,
+    "doesPauseGame": false,
+    "components": [
+      {
+        "type": "image",
+        "data": {
+          "image": "battery_monitor_gui_screen.png",
+          "use1Xscale": false,
+          "x": 126,
+          "y": 16,
+          "locked": true
+        }
+      },
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "progressbar.png",
+          "spritesCount": 11,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "ProgressDisplay"
+          },
+          "x": 197,
+          "y": 55,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "empty_slot.png",
+          "use1Xscale": false,
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "empty_slot.png",
+          "use1Xscale": false,
+          "x": 240,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "inputslot",
+        "data": {
+          "inputLimit": {
+            "value": ""
+          },
+          "disablePlacement": {
+            "fixedValue": false
+          },
+          "id": 0,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 168,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "outputslot",
+        "data": {
+          "id": 1,
+          "disablePickup": {
+            "fixedValue": false
+          },
+          "dropItemsWhenNotBound": true,
+          "x": 240,
+          "y": 62,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "battery_addon.png",
+          "use1Xscale": false,
+          "x": 93,
+          "y": 15,
+          "locked": false
+        }
+      },
+      {
+        "type": "sprite",
+        "data": {
+          "sprite": "batterylevelsmall.png",
+          "spritesCount": 11,
+          "spriteIndex": {
+            "fixedValue": 0.0,
+            "name": "EnergyDisplay"
+          },
+          "x": 101,
+          "y": 21,
+          "locked": false
+        }
+      }
+    ],
+    "gridSettings": {
+      "sx": 18,
+      "sy": 18,
+      "ox": 11,
+      "oy": 15,
+      "snapOnGrid": false
+    }
+  }
+}

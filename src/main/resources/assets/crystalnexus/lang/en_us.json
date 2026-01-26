@@ -555,5 +555,13 @@
   "gui.crystalnexus.smart_splitter_gui.tooltip_input": "Input",
   "gui.crystalnexus.smart_splitter_gui.tooltip_empty_slots_no_filter": "Empty slots \u003d no filter",
   "item.crystalnexus.computation_node": "Computation Node",
-  "block.crystalnexus.computation_cluster": "Computation Cluster"
+  "block.crystalnexus.computation_cluster": "Computation Cluster",
+  "item.crystalnexus.ssd": "SSD",
+  "item.crystalnexus.ssd.description_0": "§5Can be researched at the Computation Cluster",
+  "item.crystalnexus.rare_ssd": "Rare SSD",
+  "item.crystalnexus.rare_ssd.description_0": "§5Can be researched at the Computation Cluster",
+  "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
+  "item.crystalnexus.epic_ssd": "Epic SSD",
+  "item.crystalnexus.blank_ssd": "Blank SSD",
+  "item.crystalnexus.blank_ssd.description_0": "§5Can be researched at the Computation Cluster"
 }

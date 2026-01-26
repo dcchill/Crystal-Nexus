@@ -21,6 +21,12 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
+// NEW imports for 1.21 custom_data reading
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.init.CrystalnexusModItems;
 
@@ -42,15 +48,11 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 			setIntegerBlockState(world, pos, "blockstate", 2);
 		}
 
-		// --- upgrades (kept as-is, but simplified logically) ---
+		// --- upgrades (old items kept) ---
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 4).copy();
-		if (upgrade.getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 1;
-		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 1;
-		} else {
-			outputAmount = 1;
-		}
+
+		// outputAmount "base" (you currently always set 1)
+		outputAmount = 1;
 
 		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 75;
@@ -59,6 +61,36 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		} else {
 			cookTime = 100;
 		}
+
+		// ===== NEW multiplier upgrades from minecraft:custom_data (slot 4) =====
+		// Reads: cook_mult, output_mult (both optional)
+		double _cn_cookMult = 1.0;
+		double _cn_outputMult = 1.0;
+		boolean _cn_hasMult = false;
+
+		CompoundTag _cn_data = null;
+		if (!upgrade.isEmpty() && upgrade.has(DataComponents.CUSTOM_DATA)) {
+			CustomData _cd = upgrade.get(DataComponents.CUSTOM_DATA);
+			if (_cd != null) _cn_data = _cd.copyTag();
+		}
+
+		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+			_cn_hasMult = true;
+			if (_cn_data.contains("cook_mult")) _cn_cookMult = _cn_data.getDouble("cook_mult");
+			if (_cn_data.contains("output_mult")) _cn_outputMult = _cn_data.getDouble("output_mult");
+		}
+
+		// clamps
+		_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
+		_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
+
+		// Apply cook multiplier (stacking onto whatever cookTime already is)
+		if (_cn_hasMult) {
+			cookTime = cookTime * _cn_cookMult;
+		}
+
+		if (cookTime < 1) cookTime = 1;
+		// ================================================================
 
 		// store maxProgress
 		if (!world.isClientSide()) {
@@ -84,45 +116,58 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 
 		// Output slot checks
 		ItemStack outSlot = itemFromBlockInventory(world, pos, 3).copy();
-		boolean outSlotEmpty = outSlot.getItem() == Blocks.AIR.asItem();
+		boolean outSlotEmpty = outSlot.isEmpty() || outSlot.getItem() == Blocks.AIR.asItem();
 		boolean outSlotMatches = outSlotEmpty || outSlot.getItem() == resultStack.getItem();
 
 		if (!outSlotMatches) {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
+		// ===== Determine base output for this recipe, then apply output_mult, cap to 8 =====
+		int baseAdd;
 		if (resultStack.getItem() == CrystalnexusModItems.SULFUR_DUST.get()) {
-			// max stack check was 56 in your code (because you add +8)
-			if (itemFromBlockInventory(world, pos, 3).getCount() > 56) {
-				return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
-			}
-			// progress + craft
-			processRecipeTick(world, pos, cookTime, () -> {
-				addToOutputSlot(world, pos, resultStack, 8);
-				consumeInputs(world, pos);
-				extractEnergy(world, pos, 4096);
-			});
+			baseAdd = 8;
 		} else if (resultStack.getItem() == CrystalnexusModItems.SYNTHETIC_RUBBER.get()) {
-			// max stack check was 62 in your code (because you add +2)
-			if (itemFromBlockInventory(world, pos, 3).getCount() > 60) {
-				return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
-			}
-			processRecipeTick(world, pos, cookTime, () -> {
-				addToOutputSlot(world, pos, resultStack, 4);
-				consumeInputs(world, pos);
-				extractEnergy(world, pos, 4096);
-			});
+			baseAdd = 4;
 		} else {
-			// generic case uses +1 (kept)
-			if (64 <= itemFromBlockInventory(world, pos, 3).getCount() + outputAmount) {
-				return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
-			}
-			processRecipeTick(world, pos, cookTime, () -> {
-				addToOutputSlot(world, pos, resultStack, 1);
-				consumeInputs(world, pos);
-				extractEnergy(world, pos, 4096);
-			});
+			baseAdd = 1;
 		}
+
+		// Apply output multiplier if present (stacking onto baseAdd)
+		double scaledAddD = baseAdd;
+		if (_cn_hasMult) {
+			scaledAddD = scaledAddD * _cn_outputMult;
+		}
+
+		// Convert to int (choose behavior: floor keeps it safe)
+		int addCount = (int) Math.floor(scaledAddD);
+
+		// Ensure at least 1 if it was supposed to produce something
+		if (addCount < 1) addCount = 1;
+
+		// Cap per craft to max 8 items (your request)
+		if (addCount > 8) addCount = 8;
+
+		// Slot safety cap (space left)
+		int currentOutCount = itemFromBlockInventory(world, pos, 3).getCount();
+		int spaceLeft = 64 - currentOutCount;
+		if (spaceLeft <= 0) {
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+		}
+		if (addCount > spaceLeft) addCount = spaceLeft;
+
+		// Also keep outputAmount around for any legacy checks (optional)
+		outputAmount = addCount;
+		// ===============================================================================
+
+final int _finalAddCount = addCount;
+final ItemStack _finalResult = resultStack.copy();
+
+processRecipeTick(world, pos, cookTime, () -> {
+	addToOutputSlot(world, pos, _finalResult, _finalAddCount);
+	consumeInputs(world, pos);
+	extractEnergy(world, pos, 4096);
+});
 
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 	}
@@ -148,7 +193,6 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		ItemStack s1 = itemFromBlockInventory(world, pos, 1).copy();
 		ItemStack s2 = itemFromBlockInventory(world, pos, 2).copy();
 
-		// If any required slots are empty, fail fast (optional, keeps behavior close)
 		if (s0.isEmpty() || s1.isEmpty() || s2.isEmpty()) return null;
 
 		List<ChemicalReactionRecipe> recipes = lvl.getRecipeManager()
@@ -178,7 +222,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 	}
 
 	// ----------------------------
-	// Tick/progress helpers (keeps your behavior)
+	// Tick/progress helpers
 	// ----------------------------
 
 	private static void processRecipeTick(LevelAccessor world, BlockPos pos, double cookTime, Runnable onFinish) {
@@ -199,7 +243,6 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		if (getBlockNBTNumber(world, pos, "progress") >= cookTime) {
 			onFinish.run();
 
-			// reset progress
 			if (!world.isClientSide()) {
 				BlockEntity be = world.getBlockEntity(pos);
 				BlockState bs = world.getBlockState(pos);
@@ -210,6 +253,8 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 	}
 
 	private static void addToOutputSlot(LevelAccessor world, BlockPos pos, ItemStack result, int addCount) {
+		if (addCount <= 0) return;
+
 		if (world instanceof ILevelExtension ext &&
 			ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable handler) {
 
@@ -217,8 +262,9 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 			ItemStack toSet = result.copy();
 
 			int newCount = current.isEmpty() ? addCount : current.getCount() + addCount;
-			toSet.setCount(newCount);
+			if (newCount > 64) newCount = 64;
 
+			toSet.setCount(newCount);
 			handler.setStackInSlot(3, toSet);
 		}
 	}
@@ -247,7 +293,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 	}
 
 	// ----------------------------
-	// Existing helpers (kept)
+	// Existing helpers
 	// ----------------------------
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {

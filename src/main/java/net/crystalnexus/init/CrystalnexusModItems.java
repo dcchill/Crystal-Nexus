@@ -33,6 +33,7 @@ import net.crystalnexus.item.TurbineBladeItem;
 import net.crystalnexus.item.SyntheticRubberItem;
 import net.crystalnexus.item.StableCrystalItem;
 import net.crystalnexus.item.SiliconItem;
+import net.crystalnexus.item.SSDItem;
 import net.crystalnexus.item.RegulatedCrystalItem;
 import net.crystalnexus.item.RedstoneSingularityItem;
 import net.crystalnexus.item.RedPaintballItem;
@@ -42,6 +43,7 @@ import net.crystalnexus.item.RawChlorophyteItem;
 import net.crystalnexus.item.RawCarbonItem;
 import net.crystalnexus.item.RawBlutoniumItem;
 import net.crystalnexus.item.RawAncientCrystalItem;
+import net.crystalnexus.item.RareSSDItem;
 import net.crystalnexus.item.RangeUpgradeItem;
 import net.crystalnexus.item.QuartzSingularityItem;
 import net.crystalnexus.item.PurplePaintballItem;
@@ -91,6 +93,7 @@ import net.crystalnexus.item.FlorathaneItem;
 import net.crystalnexus.item.FlamethrowerItem;
 import net.crystalnexus.item.FertilizerItem;
 import net.crystalnexus.item.FEPlaceholderItem;
+import net.crystalnexus.item.EpicSSDItem;
 import net.crystalnexus.item.EnergySingularityItem;
 import net.crystalnexus.item.EnergizedSiliconItem;
 import net.crystalnexus.item.EmptyFuelCellItem;
@@ -145,6 +148,7 @@ import net.crystalnexus.item.BlutoniumIngotItem;
 import net.crystalnexus.item.BlutoniumDustItem;
 import net.crystalnexus.item.BlutoniumCrystalItem;
 import net.crystalnexus.item.BluePaintballItem;
+import net.crystalnexus.item.BlankSSDItem;
 import net.crystalnexus.item.BlankChipItem;
 import net.crystalnexus.item.BlackPaintballItem;
 import net.crystalnexus.item.BiomassItem;
@@ -417,6 +421,10 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> SMART_SPLITTER = block(CrystalnexusModBlocks.SMART_SPLITTER);
 	public static final DeferredItem<Item> COMPUTATION_NODE = REGISTRY.register("computation_node", ComputationNodeItem::new);
 	public static final DeferredItem<Item> COMPUTATION_CLUSTER = block(CrystalnexusModBlocks.COMPUTATION_CLUSTER);
+	public static final DeferredItem<Item> SSD = REGISTRY.register("ssd", SSDItem::new);
+	public static final DeferredItem<Item> RARE_SSD = REGISTRY.register("rare_ssd", RareSSDItem::new);
+	public static final DeferredItem<Item> EPIC_SSD = REGISTRY.register("epic_ssd", EpicSSDItem::new);
+	public static final DeferredItem<Item> BLANK_SSD = REGISTRY.register("blank_ssd", BlankSSDItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

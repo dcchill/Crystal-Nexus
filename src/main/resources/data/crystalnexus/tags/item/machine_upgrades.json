@@ -1,11 +1,14 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:epic_ssd",
     "crystalnexus:acceleration_upgrade",
     "crystalnexus:efficiency_upgrade",
     "crystalnexus:carbon_acceleration_upgrade",
+    "crystalnexus:rare_ssd",
     "crystalnexus:range_upgrade",
     "crystalnexus:carbon_range_upgrade",
-    "crystalnexus:carbon_efficiency_upgrade"
+    "crystalnexus:carbon_efficiency_upgrade",
+    "crystalnexus:ssd"
   ]
 }

@@ -50,6 +50,7 @@ import net.crystalnexus.client.gui.CrystalPurifierGUIScreen;
 import net.crystalnexus.client.gui.CrusherGuiScreen;
 import net.crystalnexus.client.gui.CraftingFactoryGUIScreen;
 import net.crystalnexus.client.gui.ContainerGUIScreen;
+import net.crystalnexus.client.gui.ComputationClusterGUIScreen;
 import net.crystalnexus.client.gui.CircuitPressGUIScreen;
 import net.crystalnexus.client.gui.ChemicalReactionChamberGUIScreen;
 import net.crystalnexus.client.gui.BlockPlacerGuiScreen;
@@ -113,6 +114,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.NODE_EXTRACTOR_GUI.get(), NodeExtractorGUIScreen::new);
 		event.register(CrystalnexusModMenus.FLUID_PACKAGER_GUI.get(), FluidPackagerGUIScreen::new);
 		event.register(CrystalnexusModMenus.SMART_SPLITTER_GUI.get(), SmartSplitterGUIScreen::new);
+		event.register(CrystalnexusModMenus.COMPUTATION_CLUSTER_GUI.get(), ComputationClusterGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {
