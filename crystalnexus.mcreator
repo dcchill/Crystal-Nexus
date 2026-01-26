@@ -15997,6 +15997,26 @@
         ]
       },
       "path": "~/computation unit"
+    },
+    {
+      "name": "SSDGetStats",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "ssd_get_stats",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "itemstack",
+            "type": "itemstack"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/SSDGetStatsProcedure.java"
+        ]
+      },
+      "path": "~/new upgrades"
     }
   ],
   "variable_elements": [
