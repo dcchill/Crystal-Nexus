@@ -8,7 +8,7 @@
     "guiTexture": "",
     "customProperties": {},
     "states": [],
-    "name": "Blank SSD",
+    "name": "Encrypted SSD",
     "rarity": "COMMON",
     "creativeTabs": [
       {
@@ -31,7 +31,7 @@
     "damageVsEntity": 0.0,
     "specialInformation": {
       "fixedValue": [
-        "§5Can be researched at the Computation Cluster"
+        "§5Can be decrypted at the Computation Cluster"
       ]
     },
     "glowCondition": {

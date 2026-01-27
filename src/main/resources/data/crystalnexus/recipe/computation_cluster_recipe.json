@@ -8,13 +8,13 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:carbon_fiber_rod"
+      "item": "crystalnexus:iron_machine_bolt"
     },
     "b": {
       "item": "crystalnexus:computation_node"
     },
     "c": {
-      "item": "crystalnexus:energized_silicon"
+      "item": "crystalnexus:machine_frame"
     }
   },
   "result": {

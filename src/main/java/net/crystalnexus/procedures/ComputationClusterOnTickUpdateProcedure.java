@@ -45,7 +45,7 @@ public class ComputationClusterOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 3;
-		cookTime = 100;
+		cookTime = 500;
 		rand = Mth.nextInt(RandomSource.create(), 1, 100);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
@@ -107,7 +107,7 @@ public class ComputationClusterOnTickUpdateProcedure {
 					if (world instanceof ILevelExtension _ext) {
 						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_entityStorage != null)
-							_entityStorage.extractEnergy(10240, false);
+							_entityStorage.extractEnergy(1024, false);
 					}
 					if (!world.isClientSide()) {
 						BlockPos _bp = BlockPos.containing(x, y, z);

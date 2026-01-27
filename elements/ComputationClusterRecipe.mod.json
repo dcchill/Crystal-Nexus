@@ -13,31 +13,31 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:CarbonFiberRod"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
         "value": "CUSTOM:ComputationNode"
       },
       {
-        "value": "CUSTOM:CarbonFiberRod"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "CUSTOM:EnergizedSilicon"
-      },
-      {
-        "value": "CUSTOM:ComputationNode"
-      },
-      {
-        "value": "CUSTOM:EnergizedSilicon"
-      },
-      {
-        "value": "CUSTOM:CarbonFiberRod"
+        "value": "CUSTOM:MachineFrame"
       },
       {
         "value": "CUSTOM:ComputationNode"
       },
       {
-        "value": "CUSTOM:CarbonFiberRod"
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
       }
     ],
     "recipeReturnStack": {

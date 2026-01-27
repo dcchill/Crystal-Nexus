@@ -15918,7 +15918,7 @@
       "name": "RareSSDItemInInventoryTick",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "rare_ssd_item_in_inventory_tick",
       "metadata": {
         "dependencies": [
@@ -15937,7 +15937,7 @@
       "name": "EpicSSDItemInInventoryTick",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "epic_ssd_item_in_inventory_tick",
       "metadata": {
         "dependencies": [
@@ -16017,6 +16017,31 @@
         ]
       },
       "path": "~/new upgrades"
+    },
+    {
+      "name": "BlankSSDTrade",
+      "type": "villagertrade",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blank_ssd_trade",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/new upgrades"
+    },
+    {
+      "name": "ComputationClusterBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "computation_cluster_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/computation_cluster_blockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/computation_cluster_blockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/computation unit"
     }
   ],
   "variable_elements": [
@@ -16609,6 +16634,8 @@
       "ZeroPointCore",
       "Silicon",
       "EnergizedSilicon",
+      "ComputationNode",
+      "ComputationCluster",
       "BlankChip",
       "RangeUpgrade",
       "AccelerationUpgrade",
@@ -16618,9 +16645,17 @@
       "CarbonRangeUpgrade",
       "CarbonAccelerationUpgrade",
       "CarbonEfficiencyUpgrade",
+      "SSD",
+      "RareSSD",
+      "EpicSSD",
+      "BlankSSD",
       "ReactorUpgrade",
       "ReactorUpgradePermafrost",
       "OmegaChip",
+      "BatteryCell",
+      "DenseBatteryCell",
+      "CarbonBatteryCell",
+      "BatteryPart",
       "DragonCrystal",
       "DestabilizedCrystal",
       "StableCrystal",
@@ -16735,17 +16770,7 @@
       "LavaNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
-      "SulfurOre",
-      "BatteryCell",
-      "DenseBatteryCell",
-      "CarbonBatteryCell",
-      "BatteryPart",
-      "ComputationNode",
-      "ComputationCluster",
-      "SSD",
-      "RareSSD",
-      "EpicSSD",
-      "BlankSSD"
+      "SulfurOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17371,8 +17396,8 @@
       "item.crystalnexus.rare_ssd.description_0": "§5Can be researched at the Computation Cluster",
       "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
       "item.crystalnexus.epic_ssd": "Epic SSD",
-      "item.crystalnexus.blank_ssd": "Blank SSD",
-      "item.crystalnexus.blank_ssd.description_0": "§5Can be researched at the Computation Cluster"
+      "item.crystalnexus.blank_ssd": "Encrypted SSD",
+      "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster"
     }
   },
   "metadata": {
@@ -17406,6 +17431,7 @@
       "src/main/java/net/crystalnexus/init/CrystalnexusModParticleTypes.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModMobEffects.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModBrewingRecipes.java",
+      "src/main/java/net/crystalnexus/init/CrystalnexusModTrades.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModBlocks.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModBlockEntities.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModItems.java",

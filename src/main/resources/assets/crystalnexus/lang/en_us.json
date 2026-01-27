@@ -562,6 +562,6 @@
   "item.crystalnexus.rare_ssd.description_0": "§5Can be researched at the Computation Cluster",
   "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
   "item.crystalnexus.epic_ssd": "Epic SSD",
-  "item.crystalnexus.blank_ssd": "Blank SSD",
-  "item.crystalnexus.blank_ssd.description_0": "§5Can be researched at the Computation Cluster"
+  "item.crystalnexus.blank_ssd": "Encrypted SSD",
+  "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster"
 }

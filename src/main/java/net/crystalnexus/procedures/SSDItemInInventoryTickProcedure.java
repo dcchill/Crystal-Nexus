@@ -16,7 +16,7 @@ public class SSDItemInInventoryTickProcedure {
 			}
 			{
 				final String _tagName = "output_mult";
-				final double _tagValue = (Mth.nextDouble(RandomSource.create(), 0.5, 3));
+				final double _tagValue = (Mth.nextDouble(RandomSource.create(), 0.5, 2));
 				CustomData.update(DataComponents.CUSTOM_DATA, itemstack, tag -> tag.putDouble(_tagName, _tagValue));
 			}
 		}

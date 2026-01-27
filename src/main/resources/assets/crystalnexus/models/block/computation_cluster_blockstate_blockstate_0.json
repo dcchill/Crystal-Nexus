@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/computation_cluster",
+  "textures": {
+    "all": "crystalnexus:block/crystalmachineframe",
+    "particle": "crystalnexus:block/puretop",
+    "0": "crystalnexus:block/computational_unit"
+  },
+  "render_type": "cutout"
+}

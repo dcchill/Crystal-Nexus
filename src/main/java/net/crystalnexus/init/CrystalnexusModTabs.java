@@ -118,6 +118,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
+				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
+				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
@@ -127,9 +129,17 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get());
+				tabData.accept(CrystalnexusModItems.SSD.get());
+				tabData.accept(CrystalnexusModItems.RARE_SSD.get());
+				tabData.accept(CrystalnexusModItems.EPIC_SSD.get());
+				tabData.accept(CrystalnexusModItems.BLANK_SSD.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());
 				tabData.accept(CrystalnexusModItems.OMEGA_CHIP.get());
+				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.CARBON_BATTERY_CELL.get());
+				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
 				tabData.accept(CrystalnexusModItems.DRAGON_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.DESTABILIZED_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.STABLE_CRYSTAL.get());
@@ -248,16 +258,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
-				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
-				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());
-				tabData.accept(CrystalnexusModItems.CARBON_BATTERY_CELL.get());
-				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
-				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
-				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
-				tabData.accept(CrystalnexusModItems.SSD.get());
-				tabData.accept(CrystalnexusModItems.RARE_SSD.get());
-				tabData.accept(CrystalnexusModItems.EPIC_SSD.get());
-				tabData.accept(CrystalnexusModItems.BLANK_SSD.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

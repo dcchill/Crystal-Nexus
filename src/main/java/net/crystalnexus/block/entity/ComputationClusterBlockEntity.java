@@ -122,7 +122,7 @@ public class ComputationClusterBlockEntity extends RandomizableContainerBlockEnt
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(409600, 4096, 409600, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(409600, 11264, 409600, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
