@@ -30,8 +30,6 @@ import net.crystalnexus.init.CrystalnexusModFluidTypes;
 import net.crystalnexus.init.CrystalnexusModEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
-import net.crystalnexus.events.CompoundSwordEnergyEvents;
-import net.crystalnexus.events.CompoundPickaxeEnergyEvents;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
@@ -57,14 +55,15 @@ public class CrystalnexusMod {
 		CrystalnexusModEntities.REGISTRY.register(modEventBus);
 		CrystalnexusModTabs.REGISTRY.register(modEventBus);
 		CrystalnexusModVariables.ATTACHMENT_TYPES.register(modEventBus);
+
 		CrystalnexusModMobEffects.REGISTRY.register(modEventBus);
 		CrystalnexusModMenus.REGISTRY.register(modEventBus);
 		CrystalnexusModParticleTypes.REGISTRY.register(modEventBus);
+
 		CrystalnexusModFluids.REGISTRY.register(modEventBus);
 		CrystalnexusModFluidTypes.REGISTRY.register(modEventBus);
+
 		// Start of user code block mod init
-		NeoForge.EVENT_BUS.register(new CompoundPickaxeEnergyEvents());
-		NeoForge.EVENT_BUS.register(new CompoundSwordEnergyEvents());
 		// End of user code block mod init
 	}
 
