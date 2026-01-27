@@ -46,6 +46,13 @@ public class ComputationClusterOnTickUpdateProcedure {
 		}
 		outputAmount = 3;
 		cookTime = 500;
+		double outputMaxStack = Math.min(new ItemStack(CrystalnexusModItems.SSD.get()).getMaxStackSize(), 64);
+		double currentOutputCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+		double outputSpaceLeft = outputMaxStack - currentOutputCount;
+		if (outputAmount > outputSpaceLeft)
+			outputAmount = outputSpaceLeft;
+		if (outputAmount < 0)
+			outputAmount = 0;
 		rand = Mth.nextInt(RandomSource.create(), 1, 100);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
@@ -56,7 +63,8 @@ public class ComputationClusterOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (CrystalnexusModItems.BLANK_SSD.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() && Blocks.AIR.asItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem()) {
+		if (outputAmount > 0 && CrystalnexusModItems.BLANK_SSD.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem()
+				&& Blocks.AIR.asItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem()) {
 			if (10240 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 					if (!world.isClientSide()) {

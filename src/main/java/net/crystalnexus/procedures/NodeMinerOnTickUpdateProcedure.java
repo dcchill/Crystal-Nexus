@@ -67,7 +67,7 @@ public class NodeMinerOnTickUpdateProcedure {
 		double _cn_cookMult = 1.0;
 		double _cn_outputMult = 1.0;
 		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
+		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
 		CompoundTag _cn_data = null;
 		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
 			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);

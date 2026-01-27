@@ -105,10 +105,6 @@ public class MetallurgicRecrystallizerOnTickUpdateProcedure {
 		double MACHINE_MAX_OUTPUT = 1; // set per machine
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
-		double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
-		double _cn_spaceLeft = 64 - _cn_currentCount; // assuming stack size 64
-		if (outputAmount > _cn_spaceLeft)
-			outputAmount = _cn_spaceLeft;
 		if (outputAmount < 0)
 			outputAmount = 0;
 		if (cookTime < 1)
