@@ -108,7 +108,7 @@ public class CircuitPressOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (!(Blocks.AIR.asItem() == (new Object() {
+		ItemStack _cn_result = (new Object() {
 			public ItemStack getResult() {
 				if (world instanceof Level _lvl) {
 					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
@@ -124,26 +124,13 @@ public class CircuitPressOnTickUpdateProcedure {
 				}
 				return ItemStack.EMPTY;
 			}
-		}.getResult()).getItem())) {
+		}.getResult()).copy();
+		int _cn_resultMax = Math.min(_cn_result.getMaxStackSize(), 64);
+		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
 			if (4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (new Object() {
-						public ItemStack getResult() {
-							if (world instanceof Level _lvl) {
-								net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-								List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-								for (CircuitPressingRecipe recipe : recipes) {
-									NonNullList<Ingredient> ingredients = recipe.getIngredients();
-									if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-										continue;
-									if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-										continue;
-									return recipe.getResultItem(null);
-								}
-							}
-							return ItemStack.EMPTY;
-						}
-					}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
+				if (_cn_resultMax >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
+					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == _cn_result.getItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);
@@ -159,23 +146,7 @@ public class CircuitPressOnTickUpdateProcedure {
 						}
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = (new Object() {
-									public ItemStack getResult() {
-										if (world instanceof Level _lvl) {
-											net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-											List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-											for (CircuitPressingRecipe recipe : recipes) {
-												NonNullList<Ingredient> ingredients = recipe.getIngredients();
-												if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-													continue;
-												if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-													continue;
-												return recipe.getResultItem(null);
-											}
-										}
-										return ItemStack.EMPTY;
-									}
-								}.getResult()).copy();
+								ItemStack _setstack = _cn_result.copy();
 								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount));
 								_itemHandlerModifiable.setStackInSlot(1, _setstack);
 							}

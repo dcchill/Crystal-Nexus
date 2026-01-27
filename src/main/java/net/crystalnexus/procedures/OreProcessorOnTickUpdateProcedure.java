@@ -300,6 +300,11 @@ public class OreProcessorOnTickUpdateProcedure {
 				cookTime2 = cookTime2 * _cn_cookMult;
 				outputAmount2 = outputAmount2 * _cn_outputMult;
 			}
+			outputAmount2 = Math.floor(outputAmount2);
+			if (outputAmount2 < 0)
+				outputAmount2 = 0;
+			if (cookTime2 < 1)
+				cookTime2 = 1;
 			if (!world.isClientSide()) {
 				BlockPos _bp = BlockPos.containing(x, y, z);
 				BlockEntity _blockEntity = world.getBlockEntity(_bp);
