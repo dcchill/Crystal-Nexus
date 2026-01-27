@@ -875,7 +875,7 @@
       "name": "CrystalCrusherOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "crystal_crusher_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -1135,7 +1135,7 @@
       "name": "DustSeparatorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "dust_separator_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -2829,7 +2829,7 @@
       "name": "MetallurgicRecrystallizerOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "metallurgic_recrystallizer_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -4142,7 +4142,7 @@
       "name": "ChlorophyteSmelterOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "chlorophyte_smelter_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -4506,7 +4506,7 @@
       "name": "CircuitPressOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "circuit_press_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -4942,7 +4942,7 @@
       "name": "InverterOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "inverter_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -9682,7 +9682,7 @@
       "name": "OreProcessorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "ore_processor_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -10128,7 +10128,7 @@
       "name": "BiomaticComposterOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "biomatic_composter_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -10325,7 +10325,7 @@
       "name": "BiomaticConstructorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "biomatic_constructor_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -10414,7 +10414,7 @@
       "name": "BiomaticSimulatorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "biomatic_simulator_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -14422,7 +14422,7 @@
       "name": "NodeMinerOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "node_miner_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -15338,7 +15338,7 @@
       "name": "NodeExtractorOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "node_extractor_on_tick_update",
       "metadata": {
         "dependencies": [

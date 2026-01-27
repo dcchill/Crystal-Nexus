@@ -39,6 +39,8 @@ public class CircuitPressOnTickUpdateProcedure {
 		String registry_name_ore = "";
 		String registry_name_nugget = "";
 		outputAmount = 1;
+
+		// Blockstate animation
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
 			{
 				int _value = 1;
@@ -56,6 +58,8 @@ public class CircuitPressOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
+
+		// Base cook time from upgrade item
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 75;
 		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
@@ -63,16 +67,20 @@ public class CircuitPressOnTickUpdateProcedure {
 		} else {
 			cookTime = 100;
 		}
+
+		// Optional multipliers on the upgrade stack (CUSTOM_DATA)
 		double _cn_cookMult = 1.0;
 		double _cn_outputMult = 1.0;
 		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
+		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
 		CompoundTag _cn_data = null;
+
 		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
 			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
 			if (_cn_cd != null)
 				_cn_data = _cn_cd.copyTag();
 		}
+
 		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
 			_cn_hasKeys = true;
 			if (_cn_data.contains("cook_mult"))
@@ -80,25 +88,19 @@ public class CircuitPressOnTickUpdateProcedure {
 			if (_cn_data.contains("output_mult"))
 				_cn_outputMult = _cn_data.getDouble("output_mult");
 		}
-		// 2) Apply multipliers (STACK onto existing values)
+
+		// Apply multipliers
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 			outputAmount = outputAmount * _cn_outputMult;
 		}
-		// 3) Output caps (machine cap + slot space cap)
-		double MACHINE_MAX_OUTPUT = 4; // set per machine
-		if (outputAmount > MACHINE_MAX_OUTPUT)
-			outputAmount = MACHINE_MAX_OUTPUT;
-		double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
-		double _cn_spaceLeft = 64 - _cn_currentCount; // assuming stack size 64
-		if (outputAmount > _cn_spaceLeft)
-			outputAmount = _cn_spaceLeft;
-		if (outputAmount < 0)
-			outputAmount = 0;
+
+		// Sync maxProgress for GUI/progress bars
 		if (cookTime < 1)
 			cookTime = 1;
+
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -108,7 +110,9 @@ public class CircuitPressOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (!(Blocks.AIR.asItem() == (new Object() {
+
+		// Resolve recipe result
+		ItemStack _cn_result = (new Object() {
 			public ItemStack getResult() {
 				if (world instanceof Level _lvl) {
 					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
@@ -124,26 +128,53 @@ public class CircuitPressOnTickUpdateProcedure {
 				}
 				return ItemStack.EMPTY;
 			}
-		}.getResult()).getItem())) {
+		}.getResult()).copy();
+
+		// If no valid result, do nothing
+		if (Blocks.AIR.asItem() == _cn_result.getItem()) {
+			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		}
+
+		// ---- OUTPUT LIMIT FIX (respects handler slot limit + item max stack size) ----
+		int MACHINE_MAX_OUTPUT = 4; // per craft
+		int out = (int) Math.floor(outputAmount);
+		if (out < 0)
+			out = 0;
+		if (out > MACHINE_MAX_OUTPUT)
+			out = MACHINE_MAX_OUTPUT;
+
+		// Slot 1 limits
+		int slotMax = 64; // fallback
+		if (world instanceof ILevelExtension _ext) {
+			IItemHandler _ih = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
+			if (_ih != null) {
+				slotMax = _ih.getSlotLimit(1);
+			}
+		}
+
+		int itemMax = Math.min(_cn_result.getMaxStackSize(), 64);
+		int realMax = Math.min(slotMax, itemMax);
+
+		int current = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+		int spaceLeft = Math.max(0, realMax - current);
+
+		if (out > spaceLeft)
+			out = spaceLeft;
+
+		// If there's no space, we should not be able to finish a craft
+		// (you can still tick progress if you want; this code only blocks completion safely)
+		// ---------------------------------------------------------------------------
+
+		// Main machine logic
+		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
 			if (4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount()) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (new Object() {
-						public ItemStack getResult() {
-							if (world instanceof Level _lvl) {
-								net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-								List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-								for (CircuitPressingRecipe recipe : recipes) {
-									NonNullList<Ingredient> ingredients = recipe.getIngredients();
-									if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-										continue;
-									if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-										continue;
-									return recipe.getResultItem(null);
-								}
-							}
-							return ItemStack.EMPTY;
-						}
-					}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
+
+				// Only allow processing if output slot is compatible and has space
+				if (out > 0) {
+					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == _cn_result.getItem()
+							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
+
+						// Progress
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);
@@ -157,28 +188,30 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ServerLevel _level)
 								_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 						}
+
+						// Complete craft
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+
+							// Insert output (clamped to realMax)
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								ItemStack _setstack = (new Object() {
-									public ItemStack getResult() {
-										if (world instanceof Level _lvl) {
-											net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-											List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-											for (CircuitPressingRecipe recipe : recipes) {
-												NonNullList<Ingredient> ingredients = recipe.getIngredients();
-												if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-													continue;
-												if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-													continue;
-												return recipe.getResultItem(null);
-											}
-										}
-										return ItemStack.EMPTY;
-									}
-								}.getResult()).copy();
-								_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount));
+								int current2 = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+
+								int slotMax2 = 64;
+								int realMax2 = Math.min(_cn_result.getMaxStackSize(), 64);
+								IItemHandler _ih2 = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
+								if (_ih2 != null) {
+									slotMax2 = _ih2.getSlotLimit(1);
+									realMax2 = Math.min(realMax2, slotMax2);
+								}
+
+								int newCount = Math.min(current2 + out, realMax2);
+
+								ItemStack _setstack = _cn_result.copy();
+								_setstack.setCount(newCount);
 								_itemHandlerModifiable.setStackInSlot(1, _setstack);
 							}
+
+							// Consume inputs
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 0;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
@@ -191,6 +224,8 @@ public class CircuitPressOnTickUpdateProcedure {
 								_stk.shrink(1);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
+
+							// Reset progress
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);
 								BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -200,6 +235,8 @@ public class CircuitPressOnTickUpdateProcedure {
 								if (world instanceof Level _level)
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 							}
+
+							// Consume energy
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
@@ -210,6 +247,7 @@ public class CircuitPressOnTickUpdateProcedure {
 				}
 			}
 		}
+
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
 	}
 

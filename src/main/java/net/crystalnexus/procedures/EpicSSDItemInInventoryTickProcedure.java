@@ -25,7 +25,7 @@ public class EpicSSDItemInInventoryTickProcedure {
 			if (rand.nextFloat() < 0.02f) {
 				CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
 					t.putDouble("cook_mult", 0.01);     // max (fastest)
-					t.putDouble("output_mult", 12.0);   // max (highest)
+					t.putDouble("output_mult", 8.0);   // max (highest)
 					t.putInt("god_roll", 1);            // <-- FLAG
 				});
 				return;
@@ -41,7 +41,7 @@ public class EpicSSDItemInInventoryTickProcedure {
 
 			double outputMult;
 			if (rand.nextFloat() < 0.85f) {
-				outputMult = biasedRange(rand, 1.00, 12.00, 2.8);
+				outputMult = biasedRange(rand, 1.00, 8.00, 2.8);
 			} else {
 				outputMult = biasedRange(rand, 0.85, 1.00, 0.6);
 			}

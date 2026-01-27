@@ -14,9 +14,12 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
@@ -61,6 +64,29 @@ public class InverterOnTickUpdateProcedure {
 		} else {
 			cookTime = 300;
 		}
+		double _cn_cookMult = 1.0;
+		double _cn_outputMult = 1.0;
+		boolean _cn_hasKeys = false;
+		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
+		CompoundTag _cn_data = null;
+		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
+			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
+			if (_cn_cd != null)
+				_cn_data = _cn_cd.copyTag();
+		}
+		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+			_cn_hasKeys = true;
+			if (_cn_data.contains("cook_mult"))
+				_cn_cookMult = _cn_data.getDouble("cook_mult");
+			if (_cn_data.contains("output_mult"))
+				_cn_outputMult = _cn_data.getDouble("output_mult");
+		}
+		if (_cn_hasKeys) {
+			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
+			_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
+			cookTime = cookTime * _cn_cookMult;
+			outputAmount = outputAmount * _cn_outputMult;
+		}
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -86,7 +112,7 @@ public class InverterOnTickUpdateProcedure {
 			}
 		}.getResult()).getItem())) {
 			if (1024 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount()) {
+				if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
 					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (new Object() {
 						public ItemStack getResult() {
 							if (world instanceof Level _lvl) {
