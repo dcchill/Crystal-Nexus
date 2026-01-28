@@ -66,6 +66,7 @@ import net.crystalnexus.world.inventory.BioMGuiMenu;
 import net.crystalnexus.world.inventory.BioMCGuiMenu;
 import net.crystalnexus.world.inventory.BatteryMonitorGuiMenu;
 import net.crystalnexus.world.inventory.AccepterGUIMenu;
+import net.crystalnexus.world.inventory.AcceleratorGuiMenu;
 import net.crystalnexus.network.MenuStateUpdateMessage;
 import net.crystalnexus.CrystalnexusMod;
 
@@ -124,6 +125,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<FluidPackagerGUIMenu>> FLUID_PACKAGER_GUI = REGISTRY.register("fluid_packager_gui", () -> IMenuTypeExtension.create(FluidPackagerGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SmartSplitterGUIMenu>> SMART_SPLITTER_GUI = REGISTRY.register("smart_splitter_gui", () -> IMenuTypeExtension.create(SmartSplitterGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ComputationClusterGUIMenu>> COMPUTATION_CLUSTER_GUI = REGISTRY.register("computation_cluster_gui", () -> IMenuTypeExtension.create(ComputationClusterGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<AcceleratorGuiMenu>> ACCELERATOR_GUI = REGISTRY.register("accelerator_gui", () -> IMenuTypeExtension.create(AcceleratorGuiMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

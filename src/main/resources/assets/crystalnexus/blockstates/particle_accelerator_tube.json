@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/particle_accelerator_tube"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/particle_accelerator_tube",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/particle_accelerator_tube",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/particle_accelerator_tube",
+      "y": 270
+    }
+  }
+}

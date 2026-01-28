@@ -58,6 +58,8 @@ import net.crystalnexus.block.PolymerBlockBlock;
 import net.crystalnexus.block.PistonGeneratorBlock;
 import net.crystalnexus.block.PipeStraightBlock;
 import net.crystalnexus.block.PipeJunctionBlock;
+import net.crystalnexus.block.ParticleAcceleratorTubeBlock;
+import net.crystalnexus.block.ParticleAcceleratorControllerBlock;
 import net.crystalnexus.block.OreProcessorBlock;
 import net.crystalnexus.block.OilNodeBlock;
 import net.crystalnexus.block.NodeMinerBlock;
@@ -93,6 +95,7 @@ import net.crystalnexus.block.EnergyRefractorBlock;
 import net.crystalnexus.block.EnergyExtractorBlock;
 import net.crystalnexus.block.EnergyCableMk2Block;
 import net.crystalnexus.block.EnergyCableBlock;
+import net.crystalnexus.block.ElectromagnetBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
 import net.crystalnexus.block.EEBatteryBlock;
 import net.crystalnexus.block.DustSeparatorBlock;
@@ -276,6 +279,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> SULFUR_ORE = REGISTRY.register("sulfur_ore", SulfurOreBlock::new);
 	public static final DeferredBlock<Block> SMART_SPLITTER = REGISTRY.register("smart_splitter", SmartSplitterBlock::new);
 	public static final DeferredBlock<Block> COMPUTATION_CLUSTER = REGISTRY.register("computation_cluster", ComputationClusterBlock::new);
+	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_TUBE = REGISTRY.register("particle_accelerator_tube", ParticleAcceleratorTubeBlock::new);
+	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_CONTROLLER = REGISTRY.register("particle_accelerator_controller", ParticleAcceleratorControllerBlock::new);
+	public static final DeferredBlock<Block> ELECTROMAGNET = REGISTRY.register("electromagnet", ElectromagnetBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

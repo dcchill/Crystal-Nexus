@@ -45,6 +45,8 @@ import net.crystalnexus.jei_recipes.BiomaticCompostingRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipe;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipeCategory;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
+import net.crystalnexus.jei_recipes.AcceleratorJeiRecipeCategory;
+import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -77,6 +79,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<BiomaticCompostingRecipe> BiomaticComposting_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticCompostingRecipeCategory.UID, BiomaticCompostingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticSimulationRecipe> BiomaticSimulation_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticSimulationRecipeCategory.UID, BiomaticSimulationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PistonGeneratorJEIRecipe> PistonGeneratorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(PistonGeneratorJEIRecipeCategory.UID, PistonGeneratorJEIRecipe.class);
+	public static mezz.jei.api.recipe.RecipeType<AcceleratorJeiRecipe> AcceleratorJei_Type = new mezz.jei.api.recipe.RecipeType<>(AcceleratorJeiRecipeCategory.UID, AcceleratorJeiRecipe.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -104,6 +107,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new BiomaticCompostingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticSimulationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new AcceleratorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
@@ -147,6 +151,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(BiomaticSimulation_Type, BiomaticSimulationRecipes);
 		List<PistonGeneratorJEIRecipe> PistonGeneratorJEIRecipes = recipeManager.getAllRecipesFor(PistonGeneratorJEIRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
 		registration.addRecipes(PistonGeneratorJEI_Type, PistonGeneratorJEIRecipes);
+		List<AcceleratorJeiRecipe> AcceleratorJeiRecipes = recipeManager.getAllRecipesFor(AcceleratorJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
 	}
 
 	@Override
@@ -178,5 +184,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem()), BiomaticComposting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem()), AcceleratorJei_Type);
 	}
 }

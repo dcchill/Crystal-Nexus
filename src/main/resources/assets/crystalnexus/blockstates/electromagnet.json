@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/electromagnet"
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/electromagnet",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/electromagnet",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/electromagnet",
+      "y": 270
+    }
+  }
+}

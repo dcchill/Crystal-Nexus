@@ -563,5 +563,9 @@
   "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
   "item.crystalnexus.epic_ssd": "Epic SSD",
   "item.crystalnexus.blank_ssd": "Encrypted SSD",
-  "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster"
+  "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster",
+  "block.crystalnexus.particle_accelerator_tube": "Particle Accelerator Tube",
+  "block.crystalnexus.particle_accelerator_controller": "Particle Accelerator Controller",
+  "gui.crystalnexus.accelerator_gui.label_proc_get_block_name_for_gui": "[Particle Accelerator]",
+  "block.crystalnexus.electromagnet": "Electromagnet"
 }

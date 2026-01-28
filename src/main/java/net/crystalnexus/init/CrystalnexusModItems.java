@@ -425,6 +425,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> RARE_SSD = REGISTRY.register("rare_ssd", RareSSDItem::new);
 	public static final DeferredItem<Item> EPIC_SSD = REGISTRY.register("epic_ssd", EpicSSDItem::new);
 	public static final DeferredItem<Item> BLANK_SSD = REGISTRY.register("blank_ssd", BlankSSDItem::new);
+	public static final DeferredItem<Item> PARTICLE_ACCELERATOR_TUBE = block(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE);
+	public static final DeferredItem<Item> PARTICLE_ACCELERATOR_CONTROLLER = block(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER);
+	public static final DeferredItem<Item> ELECTROMAGNET = block(CrystalnexusModBlocks.ELECTROMAGNET);
 
 	// Start of user code block custom items
 	// End of user code block custom items

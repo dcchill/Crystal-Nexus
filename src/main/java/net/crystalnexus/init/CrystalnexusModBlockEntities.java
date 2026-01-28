@@ -40,6 +40,8 @@ import net.crystalnexus.block.entity.QuantumMinerBlockEntity;
 import net.crystalnexus.block.entity.PistonGeneratorBlockEntity;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.PipeJunctionBlockEntity;
+import net.crystalnexus.block.entity.ParticleAcceleratorTubeBlockEntity;
+import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.OreProcessorBlockEntity;
 import net.crystalnexus.block.entity.NodeMinerBlockEntity;
 import net.crystalnexus.block.entity.NodeExtractorBlockEntity;
@@ -66,6 +68,7 @@ import net.crystalnexus.block.entity.EnergyRefractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyCableMk2BlockEntity;
 import net.crystalnexus.block.entity.EnergyCableBlockEntity;
+import net.crystalnexus.block.entity.ElectromagnetBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
 import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
@@ -196,6 +199,11 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidPackagerBlockEntity>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SmartSplitterBlockEntity>> SMART_SPLITTER = register("smart_splitter", CrystalnexusModBlocks.SMART_SPLITTER, SmartSplitterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ComputationClusterBlockEntity>> COMPUTATION_CLUSTER = register("computation_cluster", CrystalnexusModBlocks.COMPUTATION_CLUSTER, ComputationClusterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ParticleAcceleratorTubeBlockEntity>> PARTICLE_ACCELERATOR_TUBE = register("particle_accelerator_tube", CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE,
+			ParticleAcceleratorTubeBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ParticleAcceleratorControllerBlockEntity>> PARTICLE_ACCELERATOR_CONTROLLER = register("particle_accelerator_controller", CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER,
+			ParticleAcceleratorControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectromagnetBlockEntity>> ELECTROMAGNET = register("electromagnet", CrystalnexusModBlocks.ELECTROMAGNET, ElectromagnetBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -351,5 +359,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMART_SPLITTER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, COMPUTATION_CLUSTER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COMPUTATION_CLUSTER.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PARTICLE_ACCELERATOR_TUBE.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PARTICLE_ACCELERATOR_CONTROLLER.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ELECTROMAGNET.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ELECTROMAGNET.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

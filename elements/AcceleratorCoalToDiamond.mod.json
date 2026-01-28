@@ -1,0 +1,19 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "accelerator_jei",
+    "result": {
+      "value": "Items.DIAMOND"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.COAL#0"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "AcceleratorJei"
+  }
+}

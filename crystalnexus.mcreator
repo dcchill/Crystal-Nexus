@@ -16042,6 +16042,165 @@
         ]
       },
       "path": "~/computation unit"
+    },
+    {
+      "name": "ParticleAcceleratorTube",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "particle_accelerator_tube",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/particle_accelerator_tube.json",
+          "src/main/resources/assets/crystalnexus/models/item/particle_accelerator_tube.json",
+          "src/main/java/net/crystalnexus/block/ParticleAcceleratorTubeBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/ParticleAcceleratorTubeBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/blockstates/particle_accelerator_tube.json",
+          "src/main/resources/assets/crystalnexus/models/block/particle_accelerator_tube.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ParticleAcceleratorController",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "particle_accelerator_controller",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/particle_accelerator_controller.json",
+          "src/main/resources/assets/crystalnexus/models/block/particle_accelerator_controller.json",
+          "src/main/java/net/crystalnexus/block/entity/ParticleAcceleratorControllerBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/blockstates/particle_accelerator_controller.json",
+          "src/main/java/net/crystalnexus/block/ParticleAcceleratorControllerBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/particle_accelerator_controller.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorGui",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/AcceleratorGuiScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/AcceleratorGuiMenu.java",
+          "src/main/java/net/crystalnexus/network/AcceleratorGuiSlotMessage.java"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "Electromagnet",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "electromagnet",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/electromagnet.json",
+          "src/main/resources/assets/crystalnexus/models/item/electromagnet.json",
+          "src/main/java/net/crystalnexus/block/ElectromagnetBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/electromagnet.json",
+          "src/main/java/net/crystalnexus/block/entity/ElectromagnetBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/blockstates/electromagnet.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorJei",
+      "type": "jeirecipetype",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_jei",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/jei_recipes/AcceleratorJeiRecipe.java",
+          "src/main/java/net/crystalnexus/jei_recipes/AcceleratorJeiRecipeCategory.java"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorCoalToDiamond",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_coal_to_diamond",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_coal_to_diamond.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ParticleAcceleratorControllerOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "particle_accelerator_controller_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ParticleAcceleratorControllerOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ParticleAcceleratorStatusTextProcedure",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "particle_accelerator_status_text_procedure",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ParticleAcceleratorStatusTextProcedureProcedure.java"
+        ]
+      },
+      "path": "~/particle_accel"
     }
   ],
   "variable_elements": [
@@ -16770,7 +16929,10 @@
       "LavaNode",
       "AncientCrystalOreStone",
       "AncientCrystalOre",
-      "SulfurOre"
+      "SulfurOre",
+      "ParticleAcceleratorTube",
+      "ParticleAcceleratorController",
+      "Electromagnet"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17397,7 +17559,11 @@
       "item.crystalnexus.epic_ssd.description_0": "§5Can be researched at the Computation Cluster",
       "item.crystalnexus.epic_ssd": "Epic SSD",
       "item.crystalnexus.blank_ssd": "Encrypted SSD",
-      "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster"
+      "item.crystalnexus.blank_ssd.description_0": "§5Can be decrypted at the Computation Cluster",
+      "block.crystalnexus.particle_accelerator_tube": "Particle Accelerator Tube",
+      "block.crystalnexus.particle_accelerator_controller": "Particle Accelerator Controller",
+      "gui.crystalnexus.accelerator_gui.label_proc_get_block_name_for_gui": "[Particle Accelerator]",
+      "block.crystalnexus.electromagnet": "Electromagnet"
     }
   },
   "metadata": {
@@ -17609,6 +17775,10 @@
       },
       {
         "name": "new upgrades",
+        "children": []
+      },
+      {
+        "name": "particle_accel",
         "children": []
       }
     ]

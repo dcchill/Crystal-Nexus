@@ -30,6 +30,7 @@ import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipe;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
+import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -81,6 +82,8 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("biomatic_simulation", () -> BiomaticSimulationRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("piston_generator_jei", () -> PistonGeneratorJEIRecipe.Type.INSTANCE);
 			SERIALIZERS.register("piston_generator_jei", () -> PistonGeneratorJEIRecipe.Serializer.INSTANCE);
+			RECIPE_TYPES.register("accelerator_jei", () -> AcceleratorJeiRecipe.Type.INSTANCE);
+			SERIALIZERS.register("accelerator_jei", () -> AcceleratorJeiRecipe.Serializer.INSTANCE);
 		});
 	}
 }

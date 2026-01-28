@@ -59,6 +59,7 @@ import net.crystalnexus.client.gui.BioMGuiScreen;
 import net.crystalnexus.client.gui.BioMCGuiScreen;
 import net.crystalnexus.client.gui.BatteryMonitorGuiScreen;
 import net.crystalnexus.client.gui.AccepterGUIScreen;
+import net.crystalnexus.client.gui.AcceleratorGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class CrystalnexusModScreens {
@@ -115,6 +116,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.FLUID_PACKAGER_GUI.get(), FluidPackagerGUIScreen::new);
 		event.register(CrystalnexusModMenus.SMART_SPLITTER_GUI.get(), SmartSplitterGUIScreen::new);
 		event.register(CrystalnexusModMenus.COMPUTATION_CLUSTER_GUI.get(), ComputationClusterGUIScreen::new);
+		event.register(CrystalnexusModMenus.ACCELERATOR_GUI.get(), AcceleratorGuiScreen::new);
 	}
 
 	public interface ScreenAccessor {

@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "output": {
+    "id": "minecraft:diamond",
+    "count": 1
+  }
+}
