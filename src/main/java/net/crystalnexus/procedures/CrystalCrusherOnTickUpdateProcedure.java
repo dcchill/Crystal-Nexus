@@ -183,7 +183,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 											return ItemStack.EMPTY;
 										}
 									}.getResult()).copy();
-									_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 2);
+									_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 4);
 									_itemHandlerModifiable.setStackInSlot(1, _setstack);
 								}
 								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {

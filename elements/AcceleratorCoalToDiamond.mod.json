@@ -9,7 +9,7 @@
     "count": 1,
     "ingredients": [
       {
-        "value": "Items.COAL#0"
+        "value": "Blocks.COAL_BLOCK"
       }
     ],
     "integers": [],

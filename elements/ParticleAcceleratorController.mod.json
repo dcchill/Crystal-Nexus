@@ -4,10 +4,10 @@
   "definition": {
     "texture": "purebottom",
     "textureTop": "puretop",
-    "textureLeft": "lensotherside",
-    "textureFront": "particle_accel_back",
-    "textureRight": "lensside",
-    "textureBack": "battery_monitor",
+    "textureLeft": "lensside",
+    "textureFront": "factorycontroller",
+    "textureRight": "lensotherside",
+    "textureBack": "accepter",
     "renderType": 10,
     "customModelName": "Normal",
     "rotationMode": 1,
@@ -20,9 +20,9 @@
     "blockSetType": "OAK",
     "tintType": "No tint",
     "isItemTinted": false,
-    "hasTransparency": true,
+    "hasTransparency": false,
     "connectedSides": true,
-    "transparencyType": "TRANSLUCENT",
+    "transparencyType": "SOLID",
     "disableOffset": false,
     "boundingBoxes": [
       {

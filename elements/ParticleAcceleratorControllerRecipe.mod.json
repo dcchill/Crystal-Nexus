@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:ParticleAcceleratorTube"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:ParticleAcceleratorTube"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:MachineBolt"
+      },
+      {
+        "value": ""
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:ParticleAcceleratorController"
+    },
+    "name": "particle_accelerator_controller_recipe",
+    "namespace": "mod"
+  }
+}

@@ -2,7 +2,7 @@
   "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "minecraft:coal"
+      "item": "minecraft:coal_block"
     }
   ],
   "output": {

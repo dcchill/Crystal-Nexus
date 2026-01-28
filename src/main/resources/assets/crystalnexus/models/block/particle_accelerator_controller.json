@@ -3,11 +3,11 @@
   "textures": {
     "down": "crystalnexus:block/purebottom",
     "up": "crystalnexus:block/puretop",
-    "north": "crystalnexus:block/particle_accel_back",
-    "east": "crystalnexus:block/lensotherside",
-    "south": "crystalnexus:block/battery_monitor",
-    "west": "crystalnexus:block/lensside",
+    "north": "crystalnexus:block/factorycontroller",
+    "east": "crystalnexus:block/lensside",
+    "south": "crystalnexus:block/accepter",
+    "west": "crystalnexus:block/lensotherside",
     "particle": "crystalnexus:block/purebottom"
   },
-  "render_type": "translucent"
+  "render_type": "solid"
 }

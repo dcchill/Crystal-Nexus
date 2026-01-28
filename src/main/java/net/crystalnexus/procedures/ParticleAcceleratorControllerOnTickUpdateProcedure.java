@@ -21,6 +21,8 @@ import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 public class ParticleAcceleratorControllerOnTickUpdateProcedure {
@@ -29,10 +31,15 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	private static final int MIN_LEN = 12;
 	private static final int MAX_LEN = 64;
 
+	private static final int MIN_MAGNETS = 1;
+
 	// TOTAL FE drained per tick (split across all magnets)
 	private static final int TOTAL_FE_PER_TICK = 5120;
 
-	private static final double BASE_COOK_TIME = 200;
+	private static final double BASE_COOK_TIME = 2000;     // time at MIN_MAGNETS
+	private static final double MIN_COOK_TIME  = 120;      // hard floor
+	private static final double MAGNET_EFFICIENCY = 1.0;   // 1.0 = strong effect, 0.5 = weaker
+
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
@@ -43,53 +50,53 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		BlockEntity be = world.getBlockEntity(pos);
 		if (be == null) return;
 
-		// ---- Facing (MCreator standard) ----
 		Direction forward = world.getBlockState(pos)
-				.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING);
+			.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING);
 
 		// =====================================================
-		// Scan LINAC
+		// Scan: linear OR ring (corners supported)
 		// =====================================================
-		int len = 0;
-		int magnetCount = 0;
+		PathScanResult scan = scanPath(world, pos, forward, MIN_LEN, MAX_LEN);
 
-		BlockPos cur = pos.relative(forward);
-		while (len < MAX_LEN) {
-			BlockState st = world.getBlockState(cur);
+		int len = scan.len();
+		int magnetCount = scan.magnetCount();
+		boolean formed = scan.ok();
+		boolean ringMode = scan.ringMode();
+		ArrayList<BlockPos> magnets = scan.magnets();
 
-			if (st.getBlock() == CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get()) {
-				len++;
-			} else if (st.getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get()) {
-				len++;
-				magnetCount++;
-			} else {
-				break;
-			}
-			cur = cur.relative(forward);
-		}
-
-		boolean formed = len >= MIN_LEN;
-
-		// ---- Debug / GUI data ----
+		// ---- Store for GUI + renderer ----
 		be.getPersistentData().putDouble("linacLen", len);
 		be.getPersistentData().putDouble("magCount", magnetCount);
 		be.getPersistentData().putDouble("formed", formed ? 1 : 0);
-		be.getPersistentData().putDouble("maxProgress", BASE_COOK_TIME);
+		be.getPersistentData().putDouble("ringMode", ringMode ? 1 : 0);
+		be.getPersistentData().putDouble("minMagReq", MIN_MAGNETS);
+		// Cook time shrinks with magnets (diminishing returns)
+		double effectiveMagnets = Math.max(0, magnetCount - MIN_MAGNETS); // magnets above minimum
+		double cookTime = BASE_COOK_TIME / (1.0 + (effectiveMagnets * MAGNET_EFFICIENCY));
+		cookTime = Math.max(MIN_COOK_TIME, cookTime);
 
-if (!formed) {
-	be.getPersistentData().putDouble("progress", 0);
-	be.getPersistentData().putDouble("reason", 1); // invalid structure
-	sync(world, pos);
-	return;
-}
+		be.getPersistentData().putDouble("maxProgress", cookTime);
 
-if (magnetCount < 3) { // <-- MIN MAGNETS HERE
-	be.getPersistentData().putDouble("progress", 0);
-	be.getPersistentData().putDouble("reason", 2); // not enough magnets
-	sync(world, pos);
-	return;
-}
 
+		// reset default status flags each tick
+		be.getPersistentData().putDouble("reason", 0);
+		be.getPersistentData().putDouble("stalled", 0);
+		be.getPersistentData().putDouble("stallNeed", 0);
+		be.getPersistentData().putDouble("stallStored", 0);
+
+		if (!formed) {
+			be.getPersistentData().putDouble("progress", 0);
+			be.getPersistentData().putDouble("reason", 1); // invalid structure
+			sync(world, pos);
+			return;
+		}
+
+		if (magnetCount < MIN_MAGNETS) {
+			be.getPersistentData().putDouble("progress", 0);
+			be.getPersistentData().putDouble("reason", 2); // not enough magnets
+			sync(world, pos);
+			return;
+		}
 
 		// =====================================================
 		// Inventory
@@ -106,10 +113,9 @@ if (magnetCount < 3) { // <-- MIN MAGNETS HERE
 		}
 
 		// =====================================================
-		// Recipe lookup (same pattern as your crusher)
+		// Recipe lookup (your JEI pattern)
 		// =====================================================
 		ItemStack result = ItemStack.EMPTY;
-
 		if (world instanceof Level lvl) {
 			List<AcceleratorJeiRecipe> recipes =
 				lvl.getRecipeManager()
@@ -140,70 +146,45 @@ if (magnetCount < 3) { // <-- MIN MAGNETS HERE
 		if (!out.isEmpty() && out.getCount() >= 64) return;
 
 		// =====================================================
-		// POWER CHECK — ALL MAGNETS MUST PAY
+		// POWER: ALL MAGNETS MUST PAY (5120 FE/t total)
 		// =====================================================
 		int per = TOTAL_FE_PER_TICK / magnetCount;
 		int rem = TOTAL_FE_PER_TICK % magnetCount;
 
-		be.getPersistentData().putDouble("needPerMag", per);
-
-		// Pass 1: simulate
-		cur = pos.relative(forward);
-		int seen = 0;
-		int minFE = Integer.MAX_VALUE;
-
-		for (int i = 0; i < len; i++) {
-			BlockState st = world.getBlockState(cur);
-			if (st.getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get()) {
-				int cost = per + (seen < rem ? 1 : 0);
-				seen++;
-
-				IEnergyStorage es = getEnergyStorageAnySide(world, cur);
-				int stored = es == null ? 0 : es.getEnergyStored();
-				minFE = Math.min(minFE, stored);
-
-				if (es == null || es.extractEnergy(cost, true) < cost) {
-					be.getPersistentData().putDouble("stalled", 1);
-					be.getPersistentData().putDouble("stallNeed", cost);
-					be.getPersistentData().putDouble("stallStored", stored);
-					be.getPersistentData().putDouble("minMagFE", minFE == Integer.MAX_VALUE ? 0 : minFE);
-					sync(world, pos);
-					return;
-				}
+		// simulate pass (must be extractable)
+		for (int i = 0; i < magnets.size(); i++) {
+			int cost = per + (i < rem ? 1 : 0);
+			IEnergyStorage es = getDrainableEnergyStorage(world, magnets.get(i), cost);
+			if (es == null) {
+				be.getPersistentData().putDouble("stalled", 1);
+				be.getPersistentData().putDouble("stallNeed", cost);
+				be.getPersistentData().putDouble("stallStored", 0);
+				sync(world, pos);
+				return;
 			}
-			cur = cur.relative(forward);
 		}
 
-		// Pass 2: drain
-		cur = pos.relative(forward);
-		seen = 0;
-		for (int i = 0; i < len; i++) {
-			BlockState st = world.getBlockState(cur);
-			if (st.getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get()) {
-				int cost = per + (seen < rem ? 1 : 0);
-				seen++;
-				IEnergyStorage es = getEnergyStorageAnySide(world, cur);
-				if (es != null) es.extractEnergy(cost, false);
-			}
-			cur = cur.relative(forward);
+		// drain pass
+		for (int i = 0; i < magnets.size(); i++) {
+			int cost = per + (i < rem ? 1 : 0);
+			IEnergyStorage es = getDrainableEnergyStorage(world, magnets.get(i), cost);
+			if (es != null) es.extractEnergy(cost, false);
 		}
-
-		be.getPersistentData().putDouble("stalled", 0);
-		be.getPersistentData().putDouble("minMagFE", minFE == Integer.MAX_VALUE ? 0 : minFE);
 
 		// =====================================================
-		// Progress
+		// Progress + Craft
 		// =====================================================
 		double progress = be.getPersistentData().getDouble("progress");
-		double speed = 1 + Math.min(magnetCount, 15);
 
-		progress += speed;
-		be.getPersistentData().putDouble("progress", progress);
+		// speed scales with magnet count (cap)
+		cookTime = be.getPersistentData().getDouble("maxProgress");
 
-		// =====================================================
-		// Craft
-		// =====================================================
-		if (progress >= BASE_COOK_TIME) {
+// constant progress rate; magnets reduce cook time instead
+progress += 1.0;
+be.getPersistentData().putDouble("progress", progress);
+
+if (progress >= cookTime) {
+
 			if (inv instanceof IItemHandlerModifiable mod) {
 				ItemStack newOut = result.copy();
 				newOut.setCount(out.isEmpty() ? 1 : out.getCount() + 1);
@@ -220,18 +201,144 @@ if (magnetCount < 3) { // <-- MIN MAGNETS HERE
 	}
 
 	// =====================================================
-	// Helpers
+	// SCAN SUPPORT (linear OR ring, corners supported)
 	// =====================================================
-	private static IEnergyStorage getEnergyStorageAnySide(LevelAccessor world, BlockPos pos) {
+	private record PathScanResult(boolean ok, boolean ringMode, int len, int magnetCount, ArrayList<BlockPos> magnets) {}
+
+	private static boolean isTubeOrMagnet(LevelAccessor world, BlockPos p) {
+		BlockState st = world.getBlockState(p);
+		return st.getBlock() == CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get()
+			|| st.getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get();
+	}
+
+	private static boolean isMagnet(LevelAccessor world, BlockPos p) {
+		return world.getBlockState(p).getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get();
+	}
+
+private static PathScanResult scanPath(LevelAccessor world, BlockPos controllerPos, Direction facing, int minLen, int maxLen) {
+	// ---- 1) Linear scan forward ----
+	ArrayList<BlockPos> mags = new ArrayList<>();
+	int len = 0;
+
+	BlockPos cur = controllerPos.relative(facing);
+	while (len < maxLen) {
+		if (!isTubeOrMagnet(world, cur)) break;
+		if (isMagnet(world, cur)) mags.add(cur.immutable());
+		len++;
+		cur = cur.relative(facing);
+	}
+	if (len >= minLen) {
+		return new PathScanResult(true, false, len, mags.size(), mags);
+	}
+
+	// ---- 2) Ring scan (horizontal loop, corners supported) ----
+	// Start from ANY adjacent tube/magnet around controller
+	Direction[] candidates = new Direction[] {
+		facing,
+		facing.getClockWise(),
+		facing.getCounterClockWise(),
+		facing.getOpposite(),
+		Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
+	};
+
+	BlockPos startSeg = null;
+	Direction startDir = null;
+
+	for (Direction d : candidates) {
+		BlockPos p = controllerPos.relative(d);
+		if (isTubeOrMagnet(world, p)) {
+			startSeg = p;
+			startDir = d;
+			break;
+		}
+	}
+	if (startSeg == null || startDir == null) {
+		return new PathScanResult(false, false, 0, 0, new ArrayList<>());
+	}
+
+	HashSet<Long> visited = new HashSet<>();
+	ArrayList<BlockPos> ringMags = new ArrayList<>();
+
+	BlockPos pos = startSeg;
+	Direction dir = startDir;
+
+	for (int steps = 0; steps < maxLen; steps++) {
+		// must be flat ring
+		if (pos.getY() != controllerPos.getY()) {
+			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+		}
+
+		if (!isTubeOrMagnet(world, pos)) {
+			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+		}
+
+		long key = pos.asLong();
+		if (visited.contains(key)) {
+			// revisiting any segment = invalid (we close on controller, not by re-walking)
+			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+		}
+		visited.add(key);
+
+		if (isMagnet(world, pos)) ringMags.add(pos.immutable());
+
+		// CORNER-SAFE NEXT STEP:
+		Direction[] horiz = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+
+		Direction nextDir = null;
+		int options = 0;
+
+		for (Direction d : horiz) {
+			if (d == dir.getOpposite()) continue; // don't go back
+
+			BlockPos np = pos.relative(d);
+
+			// ✅ Allow closing the loop back to the CONTROLLER itself
+			if (np.equals(controllerPos) && steps + 1 >= minLen) {
+				nextDir = d;
+				options = 1;
+				break;
+			}
+
+			// Otherwise, continue to an unvisited tube/magnet
+			if (isTubeOrMagnet(world, np) && !visited.contains(np.asLong())) {
+				nextDir = d;
+				options++;
+			}
+		}
+
+		// 0 = dead end, >1 = branching/ambiguous
+		if (options != 1 || nextDir == null) {
+			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+		}
+
+		// If we are closing back to controller, we're done successfully
+		if (pos.relative(nextDir).equals(controllerPos)) {
+			int finalLen = steps + 1; // segments in ring (excluding controller)
+			return new PathScanResult(true, true, finalLen, ringMags.size(), ringMags);
+		}
+
+		dir = nextDir;
+		pos = pos.relative(nextDir);
+	}
+
+	return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+}
+
+
+	// =====================================================
+	// Energy: pick a capability that can actually extract
+	// =====================================================
+	private static IEnergyStorage getDrainableEnergyStorage(LevelAccessor world, BlockPos pos, int cost) {
 		if (!(world instanceof ILevelExtension ext)) return null;
 
 		IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-		if (es != null) return es;
+		if (es != null && es.canExtract() && es.extractEnergy(cost, true) >= cost) return es;
 
 		for (Direction d : Direction.values()) {
 			es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
-			if (es != null) return es;
+			if (es != null && es.canExtract() && es.extractEnergy(cost, true) >= cost) return es;
 		}
+
 		return null;
 	}
 

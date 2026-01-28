@@ -12,12 +12,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.crystalnexus.world.inventory.AcceleratorGuiMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.procedures.ParticleAcceleratorStatusTextProcedureProcedure;
-import net.crystalnexus.procedures.InverterOnTickUpdateProcedure;
-import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
-
-import java.util.stream.Collectors;
-import java.util.Arrays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -49,16 +44,7 @@ public class AcceleratorGuiScreen extends AbstractContainerScreen<AcceleratorGui
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		boolean customTooltipShown = false;
-		if (mouseX > leftPos + -22 && mouseX < leftPos + 2 && mouseY > topPos + 9 && mouseY < topPos + 33) {
-			String hoverText = InverterOnTickUpdateProcedure.execute(world, x, y, z);
-			if (hoverText != null) {
-				guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
-			}
-			customTooltipShown = true;
-		}
-		if (!customTooltipShown)
-			this.renderTooltip(guiGraphics, mouseX, mouseY);
+		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -67,10 +53,7 @@ public class AcceleratorGuiScreen extends AbstractContainerScreen<AcceleratorGui
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), this.leftPos + -33, this.topPos + -1, 0, 0, 48, 48, 48, 48);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 72, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		RenderSystem.disableBlend();
 	}

@@ -4,10 +4,10 @@
   "definition": {
     "texture": "carbonglass",
     "textureTop": "carbonglass",
-    "textureLeft": "particle_accel_tube_side_inv",
-    "textureFront": "particle_accel_back",
+    "textureLeft": "particle_accel_tube_side",
+    "textureFront": "carbonglass",
     "textureRight": "particle_accel_tube_side",
-    "textureBack": "particle_accel_back",
+    "textureBack": "carbonglass",
     "renderType": 10,
     "customModelName": "Normal",
     "rotationMode": 1,

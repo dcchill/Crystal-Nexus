@@ -3,9 +3,9 @@
   "textures": {
     "down": "crystalnexus:block/electromagnet",
     "up": "crystalnexus:block/electromagnet",
-    "north": "crystalnexus:block/particle_accel_back",
-    "east": "crystalnexus:block/electromagnet_side",
-    "south": "crystalnexus:block/particle_accel_back",
+    "north": "crystalnexus:block/accepter",
+    "east": "crystalnexus:block/electromagnet_side_inv",
+    "south": "crystalnexus:block/accepter",
     "west": "crystalnexus:block/electromagnet_side_inv",
     "particle": "crystalnexus:block/electromagnet"
   },

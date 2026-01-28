@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "minecraft:redstone"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_ingot"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:electromagnet",
+    "count": 1
+  }
+}

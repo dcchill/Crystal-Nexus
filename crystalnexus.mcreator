@@ -13024,18 +13024,6 @@
       }
     },
     {
-      "name": "NetheriteScrapDustPurify",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "netherite_scrap_dust_purify",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/netherite_scrap_dust_purify.json"
-        ]
-      }
-    },
-    {
       "name": "TarrockButton",
       "type": "block",
       "compiles": true,
@@ -16198,6 +16186,45 @@
         "return_type": "string",
         "files": [
           "src/main/java/net/crystalnexus/procedures/ParticleAcceleratorStatusTextProcedureProcedure.java"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ParticleAcceleratorControllerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "particle_accelerator_controller_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/particle_accelerator_controller_recipe.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ParticleAcceleratorTubeRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "particle_accelerator_tube_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/particle_accelerator_tube_recipe.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "ElectromagnetRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "electromagnet_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/electromagnet_recipe.json"
         ]
       },
       "path": "~/particle_accel"

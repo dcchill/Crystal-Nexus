@@ -3,9 +3,9 @@
   "textures": {
     "down": "crystalnexus:block/carbonglass",
     "up": "crystalnexus:block/carbonglass",
-    "north": "crystalnexus:block/particle_accel_back",
-    "east": "crystalnexus:block/particle_accel_tube_side_inv",
-    "south": "crystalnexus:block/particle_accel_back",
+    "north": "crystalnexus:block/carbonglass",
+    "east": "crystalnexus:block/particle_accel_tube_side",
+    "south": "crystalnexus:block/carbonglass",
     "west": "crystalnexus:block/particle_accel_tube_side",
     "particle": "crystalnexus:block/carbonglass"
   },

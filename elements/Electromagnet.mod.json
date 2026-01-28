@@ -4,10 +4,10 @@
   "definition": {
     "texture": "electromagnet",
     "textureTop": "electromagnet",
-    "textureLeft": "electromagnet_side",
-    "textureFront": "particle_accel_back",
+    "textureLeft": "electromagnet_side_inv",
+    "textureFront": "accepter",
     "textureRight": "electromagnet_side_inv",
-    "textureBack": "particle_accel_back",
+    "textureBack": "accepter",
     "renderType": 10,
     "customModelName": "Normal",
     "rotationMode": 1,

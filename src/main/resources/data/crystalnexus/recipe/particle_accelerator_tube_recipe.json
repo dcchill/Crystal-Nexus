@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "c": {
+      "item": "minecraft:glass"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:particle_accelerator_tube",
+    "count": 4
+  }
+}
