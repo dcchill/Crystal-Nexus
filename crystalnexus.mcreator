@@ -3229,26 +3229,6 @@
       }
     },
     {
-      "name": "PortalInversion",
-      "type": "jeiinformation",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "portal_inversion",
-      "metadata": {
-        "files": []
-      }
-    },
-    {
-      "name": "PortalInversionCrystal",
-      "type": "jeiinformation",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "portal_inversion_crystal",
-      "metadata": {
-        "files": []
-      }
-    },
-    {
       "name": "InvertiumMachineFrameRecipe",
       "type": "recipe",
       "compiles": true,
@@ -7335,18 +7315,6 @@
         "files": [
           "src/main/java/net/crystalnexus/item/NitrileItem.java",
           "src/main/resources/assets/crystalnexus/models/item/nitrile.json"
-        ]
-      }
-    },
-    {
-      "name": "DustSepNitrile",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "dust_sep_nitrile",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/dust_sep_nitrile.json"
         ]
       }
     },
@@ -11508,58 +11476,6 @@
       "path": "~/coffee"
     },
     {
-      "name": "GlowstoneInverter",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "glowstone_inverter",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/glowstone_inverter.json"
-        ]
-      },
-      "path": "~/inverter"
-    },
-    {
-      "name": "MagmaInverter",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "magma_inverter",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/magma_inverter.json"
-        ]
-      },
-      "path": "~/inverter"
-    },
-    {
-      "name": "BreezeRodInverter",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "breeze_rod_inverter",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/breeze_rod_inverter.json"
-        ]
-      },
-      "path": "~/inverter"
-    },
-    {
-      "name": "EchoShardInverter",
-      "type": "jeirecipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "echo_shard_inverter",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/echo_shard_inverter.json"
-        ]
-      },
-      "path": "~/inverter"
-    },
-    {
       "name": "AncientCrystalOreStone",
       "type": "block",
       "compiles": true,
@@ -11843,7 +11759,7 @@
       "name": "WarpPadRecipe",
       "type": "jeirecipe",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "warp_pad_recipe",
       "metadata": {
         "files": [
@@ -16228,6 +16144,186 @@
         ]
       },
       "path": "~/particle_accel"
+    },
+    {
+      "name": "InvertiumCrystalBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "invertium_crystal_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/invertium_crystal_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/invertium_crystal_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/invertium_crystal_block.json",
+          "src/main/java/net/crystalnexus/block/InvertiumCrystalBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/invertium_crystal_block.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "InvertiumCrystalFormation",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "invertium_crystal_formation",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/invertium_crystal_formation.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "InvertiumIngotSmelting",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "invertium_ingot_smelting",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/advancement/recipes/invertium_ingot_smelting.json",
+          "src/main/resources/data/crystalnexus/recipe/invertium_ingot_smelting.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "RawInvertium",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "raw_invertium",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/RawInvertiumItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/raw_invertium.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "InvertiumCrystalToRaw",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "invertium_crystal_to_raw",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/invertium_crystal_to_raw.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "InvertiumOre",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "invertium_ore",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/InvertiumOreBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/invertium_ore.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/invertium_ore.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/invertium_ore.json",
+          "src/main/resources/assets/crystalnexus/models/item/invertium_ore.json",
+          "src/main/resources/assets/crystalnexus/models/block/invertium_ore.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/invertium_ore.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/invertium_ore_biome_modifier.json"
+        ]
+      },
+      "path": "~/invertium_creation"
+    },
+    {
+      "name": "DarkMatter",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dark_matter",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/dark_matter.json",
+          "src/main/java/net/crystalnexus/item/DarkMatterItem.java"
+        ]
+      },
+      "path": "~/dark_matter"
+    },
+    {
+      "name": "AcceleratorDarkMatter",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_dark_matter",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_dark_matter.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "CompoundBaseRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "compound_base_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/compound_base_recipe.json"
+        ]
+      }
+    },
+    {
+      "name": "AcceleratorNetherStar",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_nether_star",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_nether_star.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorNetherrite",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_netherrite",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_netherrite.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorWindCharge",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_wind_charge",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_wind_charge.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "CrystalFormation",
+      "type": "jeiinformation",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crystal_formation",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/invertium_creation"
     }
   ],
   "variable_elements": [
@@ -16337,6 +16433,9 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:InvertiumOre",
+      "~CUSTOM:InvertiumCrystalBlock",
+      "~CUSTOM:ParticleAcceleratorTube",
       "~CUSTOM:SulfurOre",
       "~CUSTOM:FluidPackager",
       "~CUSTOM:NodeExtractor",
@@ -16457,6 +16556,7 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:InvertiumCrystalBlock",
       "~CUSTOM:NodeExtractor",
       "~CUSTOM:HyperMachineFrame",
       "~CUSTOM:DepotDownloader",
@@ -16501,6 +16601,7 @@
       "CUSTOM:BlutoniumNugget"
     ],
     "BLOCKS:minecraft:needs_diamond_tool": [
+      "~CUSTOM:InvertiumOre",
       "~CUSTOM:AncientDebrisNode",
       "~CUSTOM:ChlorophyteOre",
       "~CUSTOM:BlutoniumOre"
@@ -16767,11 +16868,16 @@
       "CircuitPress",
       "ChlorophyteSmelter",
       "ChlorophyteAccelerator",
+      "InvertiumCrystalBlock",
       "InvertiumCrystal",
+      "RawInvertium",
       "InvertiumNugget",
       "InvertiumIngot",
       "InvertiumMachineFrame",
       "InvertiumBlock",
+      "ParticleAcceleratorTube",
+      "ParticleAcceleratorController",
+      "Electromagnet",
       "InvertiumSmelter",
       "InvertPistonGenerator",
       "MetallurgicRecrystallizer",
@@ -16872,6 +16978,7 @@
       "Florathane",
       "ConductiveAlloy",
       "NetheriteScrapPellet",
+      "DarkMatter",
       "IronSingularity",
       "DiamondSingularity",
       "GoldSingularity",
@@ -16957,9 +17064,7 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "ParticleAcceleratorTube",
-      "ParticleAcceleratorController",
-      "Electromagnet"
+      "InvertiumOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17102,8 +17207,6 @@
       "block.crystalnexus.metallurgic_recrystallizer": "Metallurgic Recrystallizer",
       "jei.crystalnexus.m_recrystallizer_info": "Converts Ingots into Raw Ores. Put an Invertium Crystal in the middle slot. (1 by default, 2 with Efficiency Upgrade)",
       "item.crystalnexus.invertium_crystal": "Invertium Crystal",
-      "jei.crystalnexus.portal_inversion": "Made by throwing a Blutonium ingot into the End Portal",
-      "jei.crystalnexus.portal_inversion_crystal": "Made by throwing an Ancient Crystal into the End Portal\nUsed to power the Metallurgic Recrystallizer",
       "item.crystalnexus.invertium_nugget": "Invertium Nugget",
       "block.crystalnexus.invertium_block": "Invertium Block",
       "block.crystalnexus.metallurgic_recrystallizer.description_0": "§5Not OP at all...",
@@ -17140,7 +17243,7 @@
       "gui.crystalnexus.circuit_press_gui.label_proc_get_block_name_for_gui": "[Circuit Press]",
       "gamerule.disableMeltdowns": "Disable Meltdowns",
       "gamerule.disableMeltdowns.description": "Disables reactor meltdowns",
-      "block.crystalnexus.blu_tnt": "Blu TNT",
+      "block.crystalnexus.blu_tnt": "Blutonium TNT",
       "block.crystalnexus.factory_controller": "Factory Energy Controller",
       "block.crystalnexus.factory_item_controller": "Factory Item Controller",
       "block.crystalnexus.factory_output_controller": "Factory Output Controller",
@@ -17540,8 +17643,8 @@
       "block.crystalnexus.ancient_debris_node": "Ancient Debris Node",
       "item.crystalnexus.netherite_scrap_pellet": "Netherite Scrap Pellet",
       "item.crystalnexus.omega_chip": "Omega Chip",
-      "block.crystalnexus.singularity_matrix": "Singularity Matrix",
-      "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Singularity Matrix]",
+      "block.crystalnexus.singularity_matrix": "Matter Matrix",
+      "gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix": "[Matter Matrix]",
       "block.crystalnexus.singularity_matrix.description_0": "§5Converts items into EE Matter",
       "block.crystalnexus.energy_extractor.description_0": "§5Converts EE Matter back into FE",
       "item.crystalnexus.depot_uplink": "Dimensional Depot Uplink",
@@ -17590,7 +17693,14 @@
       "block.crystalnexus.particle_accelerator_tube": "Particle Accelerator Tube",
       "block.crystalnexus.particle_accelerator_controller": "Particle Accelerator Controller",
       "gui.crystalnexus.accelerator_gui.label_proc_get_block_name_for_gui": "[Particle Accelerator]",
-      "block.crystalnexus.electromagnet": "Electromagnet"
+      "block.crystalnexus.electromagnet": "Electromagnet",
+      "block.crystalnexus.electromagnet.description_1": "§5At least one needed.",
+      "block.crystalnexus.electromagnet.description_0": "§5Increases processing speed of Particle Accelerator.",
+      "block.crystalnexus.invertium_crystal_block": "Invertium Crystal Block",
+      "item.crystalnexus.raw_invertium": "Raw Invertium",
+      "block.crystalnexus.invertium_ore": "Invertium Ore",
+      "item.crystalnexus.dark_matter": "Dark Matter",
+      "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form."
     }
   },
   "metadata": {
@@ -17806,6 +17916,14 @@
       },
       {
         "name": "particle_accel",
+        "children": []
+      },
+      {
+        "name": "invertium_creation",
+        "children": []
+      },
+      {
+        "name": "dark_matter",
         "children": []
       }
     ]

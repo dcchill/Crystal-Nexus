@@ -2,18 +2,18 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "inverter_jei",
+    "category": "accelerator_jei",
     "result": {
-      "value": "Blocks.MAGMA"
+      "value": "CUSTOM:NetheriteScrapPellet"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "Blocks.PACKED_ICE"
+        "value": "CUSTOM:NetheriteScrapDust"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "InverterJei"
+    "recipetype": "AcceleratorJei"
   }
 }

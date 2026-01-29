@@ -2,18 +2,18 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "single_purification",
+    "category": "accelerator_jei",
     "result": {
-      "value": "CUSTOM:Nitrile"
+      "value": "Items.WIND_CHARGE"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "Blocks.BONE_BLOCK"
+        "value": "Items.SNOWBALL"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "SinglePurification"
+    "recipetype": "AcceleratorJei"
   }
 }

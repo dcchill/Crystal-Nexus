@@ -25,13 +25,13 @@
         "data": {
           "name": "label_singularity_matrix",
           "text": {
-            "fixedValue": "[Singularity Matrix]"
+            "fixedValue": "[Matter Matrix]"
           },
           "color": {
             "value": -12829636,
             "falpha": 0.0
           },
-          "x": 187,
+          "x": 201,
           "y": 27,
           "locked": false
         }

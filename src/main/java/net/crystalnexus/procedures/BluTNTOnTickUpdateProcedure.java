@@ -3,8 +3,13 @@ package net.crystalnexus.procedures;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.BlockPos;
 
 public class BluTNTOnTickUpdateProcedure {
@@ -57,21 +62,32 @@ public class BluTNTOnTickUpdateProcedure {
 				}
 			}
 			if (100 <= getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress")) {
-				world.destroyBlock(BlockPos.containing(x, y, z), false);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 0), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 1), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x - 1), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 0), (y + 1), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 0), (y - 1), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 0), (y + 0), (z + 1), 15, Level.ExplosionInteraction.BLOCK);
-				if (world instanceof Level _level && !_level.isClientSide())
-					_level.explode(null, (x + 0), (y + 0), (z - 1), 15, Level.ExplosionInteraction.BLOCK);
+				if ((world instanceof Level _lvl ? _lvl.dimension() : (world instanceof WorldGenLevel _wgl ? _wgl.getLevel().dimension() : Level.OVERWORLD)) == Level.END) {
+					world.destroyBlock(BlockPos.containing(x, y, z), false);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 0), (z + 0), 10, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof ServerLevel _level)
+						_level.holderOrThrow(ResourceKey.create(Registries.CONFIGURED_FEATURE, ResourceLocation.parse("crystalnexus:invertium_crystal_formation"))).value().place(_level, _level.getChunkSource().getGenerator(), _level.getRandom(),
+								BlockPos.containing(x, y + 3, z));
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 0), (z + 0), 3, Level.ExplosionInteraction.BLOCK);
+				} else {
+					world.destroyBlock(BlockPos.containing(x, y, z), false);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 1), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x - 1), (y + 0), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 1), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y - 1), (z + 0), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 0), (z + 1), 15, Level.ExplosionInteraction.BLOCK);
+					if (world instanceof Level _level && !_level.isClientSide())
+						_level.explode(null, (x + 0), (y + 0), (z - 1), 15, Level.ExplosionInteraction.BLOCK);
+				}
 			}
 		}
 	}

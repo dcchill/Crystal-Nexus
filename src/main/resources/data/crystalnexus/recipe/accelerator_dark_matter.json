@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:ee_matter"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:dark_matter",
+    "count": 1
+  }
+}

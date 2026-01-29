@@ -95,7 +95,7 @@ public class SingularityMatrixBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Singularity Matrix");
+					return Component.literal("Matter Matrix");
 				}
 
 				@Override

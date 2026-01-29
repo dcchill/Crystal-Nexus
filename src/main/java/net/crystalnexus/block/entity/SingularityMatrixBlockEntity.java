@@ -83,7 +83,7 @@ public class SingularityMatrixBlockEntity extends RandomizableContainerBlockEnti
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Singularity Matrix");
+		return Component.literal("Matter Matrix");
 	}
 
 	@Override

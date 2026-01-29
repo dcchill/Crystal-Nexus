@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:netherite_scrap_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:netherite_scrap_pellet",
+    "count": 1
+  }
+}

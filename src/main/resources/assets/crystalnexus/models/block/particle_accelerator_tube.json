@@ -1,13 +1,11 @@
 {
-  "parent": "block/cube",
+  "parent": "crystalnexus:custom/particletube",
   "textures": {
-    "down": "crystalnexus:block/carbonglass",
-    "up": "crystalnexus:block/carbonglass",
-    "north": "crystalnexus:block/carbonglass",
-    "east": "crystalnexus:block/particle_accel_tube_side",
-    "south": "crystalnexus:block/carbonglass",
-    "west": "crystalnexus:block/particle_accel_tube_side",
-    "particle": "crystalnexus:block/carbonglass"
+    "all": "crystalnexus:block/carbonglass",
+    "particle": "crystalnexus:block/carbonglass",
+    "0": "crystalnexus:block/particle_accel_tube_side",
+    "2": "crystalnexus:block/purebottom",
+    "3": "crystalnexus:block/carbonglass"
   },
-  "render_type": "translucent"
+  "render_type": "cutout"
 }

@@ -65,11 +65,16 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_CRYSTAL.get());
+				tabData.accept(CrystalnexusModItems.RAW_INVERTIUM.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_INGOT.get());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ELECTROMAGNET.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get().asItem());
@@ -170,6 +175,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.FLORATHANE.get());
 				tabData.accept(CrystalnexusModItems.CONDUCTIVE_ALLOY.get());
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
+				tabData.accept(CrystalnexusModItems.DARK_MATTER.get());
 				tabData.accept(CrystalnexusModItems.IRON_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.DIAMOND_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.GOLD_SINGULARITY.get());
@@ -258,9 +264,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ELECTROMAGNET.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

@@ -1,0 +1,17 @@
+{
+  "_fv": 79,
+  "_type": "jeiinformation",
+  "definition": {
+    "items": [
+      {
+        "value": "CUSTOM:BluTNT"
+      },
+      {
+        "value": "CUSTOM:InvertiumCrystalBlock"
+      }
+    ],
+    "information": [
+      "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form."
+    ]
+  }
+}

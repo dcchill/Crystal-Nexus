@@ -38,7 +38,10 @@
     "customProperties": [],
     "name": "Electromagnet",
     "specialInformation": {
-      "fixedValue": []
+      "fixedValue": [
+        "§5Increases processing speed of Particle Accelerator.",
+        "§5At least one needed."
+      ]
     },
     "hardness": 2.5,
     "resistance": 30.0,

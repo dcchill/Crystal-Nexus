@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": [
+    "small_end_islands",
+    "end_highlands",
+    "the_end"
+  ],
+  "features": "crystalnexus:invertium_ore",
+  "step": "underground_ores"
+}

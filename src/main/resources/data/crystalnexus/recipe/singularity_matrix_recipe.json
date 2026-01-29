@@ -2,7 +2,7 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:energy_singularity"
+      "item": "crystalnexus:dark_matter"
     },
     {
       "item": "crystalnexus:machine_bolt"

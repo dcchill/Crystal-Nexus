@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -28,6 +29,29 @@ public class ParticleAcceleratorControllerRenderer
 		implements BlockEntityRenderer<ParticleAcceleratorControllerBlockEntity> {
 
 	public ParticleAcceleratorControllerRenderer(BlockEntityRendererProvider.Context ctx) {}
+
+	/**
+	 * Make renderer visible farther away.
+	 */
+	@Override
+	public int getViewDistance() {
+		return 256; // bump up/down as you like
+	}
+
+	/**
+	 * Make renderer not disappear when controller AABB isn't in view.
+	 * This is the key fix for “beam disappears when not in sight”.
+	 */
+	@Override
+	public AABB getRenderBoundingBox(ParticleAcceleratorControllerBlockEntity be) {
+		int len = (int) be.getPersistentData().getDouble("linacLen");
+		if (len <= 0) len = 16;
+
+		// Big box around controller that covers the accelerator area.
+		// If you want “always render anywhere”, you can return AABB.INFINITE (heavier).
+		double r = Math.min(128, Math.max(8, len + 4));
+		return new AABB(be.getBlockPos()).inflate(r, 8, r);
+	}
 
 	@Override
 	public void render(
@@ -41,6 +65,7 @@ public class ParticleAcceleratorControllerRenderer
 		Level level = be.getLevel();
 		if (level == null) return;
 
+		// Only show when formed + working + not stalled
 		if (be.getPersistentData().getDouble("formed") != 1) return;
 		if (be.getPersistentData().getDouble("progress") <= 0) return;
 		if (be.getPersistentData().getDouble("stalled") == 1) return;
@@ -61,11 +86,13 @@ public class ParticleAcceleratorControllerRenderer
 
 		float pulse = 0.85f + 0.35f * Mth.sin((level.getGameTime() + partialTick) * 0.6f);
 
-		float loopSeconds = 0.6f;
+		// Speed
+		float loopSeconds = 0.35f; // smaller = faster
 		float ticksPerLoop = loopSeconds * 20f;
 		float t = ((level.getGameTime() + partialTick) % ticksPerLoop) / ticksPerLoop;
 		float head = t * points.size();
 
+		// Trail
 		int trailCount = 9;
 		float trailStep = 0.5f;
 		float baseScale = 0.20f;
@@ -133,7 +160,7 @@ public class ParticleAcceleratorControllerRenderer
 	}
 
 	// =====================================================
-	// Ring path (corner-safe, sharp turns, controller-safe)
+	// Ring path (corner-safe) + controller sharp-corner fix
 	// =====================================================
 	private static ArrayList<Vec3> buildRingPoints(
 			ParticleAcceleratorControllerBlockEntity be,
@@ -168,7 +195,6 @@ public class ParticleAcceleratorControllerRenderer
 
 		ArrayList<Vec3> pts = new ArrayList<>();
 		HashSet<Long> visited = new HashSet<>();
-
 		BlockPos pos = start;
 
 		for (int i = 0; i < maxLen; i++) {
@@ -193,7 +219,7 @@ public class ParticleAcceleratorControllerRenderer
 
 				BlockPos np = pos.relative(d);
 
-				// allow closing the loop BACK INTO THE CONTROLLER
+				// close back into controller
 				if (np.equals(origin) && i >= 3) {
 					next = d;
 					options = 1;
@@ -208,10 +234,8 @@ public class ParticleAcceleratorControllerRenderer
 
 			if (options != 1 || next == null) break;
 
-			// if we're closing into controller, STOP (we'll add controller waypoint below)
-			if (pos.relative(next).equals(origin)) {
-				break;
-			}
+			// if closing into controller, stop after adding last segment
+			if (pos.relative(next).equals(origin)) break;
 
 			dir = next;
 			pos = pos.relative(next);
@@ -219,10 +243,9 @@ public class ParticleAcceleratorControllerRenderer
 
 		if (pts.size() < 4) return new ArrayList<>();
 
-		// ---- FIX: prevent diagonal wrap through controller ----
-		// lastSeg -> controller -> firstSeg
-		pts.add(new Vec3(0, 0, 0));
-		pts.add(pts.get(0));
+		// IMPORTANT: force a sharp corner at controller instead of diagonal “curve”
+		pts.add(new Vec3(0, 0, 0));   // controller center
+		pts.add(pts.get(0));          // reconnect cleanly
 
 		return pts;
 	}
@@ -234,7 +257,7 @@ public class ParticleAcceleratorControllerRenderer
 	}
 
 	// =====================================================
-	// Transparent white glow cube
+	// Transparent white glow cube (no texture)
 	// =====================================================
 	private static void renderGlowCube(
 			PoseStack poseStack,
@@ -249,10 +272,10 @@ public class ParticleAcceleratorControllerRenderer
 		float max = 1f;
 
 		addFace(vc, pose, min, min, min, max, min, min, max, max, min, min, max, min, r, g, b, a, 0, 0, -1, light); // north
-		addFace(vc, pose, min, min, max, min, max, max, max, max, max, max, min, max, r, g, b, a, 0, 0, 1, light); // south
+		addFace(vc, pose, min, min, max, min, max, max, max, max, max, max, min, max, r, g, b, a, 0, 0, 1, light);  // south
 		addFace(vc, pose, min, min, min, min, max, min, min, max, max, min, min, max, r, g, b, a, -1, 0, 0, light); // west
-		addFace(vc, pose, max, min, min, max, min, max, max, max, max, max, max, min, r, g, b, a, 1, 0, 0, light); // east
-		addFace(vc, pose, min, max, min, max, max, min, max, max, max, min, max, max, r, g, b, a, 0, 1, 0, light); // up
+		addFace(vc, pose, max, min, min, max, min, max, max, max, max, max, max, min, r, g, b, a, 1, 0, 0, light);  // east
+		addFace(vc, pose, min, max, min, max, max, min, max, max, max, min, max, max, r, g, b, a, 0, 1, 0, light);  // up
 		addFace(vc, pose, min, min, min, min, min, max, max, min, max, max, min, min, r, g, b, a, 0, -1, 0, light); // down
 	}
 

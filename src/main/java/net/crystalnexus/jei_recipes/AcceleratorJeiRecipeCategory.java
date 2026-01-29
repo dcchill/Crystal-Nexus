@@ -35,7 +35,7 @@ public class AcceleratorJeiRecipeCategory implements IRecipeCategory<Accelerator
 
 	@Override
 	public Component getTitle() {
-		return Component.literal("Inversion");
+		return Component.literal("Particle Accelerator");
 	}
 
 	@Override

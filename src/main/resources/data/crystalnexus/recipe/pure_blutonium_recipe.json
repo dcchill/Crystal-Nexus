@@ -1,18 +1,12 @@
 {
-  "type": "crystalnexus:chemical_reaction",
+  "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "crystalnexus:blutonium_dust"
-    },
-    {
-      "item": "crystalnexus:conductive_alloy"
-    },
-    {
-      "item": "crystalnexus:chlorophyte_dust"
+      "item": "crystalnexus:blutonium_waste"
     }
   ],
   "output": {
     "id": "crystalnexus:pure_blutonium",
-    "count": 2
+    "count": 1
   }
 }

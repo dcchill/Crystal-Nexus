@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:dark_matter"
+    }
+  ],
+  "output": {
+    "id": "minecraft:nether_star",
+    "count": 1
+  }
+}

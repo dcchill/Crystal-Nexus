@@ -80,7 +80,7 @@ public class BluTNTBlockEntity extends RandomizableContainerBlockEntity implemen
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Blu TNT");
+		return Component.literal("Blutonium TNT");
 	}
 
 	@Override

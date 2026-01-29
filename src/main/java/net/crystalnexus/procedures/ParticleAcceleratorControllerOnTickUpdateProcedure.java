@@ -34,11 +34,11 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	private static final int MIN_MAGNETS = 1;
 
 	// TOTAL FE drained per tick (split across all magnets)
-	private static final int TOTAL_FE_PER_TICK = 5120;
+	private static final int TOTAL_FE_PER_TICK = 10240;
 
-	private static final double BASE_COOK_TIME = 2000;     // time at MIN_MAGNETS
-	private static final double MIN_COOK_TIME  = 120;      // hard floor
-	private static final double MAGNET_EFFICIENCY = 1.0;   // 1.0 = strong effect, 0.5 = weaker
+	private static final double BASE_COOK_TIME = 5000;     // time at MIN_MAGNETS
+	private static final double MIN_COOK_TIME  = 1000;      // hard floor
+	private static final double MAGNET_EFFICIENCY = 0.5;   // 1.0 = strong effect, 0.5 = weaker
 
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {

@@ -32,11 +32,11 @@ public class CrystalnexusModJeiInformation implements IModPlugin {
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.DESTABILIZED_CRYSTAL.get()), new ItemStack(CrystalnexusModItems.CRYSTAL_EXTRACTOR.get())), VanillaTypes.ITEM_STACK,
 				Component.translatable("jei.crystalnexus.crystal_harvest_info"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.m_recrystallizer_info"));
-		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.INVERTIUM_INGOT.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.portal_inversion"));
-		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.INVERTIUM_CRYSTAL.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.portal_inversion_crystal"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EE_MATTER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.ee_matter_fe"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.energy_singularity_fe"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EMPTY_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.OIL_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.GAS_FUEL_CELL.get()),
 				new ItemStack(CrystalnexusModBlocks.FLUID_PACKAGER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.fluid_packager_jei_info"));
+		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModBlocks.BLU_TNT.get()), new ItemStack(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK.get())), VanillaTypes.ITEM_STACK,
+				Component.translatable("jei.crystalnexus.crystal_formation"));
 	}
 }

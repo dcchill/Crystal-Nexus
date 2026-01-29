@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:snowball"
+    }
+  ],
+  "output": {
+    "id": "minecraft:wind_charge",
+    "count": 1
+  }
+}

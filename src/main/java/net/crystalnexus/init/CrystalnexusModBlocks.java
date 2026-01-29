@@ -78,7 +78,9 @@ import net.crystalnexus.block.ItemCollectorBlock;
 import net.crystalnexus.block.IronSmelterBlock;
 import net.crystalnexus.block.IronNodeBlock;
 import net.crystalnexus.block.InvertiumSmelterBlock;
+import net.crystalnexus.block.InvertiumOreBlock;
 import net.crystalnexus.block.InvertiumMachineFrameBlock;
+import net.crystalnexus.block.InvertiumCrystalBlockBlock;
 import net.crystalnexus.block.InvertiumBlockBlock;
 import net.crystalnexus.block.InverterBlock;
 import net.crystalnexus.block.InvertPistonGeneratorBlock;
@@ -282,6 +284,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_TUBE = REGISTRY.register("particle_accelerator_tube", ParticleAcceleratorTubeBlock::new);
 	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_CONTROLLER = REGISTRY.register("particle_accelerator_controller", ParticleAcceleratorControllerBlock::new);
 	public static final DeferredBlock<Block> ELECTROMAGNET = REGISTRY.register("electromagnet", ElectromagnetBlock::new);
+	public static final DeferredBlock<Block> INVERTIUM_CRYSTAL_BLOCK = REGISTRY.register("invertium_crystal_block", InvertiumCrystalBlockBlock::new);
+	public static final DeferredBlock<Block> INVERTIUM_ORE = REGISTRY.register("invertium_ore", InvertiumOreBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

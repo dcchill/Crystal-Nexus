@@ -2,18 +2,18 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "inverter_jei",
+    "category": "accelerator_jei",
     "result": {
-      "value": "Items.BREEZE_ROD"
+      "value": "Items.NETHER_STAR"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "Items.BLAZE_ROD"
+        "value": "CUSTOM:DarkMatter"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "InverterJei"
+    "recipetype": "AcceleratorJei"
   }
 }

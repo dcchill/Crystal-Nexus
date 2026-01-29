@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:invertium_ore",
     "crystalnexus:chlorophyte_ore",
     "crystalnexus:ancient_debris_node",
     "crystalnexus:blutonium_ore"

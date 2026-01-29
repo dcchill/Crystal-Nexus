@@ -1,0 +1,11 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "particle_tube",
+        "1": "particle_corner"
+      },
+      "name": "default"
+    }
+  }
+}

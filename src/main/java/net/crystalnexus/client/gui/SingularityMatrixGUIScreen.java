@@ -69,7 +69,7 @@ public class SingularityMatrixGUIScreen extends AbstractContainerScreen<Singular
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix"), 61, -10, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.singularity_matrix_gui.label_singularity_matrix"), 75, -10, -12829636, false);
 	}
 
 	@Override

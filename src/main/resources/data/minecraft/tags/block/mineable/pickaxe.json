@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:invertium_ore",
     "crystalnexus:node_extractor",
     "crystalnexus:reactor_waste_output",
     "crystalnexus:ee_matter_block",
@@ -59,6 +60,7 @@
     "crystalnexus:iron_node",
     "crystalnexus:crystal_machine_frame",
     "crystalnexus:factory_item_controller",
+    "crystalnexus:invertium_crystal_block",
     "crystalnexus:tarrock_wall",
     "crystalnexus:raw_crystal_block",
     "crystalnexus:machine_energy_input",
@@ -78,6 +80,7 @@
     "crystalnexus:reaction_chamber_computer",
     "crystalnexus:smooth_tarrock_stairs",
     "crystalnexus:conductive_energy_refractor",
+    "crystalnexus:particle_accelerator_tube",
     "crystalnexus:factory_controller",
     "crystalnexus:node_miner",
     "crystalnexus:silicon_ore",

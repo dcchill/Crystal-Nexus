@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:invertium_crystal"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:raw_invertium",
+    "count": 1
+  }
+}

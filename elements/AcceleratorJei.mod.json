@@ -16,7 +16,7 @@
     "enableCraftingtable": true,
     "enableIntList": false,
     "enableStringList": false,
-    "title": "Inversion",
+    "title": "Particle Accelerator",
     "slotList": [
       {
         "type": "INPUT",

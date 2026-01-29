@@ -2,18 +2,18 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "inverter_jei",
+    "category": "accelerator_jei",
     "result": {
-      "value": "Items.GLOWSTONE_DUST"
+      "value": "CUSTOM:DarkMatter"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "Items.REDSTONE"
+        "value": "CUSTOM:EEMatter"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "InverterJei"
+    "recipetype": "AcceleratorJei"
   }
 }

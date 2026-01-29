@@ -2,24 +2,18 @@
   "_fv": 79,
   "_type": "jeirecipe",
   "definition": {
-    "category": "chemical_reaction",
+    "category": "accelerator_jei",
     "result": {
       "value": "CUSTOM:PureBlutonium"
     },
-    "count": 2,
+    "count": 1,
     "ingredients": [
       {
-        "value": "CUSTOM:BlutoniumDust"
-      },
-      {
-        "value": "CUSTOM:ConductiveAlloy"
-      },
-      {
-        "value": "CUSTOM:ChlorophyteDust"
+        "value": "CUSTOM:BlutoniumWaste"
       }
     ],
     "integers": [],
     "strings": [],
-    "recipetype": "ChemicalReaction"
+    "recipetype": "AcceleratorJei"
   }
 }

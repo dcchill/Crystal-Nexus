@@ -1,0 +1,12 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "particle_accel_tube_side",
+        "2": "purebottom",
+        "3": "carbonglass"
+      },
+      "name": "default"
+    }
+  }
+}
