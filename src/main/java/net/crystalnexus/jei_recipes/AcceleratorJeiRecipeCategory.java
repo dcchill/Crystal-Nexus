@@ -19,7 +19,7 @@ import mezz.jei.api.constants.VanillaTypes;
 
 public class AcceleratorJeiRecipeCategory implements IRecipeCategory<AcceleratorJeiRecipe> {
 	public final static ResourceLocation UID = ResourceLocation.parse("crystalnexus:accelerator_jei");
-	public final static ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/separator_gui_jei.png");
+	public final static ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/particle_gui_jei.png");
 	private final IDrawable background;
 	private final IDrawable icon;
 
@@ -60,7 +60,10 @@ public class AcceleratorJeiRecipeCategory implements IRecipeCategory<Accelerator
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AcceleratorJeiRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 52, 34).addIngredients(recipe.getIngredients().get(0));
+		builder.addSlot(RecipeIngredientRole.INPUT, 52, 43).addIngredients(recipe.getIngredients().get(0));
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 34).addItemStack(recipe.getResultItem(null));
+		builder.addSlot(RecipeIngredientRole.INPUT, 52, 25).addIngredients(recipe.getIngredients().get(1));
+		builder.addSlot(RecipeIngredientRole.INPUT, 34, 43).addIngredients(recipe.getIngredients().get(2));
+		builder.addSlot(RecipeIngredientRole.INPUT, 34, 25).addIngredients(recipe.getIngredients().get(3));
 	}
 }

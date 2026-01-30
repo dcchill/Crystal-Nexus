@@ -1,0 +1,16 @@
+{
+  "type": "crystalnexus:biomatic_composting",
+  "ingredients": [
+    {
+      "item": "minecraft:dried_kelp"
+    }
+  ],
+  "integers": [
+    4
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:biomass",
+    "count": 1
+  }
+}

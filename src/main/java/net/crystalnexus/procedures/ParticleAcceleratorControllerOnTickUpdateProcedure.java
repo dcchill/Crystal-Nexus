@@ -28,18 +28,20 @@ import java.util.stream.Collectors;
 public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 	// ===== CONFIG =====
-	private static final int MIN_LEN = 12;
+	private static final int MIN_LEN = 5;
 	private static final int MAX_LEN = 64;
 
 	private static final int MIN_MAGNETS = 1;
 
 	// TOTAL FE drained per tick (split across all magnets)
-	private static final int TOTAL_FE_PER_TICK = 10240;
+	private static final int TOTAL_FE_PER_TICK = 5120;
 
-	private static final double BASE_COOK_TIME = 5000;     // time at MIN_MAGNETS
-	private static final double MIN_COOK_TIME  = 1000;      // hard floor
-	private static final double MAGNET_EFFICIENCY = 0.5;   // 1.0 = strong effect, 0.5 = weaker
+	private static final double BASE_COOK_TIME = 3500;     // time at MIN_MAGNETS
+	private static final double MIN_COOK_TIME  = 100;     // hard floor
+	private static final double MAGNET_EFFICIENCY = 0.25;   // 1.0 = strong effect, 0.5 = weaker
 
+	// Input slots (unordered)
+	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
@@ -70,13 +72,12 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		be.getPersistentData().putDouble("formed", formed ? 1 : 0);
 		be.getPersistentData().putDouble("ringMode", ringMode ? 1 : 0);
 		be.getPersistentData().putDouble("minMagReq", MIN_MAGNETS);
+
 		// Cook time shrinks with magnets (diminishing returns)
-		double effectiveMagnets = Math.max(0, magnetCount - MIN_MAGNETS); // magnets above minimum
+		double effectiveMagnets = Math.max(0, magnetCount - MIN_MAGNETS);
 		double cookTime = BASE_COOK_TIME / (1.0 + (effectiveMagnets * MAGNET_EFFICIENCY));
 		cookTime = Math.max(MIN_COOK_TIME, cookTime);
-
 		be.getPersistentData().putDouble("maxProgress", cookTime);
-
 
 		// reset default status flags each tick
 		be.getPersistentData().putDouble("reason", 0);
@@ -99,36 +100,61 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		}
 
 		// =====================================================
-		// Inventory
+		// Inventory (4 unordered inputs)
+		// Slots: 0,2,3,4  Output: 1
 		// =====================================================
 		if (!(world instanceof ILevelExtension ext)) return;
 		IItemHandler inv = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
 		if (inv == null) return;
 
-		ItemStack input = inv.getStackInSlot(0);
-		if (input.isEmpty()) {
-			be.getPersistentData().putDouble("progress", 0);
-			sync(world, pos);
-			return;
+		ArrayList<ItemStack> inputs = new ArrayList<>();
+		for (int s : INPUT_SLOTS) {
+			ItemStack st = inv.getStackInSlot(s);
+			if (st.isEmpty()) {
+				be.getPersistentData().putDouble("progress", 0);
+				sync(world, pos);
+				return;
+			}
+			inputs.add(st);
 		}
 
 		// =====================================================
-		// Recipe lookup (your JEI pattern)
+		// Recipe lookup (4 ingredients, order-independent)
 		// =====================================================
 		ItemStack result = ItemStack.EMPTY;
+
 		if (world instanceof Level lvl) {
 			List<AcceleratorJeiRecipe> recipes =
 				lvl.getRecipeManager()
 					.getAllRecipesFor(AcceleratorJeiRecipe.Type.INSTANCE)
-					.stream().map(RecipeHolder::value)
+					.stream()
+					.map(RecipeHolder::value)
 					.collect(Collectors.toList());
 
+			recipeLoop:
 			for (AcceleratorJeiRecipe r : recipes) {
 				NonNullList<Ingredient> ing = r.getIngredients();
-				if (!ing.isEmpty() && ing.get(0).test(input)) {
-					result = r.getResultItem(null);
-					break;
+				if (ing.size() != 4) continue;
+
+				boolean[] used = new boolean[inputs.size()];
+
+				for (Ingredient recipeIng : ing) {
+					boolean matched = false;
+
+					for (int i = 0; i < inputs.size(); i++) {
+						if (used[i]) continue;
+						if (recipeIng.test(inputs.get(i))) {
+							used[i] = true;
+							matched = true;
+							break;
+						}
+					}
+
+					if (!matched) continue recipeLoop;
 				}
+
+				result = r.getResultItem(null);
+				break;
 			}
 		}
 
@@ -146,7 +172,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		if (!out.isEmpty() && out.getCount() >= 64) return;
 
 		// =====================================================
-		// POWER: ALL MAGNETS MUST PAY (5120 FE/t total)
+		// POWER: ALL MAGNETS MUST PAY
 		// =====================================================
 		int per = TOTAL_FE_PER_TICK / magnetCount;
 		int rem = TOTAL_FE_PER_TICK % magnetCount;
@@ -175,24 +201,22 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		// Progress + Craft
 		// =====================================================
 		double progress = be.getPersistentData().getDouble("progress");
-
-		// speed scales with magnet count (cap)
 		cookTime = be.getPersistentData().getDouble("maxProgress");
 
-// constant progress rate; magnets reduce cook time instead
-progress += 1.0;
-be.getPersistentData().putDouble("progress", progress);
+		progress += 1.0;
+		be.getPersistentData().putDouble("progress", progress);
 
-if (progress >= cookTime) {
-
+		if (progress >= cookTime) {
 			if (inv instanceof IItemHandlerModifiable mod) {
 				ItemStack newOut = result.copy();
 				newOut.setCount(out.isEmpty() ? 1 : out.getCount() + 1);
 				mod.setStackInSlot(1, newOut);
 
-				ItemStack in2 = input.copy();
-				in2.shrink(1);
-				mod.setStackInSlot(0, in2);
+				for (int s : INPUT_SLOTS) {
+					ItemStack st = mod.getStackInSlot(s).copy();
+					st.shrink(1);
+					mod.setStackInSlot(s, st);
+				}
 			}
 			be.getPersistentData().putDouble("progress", 0);
 		}
@@ -215,115 +239,106 @@ if (progress >= cookTime) {
 		return world.getBlockState(p).getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get();
 	}
 
-private static PathScanResult scanPath(LevelAccessor world, BlockPos controllerPos, Direction facing, int minLen, int maxLen) {
-	// ---- 1) Linear scan forward ----
-	ArrayList<BlockPos> mags = new ArrayList<>();
-	int len = 0;
+	private static PathScanResult scanPath(LevelAccessor world, BlockPos controllerPos, Direction facing, int minLen, int maxLen) {
+		// ---- 1) Linear scan forward ----
+		ArrayList<BlockPos> mags = new ArrayList<>();
+		int len = 0;
 
-	BlockPos cur = controllerPos.relative(facing);
-	while (len < maxLen) {
-		if (!isTubeOrMagnet(world, cur)) break;
-		if (isMagnet(world, cur)) mags.add(cur.immutable());
-		len++;
-		cur = cur.relative(facing);
-	}
-	if (len >= minLen) {
-		return new PathScanResult(true, false, len, mags.size(), mags);
-	}
-
-	// ---- 2) Ring scan (horizontal loop, corners supported) ----
-	// Start from ANY adjacent tube/magnet around controller
-	Direction[] candidates = new Direction[] {
-		facing,
-		facing.getClockWise(),
-		facing.getCounterClockWise(),
-		facing.getOpposite(),
-		Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
-	};
-
-	BlockPos startSeg = null;
-	Direction startDir = null;
-
-	for (Direction d : candidates) {
-		BlockPos p = controllerPos.relative(d);
-		if (isTubeOrMagnet(world, p)) {
-			startSeg = p;
-			startDir = d;
-			break;
+		BlockPos cur = controllerPos.relative(facing);
+		while (len < maxLen) {
+			if (!isTubeOrMagnet(world, cur)) break;
+			if (isMagnet(world, cur)) mags.add(cur.immutable());
+			len++;
+			cur = cur.relative(facing);
 		}
-	}
-	if (startSeg == null || startDir == null) {
-		return new PathScanResult(false, false, 0, 0, new ArrayList<>());
-	}
-
-	HashSet<Long> visited = new HashSet<>();
-	ArrayList<BlockPos> ringMags = new ArrayList<>();
-
-	BlockPos pos = startSeg;
-	Direction dir = startDir;
-
-	for (int steps = 0; steps < maxLen; steps++) {
-		// must be flat ring
-		if (pos.getY() != controllerPos.getY()) {
-			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+		if (len >= minLen) {
+			return new PathScanResult(true, false, len, mags.size(), mags);
 		}
 
-		if (!isTubeOrMagnet(world, pos)) {
-			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
-		}
+		// ---- 2) Ring scan (horizontal loop, corners supported) ----
+		Direction[] candidates = new Direction[] {
+			facing,
+			facing.getClockWise(),
+			facing.getCounterClockWise(),
+			facing.getOpposite(),
+			Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST
+		};
 
-		long key = pos.asLong();
-		if (visited.contains(key)) {
-			// revisiting any segment = invalid (we close on controller, not by re-walking)
-			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
-		}
-		visited.add(key);
+		BlockPos startSeg = null;
+		Direction startDir = null;
 
-		if (isMagnet(world, pos)) ringMags.add(pos.immutable());
-
-		// CORNER-SAFE NEXT STEP:
-		Direction[] horiz = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
-
-		Direction nextDir = null;
-		int options = 0;
-
-		for (Direction d : horiz) {
-			if (d == dir.getOpposite()) continue; // don't go back
-
-			BlockPos np = pos.relative(d);
-
-			// ✅ Allow closing the loop back to the CONTROLLER itself
-			if (np.equals(controllerPos) && steps + 1 >= minLen) {
-				nextDir = d;
-				options = 1;
+		for (Direction d : candidates) {
+			BlockPos p = controllerPos.relative(d);
+			if (isTubeOrMagnet(world, p)) {
+				startSeg = p;
+				startDir = d;
 				break;
 			}
+		}
+		if (startSeg == null || startDir == null) {
+			return new PathScanResult(false, false, 0, 0, new ArrayList<>());
+		}
 
-			// Otherwise, continue to an unvisited tube/magnet
-			if (isTubeOrMagnet(world, np) && !visited.contains(np.asLong())) {
-				nextDir = d;
-				options++;
+		HashSet<Long> visited = new HashSet<>();
+		ArrayList<BlockPos> ringMags = new ArrayList<>();
+
+		BlockPos pos = startSeg;
+		Direction dir = startDir;
+
+		for (int steps = 0; steps < maxLen; steps++) {
+			if (pos.getY() != controllerPos.getY()) {
+				return new PathScanResult(false, true, 0, 0, new ArrayList<>());
 			}
+
+			if (!isTubeOrMagnet(world, pos)) {
+				return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+			}
+
+			long key = pos.asLong();
+			if (visited.contains(key)) {
+				return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+			}
+			visited.add(key);
+
+			if (isMagnet(world, pos)) ringMags.add(pos.immutable());
+
+			Direction[] horiz = new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+
+			Direction nextDir = null;
+			int options = 0;
+
+			for (Direction d : horiz) {
+				if (d == dir.getOpposite()) continue;
+
+				BlockPos np = pos.relative(d);
+
+				if (np.equals(controllerPos) && steps + 1 >= minLen) {
+					nextDir = d;
+					options = 1;
+					break;
+				}
+
+				if (isTubeOrMagnet(world, np) && !visited.contains(np.asLong())) {
+					nextDir = d;
+					options++;
+				}
+			}
+
+			if (options != 1 || nextDir == null) {
+				return new PathScanResult(false, true, 0, 0, new ArrayList<>());
+			}
+
+			if (pos.relative(nextDir).equals(controllerPos)) {
+				int finalLen = steps + 1;
+				return new PathScanResult(true, true, finalLen, ringMags.size(), ringMags);
+			}
+
+			dir = nextDir;
+			pos = pos.relative(nextDir);
 		}
 
-		// 0 = dead end, >1 = branching/ambiguous
-		if (options != 1 || nextDir == null) {
-			return new PathScanResult(false, true, 0, 0, new ArrayList<>());
-		}
-
-		// If we are closing back to controller, we're done successfully
-		if (pos.relative(nextDir).equals(controllerPos)) {
-			int finalLen = steps + 1; // segments in ring (excluding controller)
-			return new PathScanResult(true, true, finalLen, ringMags.size(), ringMags);
-		}
-
-		dir = nextDir;
-		pos = pos.relative(nextDir);
+		return new PathScanResult(false, true, 0, 0, new ArrayList<>());
 	}
-
-	return new PathScanResult(false, true, 0, 0, new ArrayList<>());
-}
-
 
 	// =====================================================
 	// Energy: pick a capability that can actually extract

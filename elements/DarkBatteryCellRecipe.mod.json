@@ -3,7 +3,7 @@
   "_type": "recipe",
   "definition": {
     "recipeType": "Crafting",
-    "recipeRetstackSize": 4,
+    "recipeRetstackSize": 1,
     "group": "",
     "unlockingItems": [],
     "cookingBookCategory": "MISC",
@@ -13,37 +13,37 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": ""
+        "value": "CUSTOM:DarkMatter"
       },
       {
-        "value": "CUSTOM:PipeStraight"
+        "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": ""
+        "value": "CUSTOM:DarkMatter"
       },
       {
-        "value": "CUSTOM:PipeStraight"
+        "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": "CUSTOM:PolymerSheet"
+        "value": "CUSTOM:CarbonBatteryCell"
       },
       {
-        "value": "CUSTOM:PipeStraight"
+        "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": ""
+        "value": "CUSTOM:DarkMatter"
       },
       {
-        "value": "CUSTOM:PipeStraight"
+        "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": ""
+        "value": "CUSTOM:DarkMatter"
       }
     ],
     "recipeReturnStack": {
-      "value": "CUSTOM:PipeJunction"
+      "value": "CUSTOM:DarkBatteryCell"
     },
-    "name": "pipe_junction_recipe",
+    "name": "dark_battery_cell_recipe",
     "namespace": "mod"
   }
 }

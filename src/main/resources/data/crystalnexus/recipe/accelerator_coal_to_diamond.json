@@ -3,6 +3,15 @@
   "ingredients": [
     {
       "item": "minecraft:coal_block"
+    },
+    {
+      "item": "crystalnexus:silicon"
+    },
+    {
+      "item": "crystalnexus:silicon"
+    },
+    {
+      "item": "minecraft:coal_block"
     }
   ],
   "output": {

@@ -16324,6 +16324,83 @@
         "files": []
       },
       "path": "~/invertium_creation"
+    },
+    {
+      "name": "ModChunkTickets",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "mod_chunk_tickets",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/ModChunkTickets.java"
+        ]
+      }
+    },
+    {
+      "name": "DarkBatteryCell",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "dark_battery_cell",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/dark_battery_cell.json",
+          "src/main/java/net/crystalnexus/item/DarkBatteryCellItem.java"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "DarkBatteryCellRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "dark_battery_cell_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/dark_battery_cell_recipe.json"
+        ]
+      },
+      "path": "~/battery"
+    },
+    {
+      "name": "AcceleratorCarbonFiber",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_carbon_fiber",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_carbon_fiber.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "AcceleratorOil",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_oil",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_oil.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "BioCompostSeaweed",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "bio_compost_seaweed",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/bio_compost_seaweed.json"
+        ]
+      }
     }
   ],
   "variable_elements": [
@@ -17064,7 +17141,8 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre"
+      "InvertiumOre",
+      "DarkBatteryCell"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17700,7 +17778,8 @@
       "item.crystalnexus.raw_invertium": "Raw Invertium",
       "block.crystalnexus.invertium_ore": "Invertium Ore",
       "item.crystalnexus.dark_matter": "Dark Matter",
-      "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form."
+      "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form.",
+      "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell"
     }
   },
   "metadata": {

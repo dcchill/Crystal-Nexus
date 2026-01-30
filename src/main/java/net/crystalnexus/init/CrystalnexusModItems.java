@@ -107,6 +107,7 @@ import net.crystalnexus.item.DepotUplinkItem;
 import net.crystalnexus.item.DepotStorageUpgradeItem;
 import net.crystalnexus.item.DenseBatteryCellItem;
 import net.crystalnexus.item.DarkMatterItem;
+import net.crystalnexus.item.DarkBatteryCellItem;
 import net.crystalnexus.item.CystalizedSwordItem;
 import net.crystalnexus.item.CystalizedShovelItem;
 import net.crystalnexus.item.CystalizedPickaxeItem;
@@ -434,6 +435,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> RAW_INVERTIUM = REGISTRY.register("raw_invertium", RawInvertiumItem::new);
 	public static final DeferredItem<Item> INVERTIUM_ORE = block(CrystalnexusModBlocks.INVERTIUM_ORE);
 	public static final DeferredItem<Item> DARK_MATTER = REGISTRY.register("dark_matter", DarkMatterItem::new);
+	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

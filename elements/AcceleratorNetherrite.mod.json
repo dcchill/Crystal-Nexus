@@ -4,10 +4,19 @@
   "definition": {
     "category": "accelerator_jei",
     "result": {
-      "value": "CUSTOM:NetheriteScrapPellet"
+      "value": "Items.NETHERITE_SCRAP"
     },
     "count": 1,
     "ingredients": [
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      },
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      },
+      {
+        "value": "CUSTOM:NetheriteScrapDust"
+      },
       {
         "value": "CUSTOM:NetheriteScrapDust"
       }

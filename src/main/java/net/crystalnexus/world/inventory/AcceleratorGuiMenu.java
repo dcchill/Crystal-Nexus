@@ -34,7 +34,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
-			if (!this.containsKey(key) && this.size() >= 6)
+			if (!this.containsKey(key) && this.size() >= 9)
 				return null;
 			return super.put(key, value);
 		}
@@ -54,7 +54,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 		super(CrystalnexusModMenus.ACCELERATOR_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(2);
+		this.internal = new ItemStackHandler(5);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -91,7 +91,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 25, 26) {
 			private final int slot = 0;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
@@ -111,6 +111,21 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 			public boolean mayPlace(ItemStack stack) {
 				return false;
 			}
+		}));
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 43, 26) {
+			private final int slot = 2;
+			private int x = AcceleratorGuiMenu.this.x;
+			private int y = AcceleratorGuiMenu.this.y;
+		}));
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 25, 44) {
+			private final int slot = 3;
+			private int x = AcceleratorGuiMenu.this.x;
+			private int y = AcceleratorGuiMenu.this.y;
+		}));
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 43, 44) {
+			private final int slot = 4;
+			private int x = AcceleratorGuiMenu.this.x;
+			private int y = AcceleratorGuiMenu.this.y;
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
@@ -139,16 +154,16 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 2) {
-				if (!this.moveItemStackTo(itemstack1, 2, this.slots.size(), true))
+			if (index < 5) {
+				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 2, false)) {
-				if (index < 2 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 2 + 27, this.slots.size(), true))
+			} else if (!this.moveItemStackTo(itemstack1, 0, 5, false)) {
+				if (index < 5 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 5 + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 2, 2 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, 5, 5 + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

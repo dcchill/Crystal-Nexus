@@ -3,6 +3,15 @@
   "ingredients": [
     {
       "item": "minecraft:snowball"
+    },
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "item": "minecraft:snowball"
     }
   ],
   "output": {

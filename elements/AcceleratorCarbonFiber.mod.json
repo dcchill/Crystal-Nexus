@@ -4,21 +4,21 @@
   "definition": {
     "category": "accelerator_jei",
     "result": {
-      "value": "CUSTOM:PureBlutonium"
+      "value": "CUSTOM:CarbonFiber"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "CUSTOM:RawCarbon"
       },
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "CUSTOM:NetheriteScrapDust"
       },
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "Items.IRON_INGOT"
       },
       {
-        "value": "CUSTOM:Nitrile"
+        "value": "CUSTOM:RawCarbon"
       }
     ],
     "integers": [],

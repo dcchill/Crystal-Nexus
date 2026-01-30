@@ -10,6 +10,15 @@
     "ingredients": [
       {
         "value": "CUSTOM:EEMatter"
+      },
+      {
+        "value": "CUSTOM:InvertiumBlock"
+      },
+      {
+        "value": "CUSTOM:InvertiumBlock"
+      },
+      {
+        "value": "CUSTOM:EEMatter"
       }
     ],
     "integers": [],

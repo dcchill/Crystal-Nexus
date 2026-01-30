@@ -10,6 +10,15 @@
     "ingredients": [
       {
         "value": "CUSTOM:DarkMatter"
+      },
+      {
+        "value": "Blocks.SOUL_SAND"
+      },
+      {
+        "value": "Blocks.SKULL#1"
+      },
+      {
+        "value": "CUSTOM:DarkMatter"
       }
     ],
     "integers": [],

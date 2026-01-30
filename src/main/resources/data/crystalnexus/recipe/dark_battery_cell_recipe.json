@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:dark_matter"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_battery_cell"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:dark_battery_cell",
+    "count": 1
+  }
+}

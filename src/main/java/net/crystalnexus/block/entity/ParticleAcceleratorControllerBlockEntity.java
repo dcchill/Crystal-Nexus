@@ -26,7 +26,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class ParticleAcceleratorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 
 	public ParticleAcceleratorControllerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.PARTICLE_ACCELERATOR_CONTROLLER.get(), position, state);

@@ -8,6 +8,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.crystalnexus.item.DenseBatteryCellItem;
 import net.crystalnexus.item.CarbonBatteryCellItem;
+import net.crystalnexus.item.DarkBatteryCellItem;
 
 @EventBusSubscriber(modid = "crystalnexus", bus = EventBusSubscriber.Bus.MOD)
 public class ModCapabilities {
@@ -30,6 +31,13 @@ public class ModCapabilities {
     (stack, ctx) -> new BatteryEnergyStorage(stack, CarbonBatteryCellItem.CAPACITY, CarbonBatteryCellItem.MAX_IO),
     CrystalnexusModItems.CARBON_BATTERY_CELL.get()
 );
+
+      event.registerItem(
+    Capabilities.EnergyStorage.ITEM,
+    (stack, ctx) -> new BatteryEnergyStorage(stack, DarkBatteryCellItem.CAPACITY, DarkBatteryCellItem.MAX_IO),
+    CrystalnexusModItems.DARK_BATTERY_CELL.get()
+);
+
 
     }
     

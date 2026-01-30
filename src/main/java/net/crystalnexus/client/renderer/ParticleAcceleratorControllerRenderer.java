@@ -30,25 +30,16 @@ public class ParticleAcceleratorControllerRenderer
 
 	public ParticleAcceleratorControllerRenderer(BlockEntityRendererProvider.Context ctx) {}
 
-	/**
-	 * Make renderer visible farther away.
-	 */
 	@Override
 	public int getViewDistance() {
-		return 256; // bump up/down as you like
+		return 256;
 	}
 
-	/**
-	 * Make renderer not disappear when controller AABB isn't in view.
-	 * This is the key fix for “beam disappears when not in sight”.
-	 */
 	@Override
 	public AABB getRenderBoundingBox(ParticleAcceleratorControllerBlockEntity be) {
 		int len = (int) be.getPersistentData().getDouble("linacLen");
 		if (len <= 0) len = 16;
 
-		// Big box around controller that covers the accelerator area.
-		// If you want “always render anywhere”, you can return AABB.INFINITE (heavier).
 		double r = Math.min(128, Math.max(8, len + 4));
 		return new AABB(be.getBlockPos()).inflate(r, 8, r);
 	}
@@ -84,10 +75,27 @@ public class ParticleAcceleratorControllerRenderer
 
 		if (points.size() < 2) return;
 
+		// =====================================================
+		// HEAT COLOR: orange -> blue based on progress/maxProgress
+		// progress goes 0 -> max (your setup)
+		// =====================================================
+		double prog = be.getPersistentData().getDouble("progress");
+		double max = be.getPersistentData().getDouble("maxProgress");
+		float heat = (max > 0) ? (float) (prog / max) : 0f;
+		heat = Mth.clamp(heat, 0f, 1f);
+
+		// Start (orange) -> End (blue)
+		// Orange: (1.00, 0.45, 0.05)
+		// Blue:   (0.20, 0.55, 1.00)
+		float beamR = Mth.lerp(heat, 1.00f, 0.20f);
+		float beamG = Mth.lerp(heat, 0.45f, 0.55f);
+		float beamB = Mth.lerp(heat, 0.05f, 1.00f);
+
+		// Pulse animation
 		float pulse = 0.85f + 0.35f * Mth.sin((level.getGameTime() + partialTick) * 0.6f);
 
 		// Speed
-		float loopSeconds = 0.35f; // smaller = faster
+		float loopSeconds = 0.35f;
 		float ticksPerLoop = loopSeconds * 20f;
 		float t = ((level.getGameTime() + partialTick) % ticksPerLoop) / ticksPerLoop;
 		float head = t * points.size();
@@ -103,6 +111,8 @@ public class ParticleAcceleratorControllerRenderer
 
 		for (int i = 0; i < trailCount; i++) {
 			float idx = head - i * trailStep;
+
+			// Wrap safely (prevents negative index crash)
 			while (idx < 0) idx += points.size();
 			while (idx >= points.size()) idx -= points.size();
 
@@ -132,12 +142,16 @@ public class ParticleAcceleratorControllerRenderer
 			brd.renderSingleBlock(coreState, poseStack, bufferSource, fullBright, packedOverlay);
 			poseStack.popPose();
 
-			// GLOW (transparent white cube)
+			// GLOW (colored)
 			poseStack.pushPose();
 			float glowScale = segScale * (1.6f + 0.4f * pulse * headFactor);
 			poseStack.scale(glowScale, glowScale, glowScale);
 			poseStack.translate(-0.5, -0.5, -0.5);
-			renderGlowCube(poseStack, bufferSource, 1f, 1f, 1f, 0.35f * headFactor);
+
+			// Slightly stronger alpha near the head
+			float alpha = (0.30f + 0.15f * pulse) * headFactor;
+
+			renderGlowCube(poseStack, bufferSource, beamR, beamG, beamB, alpha);
 			poseStack.popPose();
 
 			poseStack.popPose();
@@ -160,7 +174,7 @@ public class ParticleAcceleratorControllerRenderer
 	}
 
 	// =====================================================
-	// Ring path (corner-safe) + controller sharp-corner fix
+	// Ring path (your original, corner-safe)
 	// =====================================================
 	private static ArrayList<Vec3> buildRingPoints(
 			ParticleAcceleratorControllerBlockEntity be,
@@ -243,9 +257,9 @@ public class ParticleAcceleratorControllerRenderer
 
 		if (pts.size() < 4) return new ArrayList<>();
 
-		// IMPORTANT: force a sharp corner at controller instead of diagonal “curve”
-		pts.add(new Vec3(0, 0, 0));   // controller center
-		pts.add(pts.get(0));          // reconnect cleanly
+		// sharp corner at controller
+		pts.add(new Vec3(0, 0, 0));
+		pts.add(pts.get(0));
 
 		return pts;
 	}
@@ -257,7 +271,7 @@ public class ParticleAcceleratorControllerRenderer
 	}
 
 	// =====================================================
-	// Transparent white glow cube (no texture)
+	// Transparent colored glow cube (no texture)
 	// =====================================================
 	private static void renderGlowCube(
 			PoseStack poseStack,
@@ -271,12 +285,12 @@ public class ParticleAcceleratorControllerRenderer
 		float min = 0f;
 		float max = 1f;
 
-		addFace(vc, pose, min, min, min, max, min, min, max, max, min, min, max, min, r, g, b, a, 0, 0, -1, light); // north
-		addFace(vc, pose, min, min, max, min, max, max, max, max, max, max, min, max, r, g, b, a, 0, 0, 1, light);  // south
-		addFace(vc, pose, min, min, min, min, max, min, min, max, max, min, min, max, r, g, b, a, -1, 0, 0, light); // west
-		addFace(vc, pose, max, min, min, max, min, max, max, max, max, max, max, min, r, g, b, a, 1, 0, 0, light);  // east
-		addFace(vc, pose, min, max, min, max, max, min, max, max, max, min, max, max, r, g, b, a, 0, 1, 0, light);  // up
-		addFace(vc, pose, min, min, min, min, min, max, max, min, max, max, min, min, r, g, b, a, 0, -1, 0, light); // down
+		addFace(vc, pose, min, min, min, max, min, min, max, max, min, min, max, min, r, g, b, a, 0, 0, -1, light);
+		addFace(vc, pose, min, min, max, min, max, max, max, max, max, max, min, max, r, g, b, a, 0, 0, 1, light);
+		addFace(vc, pose, min, min, min, min, max, min, min, max, max, min, min, max, r, g, b, a, -1, 0, 0, light);
+		addFace(vc, pose, max, min, min, max, min, max, max, max, max, max, max, min, r, g, b, a, 1, 0, 0, light);
+		addFace(vc, pose, min, max, min, max, max, min, max, max, max, min, max, max, r, g, b, a, 0, 1, 0, light);
+		addFace(vc, pose, min, min, min, min, min, max, max, min, max, max, min, min, r, g, b, a, 0, -1, 0, light);
 	}
 
 	private static void addFace(

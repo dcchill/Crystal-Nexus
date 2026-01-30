@@ -1,0 +1,21 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:empty_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    {
+      "item": "crystalnexus:biomass"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:oil_fuel_cell",
+    "count": 1
+  }
+}

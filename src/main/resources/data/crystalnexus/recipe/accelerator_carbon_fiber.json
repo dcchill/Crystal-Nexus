@@ -2,20 +2,20 @@
   "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:raw_carbon"
     },
     {
       "item": "crystalnexus:netherite_scrap_dust"
     },
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "minecraft:iron_ingot"
     },
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:raw_carbon"
     }
   ],
   "output": {
-    "id": "minecraft:netherite_scrap",
+    "id": "crystalnexus:carbon_fiber",
     "count": 1
   }
 }

@@ -4,21 +4,21 @@
   "definition": {
     "category": "accelerator_jei",
     "result": {
-      "value": "CUSTOM:PureBlutonium"
+      "value": "CUSTOM:OilFuelCell"
     },
     "count": 1,
     "ingredients": [
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "CUSTOM:EmptyFuelCell"
       },
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "CUSTOM:PolyacrylonitrileDust"
       },
       {
-        "value": "CUSTOM:BlutoniumWaste"
+        "value": "CUSTOM:Biomass"
       },
       {
-        "value": "CUSTOM:Nitrile"
+        "value": "Items.COAL#0"
       }
     ],
     "integers": [],

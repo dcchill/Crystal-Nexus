@@ -118,7 +118,7 @@
     "hasInventory": true,
     "guiBoundTo": "AcceleratorGui",
     "openGUIOnRightClick": true,
-    "inventorySize": 3,
+    "inventorySize": 5,
     "inventoryStackSize": 99,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,

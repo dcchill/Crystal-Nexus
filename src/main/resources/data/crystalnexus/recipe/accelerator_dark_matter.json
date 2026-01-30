@@ -3,6 +3,15 @@
   "ingredients": [
     {
       "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:invertium_block"
+    },
+    {
+      "item": "crystalnexus:invertium_block"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
     }
   ],
   "output": {

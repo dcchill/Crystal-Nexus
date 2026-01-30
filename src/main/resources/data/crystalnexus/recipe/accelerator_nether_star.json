@@ -3,6 +3,15 @@
   "ingredients": [
     {
       "item": "crystalnexus:dark_matter"
+    },
+    {
+      "item": "minecraft:soul_sand"
+    },
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    {
+      "item": "crystalnexus:dark_matter"
     }
   ],
   "output": {
