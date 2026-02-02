@@ -20,4 +20,5 @@ public class ClientEventHandler {
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.CONVEYER_BELT_OUTPUT.get(), ConveyerBeltBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.TANK.get(),net.crystalnexus.client.renderer.TankBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.PARTICLE_ACCELERATOR_CONTROLLER.get(),ParticleAcceleratorControllerRenderer::new);
+        
 }}

@@ -16401,6 +16401,56 @@
           "src/main/resources/data/crystalnexus/recipe/bio_compost_seaweed.json"
         ]
       }
+    },
+    {
+      "name": "OreScanner",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ore_scanner",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/OreScannerItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/ore_scanner.json"
+        ]
+      },
+      "path": "~/orescanner"
+    },
+    {
+      "name": "OreScannerRightclicked",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "ore_scanner_rightclicked",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/OreScannerRightclickedProcedure.java"
+        ]
+      },
+      "path": "~/orescanner"
+    },
+    {
+      "name": "OreScannerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "ore_scanner_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/ore_scanner_recipe.json"
+        ]
+      },
+      "path": "~/orescanner"
     }
   ],
   "variable_elements": [
@@ -16619,7 +16669,18 @@
     ],
     "ITEMS:c:ores": [
       "CUSTOM:AncientCrystalOre",
-      "CUSTOM:BlutoniumOre"
+      "CUSTOM:BlutoniumOre",
+      "CUSTOM:AncientCrystalOreStone",
+      "CUSTOM:ChlorophyteOre",
+      "CUSTOM:SiliconOre",
+      "CUSTOM:SulfurOre",
+      "CUSTOM:InvertiumOre",
+      "CUSTOM:IronNode",
+      "CUSTOM:GoldNode",
+      "CUSTOM:CopperNode",
+      "CUSTOM:AncientDebrisNode",
+      "CUSTOM:OilNode",
+      "CUSTOM:LavaNode"
     ],
     "ITEMS:c:gems": [
       "CUSTOM:RawAncientCrystal",
@@ -17021,10 +17082,11 @@
       "ReactorUpgrade",
       "ReactorUpgradePermafrost",
       "OmegaChip",
+      "BatteryPart",
       "BatteryCell",
       "DenseBatteryCell",
       "CarbonBatteryCell",
-      "BatteryPart",
+      "DarkBatteryCell",
       "DragonCrystal",
       "DestabilizedCrystal",
       "StableCrystal",
@@ -17070,6 +17132,7 @@
       "Flamethrower",
       "MiningLaser",
       "PaintGun",
+      "OreScanner",
       "CrystalExtractor",
       "CystalizedPickaxe",
       "CystalizedAxe",
@@ -17141,8 +17204,7 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre",
-      "DarkBatteryCell"
+      "InvertiumOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17779,7 +17841,8 @@
       "block.crystalnexus.invertium_ore": "Invertium Ore",
       "item.crystalnexus.dark_matter": "Dark Matter",
       "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form.",
-      "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell"
+      "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
+      "item.crystalnexus.ore_scanner": "Ore Scanner"
     }
   },
   "metadata": {
@@ -18003,6 +18066,14 @@
       },
       {
         "name": "dark_matter",
+        "children": []
+      },
+      {
+        "name": "quarry",
+        "children": []
+      },
+      {
+        "name": "orescanner",
         "children": []
       }
     ]

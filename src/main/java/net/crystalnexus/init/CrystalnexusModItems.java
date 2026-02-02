@@ -59,6 +59,7 @@ import net.crystalnexus.item.PolyacrylonitrileDustItem;
 import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
+import net.crystalnexus.item.OreScannerItem;
 import net.crystalnexus.item.OrangePaintballItem;
 import net.crystalnexus.item.OmegaChipItem;
 import net.crystalnexus.item.OilFuelCellItem;
@@ -436,6 +437,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> INVERTIUM_ORE = block(CrystalnexusModBlocks.INVERTIUM_ORE);
 	public static final DeferredItem<Item> DARK_MATTER = REGISTRY.register("dark_matter", DarkMatterItem::new);
 	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
+	public static final DeferredItem<Item> ORE_SCANNER = REGISTRY.register("ore_scanner", OreScannerItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

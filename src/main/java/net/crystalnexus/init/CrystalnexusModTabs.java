@@ -141,10 +141,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());
 				tabData.accept(CrystalnexusModItems.OMEGA_CHIP.get());
+				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
 				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BATTERY_CELL.get());
-				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
+				tabData.accept(CrystalnexusModItems.DARK_BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.DRAGON_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.DESTABILIZED_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.STABLE_CRYSTAL.get());
@@ -193,6 +194,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
 				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
+				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.CRYSTAL_EXTRACTOR.get());
 				tabData.accept(CrystalnexusModItems.CYSTALIZED_PICKAXE.get());
 				tabData.accept(CrystalnexusModItems.CYSTALIZED_AXE.get());
@@ -265,7 +267,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
-				tabData.accept(CrystalnexusModItems.DARK_BATTERY_CELL.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

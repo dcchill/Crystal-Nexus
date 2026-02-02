@@ -573,5 +573,6 @@
   "block.crystalnexus.invertium_ore": "Invertium Ore",
   "item.crystalnexus.dark_matter": "Dark Matter",
   "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form.",
-  "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell"
+  "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
+  "item.crystalnexus.ore_scanner": "Ore Scanner"
 }

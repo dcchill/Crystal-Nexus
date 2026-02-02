@@ -2,6 +2,17 @@
   "replace": false,
   "values": [
     "crystalnexus:ancient_crystal_ore",
+    "crystalnexus:invertium_ore",
+    "crystalnexus:lava_node",
+    "crystalnexus:chlorophyte_ore",
+    "crystalnexus:copper_node",
+    "crystalnexus:oil_node",
+    "crystalnexus:iron_node",
+    "crystalnexus:gold_node",
+    "crystalnexus:silicon_ore",
+    "crystalnexus:ancient_crystal_ore_stone",
+    "crystalnexus:ancient_debris_node",
+    "crystalnexus:sulfur_ore",
     "crystalnexus:blutonium_ore"
   ]
 }

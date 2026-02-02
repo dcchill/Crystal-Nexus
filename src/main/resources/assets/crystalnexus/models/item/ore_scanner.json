@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/orescanner",
+  "textures": {
+    "0": "crystalnexus:block/orescanner_texture",
+    "particle": "crystalnexus:item/placeholderdust"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa",
+    "bcd",
+    "  e"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:silicon"
+    },
+    "c": {
+      "item": "crystalnexus:computation_node"
+    },
+    "d": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "e": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ore_scanner",
+    "count": 1
+  }
+}
