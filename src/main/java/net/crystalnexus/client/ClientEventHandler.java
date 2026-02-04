@@ -5,6 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.crystalnexus.client.render.ParticleAcceleratorControllerRenderer;
+import net.crystalnexus.client.render.QuarryBlockEntityRenderer;
 
 import net.crystalnexus.client.render.ConveyerBeltBER;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
@@ -20,5 +21,6 @@ public class ClientEventHandler {
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.CONVEYER_BELT_OUTPUT.get(), ConveyerBeltBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.TANK.get(),net.crystalnexus.client.renderer.TankBER::new);
         event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.PARTICLE_ACCELERATOR_CONTROLLER.get(),ParticleAcceleratorControllerRenderer::new);
-        
+        event.registerBlockEntityRenderer(CrystalnexusModBlockEntities.QUARRY.get(),QuarryBlockEntityRenderer::new);
+
 }}

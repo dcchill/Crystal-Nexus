@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/laser_quarry",
+  "textures": {
+    "all": "crystalnexus:block/crystalmachineframe",
+    "particle": "crystalnexus:block/crystalmachineframe",
+    "0": "crystalnexus:block/laser_quarry"
+  },
+  "render_type": "translucent"
+}

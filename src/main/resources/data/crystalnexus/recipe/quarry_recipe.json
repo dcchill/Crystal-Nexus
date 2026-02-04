@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "efe"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:computation_node"
+    },
+    "c": {
+      "item": "crystalnexus:invertium_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:invertium_machine_frame"
+    },
+    "e": {
+      "tag": "c:glass_blocks"
+    },
+    "f": {
+      "item": "crystalnexus:silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:quarry",
+    "count": 1
+  }
+}

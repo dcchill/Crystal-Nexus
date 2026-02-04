@@ -1,0 +1,21 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:slime_ball"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    },
+    {
+      "item": "crystalnexus:raw_carbon"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:synthetic_rubber",
+    "count": 1
+  }
+}

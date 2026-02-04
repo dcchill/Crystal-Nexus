@@ -21,6 +21,7 @@ import net.crystalnexus.client.gui.SingularityCompressorGUIScreen;
 import net.crystalnexus.client.gui.SeparatorGuiScreen;
 import net.crystalnexus.client.gui.ReactorGUIScreen;
 import net.crystalnexus.client.gui.ReactionGUIScreen;
+import net.crystalnexus.client.gui.QuarryGUIScreen;
 import net.crystalnexus.client.gui.QuantumMinerGUIScreen;
 import net.crystalnexus.client.gui.PistonGenGUIScreen;
 import net.crystalnexus.client.gui.OreProGUIScreen;
@@ -117,6 +118,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.SMART_SPLITTER_GUI.get(), SmartSplitterGUIScreen::new);
 		event.register(CrystalnexusModMenus.COMPUTATION_CLUSTER_GUI.get(), ComputationClusterGUIScreen::new);
 		event.register(CrystalnexusModMenus.ACCELERATOR_GUI.get(), AcceleratorGuiScreen::new);
+		event.register(CrystalnexusModMenus.QUARRY_GUI.get(), QuarryGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

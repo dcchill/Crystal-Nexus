@@ -3,6 +3,6 @@
   "biomes": {
     "type": "neoforge:any"
   },
-  "features": "crystalnexus:silicon_ore",
-  "step": "underground_ores"
+  "features": "crystalnexus:tarrock_deposit",
+  "step": "underground_decoration"
 }

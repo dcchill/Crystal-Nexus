@@ -438,6 +438,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DARK_MATTER = REGISTRY.register("dark_matter", DarkMatterItem::new);
 	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
 	public static final DeferredItem<Item> ORE_SCANNER = REGISTRY.register("ore_scanner", OreScannerItem::new);
+	public static final DeferredItem<Item> QUARRY = block(CrystalnexusModBlocks.QUARRY);
 
 	// Start of user code block custom items
 	// End of user code block custom items

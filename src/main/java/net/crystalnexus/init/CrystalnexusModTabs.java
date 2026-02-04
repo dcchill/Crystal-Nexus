@@ -267,6 +267,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.QUARRY.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

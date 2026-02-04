@@ -21,6 +21,7 @@ import java.util.List;
 public class ConveyerBeltOnTickUpdateProcedure {
 
     public static void execute(LevelAccessor world, double x, double y, double z) {
+    	int PULL_MAX = 32;
         if (!(world instanceof Level level)) return;
         if (level.isClientSide) return;
 
@@ -51,51 +52,73 @@ public class ConveyerBeltOnTickUpdateProcedure {
                     facing
             );
 
-            if (inputHandler != null) {
-                for (int slot = 0; slot < inputHandler.getSlots(); slot++) {
-                    ItemStack extracted = inputHandler.extractItem(slot, 1, true);
-                    if (!extracted.isEmpty()) {
-                        inputHandler.extractItem(slot, 1, false);
+if (inputHandler != null) {
+    for (int slot = 0; slot < inputHandler.getSlots(); slot++) {
 
-                        // Try to merge with existing items on belt first
-                        boolean merged = false;
-                        AABB beltBox = new AABB(centerX - 0.4, minY, centerZ - 0.4,
-                                                centerX + 0.4, maxY, centerZ + 0.4);
-                        List<ItemEntity> existing = level.getEntitiesOfClass(ItemEntity.class, beltBox);
+        int remaining = 32;
+        ItemStack extractedTotal = ItemStack.EMPTY;
 
-                        for (ItemEntity entity : existing) {
-                            if (!entity.isAlive()) continue;
-                            ItemStack stack = entity.getItem();
+        while (remaining > 0) {
+            // Simulate (some handlers only ever give 1 even if you ask for more)
+            ItemStack sim = inputHandler.extractItem(slot, remaining, true);
+            if (sim.isEmpty()) break;
 
-                            // ✅ Merge by item type only
-                            if (stack.getItem() == extracted.getItem()) {
-                                int availableSpace = stack.getMaxStackSize() - stack.getCount();
-                                int toAdd = Math.min(extracted.getCount(), availableSpace);
-                                stack.grow(toAdd);
-                                extracted.shrink(toAdd);
-                                merged = true;
-                                if (extracted.isEmpty()) break;
-                            }
-                        }
+            // Actually extract what the simulation says is possible
+            ItemStack got = inputHandler.extractItem(slot, sim.getCount(), false);
+            if (got.isEmpty()) break;
 
-                        // If not merged, spawn new entity
-                        if (!extracted.isEmpty()) {
-                            ItemEntity entity = new ItemEntity(
-                                    level,
-                                    centerX,
-                                    pos.getY() + 0.6,
-                                    centerZ,
-                                    extracted
-                            );
-                            entity.setDeltaMovement(0, 0, 0);
-                            entity.setPickUpDelay(10);
-                            entity.setUnlimitedLifetime();
-                            level.addFreshEntity(entity);
-                        }
-                        break; // one item per tick
-                    }
+            // First pull sets the type; later pulls must match
+            if (extractedTotal.isEmpty()) {
+                extractedTotal = got.copy();
+            } else {
+                if (got.getItem() != extractedTotal.getItem()) {
+                    // Slot changed to a different item somehow; stop to avoid mixing
+                    // (putting it back is hard with IItemHandler, so we just stop)
+                    break;
+                }
+                extractedTotal.grow(got.getCount());
+            }
+
+            remaining -= got.getCount();
+
+            // Safety: if handler returns 0-count (shouldn't happen), avoid infinite loop
+            if (got.getCount() <= 0) break;
+        }
+
+        if (!extractedTotal.isEmpty()) {
+            // ---- your existing merge/spawn code, using extractedTotal instead of extracted ----
+
+            AABB beltBox = new AABB(centerX - 0.4, minY, centerZ - 0.4,
+                                    centerX + 0.4, maxY, centerZ + 0.4);
+            List<ItemEntity> existing = level.getEntitiesOfClass(ItemEntity.class, beltBox);
+
+            for (ItemEntity entity : existing) {
+                if (!entity.isAlive()) continue;
+                ItemStack stack = entity.getItem();
+
+                if (stack.getItem() == extractedTotal.getItem()) {
+                    int availableSpace = stack.getMaxStackSize() - stack.getCount();
+                    int toAdd = Math.min(extractedTotal.getCount(), availableSpace);
+                    stack.grow(toAdd);
+                    extractedTotal.shrink(toAdd);
+                    if (extractedTotal.isEmpty()) break;
                 }
             }
+
+            if (!extractedTotal.isEmpty()) {
+                ItemEntity entity = new ItemEntity(level, centerX, pos.getY() + 0.6, centerZ, extractedTotal);
+                entity.setDeltaMovement(0, 0, 0);
+                entity.setPickUpDelay(10);
+                entity.setUnlimitedLifetime();
+                level.addFreshEntity(entity);
+            }
+
+            break; // one slot per tick, but up to 32 items
+        }
+    }
+}
+
+
         }
 
         /* ===================================================

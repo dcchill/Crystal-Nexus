@@ -53,6 +53,7 @@ import net.crystalnexus.block.ReactionChamberBlockBlock;
 import net.crystalnexus.block.RawCrystalBlockStairsBlock;
 import net.crystalnexus.block.RawCrystalBlockSlabBlock;
 import net.crystalnexus.block.RawCrystalBlockBlock;
+import net.crystalnexus.block.QuarryBlock;
 import net.crystalnexus.block.QuantumMinerBlock;
 import net.crystalnexus.block.PolymerBlockBlock;
 import net.crystalnexus.block.PistonGeneratorBlock;
@@ -286,6 +287,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ELECTROMAGNET = REGISTRY.register("electromagnet", ElectromagnetBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_CRYSTAL_BLOCK = REGISTRY.register("invertium_crystal_block", InvertiumCrystalBlockBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_ORE = REGISTRY.register("invertium_ore", InvertiumOreBlock::new);
+	public static final DeferredBlock<Block> QUARRY = REGISTRY.register("quarry", QuarryBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

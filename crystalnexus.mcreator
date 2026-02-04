@@ -16451,6 +16451,91 @@
         ]
       },
       "path": "~/orescanner"
+    },
+    {
+      "name": "TarrockDeposit",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tarrock_deposit",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/tarrock_deposit_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/tarrock_deposit.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/tarrock_deposit.json"
+        ]
+      },
+      "path": "~/oil_depths"
+    },
+    {
+      "name": "Quarry",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "quarry",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/quarry.json",
+          "src/main/resources/assets/crystalnexus/blockstates/quarry.json",
+          "src/main/java/net/crystalnexus/block/QuarryBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/quarry.json",
+          "src/main/resources/assets/crystalnexus/models/item/quarry.json",
+          "src/main/java/net/crystalnexus/block/entity/QuarryBlockEntity.java"
+        ]
+      },
+      "path": "~/quarry"
+    },
+    {
+      "name": "QuarryBlockEntityRenderer",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "quarry_block_entity_renderer",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/QuarryBlockEntityRenderer.java"
+        ]
+      }
+    },
+    {
+      "name": "QuarryGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "quarry_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/QuarryGUIScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/QuarryGUIMenu.java"
+        ]
+      },
+      "path": "~/quarry"
+    },
+    {
+      "name": "AcceleratorRubberAlt",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "accelerator_rubber_alt",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/accelerator_rubber_alt.json"
+        ]
+      },
+      "path": "~/particle_accel"
+    },
+    {
+      "name": "QuarryRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "quarry_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/quarry_recipe.json"
+        ]
+      },
+      "path": "~/quarry"
     }
   ],
   "variable_elements": [
@@ -17204,7 +17289,8 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre"
+      "InvertiumOre",
+      "Quarry"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17842,7 +17928,9 @@
       "item.crystalnexus.dark_matter": "Dark Matter",
       "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form.",
       "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
-      "item.crystalnexus.ore_scanner": "Ore Scanner"
+      "item.crystalnexus.ore_scanner": "Ore Scanner",
+      "block.crystalnexus.quarry": "Laser Quarry",
+      "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]"
     }
   },
   "metadata": {

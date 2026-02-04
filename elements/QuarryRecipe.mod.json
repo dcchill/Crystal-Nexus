@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 1,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "CUSTOM:ComputationNode"
+      },
+      {
+        "value": "CUSTOM:IronMachineBolt"
+      },
+      {
+        "value": "CUSTOM:InvertiumIngot"
+      },
+      {
+        "value": "CUSTOM:InvertiumMachineFrame"
+      },
+      {
+        "value": "CUSTOM:InvertiumIngot"
+      },
+      {
+        "value": "TAG:c:glass_blocks"
+      },
+      {
+        "value": "CUSTOM:Silicon"
+      },
+      {
+        "value": "TAG:c:glass_blocks"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:Quarry"
+    },
+    "name": "quarry_recipe",
+    "namespace": "mod"
+  }
+}

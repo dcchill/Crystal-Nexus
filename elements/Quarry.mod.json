@@ -2,14 +2,14 @@
   "_fv": 79,
   "_type": "block",
   "definition": {
-    "texture": "silicon_ore",
+    "texture": "crystalmachineframe",
     "textureTop": "",
     "textureLeft": "",
     "textureFront": "",
     "textureRight": "",
     "textureBack": "",
-    "renderType": 11,
-    "customModelName": "Single texture",
+    "renderType": 2,
+    "customModelName": "laser_quarry:default",
     "rotationMode": 0,
     "enablePitch": false,
     "emissiveRendering": false,
@@ -20,14 +20,68 @@
     "blockSetType": "OAK",
     "tintType": "No tint",
     "isItemTinted": false,
-    "hasTransparency": false,
+    "hasTransparency": true,
     "connectedSides": false,
-    "transparencyType": "SOLID",
+    "transparencyType": "TRANSLUCENT",
     "disableOffset": false,
     "boundingBoxes": [
       {
         "mx": 0.0,
         "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 1.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 0.0,
+        "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 1.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 0.0,
+        "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 1.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 15.0,
+        "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 16.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 15.0,
+        "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 16.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 15.0,
+        "my": 0.0,
+        "mz": 6.4087,
+        "Mx": 16.0,
+        "My": 5.0,
+        "Mz": 9.5913,
+        "subtract": false
+      },
+      {
+        "mx": 0.0,
+        "my": 5.0,
         "mz": 0.0,
         "Mx": 16.0,
         "My": 16.0,
@@ -36,12 +90,12 @@
       }
     ],
     "customProperties": [],
-    "name": "Silicon Ore",
+    "name": "Quarry",
     "specialInformation": {
       "fixedValue": []
     },
-    "hardness": 3.25,
-    "resistance": 5.2,
+    "hardness": 1.0,
+    "resistance": 10.0,
     "hasGravity": false,
     "isWaterloggable": false,
     "hasBlockItem": true,
@@ -53,18 +107,18 @@
         "value": "CUSTOM:CrystalNexusTab"
       }
     ],
-    "destroyTool": "pickaxe",
+    "destroyTool": "Not specified",
     "customDrop": {
-      "value": "CUSTOM:Silicon"
+      "value": ""
     },
     "dropAmount": 1,
     "useLootTableForDrops": false,
-    "requiresCorrectTool": true,
+    "requiresCorrectTool": false,
     "enchantPowerBonus": 0.0,
     "plantsGrowOn": false,
     "canRedstoneConnect": false,
-    "lightOpacity": 15,
-    "tickRate": 0,
+    "lightOpacity": 0,
+    "tickRate": 1,
     "tickRandomly": false,
     "isReplaceable": false,
     "canProvidePower": false,
@@ -72,7 +126,7 @@
       "fixedValue": 15.0
     },
     "colorOnMap": "DEFAULT",
-    "noteBlockInstrument": "basedrum",
+    "noteBlockInstrument": "harp",
     "creativePickItem": {
       "value": ""
     },
@@ -89,7 +143,7 @@
     "isNotColidable": false,
     "isCustomSoundType": false,
     "soundOnStep": {
-      "value": "NETHERRACK"
+      "value": "METAL"
     },
     "breakSound": {
       "value": ""
@@ -108,40 +162,41 @@
     },
     "luminance": 0,
     "unbreakable": false,
-    "vanillaToolTier": "IRON",
+    "vanillaToolTier": "NONE",
     "isBonemealable": false,
     "sensitiveToVibration": false,
     "vibrationalEvents": [],
     "vibrationSensitivityRadius": {
       "fixedValue": 7.0
     },
-    "hasInventory": false,
-    "openGUIOnRightClick": false,
+    "hasInventory": true,
+    "guiBoundTo": "QuarryGUI",
+    "openGUIOnRightClick": true,
     "inventorySize": 9,
     "inventoryStackSize": 99,
     "inventoryDropWhenDestroyed": true,
     "inventoryComparatorPower": true,
     "inventoryOutSlotIDs": [],
     "inventoryInSlotIDs": [],
-    "hasEnergyStorage": false,
+    "hasEnergyStorage": true,
     "energyInitial": 0,
-    "energyCapacity": 400000,
-    "energyMaxReceive": 200,
-    "energyMaxExtract": 200,
+    "energyCapacity": 409600,
+    "energyMaxReceive": 20480,
+    "energyMaxExtract": 10240,
     "isFluidTank": false,
     "fluidCapacity": 8000,
     "fluidRestrictions": [],
-    "generateFeature": true,
+    "generateFeature": false,
     "restrictionBiomes": [],
     "blocksToReplace": [
       {
-        "value": "CUSTOM:Tarrock"
+        "value": "TAG:stone_ore_replaceables"
       }
     ],
     "generationShape": "UNIFORM",
-    "frequencyPerChunks": 6,
-    "frequencyOnChunk": 11,
+    "frequencyPerChunks": 10,
+    "frequencyOnChunk": 16,
     "minGenerateHeight": 0,
-    "maxGenerateHeight": 128
+    "maxGenerateHeight": 64
   }
 }

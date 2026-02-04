@@ -1,0 +1,28 @@
+{
+  "_fv": 79,
+  "_type": "jeirecipe",
+  "definition": {
+    "category": "accelerator_jei",
+    "result": {
+      "value": "CUSTOM:SyntheticRubber"
+    },
+    "count": 1,
+    "ingredients": [
+      {
+        "value": "Items.SLIME_BALL"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      },
+      {
+        "value": "CUSTOM:RawCarbon"
+      }
+    ],
+    "integers": [],
+    "strings": [],
+    "recipetype": "AcceleratorJei"
+  }
+}

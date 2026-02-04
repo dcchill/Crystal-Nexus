@@ -36,6 +36,7 @@ import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
 import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
 import net.crystalnexus.block.entity.ReactionEnergyInputBlockEntity;
 import net.crystalnexus.block.entity.ReactionChamberComputerBlockEntity;
+import net.crystalnexus.block.entity.QuarryBlockEntity;
 import net.crystalnexus.block.entity.QuantumMinerBlockEntity;
 import net.crystalnexus.block.entity.PistonGeneratorBlockEntity;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
@@ -204,6 +205,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ParticleAcceleratorControllerBlockEntity>> PARTICLE_ACCELERATOR_CONTROLLER = register("particle_accelerator_controller", CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER,
 			ParticleAcceleratorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectromagnetBlockEntity>> ELECTROMAGNET = register("electromagnet", CrystalnexusModBlocks.ELECTROMAGNET, ElectromagnetBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<QuarryBlockEntity>> QUARRY = register("quarry", CrystalnexusModBlocks.QUARRY, QuarryBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -363,5 +365,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PARTICLE_ACCELERATOR_CONTROLLER.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ELECTROMAGNET.get(), SidedInvWrapper::new);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ELECTROMAGNET.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, QUARRY.get(), SidedInvWrapper::new);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, QUARRY.get(), (blockEntity, side) -> blockEntity.getEnergyStorage());
 	}
 }

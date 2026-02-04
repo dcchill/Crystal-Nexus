@@ -181,35 +181,77 @@ private boolean hasGapAtHead() {
 
     // ======== Inventory interactions ========
 
-    private boolean tryPullFromBehind(Direction back, Direction facing) {
-        if (level == null) return false;
+private static final int PULL_MAX = 32;
 
-        if (!canAccept(belt[0], 1)) return false;
-		// Enforce spacing: only pull if head has a gap
-		if (!hasGapAtHead()) return false;
+private boolean tryPullFromBehind(Direction back, Direction facing) {
+    if (level == null) return false;
 
-        BlockPos inputPos = worldPosition.relative(back);
+    // Enforce spacing: only pull if head has a gap
+    if (!hasGapAtHead()) return false;
 
-        // Try common sides + null (more compatible with different inventories)
-        IItemHandler input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, facing);
-        if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, null);
-        if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, back);
-        if (input == null) return false;
+    // If head has something, we can only pull more of the same thing
+    ItemStack head = belt[0];
+    int headSpace = head.isEmpty() ? 64 : (head.getMaxStackSize() - head.getCount());
+    if (headSpace <= 0) return false;
 
-        for (int slot = 0; slot < input.getSlots(); slot++) {
-            ItemStack sim = input.extractItem(slot, 1, true);
-            if (sim.isEmpty()) continue;
+    // Pull no more than: 32, or remaining space in the head stack
+    int toPullMax = Math.min(PULL_MAX, headSpace);
+    if (toPullMax <= 0) return false;
 
-            if (!belt[0].isEmpty() && !ItemStack.isSameItemSameComponents(belt[0], sim)) continue;
+    BlockPos inputPos = worldPosition.relative(back);
 
-            ItemStack pulled = input.extractItem(slot, 1, false);
-            if (pulled.isEmpty()) continue;
+    // Try common sides + null (more compatible with different inventories)
+    IItemHandler input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, facing);
+    if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, null);
+    if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, back);
+    if (input == null) return false;
 
-            belt[0] = insertIntoSegment(belt[0], pulled);
-            return true; // one per tick
+    for (int slot = 0; slot < input.getSlots(); slot++) {
+
+        // Peek what item is available (some handlers only reveal 1 even if asked for more)
+        ItemStack peek = input.extractItem(slot, 1, true);
+        if (peek.isEmpty()) continue;
+
+        // If belt head isn't empty, only accept exact same item+components
+        if (!head.isEmpty() && !ItemStack.isSameItemSameComponents(head, peek)) continue;
+
+        int remaining = toPullMax;
+        ItemStack pulledTotal = ItemStack.EMPTY;
+
+        while (remaining > 0) {
+            // Try to extract remaining (handler might still only give 1)
+            ItemStack sim = input.extractItem(slot, remaining, true);
+            if (sim.isEmpty()) break;
+
+            // Make sure it still matches (safety)
+            if (!head.isEmpty() && !ItemStack.isSameItemSameComponents(head, sim)) break;
+            if (!pulledTotal.isEmpty() && !ItemStack.isSameItemSameComponents(pulledTotal, sim)) break;
+
+            ItemStack got = input.extractItem(slot, sim.getCount(), false);
+            if (got.isEmpty()) break;
+
+            if (pulledTotal.isEmpty()) {
+                pulledTotal = got.copy();
+            } else {
+                pulledTotal.grow(got.getCount());
+            }
+
+            remaining -= got.getCount();
+
+            // safety against weird 0-count behavior
+            if (got.getCount() <= 0) break;
         }
-        return false;
+
+        if (pulledTotal.isEmpty()) continue;
+
+        // Insert into belt[0] (won’t overflow because we bounded by headSpace)
+        belt[0] = insertIntoSegment(belt[0], pulledTotal);
+        return true; // pulled up to 32 (or up to space), from one slot per step
     }
+
+    return false;
+}
+
 
     private boolean tryPushToFront(Direction facing, Direction back) {
         if (level == null) return false;
