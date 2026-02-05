@@ -1,6 +1,7 @@
 {
-  "parent": "item/generated",
+  "parent": "crystalnexus:custom/jetpack_item",
   "textures": {
-    "layer0": "crystalnexus:item/jetpack_sprite"
+    "0": "crystalnexus:block/jetpack_texture",
+    "particle": "crystalnexus:item/jetpack_sprite"
   }
 }

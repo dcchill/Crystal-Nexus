@@ -25,7 +25,7 @@ public class JetPackOnCraftProcedure {
 	}
 
 	private static void execute(@Nullable Event event, ItemStack itemstack) {
-		if (CrystalnexusModItems.JET_PACK_CHESTPLATE.get() == itemstack.getItem() || CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get() == itemstack.getItem()) {
+		if (CrystalnexusModItems.JET_PACK_CHESTPLATE.get() == itemstack.getItem()) {
 			{
 				final String _tagName = "fuel";
 				final double _tagValue = 4096;

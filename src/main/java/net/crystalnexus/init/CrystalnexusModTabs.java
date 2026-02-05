@@ -80,6 +80,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.QUARRY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUTONIUM_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.RAW_BLUTONIUM.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_DUST.get());
@@ -125,6 +126,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
+				tabData.accept(CrystalnexusModItems.LASER_DIODE.get());
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
@@ -186,11 +188,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.COAL_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.ENERGY_SINGULARITY.get());
 				tabData.accept(CrystalnexusModItems.JET_PACK_CHESTPLATE.get());
+				tabData.accept(CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_HELMET.get());
 				tabData.accept(CrystalnexusModItems.CARBON_CHESTPLATE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
-				tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
 				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
@@ -267,7 +269,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.QUARRY.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -334,7 +335,7 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.CARBON_CHESTPLATE.get());
 			tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 			tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
-			tabData.accept(CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get());
+			tabData.accept(CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get());
 		}
 	}
 }

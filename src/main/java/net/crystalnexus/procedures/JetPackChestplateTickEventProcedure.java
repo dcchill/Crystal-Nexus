@@ -29,8 +29,7 @@ public class JetPackChestplateTickEventProcedure {
 			ythrust = 0.7;
 		}
 		if (!entity.onGround()) {
-			if ((CrystalnexusModItems.JET_PACK_CHESTPLATE.get() == (entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY).getItem()
-					|| CrystalnexusModItems.CARBON_JETPACK_CHESTPLATE.get() == (entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY).getItem())
+			if (CrystalnexusModItems.JET_PACK_CHESTPLATE.get() == (entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY).getItem()
 					&& entity.getData(CrystalnexusModVariables.PLAYER_VARIABLES).jetpackFly) {
 				if ((entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY).getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getDouble("fuel") > 1
 						|| (entity instanceof Player _plr ? _plr.getAbilities().instabuild : false)) {

@@ -1,6 +1,8 @@
 package net.crystalnexus.item;
 
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -14,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.resources.ResourceLocation;
@@ -21,14 +25,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.Util;
 
 import net.crystalnexus.procedures.JetPackChestplateTickEventProcedure;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.client.model.Modeljet_pack;
 
+import java.util.Map;
 import java.util.List;
 import java.util.EnumMap;
+import java.util.Collections;
 
 import com.google.common.collect.Iterables;
 
@@ -51,6 +60,24 @@ public abstract class JetPackItem extends ArmorItem {
 		});
 	}
 
+	@SubscribeEvent
+	public static void registerItemExtensions(RegisterClientExtensionsEvent event) {
+		event.registerItem(new IClientItemExtensions() {
+			@Override
+			@OnlyIn(Dist.CLIENT)
+			public HumanoidModel getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+				HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(), Map.of("body", new Modeljet_pack(Minecraft.getInstance().getEntityModels().bakeLayer(Modeljet_pack.LAYER_LOCATION)).bone, "left_arm",
+						new Modeljet_pack(Minecraft.getInstance().getEntityModels().bakeLayer(Modeljet_pack.LAYER_LOCATION)).bone2, "right_arm",
+						new Modeljet_pack(Minecraft.getInstance().getEntityModels().bakeLayer(Modeljet_pack.LAYER_LOCATION)).bone3, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
+						new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
+				armorModel.crouching = living.isShiftKeyDown();
+				armorModel.riding = defaultModel.riding;
+				armorModel.young = living.isBaby();
+				return armorModel;
+			}
+		}, CrystalnexusModItems.JET_PACK_CHESTPLATE.get());
+	}
+
 	public JetPackItem(ArmorItem.Type type, Item.Properties properties) {
 		super(ARMOR_MATERIAL, type, properties);
 	}
@@ -58,6 +85,11 @@ public abstract class JetPackItem extends ArmorItem {
 	public static class Chestplate extends JetPackItem {
 		public Chestplate() {
 			super(ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(15)));
+		}
+
+		@Override
+		public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+			return ResourceLocation.parse("crystalnexus:textures/entities/jetpack_texture.png");
 		}
 
 		@Override

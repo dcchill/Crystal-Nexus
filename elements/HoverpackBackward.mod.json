@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "S",
+    "keyBindingName": "Hoverpack Backward",
+    "keyBindingCategoryKey": "hoverpack",
+    "onKeyPressed": {
+      "name": "HoverpackBackwardOnKeyPressed"
+    },
+    "onKeyReleased": {
+      "name": "HoverpackBackwardOnKeyReleased"
+    }
+  }
+}

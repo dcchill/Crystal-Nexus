@@ -22,7 +22,7 @@ public class DepotSavedData extends SavedData {
     public static final String ID = "crystalnexus_depot";
 
     // ===== Capacity / Upgrades =====
-    public static final long BASE_CAPACITY = 1024L; // tune this
+    public static final long BASE_CAPACITY = 20480L; // tune this
     private int upgradeLevel = 0;
 
     // ===== Stored items =====

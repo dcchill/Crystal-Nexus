@@ -13191,46 +13191,6 @@
       "path": "~/carbon_armor"
     },
     {
-      "name": "CarbonJetpack",
-      "type": "armor",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "carbon_jetpack",
-      "metadata": {
-        "files": [
-          "src/main/java/net/crystalnexus/item/CarbonJetpackItem.java",
-          "src/main/resources/assets/crystalnexus/models/item/carbon_jetpack_chestplate.json"
-        ]
-      },
-      "path": "~/Jetpack"
-    },
-    {
-      "name": "CarbonJetpackRecipe",
-      "type": "recipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "carbon_jetpack_recipe",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/carbon_jetpack_recipe.json"
-        ]
-      },
-      "path": "~/Jetpack"
-    },
-    {
-      "name": "CarbonJetpackRefuel",
-      "type": "recipe",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "carbon_jetpack_refuel",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/recipe/carbon_jetpack_refuel.json"
-        ]
-      },
-      "path": "~/Jetpack"
-    },
-    {
       "name": "PipeStraight",
       "type": "block",
       "compiles": true,
@@ -13623,7 +13583,7 @@
       "name": "LaserPistolRightclicked",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "laser_pistol_rightclicked",
       "metadata": {
         "dependencies": [
@@ -16536,6 +16496,406 @@
         ]
       },
       "path": "~/quarry"
+    },
+    {
+      "name": "LaserDiode",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_diode",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/LaserDiodeItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/laser_diode.json"
+        ]
+      },
+      "path": "~/quarry"
+    },
+    {
+      "name": "LaserDiodeRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "laser_diode_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/laser_diode_recipe.json"
+        ]
+      },
+      "path": "~/quarry"
+    },
+    {
+      "name": "HoverPack",
+      "type": "armor",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hover_pack",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/hover_pack_chestplate.json",
+          "src/main/java/net/crystalnexus/item/HoverPackItem.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverPackChestplateTickEvent",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hover_pack_chestplate_tick_event",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverPackChestplateTickEventProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRiseKeyPressedProcedure",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_rise_key_pressed_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/HoverpackRiseKeyPressedProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "HoverpackRiseKeyReleasedProcedure",
+      "type": "code",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_rise_key_released_procedure",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/HoverpackRiseKeyReleasedProcedure.java"
+        ]
+      }
+    },
+    {
+      "name": "HoverpackRise",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_rise",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackRiseMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRiseOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_rise_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackRiseOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRiseOnKeyReleased",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_rise_on_key_released",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackRiseOnKeyReleasedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackForwardOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_forward_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackForwardOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackForwardOnKeyReleased",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_forward_on_key_released",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackForwardOnKeyReleasedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackForward",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_forward",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackForwardMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackBackward",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_backward",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackBackwardMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackBackwardOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_backward_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackBackwardOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackBackwardOnKeyReleased",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_backward_on_key_released",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackBackwardOnKeyReleasedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackLeft",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_left",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackLeftMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackLeftOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_left_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackLeftOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackLeftOnKeyReleased",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_left_on_key_released",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackLeftOnKeyReleasedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRight",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_right",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackRightMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRightOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_right_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackRightOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackRightOnKeyReleased",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_right_on_key_released",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackRightOnKeyReleasedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackToggleOnKeyPressed",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "hoverpack_toggle_on_key_pressed",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "entity",
+            "type": "entity"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/HoverpackToggleOnKeyPressedProcedure.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverpackToggle",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hoverpack_toggle",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/HoverpackToggleMessage.java"
+        ]
+      },
+      "path": "~/hoverpack"
+    },
+    {
+      "name": "HoverPackRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "hover_pack_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/hover_pack_recipe.json"
+        ]
+      },
+      "path": "~/hoverpack"
     }
   ],
   "variable_elements": [
@@ -17016,7 +17376,7 @@
       "CUSTOM:Tarrock"
     ],
     "ITEMS:minecraft:chest_armor": [
-      "~CUSTOM:CarbonJetpack.body",
+      "~CUSTOM:HoverPack.body",
       "~CUSTOM:Carbon.body",
       "~CUSTOM:JetPack.body"
     ],
@@ -17106,6 +17466,7 @@
       "MetallurgicRecrystallizer",
       "Inverter",
       "BiomaticSimulator",
+      "Quarry",
       "BlutoniumOre",
       "RawBlutonium",
       "BlutoniumDust",
@@ -17151,6 +17512,7 @@
       "EnergizedSilicon",
       "ComputationNode",
       "ComputationCluster",
+      "LaserDiode",
       "BlankChip",
       "RangeUpgrade",
       "AccelerationUpgrade",
@@ -17212,8 +17574,8 @@
       "CoalSingularity",
       "EnergySingularity",
       "JetPack",
+      "HoverPack",
       "Carbon",
-      "CarbonJetpack",
       "Flamethrower",
       "MiningLaser",
       "PaintGun",
@@ -17289,8 +17651,7 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre",
-      "Quarry"
+      "InvertiumOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -17320,7 +17681,7 @@
       "CompoundSword",
       "JetPack",
       "Carbon",
-      "CarbonJetpack"
+      "HoverPack"
     ],
     "CUSTOM:CrystalNexusLogistics": [
       "Container",
@@ -17818,7 +18179,6 @@
       "item.crystalnexus.carbon_leggings": "Carbon Leggings",
       "item.crystalnexus.carbon_chestplate": "Carbon Chestplate",
       "item.crystalnexus.carbon_boots": "Carbon Boots",
-      "item.crystalnexus.carbon_jetpack_chestplate": "Carbon Jetpack Chestplate",
       "block.crystalnexus.pipe_straight": "Pipe Straight",
       "block.crystalnexus.pipe_junction": "Pipe Junction",
       "block.crystalnexus.pipe_junction.description_0": "§5Works like a splitter / corner for pipes.  Does not push fluid to nearby machines or tanks.",
@@ -17930,7 +18290,16 @@
       "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
       "item.crystalnexus.ore_scanner": "Ore Scanner",
       "block.crystalnexus.quarry": "Laser Quarry",
-      "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]"
+      "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]",
+      "item.crystalnexus.laser_diode": "Laser Diode",
+      "item.crystalnexus.hover_pack_chestplate": "Hover Pack",
+      "key.crystalnexus.hoverpack_rise": "Hoverpack Rise",
+      "key.crystalnexus.hoverpack_forward": "Hoverpack Forward",
+      "key.crystalnexus.hoverpack_backward": "Hoverpack Backward",
+      "key.crystalnexus.hoverpack_left": "Hoverpack Left",
+      "key.crystalnexus.hoverpack_right": "Hoverpack Right",
+      "key.crystalnexus.hoverpack_toggle": "Hoverpack Toggle",
+      "key.categories.hoverpack": "Crystal Nexus Hoverpack"
     }
   },
   "metadata": {
@@ -18162,6 +18531,10 @@
       },
       {
         "name": "orescanner",
+        "children": []
+      },
+      {
+        "name": "hoverpack",
         "children": []
       }
     ]

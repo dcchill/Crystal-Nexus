@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "W",
+    "keyBindingName": "Hoverpack Forward",
+    "keyBindingCategoryKey": "hoverpack",
+    "onKeyPressed": {
+      "name": "HoverpackForwardOnKeyPressed"
+    },
+    "onKeyReleased": {
+      "name": "HoverpackForwardOnKeyReleased"
+    }
+  }
+}

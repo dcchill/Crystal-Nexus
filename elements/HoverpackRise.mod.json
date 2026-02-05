@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "SPACE",
+    "keyBindingName": "Hoverpack Rise",
+    "keyBindingCategoryKey": "hoverpack",
+    "onKeyPressed": {
+      "name": "HoverpackRiseOnKeyPressed"
+    },
+    "onKeyReleased": {
+      "name": "HoverpackRiseOnKeyReleased"
+    }
+  }
+}

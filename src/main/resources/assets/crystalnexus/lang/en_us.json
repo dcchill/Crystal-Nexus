@@ -464,7 +464,6 @@
   "item.crystalnexus.carbon_leggings": "Carbon Leggings",
   "item.crystalnexus.carbon_chestplate": "Carbon Chestplate",
   "item.crystalnexus.carbon_boots": "Carbon Boots",
-  "item.crystalnexus.carbon_jetpack_chestplate": "Carbon Jetpack Chestplate",
   "block.crystalnexus.pipe_straight": "Pipe Straight",
   "block.crystalnexus.pipe_junction": "Pipe Junction",
   "block.crystalnexus.pipe_junction.description_0": "§5Works like a splitter / corner for pipes.  Does not push fluid to nearby machines or tanks.",
@@ -576,5 +575,14 @@
   "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
   "item.crystalnexus.ore_scanner": "Ore Scanner",
   "block.crystalnexus.quarry": "Laser Quarry",
-  "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]"
+  "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]",
+  "item.crystalnexus.laser_diode": "Laser Diode",
+  "item.crystalnexus.hover_pack_chestplate": "Hover Pack",
+  "key.crystalnexus.hoverpack_rise": "Hoverpack Rise",
+  "key.crystalnexus.hoverpack_forward": "Hoverpack Forward",
+  "key.crystalnexus.hoverpack_backward": "Hoverpack Backward",
+  "key.crystalnexus.hoverpack_left": "Hoverpack Left",
+  "key.crystalnexus.hoverpack_right": "Hoverpack Right",
+  "key.crystalnexus.hoverpack_toggle": "Hoverpack Toggle",
+  "key.categories.hoverpack": "Crystal Nexus Hoverpack"
 }

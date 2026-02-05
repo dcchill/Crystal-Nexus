@@ -3,15 +3,15 @@
   "_type": "armor",
   "definition": {
     "enableHelmet": false,
-    "textureHelmet": "carbon_head",
+    "textureHelmet": "",
     "enableBody": true,
     "textureBody": "carbon_jetpack",
     "enableLeggings": false,
-    "textureLeggings": "carbon_leggings",
+    "textureLeggings": "",
     "enableBoots": false,
-    "textureBoots": "carbon_boots",
+    "textureBoots": "",
     "onBodyTick": {
-      "name": "JetPackChestplateTickEvent"
+      "name": "HoverPackChestplateTickEvent"
     },
     "creativeTabs": [
       {
@@ -22,16 +22,15 @@
       }
     ],
     "armorTextureFile": "carbon_jetpack",
-    "helmetName": "Carbon Helmet",
-    "bodyName": "Carbon Jetpack Chestplate",
-    "leggingsName": "Carbon Leggings",
-    "bootsName": "Carbon Boots",
+    "helmetName": "Hover Pack Helmet",
+    "bodyName": "Hover Pack",
+    "leggingsName": "Hover Pack Leggings",
+    "bootsName": "Hover Pack Boots",
     "helmetSpecialInformation": {
       "fixedValue": []
     },
     "bodySpecialInformation": {
-      "fixedValue": [],
-      "name": "JetPackChestplateTickEvent"
+      "fixedValue": []
     },
     "leggingsSpecialInformation": {
       "fixedValue": []
@@ -42,11 +41,11 @@
     "helmetModelName": "Default",
     "helmetModelPart": "Helmet",
     "helmetModelTexture": "From armor",
-    "bodyModelName": "Default",
-    "bodyModelPart": "Body",
-    "armsModelPartL": "Arms L",
-    "armsModelPartR": "Arms R",
-    "bodyModelTexture": "From armor",
+    "bodyModelName": "Modelhover_pack",
+    "bodyModelPart": "hoverpack",
+    "armsModelPartL": "bone6",
+    "armsModelPartR": "bone7",
+    "bodyModelTexture": "hover_pack_texture.png",
     "leggingsModelName": "Default",
     "leggingsModelPartL": "Leggings L",
     "leggingsModelPartR": "Leggings R",
@@ -57,8 +56,8 @@
     "bootsModelTexture": "From armor",
     "helmetItemRenderType": 0,
     "helmetItemCustomModelName": "Normal",
-    "bodyItemRenderType": 0,
-    "bodyItemCustomModelName": "Normal",
+    "bodyItemRenderType": 1,
+    "bodyItemCustomModelName": "hoverpack_item:default",
     "leggingsItemRenderType": 0,
     "leggingsItemCustomModelName": "Normal",
     "bootsItemRenderType": 0,
@@ -91,20 +90,20 @@
     "bootsPiglinNeutral": {
       "fixedValue": false
     },
-    "maxDamage": 40,
+    "maxDamage": 33,
     "damageValueHelmet": 2,
-    "damageValueBody": 6,
+    "damageValueBody": 7,
     "damageValueLeggings": 5,
     "damageValueBoots": 2,
-    "enchantability": 30,
-    "toughness": 4.0,
-    "knockbackResistance": 0.30000000000000004,
+    "enchantability": 9,
+    "toughness": 1.5,
+    "knockbackResistance": 0.0,
     "equipSound": {
       "value": ""
     },
     "repairItems": [
       {
-        "value": "CUSTOM:CarbonFiber"
+        "value": "CUSTOM:InvertiumIngot"
       }
     ]
   }

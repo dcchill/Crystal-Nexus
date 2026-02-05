@@ -1,0 +1,15 @@
+{
+  "_fv": 79,
+  "_type": "keybind",
+  "definition": {
+    "triggerKey": "A",
+    "keyBindingName": "Hoverpack Left",
+    "keyBindingCategoryKey": "misc",
+    "onKeyPressed": {
+      "name": "HoverpackRightOnKeyPressed"
+    },
+    "onKeyReleased": {
+      "name": "HoverpackRightOnKeyReleased"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "hover_pack_texture"
+      },
+      "name": "default"
+    }
+  }
+}

@@ -22,18 +22,11 @@
     "attackSpeed": 1.0,
     "enchantability": 1,
     "damageVsEntity": 4.0,
-    "usageCount": 2048,
+    "usageCount": 0,
     "glowCondition": {
       "fixedValue": false
     },
-    "repairItems": [
-      {
-        "value": "CUSTOM:UltimateCrystal"
-      },
-      {
-        "value": "CUSTOM:BlutoniumCrystal"
-      }
-    ],
+    "repairItems": [],
     "immuneToFire": false,
     "blockDropsTier": "WOOD",
     "blocksAffected": [],

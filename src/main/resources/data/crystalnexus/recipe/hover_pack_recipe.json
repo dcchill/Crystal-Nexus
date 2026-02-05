@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a a",
+    "bcb",
+    "d d"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:invertium_block"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "d": {
+      "item": "crystalnexus:turbine_blade"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:hover_pack_chestplate",
+    "count": 1
+  }
+}

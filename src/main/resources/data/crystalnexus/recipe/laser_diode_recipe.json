@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:circuit_pressing",
+  "ingredients": [
+    {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    {
+      "item": "crystalnexus:blank_chip"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:laser_diode",
+    "count": 1
+  }
+}

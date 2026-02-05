@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:custom/hoverpack_item",
+  "textures": {
+    "0": "crystalnexus:block/hover_pack_texture",
+    "particle": "crystalnexus:item/carbon_jetpack"
+  }
+}

@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:carbon_jetpack_chestplate",
     "crystalnexus:carbon_chestplate",
+    "crystalnexus:hover_pack_chestplate",
     "crystalnexus:jet_pack_chestplate"
   ]
 }

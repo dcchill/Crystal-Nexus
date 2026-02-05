@@ -73,6 +73,7 @@ import net.crystalnexus.item.LinkCardItem;
 import net.crystalnexus.item.LimePaintballItem;
 import net.crystalnexus.item.LightGrayPaintballItem;
 import net.crystalnexus.item.LightBluePaintballItem;
+import net.crystalnexus.item.LaserDiodeItem;
 import net.crystalnexus.item.JetPackItem;
 import net.crystalnexus.item.IronSingularityItem;
 import net.crystalnexus.item.IronMachineBoltItem;
@@ -84,6 +85,7 @@ import net.crystalnexus.item.InvertiumIngotItem;
 import net.crystalnexus.item.InvertiumHoeItem;
 import net.crystalnexus.item.InvertiumCrystalItem;
 import net.crystalnexus.item.InvertiumAxeItem;
+import net.crystalnexus.item.HoverPackItem;
 import net.crystalnexus.item.GreenPaintballItem;
 import net.crystalnexus.item.GrayPaintballItem;
 import net.crystalnexus.item.GoldSingularityItem;
@@ -138,7 +140,6 @@ import net.crystalnexus.item.ChlorophyteHoeItem;
 import net.crystalnexus.item.ChlorophyteDustItem;
 import net.crystalnexus.item.ChlorophyteAxeItem;
 import net.crystalnexus.item.CarbonRangeUpgradeItem;
-import net.crystalnexus.item.CarbonJetpackItem;
 import net.crystalnexus.item.CarbonItem;
 import net.crystalnexus.item.CarbonFiberRodItem;
 import net.crystalnexus.item.CarbonFiberItem;
@@ -376,7 +377,6 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_CHESTPLATE = REGISTRY.register("carbon_chestplate", CarbonItem.Chestplate::new);
 	public static final DeferredItem<Item> CARBON_LEGGINGS = REGISTRY.register("carbon_leggings", CarbonItem.Leggings::new);
 	public static final DeferredItem<Item> CARBON_BOOTS = REGISTRY.register("carbon_boots", CarbonItem.Boots::new);
-	public static final DeferredItem<Item> CARBON_JETPACK_CHESTPLATE = REGISTRY.register("carbon_jetpack_chestplate", CarbonJetpackItem.Chestplate::new);
 	public static final DeferredItem<Item> PIPE_STRAIGHT = block(CrystalnexusModBlocks.PIPE_STRAIGHT);
 	public static final DeferredItem<Item> PIPE_JUNCTION = block(CrystalnexusModBlocks.PIPE_JUNCTION);
 	public static final DeferredItem<Item> STEAM_COLLECTOR = block(CrystalnexusModBlocks.STEAM_COLLECTOR);
@@ -439,6 +439,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
 	public static final DeferredItem<Item> ORE_SCANNER = REGISTRY.register("ore_scanner", OreScannerItem::new);
 	public static final DeferredItem<Item> QUARRY = block(CrystalnexusModBlocks.QUARRY);
+	public static final DeferredItem<Item> LASER_DIODE = REGISTRY.register("laser_diode", LaserDiodeItem::new);
+	public static final DeferredItem<Item> HOVER_PACK_CHESTPLATE = REGISTRY.register("hover_pack_chestplate", HoverPackItem.Chestplate::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

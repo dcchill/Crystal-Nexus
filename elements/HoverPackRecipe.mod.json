@@ -13,37 +13,37 @@
     "recipeShapeless": false,
     "recipeSlots": [
       {
-        "value": "CUSTOM:ConductiveAlloy"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "CUSTOM:CarbonMachineFrame"
+        "value": ""
       },
       {
-        "value": "CUSTOM:ConductiveAlloy"
+        "value": "CUSTOM:IronMachineBolt"
       },
       {
-        "value": "CUSTOM:Gasoline.bucket"
+        "value": "CUSTOM:InvertiumBlock"
       },
       {
-        "value": "CUSTOM:Carbon.body"
+        "value": "CUSTOM:CarbonFiber"
       },
       {
-        "value": "CUSTOM:Gasoline.bucket"
+        "value": "CUSTOM:InvertiumBlock"
       },
       {
-        "value": "CUSTOM:EnergizedSilicon"
+        "value": "CUSTOM:TurbineBlade"
       },
       {
-        "value": "CUSTOM:JetPack.body"
+        "value": ""
       },
       {
-        "value": "CUSTOM:EnergizedSilicon"
+        "value": "CUSTOM:TurbineBlade"
       }
     ],
     "recipeReturnStack": {
-      "value": "CUSTOM:CarbonJetpack.body"
+      "value": "CUSTOM:HoverPack.body"
     },
-    "name": "carbon_jetpack_recipe",
+    "name": "hover_pack_recipe",
     "namespace": "mod"
   }
 }
