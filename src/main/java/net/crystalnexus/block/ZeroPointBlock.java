@@ -29,6 +29,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 
+
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
+import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
+
 import net.crystalnexus.procedures.ZeroPointMultiblockCheckProcedure;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.block.entity.ZeroPointBlockEntity;
@@ -116,7 +122,14 @@ public class ZeroPointBlock extends Block implements EntityBlock {
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
 		return new ZeroPointBlockEntity(pos, state);
 	}
+@Override
+public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+    super.setPlacedBy(level, pos, state, placer, stack);
 
+    if (!level.isClientSide && placer instanceof ServerPlayer sp) {
+        PacketDistributor.sendToPlayer(sp, new S2C_ZeroPointPreview(pos, "zeropoint_multiblock_v1", 20 * 60));
+    }
+}
 	@Override
 	public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
 		super.triggerEvent(state, world, pos, eventID, eventParam);

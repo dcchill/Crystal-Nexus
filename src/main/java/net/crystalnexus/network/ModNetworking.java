@@ -3,7 +3,8 @@ package net.crystalnexus.network;
 import net.crystalnexus.network.payload.C2S_RequestPage;
 import net.crystalnexus.network.payload.C2S_Withdraw;
 import net.crystalnexus.network.payload.S2C_SendPage;
-import net.crystalnexus.network.payload.S2C_OreScanResult; // <-- add
+import net.crystalnexus.network.payload.S2C_OreScanResult;
+import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -24,5 +25,8 @@ public class ModNetworking {
 
 		// Ore scanner results
 		r.playToClient(S2C_OreScanResult.TYPE, S2C_OreScanResult.STREAM_CODEC, ClientHandlers::onOreScanResult);
+
+		r.playToClient(S2C_ZeroPointPreview.TYPE, S2C_ZeroPointPreview.STREAM_CODEC, ClientHandlers::onZeroPointPreview);
+
 	}
 }

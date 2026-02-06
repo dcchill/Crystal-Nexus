@@ -3,7 +3,7 @@
   "textures": {
     "all": "crystalnexus:block/zeropoint_on",
     "particle": "crystalnexus:block/carbon_machine_frame",
-    "0": "crystalnexus:block/researchstation"
+    "0": "crystalnexus:block/zeropoint_on"
   },
   "render_type": "solid"
 }

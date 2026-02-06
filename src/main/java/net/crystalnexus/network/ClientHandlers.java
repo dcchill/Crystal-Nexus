@@ -1,7 +1,10 @@
 package net.crystalnexus.network;
 
 import net.crystalnexus.network.payload.S2C_SendPage;
-import net.crystalnexus.network.payload.S2C_OreScanResult; // <-- add
+import net.crystalnexus.network.payload.S2C_OreScanResult;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.crystalnexus.client.preview.ZeroPointPreviewState;
+import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientHandlers {
@@ -17,8 +20,6 @@ public class ClientHandlers {
             }
         });
     }
-
-    // ✅ NEW: Ore scanner result
    public static void onOreScanResult(final S2C_OreScanResult msg, final IPayloadContext ctx) {
 	ctx.enqueueWork(() -> {
 		try {
@@ -29,5 +30,24 @@ public class ClientHandlers {
 		}
 	});
 }
+
+public static void onZeroPointPreview(final S2C_ZeroPointPreview msg, final IPayloadContext ctx) {
+    ctx.enqueueWork(() -> {
+        ZeroPointPreviewState.activate(msg.controllerPos(), msg.templateId());
+
+        var mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.player != null) {
+            mc.player.sendSystemMessage(net.minecraft.network.chat.Component.literal(
+                    "ZeroPoint preview ON at " + msg.controllerPos()
+            ));
+        }
+
+        System.out.println("[ZeroPointPreview] activated at " + msg.controllerPos() + " template=" + msg.templateId());
+    });
+}
+
+
+
+
 
 }

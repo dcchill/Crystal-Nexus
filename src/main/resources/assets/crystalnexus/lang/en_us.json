@@ -132,7 +132,7 @@
   "gui.crystalnexus.reaction_gui.label_reactor_controller": "[Reaction Controller]",
   "gui.crystalnexus.reaction_gui.label_fluid": "Fluid",
   "gui.crystalnexus.reaction_gui.label_stock_energy": "Input Energy",
-  "item.crystalnexus.fe_placeholder": "FE Placeholder",
+  "item.crystalnexus.fe_placeholder": "x10m FE",
   "item.crystalnexus.ee_matter.description_1": "§5Matter created from pure energy",
   "item.crystalnexus.raw_carbon": "Raw Carbon",
   "item.crystalnexus.carbon_fiber": "Carbon Fiber",

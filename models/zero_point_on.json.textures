@@ -2,7 +2,7 @@
   "mappings": {
     "default": {
       "map": {
-        "0": "researchstation"
+        "0": "zeropoint_on"
       },
       "name": "default"
     }
