@@ -14,29 +14,48 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 
-import net.crystalnexus.network.CrystalnexusModVariables;
-
 public class RadiationSicknessOnEffectActiveTickProcedure {
-	public static void execute(LevelAccessor world, Entity entity) {
-		if (entity == null)
-			return;
-		if (!((entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY)
-				.getEnchantmentLevel(world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.parse("crystalnexus:hazmat")))) != 0)) {
-			if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
-				_entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, 40, 1, false, false));
-			CrystalnexusModVariables.MapVariables.get(world).timeSick = CrystalnexusModVariables.MapVariables.get(world).timeSick + 1;
-			CrystalnexusModVariables.MapVariables.get(world).syncData(world);
-			if (1000 <= CrystalnexusModVariables.MapVariables.get(world).timeSick + 1) {
-				if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
-					_entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 1, false, false));
-				CrystalnexusModVariables.MapVariables.get(world).timeSick = CrystalnexusModVariables.MapVariables.get(world).timeSick + 1;
-				CrystalnexusModVariables.MapVariables.get(world).syncData(world);
-			}
-			if (1500 <= CrystalnexusModVariables.MapVariables.get(world).timeSick + 1) {
-				if (1 == Mth.nextInt(RandomSource.create(), 1, 20)) {
-					entity.hurt(new DamageSource(world.holderOrThrow(ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.parse("crystalnexus:rad_sickness")))), 2);
-				}
-			}
-		}
-	}
+public static void execute(LevelAccessor world, Entity entity) {
+    if (entity == null)
+        return;
+
+    if (entity instanceof LivingEntity living) {
+
+        ItemStack chest = living.getItemBySlot(EquipmentSlot.CHEST);
+        boolean hasHazmat = chest.getEnchantmentLevel(
+                world.registryAccess()
+                        .lookupOrThrow(Registries.ENCHANTMENT)
+                        .getOrThrow(ResourceKey.create(
+                                Registries.ENCHANTMENT,
+                                ResourceLocation.parse("crystalnexus:hazmat")
+                        ))
+        ) > 0;
+
+        if (!hasHazmat) {
+
+            // increment once per tick
+            double time = entity.getPersistentData().getDouble("timeSick") + 1;
+            entity.getPersistentData().putDouble("timeSick", time);
+
+            if (!living.level().isClientSide())
+                living.addEffect(new MobEffectInstance(MobEffects.GLOWING, 40, 1, false, false));
+
+            if (time >= 1000 && !living.level().isClientSide())
+                living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 1, false, false));
+
+            if (time >= 1500) {
+                if (living.getRandom().nextInt(20) == 0) {
+                    living.hurt(
+                        new DamageSource(world.holderOrThrow(
+                                ResourceKey.create(
+                                        Registries.DAMAGE_TYPE,
+                                        ResourceLocation.parse("crystalnexus:rad_sickness")
+                                ))),
+                        2
+                    );
+                }
+            }
+        }
+    }
+}
 }

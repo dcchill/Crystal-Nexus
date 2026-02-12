@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.core.BlockPos;
 
+import net.crystalnexus.init.CrystalnexusModBlocks;
+
 public class BluTNTOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double outputAmount = 0;
@@ -87,6 +89,7 @@ public class BluTNTOnTickUpdateProcedure {
 						_level.explode(null, (x + 0), (y + 0), (z + 1), 15, Level.ExplosionInteraction.BLOCK);
 					if (world instanceof Level _level && !_level.isClientSide())
 						_level.explode(null, (x + 0), (y + 0), (z - 1), 15, Level.ExplosionInteraction.BLOCK);
+					world.setBlock(BlockPos.containing(x, y, z), CrystalnexusModBlocks.RAD_PLACEHOLDER.get().defaultBlockState(), 3);
 				}
 			}
 		}

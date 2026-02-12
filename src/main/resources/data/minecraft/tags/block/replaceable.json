@@ -3,6 +3,7 @@
   "values": [
     "crystalnexus:steam",
     "crystalnexus:crude_oil",
-    "crystalnexus:gasoline"
+    "crystalnexus:gasoline",
+    "crystalnexus:rad_placeholder"
   ]
 }

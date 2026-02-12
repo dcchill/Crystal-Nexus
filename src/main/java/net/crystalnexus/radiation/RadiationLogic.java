@@ -17,27 +17,33 @@ public class RadiationLogic {
     private static final int EFFECT_DURATION_TICKS = 60; // 3 seconds
     private static final int MIN_AMOUNT = 1;
 
-    public static void radiateFrom(ServerLevel level, BlockPos sourcePos, int amount) {
-        if (amount < MIN_AMOUNT) return;
+		public static void radiateFrom(ServerLevel level, BlockPos sourcePos, int amount) {
+		    if (amount < MIN_AMOUNT) return;
+		
+		    int radius = calculateRadius(amount);
+		    int amplifier = calculateAmplifier(amount);
+		
+		    AABB area = new AABB(sourcePos).inflate(radius);
+		
+		    for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
+		
+		        if (entity instanceof Player p && p.isCreative()) continue;
+		
+		        // Apply radiation effect
+		        entity.addEffect(new MobEffectInstance(
+		                CrystalnexusModMobEffects.RADIATION_SICKNESS,
+		                EFFECT_DURATION_TICKS,
+		                amplifier,
+		                true,
+		                true
+		        ));
+		
+		        // 🔥 Store radiation value for Geiger
+		        if (entity instanceof Player player) {
+		        }
+		    }
+		}
 
-        int radius = calculateRadius(amount);
-        int amplifier = calculateAmplifier(amount);
-
-        AABB area = new AABB(sourcePos).inflate(radius);
-
-        for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area)) {
-            // remove this if you want creative affected too
-            if (entity instanceof Player p && p.isCreative()) continue;
-
-            entity.addEffect(new MobEffectInstance(
-                    CrystalnexusModMobEffects.RADIATION_SICKNESS, // Holder
-                    EFFECT_DURATION_TICKS,
-                    amplifier,
-                    true,
-                    true
-            ));
-        }
-    }
 
     private static int calculateRadius(int amount) {
         int r = 2 + (int) Math.sqrt(amount) + (amount / 64);

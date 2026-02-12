@@ -2669,7 +2669,7 @@
       "name": "RadiationSicknessOnEffectActiveTick",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "radiation_sickness_on_effect_active_tick",
       "metadata": {
         "dependencies": [
@@ -16896,6 +16896,84 @@
         ]
       },
       "path": "~/hoverpack"
+    },
+    {
+      "name": "GeigerCounter",
+      "type": "animateditem",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "geiger_counter",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/geiger_counter.json",
+          "src/main/java/net/crystalnexus/item/model/GeigerCounterItemModel.java",
+          "src/main/java/net/crystalnexus/item/renderer/GeigerCounterItemRenderer.java",
+          "src/main/java/net/crystalnexus/item/GeigerCounterItem.java"
+        ]
+      },
+      "path": "~/blutoniumwaste"
+    },
+    {
+      "name": "GeigerCounterRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "geiger_counter_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/geiger_counter_recipe.json"
+        ]
+      },
+      "path": "~/blutoniumwaste"
+    },
+    {
+      "name": "RadPlaceholder",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "rad_placeholder",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/entity/RadPlaceholderBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/rad_placeholder.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/rad_placeholder.json",
+          "src/main/resources/assets/crystalnexus/blockstates/rad_placeholder.json",
+          "src/main/resources/assets/crystalnexus/models/block/rad_placeholder.json",
+          "src/main/java/net/crystalnexus/block/RadPlaceholderBlock.java"
+        ]
+      },
+      "path": "~/radplaceholder"
+    },
+    {
+      "name": "RadPlaceholderOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "rad_placeholder_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/RadPlaceholderOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/radplaceholder"
     }
   ],
   "variable_elements": [
@@ -16946,10 +17024,19 @@
       ],
       "category": "block",
       "subtitle": "Zero Point Resonates"
+    },
+    {
+      "name": "geiger_click",
+      "files": [
+        "geiger_click"
+      ],
+      "category": "ambient",
+      "subtitle": "Geiger Counter Clicks"
     }
   ],
   "tag_elements": {
     "BLOCKS:minecraft:replaceable": [
+      "~CUSTOM:RadPlaceholder",
       "~CUSTOM:Steam",
       "~CUSTOM:Gasoline",
       "~CUSTOM:CrudeOil"
@@ -16980,9 +17067,9 @@
       "~CUSTOM:ChlorophyteAxe"
     ],
     "ITEMS:minecraft:swords": [
-      "~CUSTOM:CompoundSword",
       "~CUSTOM:InvertiumSword",
       "~CUSTOM:PolymerSword",
+      "~CUSTOM:CompoundSword",
       "~CUSTOM:CompoundPickaxe",
       "~CUSTOM:CystalizedSword",
       "~CUSTOM:ChlorophyteSword"
@@ -17217,7 +17304,12 @@
     "ITEMS:mod:radioactive": [
       "CUSTOM:BlutoniumIngot",
       "CUSTOM:RawBlutonium",
-      "CUSTOM:BlutoniumCrystal"
+      "CUSTOM:BlutoniumCrystal",
+      "CUSTOM:BlutoniumOre",
+      "CUSTOM:BlutoniumDust",
+      "CUSTOM:BlutoniumNugget",
+      "CUSTOM:PureBlutonium",
+      "CUSTOM:BlutoniumWaste"
     ],
     "DAMAGE_TYPES:minecraft:no_knockback": [
       "CUSTOM:CrystalBeam",
@@ -17404,6 +17496,31 @@
     "ITEMS:mod:battery": [
       "CUSTOM:BatteryCell",
       "CUSTOM:DenseBatteryCell"
+    ],
+    "ITEMS:mod:byte_dig": [
+      "CUSTOM:CystalizedAlloy",
+      "CUSTOM:ChlorophyteIngot",
+      "CUSTOM:InvertiumIngot",
+      "CUSTOM:RawCarbon",
+      "CUSTOM:CarbonFiber",
+      "CUSTOM:Nitrile",
+      "CUSTOM:PolyacrylonitrileDust",
+      "CUSTOM:PolymerSheet",
+      "CUSTOM:TurbineBlade",
+      "CUSTOM:Silicon",
+      "CUSTOM:CrudeOil.bucket",
+      "CUSTOM:Gasoline.bucket",
+      "CUSTOM:SyntheticRubber",
+      "CUSTOM:BatteryCell",
+      "CUSTOM:DenseBatteryCell",
+      "CUSTOM:RareSSD",
+      "CUSTOM:EpicSSD",
+      "CUSTOM:BlankSSD"
+    ],
+    "BLOCKS:mod:radioactive_blocks": [
+      "CUSTOM:BlutoniumOre",
+      "CUSTOM:BluTNT",
+      "CUSTOM:RadPlaceholder"
     ]
   },
   "tab_element_order": {
@@ -17576,10 +17693,11 @@
       "JetPack",
       "HoverPack",
       "Carbon",
+      "GeigerCounter",
+      "OreScanner",
       "Flamethrower",
       "MiningLaser",
       "PaintGun",
-      "OreScanner",
       "CrystalExtractor",
       "CystalizedPickaxe",
       "CystalizedAxe",
@@ -17679,8 +17797,8 @@
       "Flamethrower",
       "InvertiumSword",
       "CompoundSword",
-      "JetPack",
       "Carbon",
+      "JetPack",
       "HoverPack"
     ],
     "CUSTOM:CrystalNexusLogistics": [
@@ -18290,7 +18408,7 @@
       "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
       "item.crystalnexus.ore_scanner": "Ore Scanner",
       "block.crystalnexus.quarry": "Laser Quarry",
-      "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Laser Quarry]",
+      "gui.crystalnexus.quarry_gui.label_quantum_miner": "[Chunk Quarry]",
       "item.crystalnexus.laser_diode": "Laser Diode",
       "item.crystalnexus.hover_pack_chestplate": "Hover Pack",
       "key.crystalnexus.hoverpack_rise": "Hoverpack Rise",
@@ -18299,14 +18417,16 @@
       "key.crystalnexus.hoverpack_left": "Hoverpack Left",
       "key.crystalnexus.hoverpack_right": "Hoverpack Right",
       "key.crystalnexus.hoverpack_toggle": "Hoverpack Toggle",
-      "key.categories.hoverpack": "Crystal Nexus Hoverpack"
+      "key.categories.hoverpack": "Crystal Nexus Hoverpack",
+      "subtitles.geiger_click": "Geiger Counter Clicks",
+      "item.crystalnexus.geiger_counter": "Geiger Counter",
+      "block.crystalnexus.rad_placeholder": "Rad Placeholder"
     }
   },
   "metadata": {
     "files": [
       "src/main/java/net/crystalnexus/init/CrystalnexusModSounds.java",
       "src/main/java/net/crystalnexus/network/CrystalnexusModVariables.java",
-      "src/main/resources/crystalnexus.mixins.json",
       "src/main/resources/pack.mcmeta",
       "src/main/resources/assets/crystalnexus/sounds.json",
       "src/main/java/net/crystalnexus/CrystalnexusMod.java",
@@ -18314,8 +18434,8 @@
       "src/main/java/net/crystalnexus/init/CrystalnexusModModels.java",
       "src/main/resources/META-INF/neoforge.mods.toml",
       "src/main/resources/META-INF/accesstransformer.cfg",
-      "src/main/java/net/crystalnexus/mixin/NoiseGeneratorSettingsMixin.java",
-      "src/main/java/net/crystalnexus/init/CrystalnexusModBiomes.java",
+      "src/main/java/net/crystalnexus/utils/AnimUtils.java",
+      "src/main/java/net/crystalnexus/init/ItemAnimationFactory.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModFluids.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModFluidTypes.java",
       "src/main/java/net/crystalnexus/network/MenuStateUpdateMessage.java",
@@ -18536,6 +18656,10 @@
       {
         "name": "hoverpack",
         "children": []
+      },
+      {
+        "name": "radplaceholder",
+        "children": []
       }
     ]
   },
@@ -18552,6 +18676,7 @@
     "dependencies": [],
     "dependants": [],
     "mcreatorDependencies": [
+      "geckolib",
       "jei"
     ],
     "currentGenerator": "neoforge-1.21.1",

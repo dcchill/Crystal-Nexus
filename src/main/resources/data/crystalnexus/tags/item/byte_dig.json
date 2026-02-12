@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:epic_ssd",
+    "crystalnexus:crystalized_alloy",
+    "crystalnexus:synthetic_rubber",
+    "crystalnexus:invertium_ingot",
+    "crystalnexus:polymer_sheet",
+    "crystalnexus:silicon",
+    "crystalnexus:gasoline_bucket",
+    "crystalnexus:blank_ssd",
+    "crystalnexus:turbine_blade",
+    "crystalnexus:crude_oil_bucket",
+    "crystalnexus:battery_cell",
+    "crystalnexus:dense_battery_cell",
+    "crystalnexus:rare_ssd",
+    "crystalnexus:sulfur_dust",
+    "crystalnexus:raw_carbon",
+    "crystalnexus:chlorophyte_ingot",
+    "crystalnexus:carbon_fiber",
+    "crystalnexus:nitrile"
+  ]
+}

@@ -193,10 +193,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_CHESTPLATE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
+				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
+				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
 				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
-				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.CRYSTAL_EXTRACTOR.get());
 				tabData.accept(CrystalnexusModItems.CYSTALIZED_PICKAXE.get());
 				tabData.accept(CrystalnexusModItems.CYSTALIZED_AXE.get());
@@ -330,11 +331,11 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 			tabData.accept(CrystalnexusModItems.INVERTIUM_SWORD.get());
 			tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
-			tabData.accept(CrystalnexusModItems.JET_PACK_CHESTPLATE.get());
 			tabData.accept(CrystalnexusModItems.CARBON_HELMET.get());
 			tabData.accept(CrystalnexusModItems.CARBON_CHESTPLATE.get());
 			tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 			tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
+			tabData.accept(CrystalnexusModItems.JET_PACK_CHESTPLATE.get());
 			tabData.accept(CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get());
 		}
 	}

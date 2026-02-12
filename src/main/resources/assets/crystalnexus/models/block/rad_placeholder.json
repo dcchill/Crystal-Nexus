@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/trans",
+    "particle": "crystalnexus:block/trans"
+  },
+  "render_type": "cutout"
+}

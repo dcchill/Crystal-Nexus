@@ -16,5 +16,14 @@
         "stream": false
       }
     ]
+  },
+  "geiger_click": {
+    "subtitle": "subtitles.geiger_click",
+    "sounds": [
+      {
+        "name": "crystalnexus:geiger_click",
+        "stream": false
+      }
+    ]
   }
 }

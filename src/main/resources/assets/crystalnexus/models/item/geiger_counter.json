@@ -1,0 +1,6 @@
+{
+  "parent": "crystalnexus:displaysettings/geiger_counter",
+  "textures": {
+    "layer0": "crystalnexus:item/geiger_texture"
+  }
+}

@@ -1,5 +1,16 @@
 repositories {
   maven {
+      url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+  }
+}
+
+dependencies {
+  implementation 'software.bernie.geckolib:geckolib-neoforge-1.21.1:4.7.6'
+}
+
+
+repositories {
+  maven {
     name = "Progwml6's maven"
     url = "https://dvs1.progwml6.com/files/maven/"
   }

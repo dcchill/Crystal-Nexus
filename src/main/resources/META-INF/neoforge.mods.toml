@@ -14,16 +14,10 @@ authors="Dcchill"
 # Start of user code block mod configuration
 # End of user code block mod configuration
 
-[[mixins]]
-    config = "crystalnexus.mixins.json"
-
-# Start of user code block custom mixins
-# End of user code block custom mixins
-
 [[dependencies.crystalnexus]]
     modId="neoforge"
     type="required"
-    versionRange="[21.1.176,)"
+    versionRange="[21.1.190,)"
     ordering="AFTER"
     side="BOTH"
 
@@ -35,6 +29,12 @@ authors="Dcchill"
     side="BOTH"
 
 
+[[dependencies.crystalnexus]]
+    modId="geckolib"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
 [[dependencies.crystalnexus]]
     modId="jei"
     type="optional"

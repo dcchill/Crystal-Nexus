@@ -287,6 +287,15 @@ public class ReactorComputerOnTickUpdateProcedure {
 						_level.playLocalSound(x, y, z, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("crystalnexus:reactor_failure")), SoundSource.BLOCKS, 1, 1, false);
 					}
 				}
+				if (!world.isClientSide()) {
+					BlockPos _bp = BlockPos.containing(x, y, z);
+					BlockEntity _blockEntity = world.getBlockEntity(_bp);
+					BlockState _bs = world.getBlockState(_bp);
+					if (_blockEntity != null)
+						_blockEntity.getPersistentData().putDouble("heat", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat") + 1));
+					if (world instanceof Level _level)
+						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				}
 			}
 		}
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxHeat") < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat")) {
@@ -301,13 +310,32 @@ public class ReactorComputerOnTickUpdateProcedure {
 			}
 			if (world instanceof ServerLevel _level)
 				_level.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, (x + 0.5), (y + 0.5), (z + 0.5), 3, 1, 1, 1, 0);
+			if (!world.isClientSide()) {
+				BlockPos _bp = BlockPos.containing(x, y, z);
+				BlockEntity _blockEntity = world.getBlockEntity(_bp);
+				BlockState _bs = world.getBlockState(_bp);
+				if (_blockEntity != null)
+					_blockEntity.getPersistentData().putDouble("heat", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat") + 1));
+				if (world instanceof Level _level)
+					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+			}
 		}
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxHeat") + 200 < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat")) {
+			if (!world.isClientSide()) {
+				BlockPos _bp = BlockPos.containing(x, y, z);
+				BlockEntity _blockEntity = world.getBlockEntity(_bp);
+				BlockState _bs = world.getBlockState(_bp);
+				if (_blockEntity != null)
+					_blockEntity.getPersistentData().putDouble("heat", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "heat") + 1));
+				if (world instanceof Level _level)
+					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+			}
 			if (false == world.getLevelData().getGameRules().getBoolean(CrystalnexusModGameRules.DISABLE_MELTDOWNS)) {
 				if (world instanceof Level _level && !_level.isClientSide())
 					_level.explode(null, x, y, z, 100, Level.ExplosionInteraction.TNT);
 				if (world instanceof Level _level && !_level.isClientSide())
 					_level.explode(null, x, y, z, 20, Level.ExplosionInteraction.TNT);
+				world.setBlock(BlockPos.containing(x, y, z), CrystalnexusModBlocks.RAD_PLACEHOLDER.get().defaultBlockState(), 3);
 			}
 		}
 	}
