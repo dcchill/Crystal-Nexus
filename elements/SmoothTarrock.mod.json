@@ -50,7 +50,7 @@
     "immuneToFire": false,
     "creativeTabs": [
       {
-        "value": "CUSTOM:CrystalNexusTab"
+        "value": "CUSTOM:CrystalNexusBuildingBlocks"
       }
     ],
     "destroyTool": "pickaxe",

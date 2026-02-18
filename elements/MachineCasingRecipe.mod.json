@@ -1,0 +1,27 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Stone cutting",
+    "recipeRetstackSize": 8,
+    "group": "",
+    "unlockingItems": [
+      {
+        "value": "CUSTOM:MachineFrame"
+      }
+    ],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "stoneCuttingInputStack": {
+      "value": "CUSTOM:MachineFrame"
+    },
+    "stoneCuttingReturnStack": {
+      "value": "CUSTOM:MachineCasing"
+    },
+    "name": "machine_casing_recipe",
+    "namespace": "mod"
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "xxx",
+        "xzx",
+        "xxx"
+    ],
+    "key": {
+        "x": {
+            "item": "crystalnexus:heavy_iron_block"
+        },
+        "z": {
+            "item": "minecraft:light_blue_dye"
+        }
+    },
+    "result": {
+        "id": "crystalnexus:light_blue_heavy_iron_block",
+        "count": 8
+    }
+}

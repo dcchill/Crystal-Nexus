@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:machine_frame"
+  },
+  "result": {
+    "id": "crystalnexus:machine_casing",
+    "count": 8
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:heavy_iron_block"
+  },
+  "result": {
+    "id": "crystalnexus:caution_block",
+    "count": 1
+  }
+}

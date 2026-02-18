@@ -248,18 +248,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.SILICON_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TARROCK_SOIL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TARROCK.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_STAIRS.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_SLAB.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_WALL.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_BUTTON.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICKS.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_STAIRS.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_SLAB.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_WALL.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_STAIRS.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_SLAB.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_WALL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.COPPER_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_NODE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.GOLD_NODE.get().asItem());
@@ -300,6 +288,45 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
 				tabData.accept(CrystalnexusModBlocks.SMART_SPLITTER.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_TAB.getId()).build());
+	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_BUILDING_BLOCKS = REGISTRY.register("crystal_nexus_building_blocks",
+			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_building_blocks")).icon(() -> new ItemStack(CrystalnexusModBlocks.HEAVY_IRON_BLOCK.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(CrystalnexusModBlocks.HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MACHINE_CASING.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CAUTION_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CAUTION_BLOCK_ARROW.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_SOIL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_STAIRS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_SLAB.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_WALL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_BUTTON.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICKS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_STAIRS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_SLAB.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TARROCK_BRICK_WALL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_STAIRS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_SLAB.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMOOTH_TARROCK_WALL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FACTORY_LIGHT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FACTORY_LIGHT_FLOOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.WHITE_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LIGHT_GRAY_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GRAY_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BLACK_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BROWN_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.RED_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ORANGE_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.YELLOW_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LIME_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GREEN_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CYAN_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LIGHT_BLUE_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BLUE_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PURPLE_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MAGENTA_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PINK_HEAVY_IRON_BLOCK.get().asItem());
+			}).withTabsBefore(CRYSTAL_NEXUS_LOGISTICS.getId()).build());
 
 	@SubscribeEvent
 	public static void buildTabContentsVanilla(BuildCreativeModeTabContentsEvent tabData) {

@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/caution_block",
+    "particle": "crystalnexus:block/caution_block"
+  },
+  "render_type": "solid"
+}

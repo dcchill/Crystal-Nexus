@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/factory_light_floor",
+  "textures": {
+    "all": "crystalnexus:block/iron_top",
+    "particle": "crystalnexus:block/iron_top",
+    "0": "crystalnexus:block/factory_light_texture"
+  },
+  "render_type": "cutout_mipped"
+}

@@ -1,0 +1,10 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "factory_light_texture_on"
+      },
+      "name": "default"
+    }
+  }
+}

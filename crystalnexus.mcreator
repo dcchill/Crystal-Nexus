@@ -16974,6 +16974,639 @@
         ]
       },
       "path": "~/radplaceholder"
+    },
+    {
+      "name": "HeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/HeavyIronBlockBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CrystalNexusBuildingBlocks",
+      "type": "tab",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "crystal_nexus_building_blocks",
+      "metadata": {
+        "files": []
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "MachineCasing",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "machine_casing",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/machine_casing.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/machine_casing.json",
+          "src/main/java/net/crystalnexus/block/MachineCasingBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/machine_casing.json",
+          "src/main/resources/assets/crystalnexus/models/block/machine_casing.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/CautionBlockBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/caution_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/caution_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/caution_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/caution_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlockArrow",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block_arrow",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/caution_block_arrow.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/caution_block_arrow.json",
+          "src/main/resources/assets/crystalnexus/models/item/caution_block_arrow.json",
+          "src/main/java/net/crystalnexus/block/CautionBlockArrowBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/caution_block_arrow.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "HeavyIronBlockRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "heavy_iron_block_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/heavy_iron_block_recipe.json",
+          "src/main/resources/data/crystalnexus/advancement/recipes/heavy_iron_block_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlockRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/caution_block_recipe.json",
+          "src/main/resources/data/crystalnexus/advancement/recipes/caution_block_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlockArrowRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block_arrow_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/advancement/recipes/caution_block_arrow_recipe.json",
+          "src/main/resources/data/crystalnexus/recipe/caution_block_arrow_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlockRecipeAlt",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block_recipe_alt",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/caution_block_recipe_alt.json",
+          "src/main/resources/data/crystalnexus/advancement/recipes/caution_block_recipe_alt.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CautionBlockArrowRecipeAlt",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "caution_block_arrow_recipe_alt",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/caution_block_arrow_recipe_alt.json",
+          "src/main/resources/data/crystalnexus/advancement/recipes/caution_block_arrow_recipe_alt.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "MachineCasingRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "machine_casing_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/machine_casing_recipe.json",
+          "src/main/resources/data/crystalnexus/advancement/recipes/machine_casing_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLight",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/FactoryLightBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/factory_light.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/factory_light.json",
+          "src/main/resources/assets/crystalnexus/models/block/factory_light.json",
+          "src/main/resources/assets/crystalnexus/models/item/factory_light.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "factory_light_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/factory_light_blockstate_blockstate_0.json",
+          "src/main/resources/assets/crystalnexus/models/block/factory_light_blockstate_blockstate_1.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightOnBlockRightClicked",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "factory_light_on_block_right_clicked",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "blockstate",
+            "type": "blockstate"
+          },
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/FactoryLightOnBlockRightClickedProcedure.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightRedstoneOff",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_redstone_off",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/FactoryLightRedstoneOffProcedure.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightRedstoneOn",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_redstone_on",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/FactoryLightRedstoneOnProcedure.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightFloor",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_floor",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/factory_light_floor.json",
+          "src/main/resources/assets/crystalnexus/models/block/factory_light_floor.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/factory_light_floor.json",
+          "src/main/java/net/crystalnexus/block/FactoryLightFloorBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/factory_light_floor.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightFloorBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "factory_light_floor_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/factory_light_floor_blockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/factory_light_floor_blockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightFloorRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_floor_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/factory_light_floor_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightFloorRecipeAlt",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_floor_recipe_alt",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/factory_light_floor_recipe_alt.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "FactoryLightRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "factory_light_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/factory_light_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "WhiteHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "white_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/white_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/WhiteHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/white_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/white_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/white_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "OrangeHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "orange_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/orange_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/OrangeHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/orange_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/orange_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/orange_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "MagentaHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "magenta_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/magenta_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/magenta_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/MagentaHeavyIronBlockBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/magenta_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/magenta_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "LightBlueHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "light_blue_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/light_blue_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/light_blue_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/LightBlueHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/light_blue_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/light_blue_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "YellowHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "yellow_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/yellow_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/yellow_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/YellowHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/yellow_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/yellow_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "LimeHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "lime_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/lime_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/lime_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/lime_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/lime_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/LimeHeavyIronBlockBlock.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "PinkHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "pink_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/pink_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/pink_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/pink_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/pink_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/PinkHeavyIronBlockBlock.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "GrayHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gray_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/gray_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/gray_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/GrayHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/gray_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/gray_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "LightGrayHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "light_gray_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/light_gray_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/light_gray_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/LightGrayHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/light_gray_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/light_gray_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "CyanHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "cyan_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/cyan_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/CyanHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/cyan_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/cyan_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/cyan_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "PurpleHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "purple_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/purple_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/purple_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/PurpleHeavyIronBlockBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/purple_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/purple_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "BlueHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blue_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/blue_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/BlueHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/blue_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/blue_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/blue_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "BrownHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "brown_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/brown_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/brown_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/brown_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/brown_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/BrownHeavyIronBlockBlock.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "GreenHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "green_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/green_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/GreenHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/green_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/item/green_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/green_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "RedHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "red_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/red_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/RedHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/red_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/red_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/blockstates/red_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "BlackHeavyIronBlock",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "black_heavy_iron_block",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/black_heavy_iron_block.json",
+          "src/main/java/net/crystalnexus/block/BlackHeavyIronBlockBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/black_heavy_iron_block.json",
+          "src/main/resources/assets/crystalnexus/models/block/black_heavy_iron_block.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/black_heavy_iron_block.json"
+        ]
+      },
+      "path": "~/deco"
     }
   ],
   "variable_elements": [
@@ -17092,6 +17725,23 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:BlackHeavyIronBlock",
+      "~CUSTOM:RedHeavyIronBlock",
+      "~CUSTOM:GreenHeavyIronBlock",
+      "~CUSTOM:BrownHeavyIronBlock",
+      "~CUSTOM:BlueHeavyIronBlock",
+      "~CUSTOM:PurpleHeavyIronBlock",
+      "~CUSTOM:CyanHeavyIronBlock",
+      "~CUSTOM:LightGrayHeavyIronBlock",
+      "~CUSTOM:GrayHeavyIronBlock",
+      "~CUSTOM:PinkHeavyIronBlock",
+      "~CUSTOM:LimeHeavyIronBlock",
+      "~CUSTOM:YellowHeavyIronBlock",
+      "~CUSTOM:LightBlueHeavyIronBlock",
+      "~CUSTOM:MagentaHeavyIronBlock",
+      "~CUSTOM:OrangeHeavyIronBlock",
+      "~CUSTOM:HeavyIronBlock",
+      "~CUSTOM:WhiteHeavyIronBlock",
       "~CUSTOM:InvertiumOre",
       "~CUSTOM:InvertiumCrystalBlock",
       "~CUSTOM:ParticleAcceleratorTube",
@@ -17482,6 +18132,23 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:BlackHeavyIronBlock",
+      "~CUSTOM:RedHeavyIronBlock",
+      "~CUSTOM:GreenHeavyIronBlock",
+      "~CUSTOM:BrownHeavyIronBlock",
+      "~CUSTOM:BlueHeavyIronBlock",
+      "~CUSTOM:PurpleHeavyIronBlock",
+      "~CUSTOM:CyanHeavyIronBlock",
+      "~CUSTOM:LightGrayHeavyIronBlock",
+      "~CUSTOM:GrayHeavyIronBlock",
+      "~CUSTOM:PinkHeavyIronBlock",
+      "~CUSTOM:LimeHeavyIronBlock",
+      "~CUSTOM:YellowHeavyIronBlock",
+      "~CUSTOM:LightBlueHeavyIronBlock",
+      "~CUSTOM:MagentaHeavyIronBlock",
+      "~CUSTOM:OrangeHeavyIronBlock",
+      "~CUSTOM:HeavyIronBlock",
+      "~CUSTOM:WhiteHeavyIronBlock",
       "~CUSTOM:SulfurOre",
       "~CUSTOM:OilNode",
       "~CUSTOM:CopperNode",
@@ -17748,18 +18415,6 @@
       "SiliconOre",
       "TarrockSoil",
       "Tarrock",
-      "TarrockStairs",
-      "TarrockSlab",
-      "TarrockWall",
-      "TarrockButton",
-      "TarrockBricks",
-      "TarrockBrickStairs",
-      "TarrockBrickSlab",
-      "TarrockBrickWall",
-      "SmoothTarrock",
-      "SmoothTarrockStairs",
-      "SmoothTarrockSlab",
-      "SmoothTarrockWall",
       "CopperNode",
       "IronNode",
       "GoldNode",
@@ -17828,6 +18483,44 @@
       "FactoryOutputController",
       "LinkCard",
       "SmartSplitter"
+    ],
+    "CUSTOM:CrystalNexusBuildingBlocks": [
+      "HeavyIronBlock",
+      "MachineCasing",
+      "CautionBlock",
+      "CautionBlockArrow",
+      "TarrockSoil",
+      "Tarrock",
+      "TarrockStairs",
+      "TarrockSlab",
+      "TarrockWall",
+      "TarrockButton",
+      "TarrockBricks",
+      "TarrockBrickStairs",
+      "TarrockBrickSlab",
+      "TarrockBrickWall",
+      "SmoothTarrock",
+      "SmoothTarrockStairs",
+      "SmoothTarrockSlab",
+      "SmoothTarrockWall",
+      "FactoryLight",
+      "FactoryLightFloor",
+      "WhiteHeavyIronBlock",
+      "LightGrayHeavyIronBlock",
+      "GrayHeavyIronBlock",
+      "BlackHeavyIronBlock",
+      "BrownHeavyIronBlock",
+      "RedHeavyIronBlock",
+      "OrangeHeavyIronBlock",
+      "YellowHeavyIronBlock",
+      "LimeHeavyIronBlock",
+      "GreenHeavyIronBlock",
+      "CyanHeavyIronBlock",
+      "LightBlueHeavyIronBlock",
+      "BlueHeavyIronBlock",
+      "PurpleHeavyIronBlock",
+      "MagentaHeavyIronBlock",
+      "PinkHeavyIronBlock"
     ]
   },
   "language_map": {
@@ -18420,7 +19113,32 @@
       "key.categories.hoverpack": "Crystal Nexus Hoverpack",
       "subtitles.geiger_click": "Geiger Counter Clicks",
       "item.crystalnexus.geiger_counter": "Geiger Counter",
-      "block.crystalnexus.rad_placeholder": "Rad Placeholder"
+      "block.crystalnexus.rad_placeholder": "Rad Placeholder",
+      "block.crystalnexus.heavy_iron_block": "Heavy Iron Block",
+      "item_group.crystalnexus.crystal_nexus_building_blocks": "Crystal Nexus Building Blocks",
+      "block.crystalnexus.machine_casing": "Machine Casing",
+      "block.crystalnexus.caution_block": "Caution Block",
+      "block.crystalnexus.caution_block_arrow": "Caution Block",
+      "block.crystalnexus.factory_light": "Factory Ceiling Light",
+      "block.crystalnexus.factory_light_floor": "Factory Light",
+      "block.crystalnexus.factory_light_floor.description_0": "§5Can be mounted on the floor or walls",
+      "block.crystalnexus.factory_light.description_0": "§5Can be mounted on the ceiling",
+      "block.crystalnexus.white_heavy_iron_block": "White Heavy Iron Block",
+      "block.crystalnexus.orange_heavy_iron_block": "Orange Heavy Iron Block",
+      "block.crystalnexus.magenta_heavy_iron_block": "Magenta Heavy Iron Block",
+      "block.crystalnexus.light_blue_heavy_iron_block": "Light Blue Heavy Iron Block",
+      "block.crystalnexus.yellow_heavy_iron_block": "Yellow Heavy Iron Block",
+      "block.crystalnexus.lime_heavy_iron_block": "Lime Heavy Iron Block",
+      "block.crystalnexus.pink_heavy_iron_block": "Pink Heavy Iron Block",
+      "block.crystalnexus.gray_heavy_iron_block": "Gray Heavy Iron Block",
+      "block.crystalnexus.light_gray_heavy_iron_block": "Light Gray Heavy Iron Block",
+      "block.crystalnexus.cyan_heavy_iron_block": "Cyan Heavy Iron Block",
+      "block.crystalnexus.purple_heavy_iron_block": "Purple Heavy Iron Block",
+      "block.crystalnexus.blue_heavy_iron_block": "Blue Heavy Iron Block",
+      "block.crystalnexus.brown_heavy_iron_block": "Brown Heavy Iron Block",
+      "block.crystalnexus.green_heavy_iron_block": "Green Heavy Iron Block",
+      "block.crystalnexus.red_heavy_iron_block": "Red Heavy Iron Block",
+      "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block"
     }
   },
   "metadata": {
@@ -18659,6 +19377,10 @@
       },
       {
         "name": "radplaceholder",
+        "children": []
+      },
+      {
+        "name": "deco",
         "children": []
       }
     ]

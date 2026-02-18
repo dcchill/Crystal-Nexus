@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "crystalnexus:caution_block_arrow"
+  },
+  "result": {
+    "id": "crystalnexus:caution_block",
+    "count": 1
+  }
+}
