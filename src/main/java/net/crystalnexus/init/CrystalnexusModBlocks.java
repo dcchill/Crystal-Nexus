@@ -42,6 +42,9 @@ import net.crystalnexus.block.SingularityMatrixBlock;
 import net.crystalnexus.block.SingularityCompressorBlock;
 import net.crystalnexus.block.SiliconOreBlock;
 import net.crystalnexus.block.RubberBlockBlock;
+import net.crystalnexus.block.ReinforcedConcreteStairsBlock;
+import net.crystalnexus.block.ReinforcedConcreteSlabBlock;
+import net.crystalnexus.block.ReinforcedConcreteBlock;
 import net.crystalnexus.block.RedHeavyIronBlockBlock;
 import net.crystalnexus.block.ReactorWasteOutputBlock;
 import net.crystalnexus.block.ReactorFluidInputBlock;
@@ -334,6 +337,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> GREEN_HEAVY_IRON_BLOCK = REGISTRY.register("green_heavy_iron_block", GreenHeavyIronBlockBlock::new);
 	public static final DeferredBlock<Block> RED_HEAVY_IRON_BLOCK = REGISTRY.register("red_heavy_iron_block", RedHeavyIronBlockBlock::new);
 	public static final DeferredBlock<Block> BLACK_HEAVY_IRON_BLOCK = REGISTRY.register("black_heavy_iron_block", BlackHeavyIronBlockBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE = REGISTRY.register("reinforced_concrete", ReinforcedConcreteBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE_STAIRS = REGISTRY.register("reinforced_concrete_stairs", ReinforcedConcreteStairsBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE_SLAB = REGISTRY.register("reinforced_concrete_slab", ReinforcedConcreteSlabBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

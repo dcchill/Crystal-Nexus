@@ -17607,6 +17607,100 @@
         ]
       },
       "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcrete",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete.json",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete.json",
+          "src/main/java/net/crystalnexus/block/ReinforcedConcreteBlock.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "reinforced_concrete_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteStairs",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_stairs",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_stairs_inner.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_stairs.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete_stairs.json",
+          "src/main/java/net/crystalnexus/block/ReinforcedConcreteStairsBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete_stairs.json",
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete_stairs.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_stairs_outer.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteSlab",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_slab",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete_slab.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_slab_top.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete_slab.json",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete_slab.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_slab.json",
+          "src/main/java/net/crystalnexus/block/ReinforcedConcreteSlabBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_slab_full.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteStairsRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_stairs_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_stairs_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteSlabRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_slab_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_slab_recipe.json"
+        ]
+      },
+      "path": "~/deco"
     }
   ],
   "variable_elements": [
@@ -17725,6 +17819,9 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:ReinforcedConcreteSlab",
+      "~CUSTOM:ReinforcedConcreteStairs",
+      "~CUSTOM:ReinforcedConcrete",
       "~CUSTOM:BlackHeavyIronBlock",
       "~CUSTOM:RedHeavyIronBlock",
       "~CUSTOM:GreenHeavyIronBlock",
@@ -18056,12 +18153,14 @@
       "CUSTOM:FluidPackager"
     ],
     "BLOCKS:minecraft:slabs": [
+      "~CUSTOM:ReinforcedConcreteSlab",
       "~CUSTOM:SmoothTarrockSlab",
       "~CUSTOM:TarrockBrickSlab",
       "~CUSTOM:TarrockSlab",
       "~CUSTOM:RawCrystalBlockSlab"
     ],
     "BLOCKS:minecraft:stairs": [
+      "~CUSTOM:ReinforcedConcreteStairs",
       "~CUSTOM:SmoothTarrockStairs",
       "~CUSTOM:TarrockBrickStairs",
       "~CUSTOM:TarrockStairs",
@@ -18132,6 +18231,9 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:ReinforcedConcreteSlab",
+      "~CUSTOM:ReinforcedConcreteStairs",
+      "~CUSTOM:ReinforcedConcrete",
       "~CUSTOM:BlackHeavyIronBlock",
       "~CUSTOM:RedHeavyIronBlock",
       "~CUSTOM:GreenHeavyIronBlock",
@@ -18520,7 +18622,10 @@
       "BlueHeavyIronBlock",
       "PurpleHeavyIronBlock",
       "MagentaHeavyIronBlock",
-      "PinkHeavyIronBlock"
+      "PinkHeavyIronBlock",
+      "ReinforcedConcrete",
+      "ReinforcedConcreteStairs",
+      "ReinforcedConcreteSlab"
     ]
   },
   "language_map": {
@@ -19138,7 +19243,10 @@
       "block.crystalnexus.brown_heavy_iron_block": "Brown Heavy Iron Block",
       "block.crystalnexus.green_heavy_iron_block": "Green Heavy Iron Block",
       "block.crystalnexus.red_heavy_iron_block": "Red Heavy Iron Block",
-      "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block"
+      "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block",
+      "block.crystalnexus.reinforced_concrete": "Reinforced Concrete",
+      "block.crystalnexus.reinforced_concrete_stairs": "Reinforced Concrete Stairs",
+      "block.crystalnexus.reinforced_concrete_slab": "Reinforced Concrete Slab"
     }
   },
   "metadata": {

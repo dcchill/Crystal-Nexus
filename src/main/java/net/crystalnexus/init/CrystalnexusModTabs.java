@@ -326,6 +326,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.PURPLE_HEAVY_IRON_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MAGENTA_HEAVY_IRON_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PINK_HEAVY_IRON_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_STAIRS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_SLAB.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_LOGISTICS.getId()).build());
 
 	@SubscribeEvent

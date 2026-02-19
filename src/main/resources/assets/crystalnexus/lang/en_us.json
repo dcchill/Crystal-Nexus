@@ -612,5 +612,8 @@
   "block.crystalnexus.brown_heavy_iron_block": "Brown Heavy Iron Block",
   "block.crystalnexus.green_heavy_iron_block": "Green Heavy Iron Block",
   "block.crystalnexus.red_heavy_iron_block": "Red Heavy Iron Block",
-  "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block"
+  "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block",
+  "block.crystalnexus.reinforced_concrete": "Reinforced Concrete",
+  "block.crystalnexus.reinforced_concrete_stairs": "Reinforced Concrete Stairs",
+  "block.crystalnexus.reinforced_concrete_slab": "Reinforced Concrete Slab"
 }

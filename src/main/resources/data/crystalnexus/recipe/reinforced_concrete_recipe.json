@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bbb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "tag": "c:concretes"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reinforced_concrete",
+    "count": 5
+  }
+}

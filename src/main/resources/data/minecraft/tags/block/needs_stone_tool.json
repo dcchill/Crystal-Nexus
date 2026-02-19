@@ -11,6 +11,7 @@
     "crystalnexus:oil_node",
     "crystalnexus:iron_node",
     "crystalnexus:magenta_heavy_iron_block",
+    "crystalnexus:reinforced_concrete_stairs",
     "crystalnexus:heavy_iron_block",
     "crystalnexus:orange_heavy_iron_block",
     "crystalnexus:gray_heavy_iron_block",
@@ -19,7 +20,9 @@
     "crystalnexus:pink_heavy_iron_block",
     "crystalnexus:light_gray_heavy_iron_block",
     "crystalnexus:lime_heavy_iron_block",
+    "crystalnexus:reinforced_concrete_slab",
     "crystalnexus:red_heavy_iron_block",
+    "crystalnexus:reinforced_concrete",
     "crystalnexus:purple_heavy_iron_block",
     "crystalnexus:sulfur_ore"
   ]

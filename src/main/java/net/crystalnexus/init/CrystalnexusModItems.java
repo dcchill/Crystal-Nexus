@@ -465,6 +465,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> GREEN_HEAVY_IRON_BLOCK = block(CrystalnexusModBlocks.GREEN_HEAVY_IRON_BLOCK);
 	public static final DeferredItem<Item> RED_HEAVY_IRON_BLOCK = block(CrystalnexusModBlocks.RED_HEAVY_IRON_BLOCK);
 	public static final DeferredItem<Item> BLACK_HEAVY_IRON_BLOCK = block(CrystalnexusModBlocks.BLACK_HEAVY_IRON_BLOCK);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE = block(CrystalnexusModBlocks.REINFORCED_CONCRETE);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE_STAIRS = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_STAIRS);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE_SLAB = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_SLAB);
 
 	// Start of user code block custom items
 	// End of user code block custom items

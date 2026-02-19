@@ -1,0 +1,10 @@
+{
+  "parent": "block/slab",
+  "textures": {
+    "particle": "crystalnexus:block/concrete_panel",
+    "bottom": "crystalnexus:block/concrete_panel",
+    "top": "crystalnexus:block/concrete_panel",
+    "side": "crystalnexus:block/concrete_panel"
+  },
+  "render_type": "solid"
+}
