@@ -17701,6 +17701,19 @@
         ]
       },
       "path": "~/deco"
+    },
+    {
+      "name": "TimeSickDegrade",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "time_sick_degrade",
+      "metadata": {
+        "dependencies": [],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/TimeSickDegradeProcedure.java"
+        ]
+      }
     }
   ],
   "variable_elements": [

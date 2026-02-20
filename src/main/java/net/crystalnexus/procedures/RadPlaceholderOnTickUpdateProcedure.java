@@ -69,7 +69,7 @@ public class RadPlaceholderOnTickUpdateProcedure {
 							entityiterator.discard();
 					} else {
 						if (entityiterator instanceof LivingEntity _entity && !_entity.level().isClientSide())
-							_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 2400, 1, false, true));
+							_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 240, 1, false, true));
 					}
 				}
 			}

@@ -48,9 +48,9 @@ public class ReactorComputerOnTickUpdateProcedure {
 			BlocksCheckerProcedure.execute(world, x, y, z - 1);
 		}
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.REACTOR_UPGRADE.get()) {
-			energy = 512000;
+			energy = 32768;
 		} else {
-			energy = 327680;
+			energy = 16384;
 		}
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()) {
 			if (!world.isClientSide()) {
