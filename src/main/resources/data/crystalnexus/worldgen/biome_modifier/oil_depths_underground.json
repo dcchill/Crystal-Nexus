@@ -1,0 +1,5 @@
+{
+  "type": "neoforge:add_overworld_biomes",
+  "biomes": "crystalnexus:oil_depths",
+  "weights": 8
+}

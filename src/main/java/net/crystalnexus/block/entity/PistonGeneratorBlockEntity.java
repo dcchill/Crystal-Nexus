@@ -144,7 +144,7 @@ public class PistonGeneratorBlockEntity extends RandomizableContainerBlockEntity
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(40960, 512, 2048, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(40960, 2048, 1024, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
@@ -174,6 +174,10 @@ public class PistonGeneratorBlockEntity extends RandomizableContainerBlockEntity
 		if (fs.getFluid() == CrystalnexusModFluids.GASOLINE.get())
 			return true;
 		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_GASOLINE.get())
+			return true;
+		if (fs.getFluid() == CrystalnexusModFluids.OVERFUEL.get())
+			return true;
+		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_OVERFUEL.get())
 			return true;
 		return false;
 	}) {

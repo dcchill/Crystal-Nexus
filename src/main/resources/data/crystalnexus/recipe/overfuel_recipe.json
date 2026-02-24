@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    {
+      "item": "crystalnexus:gas_fuel_cell"
+    },
+    {
+      "item": "crystalnexus:conductive_alloy"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:overfuel_cell",
+    "count": 1
+  }
+}

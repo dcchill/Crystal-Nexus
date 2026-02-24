@@ -12410,19 +12410,6 @@
       "path": "~/oil_depths"
     },
     {
-      "name": "OilDepths",
-      "type": "biome",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "oil_depths",
-      "metadata": {
-        "files": [
-          "src/main/resources/data/crystalnexus/worldgen/biome/oil_depths.json"
-        ]
-      },
-      "path": "~/oil_depths"
-    },
-    {
       "name": "OilLake",
       "type": "feature",
       "compiles": true,
@@ -17714,6 +17701,222 @@
           "src/main/java/net/crystalnexus/procedures/TimeSickDegradeProcedure.java"
         ]
       }
+    },
+    {
+      "name": "ReinforcedConcretePanel",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_panel",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/ReinforcedConcretePanelBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete_panel.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete_panel.json",
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete_panel.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcretePanelStairs",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_panel_stairs",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete_panel_stairs.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_stairs.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_stairs_inner.json",
+          "src/main/java/net/crystalnexus/block/ReinforcedConcretePanelStairsBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete_panel_stairs.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_stairs_outer.json",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete_panel_stairs.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcretePanelSlab",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_panel_slab",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/reinforced_concrete_panel_slab.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_slab_top.json",
+          "src/main/resources/assets/crystalnexus/models/item/reinforced_concrete_panel_slab.json",
+          "src/main/java/net/crystalnexus/block/ReinforcedConcretePanelSlabBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_slab_full.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/reinforced_concrete_panel_slab.json",
+          "src/main/resources/assets/crystalnexus/models/block/reinforced_concrete_panel_slab.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteStairsPanelRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_stairs_panel_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_stairs_panel_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcreteStairsSlabRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "reinforced_concrete_stairs_slab_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_stairs_slab_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "ReinforcedConcretePanelRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "reinforced_concrete_panel_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/reinforced_concrete_panel_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "Overfuel",
+      "type": "fluid",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "overfuel",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/fluid/OverfuelFluid.java",
+          "src/main/java/net/crystalnexus/item/OverfuelItem.java",
+          "src/main/resources/assets/crystalnexus/blockstates/overfuel.json",
+          "src/main/java/net/crystalnexus/block/OverfuelBlock.java",
+          "src/main/java/net/crystalnexus/fluid/types/OverfuelFluidType.java",
+          "src/main/resources/assets/crystalnexus/models/block/overfuel.json",
+          "src/main/resources/assets/crystalnexus/models/item/overfuel_bucket.json"
+        ]
+      },
+      "path": "~/gasGen"
+    },
+    {
+      "name": "OverfuelCell",
+      "type": "item",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "overfuel_cell",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/overfuel_cell.json",
+          "src/main/java/net/crystalnexus/item/OverfuelCellItem.java"
+        ]
+      },
+      "path": "~/gasGen"
+    },
+    {
+      "name": "OverfuelCellRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "overfuel_cell_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/overfuel_cell_recipe.json"
+        ]
+      },
+      "path": "~/gasGen"
+    },
+    {
+      "name": "OverfuelBucketRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "overfuel_bucket_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/overfuel_bucket_recipe.json"
+        ]
+      },
+      "path": "~/gasGen"
+    },
+    {
+      "name": "OverfuelRecipe",
+      "type": "jeirecipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "overfuel_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/overfuel_recipe.json"
+        ]
+      },
+      "path": "~/gasGen"
+    },
+    {
+      "name": "TarrockDepositOverworld",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "tarrock_deposit_overworld",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/tarrock_deposit_overworld.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/tarrock_deposit_overworld.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/tarrock_deposit_overworld_biome_modifier.json"
+        ]
+      },
+      "path": "~/oil_depths"
+    },
+    {
+      "name": "SiliconDepositOverworld",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "silicon_deposit_overworld",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/silicon_deposit_overworld_biome_modifier.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/silicon_deposit_overworld.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/silicon_deposit_overworld.json"
+        ]
+      },
+      "path": "~/oil_depths"
+    },
+    {
+      "name": "DeepslateSiliconOre",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "deepslate_silicon_ore",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/deepslate_silicon_ore_biome_modifier.json",
+          "src/main/resources/assets/crystalnexus/models/block/deepslate_silicon_ore.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/deepslate_silicon_ore.json",
+          "src/main/resources/assets/crystalnexus/models/item/deepslate_silicon_ore.json",
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/deepslate_silicon_ore.json",
+          "src/main/resources/assets/crystalnexus/blockstates/deepslate_silicon_ore.json",
+          "src/main/java/net/crystalnexus/block/DeepslateSiliconOreBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/deepslate_silicon_ore.json"
+        ]
+      },
+      "path": "~/oil_depths"
     }
   ],
   "variable_elements": [
@@ -17776,6 +17979,7 @@
   ],
   "tag_elements": {
     "BLOCKS:minecraft:replaceable": [
+      "~CUSTOM:Overfuel",
       "~CUSTOM:RadPlaceholder",
       "~CUSTOM:Steam",
       "~CUSTOM:Gasoline",
@@ -17832,6 +18036,10 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:DeepslateSiliconOre",
+      "~CUSTOM:ReinforcedConcretePanelSlab",
+      "~CUSTOM:ReinforcedConcretePanelStairs",
+      "~CUSTOM:ReinforcedConcretePanel",
       "~CUSTOM:ReinforcedConcreteSlab",
       "~CUSTOM:ReinforcedConcreteStairs",
       "~CUSTOM:ReinforcedConcrete",
@@ -17986,6 +18194,7 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:DeepslateSiliconOre",
       "~CUSTOM:InvertiumCrystalBlock",
       "~CUSTOM:NodeExtractor",
       "~CUSTOM:HyperMachineFrame",
@@ -18166,6 +18375,7 @@
       "CUSTOM:FluidPackager"
     ],
     "BLOCKS:minecraft:slabs": [
+      "~CUSTOM:ReinforcedConcretePanelSlab",
       "~CUSTOM:ReinforcedConcreteSlab",
       "~CUSTOM:SmoothTarrockSlab",
       "~CUSTOM:TarrockBrickSlab",
@@ -18173,6 +18383,7 @@
       "~CUSTOM:RawCrystalBlockSlab"
     ],
     "BLOCKS:minecraft:stairs": [
+      "~CUSTOM:ReinforcedConcretePanelStairs",
       "~CUSTOM:ReinforcedConcreteStairs",
       "~CUSTOM:SmoothTarrockStairs",
       "~CUSTOM:TarrockBrickStairs",
@@ -18209,15 +18420,6 @@
       "CUSTOM:RawBlutonium",
       "CUSTOM:RawChlorophyte"
     ],
-    "BIOMES:minecraft:has_structure/nether_fortress": [
-      "~CUSTOM:OilDepths"
-    ],
-    "BIOMES:minecraft:has_structure/nether_fossil": [
-      "~CUSTOM:OilDepths"
-    ],
-    "BIOMES:minecraft:has_structure/ruined_portal_nether": [
-      "~CUSTOM:OilDepths"
-    ],
     "BLOCKS:minecraft:walls": [
       "~CUSTOM:SmoothTarrockWall",
       "~CUSTOM:TarrockBrickWall",
@@ -18244,6 +18446,9 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:ReinforcedConcretePanelSlab",
+      "~CUSTOM:ReinforcedConcretePanelStairs",
+      "~CUSTOM:ReinforcedConcretePanel",
       "~CUSTOM:ReinforcedConcreteSlab",
       "~CUSTOM:ReinforcedConcreteStairs",
       "~CUSTOM:ReinforcedConcrete",
@@ -18303,6 +18508,13 @@
       "CUSTOM:BlutoniumOre",
       "CUSTOM:BluTNT",
       "CUSTOM:RadPlaceholder"
+    ],
+    "BLOCKS:minecraft:overworld_carver_replaceables": [
+      "~CUSTOM:TarrockSoil",
+      "~CUSTOM:Tarrock"
+    ],
+    "BLOCKS:minecraft:dirt": [
+      "CUSTOM:TarrockSoil"
     ]
   },
   "tab_element_order": {
@@ -18509,6 +18721,8 @@
       "CrudeOil",
       "OilFuelCell",
       "Gasoline",
+      "OverfuelCell",
+      "Overfuel",
       "EmptyFuelCell",
       "WhitePaintball",
       "LightGrayPaintball",
@@ -18527,6 +18741,7 @@
       "PinkPaintball",
       "Coffee",
       "AtomicCoffee",
+      "DeepslateSiliconOre",
       "SiliconOre",
       "TarrockSoil",
       "Tarrock",
@@ -18638,7 +18853,10 @@
       "PinkHeavyIronBlock",
       "ReinforcedConcrete",
       "ReinforcedConcreteStairs",
-      "ReinforcedConcreteSlab"
+      "ReinforcedConcreteSlab",
+      "ReinforcedConcretePanel",
+      "ReinforcedConcretePanelStairs",
+      "ReinforcedConcretePanelSlab"
     ]
   },
   "language_map": {
@@ -19079,7 +19297,7 @@
       "block.crystalnexus.gasoline": "Gasoline",
       "fluid.crystalnexus.gasoline": "Gasoline",
       "item.crystalnexus.empty_fuel_cell": "Empty Fuel Cell",
-      "item.crystalnexus.oil_fuel_cell": "Oil Fuel Cell",
+      "item.crystalnexus.oil_fuel_cell": "Oil Fluid Cell",
       "item.crystalnexus.gas_fuel_cell": "Gasoline Fuel Cell",
       "block.crystalnexus.piston_generator": "Piston Generator",
       "gui.crystalnexus.piston_gen_gui.label_piston_generator": "[Piston Generator]",
@@ -19090,7 +19308,6 @@
       "block.crystalnexus.tarrock_stairs": "Tarrock Stairs",
       "block.crystalnexus.tarrock_slab": "Tarrock Slab",
       "block.crystalnexus.silicon_ore": "Silicon Ore",
-      "biome.crystalnexus.oil_depths": "Oil Depths",
       "block.crystalnexus.tarrock_soil": "Tarrock Soil",
       "block.crystalnexus.tarrock_bricks": "Tarrock Bricks",
       "block.crystalnexus.tarrock_brick_stairs": "Tarrock Brick Stairs",
@@ -19257,9 +19474,18 @@
       "block.crystalnexus.green_heavy_iron_block": "Green Heavy Iron Block",
       "block.crystalnexus.red_heavy_iron_block": "Red Heavy Iron Block",
       "block.crystalnexus.black_heavy_iron_block": "Black Heavy Iron Block",
-      "block.crystalnexus.reinforced_concrete": "Reinforced Concrete",
-      "block.crystalnexus.reinforced_concrete_stairs": "Reinforced Concrete Stairs",
-      "block.crystalnexus.reinforced_concrete_slab": "Reinforced Concrete Slab"
+      "block.crystalnexus.reinforced_concrete": "Reinforced Concrete Tile",
+      "block.crystalnexus.reinforced_concrete_stairs": "Reinforced Concrete Tile Stairs",
+      "block.crystalnexus.reinforced_concrete_slab": "Reinforced Concrete Tile Slab",
+      "block.crystalnexus.reinforced_concrete_panel": "Reinforced Concrete Panel",
+      "block.crystalnexus.reinforced_concrete_panel_stairs": "Reinforced Concrete Panel Stairs",
+      "block.crystalnexus.reinforced_concrete_panel_slab": "Reinforced Concrete Panel Slab",
+      "fluid_type.crystalnexus.overfuel": "Overfuel",
+      "block.crystalnexus.overfuel": "Overfuel",
+      "fluid.crystalnexus.overfuel": "Overfuel",
+      "item.crystalnexus.overfuel_bucket": "Overfuel Bucket",
+      "item.crystalnexus.overfuel_cell": "Overfuel Cell",
+      "block.crystalnexus.deepslate_silicon_ore": "Deepslate Silicon Ore"
     }
   },
   "metadata": {

@@ -58,6 +58,8 @@ import net.crystalnexus.item.PolyacrylonitrileDustItem;
 import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
+import net.crystalnexus.item.OverfuelItem;
+import net.crystalnexus.item.OverfuelCellItem;
 import net.crystalnexus.item.OreScannerItem;
 import net.crystalnexus.item.OrangePaintballItem;
 import net.crystalnexus.item.OmegaChipItem;
@@ -468,6 +470,12 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REINFORCED_CONCRETE = block(CrystalnexusModBlocks.REINFORCED_CONCRETE);
 	public static final DeferredItem<Item> REINFORCED_CONCRETE_STAIRS = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_STAIRS);
 	public static final DeferredItem<Item> REINFORCED_CONCRETE_SLAB = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_SLAB);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL_STAIRS = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_STAIRS);
+	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL_SLAB = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_SLAB);
+	public static final DeferredItem<Item> OVERFUEL_BUCKET = REGISTRY.register("overfuel_bucket", OverfuelItem::new);
+	public static final DeferredItem<Item> OVERFUEL_CELL = REGISTRY.register("overfuel_cell", OverfuelCellItem::new);
+	public static final DeferredItem<Item> DEEPSLATE_SILICON_ORE = block(CrystalnexusModBlocks.DEEPSLATE_SILICON_ORE);
 
 	// Start of user code block custom items
 	// End of user code block custom items

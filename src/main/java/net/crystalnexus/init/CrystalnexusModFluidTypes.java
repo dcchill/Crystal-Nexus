@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.fluids.FluidType;
 
 import net.crystalnexus.fluid.types.SteamFluidType;
+import net.crystalnexus.fluid.types.OverfuelFluidType;
 import net.crystalnexus.fluid.types.GasolineFluidType;
 import net.crystalnexus.fluid.types.CrudeOilFluidType;
 import net.crystalnexus.CrystalnexusMod;
@@ -18,4 +19,5 @@ public class CrystalnexusModFluidTypes {
 	public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE = REGISTRY.register("crude_oil", () -> new CrudeOilFluidType());
 	public static final DeferredHolder<FluidType, FluidType> GASOLINE_TYPE = REGISTRY.register("gasoline", () -> new GasolineFluidType());
 	public static final DeferredHolder<FluidType, FluidType> STEAM_TYPE = REGISTRY.register("steam", () -> new SteamFluidType());
+	public static final DeferredHolder<FluidType, FluidType> OVERFUEL_TYPE = REGISTRY.register("overfuel", () -> new OverfuelFluidType());
 }

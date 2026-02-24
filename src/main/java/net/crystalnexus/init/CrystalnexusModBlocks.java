@@ -44,6 +44,9 @@ import net.crystalnexus.block.SiliconOreBlock;
 import net.crystalnexus.block.RubberBlockBlock;
 import net.crystalnexus.block.ReinforcedConcreteStairsBlock;
 import net.crystalnexus.block.ReinforcedConcreteSlabBlock;
+import net.crystalnexus.block.ReinforcedConcretePanelStairsBlock;
+import net.crystalnexus.block.ReinforcedConcretePanelSlabBlock;
+import net.crystalnexus.block.ReinforcedConcretePanelBlock;
 import net.crystalnexus.block.ReinforcedConcreteBlock;
 import net.crystalnexus.block.RedHeavyIronBlockBlock;
 import net.crystalnexus.block.ReactorWasteOutputBlock;
@@ -70,6 +73,7 @@ import net.crystalnexus.block.PipeJunctionBlock;
 import net.crystalnexus.block.PinkHeavyIronBlockBlock;
 import net.crystalnexus.block.ParticleAcceleratorTubeBlock;
 import net.crystalnexus.block.ParticleAcceleratorControllerBlock;
+import net.crystalnexus.block.OverfuelBlock;
 import net.crystalnexus.block.OreProcessorBlock;
 import net.crystalnexus.block.OrangeHeavyIronBlockBlock;
 import net.crystalnexus.block.OilNodeBlock;
@@ -124,6 +128,7 @@ import net.crystalnexus.block.EEBatteryBlock;
 import net.crystalnexus.block.DustSeparatorBlock;
 import net.crystalnexus.block.DepotUploaderBlock;
 import net.crystalnexus.block.DepotDownloaderBlock;
+import net.crystalnexus.block.DeepslateSiliconOreBlock;
 import net.crystalnexus.block.CyanHeavyIronBlockBlock;
 import net.crystalnexus.block.CrystalizedAlloyBlockBlock;
 import net.crystalnexus.block.CrystalSmelterBlock;
@@ -340,6 +345,11 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REINFORCED_CONCRETE = REGISTRY.register("reinforced_concrete", ReinforcedConcreteBlock::new);
 	public static final DeferredBlock<Block> REINFORCED_CONCRETE_STAIRS = REGISTRY.register("reinforced_concrete_stairs", ReinforcedConcreteStairsBlock::new);
 	public static final DeferredBlock<Block> REINFORCED_CONCRETE_SLAB = REGISTRY.register("reinforced_concrete_slab", ReinforcedConcreteSlabBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE_PANEL = REGISTRY.register("reinforced_concrete_panel", ReinforcedConcretePanelBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE_PANEL_STAIRS = REGISTRY.register("reinforced_concrete_panel_stairs", ReinforcedConcretePanelStairsBlock::new);
+	public static final DeferredBlock<Block> REINFORCED_CONCRETE_PANEL_SLAB = REGISTRY.register("reinforced_concrete_panel_slab", ReinforcedConcretePanelSlabBlock::new);
+	public static final DeferredBlock<Block> OVERFUEL = REGISTRY.register("overfuel", OverfuelBlock::new);
+	public static final DeferredBlock<Block> DEEPSLATE_SILICON_ORE = REGISTRY.register("deepslate_silicon_ore", DeepslateSiliconOreBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

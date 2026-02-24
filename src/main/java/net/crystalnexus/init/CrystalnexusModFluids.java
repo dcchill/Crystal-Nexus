@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 
 import net.crystalnexus.fluid.SteamFluid;
+import net.crystalnexus.fluid.OverfuelFluid;
 import net.crystalnexus.fluid.GasolineFluid;
 import net.crystalnexus.fluid.CrudeOilFluid;
 import net.crystalnexus.CrystalnexusMod;
@@ -29,6 +30,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_GASOLINE = REGISTRY.register("flowing_gasoline", () -> new GasolineFluid.Flowing());
 	public static final DeferredHolder<Fluid, FlowingFluid> STEAM = REGISTRY.register("steam", () -> new SteamFluid.Source());
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_STEAM = REGISTRY.register("flowing_steam", () -> new SteamFluid.Flowing());
+	public static final DeferredHolder<Fluid, FlowingFluid> OVERFUEL = REGISTRY.register("overfuel", () -> new OverfuelFluid.Source());
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_OVERFUEL = REGISTRY.register("flowing_overfuel", () -> new OverfuelFluid.Flowing());
 
 	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class FluidsClientSideHandler {
@@ -40,6 +43,8 @@ public class CrystalnexusModFluids {
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_GASOLINE.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(STEAM.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_STEAM.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(OVERFUEL.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_OVERFUEL.get(), RenderType.translucent());
 		}
 	}
 }

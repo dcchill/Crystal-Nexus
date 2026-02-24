@@ -144,7 +144,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(81290, 1024, 4096, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(81290, 4096, 2048, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
@@ -174,6 +174,10 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 		if (fs.getFluid() == CrystalnexusModFluids.GASOLINE.get())
 			return true;
 		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_GASOLINE.get())
+			return true;
+		if (fs.getFluid() == CrystalnexusModFluids.OVERFUEL.get())
+			return true;
+		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_OVERFUEL.get())
 			return true;
 		return false;
 	}) {

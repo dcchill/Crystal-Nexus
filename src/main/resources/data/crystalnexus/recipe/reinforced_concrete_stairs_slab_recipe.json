@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aaa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:reinforced_concrete_panel"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reinforced_concrete_panel_slab",
+    "count": 3
+  }
+}

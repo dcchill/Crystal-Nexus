@@ -19,7 +19,7 @@ import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 public class PipeStraightOnTickUpdateProcedure {
 
     private static final int MAX_TRANSFER = 100;
-    private static final int PARTICLE_CHANCE = 20;
+    private static final int PARTICLE_CHANCE = 1;
 
     public static void execute(LevelAccessor world, BlockPos pos, BlockState state) {
         if (world == null || pos == null || state == null) return;

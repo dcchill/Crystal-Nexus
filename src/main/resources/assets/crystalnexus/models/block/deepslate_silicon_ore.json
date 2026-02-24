@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/deepslate_silicon",
+    "particle": "crystalnexus:block/deepslate_silicon"
+  },
+  "render_type": "solid"
+}

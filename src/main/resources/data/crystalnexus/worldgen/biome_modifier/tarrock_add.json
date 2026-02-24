@@ -1,0 +1,8 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "crystalnexus:oil_depths",
+  "features": [
+    "crystalnexus:tarrock_replace"
+  ],
+  "step": "underground_ores"
+}

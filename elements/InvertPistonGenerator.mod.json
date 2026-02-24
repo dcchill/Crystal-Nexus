@@ -135,8 +135,8 @@
     "hasEnergyStorage": true,
     "energyInitial": 0,
     "energyCapacity": 81290,
-    "energyMaxReceive": 1024,
-    "energyMaxExtract": 4096,
+    "energyMaxReceive": 4096,
+    "energyMaxExtract": 2048,
     "isFluidTank": true,
     "fluidCapacity": 32000,
     "fluidRestrictions": [
@@ -145,6 +145,12 @@
       },
       {
         "value": "CUSTOM:Gasoline:Flowing"
+      },
+      {
+        "value": "CUSTOM:Overfuel"
+      },
+      {
+        "value": "CUSTOM:Overfuel:Flowing"
       }
     ],
     "onBlockAdded": {

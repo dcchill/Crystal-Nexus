@@ -54,11 +54,11 @@ public class PistonGeneratorOnTickUpdateProcedure {
 
         // Acceleration upgrade
         if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-            COOK_TIME = 350;
+            COOK_TIME = 450;
         } else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-            COOK_TIME = 400;
+            COOK_TIME = 500;
         } else {
-            COOK_TIME = 300;
+            COOK_TIME = 499;
         }
 
         be.getPersistentData().putDouble("maxProgress", COOK_TIME);
@@ -68,23 +68,49 @@ public class PistonGeneratorOnTickUpdateProcedure {
 
         // --- Fluid handler ---
         IFluidHandler fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
+		// --- Fill tank from fuel cells ---
+		if (!fuelStack.isEmpty() && fluidHandler != null) {
+		
+		    FluidStack fluidToInsert = FluidStack.EMPTY;
+		
+		    // Gasoline cell
+		    if (fuelStack.getItem() == CrystalnexusModItems.GAS_FUEL_CELL.get()) {
+		        fluidToInsert = new FluidStack(CrystalnexusModFluids.GASOLINE.get(), FUEL_CELL_AMOUNT);
+		    }
+		
+		    // Overfuel cell
+		    else if (fuelStack.getItem() == CrystalnexusModItems.OVERFUEL_CELL.get()) {
+		        fluidToInsert = new FluidStack(CrystalnexusModFluids.OVERFUEL.get(), FUEL_CELL_AMOUNT);
+		    }
+		
+		    // If we found a valid fuel type
+		    if (!fluidToInsert.isEmpty()) {
+		        int filledSim = fluidHandler.fill(fluidToInsert, IFluidHandler.FluidAction.SIMULATE);
+		
+		        if (filledSim == FUEL_CELL_AMOUNT) {
+		            fluidHandler.fill(fluidToInsert, IFluidHandler.FluidAction.EXECUTE);
+		            consumeItem(level, pos, 0, 1);
+		            insertIntoSlot(level, pos, 1, new ItemStack(CrystalnexusModItems.EMPTY_FUEL_CELL.get()));
+		        }
+		    }
+		}
 
-        // --- Fill tank from fuel cells ---
-        if (!fuelStack.isEmpty() && fuelStack.getItem() == CrystalnexusModItems.GAS_FUEL_CELL.get() && fluidHandler != null) {
-            int filledSim = fluidHandler.fill(new FluidStack(CrystalnexusModFluids.GASOLINE.get(), FUEL_CELL_AMOUNT), IFluidHandler.FluidAction.SIMULATE);
-            if (filledSim == FUEL_CELL_AMOUNT) {
-                fluidHandler.fill(new FluidStack(CrystalnexusModFluids.GASOLINE.get(), FUEL_CELL_AMOUNT), IFluidHandler.FluidAction.EXECUTE);
-                consumeItem(level, pos, 0, 1);
-                insertIntoSlot(level, pos, 1, new ItemStack(CrystalnexusModItems.EMPTY_FUEL_CELL.get()));
-            }
-        }
-
-        // --- Check if enough fuel to run ---
-        boolean canRun = false;
-        if (fluidHandler != null) {
-            FluidStack simulated = fluidHandler.drain(FUEL_CELL_AMOUNT, IFluidHandler.FluidAction.SIMULATE);
-            canRun = simulated.getAmount() >= FUEL_CELL_AMOUNT;
-        }
+		// --- Check if enough fuel to run ---
+		boolean canRun = false;
+		boolean isOverfuel = false;
+		FluidStack tankFluid = FluidStack.EMPTY;
+		
+		if (fluidHandler != null) {
+		    tankFluid = fluidHandler.drain(FUEL_CELL_AMOUNT, IFluidHandler.FluidAction.SIMULATE);
+		
+		    if (tankFluid.getAmount() >= FUEL_CELL_AMOUNT) {
+		        canRun = true;
+		
+		        if (tankFluid.getFluid() == CrystalnexusModFluids.OVERFUEL.get()) {
+		            isOverfuel = true;
+		        }
+		    }
+		}
 
         // --- Update blockstate ---
         setBlockStateInteger(level, pos, "blockstate", canRun ? 2 : 1);
@@ -95,7 +121,13 @@ public class PistonGeneratorOnTickUpdateProcedure {
             be.getPersistentData().putDouble("progress", progress);
 
             // Try to insert real energy into the block’s buffer
-            energyStorage.receiveEnergy(ENERGY_PER_TICK, false);
+            int energyOutput = ENERGY_PER_TICK;
+
+				if (isOverfuel) {
+				    energyOutput *= 2; // 2x power for Overfuel
+				}
+				
+				energyStorage.receiveEnergy(energyOutput, false);
 
             // Consume fuel on full cook cycle
             if (progress >= COOK_TIME) {
@@ -114,7 +146,7 @@ public class PistonGeneratorOnTickUpdateProcedure {
                 IEnergyStorage neighbor = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighborPos, dir.getOpposite());
                 if (neighbor == null) continue;
 
-                int energyToSend = Math.min(energyStorage.getEnergyStored(), 1000); // push up to 1000 FE/tick
+                int energyToSend = Math.min(energyStorage.getEnergyStored(), 2048); // push up to 1000 FE/tick
                 int accepted = neighbor.receiveEnergy(energyToSend, false);
                 if (accepted > 0) {
                     // drain from own storage

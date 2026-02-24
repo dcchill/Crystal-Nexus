@@ -1,0 +1,10 @@
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "particle": "crystalnexus:block/r_concrete",
+    "bottom": "crystalnexus:block/r_concrete",
+    "top": "crystalnexus:block/r_concrete",
+    "side": "crystalnexus:block/r_concrete_slab"
+  },
+  "render_type": "solid"
+}

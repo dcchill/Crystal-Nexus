@@ -227,6 +227,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CRUDE_OIL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OIL_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.GASOLINE_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.OVERFUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.OVERFUEL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.EMPTY_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.WHITE_PAINTBALL.get());
 				tabData.accept(CrystalnexusModItems.LIGHT_GRAY_PAINTBALL.get());
@@ -245,6 +247,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.PINK_PAINTBALL.get());
 				tabData.accept(CrystalnexusModItems.COFFEE.get());
 				tabData.accept(CrystalnexusModItems.ATOMIC_COFFEE.get());
+				tabData.accept(CrystalnexusModBlocks.DEEPSLATE_SILICON_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SILICON_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TARROCK_SOIL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TARROCK.get().asItem());
@@ -329,6 +332,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_STAIRS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_SLAB.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_STAIRS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_SLAB.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_LOGISTICS.getId()).build());
 
 	@SubscribeEvent

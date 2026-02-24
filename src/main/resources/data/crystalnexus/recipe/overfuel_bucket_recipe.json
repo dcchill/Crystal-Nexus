@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:overfuel_cell"
+    },
+    {
+      "item": "crystalnexus:overfuel_cell"
+    },
+    {
+      "item": "minecraft:bucket"
+    },
+    {
+      "item": "crystalnexus:overfuel_cell"
+    },
+    {
+      "item": "crystalnexus:overfuel_cell"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:overfuel_bucket",
+    "count": 1
+  }
+}
