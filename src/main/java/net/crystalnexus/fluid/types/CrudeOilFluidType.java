@@ -47,7 +47,7 @@ public class CrudeOilFluidType extends FluidType {
 
 			@Override
 			public Vector3f modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector3f fluidFogColor) {
-				return new Vector3f(0.2f, 0.2f, 0.2f);
+				return new Vector3f(0.2f, 0f, 0.2f);
 			}
 
 			@Override

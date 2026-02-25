@@ -623,5 +623,10 @@
   "fluid.crystalnexus.overfuel": "Overfuel",
   "item.crystalnexus.overfuel_bucket": "Overfuel Bucket",
   "item.crystalnexus.overfuel_cell": "Overfuel Cell",
-  "block.crystalnexus.deepslate_silicon_ore": "Deepslate Silicon Ore"
+  "block.crystalnexus.deepslate_silicon_ore": "Deepslate Silicon Ore",
+  "block.crystalnexus.item_charger": "Item Charger",
+  "gui.crystalnexus.item_charger_gui.label_item_charger": "[Item Charger]",
+  "block.crystalnexus.aoe_charger": "AOE Charger",
+  "gui.crystalnexus.aoe_charger_gui.label_item_charger": "[AOE Charger]",
+  "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel."
 }

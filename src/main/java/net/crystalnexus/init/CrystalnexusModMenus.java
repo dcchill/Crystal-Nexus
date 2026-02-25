@@ -45,6 +45,7 @@ import net.crystalnexus.world.inventory.MRecrystallGuiMenu;
 import net.crystalnexus.world.inventory.ItemElevatorGuiMenu;
 import net.crystalnexus.world.inventory.ItemElevatorGuiDownMenu;
 import net.crystalnexus.world.inventory.ItemCollectorGUIMenu;
+import net.crystalnexus.world.inventory.ItemChargerGuiMenu;
 import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.world.inventory.InverterGuiMenu;
 import net.crystalnexus.world.inventory.FluidPackagerGUIMenu;
@@ -68,6 +69,7 @@ import net.crystalnexus.world.inventory.BioMCGuiMenu;
 import net.crystalnexus.world.inventory.BatteryMonitorGuiMenu;
 import net.crystalnexus.world.inventory.AccepterGUIMenu;
 import net.crystalnexus.world.inventory.AcceleratorGuiMenu;
+import net.crystalnexus.world.inventory.AOEChargerGuiMenu;
 import net.crystalnexus.network.MenuStateUpdateMessage;
 import net.crystalnexus.CrystalnexusMod;
 
@@ -128,6 +130,8 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ComputationClusterGUIMenu>> COMPUTATION_CLUSTER_GUI = REGISTRY.register("computation_cluster_gui", () -> IMenuTypeExtension.create(ComputationClusterGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<AcceleratorGuiMenu>> ACCELERATOR_GUI = REGISTRY.register("accelerator_gui", () -> IMenuTypeExtension.create(AcceleratorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<QuarryGUIMenu>> QUARRY_GUI = REGISTRY.register("quarry_gui", () -> IMenuTypeExtension.create(QuarryGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<ItemChargerGuiMenu>> ITEM_CHARGER_GUI = REGISTRY.register("item_charger_gui", () -> IMenuTypeExtension.create(ItemChargerGuiMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<AOEChargerGuiMenu>> AOE_CHARGER_GUI = REGISTRY.register("aoe_charger_gui", () -> IMenuTypeExtension.create(AOEChargerGuiMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

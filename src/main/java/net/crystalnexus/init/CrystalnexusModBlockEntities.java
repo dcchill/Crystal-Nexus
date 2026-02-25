@@ -56,6 +56,7 @@ import net.crystalnexus.block.entity.MachineCoreBlockEntity;
 import net.crystalnexus.block.entity.ItemElevatorDownBlockEntity;
 import net.crystalnexus.block.entity.ItemElevatorBlockEntity;
 import net.crystalnexus.block.entity.ItemCollectorBlockEntity;
+import net.crystalnexus.block.entity.ItemChargerBlockEntity;
 import net.crystalnexus.block.entity.IronSmelterBlockEntity;
 import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
 import net.crystalnexus.block.entity.InverterBlockEntity;
@@ -102,6 +103,7 @@ import net.crystalnexus.block.entity.BiomaticComposterBlockEntity;
 import net.crystalnexus.block.entity.BatteryMonitorBlockEntity;
 import net.crystalnexus.block.entity.BatteryBlockEntity;
 import net.crystalnexus.block.entity.BasicEnergyCableBlockEntity;
+import net.crystalnexus.block.entity.AOEChargerBlockEntity;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -194,6 +196,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ELECTROMAGNET = register("electromagnet", CrystalnexusModBlocks.ELECTROMAGNET, ElectromagnetBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUARRY = register("quarry", CrystalnexusModBlocks.QUARRY, QuarryBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> RAD_PLACEHOLDER = register("rad_placeholder", CrystalnexusModBlocks.RAD_PLACEHOLDER, RadPlaceholderBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_CHARGER = register("item_charger", CrystalnexusModBlocks.ITEM_CHARGER, ItemChargerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> AOE_CHARGER = register("aoe_charger", CrystalnexusModBlocks.AOE_CHARGER, AOEChargerBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -356,5 +360,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, QUARRY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, QUARRY.get(), (blockEntity, side) -> ((QuarryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, RAD_PLACEHOLDER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_CHARGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ITEM_CHARGER.get(), (blockEntity, side) -> ((ItemChargerBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> ((AOEChargerBlockEntity) blockEntity).getEnergyStorage());
 	}
 }

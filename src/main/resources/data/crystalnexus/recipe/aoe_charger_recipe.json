@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:invertium_crystal"
+    },
+    "b": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "c": {
+      "item": "crystalnexus:invertium_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:battery"
+    },
+    "e": {
+      "item": "crystalnexus:invertium_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:aoe_charger",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "ebe"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "b": {
+      "item": "crystalnexus:battery"
+    },
+    "c": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "d": {
+      "item": "crystalnexus:crystal_machine_frame"
+    },
+    "e": {
+      "tag": "c:stones"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:item_charger",
+    "count": 1
+  }
+}

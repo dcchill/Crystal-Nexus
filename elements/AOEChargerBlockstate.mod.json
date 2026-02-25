@@ -1,0 +1,127 @@
+{
+  "_fv": 79,
+  "_type": "blockstates",
+  "definition": {
+    "block": "AOECharger",
+    "blockstateList": [
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "charger",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 2,
+        "customModelName": "tesla:default",
+        "luminance": 0,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 6.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 6.0,
+            "my": 6.0,
+            "mz": 6.0,
+            "Mx": 10.0,
+            "My": 16.0,
+            "Mz": 10.0,
+            "subtract": false
+          },
+          {
+            "mx": 2.0,
+            "my": 7.0,
+            "mz": 2.0,
+            "Mx": 14.0,
+            "My": 9.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 3.0,
+            "my": 10.0,
+            "mz": 3.0,
+            "Mx": 13.0,
+            "My": 12.0,
+            "Mz": 13.0,
+            "subtract": false
+          },
+          {
+            "mx": 4.0,
+            "my": 13.0,
+            "mz": 4.0,
+            "Mx": 12.0,
+            "My": 15.0,
+            "Mz": 12.0,
+            "subtract": false
+          }
+        ]
+      },
+      {
+        "texture": "purebottom",
+        "textureTop": "puretop",
+        "textureLeft": "pureside",
+        "textureFront": "charger_on",
+        "textureRight": "pureside",
+        "textureBack": "pureside",
+        "particleTexture": "",
+        "renderType": 2,
+        "customModelName": "tesla_on:default",
+        "luminance": 15,
+        "boundingBoxes": [
+          {
+            "mx": 0.0,
+            "my": 0.0,
+            "mz": 0.0,
+            "Mx": 16.0,
+            "My": 6.0,
+            "Mz": 16.0,
+            "subtract": false
+          },
+          {
+            "mx": 6.0,
+            "my": 6.0,
+            "mz": 6.0,
+            "Mx": 10.0,
+            "My": 16.0,
+            "Mz": 10.0,
+            "subtract": false
+          },
+          {
+            "mx": 2.0,
+            "my": 7.0,
+            "mz": 2.0,
+            "Mx": 14.0,
+            "My": 9.0,
+            "Mz": 14.0,
+            "subtract": false
+          },
+          {
+            "mx": 3.0,
+            "my": 10.0,
+            "mz": 3.0,
+            "Mx": 13.0,
+            "My": 12.0,
+            "Mz": 13.0,
+            "subtract": false
+          },
+          {
+            "mx": 4.0,
+            "my": 13.0,
+            "mz": 4.0,
+            "Mx": 12.0,
+            "My": 15.0,
+            "Mz": 12.0,
+            "subtract": false
+          }
+        ]
+      }
+    ]
+  }
+}

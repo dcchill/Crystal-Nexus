@@ -51,6 +51,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.RAW_CHLOROPHYTE.get());
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_DUST.get());
@@ -261,6 +262,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AOE_CHARGER.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {

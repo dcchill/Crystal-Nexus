@@ -476,6 +476,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> OVERFUEL_BUCKET = REGISTRY.register("overfuel_bucket", OverfuelItem::new);
 	public static final DeferredItem<Item> OVERFUEL_CELL = REGISTRY.register("overfuel_cell", OverfuelCellItem::new);
 	public static final DeferredItem<Item> DEEPSLATE_SILICON_ORE = block(CrystalnexusModBlocks.DEEPSLATE_SILICON_ORE);
+	public static final DeferredItem<Item> ITEM_CHARGER = block(CrystalnexusModBlocks.ITEM_CHARGER);
+	public static final DeferredItem<Item> AOE_CHARGER = block(CrystalnexusModBlocks.AOE_CHARGER);
 
 	// Start of user code block custom items
 	// End of user code block custom items

@@ -138,20 +138,6 @@
         }
       },
       {
-        "type": "tooltip",
-        "data": {
-          "name": "tooltip_energy_crystal",
-          "text": {
-            "fixedValue": "Energy Crystal"
-          },
-          "width": 24,
-          "height": 24,
-          "x": 202,
-          "y": 54,
-          "locked": false
-        }
-      },
-      {
         "type": "sprite",
         "data": {
           "sprite": "steam_fluidlevels.png",
@@ -162,6 +148,30 @@
           },
           "x": 232,
           "y": 47,
+          "locked": false
+        }
+      },
+      {
+        "type": "image",
+        "data": {
+          "image": "tooltip.png",
+          "use1Xscale": false,
+          "x": 130,
+          "y": 41,
+          "locked": false
+        }
+      },
+      {
+        "type": "tooltip",
+        "data": {
+          "name": "tooltip_input_coal_or_charcoal_for_fuel",
+          "text": {
+            "fixedValue": "Input coal or charcoal for fuel."
+          },
+          "width": 24,
+          "height": 24,
+          "x": 127,
+          "y": 38,
           "locked": false
         }
       }

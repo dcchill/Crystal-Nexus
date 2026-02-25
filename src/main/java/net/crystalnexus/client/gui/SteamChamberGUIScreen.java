@@ -49,8 +49,8 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.steam_chamber_gui.tooltip_water_bucket"), mouseX, mouseY);
 			customTooltipShown = true;
 		}
-		if (mouseX > leftPos + 76 && mouseX < leftPos + 100 && mouseY > topPos + 17 && mouseY < topPos + 41) {
-			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.steam_chamber_gui.tooltip_energy_crystal"), mouseX, mouseY);
+		if (mouseX > leftPos + 1 && mouseX < leftPos + 25 && mouseY > topPos + 1 && mouseY < topPos + 25) {
+			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel"), mouseX, mouseY);
 			customTooltipShown = true;
 		}
 		if (!customTooltipShown)
@@ -65,6 +65,7 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png"), this.leftPos + 4, this.topPos + 4, 0, 0, 16, 16, 16, 16);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarinvert.png"), this.leftPos + 72, this.topPos + 39, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/steam_fluidlevels.png"), this.leftPos + 106, this.topPos + 10, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
 		RenderSystem.disableBlend();

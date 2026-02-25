@@ -66,7 +66,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) >= 500) {
+		if (getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) >= 1000) {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
@@ -82,7 +82,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_entityStorage != null)
-						_entityStorage.receiveEnergy((int) (2048 * outputAmount), false);
+						_entityStorage.receiveEnergy((int) (256 * outputAmount), false);
 				}
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
@@ -98,7 +98,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_fluidHandler != null)
-						_fluidHandler.drain(500, IFluidHandler.FluidAction.EXECUTE);
+						_fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
 				}
 			}
 		}

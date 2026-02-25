@@ -38,6 +38,7 @@ import net.crystalnexus.client.gui.MRecrystallGuiScreen;
 import net.crystalnexus.client.gui.ItemElevatorGuiScreen;
 import net.crystalnexus.client.gui.ItemElevatorGuiDownScreen;
 import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
+import net.crystalnexus.client.gui.ItemChargerGuiScreen;
 import net.crystalnexus.client.gui.IronSmelterGuiScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
 import net.crystalnexus.client.gui.FluidPackagerGUIScreen;
@@ -61,6 +62,7 @@ import net.crystalnexus.client.gui.BioMCGuiScreen;
 import net.crystalnexus.client.gui.BatteryMonitorGuiScreen;
 import net.crystalnexus.client.gui.AccepterGUIScreen;
 import net.crystalnexus.client.gui.AcceleratorGuiScreen;
+import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class CrystalnexusModScreens {
@@ -119,6 +121,8 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.COMPUTATION_CLUSTER_GUI.get(), ComputationClusterGUIScreen::new);
 		event.register(CrystalnexusModMenus.ACCELERATOR_GUI.get(), AcceleratorGuiScreen::new);
 		event.register(CrystalnexusModMenus.QUARRY_GUI.get(), QuarryGUIScreen::new);
+		event.register(CrystalnexusModMenus.ITEM_CHARGER_GUI.get(), ItemChargerGuiScreen::new);
+		event.register(CrystalnexusModMenus.AOE_CHARGER_GUI.get(), AOEChargerGuiScreen::new);
 	}
 
 	public interface ScreenAccessor {

@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:custom/tesla",
+  "textures": {
+    "all": "crystalnexus:block/purebottom",
+    "particle": "crystalnexus:block/purebottom",
+    "0": "crystalnexus:block/tesla_texture"
+  },
+  "render_type": "solid"
+}

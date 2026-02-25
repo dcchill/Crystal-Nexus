@@ -95,6 +95,7 @@ import net.crystalnexus.block.LavaNodeBlock;
 import net.crystalnexus.block.ItemElevatorDownBlock;
 import net.crystalnexus.block.ItemElevatorBlock;
 import net.crystalnexus.block.ItemCollectorBlock;
+import net.crystalnexus.block.ItemChargerBlock;
 import net.crystalnexus.block.IronSmelterBlock;
 import net.crystalnexus.block.IronNodeBlock;
 import net.crystalnexus.block.InvertiumSmelterBlock;
@@ -177,6 +178,7 @@ import net.crystalnexus.block.BasicEnergyCableBlock;
 import net.crystalnexus.block.AncientDebrisNodeBlock;
 import net.crystalnexus.block.AncientCrystalOreStoneBlock;
 import net.crystalnexus.block.AncientCrystalOreBlock;
+import net.crystalnexus.block.AOEChargerBlock;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModBlocks {
@@ -350,6 +352,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REINFORCED_CONCRETE_PANEL_SLAB = REGISTRY.register("reinforced_concrete_panel_slab", ReinforcedConcretePanelSlabBlock::new);
 	public static final DeferredBlock<Block> OVERFUEL = REGISTRY.register("overfuel", OverfuelBlock::new);
 	public static final DeferredBlock<Block> DEEPSLATE_SILICON_ORE = REGISTRY.register("deepslate_silicon_ore", DeepslateSiliconOreBlock::new);
+	public static final DeferredBlock<Block> ITEM_CHARGER = REGISTRY.register("item_charger", ItemChargerBlock::new);
+	public static final DeferredBlock<Block> AOE_CHARGER = REGISTRY.register("aoe_charger", AOEChargerBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

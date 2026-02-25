@@ -17917,6 +17917,188 @@
         ]
       },
       "path": "~/oil_depths"
+    },
+    {
+      "name": "ItemCharger",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_charger",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/ItemChargerBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/item_charger.json",
+          "src/main/resources/assets/crystalnexus/models/block/item_charger.json",
+          "src/main/java/net/crystalnexus/block/entity/ItemChargerBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/item_charger.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/item_charger.json"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "ItemChargerGui",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_charger_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/client/gui/ItemChargerGuiScreen.java",
+          "src/main/java/net/crystalnexus/world/inventory/ItemChargerGuiMenu.java"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "ItemChargerOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "item_charger_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/ItemChargerOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "ItemChargerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_charger_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/item_charger_recipe.json"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "ItemChargerBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "item_charger_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/item_charger_blockstate_blockstate_0.json",
+          "src/main/resources/assets/crystalnexus/models/block/item_charger_blockstate_blockstate_1.json"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "AOECharger",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "aoe_charger",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/aoe_charger.json",
+          "src/main/resources/assets/crystalnexus/models/block/aoe_charger.json",
+          "src/main/java/net/crystalnexus/block/entity/AOEChargerBlockEntity.java",
+          "src/main/resources/assets/crystalnexus/models/item/aoe_charger.json",
+          "src/main/java/net/crystalnexus/block/AOEChargerBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/aoe_charger.json"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "AOEChargerOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "aoe_charger_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "return_type": "string",
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/AOEChargerOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "AOEChargerGui",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "aoe_charger_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/AOEChargerGuiMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/AOEChargerGuiScreen.java"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "AOEChargerBlockstate",
+      "type": "blockstates",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "aoe_charger_blockstate",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/aoe_charger_blockstate_blockstate_1.json",
+          "src/main/resources/assets/crystalnexus/models/block/aoe_charger_blockstate_blockstate_0.json"
+        ]
+      },
+      "path": "~/chargers"
+    },
+    {
+      "name": "AOEChargerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "aoe_charger_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/aoe_charger_recipe.json"
+        ]
+      },
+      "path": "~/chargers"
     }
   ],
   "variable_elements": [
@@ -18515,6 +18697,11 @@
     ],
     "BLOCKS:minecraft:dirt": [
       "CUSTOM:TarrockSoil"
+    ],
+    "ITEMS:mod:steam_fuel": [
+      "Items.COAL#0",
+      "Items.COAL#1",
+      "CUSTOM:CoalSingularity"
     ]
   },
   "tab_element_order": {
@@ -18548,6 +18735,7 @@
       "CrystalPurifier",
       "CrystalCrusher",
       "DustSeparator",
+      "ItemCharger",
       "ChlorophyteOre",
       "RawChlorophyte",
       "ChlorophyteDust",
@@ -18754,7 +18942,8 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre"
+      "InvertiumOre",
+      "AOECharger"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -19485,7 +19674,12 @@
       "fluid.crystalnexus.overfuel": "Overfuel",
       "item.crystalnexus.overfuel_bucket": "Overfuel Bucket",
       "item.crystalnexus.overfuel_cell": "Overfuel Cell",
-      "block.crystalnexus.deepslate_silicon_ore": "Deepslate Silicon Ore"
+      "block.crystalnexus.deepslate_silicon_ore": "Deepslate Silicon Ore",
+      "block.crystalnexus.item_charger": "Item Charger",
+      "gui.crystalnexus.item_charger_gui.label_item_charger": "[Item Charger]",
+      "block.crystalnexus.aoe_charger": "AOE Charger",
+      "gui.crystalnexus.aoe_charger_gui.label_item_charger": "[AOE Charger]",
+      "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel."
     }
   },
   "metadata": {
@@ -19728,6 +19922,10 @@
       },
       {
         "name": "deco",
+        "children": []
+      },
+      {
+        "name": "chargers",
         "children": []
       }
     ]
