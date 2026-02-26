@@ -76,6 +76,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ELECTROMAGNET.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AOE_CHARGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get().asItem());
@@ -168,6 +169,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_DUST.get());
 				tabData.accept(CrystalnexusModItems.RAW_CARBON.get());
 				tabData.accept(CrystalnexusModItems.SULFUR_DUST.get());
+				tabData.accept(CrystalnexusModBlocks.SULFUR_CRYSTAL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BUDDING_SULFUR_CRYSTAL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMALL_SULFUR_CRYSTAL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MEDIUM_SULFUR_CRYSTAL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.LARGE_SULFUR_CRYSTAL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SULFUR_CLUSTER.get().asItem());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER.get());
 				tabData.accept(CrystalnexusModItems.CARBON_FIBER_ROD.get());
 				tabData.accept(CrystalnexusModItems.MACHINE_BOLT.get());
@@ -262,7 +269,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.AOE_CHARGER.get().asItem());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -337,6 +343,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_STAIRS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_SLAB.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SMOKE_EMITTER.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_LOGISTICS.getId()).build());
 
 	@SubscribeEvent

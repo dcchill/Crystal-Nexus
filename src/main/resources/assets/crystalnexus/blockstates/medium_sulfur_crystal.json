@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "facing=up":    { "model": "crystalnexus:block/medium_sulfur_crystal" },
+    "facing=down":  { "model": "crystalnexus:block/medium_sulfur_crystal", "x": 180 },
+    "facing=north": { "model": "crystalnexus:block/medium_sulfur_crystal", "x": 90 },
+    "facing=south": { "model": "crystalnexus:block/medium_sulfur_crystal", "x": 90, "y": 180 },
+    "facing=west":  { "model": "crystalnexus:block/medium_sulfur_crystal", "x": 90, "y": 270 },
+    "facing=east":  { "model": "crystalnexus:block/medium_sulfur_crystal", "x": 90, "y": 90 }
+  }
+}

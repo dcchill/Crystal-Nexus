@@ -27,6 +27,7 @@ import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
 import net.crystalnexus.block.entity.SteamEngineBlockEntity;
 import net.crystalnexus.block.entity.SteamCollectorBlockEntity;
 import net.crystalnexus.block.entity.SteamChamberBlockEntity;
+import net.crystalnexus.block.entity.SmokeEmitterBlockEntity;
 import net.crystalnexus.block.entity.SmartSplitterBlockEntity;
 import net.crystalnexus.block.entity.SingularityMatrixBlockEntity;
 import net.crystalnexus.block.entity.SingularityCompressorBlockEntity;
@@ -198,6 +199,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> RAD_PLACEHOLDER = register("rad_placeholder", CrystalnexusModBlocks.RAD_PLACEHOLDER, RadPlaceholderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_CHARGER = register("item_charger", CrystalnexusModBlocks.ITEM_CHARGER, ItemChargerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> AOE_CHARGER = register("aoe_charger", CrystalnexusModBlocks.AOE_CHARGER, AOEChargerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMOKE_EMITTER = register("smoke_emitter", CrystalnexusModBlocks.SMOKE_EMITTER, SmokeEmitterBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -364,5 +366,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ITEM_CHARGER.get(), (blockEntity, side) -> ((ItemChargerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> ((AOEChargerBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMOKE_EMITTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 	}
 }

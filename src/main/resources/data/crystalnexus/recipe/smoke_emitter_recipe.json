@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:turbine_blade"
+    },
+    "b": {
+      "item": "crystalnexus:machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:smoke_emitter",
+    "count": 1
+  }
+}

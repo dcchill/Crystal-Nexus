@@ -18099,6 +18099,198 @@
         ]
       },
       "path": "~/chargers"
+    },
+    {
+      "name": "SmokeEmitter",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "smoke_emitter",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/SmokeEmitterBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/SmokeEmitterBlockEntity.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/smoke_emitter.json",
+          "src/main/resources/assets/crystalnexus/models/item/smoke_emitter.json",
+          "src/main/resources/assets/crystalnexus/models/block/smoke_emitter.json",
+          "src/main/resources/assets/crystalnexus/blockstates/smoke_emitter.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "SmokeEmitterOnTickUpdate",
+      "type": "procedure",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "smoke_emitter_on_tick_update",
+      "metadata": {
+        "dependencies": [
+          {
+            "name": "x",
+            "type": "number"
+          },
+          {
+            "name": "y",
+            "type": "number"
+          },
+          {
+            "name": "z",
+            "type": "number"
+          },
+          {
+            "name": "world",
+            "type": "world"
+          }
+        ],
+        "files": [
+          "src/main/java/net/crystalnexus/procedures/SmokeEmitterOnTickUpdateProcedure.java"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "SmokeEmitterRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "smoke_emitter_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/smoke_emitter_recipe.json"
+        ]
+      },
+      "path": "~/deco"
+    },
+    {
+      "name": "SulfurCrystal",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "sulfur_crystal",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/SulfurCrystalBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/block/sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/blockstates/sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/item/sulfur_crystal.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "SulfurCrystalGeode",
+      "type": "feature",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "sulfur_crystal_geode",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/worldgen/configured_feature/sulfur_crystal_geode.json",
+          "src/main/resources/data/crystalnexus/worldgen/placed_feature/sulfur_crystal_geode.json",
+          "src/main/resources/data/crystalnexus/neoforge/biome_modifier/sulfur_crystal_geode_biome_modifier.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "BuddingSulfurCrystal",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "budding_sulfur_crystal",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/block/budding_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/item/budding_sulfur_crystal.json",
+          "src/main/java/net/crystalnexus/block/BuddingSulfurCrystalBlock.java",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/budding_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/blockstates/budding_sulfur_crystal.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "SmallSulfurCrystal",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "small_sulfur_crystal",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/SmallSulfurCrystalBlock.java",
+          "src/main/resources/assets/crystalnexus/models/item/small_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/block/small_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/blockstates/small_sulfur_crystal.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/small_sulfur_crystal.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "MediumSulfurCrystal",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "medium_sulfur_crystal",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/MediumSulfurCrystalBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/medium_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/item/medium_sulfur_crystal.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/medium_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/blockstates/medium_sulfur_crystal.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "LargeSulfurCrystal",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "large_sulfur_crystal",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/block/LargeSulfurCrystalBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/large_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/blockstates/large_sulfur_crystal.json",
+          "src/main/resources/assets/crystalnexus/models/item/large_sulfur_crystal.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/large_sulfur_crystal.json"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "SulfurCluster",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "sulfur_cluster",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/sulfur_cluster.json",
+          "src/main/resources/assets/crystalnexus/models/item/sulfur_cluster.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/sulfur_cluster.json",
+          "src/main/resources/assets/crystalnexus/models/block/sulfur_cluster.json",
+          "src/main/java/net/crystalnexus/block/SulfurClusterBlock.java"
+        ]
+      },
+      "path": "~/sulfur"
+    },
+    {
+      "name": "SulfurCrystalRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "sulfur_crystal_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/sulfur_crystal_recipe.json"
+        ]
+      },
+      "path": "~/sulfur"
     }
   ],
   "variable_elements": [
@@ -18218,6 +18410,13 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:SulfurCluster",
+      "~CUSTOM:LargeSulfurCrystal",
+      "~CUSTOM:MediumSulfurCrystal",
+      "~CUSTOM:SmallSulfurCrystal",
+      "~CUSTOM:BuddingSulfurCrystal",
+      "~CUSTOM:SulfurCrystal",
+      "~CUSTOM:SmokeEmitter",
       "~CUSTOM:DeepslateSiliconOre",
       "~CUSTOM:ReinforcedConcretePanelSlab",
       "~CUSTOM:ReinforcedConcretePanelStairs",
@@ -18376,6 +18575,7 @@
       "CUSTOM:BlutoniumBlock"
     ],
     "BLOCKS:minecraft:needs_iron_tool": [
+      "~CUSTOM:SmokeEmitter",
       "~CUSTOM:DeepslateSiliconOre",
       "~CUSTOM:InvertiumCrystalBlock",
       "~CUSTOM:NodeExtractor",
@@ -18628,6 +18828,12 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:SulfurCluster",
+      "~CUSTOM:LargeSulfurCrystal",
+      "~CUSTOM:MediumSulfurCrystal",
+      "~CUSTOM:SmallSulfurCrystal",
+      "~CUSTOM:BuddingSulfurCrystal",
+      "~CUSTOM:SulfurCrystal",
       "~CUSTOM:ReinforcedConcretePanelSlab",
       "~CUSTOM:ReinforcedConcretePanelStairs",
       "~CUSTOM:ReinforcedConcretePanel",
@@ -18760,6 +18966,7 @@
       "ParticleAcceleratorTube",
       "ParticleAcceleratorController",
       "Electromagnet",
+      "AOECharger",
       "InvertiumSmelter",
       "InvertPistonGenerator",
       "MetallurgicRecrystallizer",
@@ -18852,6 +19059,12 @@
       "NetheriteScrapDust",
       "RawCarbon",
       "PolyacrylonitrileDust",
+      "SulfurCrystal",
+      "BuddingSulfurCrystal",
+      "SmallSulfurCrystal",
+      "MediumSulfurCrystal",
+      "LargeSulfurCrystal",
+      "SulfurCluster",
       "CarbonFiber",
       "CarbonFiberRod",
       "MachineBolt",
@@ -18942,8 +19155,7 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre",
-      "AOECharger"
+      "InvertiumOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -19045,7 +19257,8 @@
       "ReinforcedConcreteSlab",
       "ReinforcedConcretePanel",
       "ReinforcedConcretePanelStairs",
-      "ReinforcedConcretePanelSlab"
+      "ReinforcedConcretePanelSlab",
+      "SmokeEmitter"
     ]
   },
   "language_map": {
@@ -19679,7 +19892,14 @@
       "gui.crystalnexus.item_charger_gui.label_item_charger": "[Item Charger]",
       "block.crystalnexus.aoe_charger": "AOE Charger",
       "gui.crystalnexus.aoe_charger_gui.label_item_charger": "[AOE Charger]",
-      "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel."
+      "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel.",
+      "block.crystalnexus.smoke_emitter": "Smoke Emitter",
+      "block.crystalnexus.sulfur_crystal": "Sulfur Crystal",
+      "block.crystalnexus.budding_sulfur_crystal": "Budding Sulfur Crystal",
+      "block.crystalnexus.small_sulfur_crystal": "Small Sulfur Crystal",
+      "block.crystalnexus.medium_sulfur_crystal": "Medium Sulfur Crystal",
+      "block.crystalnexus.large_sulfur_crystal": "Large Sulfur Crystal",
+      "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal"
     }
   },
   "metadata": {

@@ -4,6 +4,7 @@
     "crystalnexus:green_heavy_iron_block",
     "crystalnexus:oil_node",
     "crystalnexus:magenta_heavy_iron_block",
+    "crystalnexus:sulfur_crystal",
     "crystalnexus:reinforced_concrete_panel",
     "crystalnexus:orange_heavy_iron_block",
     "crystalnexus:black_heavy_iron_block",
@@ -17,16 +18,21 @@
     "crystalnexus:blue_heavy_iron_block",
     "crystalnexus:brown_heavy_iron_block",
     "crystalnexus:copper_node",
+    "crystalnexus:large_sulfur_crystal",
     "crystalnexus:yellow_heavy_iron_block",
     "crystalnexus:iron_node",
+    "crystalnexus:medium_sulfur_crystal",
     "crystalnexus:reinforced_concrete_stairs",
     "crystalnexus:heavy_iron_block",
     "crystalnexus:reinforced_concrete_panel_stairs",
     "crystalnexus:gray_heavy_iron_block",
     "crystalnexus:white_heavy_iron_block",
+    "crystalnexus:budding_sulfur_crystal",
     "crystalnexus:light_gray_heavy_iron_block",
     "crystalnexus:lime_heavy_iron_block",
     "crystalnexus:reinforced_concrete_slab",
-    "crystalnexus:purple_heavy_iron_block"
+    "crystalnexus:sulfur_cluster",
+    "crystalnexus:purple_heavy_iron_block",
+    "crystalnexus:small_sulfur_crystal"
   ]
 }

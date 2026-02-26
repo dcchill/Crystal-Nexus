@@ -478,6 +478,13 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEEPSLATE_SILICON_ORE = block(CrystalnexusModBlocks.DEEPSLATE_SILICON_ORE);
 	public static final DeferredItem<Item> ITEM_CHARGER = block(CrystalnexusModBlocks.ITEM_CHARGER);
 	public static final DeferredItem<Item> AOE_CHARGER = block(CrystalnexusModBlocks.AOE_CHARGER);
+	public static final DeferredItem<Item> SMOKE_EMITTER = block(CrystalnexusModBlocks.SMOKE_EMITTER);
+	public static final DeferredItem<Item> SULFUR_CRYSTAL = block(CrystalnexusModBlocks.SULFUR_CRYSTAL);
+	public static final DeferredItem<Item> BUDDING_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.BUDDING_SULFUR_CRYSTAL);
+	public static final DeferredItem<Item> SMALL_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.SMALL_SULFUR_CRYSTAL);
+	public static final DeferredItem<Item> MEDIUM_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.MEDIUM_SULFUR_CRYSTAL);
+	public static final DeferredItem<Item> LARGE_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.LARGE_SULFUR_CRYSTAL);
+	public static final DeferredItem<Item> SULFUR_CLUSTER = block(CrystalnexusModBlocks.SULFUR_CLUSTER);
 
 	// Start of user code block custom items
 	// End of user code block custom items

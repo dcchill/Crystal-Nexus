@@ -628,5 +628,12 @@
   "gui.crystalnexus.item_charger_gui.label_item_charger": "[Item Charger]",
   "block.crystalnexus.aoe_charger": "AOE Charger",
   "gui.crystalnexus.aoe_charger_gui.label_item_charger": "[AOE Charger]",
-  "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel."
+  "gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel": "Input coal or charcoal for fuel.",
+  "block.crystalnexus.smoke_emitter": "Smoke Emitter",
+  "block.crystalnexus.sulfur_crystal": "Sulfur Crystal",
+  "block.crystalnexus.budding_sulfur_crystal": "Budding Sulfur Crystal",
+  "block.crystalnexus.small_sulfur_crystal": "Small Sulfur Crystal",
+  "block.crystalnexus.medium_sulfur_crystal": "Medium Sulfur Crystal",
+  "block.crystalnexus.large_sulfur_crystal": "Large Sulfur Crystal",
+  "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal"
 }

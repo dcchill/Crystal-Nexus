@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:sulfur_dust"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:sulfur_crystal",
+    "count": 1
+  }
+}

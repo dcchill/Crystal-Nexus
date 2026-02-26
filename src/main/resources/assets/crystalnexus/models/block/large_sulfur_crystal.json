@@ -1,0 +1,8 @@
+{
+  "parent": "block/cross",
+  "textures": {
+    "cross": "crystalnexus:block/large_sulfur_bud",
+    "particle": "crystalnexus:block/large_sulfur_bud"
+  },
+  "render_type": "cutout"
+}
