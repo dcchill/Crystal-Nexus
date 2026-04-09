@@ -91,7 +91,7 @@
       "name": "CrystalPurifier",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "crystal_purifier",
       "metadata": {
         "files": [
@@ -122,7 +122,7 @@
       "name": "CrystalPurifierOnTickUpdate",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "crystal_purifier_on_tick_update",
       "metadata": {
         "dependencies": [
@@ -356,7 +356,7 @@
       "name": "CrystalAccepter",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "crystal_accepter",
       "metadata": {
         "files": [
@@ -4264,7 +4264,7 @@
       "name": "Tesseract",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "tesseract",
       "metadata": {
         "files": [
@@ -4699,7 +4699,7 @@
       "name": "FactoryController",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "factory_controller",
       "metadata": {
         "files": [
@@ -5743,7 +5743,7 @@
       "name": "EnergyExtractor",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "energy_extractor",
       "metadata": {
         "files": [
@@ -8498,7 +8498,7 @@
       "name": "Battery",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "battery",
       "metadata": {
         "files": [
@@ -8616,7 +8616,7 @@
       "name": "EEBattery",
       "type": "block",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "ee_battery",
       "metadata": {
         "files": [
@@ -20153,7 +20153,7 @@
   "workspaceSettings": {
     "modid": "crystalnexus",
     "modName": "CrystalNexus",
-    "version": "1.0.0",
+    "version": "0.0.1",
     "author": "Dcchill",
     "websiteURL": "https://www.curseforge.com/members/chilllliii/projects",
     "license": "Not specified",

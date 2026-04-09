@@ -124,7 +124,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(64, false);
+								_entityStorage.extractEnergy(256, false);
 						}
 						if (world instanceof ServerLevel _level)
 							_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
@@ -170,7 +170,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(128, false);
+								_entityStorage.extractEnergy(512, false);
 						}
 						if (world instanceof ServerLevel _level)
 							_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
@@ -222,7 +222,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(256, false);
+								_entityStorage.extractEnergy(1024, false);
 						}
 						if (world instanceof ServerLevel _level)
 							_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
@@ -274,7 +274,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(512, false);
+								_entityStorage.extractEnergy(2048, false);
 						}
 						if (world instanceof ServerLevel _level)
 							_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);

@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DarkBatteryCellItem extends Item {
-    public static final int CAPACITY = 102_400_000;
-    public static final int MAX_IO = 102_400;
+    public static final int CAPACITY = 5_000_000;
+    public static final int MAX_IO = 250_000;
 
     public DarkBatteryCellItem() {
         super(new Item.Properties().stacksTo(1));

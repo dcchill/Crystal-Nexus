@@ -119,7 +119,7 @@ public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBloc
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(2048, 128, 64, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(8192, 512, 256, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

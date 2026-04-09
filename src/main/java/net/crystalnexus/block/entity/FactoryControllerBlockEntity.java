@@ -137,7 +137,7 @@ public class FactoryControllerBlockEntity extends RandomizableContainerBlockEnti
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(80192, 80192, 80192, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(65536, 65536, 65536, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

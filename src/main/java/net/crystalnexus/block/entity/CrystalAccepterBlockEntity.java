@@ -129,7 +129,7 @@ public class CrystalAccepterBlockEntity extends RandomizableContainerBlockEntity
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(409600, 0, 2048, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(409600, 2048, 2048, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

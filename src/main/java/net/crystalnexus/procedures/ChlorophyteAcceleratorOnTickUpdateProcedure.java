@@ -21,7 +21,7 @@ import net.minecraft.core.BlockPos;
 public class ChlorophyteAcceleratorOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
         // Only run if the block has enough energy
-        if (getEnergyStored(world, BlockPos.containing(x, y, z), null) >= 64) {
+        if (getEnergyStored(world, BlockPos.containing(x, y, z), null) >= 256) {
 
             int radius = 5; // how far around the block to boost growth
             for (int dx = -radius; dx <= radius; dx++) {
@@ -70,7 +70,7 @@ public class ChlorophyteAcceleratorOnTickUpdateProcedure {
         }			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 				if (_entityStorage != null)
-					_entityStorage.extractEnergy(64, false);
+					_entityStorage.extractEnergy(256, false);
 			}
  // end energy check
     }

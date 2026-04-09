@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class DenseBatteryCellItem extends Item {
-    public static final int CAPACITY = 102_400;
-    public static final int MAX_IO = 10_240;
+    public static final int CAPACITY = 250_000;
+    public static final int MAX_IO = 12_500;
 
     public DenseBatteryCellItem() {
         super(new Item.Properties().stacksTo(1));

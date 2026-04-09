@@ -11,8 +11,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class CarbonBatteryCellItem extends Item {
-    public static final int CAPACITY = 1_024_000;
-    public static final int MAX_IO = 10_240;
+    public static final int CAPACITY = 1_000_000;
+    public static final int MAX_IO = 50_000;
 
     public CarbonBatteryCellItem() {
         super(new Item.Properties().stacksTo(1));

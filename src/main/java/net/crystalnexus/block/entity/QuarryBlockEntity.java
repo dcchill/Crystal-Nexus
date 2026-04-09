@@ -57,7 +57,7 @@ import io.netty.buffer.Unpooled;
 public class QuarryBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 
 	// ----------------- CONFIG -----------------
-	private static final int FE_PER_BLOCK = 128;
+	private static final int FE_PER_BLOCK = 1024;
 	private static final int BLOCKS_PER_TICK = 1;
 	private static final int COOLDOWN_TICKS = 2;
 

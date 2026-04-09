@@ -122,7 +122,7 @@ public class TesseractBlockEntity extends RandomizableContainerBlockEntity imple
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(4009600, 4009600, 4009600, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(4096000, 4096000, 4096000, 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
