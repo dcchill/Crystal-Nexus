@@ -10,7 +10,11 @@
     "states": [],
     "name": "Fertilizer",
     "rarity": "COMMON",
-    "creativeTabs": [],
+    "creativeTabs": [
+      {
+        "value": "CUSTOM:CrystalNexusTab"
+      }
+    ],
     "stackSize": 64,
     "enchantability": 0,
     "useDuration": 0,

@@ -183,6 +183,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.UNSTABLE_EE_MATTER.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_E.get());
 				tabData.accept(CrystalnexusModBlocks.EE_MATTER_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModItems.FERTILIZER.get());
 				tabData.accept(CrystalnexusModItems.FLORATHANE.get());
 				tabData.accept(CrystalnexusModItems.CONDUCTIVE_ALLOY.get());
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
