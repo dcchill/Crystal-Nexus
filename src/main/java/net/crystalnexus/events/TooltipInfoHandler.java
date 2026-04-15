@@ -539,7 +539,7 @@ public class TooltipInfoHandler {
 				"Forms the ring of the Particle Accelerator.");
 		addTooltip("turbine",
 				"Power generation turbine.",
-				"Converts fluid flow into usable energy.");
+				"Converts steam from blutonium into usable energy.");
 		addTooltip("turbine_blade",
 				"Turbine Blade.",
 				"Component used to craft Turbines.");
