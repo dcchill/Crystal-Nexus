@@ -48,7 +48,6 @@ public class EnergySplitterBlock extends Block implements EntityBlock {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(itemstack, context, list, flag);
-		list.add(Component.translatable("block.crystalnexus.energy_splitter.description_0"));
 	}
 
 	@Override

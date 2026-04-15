@@ -58,7 +58,6 @@ public class FactoryLightBlock extends Block {
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack itemstack, Item.TooltipContext context, List<Component> list, TooltipFlag flag) {
 		super.appendHoverText(itemstack, context, list, flag);
-		list.add(Component.translatable("block.crystalnexus.factory_light.description_0"));
 	}
 
 	@Override
