@@ -24,7 +24,7 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 - How to Build: Requires Zero Point Core and surrounding structure.
 
 ### Energy Cables (Basic, Mk2, Energy Splitter, Energy Refractor)
-- Function: Transfers energy from generators to machines. Use splitters to divide the main power line into multiple directions without losing efficiency.
+- Function: Transfers energy from generators to machines.
 
 ## 2. RESOURCE PROCESSING MACHINES
 ### These machines require energy and process raw ores or other items into refined materials.
@@ -54,7 +54,7 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 - Function: Stamps raw materials into printed circuits or chips for machine components.
 
 ### Dust Separator
-- Function: Sifts through extracted mixed dust or waste to separate useful trace minerals.
+- Function: Sifts through extracted mixed dust to get nuggets.
 
 ### Matter Transmutation Table
 - Function: Endgame block that allows converting energy/EE-matter directly into resources (like stone, coal, sand, or rare ores).
@@ -84,12 +84,12 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 - Function: Remote wireless item transfer. Links to Depots to pull/push items over long distances instantly.
 
 ### Tesseract
-- Function: Endgame wireless transfer gateway. Can transfer Items, Energy, and Fluids simultaneously across any distance.
+- Function: Endgame wireless energy transfer. Can transfer Energy across any distance.
 
 ## 4. UTILITY & CRAFTING
 
 ### Crafting Factory
-- Function: Specialized crafter that combines intricate recipes automatically when supplied with power, fluids, and items via controllers (Factory Energy Controller, Factory Item Controller).
+- Function: Specialized crafter that crafts recipes automatically and intelligently when supplied with power and items.
 
 ### Biomatic Composter / Simulator / Constructor
 - Function: Processes organic matter into biomass/fuel, or simulates organic compound growth (like wood/crops) using power instead of farming.
@@ -103,11 +103,12 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ### Item Charger
 - Function: Charges energy-based items (tools, batteries, jetpacks, hoverpacks) that are placed inside it.
 
-### Electromagnet
-- Function: When powered, it pulls dropped item entities around it toward itself, acting as a large vacuum. Usually paired with an Item Collector.
+### Electromagnet and Particle Accelerator
+- Function: Crafts special recipes by accelerating items at high speeds.
+- How to Build: Use the Particle Accelerator tube to build a closed flat loop around the Particle Accelerator Controller.  In that loop put in Electromagnets and power them to make the machine work; the more magents the faster it crafts.
 
 ### Item Collector
-- Function: Picks up dropped items around it and places them into adjacent chests or conveyor outputs.
+- Function: Attracts items and picks them up.
 
 ## 5. STORAGE
 ### Container
@@ -133,13 +134,15 @@ Crude Oil / Gas Generation: Placed via world generation. Use pumps or extractors
 - Jetpack vs Hoverpack: The Jetpack uses internal fuel to provide continuous vertical and forward directional thrust (great for moving fast or scaling heights). The Hoverpack provides a stable, gravity-defying hover with fine mid-air control, making it ideal when building or working inside your base. The Hoverpack uses energy from battery items.
 
 ### Machine Upgrades
-- Function: Modifiers placed inside compatible machines to boost their stats. Includes Acceleration Upgrades (faster processing), Efficiency Upgrades (less power usage), and Range/Storage Upgrades (for logistics blocks like depots).
-
+- Function: Modifiers placed inside compatible machines to boost their stats with flat multipliers. Includes Acceleration Upgrades (faster processing), Efficiency Upgrades (less power usage), and Range/Storage Upgrades (for logistics blocks like depots).
+  
+### SSD / Data Storage Upgrades
+- Function: Solid State Drives (SSDs) are installed as randomized modifiers inside computational machines (like the Computation Cluster or Crafting Factory). Higher tiers (SSD, Rare SSD, Epic SSD) increase the odds of getting better multipliers.
+  
 ### Crystals & Singularities
 - Function: Highly compressed or purely refined resources, typically used as key materials in end-game crafting (such as creating the Zero Point core or accessing dimensional tiers).
 
 ### Batteries & Cells
 - Function: Portable batteries (Dark Matter Battery Cell, Dense Battery Cell, etc.) and fuel cells (Oil, Gasoline) for transporting or storing energy on the go.
 
-### SSD / Data Storage Upgrades
-- Function: Solid State Drives (SSDs) are installed as modifiers inside computational machines (like the Computation Cluster or Crafting Factory). They store digital patterns, recipes, or complex data required for late-game autocrafting. Higher tiers (Rare SSD, Epic SSD, Encrypted SSD) dramatically increase the data storage capacity and processing abilities of the machine they are installed in.
+
