@@ -53,18 +53,18 @@ public class TooltipInfoHandler {
 				"Place above a Steam Chamber to collect steam.",
 				"Use fluid pipes to send steam to Steam Engines.");
 		addTooltip("steam_engine",
-				"Converts steam into usable energy.",
+				"Converts steam into energy.",
 				"Basic power generation from collected steam.");
 		addTooltip("steam_engine_upgrade",
 				"High Pressure Steam Engine.",
 				"Increased power generation from collected steam.");
 
 		addTooltip("piston_generator",
-				"Generates energy using gasoline.",
-				"Place fuel or required inputs to start generation.");
+				"Generates energy using fuel.",
+				"Insert fuel to start generation.");
 		addTooltip("invert_piston_generator",
-				"Generates energy using gasoline.",
-				"Higher energy output using Invertium technology.");
+				"Generates energy using fuel.",
+				"Insert fuel to start generation.");
 
 		addTooltip("reactor_block",
 				"Outer casing for the Reactor multiblock.",
@@ -74,7 +74,7 @@ public class TooltipInfoHandler {
 				"Place internally within the reactor structure.");
 		addTooltip("reactor_computer",
 				"Master control block for the Reactor.",
-				"Right-click to manage the reaction process.",
+				"Uses Blutonium and water to generate energy.",
 				"Requires Reactor Blocks, Core, Fluid Input, and Energy Output.");
 		addTooltip("reactor_fluid_input",
 				"Provides coolant to the Reactor.",
@@ -86,8 +86,8 @@ public class TooltipInfoHandler {
 				"Outputs waste from the Reactor.",
 				"Handles byproducts of the reactor process.");
 		addTooltip("reactor_upgrade",
-				"Reactor speed upgrade.",
-				"Boosts reactor energy output.");
+				"Reactor energy upgrade.",
+				"Boosts reactor energy production.");
 		addTooltip("reactor_upgrade_permafrost",
 				"Reactor Permafrost upgrade.",
 				"Removes coolant requirement.");
@@ -100,35 +100,36 @@ public class TooltipInfoHandler {
 
 		addTooltip("basic_energy_cable",
 				"Basic energy transfer cable.",
-				"Transfers energy from generators to machines.");
+				"Transfers energy to machines.");
 		addTooltip("energy_cable",
 				"Standard energy transfer cable.",
-				"Transfers energy from generators to machines.");
+				"Transfers energy with medium throughput to machines.");
 		addTooltip("energy_cable_mk_2",
 				"Advanced energy transfer cable.",
-				"Higher throughput energy transfer.");
+				"Transfers energy with high throughput to machines.");
+
 		addTooltip("energy_splitter",
 				"Splits energy into multiple directions.",
-				"Divide power lines.");
+				"Divide energy beams.");
 		addTooltip("energy_refractor",
 				"Redirects energy flow.",
 				"Route energy in specific directions.");
 
 		addTooltip("crystal_energy_guide",
 				"Energy routing through the air.",
-				"Guides energy along a beam.");
+				"Redirects crystal energy into a specific direction.");
 		addTooltip("crystal_guide",
-				"Crystal energy guide block.",
-				"Routes crystal energy in specific directions.");
+				"End Crystal beam guide.",
+				"Redirects the End Crystal beam.");
 		addTooltip("conductive_energy_guide",
 				"Upgraded energy routing through the air.",
 				"Guides energy along a beam.");
 		addTooltip("conductive_energy_refractor",
 				"Upgraded energy redirector.",
-				"Routes conductive energy in specific directions.");
+				"Redirects conductive energy into a specific direction.");
 		addTooltip("conductive_energy_splitter",
 				"Upgraded energy splitter.",
-				"Divide conductive power into multiple directions.");
+				"Divide energy beams.");
 
 		// RESOURCE PROCESSING
 
@@ -162,8 +163,7 @@ public class TooltipInfoHandler {
 				"Extreme high-pressure compressor.",
 				"Condenses thousands of items into Singularities.");
 		addTooltip("crystal_purifier",
-				"Purifies and upgrades energy crystals.",
-				"Produces clear usable energy crystals.");
+				"Purifies and upgrades energy crystals.");
 		addTooltip("chemical_reaction_chamber",
 				"Combines base resources with reactants.",
 				"Processes chemical reactions for materials.");
@@ -201,30 +201,30 @@ public class TooltipInfoHandler {
 				"Quantum resource extraction.",
 				"Pulls resources from another dimension.");
 		addTooltip("node_miner",
-				"Mines from resource Nodes.",
-				"Place on deposits for continuous mining.");
+				"Mines from Ore Nodes.",
+				"Slowly mines resources at the cost of power");
 		addTooltip("node_extractor",
-				"Targets infinite ore Nodes.",
-				"Slowly extracts resources at the cost of power.");
+				"Extracts fluid from Fluid Nodes.",
+				"Slowly extracts fluids at the cost of power.");
 
 		addTooltip("iron_node",
 				"Infinite Iron resource node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Miner.");
 		addTooltip("gold_node",
 				"Infinite Gold resource node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Miner.");
 		addTooltip("copper_node",
 				"Infinite Copper resource node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Miner.");
 		addTooltip("ancient_debris_node",
 				"Infinite Ancient Debris node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Miner.");
 		addTooltip("lava_node",
 				"Infinite Lava node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Extractor.");
 		addTooltip("oil_node",
 				"Infinite Oil node.",
-				"Extract with Node Miner or Extractor.");
+				"Extract with Node Extractor.");
 
 		addTooltip("conveyer_belt",
 				"Transports items horizontally.",
@@ -260,13 +260,13 @@ public class TooltipInfoHandler {
 
 		addTooltip("depot_uploader",
 				"Wireless item upload station.",
-				"Sends items to linked Depots.");
+				"Sends items to your personal Depot.");
 		addTooltip("depot_downloader",
 				"Wireless item download station.",
-				"Retrieves items from linked Depots.");
+				"Retrieves items from your personal Depot.");
 		addTooltip("depot_uplink",
 				"Expandable wireless storage system.",
-				"Transfers items wirelessly.");
+				"Transfers items wirelessly to your personal Depot.");
 		addTooltip("depot_storage_upgrade",
 				"Doubles depot storage capacity.");
 		addTooltip("tesseract",
@@ -282,7 +282,8 @@ public class TooltipInfoHandler {
 
 		addTooltip("crafting_factory",
 				"Automated recipe crafter.",
-				"Crafts assigned recipes.");
+				"Crafts assigned recipes.",
+				"Ignores recipe shape.");
 		addTooltip("factory_controller",
 				"Energy controller for Machines.",
 				"Supplies power to linked Machines.");
@@ -454,28 +455,25 @@ public class TooltipInfoHandler {
 				"Block of EE Matter.",
 				"Compressed energy matter.");
 
-		addTooltip("computation_node",
-				"Computation Node.",
-				"Processes SSD data.");
 		addTooltip("computation_cluster",
 				"Computation Cluster.",
 				"High-performance processing unit.");
 
 		addTooltip("extractinator",
 				"Resource extraction machine.",
-				"Processes raw materials into outputs.");
+				"Sifts through loose sediment to find resources.");
 		addTooltip("crystal_accepter",
 				"Crystal Energy Siphon.",
-				"Accepts and processes crystal inputs.");
+				"Generates energy from nearby End Crystals.");
 		addTooltip("inverter",
 				"Invertium Inverter.",
 				"Inverts energy types.");
 		addTooltip("energy_extractor",
-				"Chlorophyte Energy Extractor.",
-				"Converts stored energy into grid energy.");
+				"Energy Extractor.",
+				"Extracts energy from items.");
 		addTooltip("battery_monitor",
 				"Battery Monitor.",
-				"Displays battery status.");
+				"Displays battery storage.");
 		addTooltip("singularity_matrix",
 				"Singularity Matrix.",
 				"Converts items into EE Matter.");
@@ -500,26 +498,24 @@ public class TooltipInfoHandler {
 
 		addTooltip("chlorophyte_accelerator",
 				"Chlorophyte Accelerator.",
-				"Speeds up crop growth.");
+				"Speeds up crop growth using energy.");
 
 		addTooltip("conductive_alloy",
-				"Conductive Alloy ingot.",
+				"Conductive Alloy.",
 				"Used in energy systems and components.");
-		addTooltip("crystalized_alloy",
-				"Crystalized Alloy ingot.",
-				"Refined alloy for advanced systems.");
 		addTooltip("crystalized_alloy_magnet",
 				"Crystalized Alloy Magnet.",
-				"Magnetic component for item systems.");
+				"Magnetic component for machines.",
+				"Also attracts items when held in hand.");
 		addTooltip("florathane",
 				"Florathane compound.",
-				"Strong biofuel.");
+				"Powerful biofuel.");
 		addTooltip("florathane_wand",
 				"Florathane Wand.",
 				"Applies growth acceleration.");
 		addTooltip("fertilizer",
 				"Fertilizer.",
-				"Boosts crop growth when applied.");
+				"Boosts crop growth in an AOE.");
 	}
 
 	private static void addTooltip(String registryName, String... lines) {
