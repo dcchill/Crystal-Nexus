@@ -457,7 +457,7 @@ public class TooltipInfoHandler {
 
 		addTooltip("computation_cluster",
 				"Computation Cluster.",
-				"High-performance processing unit.");
+				"Decrypts SSD Upgrades.");
 
 		addTooltip("extractinator",
 				"Resource extraction machine.",

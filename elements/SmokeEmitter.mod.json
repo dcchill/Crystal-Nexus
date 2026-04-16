@@ -3,7 +3,7 @@
   "_type": "block",
   "definition": {
     "texture": "crystalmachineframe",
-    "textureTop": "turbine_bottom_on",
+    "textureTop": "turbine_on",
     "textureLeft": "crystalmachineframe",
     "textureFront": "crystalmachineframe",
     "textureRight": "crystalmachineframe",

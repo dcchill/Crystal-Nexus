@@ -2,7 +2,7 @@
   "parent": "block/cube",
   "textures": {
     "down": "crystalnexus:block/crystalmachineframe",
-    "up": "crystalnexus:block/turbine_bottom_on",
+    "up": "crystalnexus:block/turbine_on",
     "north": "crystalnexus:block/crystalmachineframe",
     "east": "crystalnexus:block/crystalmachineframe",
     "south": "crystalnexus:block/crystalmachineframe",
