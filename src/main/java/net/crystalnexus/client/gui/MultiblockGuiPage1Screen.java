@@ -5,17 +5,14 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.MultiblockGuiPage1Menu;
-import net.crystalnexus.procedures.MultiblockGuiPage1WhileThisGUIIsOpenTickProcedure;
 import net.crystalnexus.network.MultiblockGuiPage1ButtonMessage;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
@@ -26,8 +23,7 @@ public class MultiblockGuiPage1Screen extends AbstractContainerScreen<Multiblock
 	private final int x, y, z;
 	private final Player entity;
 	private boolean menuStateUpdateActive = false;
-	Button button_empty;
-	Button button_empty1;
+	private final MultiblockStructurePreview structurePreview = new MultiblockStructurePreview("reactor");
 	ImageButton imagebutton_tab_dark;
 	ImageButton imagebutton_tab_dark1;
 	ImageButton imagebutton_tab_dark2;
@@ -54,6 +50,7 @@ public class MultiblockGuiPage1Screen extends AbstractContainerScreen<Multiblock
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
+		this.structurePreview.renderHoverTooltip(guiGraphics, this.font, this.world.registryAccess(), this.leftPos, this.topPos, mouseX, mouseY);
 	}
 
 	@Override
@@ -63,8 +60,7 @@ public class MultiblockGuiPage1Screen extends AbstractContainerScreen<Multiblock
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/multiblock_gui_page_1_overlay.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 330, 166, 330, 166);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tab_reactor.png"), this.leftPos + 153, this.topPos + -23, 0, 0, 32, 26, 32, 26);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/reactorsprite.png"), this.leftPos + 6, this.topPos + 7, 0, Mth.clamp((int) MultiblockGuiPage1WhileThisGUIIsOpenTickProcedure.execute(world, x, y, z) * 128, 0, 256), 128,
-				128, 128, 384);
+		this.structurePreview.render(guiGraphics, this.font, this.world.registryAccess(), this.leftPos, this.topPos, mouseX, mouseY);
 		RenderSystem.disableBlend();
 	}
 
@@ -75,6 +71,38 @@ public class MultiblockGuiPage1Screen extends AbstractContainerScreen<Multiblock
 			return true;
 		}
 		return super.keyPressed(key, b, c);
+	}
+
+	@Override
+	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (this.structurePreview.mouseClicked(mouseX, mouseY, button, this.world.registryAccess(), this.leftPos, this.topPos)) {
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		if (this.structurePreview.mouseDragged(mouseX, mouseY, button)) {
+			return true;
+		}
+		return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+	}
+
+	@Override
+	public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		if (this.structurePreview.mouseReleased(mouseX, mouseY, button)) {
+			return true;
+		}
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	@Override
+	public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+		if (this.structurePreview.mouseScrolled(mouseX, mouseY, deltaY, this.world.registryAccess(), this.leftPos, this.topPos)) {
+			return true;
+		}
+		return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
 	}
 
 	@Override
@@ -93,24 +121,6 @@ public class MultiblockGuiPage1Screen extends AbstractContainerScreen<Multiblock
 	@Override
 	public void init() {
 		super.init();
-		button_empty = Button.builder(Component.translatable("gui.crystalnexus.multiblock_gui_page_1.button_empty"), e -> {
-			int x = MultiblockGuiPage1Screen.this.x;
-			int y = MultiblockGuiPage1Screen.this.y;
-			if (true) {
-				PacketDistributor.sendToServer(new MultiblockGuiPage1ButtonMessage(0, x, y, z));
-				MultiblockGuiPage1ButtonMessage.handleButtonAction(entity, 0, x, y, z);
-			}
-		}).bounds(this.leftPos + 96, this.topPos + 142, 30, 20).build();
-		this.addRenderableWidget(button_empty);
-		button_empty1 = Button.builder(Component.translatable("gui.crystalnexus.multiblock_gui_page_1.button_empty1"), e -> {
-			int x = MultiblockGuiPage1Screen.this.x;
-			int y = MultiblockGuiPage1Screen.this.y;
-			if (true) {
-				PacketDistributor.sendToServer(new MultiblockGuiPage1ButtonMessage(1, x, y, z));
-				MultiblockGuiPage1ButtonMessage.handleButtonAction(entity, 1, x, y, z);
-			}
-		}).bounds(this.leftPos + 15, this.topPos + 142, 30, 20).build();
-		this.addRenderableWidget(button_empty1);
 		imagebutton_tab_dark = new ImageButton(this.leftPos + 285, this.topPos + -23, 32, 26, new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab.png")),
 				e -> {
 					int x = MultiblockGuiPage1Screen.this.x;

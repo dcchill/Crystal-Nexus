@@ -10904,7 +10904,7 @@
       "name": "MultiblockGuiPage1",
       "type": "gui",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "multiblock_gui_page_1",
       "metadata": {
         "files": [
@@ -11058,7 +11058,7 @@
       "name": "MultiblockGuiPage2",
       "type": "gui",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "multiblock_gui_page_2",
       "metadata": {
         "files": [
@@ -11143,7 +11143,7 @@
       "name": "MultiblockGuiPage3",
       "type": "gui",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "multiblock_gui_page_3",
       "metadata": {
         "files": [
@@ -11228,7 +11228,7 @@
       "name": "MultiblockGuiPage4",
       "type": "gui",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "multiblock_gui_page_4",
       "metadata": {
         "files": [
@@ -11287,7 +11287,7 @@
       "name": "MultiblockGuiPage5",
       "type": "gui",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "multiblock_gui_page_5",
       "metadata": {
         "files": [
