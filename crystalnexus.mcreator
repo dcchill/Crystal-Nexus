@@ -7139,7 +7139,7 @@
       "name": "ZeroPointMultiblockCheck",
       "type": "procedure",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "zero_point_multiblock_check",
       "metadata": {
         "dependencies": [
