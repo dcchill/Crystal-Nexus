@@ -172,6 +172,9 @@ import net.crystalnexus.block.BuddingSulfurCrystalBlock;
 import net.crystalnexus.block.BrownHeavyIronBlockBlock;
 import net.crystalnexus.block.BlutoniumOreBlock;
 import net.crystalnexus.block.BlutoniumBlockBlock;
+import net.crystalnexus.block.BlueprintFrameBlock;
+import net.crystalnexus.block.BlueprintControllerBlock;
+import net.crystalnexus.block.BlueprintBaseBlock;
 import net.crystalnexus.block.BlueHeavyIronBlockBlock;
 import net.crystalnexus.block.BluTNTBlock;
 import net.crystalnexus.block.BlockPlacerBlock;
@@ -368,6 +371,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> MEDIUM_SULFUR_CRYSTAL = REGISTRY.register("medium_sulfur_crystal", MediumSulfurCrystalBlock::new);
 	public static final DeferredBlock<Block> LARGE_SULFUR_CRYSTAL = REGISTRY.register("large_sulfur_crystal", LargeSulfurCrystalBlock::new);
 	public static final DeferredBlock<Block> SULFUR_CLUSTER = REGISTRY.register("sulfur_cluster", SulfurClusterBlock::new);
+	public static final DeferredBlock<Block> BLUEPRINT_BASE = REGISTRY.register("blueprint_base", BlueprintBaseBlock::new);
+	public static final DeferredBlock<Block> BLUEPRINT_FRAME = REGISTRY.register("blueprint_frame", BlueprintFrameBlock::new);
+	public static final DeferredBlock<Block> BLUEPRINT_CONTROLLER = REGISTRY.register("blueprint_controller", BlueprintControllerBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

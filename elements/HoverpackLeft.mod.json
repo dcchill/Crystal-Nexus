@@ -4,7 +4,7 @@
   "definition": {
     "triggerKey": "A",
     "keyBindingName": "Hoverpack Left",
-    "keyBindingCategoryKey": "misc",
+    "keyBindingCategoryKey": "hoverpack",
     "onKeyPressed": {
       "name": "HoverpackRightOnKeyPressed"
     },

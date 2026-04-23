@@ -1,0 +1,12 @@
+{
+  "mappings": {
+    "default": {
+      "map": {
+        "0": "buildgun",
+        "1": "blueprint_holo",
+        "missing": "blueprint_holo"
+      },
+      "name": "default"
+    }
+  }
+}

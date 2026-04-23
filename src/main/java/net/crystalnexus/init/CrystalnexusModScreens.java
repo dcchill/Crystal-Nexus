@@ -55,6 +55,7 @@ import net.crystalnexus.client.gui.ContainerGUIScreen;
 import net.crystalnexus.client.gui.ComputationClusterGUIScreen;
 import net.crystalnexus.client.gui.CircuitPressGUIScreen;
 import net.crystalnexus.client.gui.ChemicalReactionChamberGUIScreen;
+import net.crystalnexus.client.gui.BlueprintGUIScreen;
 import net.crystalnexus.client.gui.BlockPlacerGuiScreen;
 import net.crystalnexus.client.gui.BioSIMGuiScreen;
 import net.crystalnexus.client.gui.BioMGuiScreen;
@@ -123,6 +124,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.QUARRY_GUI.get(), QuarryGUIScreen::new);
 		event.register(CrystalnexusModMenus.ITEM_CHARGER_GUI.get(), ItemChargerGuiScreen::new);
 		event.register(CrystalnexusModMenus.AOE_CHARGER_GUI.get(), AOEChargerGuiScreen::new);
+		event.register(CrystalnexusModMenus.BLUEPRINT_GUI.get(), BlueprintGUIScreen::new);
 	}
 
 	public interface ScreenAccessor {

@@ -1,0 +1,16 @@
+{
+  "parent": "crystalnexus:custom/buildgun_idle",
+  "textures": {
+    "0": "crystalnexus:block/buildgun",
+    "1": "crystalnexus:block/blueprint_holo",
+    "particle": "crystalnexus:block/buildgun"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "crystalnexus:active": 1
+      },
+      "model": "crystalnexus:custom/buildgun_active"
+    }
+  ]
+}

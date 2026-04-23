@@ -96,6 +96,8 @@ import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteAcceleratorBlockEntity;
 import net.crystalnexus.block.entity.ChemicalReactionChamberBlockEntity;
+import net.crystalnexus.block.entity.BlueprintControllerBlockEntity;
+import net.crystalnexus.block.entity.BlueprintBaseBlockEntity;
 import net.crystalnexus.block.entity.BluTNTBlockEntity;
 import net.crystalnexus.block.entity.BlockPlacerBlockEntity;
 import net.crystalnexus.block.entity.BiomaticSimulatorBlockEntity;
@@ -200,6 +202,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_CHARGER = register("item_charger", CrystalnexusModBlocks.ITEM_CHARGER, ItemChargerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> AOE_CHARGER = register("aoe_charger", CrystalnexusModBlocks.AOE_CHARGER, AOEChargerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMOKE_EMITTER = register("smoke_emitter", CrystalnexusModBlocks.SMOKE_EMITTER, SmokeEmitterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_BASE = register("blueprint_base", CrystalnexusModBlocks.BLUEPRINT_BASE, BlueprintBaseBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_CONTROLLER = register("blueprint_controller", CrystalnexusModBlocks.BLUEPRINT_CONTROLLER, BlueprintControllerBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -367,5 +371,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, AOE_CHARGER.get(), (blockEntity, side) -> ((AOEChargerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMOKE_EMITTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLUEPRINT_BASE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLUEPRINT_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 	}
 }

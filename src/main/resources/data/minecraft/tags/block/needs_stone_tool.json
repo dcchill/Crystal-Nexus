@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:blueprint_frame",
     "crystalnexus:green_heavy_iron_block",
     "crystalnexus:oil_node",
     "crystalnexus:magenta_heavy_iron_block",
@@ -9,6 +10,7 @@
     "crystalnexus:orange_heavy_iron_block",
     "crystalnexus:black_heavy_iron_block",
     "crystalnexus:pink_heavy_iron_block",
+    "crystalnexus:blueprint_base",
     "crystalnexus:red_heavy_iron_block",
     "crystalnexus:reinforced_concrete",
     "crystalnexus:sulfur_ore",

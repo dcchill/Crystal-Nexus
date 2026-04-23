@@ -270,6 +270,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SULFUR_ORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_ORE.get().asItem());
+				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
 			}).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_LOGISTICS = REGISTRY.register("crystal_nexus_logistics",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
@@ -299,6 +300,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
 				tabData.accept(CrystalnexusModBlocks.SMART_SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_BASE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER.get().asItem());
 			}).withTabsBefore(CRYSTAL_NEXUS_TAB.getId()).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_BUILDING_BLOCKS = REGISTRY.register("crystal_nexus_building_blocks",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_building_blocks")).icon(() -> new ItemStack(CrystalnexusModBlocks.HEAVY_IRON_BLOCK.get())).displayItems((parameters, tabData) -> {

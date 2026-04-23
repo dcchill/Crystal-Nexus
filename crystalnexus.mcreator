@@ -18291,6 +18291,100 @@
         ]
       },
       "path": "~/sulfur"
+    },
+    {
+      "name": "BuildGun",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "build_gun",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/BuildGunItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/build_gun.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BuildgunMenu",
+      "type": "keybind",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "buildgun_menu",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/network/BuildgunMenuMessage.java"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintBase",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_base",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/blockstates/blueprint_base.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/blueprint_base.json",
+          "src/main/resources/assets/crystalnexus/models/item/blueprint_base.json",
+          "src/main/resources/assets/crystalnexus/models/block/blueprint_base.json",
+          "src/main/java/net/crystalnexus/block/entity/BlueprintBaseBlockEntity.java",
+          "src/main/java/net/crystalnexus/block/BlueprintBaseBlock.java"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintFrame",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_frame",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/blueprint_frame.json",
+          "src/main/java/net/crystalnexus/block/BlueprintFrameBlock.java",
+          "src/main/resources/assets/crystalnexus/blockstates/blueprint_frame.json",
+          "src/main/resources/assets/crystalnexus/models/block/blueprint_frame.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/blueprint_frame.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintController",
+      "type": "block",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_controller",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/loot_table/blocks/blueprint_controller.json",
+          "src/main/java/net/crystalnexus/block/entity/BlueprintControllerBlockEntity.java",
+          "src/main/java/net/crystalnexus/block/BlueprintControllerBlock.java",
+          "src/main/resources/assets/crystalnexus/models/block/blueprint_controller.json",
+          "src/main/resources/assets/crystalnexus/blockstates/blueprint_controller.json",
+          "src/main/resources/assets/crystalnexus/models/item/blueprint_controller.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintGUI",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "blueprint_gui",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/BlueprintGUIMenu.java",
+          "src/main/java/net/crystalnexus/client/gui/BlueprintGUIScreen.java"
+        ]
+      },
+      "path": "~/buildgun"
     }
   ],
   "variable_elements": [
@@ -18410,6 +18504,8 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:BlueprintFrame",
+      "~CUSTOM:BlueprintBase",
       "~CUSTOM:SulfurCluster",
       "~CUSTOM:LargeSulfurCrystal",
       "~CUSTOM:MediumSulfurCrystal",
@@ -18828,6 +18924,8 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:BlueprintFrame",
+      "~CUSTOM:BlueprintBase",
       "~CUSTOM:SulfurCluster",
       "~CUSTOM:LargeSulfurCrystal",
       "~CUSTOM:MediumSulfurCrystal",
@@ -19156,7 +19254,8 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre"
+      "InvertiumOre",
+      "BuildGun"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -19214,7 +19313,10 @@
       "FactoryItemController",
       "FactoryOutputController",
       "LinkCard",
-      "SmartSplitter"
+      "SmartSplitter",
+      "BlueprintBase",
+      "BlueprintFrame",
+      "BlueprintController"
     ],
     "CUSTOM:CrystalNexusBuildingBlocks": [
       "HeavyIronBlock",
@@ -19900,7 +20002,17 @@
       "block.crystalnexus.small_sulfur_crystal": "Small Sulfur Crystal",
       "block.crystalnexus.medium_sulfur_crystal": "Medium Sulfur Crystal",
       "block.crystalnexus.large_sulfur_crystal": "Large Sulfur Crystal",
-      "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal"
+      "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal",
+      "item.crystalnexus.build_gun": "Build Gun",
+      "key.crystalnexus.buildgun_menu": "Buildgun Schematic Menu",
+      "block.crystalnexus.blueprint_base": "Blueprint Base",
+      "block.crystalnexus.blueprint_frame": "Blueprint Frame",
+      "block.crystalnexus.blueprint_controller": "Blueprint Controller",
+      "gui.crystalnexus.blueprint_gui.label_proc_get_block_name_for_gui": "[Ore Generator]",
+      "gui.crystalnexus.blueprint_gui.tooltip_fill_with_crystal_gloop_and_powe": "Fill with Crystal Gloop and power to start generating ores.",
+      "gui.crystalnexus.blueprint_gui.name": "Blueprint Name",
+      "gui.crystalnexus.blueprint_gui.button_save": "Save",
+      "gui.crystalnexus.blueprint_gui.label_blueprint_controller": "[Blueprint Controller]"
     }
   },
   "metadata": {
@@ -20147,6 +20259,10 @@
       },
       {
         "name": "chargers",
+        "children": []
+      },
+      {
+        "name": "buildgun",
         "children": []
       }
     ]

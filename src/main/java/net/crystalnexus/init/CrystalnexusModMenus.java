@@ -62,6 +62,7 @@ import net.crystalnexus.world.inventory.ContainerGUIMenu;
 import net.crystalnexus.world.inventory.ComputationClusterGUIMenu;
 import net.crystalnexus.world.inventory.CircuitPressGUIMenu;
 import net.crystalnexus.world.inventory.ChemicalReactionChamberGUIMenu;
+import net.crystalnexus.world.inventory.BlueprintGUIMenu;
 import net.crystalnexus.world.inventory.BlockPlacerGuiMenu;
 import net.crystalnexus.world.inventory.BioSIMGuiMenu;
 import net.crystalnexus.world.inventory.BioMGuiMenu;
@@ -132,6 +133,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<QuarryGUIMenu>> QUARRY_GUI = REGISTRY.register("quarry_gui", () -> IMenuTypeExtension.create(QuarryGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemChargerGuiMenu>> ITEM_CHARGER_GUI = REGISTRY.register("item_charger_gui", () -> IMenuTypeExtension.create(ItemChargerGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<AOEChargerGuiMenu>> AOE_CHARGER_GUI = REGISTRY.register("aoe_charger_gui", () -> IMenuTypeExtension.create(AOEChargerGuiMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<BlueprintGUIMenu>> BLUEPRINT_GUI = REGISTRY.register("blueprint_gui", () -> IMenuTypeExtension.create(BlueprintGUIMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

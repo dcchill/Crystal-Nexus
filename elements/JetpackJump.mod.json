@@ -4,7 +4,7 @@
   "definition": {
     "triggerKey": "SPACE",
     "keyBindingName": "Jetpack Jump",
-    "keyBindingCategoryKey": "misc",
+    "keyBindingCategoryKey": "hoverpack",
     "onKeyPressed": {
       "name": "JetpackJumpOnKeyPressed"
     },

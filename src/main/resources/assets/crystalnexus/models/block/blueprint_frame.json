@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/blueprint_frame",
+    "particle": "crystalnexus:block/blueprint_frame"
+  },
+  "render_type": "solid"
+}

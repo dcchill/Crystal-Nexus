@@ -149,6 +149,7 @@ import net.crystalnexus.item.CarbonEfficiencyUpgradeItem;
 import net.crystalnexus.item.CarbonChipItem;
 import net.crystalnexus.item.CarbonBatteryCellItem;
 import net.crystalnexus.item.CarbonAccelerationUpgradeItem;
+import net.crystalnexus.item.BuildGunItem;
 import net.crystalnexus.item.BlutoniumWasteItem;
 import net.crystalnexus.item.BlutoniumNuggetItem;
 import net.crystalnexus.item.BlutoniumIngotItem;
@@ -485,6 +486,10 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> MEDIUM_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.MEDIUM_SULFUR_CRYSTAL);
 	public static final DeferredItem<Item> LARGE_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.LARGE_SULFUR_CRYSTAL);
 	public static final DeferredItem<Item> SULFUR_CLUSTER = block(CrystalnexusModBlocks.SULFUR_CLUSTER);
+	public static final DeferredItem<Item> BUILD_GUN = REGISTRY.register("build_gun", BuildGunItem::new);
+	public static final DeferredItem<Item> BLUEPRINT_BASE = block(CrystalnexusModBlocks.BLUEPRINT_BASE);
+	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
+	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);
 
 	// Start of user code block custom items
 	// End of user code block custom items

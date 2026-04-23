@@ -25,7 +25,7 @@ import net.crystalnexus.network.HoverpackBackwardMessage;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = {Dist.CLIENT})
 public class CrystalnexusModKeyMappings {
-	public static final KeyMapping JETPACK_JUMP = new KeyMapping("key.crystalnexus.jetpack_jump", GLFW.GLFW_KEY_SPACE, "key.categories.misc") {
+	public static final KeyMapping JETPACK_JUMP = new KeyMapping("key.crystalnexus.jetpack_jump", GLFW.GLFW_KEY_SPACE, "key.categories.hoverpack") {
 		private boolean isDownOld = false;
 
 		@Override
@@ -97,7 +97,7 @@ public class CrystalnexusModKeyMappings {
 			isDownOld = isDown;
 		}
 	};
-	public static final KeyMapping HOVERPACK_LEFT = new KeyMapping("key.crystalnexus.hoverpack_left", GLFW.GLFW_KEY_A, "key.categories.misc") {
+	public static final KeyMapping HOVERPACK_LEFT = new KeyMapping("key.crystalnexus.hoverpack_left", GLFW.GLFW_KEY_A, "key.categories.hoverpack") {
 		private boolean isDownOld = false;
 
 		@Override
@@ -146,6 +146,7 @@ public class CrystalnexusModKeyMappings {
 			isDownOld = isDown;
 		}
 	};
+	public static final KeyMapping BUILDGUN_MENU = new KeyMapping("key.crystalnexus.buildgun_menu", GLFW.GLFW_KEY_K, "key.categories.buildgun");
 	private static long JETPACK_JUMP_LASTPRESS = 0;
 	private static long HOVERPACK_RISE_LASTPRESS = 0;
 	private static long HOVERPACK_FORWARD_LASTPRESS = 0;
@@ -162,6 +163,7 @@ public class CrystalnexusModKeyMappings {
 		event.register(HOVERPACK_LEFT);
 		event.register(HOVERPACK_RIGHT);
 		event.register(HOVERPACK_TOGGLE);
+		event.register(BUILDGUN_MENU);
 	}
 
 	@EventBusSubscriber({Dist.CLIENT})

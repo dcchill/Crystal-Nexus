@@ -635,5 +635,15 @@
   "block.crystalnexus.small_sulfur_crystal": "Small Sulfur Crystal",
   "block.crystalnexus.medium_sulfur_crystal": "Medium Sulfur Crystal",
   "block.crystalnexus.large_sulfur_crystal": "Large Sulfur Crystal",
-  "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal"
+  "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal",
+  "item.crystalnexus.build_gun": "Build Gun",
+  "key.crystalnexus.buildgun_menu": "Buildgun Schematic Menu",
+  "block.crystalnexus.blueprint_base": "Blueprint Base",
+  "block.crystalnexus.blueprint_frame": "Blueprint Frame",
+  "block.crystalnexus.blueprint_controller": "Blueprint Controller",
+  "gui.crystalnexus.blueprint_gui.label_proc_get_block_name_for_gui": "[Ore Generator]",
+  "gui.crystalnexus.blueprint_gui.tooltip_fill_with_crystal_gloop_and_powe": "Fill with Crystal Gloop and power to start generating ores.",
+  "gui.crystalnexus.blueprint_gui.name": "Blueprint Name",
+  "gui.crystalnexus.blueprint_gui.button_save": "Save",
+  "gui.crystalnexus.blueprint_gui.label_blueprint_controller": "[Blueprint Controller]"
 }
