@@ -3,6 +3,7 @@ package net.crystalnexus.client;
 import net.crystalnexus.item.BuildGunItem;
 import net.crystalnexus.network.BuildgunAdjustPlacementMessage;
 import net.crystalnexus.network.BuildgunMenuMessage;
+import net.crystalnexus.network.BuildgunTogglePlacementModeMessage;
 import net.crystalnexus.init.CrystalnexusModKeyMappings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
@@ -47,6 +48,23 @@ public class BuildgunClientEvents {
 
 		int steps = event.getScrollDeltaY() > 0 ? 1 : -1;
 		PacketDistributor.sendToServer(new BuildgunAdjustPlacementMessage(steps, minecraft.player.isShiftKeyDown()));
+		event.setCanceled(true);
+	}
+
+	@SubscribeEvent
+	public static void onInteractionInput(InputEvent.InteractionKeyMappingTriggered event) {
+		Minecraft minecraft = Minecraft.getInstance();
+		if (minecraft.player == null || minecraft.screen != null) {
+			return;
+		}
+		if (!event.isAttack() || !minecraft.player.isShiftKeyDown()) {
+			return;
+		}
+		if (heldBuildgun().isEmpty()) {
+			return;
+		}
+		PacketDistributor.sendToServer(new BuildgunTogglePlacementModeMessage());
+		event.setSwingHand(false);
 		event.setCanceled(true);
 	}
 

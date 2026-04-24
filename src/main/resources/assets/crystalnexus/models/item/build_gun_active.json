@@ -1,0 +1,8 @@
+{
+  "parent": "crystalnexus:custom/buildgun_active",
+  "textures": {
+    "0": "crystalnexus:block/buildgun",
+    "1": "crystalnexus:block/blueprint_holo",
+    "particle": "crystalnexus:block/buildgun"
+  }
+}

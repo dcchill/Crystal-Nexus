@@ -33,6 +33,8 @@ import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -330,7 +332,7 @@ public class MultiblockStructurePreview {
 
     private static StructurePreviewData load(String structureId, HolderGetter<Block> blockLookup) {
         String path = "data/crystalnexus/structures/" + structureId + ".nbt";
-        try (InputStream input = MultiblockStructurePreview.class.getClassLoader().getResourceAsStream(path)) {
+        try (InputStream input = openPreviewStream(path, structureId)) {
             if (input == null) {
                 return StructurePreviewData.error("Missing file");
             }
@@ -394,6 +396,25 @@ public class MultiblockStructurePreview {
         } catch (IOException | RuntimeException exception) {
             return StructurePreviewData.error("Load failed");
         }
+    }
+
+    private static InputStream openPreviewStream(String resourcePath, String structureId) throws IOException {
+        InputStream resource = MultiblockStructurePreview.class.getClassLoader().getResourceAsStream(resourcePath);
+        if (resource != null) {
+            return resource;
+        }
+
+        Path schematicsPath = Path.of("schematics", structureId + ".nbt");
+        if (Files.exists(schematicsPath)) {
+            return Files.newInputStream(schematicsPath);
+        }
+
+        Path runSchematicsPath = Path.of("run", "schematics", structureId + ".nbt");
+        if (Files.exists(runSchematicsPath)) {
+            return Files.newInputStream(runSchematicsPath);
+        }
+
+        return null;
     }
 
     private static ListTag getPaletteTag(CompoundTag root) {

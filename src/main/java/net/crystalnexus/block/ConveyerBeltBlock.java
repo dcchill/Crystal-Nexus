@@ -7,6 +7,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -27,6 +28,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -47,6 +49,7 @@ import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
 public class ConveyerBeltBlock extends Block implements EntityBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final EnumProperty<CurveShape> CURVE = EnumProperty.create("curve", CurveShape.class);
 
 	public ConveyerBeltBlock() {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(0.8f, 8f).lightLevel(s -> (new Object() {
@@ -58,7 +61,7 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 				return 0;
 			}
 		}.getLightLevel())).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).dynamicShape());
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCKSTATE, 0).setValue(CURVE, CurveShape.STRAIGHT));
 	}
 
 	@Override
@@ -117,7 +120,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING, BLOCKSTATE);
+		builder.add(FACING, BLOCKSTATE, CURVE);
 	}
 public net.minecraft.world.InteractionResult useWithoutItem(
         BlockState state,
@@ -156,7 +159,8 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 	@Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
     return this.defaultBlockState()
-        .setValue(FACING, context.getHorizontalDirection());
+        .setValue(FACING, context.getHorizontalDirection())
+        .setValue(CURVE, CurveShape.STRAIGHT);
 }
 
 
@@ -171,6 +175,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	@Override
 	public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
 		super.onPlace(blockstate, world, pos, oldState, moving);
+		updateCurveState(world, pos);
 		world.scheduleTick(pos, this, 1);
 	}
 
@@ -178,6 +183,35 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
 		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
 		ConveyerBeltNeighbourBlockChangesProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+		updateCurveState(world, pos);
+	}
+
+	private void updateCurveState(Level world, BlockPos pos) {
+		BlockState state = world.getBlockState(pos);
+		if (state.getBlock() != this || !state.hasProperty(FACING) || !state.hasProperty(CURVE)) {
+			return;
+		}
+
+		if (state.getValue(CURVE) != CurveShape.STRAIGHT) {
+			world.setBlock(pos, state.setValue(CURVE, CurveShape.STRAIGHT), 3);
+		}
+	}
+
+	public enum CurveShape implements StringRepresentable {
+		STRAIGHT("straight"),
+		LEFT("left"),
+		RIGHT("right");
+
+		private final String name;
+
+		CurveShape(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name;
+		}
 	}
 
 	@Override

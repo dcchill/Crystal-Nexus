@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "abc",
+    "  d"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:laser_diode"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "c": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:build_gun",
+    "count": 1
+  }
+}

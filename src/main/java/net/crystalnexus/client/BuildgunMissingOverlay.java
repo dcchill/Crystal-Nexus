@@ -19,7 +19,7 @@ public class BuildgunMissingOverlay {
 
 	public static void show(List<BuildgunMissingItemsMessage.Entry> entries) {
 		ENTRIES.clear();
-		ENTRIES.addAll(entries);
+		ENTRIES.addAll(entries.stream().sorted((a, b) -> Integer.compare(b.count(), a.count())).toList());
 		visibleUntilMs = System.currentTimeMillis() + 2500L;
 	}
 
@@ -31,13 +31,16 @@ public class BuildgunMissingOverlay {
 		Minecraft minecraft = Minecraft.getInstance();
 		GuiGraphics guiGraphics = event.getGuiGraphics();
 		int centerX = guiGraphics.guiWidth() / 2;
-		int y = guiGraphics.guiHeight() - 48;
+		int y = guiGraphics.guiHeight() - 126;
+		int totalCount = ENTRIES.stream().mapToInt(BuildgunMissingItemsMessage.Entry::count).sum();
+		guiGraphics.fill(centerX - 88, y - 28, centerX + 88, y - 14, 0xA0221010);
+		guiGraphics.drawCenteredString(minecraft.font, "Missing: " + totalCount + " blocks  |  " + ENTRIES.size() + " types", centerX, y - 24, 0xFFB3B3);
 		int totalSlots = Math.min(ENTRIES.size(), 8) + (ENTRIES.size() > 8 ? 1 : 0);
 		int startX = centerX - (totalSlots * 20 - 2) / 2;
 
 		for (int i = 0; i < Math.min(ENTRIES.size(), 8); i++) {
 			int x = startX + i * 20;
-			guiGraphics.fill(x - 2, y - 2, x + 18, y + 18, 0xB0101116);
+			guiGraphics.fill(x - 2, y - 2, x + 18, y + 18, 0xB0221414);
 			ItemStack stack = new ItemStack(ENTRIES.get(i).item());
 			guiGraphics.renderItem(stack, x, y);
 			guiGraphics.renderItemDecorations(minecraft.font, stack, x, y, String.valueOf(ENTRIES.get(i).count()));

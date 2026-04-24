@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -46,6 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @EventBusSubscriber(modid = "crystalnexus", value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class BuildgunPreviewRenderer {
@@ -53,7 +57,7 @@ public class BuildgunPreviewRenderer {
 
 	@SubscribeEvent
 	public static void onRenderLevelStage(RenderLevelStageEvent event) {
-		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
+		if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
 			return;
 		}
 
@@ -90,8 +94,11 @@ public class BuildgunPreviewRenderer {
 
 		int distance = Mth.clamp(tag.getInt("buildgunPlacementDistance"), -64, 64);
 		int rotation = Math.floorMod(tag.getInt("buildgunPlacementRotation"), 4);
-		BlockPos origin = placementOrigin(mc, distance);
+		BlockPos origin = placementOrigin(mc, level, tag);
 		List<ClientBlock> blocks = schematic.rotated(rotation, origin);
+		if (BuildgunSchematicManager.MODE_FLAT_GROUND.equals(tag.getString("buildgunPlacementMode"))) {
+			blocks = settleBlocksToGround(level, blocks);
+		}
 		if (blocks.isEmpty() && tag.getBoolean("buildgunPlacementActive")) {
 			return;
 		}
@@ -132,6 +139,7 @@ public class BuildgunPreviewRenderer {
 			renderWireBox(event, mc, bounds.inflate(0.02), 0.15f, 0.85f, 1.0f, 1.0f);
 		}
 		renderBeam(event, mc, stack, bounds.getCenter());
+		buffers.endBatch(RenderType.lightning());
 		buffers.endBatch();
 	}
 
@@ -153,6 +161,7 @@ public class BuildgunPreviewRenderer {
 			return;
 		}
 		forward.normalize();
+		Vector3f muzzleEnd = new Vector3f(s).add(new Vector3f(forward).mul(Math.min(1.1f, s.distance(e))));
 		Vector3f toCam = new Vector3f(-s.x, -s.y, -s.z);
 		if (toCam.lengthSquared() < 1.0e-6f) {
 			toCam.set(0.0f, 1.0f, 0.0f);
@@ -168,6 +177,8 @@ public class BuildgunPreviewRenderer {
 		VertexConsumer consumer = mc.renderBuffers().bufferSource().getBuffer(RenderType.lightning());
 		poseStack.pushPose();
 		Matrix4f mat = poseStack.last().pose();
+		drawBeamTube(consumer, mat, s, muzzleEnd, side, up, 0.18f, 0x3C, 0x44, 0x9A, 140);
+		drawBeamTube(consumer, mat, s, muzzleEnd, side, up, 0.09f, 0x3C, 0x44, 0x9A, 255);
 		drawBeamTube(consumer, mat, s, e, side, up, 0.12f, 0x3C, 0x44, 0x9A, 96);
 		drawBeamTube(consumer, mat, s, e, side, up, 0.055f, 0x3C, 0x44, 0x9A, 255);
 		poseStack.popPose();
@@ -204,8 +215,63 @@ public class BuildgunPreviewRenderer {
 		return eye.add(look.scale(0.65D)).add(right.scale(side)).add(0.0D, -0.18D, 0.0D);
 	}
 
-	private static BlockPos placementOrigin(Minecraft mc, int distance) {
-		return BlockPos.containing(mc.player.getEyePosition().add(mc.player.getLookAngle().scale(distance)));
+	private static BlockPos placementOrigin(Minecraft mc, Level level, CompoundTag tag) {
+		if (BuildgunSchematicManager.MODE_FLAT_GROUND.equals(tag.getString("buildgunPlacementMode")) && mc.hitResult instanceof BlockHitResult hit && hit.getType() != HitResult.Type.MISS) {
+			return hit.getBlockPos().relative(hit.getDirection());
+		}
+		return BuildgunSchematicManager.placementOrigin(level, mc.player.getEyePosition(), mc.player.getLookAngle(), tag);
+	}
+
+	private static List<ClientBlock> settleBlocksToGround(Level level, List<ClientBlock> blocks) {
+		if (blocks.isEmpty()) {
+			return blocks;
+		}
+		List<ClientBlock> settled = blocks;
+		int minY = level.getMinBuildHeight();
+		int maxY = level.getMaxBuildHeight();
+		for (int i = 0; i < maxY - minY && hasBlockingCollision(level, settled); i++) {
+			settled = offsetBlocks(settled, 1);
+		}
+		for (int i = 0; i < maxY - minY && canMoveDown(level, settled); i++) {
+			settled = offsetBlocks(settled, -1);
+		}
+		return settled;
+	}
+
+	private static boolean hasBlockingCollision(Level level, List<ClientBlock> blocks) {
+		for (ClientBlock block : blocks) {
+			BlockState existing = level.getBlockState(block.pos);
+			if (!existing.isAir() && !existing.canBeReplaced()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean canMoveDown(Level level, List<ClientBlock> blocks) {
+		Set<BlockPos> occupied = blocks.stream().map(ClientBlock::pos).collect(Collectors.toSet());
+		for (ClientBlock block : blocks) {
+			BlockPos below = block.pos.below();
+			if (below.getY() < level.getMinBuildHeight()) {
+				return false;
+			}
+			if (occupied.contains(below)) {
+				continue;
+			}
+			BlockState existing = level.getBlockState(below);
+			if (!existing.isAir() && !existing.canBeReplaced()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static List<ClientBlock> offsetBlocks(List<ClientBlock> blocks, int yOffset) {
+		List<ClientBlock> moved = new ArrayList<>(blocks.size());
+		for (ClientBlock block : blocks) {
+			moved.add(new ClientBlock(block.pos.offset(0, yOffset, 0), block.state));
+		}
+		return moved;
 	}
 
 	private static ClientSchematic load(Level level, String name) {

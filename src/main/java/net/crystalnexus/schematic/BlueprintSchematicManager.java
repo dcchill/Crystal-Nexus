@@ -4,6 +4,7 @@ import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
@@ -12,6 +13,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -56,7 +58,45 @@ public final class BlueprintSchematicManager {
 		}
 	}
 
-	private static BlueprintVolume findVolume(ServerLevel level, BlockPos controllerPos) {
+	public static void clearFromController(ServerPlayer player, BlockPos controllerPos) {
+		ServerLevel level = player.serverLevel();
+		BlueprintVolume volume = findVolume(level, controllerPos);
+		if (volume.error != null) {
+			player.displayClientMessage(Component.literal(volume.error).withStyle(ChatFormatting.RED), true);
+			return;
+		}
+
+		int cleared = 0;
+		int skipped = 0;
+		for (int y = volume.maxY; y >= volume.minY; y--) {
+			for (int z = volume.minZ; z <= volume.maxZ; z++) {
+				for (int x = volume.minX; x <= volume.maxX; x++) {
+					BlockPos pos = new BlockPos(x, y, z);
+					BlockState state = level.getBlockState(pos);
+					if (state.isAir() || state.is(Blocks.STRUCTURE_VOID) || isBlueprintPart(state)) {
+						continue;
+					}
+					if (state.getDestroySpeed(level, pos) < 0.0f) {
+						skipped++;
+						continue;
+					}
+
+					BlockEntity blockEntity = level.getBlockEntity(pos);
+					Block.dropResources(state, level, pos, blockEntity, player, player.getMainHandItem());
+					level.destroyBlock(pos, false, player);
+					cleared++;
+				}
+			}
+		}
+
+		Component message = Component.literal("Cleared " + cleared + " blocks").withStyle(ChatFormatting.GREEN);
+		if (skipped > 0) {
+			message = message.copy().append(Component.literal(" (" + skipped + " skipped)").withStyle(ChatFormatting.YELLOW));
+		}
+		player.displayClientMessage(message, false);
+	}
+
+	public static BlueprintVolume findVolume(Level level, BlockPos controllerPos) {
 		Set<BlockPos> structure = collectConnectedStructure(level, controllerPos);
 		List<BlockPos> bases = structure.stream().filter(pos -> isBase(level.getBlockState(pos))).toList();
 		List<BlockPos> frames = structure.stream().filter(pos -> isFrame(level.getBlockState(pos))).toList();
@@ -120,14 +160,14 @@ public final class BlueprintSchematicManager {
 		return new BlueprintVolume(minX + 1, floorY + 1, minZ + 1, maxX - 1, topY - 1, maxZ - 1, null);
 	}
 
-	private static Set<BlockPos> collectConnectedStructure(ServerLevel level, BlockPos controllerPos) {
+	private static Set<BlockPos> collectConnectedStructure(Level level, BlockPos controllerPos) {
 		Set<BlockPos> visited = new HashSet<>();
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
 		queue.add(controllerPos);
 		visited.add(controllerPos);
 		while (!queue.isEmpty() && visited.size() < 8192) {
 			BlockPos pos = queue.removeFirst();
-			for (var direction : net.minecraft.core.Direction.values()) {
+			for (Direction direction : Direction.values()) {
 				BlockPos next = pos.relative(direction);
 				if (visited.contains(next)) {
 					continue;
@@ -226,7 +266,11 @@ public final class BlueprintSchematicManager {
 		return isBase(state) || isFrame(state) || isController(state);
 	}
 
-	private record BlueprintVolume(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, String error) {
+	public record BlueprintVolume(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, String error) {
+		public boolean isValid() {
+			return error == null;
+		}
+
 		private static BlueprintVolume error(String message) {
 			return new BlueprintVolume(0, 0, 0, 0, 0, 0, message);
 		}

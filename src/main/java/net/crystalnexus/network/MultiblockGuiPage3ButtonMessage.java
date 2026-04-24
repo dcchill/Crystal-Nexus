@@ -19,6 +19,7 @@ import net.crystalnexus.procedures.ZeroPointMultiGuiOpenProcedure;
 import net.crystalnexus.procedures.ReactorMultiGuiOpenProcedure;
 import net.crystalnexus.procedures.ReactionMultiGuiOpenProcedure;
 import net.crystalnexus.procedures.OreProMultiGuiOpenProcedure;
+import net.crystalnexus.procedures.BlueprintCreatorMultiGuiOpenProcedure;
 import net.crystalnexus.procedures.MultiblockResearchPrevPageProcedure;
 import net.crystalnexus.procedures.MultiblockResearchNextPageProcedure;
 import net.crystalnexus.CrystalnexusMod;
@@ -75,6 +76,10 @@ public record MultiblockGuiPage3ButtonMessage(int buttonID, int x, int y, int z)
 		if (buttonID == 5) {
 
 			ReactorMultiGuiOpenProcedure.execute(world, x, y, z, entity);
+		}
+		if (buttonID == 6) {
+
+			BlueprintCreatorMultiGuiOpenProcedure.execute(world, x, y, z, entity);
 		}
 	}
 

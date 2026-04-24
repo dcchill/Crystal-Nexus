@@ -23,7 +23,7 @@ public class BuildgunUsageOverlay {
 
 	public static void show(List<BuildgunUsageItemsMessage.Entry> entries) {
 		ENTRIES.clear();
-		ENTRIES.addAll(entries);
+		ENTRIES.addAll(entries.stream().sorted((a, b) -> Integer.compare(b.count(), a.count())).toList());
 		visibleUntilMs = System.currentTimeMillis() + 2500L;
 	}
 
@@ -36,14 +36,16 @@ public class BuildgunUsageOverlay {
 		}
 		GuiGraphics guiGraphics = event.getGuiGraphics();
 		int centerX = guiGraphics.guiWidth() / 2;
-		int y = guiGraphics.guiHeight() - 74;
-		guiGraphics.drawCenteredString(minecraft.font, Component.literal("Uses"), centerX, y - 12, 0xD7F0FF);
+		int y = guiGraphics.guiHeight() - 94;
+		int totalCount = ENTRIES.stream().mapToInt(BuildgunUsageItemsMessage.Entry::count).sum();
+		guiGraphics.fill(centerX - 86, y - 28, centerX + 86, y - 14, 0x90101822);
+		guiGraphics.drawCenteredString(minecraft.font, Component.literal("Uses: " + totalCount + " blocks  |  " + ENTRIES.size() + " types"), centerX, y - 24, 0xD7F0FF);
 		int totalSlots = Math.min(ENTRIES.size(), 8) + (ENTRIES.size() > 8 ? 1 : 0);
 		int startX = centerX - (totalSlots * 20 - 2) / 2;
 
 		for (int i = 0; i < Math.min(ENTRIES.size(), 8); i++) {
 			int x = startX + i * 20;
-			guiGraphics.fill(x - 2, y - 2, x + 18, y + 18, 0xB0101116);
+			guiGraphics.fill(x - 2, y - 2, x + 18, y + 18, 0xB0141A22);
 			ItemStack stack = new ItemStack(ENTRIES.get(i).item());
 			guiGraphics.renderItem(stack, x, y);
 			guiGraphics.renderItemDecorations(minecraft.font, stack, x, y, String.valueOf(ENTRIES.get(i).count()));

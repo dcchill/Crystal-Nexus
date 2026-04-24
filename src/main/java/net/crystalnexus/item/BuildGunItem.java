@@ -15,7 +15,7 @@ import net.minecraft.world.level.Level;
 
 public class BuildGunItem extends Item {
 	public BuildGunItem() {
-		super(new Item.Properties());
+		super(new Item.Properties().stacksTo(1));
 	}
 
 	public static boolean isVisualActive(ItemStack stack) {

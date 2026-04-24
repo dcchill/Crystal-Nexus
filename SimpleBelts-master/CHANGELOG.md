@@ -1,0 +1,2 @@
+- Fix crash when placing conveyor chute block on floors
+- Fix potential crash when invalid conveyors are destroyed

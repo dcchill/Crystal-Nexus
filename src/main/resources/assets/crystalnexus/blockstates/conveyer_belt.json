@@ -1,48 +1,138 @@
 {
   "variants": {
-    "facing=north,blockstate=0": {
+    "facing=north,blockstate=0,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt"
     },
-    "facing=east,blockstate=0": {
+    "facing=east,blockstate=0,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt",
       "y": 90
     },
-    "facing=south,blockstate=0": {
+    "facing=south,blockstate=0,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt",
       "y": 180
     },
-    "facing=west,blockstate=0": {
+    "facing=west,blockstate=0,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt",
       "y": 270
     },
-    "facing=north,blockstate=1": {
+    "facing=north,blockstate=1,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_0"
     },
-    "facing=east,blockstate=1": {
+    "facing=east,blockstate=1,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_0",
       "y": 90
     },
-    "facing=south,blockstate=1": {
+    "facing=south,blockstate=1,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_0",
       "y": 180
     },
-    "facing=west,blockstate=1": {
+    "facing=west,blockstate=1,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_0",
       "y": 270
     },
-    "facing=north,blockstate=2": {
+    "facing=north,blockstate=2,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_1"
     },
-    "facing=east,blockstate=2": {
+    "facing=east,blockstate=2,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_1",
       "y": 90
     },
-    "facing=south,blockstate=2": {
+    "facing=south,blockstate=2,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_1",
       "y": 180
     },
-    "facing=west,blockstate=2": {
+    "facing=west,blockstate=2,curve=straight": {
       "model": "crystalnexus:block/conveyer_belt_blockstate_blockstate_1",
+      "y": 270
+    },
+    "facing=north,blockstate=0,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left"
+    },
+    "facing=east,blockstate=0,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 90
+    },
+    "facing=south,blockstate=0,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 180
+    },
+    "facing=west,blockstate=0,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 270
+    },
+    "facing=north,blockstate=1,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left"
+    },
+    "facing=east,blockstate=1,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 90
+    },
+    "facing=south,blockstate=1,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 180
+    },
+    "facing=west,blockstate=1,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 270
+    },
+    "facing=north,blockstate=2,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left"
+    },
+    "facing=east,blockstate=2,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 90
+    },
+    "facing=south,blockstate=2,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 180
+    },
+    "facing=west,blockstate=2,curve=left": {
+      "model": "crystalnexus:block/conveyer_belt_curve_left",
+      "y": 270
+    },
+    "facing=north,blockstate=0,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right"
+    },
+    "facing=east,blockstate=0,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 90
+    },
+    "facing=south,blockstate=0,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 180
+    },
+    "facing=west,blockstate=0,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 270
+    },
+    "facing=north,blockstate=1,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right"
+    },
+    "facing=east,blockstate=1,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 90
+    },
+    "facing=south,blockstate=1,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 180
+    },
+    "facing=west,blockstate=1,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 270
+    },
+    "facing=north,blockstate=2,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right"
+    },
+    "facing=east,blockstate=2,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 90
+    },
+    "facing=south,blockstate=2,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
+      "y": 180
+    },
+    "facing=west,blockstate=2,curve=right": {
+      "model": "crystalnexus:block/conveyer_belt_curve_right",
       "y": 270
     }
   }

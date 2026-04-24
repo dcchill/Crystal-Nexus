@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:blutonium_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "c": {
+      "item": "crystalnexus:polymer_sheet"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:blueprint_base",
+    "count": 4
+  }
+}

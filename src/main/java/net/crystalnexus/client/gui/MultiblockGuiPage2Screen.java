@@ -28,6 +28,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 	ImageButton imagebutton_tab_dark1;
 	ImageButton imagebutton_tab_dark2;
 	ImageButton imagebutton_tab_dark3;
+	ImageButton imagebutton_tab_dark4;
 
 	public MultiblockGuiPage2Screen(MultiblockGuiPage2Menu container, Inventory inventory, Component text) {
 		super(container, inventory, text);
@@ -59,7 +60,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/multiblock_gui_page_1_overlay.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 330, 166, 330, 166);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tab_reaction.png"), this.leftPos + 186, this.topPos + -23, 0, 0, 32, 26, 32, 26);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tab_reaction.png"), this.leftPos + 153, this.topPos + -23, 0, 0, 32, 26, 32, 26);
 		this.structurePreview.render(guiGraphics, this.font, this.world.registryAccess(), this.leftPos, this.topPos, mouseX, mouseY);
 		RenderSystem.disableBlend();
 	}
@@ -119,7 +120,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 	@Override
 	public void init() {
 		super.init();
-		imagebutton_tab_dark = new ImageButton(this.leftPos + 285, this.topPos + -23, 32, 26, new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab.png")),
+		imagebutton_tab_dark = new ImageButton(this.leftPos + 252, this.topPos + -23, 32, 26, new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab.png")),
 				e -> {
 					int x = MultiblockGuiPage2Screen.this.x;
 					int y = MultiblockGuiPage2Screen.this.y;
@@ -134,7 +135,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 			}
 		};
 		this.addRenderableWidget(imagebutton_tab_dark);
-		imagebutton_tab_dark1 = new ImageButton(this.leftPos + 252, this.topPos + -23, 32, 26,
+		imagebutton_tab_dark1 = new ImageButton(this.leftPos + 219, this.topPos + -23, 32, 26,
 				new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_orepro_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab_orepro.png")), e -> {
 					int x = MultiblockGuiPage2Screen.this.x;
 					int y = MultiblockGuiPage2Screen.this.y;
@@ -149,7 +150,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 			}
 		};
 		this.addRenderableWidget(imagebutton_tab_dark1);
-		imagebutton_tab_dark2 = new ImageButton(this.leftPos + 219, this.topPos + -23, 32, 26,
+		imagebutton_tab_dark2 = new ImageButton(this.leftPos + 186, this.topPos + -23, 32, 26,
 				new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_ultimasmelter_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab_ultimasmelter.png")), e -> {
 					int x = MultiblockGuiPage2Screen.this.x;
 					int y = MultiblockGuiPage2Screen.this.y;
@@ -164,7 +165,7 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 			}
 		};
 		this.addRenderableWidget(imagebutton_tab_dark2);
-		imagebutton_tab_dark3 = new ImageButton(this.leftPos + 153, this.topPos + -23, 32, 26,
+		imagebutton_tab_dark3 = new ImageButton(this.leftPos + 120, this.topPos + -23, 32, 26,
 				new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_reactor_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab_reactor.png")), e -> {
 					int x = MultiblockGuiPage2Screen.this.x;
 					int y = MultiblockGuiPage2Screen.this.y;
@@ -179,5 +180,20 @@ public class MultiblockGuiPage2Screen extends AbstractContainerScreen<Multiblock
 			}
 		};
 		this.addRenderableWidget(imagebutton_tab_dark3);
+		imagebutton_tab_dark4 = new ImageButton(this.leftPos + 285, this.topPos + -23, 32, 26,
+				new WidgetSprites(ResourceLocation.parse("crystalnexus:textures/screens/tab_blueprint_dark.png"), ResourceLocation.parse("crystalnexus:textures/screens/tab_blueprint.png")), e -> {
+					int x = MultiblockGuiPage2Screen.this.x;
+					int y = MultiblockGuiPage2Screen.this.y;
+					if (true) {
+						PacketDistributor.sendToServer(new MultiblockGuiPage2ButtonMessage(6, x, y, z));
+						MultiblockGuiPage2ButtonMessage.handleButtonAction(entity, 6, x, y, z);
+					}
+				}) {
+			@Override
+			public void renderWidget(GuiGraphics guiGraphics, int x, int y, float partialTicks) {
+				guiGraphics.blit(sprites.get(isActive(), isHoveredOrFocused()), getX(), getY(), 0, 0, width, height, width, height);
+			}
+		};
+		this.addRenderableWidget(imagebutton_tab_dark4);
 	}
 }

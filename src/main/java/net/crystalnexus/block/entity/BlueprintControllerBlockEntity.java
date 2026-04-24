@@ -83,7 +83,7 @@ public class BlueprintControllerBlockEntity extends RandomizableContainerBlockEn
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Blueprint Controller");
+		return Component.literal("Blu-print Controller");
 	}
 
 	@Override

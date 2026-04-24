@@ -14,20 +14,28 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.io.IOException;
@@ -35,6 +43,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -42,13 +51,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class BuildgunSchematicManager {
 	private static final String SELECTED = "buildgunSelectedSchematic";
 	private static final String PLACEMENT_ACTIVE = "buildgunPlacementActive";
 	private static final String PLACEMENT_DISTANCE = "buildgunPlacementDistance";
 	private static final String PLACEMENT_ROTATION = "buildgunPlacementRotation";
+	private static final String PLACEMENT_MODE = "buildgunPlacementMode";
 	private static final String BUILDING_ACTIVE = "buildgunBuildingActive";
+	private static final int STORAGE_RECURSION_LIMIT = 4;
+	public static final String MODE_DEFAULT = "default";
+	public static final String MODE_FLAT_GROUND = "flat_ground";
 
 	private BuildgunSchematicManager() {
 	}
@@ -90,7 +105,9 @@ public final class BuildgunSchematicManager {
 			tag.putBoolean(BUILDING_ACTIVE, false);
 			tag.putInt(PLACEMENT_DISTANCE, 6);
 			tag.putInt(PLACEMENT_ROTATION, 0);
+			tag.putString(PLACEMENT_MODE, MODE_DEFAULT);
 		});
+		refreshModelState(stack);
 		player.displayClientMessage(Component.literal("Selected schematic: " + schematicName).withStyle(ChatFormatting.AQUA), true);
 	}
 
@@ -109,7 +126,11 @@ public final class BuildgunSchematicManager {
 			if (!tag.contains(PLACEMENT_ROTATION)) {
 				tag.putInt(PLACEMENT_ROTATION, 0);
 			}
+			if (!tag.contains(PLACEMENT_MODE)) {
+				tag.putString(PLACEMENT_MODE, MODE_DEFAULT);
+			}
 		});
+		refreshModelState(stack);
 		try {
 			SchematicData schematic = loadSchematic(player.serverLevel(), selected);
 			showUsage(player, usageItems(schematic.blocks));
@@ -140,6 +161,15 @@ public final class BuildgunSchematicManager {
 		player.displayClientMessage(Component.literal("Distance " + tag.getInt(PLACEMENT_DISTANCE) + "  Rotation " + (tag.getInt(PLACEMENT_ROTATION) * 90) + " deg").withStyle(ChatFormatting.GRAY), true);
 	}
 
+	public static void togglePlacementMode(ServerPlayer player, ItemStack stack) {
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
+			String current = normalizedMode(tag);
+			tag.putString(PLACEMENT_MODE, MODE_FLAT_GROUND.equals(current) ? MODE_DEFAULT : MODE_FLAT_GROUND);
+		});
+		String mode = placementMode(stack);
+		player.displayClientMessage(Component.literal("Buildgun mode: " + (MODE_FLAT_GROUND.equals(mode) ? "Prefer Flat Ground" : "Default")).withStyle(ChatFormatting.AQUA), true);
+	}
+
 	public static void tryBuild(ServerPlayer player, ItemStack stack) {
 		String selected = getString(stack, SELECTED);
 		if (selected.isBlank()) {
@@ -156,13 +186,16 @@ public final class BuildgunSchematicManager {
 		}
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-		BlockPos origin = placementOrigin(player, tag);
+		BlockPos origin = placementOrigin(player.serverLevel(), player.getEyePosition(), player.getLookAngle(), tag);
 		int rotation = Math.floorMod(tag.getInt(PLACEMENT_ROTATION), 4);
 		List<PlacedBlock> blocks = schematic.blocks.stream()
 				.map(block -> block.rotated(rotation).at(origin))
 				.filter(block -> !block.state.isAir() && !block.state.is(Blocks.STRUCTURE_VOID))
 				.sorted(Comparator.comparingDouble(block -> block.pos.distSqr(player.blockPosition())))
 				.toList();
+		if (MODE_FLAT_GROUND.equals(normalizedMode(tag))) {
+			blocks = settleBlocksToGround(player.serverLevel(), blocks);
+		}
 
 		BlockedPlacement blocked = findBlocked(player.serverLevel(), blocks);
 		if (blocked != null) {
@@ -174,6 +207,7 @@ public final class BuildgunSchematicManager {
 		if (player.isCreative()) {
 			animateBuild(player, stack, blocks);
 			CustomData.update(DataComponents.CUSTOM_DATA, stack, data -> data.putBoolean(PLACEMENT_ACTIVE, false));
+			refreshModelState(stack);
 			player.displayClientMessage(Component.literal("Building " + selected).withStyle(ChatFormatting.GREEN), true);
 			return;
 		}
@@ -186,6 +220,7 @@ public final class BuildgunSchematicManager {
 		consumeItems(player, needed);
 		animateBuild(player, stack, blocks);
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, data -> data.putBoolean(PLACEMENT_ACTIVE, false));
+		refreshModelState(stack);
 		player.displayClientMessage(Component.literal("Building " + selected).withStyle(ChatFormatting.GREEN), true);
 	}
 
@@ -269,9 +304,7 @@ public final class BuildgunSchematicManager {
 	private static int countItem(ServerPlayer player, Item item) {
 		int count = 0;
 		for (ItemStack stack : player.getInventory().items) {
-			if (stack.is(item)) {
-				count += stack.getCount();
-			}
+			count += countItemInStack(stack, item, 0);
 		}
 		return count;
 	}
@@ -289,6 +322,14 @@ public final class BuildgunSchematicManager {
 				int taken = Math.min(remaining, stack.getCount());
 				stack.shrink(taken);
 				remaining -= taken;
+			}
+			if (remaining > 0) {
+				for (ItemStack stack : player.getInventory().items) {
+					if (remaining <= 0) {
+						break;
+					}
+					remaining = consumeFromContainedItems(stack, entry.getKey(), remaining, 0);
+				}
 			}
 		}
 		player.getInventory().setChanged();
@@ -315,6 +356,7 @@ public final class BuildgunSchematicManager {
 		int batchSize = 8;
 		int totalBatches = Math.max(1, Mth.ceil((float) blocks.size() / batchSize));
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(BUILDING_ACTIVE, true));
+		refreshModelState(stack);
 		for (int i = 0; i < blocks.size(); i += batchSize) {
 			int from = i;
 			int to = Math.min(i + batchSize, blocks.size());
@@ -335,7 +377,7 @@ public final class BuildgunSchematicManager {
 					if (block.blockEntityTag != null) {
 						BlockEntity blockEntity = level.getBlockEntity(block.pos);
 						if (blockEntity != null) {
-							CompoundTag nbt = block.blockEntityTag.copy();
+							CompoundTag nbt = sanitizedBlockEntityTag(block.blockEntityTag);
 							nbt.putInt("x", block.pos.getX());
 							nbt.putInt("y", block.pos.getY());
 							nbt.putInt("z", block.pos.getZ());
@@ -346,13 +388,41 @@ public final class BuildgunSchematicManager {
 				}
 			});
 		}
-		CrystalnexusMod.queueServerWork(totalBatches + 2, () -> CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(BUILDING_ACTIVE, false)));
+		CrystalnexusMod.queueServerWork(totalBatches + 2, () -> {
+			CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(BUILDING_ACTIVE, false));
+			refreshModelState(stack);
+		});
 	}
 
-	private static BlockPos placementOrigin(ServerPlayer player, CompoundTag tag) {
+	private static void refreshModelState(ItemStack stack) {
+		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		boolean active = tag.getBoolean(PLACEMENT_ACTIVE) || tag.getBoolean(BUILDING_ACTIVE);
+		stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(active ? 1 : 0));
+	}
+
+	public static String placementMode(ItemStack stack) {
+		return normalizedMode(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag());
+	}
+
+	public static BlockPos placementOrigin(Level level, Vec3 eyePosition, Vec3 look, CompoundTag tag) {
 		int distance = tag.getInt(PLACEMENT_DISTANCE);
-		Vec3 look = player.getLookAngle();
-		return BlockPos.containing(player.getEyePosition().add(look.scale(distance)));
+		Vec3 target = eyePosition.add(look.scale(distance));
+		String mode = normalizedMode(tag);
+		if (MODE_FLAT_GROUND.equals(mode)) {
+			return preferredFlatGroundPos(level, eyePosition, look, distance);
+		}
+		return BlockPos.containing(target);
+	}
+
+	private static BlockPos preferredFlatGroundPos(Level level, Vec3 eyePosition, Vec3 look, int distance) {
+		double reach = Math.max(Math.abs(distance), 1);
+		Vec3 clipEnd = eyePosition.add(look.scale(reach));
+		BlockHitResult hit = level.clip(new ClipContext(eyePosition, clipEnd, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()));
+		if (hit.getType() != HitResult.Type.MISS) {
+			return hit.getBlockPos().relative(hit.getDirection());
+		}
+		Vec3 target = eyePosition.add(look.scale(distance));
+		return BlockPos.containing(target.x, 0.0D, target.z);
 	}
 
 	private static boolean isSafeSchematicName(String schematicName) {
@@ -363,8 +433,115 @@ public final class BuildgunSchematicManager {
 		return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getString(key);
 	}
 
+	private static String normalizedMode(CompoundTag tag) {
+		return MODE_FLAT_GROUND.equals(tag.getString(PLACEMENT_MODE)) ? MODE_FLAT_GROUND : MODE_DEFAULT;
+	}
+
 	private static String shortPos(BlockPos pos) {
 		return pos.getX() + " " + pos.getY() + " " + pos.getZ();
+	}
+
+	private static int countItemInStack(ItemStack stack, Item item, int depth) {
+		if (stack.isEmpty()) {
+			return 0;
+		}
+		int count = stack.is(item) ? stack.getCount() : 0;
+		if (depth >= STORAGE_RECURSION_LIMIT) {
+			return count;
+		}
+		for (ItemStack contained : containedItems(stack)) {
+			count += countItemInStack(contained, item, depth + 1);
+		}
+		return count;
+	}
+
+	private static int consumeFromContainedItems(ItemStack stack, Item item, int remaining, int depth) {
+		if (remaining <= 0 || depth >= STORAGE_RECURSION_LIMIT) {
+			return remaining;
+		}
+		ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
+		if (contents == null) {
+			return remaining;
+		}
+		List<ItemStack> updated = new ArrayList<>();
+		for (ItemStack contained : contents.stream().map(ItemStack::copy).toList()) {
+			ItemStack mutable = contained.copy();
+			if (remaining > 0 && mutable.is(item)) {
+				int taken = Math.min(remaining, mutable.getCount());
+				mutable.shrink(taken);
+				remaining -= taken;
+			}
+			if (remaining > 0 && !mutable.isEmpty()) {
+				remaining = consumeFromContainedItems(mutable, item, remaining, depth + 1);
+			}
+			updated.add(mutable);
+		}
+		stack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(updated));
+		return remaining;
+	}
+
+	private static Collection<ItemStack> containedItems(ItemStack stack) {
+		ItemContainerContents contents = stack.get(DataComponents.CONTAINER);
+		return contents == null ? List.of() : contents.stream().map(ItemStack::copy).toList();
+	}
+
+	private static CompoundTag sanitizedBlockEntityTag(CompoundTag original) {
+		CompoundTag nbt = original.copy();
+		nbt.remove("Items");
+		return nbt;
+	}
+
+	private static List<PlacedBlock> settleBlocksToGround(ServerLevel level, List<PlacedBlock> blocks) {
+		if (blocks.isEmpty()) {
+			return blocks;
+		}
+		List<PlacedBlock> settled = blocks;
+		int minY = level.getMinBuildHeight();
+		int maxY = level.getMaxBuildHeight();
+
+		for (int i = 0; i < maxY - minY && hasBlockingCollision(level, settled); i++) {
+			settled = offsetBlocks(settled, 1);
+		}
+		for (int i = 0; i < maxY - minY && canMoveDown(level, settled); i++) {
+			settled = offsetBlocks(settled, -1);
+		}
+		return settled;
+	}
+
+	private static boolean hasBlockingCollision(Level level, List<PlacedBlock> blocks) {
+		for (PlacedBlock block : blocks) {
+			BlockState existing = level.getBlockState(block.pos);
+			if (!existing.isAir() && !existing.canBeReplaced()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private static boolean canMoveDown(Level level, List<PlacedBlock> blocks) {
+		Set<BlockPos> occupied = blocks.stream().map(PlacedBlock::pos).collect(Collectors.toSet());
+		for (PlacedBlock block : blocks) {
+			BlockPos below = block.pos.below();
+			if (below.getY() < level.getMinBuildHeight()) {
+				return false;
+			}
+			if (occupied.contains(below)) {
+				continue;
+			}
+			BlockState existing = level.getBlockState(below);
+			if (!existing.isAir() && !existing.canBeReplaced()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private static List<PlacedBlock> offsetBlocks(List<PlacedBlock> blocks, int yOffset) {
+		List<PlacedBlock> moved = new ArrayList<>(blocks.size());
+		for (PlacedBlock block : blocks) {
+			moved.add(new PlacedBlock(block.pos.offset(0, yOffset, 0), block.state, block.blockEntityTag));
+		}
+		return moved;
 	}
 
 	private record SchematicData(List<SchematicBlock> blocks) {

@@ -1,0 +1,49 @@
+{
+  "_fv": 79,
+  "_type": "recipe",
+  "definition": {
+    "recipeType": "Crafting",
+    "recipeRetstackSize": 6,
+    "group": "",
+    "unlockingItems": [],
+    "cookingBookCategory": "MISC",
+    "xpReward": 0.0,
+    "cookingTime": 200,
+    "craftingBookCategory": "MISC",
+    "recipeShapeless": false,
+    "recipeSlots": [
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:BlutoniumNugget"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:MachineFrame"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:BlutoniumNugget"
+      },
+      {
+        "value": ""
+      },
+      {
+        "value": "CUSTOM:BlutoniumNugget"
+      }
+    ],
+    "recipeReturnStack": {
+      "value": "CUSTOM:BlueprintFrame"
+    },
+    "name": "blueprint_frame_recipe",
+    "namespace": "mod"
+  }
+}

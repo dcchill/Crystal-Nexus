@@ -80,7 +80,7 @@ public class BlueprintBaseBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Blueprint Base");
+		return Component.literal("Blu-print Base");
 	}
 
 	@Override

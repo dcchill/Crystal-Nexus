@@ -327,6 +327,18 @@ public class TooltipInfoHandler {
 		addTooltip("container",
 				"High density portable item storage.",
 				"Large storage capacity.");
+		addTooltip("blueprint_base",
+				"Blueprint designer floor block.",
+				"Build a complete flat floor with Blueprint Base.",
+				"Everything saved must sit inside the framed interior volume.");
+		addTooltip("blueprint_frame",
+				"Blueprint designer frame block.",
+				"Build four corner pillars from the floor and connect them across the top.",
+				"Forms the save bounds for the blueprint designer.");
+		addTooltip("blueprint_controller",
+				"Blueprint designer controller.",
+				"Attach it to a valid Blueprint Base and Frame structure.",
+				"Open the GUI, enter a name, and save everything inside the blueprint volume.");
 
 		// RESOURCES
 
@@ -372,6 +384,18 @@ public class TooltipInfoHandler {
 		addTooltip("geiger_counter",
 				"Radiation detector.",
 				"Measures radiation levels.");
+		addTooltip("build_gun",
+				"Schematic builder and placement tool.",
+				"Press the Buildgun Menu key to choose a saved blueprint.",
+				"Shift Right Click loads placement mode.",
+				"Shift Left Click toggles Default and Prefer Flat Ground placement modes.",
+				"Prefer Flat Ground settles the whole schematic onto nearby support like a real placement.",
+				"Scroll moves the preview. Hold Shift and scroll to rotate.",
+				"Right Click places the loaded schematic.",
+				"Shows required and missing materials on screen while preparing placement.",
+				"Can pull materials from inventory, shulker boxes, and Container items you are carrying.",
+				"Creative mode ignores material requirements.",
+				"Placed storage blocks keep the block but do not restore stored item contents.");
 
 		addTooltip("jet_pack_chestplate",
 				"Jetpack - continuous thrust flight.",

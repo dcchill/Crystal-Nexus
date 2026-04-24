@@ -18385,6 +18385,73 @@
         ]
       },
       "path": "~/buildgun"
+    },
+    {
+      "name": "BuildGunRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "build_gun_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/build_gun_recipe.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintBaseRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_base_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/blueprint_base_recipe.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintFrameRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_frame_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/blueprint_frame_recipe.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "BlueprintControllerRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "blueprint_controller_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/blueprint_controller_recipe.json"
+        ]
+      },
+      "path": "~/buildgun"
+    },
+    {
+      "name": "MultiblockGuiPage6",
+      "type": "gui",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "multiblock_gui_page_6",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/world/inventory/MultiblockGuiPage6Menu.java",
+          "src/main/java/net/crystalnexus/client/gui/MultiblockGuiPage6Screen.java",
+          "src/main/java/net/crystalnexus/network/MultiblockGuiPage6ButtonMessage.java"
+        ]
+      },
+      "path": "~/multiblockresearch"
     }
   ],
   "variable_elements": [
@@ -19187,6 +19254,7 @@
       "JetPack",
       "HoverPack",
       "Carbon",
+      "BuildGun",
       "GeigerCounter",
       "OreScanner",
       "Flamethrower",
@@ -19254,8 +19322,7 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre",
-      "BuildGun"
+      "InvertiumOre"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -20005,14 +20072,34 @@
       "block.crystalnexus.sulfur_cluster": "Large Sulfur Crystal",
       "item.crystalnexus.build_gun": "Build Gun",
       "key.crystalnexus.buildgun_menu": "Buildgun Schematic Menu",
-      "block.crystalnexus.blueprint_base": "Blueprint Base",
-      "block.crystalnexus.blueprint_frame": "Blueprint Frame",
-      "block.crystalnexus.blueprint_controller": "Blueprint Controller",
+      "block.crystalnexus.blueprint_base": "Blu-print Base",
+      "block.crystalnexus.blueprint_frame": "Blu-print Frame",
+      "block.crystalnexus.blueprint_controller": "Blu-print Controller",
       "gui.crystalnexus.blueprint_gui.label_proc_get_block_name_for_gui": "[Ore Generator]",
       "gui.crystalnexus.blueprint_gui.tooltip_fill_with_crystal_gloop_and_powe": "Fill with Crystal Gloop and power to start generating ores.",
       "gui.crystalnexus.blueprint_gui.name": "Blueprint Name",
       "gui.crystalnexus.blueprint_gui.button_save": "Save",
-      "gui.crystalnexus.blueprint_gui.label_blueprint_controller": "[Blueprint Controller]"
+      "gui.crystalnexus.blueprint_gui.label_blueprint_controller": "[Blueprint Controller]",
+      "gui.crystalnexus.blueprint_gui.button_clear": "Clear",
+      "gui.crystalnexus.multiblock_gui_page_6.label_uses_water_and_blutonium_ingots": "Ultimate Endgame Energy.",
+      "gui.crystalnexus.multiblock_gui_page_6.label_any_side_in_the_middle_row_of_bl": "Material List",
+      "gui.crystalnexus.multiblock_gui_page_6.label_automatically_combines_nuggets": "174 x Carbon Fiber Blocks",
+      "gui.crystalnexus.multiblock_gui_page_6.label_into_ingots": "15 x Carbon Fiber Glass",
+      "gui.crystalnexus.multiblock_gui_page_6.label_massive_multiblock": "Massive Multiblock",
+      "gui.crystalnexus.multiblock_gui_page_6.label_can_smelt_four_stacks_at_once": "Generates FE with no requirements.",
+      "gui.crystalnexus.multiblock_gui_page_6.label_diameter_of_25_blocks": "(Diameter of 25 blocks)",
+      "gui.crystalnexus.multiblock_gui_page_6.label_52x_carbon_machine_frames": "52 x Carbon Machine Frames",
+      "gui.crystalnexus.multiblock_gui_page_6.label_1_x_zero_point": "1 x Zero Point",
+      "gui.crystalnexus.multiblock_gui_page_6.button_empty": "\u003e",
+      "gui.crystalnexus.multiblock_gui_page_6.button_empty1": "\u003c",
+      "gui.crystalnexus.multiblock_gui_page_6.label_blutonium_reactor": "Zero Point",
+      "gui.crystalnexus.multiblock_gui_page_7.label_floor": "Build a full floor from Blu-print Base.",
+      "gui.crystalnexus.multiblock_gui_page_7.label_pillars": "Add Blu-print Frame pillars on each corner.",
+      "gui.crystalnexus.multiblock_gui_page_7.label_top_frame": "Connect the pillars across the top.",
+      "gui.crystalnexus.multiblock_gui_page_7.label_controller": "Place the controller near the base, you use this block to Save/Clear the schematics",
+      "gui.crystalnexus.multiblock_gui_page_7.label_save": "Enter a name, then press Save.",
+      "gui.crystalnexus.multiblock_gui_page_7.label_volume": "Everything you build inside gets saved as a schematic, usable by the Build Gun",
+      "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator"
     }
   },
   "metadata": {

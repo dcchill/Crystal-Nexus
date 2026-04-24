@@ -28,6 +28,7 @@ import net.crystalnexus.client.gui.OreProGUIScreen;
 import net.crystalnexus.client.gui.OreGenGUIScreen;
 import net.crystalnexus.client.gui.NodeMinerGUIScreen;
 import net.crystalnexus.client.gui.NodeExtractorGUIScreen;
+import net.crystalnexus.client.gui.MultiblockGuiPage6Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage5Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage4Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage3Screen;
@@ -125,6 +126,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.ITEM_CHARGER_GUI.get(), ItemChargerGuiScreen::new);
 		event.register(CrystalnexusModMenus.AOE_CHARGER_GUI.get(), AOEChargerGuiScreen::new);
 		event.register(CrystalnexusModMenus.BLUEPRINT_GUI.get(), BlueprintGUIScreen::new);
+		event.register(CrystalnexusModMenus.MULTIBLOCK_GUI_PAGE_6.get(), MultiblockGuiPage6Screen::new);
 	}
 
 	public interface ScreenAccessor {

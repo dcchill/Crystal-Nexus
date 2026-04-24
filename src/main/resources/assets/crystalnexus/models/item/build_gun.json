@@ -8,9 +8,9 @@
   "overrides": [
     {
       "predicate": {
-        "crystalnexus:active": 1
+        "custom_model_data": 1
       },
-      "model": "crystalnexus:custom/buildgun_active"
+      "model": "crystalnexus:item/build_gun_active"
     }
   ]
 }

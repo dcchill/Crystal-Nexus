@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    " b ",
+    "a a"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:blutonium_nugget"
+    },
+    "b": {
+      "item": "crystalnexus:machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:blueprint_frame",
+    "count": 6
+  }
+}

@@ -35,6 +35,7 @@ import net.crystalnexus.world.inventory.OreProGUIMenu;
 import net.crystalnexus.world.inventory.OreGenGUIMenu;
 import net.crystalnexus.world.inventory.NodeMinerGUIMenu;
 import net.crystalnexus.world.inventory.NodeExtractorGUIMenu;
+import net.crystalnexus.world.inventory.MultiblockGuiPage6Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage5Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage4Menu;
 import net.crystalnexus.world.inventory.MultiblockGuiPage3Menu;
@@ -134,6 +135,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemChargerGuiMenu>> ITEM_CHARGER_GUI = REGISTRY.register("item_charger_gui", () -> IMenuTypeExtension.create(ItemChargerGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<AOEChargerGuiMenu>> AOE_CHARGER_GUI = REGISTRY.register("aoe_charger_gui", () -> IMenuTypeExtension.create(AOEChargerGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<BlueprintGUIMenu>> BLUEPRINT_GUI = REGISTRY.register("blueprint_gui", () -> IMenuTypeExtension.create(BlueprintGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<MultiblockGuiPage6Menu>> MULTIBLOCK_GUI_PAGE_6 = REGISTRY.register("multiblock_gui_page_6", () -> IMenuTypeExtension.create(MultiblockGuiPage6Menu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();
