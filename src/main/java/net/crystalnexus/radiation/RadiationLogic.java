@@ -15,10 +15,11 @@ public class RadiationLogic {
     private static final int MAX_AMPLIFIER = 4;
 
     private static final int EFFECT_DURATION_TICKS = 60; // 3 seconds
-    private static final int MIN_AMOUNT = 1;
+    public static final int MIN_CONTAINER_WASTE_AMOUNT = 64;
+    public static final String LAST_EXPOSURE_TICK_TAG = "lastRadiationExposureTick";
 
 		public static void radiateFrom(ServerLevel level, BlockPos sourcePos, int amount) {
-		    if (amount < MIN_AMOUNT) return;
+		    if (amount < MIN_CONTAINER_WASTE_AMOUNT) return;
 		
 		    int radius = calculateRadius(amount);
 		    int amplifier = calculateAmplifier(amount);
@@ -37,6 +38,7 @@ public class RadiationLogic {
 		                true,
 		                true
 		        ));
+		        entity.getPersistentData().putLong(LAST_EXPOSURE_TICK_TAG, level.getGameTime());
 		
 		        // 🔥 Store radiation value for Geiger
 		        if (entity instanceof Player player) {

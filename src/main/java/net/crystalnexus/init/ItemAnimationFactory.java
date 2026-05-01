@@ -10,6 +10,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.component.DataComponents;
 
+import net.crystalnexus.item.GravityGunItem;
 import net.crystalnexus.item.GeigerCounterItem;
 
 @EventBusSubscriber
@@ -35,6 +36,24 @@ public class ItemAnimationFactory {
 					CustomData.update(DataComponents.CUSTOM_DATA, event.getEntity().getOffhandItem(), tag -> tag.putString("geckoAnim", ""));
 					if (event.getEntity().level().isClientSide()) {
 						((GeigerCounterItem) event.getEntity().getOffhandItem().getItem()).animationprocedure = animation;
+					}
+				}
+			}
+			if (mainhandItem.getItem() instanceof GravityGunItem animatable) {
+				animation = mainhandItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getString("geckoAnim");
+				if (!animation.isEmpty()) {
+					CustomData.update(DataComponents.CUSTOM_DATA, event.getEntity().getMainHandItem(), tag -> tag.putString("geckoAnim", ""));
+					if (event.getEntity().level().isClientSide()) {
+						((GravityGunItem) event.getEntity().getMainHandItem().getItem()).animationprocedure = animation;
+					}
+				}
+			}
+			if (offhandItem.getItem() instanceof GravityGunItem animatable) {
+				animation = offhandItem.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getString("geckoAnim");
+				if (!animation.isEmpty()) {
+					CustomData.update(DataComponents.CUSTOM_DATA, event.getEntity().getOffhandItem(), tag -> tag.putString("geckoAnim", ""));
+					if (event.getEntity().level().isClientSide()) {
+						((GravityGunItem) event.getEntity().getOffhandItem().getItem()).animationprocedure = animation;
 					}
 				}
 			}

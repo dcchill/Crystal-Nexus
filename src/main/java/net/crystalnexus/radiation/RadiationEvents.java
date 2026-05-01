@@ -31,6 +31,9 @@ public class RadiationEvents {
 
     private static final int SCAN_XZ = 48;
     private static final int SCAN_Y = 24;
+    private static final int CONTAINER_RADIATION_INTERVAL_TICKS = 20;
+    private static final int CONTAINER_RADIATION_SCAN_RADIUS = 24;
+    private static final int CONTAINER_RADIATION_SCAN_Y = 8;
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -39,7 +42,19 @@ public class RadiationEvents {
 
         for (ServerLevel level : server.getAllLevels()) {
 
+            boolean shouldScanContainerRadiation =
+                    level.getGameTime() % CONTAINER_RADIATION_INTERVAL_TICKS == 0;
+
             for (ServerPlayer player : level.players()) {
+
+                if (shouldScanContainerRadiation) {
+                    RadiationScan.scanAndRadiate(
+                            level,
+                            player.blockPosition(),
+                            CONTAINER_RADIATION_SCAN_RADIUS,
+                            CONTAINER_RADIATION_SCAN_Y
+                    );
+                }
 
                 ItemStack stack = player.getMainHandItem();
 
@@ -174,7 +189,7 @@ public class RadiationEvents {
                         }
                     }
 
-                    if (waste > 0) {
+                    if (waste >= RadiationLogic.MIN_CONTAINER_WASTE_AMOUNT) {
                         double scaled = Math.log(waste + 1);
                         value += scaled * 14.0 * falloff;
                     }

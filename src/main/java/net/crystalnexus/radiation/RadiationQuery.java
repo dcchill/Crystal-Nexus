@@ -31,10 +31,9 @@ public class RadiationQuery {
             if (handler == null) continue;
 
             int waste = countWaste(handler);
-            if (waste <= 0) continue;
+            if (waste < RadiationLogic.MIN_CONTAINER_WASTE_AMOUNT) continue;
 
             double distance = Math.sqrt(pos.distSqr(center));
-            double strength = waste * 5.0;
 
             double falloff = 1.0 / (distance + 1.0);
             totalRadiation += waste * 10.0 * falloff;

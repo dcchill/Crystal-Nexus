@@ -24,7 +24,7 @@ public class RadiationScan {
             if (handler == null) return;
 
             int amount = countWaste(handler);
-            if (amount <= 0) return;
+            if (amount < RadiationLogic.MIN_CONTAINER_WASTE_AMOUNT) return;
 
             RadiationLogic.radiateFrom(level, pos, amount);
         });

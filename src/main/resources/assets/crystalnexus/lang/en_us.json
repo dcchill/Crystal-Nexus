@@ -665,5 +665,6 @@
   "gui.crystalnexus.multiblock_gui_page_7.label_controller": "Place the controller near the base, you use this block to Save/Clear the schematics",
   "gui.crystalnexus.multiblock_gui_page_7.label_save": "Enter a name, then press Save.",
   "gui.crystalnexus.multiblock_gui_page_7.label_volume": "Everything you build inside gets saved as a schematic, usable by the Build Gun",
-  "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator"
+  "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator",
+  "item.crystalnexus.gravity_gun": "Gravity Gun"
 }

@@ -89,6 +89,7 @@ import net.crystalnexus.item.InvertiumAxeItem;
 import net.crystalnexus.item.HoverPackItem;
 import net.crystalnexus.item.GreenPaintballItem;
 import net.crystalnexus.item.GrayPaintballItem;
+import net.crystalnexus.item.GravityGunItem;
 import net.crystalnexus.item.GoldSingularityItem;
 import net.crystalnexus.item.GodlikeCrystalItem;
 import net.crystalnexus.item.GeigerCounterItem;
@@ -490,6 +491,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUEPRINT_BASE = block(CrystalnexusModBlocks.BLUEPRINT_BASE);
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
 	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);
+	public static final DeferredItem<Item> GRAVITY_GUN = REGISTRY.register("gravity_gun", GravityGunItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "enum": "net/minecraft/client/model/HumanoidModel$ArmPose",
+      "name": "CRYSTALNEXUS_GRAVITY_GUN",
+      "constructor": "(ZLnet/neoforged/neoforge/client/IArmPoseTransformer;)V",
+      "parameters": {
+        "class": "net/crystalnexus/item/GravityGunItem",
+        "field": "ARM_POSE"
+      }
+    }
+  ]
+}

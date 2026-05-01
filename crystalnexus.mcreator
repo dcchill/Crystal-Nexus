@@ -18452,6 +18452,35 @@
         ]
       },
       "path": "~/multiblockresearch"
+    },
+    {
+      "name": "GravityGun",
+      "type": "animateditem",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "gravity_gun",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/renderer/GravityGunItemRenderer.java",
+          "src/main/java/net/crystalnexus/item/model/GravityGunItemModel.java",
+          "src/main/java/net/crystalnexus/item/GravityGunItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/gravity_gun.json"
+        ]
+      },
+      "path": "~/gravity gun"
+    },
+    {
+      "name": "GravityGunRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "gravity_gun_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/gravity_gun_recipe.json"
+        ]
+      },
+      "path": "~/gravity gun"
     }
   ],
   "variable_elements": [
@@ -19255,6 +19284,7 @@
       "HoverPack",
       "Carbon",
       "BuildGun",
+      "GravityGun",
       "GeigerCounter",
       "OreScanner",
       "Flamethrower",
@@ -20099,7 +20129,8 @@
       "gui.crystalnexus.multiblock_gui_page_7.label_controller": "Place the controller near the base, you use this block to Save/Clear the schematics",
       "gui.crystalnexus.multiblock_gui_page_7.label_save": "Enter a name, then press Save.",
       "gui.crystalnexus.multiblock_gui_page_7.label_volume": "Everything you build inside gets saved as a schematic, usable by the Build Gun",
-      "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator"
+      "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator",
+      "item.crystalnexus.gravity_gun": "Gravity Gun"
     }
   },
   "metadata": {
@@ -20110,6 +20141,7 @@
       "src/main/resources/assets/crystalnexus/sounds.json",
       "src/main/java/net/crystalnexus/CrystalnexusMod.java",
       "src/main/java/net/crystalnexus/init/CrystalnexusModTabs.java",
+      "src/main/resources/META-INF/enumextensions.json",
       "src/main/java/net/crystalnexus/init/CrystalnexusModModels.java",
       "src/main/resources/META-INF/neoforge.mods.toml",
       "src/main/resources/META-INF/accesstransformer.cfg",
@@ -20350,6 +20382,10 @@
       },
       {
         "name": "buildgun",
+        "children": []
+      },
+      {
+        "name": "gravity gun",
         "children": []
       }
     ]

@@ -6,10 +6,12 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
-import net.crystalnexus.init.CrystalnexusModMobEffects;
+import net.crystalnexus.radiation.RadiationLogic;
 
 @EventBusSubscriber
 public class TimeSickDegradeProcedure {
+    private static final long EXPOSURE_GRACE_TICKS = 25;
+    private static final double RECOVERY_PER_SECOND = 1000;
 
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
@@ -27,13 +29,16 @@ public class TimeSickDegradeProcedure {
         if (entity.tickCount % 20 != 0)
             return;
 
-        // Only recover if NOT irradiated
-        if (!living.hasEffect(CrystalnexusModMobEffects.RADIATION_SICKNESS)
-                && currentTimeSick > 0) {
+        long currentTick = living.level().getGameTime();
+        long lastExposureTick = entity.getPersistentData().getLong(RadiationLogic.LAST_EXPOSURE_TICK_TAG);
+        boolean isActivelyExposed = currentTick - lastExposureTick <= EXPOSURE_GRACE_TICKS;
+
+        // Recover rapidly once no radiation source has exposed the player recently.
+        if (!isActivelyExposed && currentTimeSick > 0) {
 
             entity.getPersistentData().putDouble(
                 "timeSick",
-                Math.max(0, currentTimeSick - 1)
+                Math.max(0, currentTimeSick - RECOVERY_PER_SECOND)
             );
         }
     }

@@ -203,6 +203,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
+				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());

@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
 
 import net.crystalnexus.init.CrystalnexusModMobEffects;
+import net.crystalnexus.radiation.RadiationLogic;
 
 public class BlutoniumIngotItemInInventoryTickProcedure {
 	public static void execute(LevelAccessor world, Entity entity) {
@@ -18,8 +19,10 @@ public class BlutoniumIngotItemInInventoryTickProcedure {
 			return;
 		if (!((entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY)
 				.getEnchantmentLevel(world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.parse("crystalnexus:hazmat")))) != 0)) {
-			if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide())
+			if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
 				_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 40, 1, false, false));
+				_entity.getPersistentData().putLong(RadiationLogic.LAST_EXPOSURE_TICK_TAG, _entity.level().getGameTime());
+			}
 		}
 	}
 }

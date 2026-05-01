@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "abc",
+    "  d"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:dark_matter"
+    },
+    "b": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "c": {
+      "item": "crystalnexus:silicon"
+    },
+    "d": {
+      "item": "crystalnexus:carbon_fiber_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:gravity_gun",
+    "count": 1
+  }
+}
