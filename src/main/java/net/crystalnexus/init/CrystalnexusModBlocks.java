@@ -178,6 +178,7 @@ import net.crystalnexus.block.BlueprintBaseBlock;
 import net.crystalnexus.block.BlueHeavyIronBlockBlock;
 import net.crystalnexus.block.BluTNTBlock;
 import net.crystalnexus.block.BlockPlacerBlock;
+import net.crystalnexus.block.BlackHoleTntBlock;
 import net.crystalnexus.block.BlackHeavyIronBlockBlock;
 import net.crystalnexus.block.BiomaticSimulatorBlock;
 import net.crystalnexus.block.BiomaticConstructorBlock;
@@ -374,6 +375,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> BLUEPRINT_BASE = REGISTRY.register("blueprint_base", BlueprintBaseBlock::new);
 	public static final DeferredBlock<Block> BLUEPRINT_FRAME = REGISTRY.register("blueprint_frame", BlueprintFrameBlock::new);
 	public static final DeferredBlock<Block> BLUEPRINT_CONTROLLER = REGISTRY.register("blueprint_controller", BlueprintControllerBlock::new);
+	public static final DeferredBlock<Block> BLACK_HOLE_TNT = REGISTRY.register("black_hole_tnt", BlackHoleTntBlock::new);
 	// Start of user code block custom blocks
 	// End of user code block custom blocks
 }

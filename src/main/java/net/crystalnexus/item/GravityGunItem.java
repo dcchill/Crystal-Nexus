@@ -47,17 +47,27 @@ import net.minecraft.world.phys.Vec3;
 import net.crystalnexus.item.renderer.GravityGunItemRenderer;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class GravityGunItem extends Item implements GeoItem {
 	private static final double PICKUP_RANGE = 8.0D;
-	private static final double HOLD_DISTANCE = 4.0D;
+	private static final double DEFAULT_HOLD_DISTANCE = 4.0D;
+	private static final double MIN_HOLD_DISTANCE = 2.0D;
+	private static final double MAX_HOLD_DISTANCE = 12.0D;
+	private static final double HOLD_DISTANCE_STEP = 0.5D;
 	private static final double HOLD_STRENGTH = 0.45D;
-	private static final double THROW_SPEED = 1.7D;
+	private static final double THROW_SPEED = 2.8D;
+	private static final double PROJECTILE_DAMAGE = 9.0D;
+	private static final double PROJECTILE_KNOCKBACK = 1.15D;
+	private static final int PROJECTILE_MAX_DAMAGE = 20;
+	private static final int PROJECTILE_LIFETIME_TICKS = 80;
 	private static final int GRAB_ANIMATION_TICKS = 10;
 	private static final Map<UUID, UUID> HELD_ENTITIES = new ConcurrentHashMap<>();
+	private static final Set<UUID> HELD_FALLING_BLOCKS = ConcurrentHashMap.newKeySet();
+	private static final Map<UUID, ThrownBlockProjectile> THROWN_BLOCKS = new ConcurrentHashMap<>();
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public String animationprocedure = "empty";
 
@@ -82,18 +92,14 @@ public class GravityGunItem extends Item implements GeoItem {
 		UUID playerId = serverPlayer.getUUID();
 		Entity held = getHeldEntity(serverLevel, playerId);
 		if (held != null) {
-			if (serverPlayer.isShiftKeyDown()) {
-				throwHeldEntity(serverPlayer, held);
-			} else {
-				releaseHeldEntity(playerId, held);
-			}
+			releaseHeldEntity(playerId, held);
 			setHoldingState(stack, false, null);
 			return InteractionResult.SUCCESS_NO_ITEM_USED;
 		}
 
 		FallingBlockEntity fallingBlock = tryGrabBlockAt(serverPlayer, serverLevel, context.getClickedPos());
 		if (fallingBlock != null) {
-			grabEntity(serverPlayer, fallingBlock);
+			grabEntity(serverPlayer, fallingBlock, stack);
 			setHoldingState(stack, true, fallingBlock.getUUID());
 			return InteractionResult.SUCCESS_NO_ITEM_USED;
 		}
@@ -111,25 +117,21 @@ public class GravityGunItem extends Item implements GeoItem {
 		UUID playerId = serverPlayer.getUUID();
 		Entity held = getHeldEntity(serverLevel, playerId);
 		if (held != null) {
-			if (serverPlayer.isShiftKeyDown()) {
-				throwHeldEntity(serverPlayer, held);
-			} else {
-				releaseHeldEntity(playerId, held);
-			}
+			releaseHeldEntity(playerId, held);
 			setHoldingState(stack, false, null);
 			return noSwingResult(stack);
 		}
 
 		Entity targetEntity = findTargetEntity(serverPlayer);
 		if (targetEntity != null) {
-			grabEntity(serverPlayer, targetEntity);
+			grabEntity(serverPlayer, targetEntity, stack);
 			setHoldingState(stack, true, targetEntity.getUUID());
 			return noSwingResult(stack);
 		}
 
 		FallingBlockEntity fallingBlock = tryGrabTargetBlock(serverPlayer, serverLevel);
 		if (fallingBlock != null) {
-			grabEntity(serverPlayer, fallingBlock);
+			grabEntity(serverPlayer, fallingBlock, stack);
 			setHoldingState(stack, true, fallingBlock.getUUID());
 			return noSwingResult(stack);
 		}
@@ -151,7 +153,10 @@ public class GravityGunItem extends Item implements GeoItem {
 		UUID playerId = player.getUUID();
 		Entity held = getHeldEntity(serverLevel, playerId);
 		if (held == null) {
-			HELD_ENTITIES.remove(playerId);
+			UUID heldEntityId = HELD_ENTITIES.remove(playerId);
+			if (heldEntityId != null) {
+				HELD_FALLING_BLOCKS.remove(heldEntityId);
+			}
 			setHoldingState(stack, false, null);
 			return;
 		}
@@ -162,19 +167,28 @@ public class GravityGunItem extends Item implements GeoItem {
 			return;
 		}
 
-		moveHeldEntity(player, held);
+		moveHeldEntity(player, held, stack);
 		tickGrabAnimation(stack);
 	}
 
-	private static void grabEntity(ServerPlayer player, Entity target) {
+	private static void grabEntity(ServerPlayer player, Entity target, ItemStack stack) {
 		target.setNoGravity(true);
+		target.setOnGround(false);
 		target.fallDistance = 0.0F;
 		HELD_ENTITIES.put(player.getUUID(), target.getUUID());
-		moveHeldEntity(player, target);
+		if (target instanceof FallingBlockEntity) {
+			HELD_FALLING_BLOCKS.add(target.getUUID());
+		}
+		moveHeldEntity(player, target, stack);
 	}
 
-	private static void moveHeldEntity(ServerPlayer player, Entity held) {
-		Vec3 targetPos = player.getEyePosition().add(player.getLookAngle().normalize().scale(HOLD_DISTANCE));
+	private static void moveHeldEntity(ServerPlayer player, Entity held, ItemStack stack) {
+		Vec3 targetPos = player.getEyePosition().add(player.getLookAngle().normalize().scale(getHoldDistance(stack)));
+		if (held instanceof FallingBlockEntity) {
+			targetPos = collisionFreeHoldTarget(held, targetPos);
+			held.setNoGravity(true);
+			held.setOnGround(false);
+		}
 		Vec3 heldCenter = held.position().add(0.0D, held.getBbHeight() * 0.5D, 0.0D);
 		Vec3 velocity = targetPos.subtract(heldCenter).scale(HOLD_STRENGTH);
 		held.setDeltaMovement(velocity);
@@ -184,21 +198,152 @@ public class GravityGunItem extends Item implements GeoItem {
 
 	private static void releaseHeldEntity(UUID playerId, Entity held) {
 		HELD_ENTITIES.remove(playerId);
+		HELD_FALLING_BLOCKS.remove(held.getUUID());
 		held.setNoGravity(false);
 		held.fallDistance = 0.0F;
 	}
 
+	public static boolean shootHeldEntity(ServerPlayer player) {
+		if (!(player.level() instanceof ServerLevel serverLevel)) {
+			return false;
+		}
+
+		Entity held = getHeldEntity(serverLevel, player.getUUID());
+		if (held == null) {
+			return false;
+		}
+
+		throwHeldEntity(player, held);
+		ItemStack stack = heldGravityGun(player);
+		if (!stack.isEmpty()) {
+			setHoldingState(stack, false, null);
+		}
+		return true;
+	}
+
+	public static boolean adjustHoldDistance(ServerPlayer player, int steps) {
+		if (steps == 0 || !(player.level() instanceof ServerLevel serverLevel)) {
+			return false;
+		}
+
+		if (getHeldEntity(serverLevel, player.getUUID()) == null) {
+			return false;
+		}
+
+		ItemStack stack = heldGravityGun(player);
+		if (stack.isEmpty()) {
+			return false;
+		}
+
+		double distance = clampHoldDistance(getHoldDistance(stack) + steps * HOLD_DISTANCE_STEP);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putDouble("gravityGunHoldDistance", distance));
+		return true;
+	}
+
 	private static void throwHeldEntity(ServerPlayer player, Entity held) {
 		HELD_ENTITIES.remove(player.getUUID());
+		HELD_FALLING_BLOCKS.remove(held.getUUID());
 		held.setNoGravity(false);
 		held.setDeltaMovement(player.getLookAngle().normalize().scale(THROW_SPEED));
 		held.hurtMarked = true;
 		held.fallDistance = 0.0F;
+		if (held instanceof FallingBlockEntity fallingBlock) {
+			fallingBlock.setHurtsEntities((float) PROJECTILE_DAMAGE, PROJECTILE_MAX_DAMAGE);
+			THROWN_BLOCKS.put(fallingBlock.getUUID(), new ThrownBlockProjectile(player.getUUID()));
+		}
+	}
+
+	public static void tickThrownBlockProjectile(FallingBlockEntity fallingBlock) {
+		ThrownBlockProjectile projectile = THROWN_BLOCKS.get(fallingBlock.getUUID());
+		if (projectile == null) {
+			return;
+		}
+
+		if (fallingBlock.level().isClientSide() || fallingBlock.isRemoved() || projectile.ticksLeft-- <= 0) {
+			THROWN_BLOCKS.remove(fallingBlock.getUUID());
+			return;
+		}
+
+		Vec3 motion = fallingBlock.getDeltaMovement();
+		if (fallingBlock.onGround() || motion.lengthSqr() < 0.03D) {
+			THROWN_BLOCKS.remove(fallingBlock.getUUID());
+			return;
+		}
+
+		AABB hitBox = fallingBlock.getBoundingBox().expandTowards(motion).inflate(0.35D);
+		for (LivingEntity target : fallingBlock.level().getEntitiesOfClass(LivingEntity.class, hitBox, entity -> canProjectileDamage(projectile, entity))) {
+			if (target.hurt(fallingBlock.damageSources().fallingBlock(fallingBlock), (float) projectileDamage(motion))) {
+				projectile.damagedEntities.add(target.getUUID());
+				Vec3 knockback = motion.normalize().scale(PROJECTILE_KNOCKBACK);
+				target.push(knockback.x, Math.max(0.2D, knockback.y + 0.25D), knockback.z);
+				target.hurtMarked = true;
+			}
+		}
+
+		if (!projectile.damagedEntities.isEmpty()) {
+			fallingBlock.setNoGravity(false);
+			fallingBlock.setDeltaMovement(motion.scale(0.25D));
+			fallingBlock.hurtMarked = true;
+			THROWN_BLOCKS.remove(fallingBlock.getUUID());
+		}
+	}
+
+	public static void prepareHeldFallingBlock(FallingBlockEntity fallingBlock) {
+		if (!HELD_FALLING_BLOCKS.contains(fallingBlock.getUUID())) {
+			return;
+		}
+
+		fallingBlock.setNoGravity(true);
+		fallingBlock.setOnGround(false);
+		fallingBlock.fallDistance = 0.0F;
+	}
+
+	private static boolean canProjectileDamage(ThrownBlockProjectile projectile, LivingEntity entity) {
+		return entity.isAlive()
+				&& !entity.isSpectator()
+				&& !entity.getUUID().equals(projectile.ownerId)
+				&& !projectile.damagedEntities.contains(entity.getUUID());
+	}
+
+	private static double projectileDamage(Vec3 motion) {
+		return Math.min(PROJECTILE_MAX_DAMAGE, PROJECTILE_DAMAGE + motion.length() * 2.0D);
+	}
+
+	private static double getHoldDistance(ItemStack stack) {
+		double distance = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getDouble("gravityGunHoldDistance");
+		return distance <= 0.0D ? DEFAULT_HOLD_DISTANCE : clampHoldDistance(distance);
+	}
+
+	private static double clampHoldDistance(double distance) {
+		return Math.max(MIN_HOLD_DISTANCE, Math.min(MAX_HOLD_DISTANCE, distance));
+	}
+
+	private static Vec3 collisionFreeHoldTarget(Entity held, Vec3 targetPos) {
+		Vec3 heldCenter = held.position().add(0.0D, held.getBbHeight() * 0.5D, 0.0D);
+		Vec3 adjustedTarget = targetPos;
+		for (int i = 0; i < 8; i++) {
+			AABB targetBox = held.getBoundingBox().move(adjustedTarget.subtract(heldCenter));
+			if (held.level().noCollision(held, targetBox)) {
+				return adjustedTarget;
+			}
+			adjustedTarget = adjustedTarget.add(0.0D, 0.25D, 0.0D);
+		}
+		return adjustedTarget;
 	}
 
 	private static Entity getHeldEntity(ServerLevel level, UUID playerId) {
 		UUID entityId = HELD_ENTITIES.get(playerId);
 		return entityId == null ? null : level.getEntity(entityId);
+	}
+
+	private static ItemStack heldGravityGun(Player player) {
+		for (InteractionHand hand : InteractionHand.values()) {
+			ItemStack stack = player.getItemInHand(hand);
+			if (stack.getItem() instanceof GravityGunItem) {
+				return stack;
+			}
+		}
+		return ItemStack.EMPTY;
 	}
 
 	private static Entity findTargetEntity(ServerPlayer player) {
@@ -239,6 +384,9 @@ public class GravityGunItem extends Item implements GeoItem {
 	private static void setHoldingState(ItemStack stack, boolean holding, UUID heldEntityId) {
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> {
 			tag.putBoolean("gravityGunHolding", holding);
+			if (tag.getDouble("gravityGunHoldDistance") <= 0.0D) {
+				tag.putDouble("gravityGunHoldDistance", DEFAULT_HOLD_DISTANCE);
+			}
 			if (holding && heldEntityId != null) {
 				tag.putString("gravityGunHeldEntity", heldEntityId.toString());
 				tag.putString("geckoAnim", "grab");
@@ -346,5 +494,15 @@ public class GravityGunItem extends Item implements GeoItem {
 	@Override
 	public AnimatableInstanceCache getAnimatableInstanceCache() {
 		return this.cache;
+	}
+
+	private static final class ThrownBlockProjectile {
+		private final UUID ownerId;
+		private final Set<UUID> damagedEntities = ConcurrentHashMap.newKeySet();
+		private int ticksLeft = PROJECTILE_LIFETIME_TICKS;
+
+		private ThrownBlockProjectile(UUID ownerId) {
+			this.ownerId = ownerId;
+		}
 	}
 }

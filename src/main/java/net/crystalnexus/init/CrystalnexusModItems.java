@@ -61,6 +61,7 @@ import net.crystalnexus.item.PaintGunItem;
 import net.crystalnexus.item.OverfuelItem;
 import net.crystalnexus.item.OverfuelCellItem;
 import net.crystalnexus.item.OreScannerItem;
+import net.crystalnexus.item.OrbitalStrikeRemoteItem;
 import net.crystalnexus.item.OrangePaintballItem;
 import net.crystalnexus.item.OmegaChipItem;
 import net.crystalnexus.item.OilFuelCellItem;
@@ -492,6 +493,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
 	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);
 	public static final DeferredItem<Item> GRAVITY_GUN = REGISTRY.register("gravity_gun", GravityGunItem::new);
+	public static final DeferredItem<Item> BLACK_HOLE_TNT = block(CrystalnexusModBlocks.BLACK_HOLE_TNT);
+	public static final DeferredItem<Item> ORBITAL_STRIKE_REMOTE = REGISTRY.register("orbital_strike_remote", OrbitalStrikeRemoteItem::new);
 
 	// Start of user code block custom items
 	// End of user code block custom items

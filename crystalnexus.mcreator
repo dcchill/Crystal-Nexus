@@ -18481,6 +18481,64 @@
         ]
       },
       "path": "~/gravity gun"
+    },
+    {
+      "name": "BlackHoleTnt",
+      "type": "block",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "black_hole_tnt",
+      "metadata": {
+        "files": [
+          "src/main/resources/assets/crystalnexus/models/item/black_hole_tnt.json",
+          "src/main/resources/assets/crystalnexus/models/block/black_hole_tnt.json",
+          "src/main/resources/data/crystalnexus/loot_table/blocks/black_hole_tnt.json",
+          "src/main/resources/assets/crystalnexus/blockstates/black_hole_tnt.json",
+          "src/main/java/net/crystalnexus/block/BlackHoleTntBlock.java",
+          "src/main/java/net/crystalnexus/block/entity/BlackHoleTntBlockEntity.java"
+        ]
+      },
+      "path": "~/blackholetnt"
+    },
+    {
+      "name": "BlackHoleTntRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "black_hole_tnt_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/black_hole_tnt_recipe.json"
+        ]
+      },
+      "path": "~/blackholetnt"
+    },
+    {
+      "name": "OrbitalStrikeRemote",
+      "type": "item",
+      "compiles": true,
+      "locked_code": true,
+      "registry_name": "orbital_strike_remote",
+      "metadata": {
+        "files": [
+          "src/main/java/net/crystalnexus/item/OrbitalStrikeRemoteItem.java",
+          "src/main/resources/assets/crystalnexus/models/item/orbital_strike_remote.json"
+        ]
+      },
+      "path": "~/blackholetnt"
+    },
+    {
+      "name": "OrbitalStrikeRemoteRecipe",
+      "type": "recipe",
+      "compiles": true,
+      "locked_code": false,
+      "registry_name": "orbital_strike_remote_recipe",
+      "metadata": {
+        "files": [
+          "src/main/resources/data/crystalnexus/recipe/orbital_strike_remote_recipe.json"
+        ]
+      },
+      "path": "~/blackholetnt"
     }
   ],
   "variable_elements": [
@@ -18600,6 +18658,7 @@
       "CUSTOM:EpicSSD"
     ],
     "BLOCKS:minecraft:mineable/pickaxe": [
+      "~CUSTOM:BlackHoleTnt",
       "~CUSTOM:BlueprintFrame",
       "~CUSTOM:BlueprintBase",
       "~CUSTOM:SulfurCluster",
@@ -19020,6 +19079,7 @@
       "~CUSTOM:Carbon.boots"
     ],
     "BLOCKS:minecraft:needs_stone_tool": [
+      "~CUSTOM:BlackHoleTnt",
       "~CUSTOM:BlueprintFrame",
       "~CUSTOM:BlueprintBase",
       "~CUSTOM:SulfurCluster",
@@ -19352,7 +19412,9 @@
       "AncientCrystalOreStone",
       "AncientCrystalOre",
       "SulfurOre",
-      "InvertiumOre"
+      "InvertiumOre",
+      "BlackHoleTnt",
+      "OrbitalStrikeRemote"
     ],
     "TOOLS": [
       "ChlorophytePickaxe",
@@ -20130,7 +20192,9 @@
       "gui.crystalnexus.multiblock_gui_page_7.label_save": "Enter a name, then press Save.",
       "gui.crystalnexus.multiblock_gui_page_7.label_volume": "Everything you build inside gets saved as a schematic, usable by the Build Gun",
       "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator",
-      "item.crystalnexus.gravity_gun": "Gravity Gun"
+      "item.crystalnexus.gravity_gun": "Gravity Gun",
+      "block.crystalnexus.black_hole_tnt": "Black Hole Tnt",
+      "item.crystalnexus.orbital_strike_remote": "Orbital Strike Remote"
     }
   },
   "metadata": {
@@ -20386,6 +20450,10 @@
       },
       {
         "name": "gravity gun",
+        "children": []
+      },
+      {
+        "name": "blackholetnt",
         "children": []
       }
     ]

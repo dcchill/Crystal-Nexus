@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:energy_singularity"
+    },
+    "b": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "c": {
+      "item": "crystalnexus:dark_matter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:orbital_strike_remote",
+    "count": 1
+  }
+}

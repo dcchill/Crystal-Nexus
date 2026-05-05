@@ -1,11 +1,12 @@
 package net.crystalnexus.network;
 
 import net.crystalnexus.network.payload.S2C_SendPage;
+import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
 import net.crystalnexus.network.payload.S2C_OreScanResult;
+import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientHandlers {
 
@@ -46,8 +47,26 @@ public static void onZeroPointPreview(final S2C_ZeroPointPreview msg, final IPay
     });
 }
 
+public static void onBlackHoleVisual(final S2C_BlackHoleVisual msg, final IPayloadContext ctx) {
+    ctx.enqueueWork(() -> {
+        try {
+            Class<?> c = Class.forName("net.crystalnexus.client.blackhole.BlackHoleVisualState");
+            c.getMethod("add", double.class, double.class, double.class, double.class, int.class)
+                    .invoke(null, msg.x(), msg.y(), msg.z(), msg.radius(), msg.durationTicks());
+        } catch (Throwable ignored) {
+        }
+    });
+}
 
-
-
+public static void onOrbitalStrikeBeam(final S2C_OrbitalStrikeBeam msg, final IPayloadContext ctx) {
+    ctx.enqueueWork(() -> {
+        try {
+            Class<?> c = Class.forName("net.crystalnexus.client.renderer.OrbitalStrikeRenderer");
+            c.getMethod("addStrike", double.class, double.class, double.class, double.class, int.class, int.class)
+                    .invoke(null, msg.x(), msg.y(), msg.z(), msg.skyY(), msg.durationTicks(), msg.impactDelayTicks());
+        } catch (Throwable ignored) {
+        }
+    });
+}
 
 }

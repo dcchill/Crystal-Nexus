@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:dark_matter"
+    },
+    "b": {
+      "item": "crystalnexus:blu_tnt"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:black_hole_tnt",
+    "count": 1
+  }
+}

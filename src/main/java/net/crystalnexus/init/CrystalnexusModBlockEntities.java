@@ -100,6 +100,7 @@ import net.crystalnexus.block.entity.BlueprintControllerBlockEntity;
 import net.crystalnexus.block.entity.BlueprintBaseBlockEntity;
 import net.crystalnexus.block.entity.BluTNTBlockEntity;
 import net.crystalnexus.block.entity.BlockPlacerBlockEntity;
+import net.crystalnexus.block.entity.BlackHoleTntBlockEntity;
 import net.crystalnexus.block.entity.BiomaticSimulatorBlockEntity;
 import net.crystalnexus.block.entity.BiomaticConstructorBlockEntity;
 import net.crystalnexus.block.entity.BiomaticComposterBlockEntity;
@@ -204,6 +205,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMOKE_EMITTER = register("smoke_emitter", CrystalnexusModBlocks.SMOKE_EMITTER, SmokeEmitterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_BASE = register("blueprint_base", CrystalnexusModBlocks.BLUEPRINT_BASE, BlueprintBaseBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_CONTROLLER = register("blueprint_controller", CrystalnexusModBlocks.BLUEPRINT_CONTROLLER, BlueprintControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLACK_HOLE_TNT = register("black_hole_tnt", CrystalnexusModBlocks.BLACK_HOLE_TNT, BlackHoleTntBlockEntity::new);
 
 	// Start of user code block custom block entities
 	// End of user code block custom block entities
@@ -373,5 +375,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMOKE_EMITTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLUEPRINT_BASE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLUEPRINT_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLACK_HOLE_TNT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 	}
 }
