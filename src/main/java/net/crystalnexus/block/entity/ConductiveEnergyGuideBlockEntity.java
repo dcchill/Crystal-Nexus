@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -130,7 +132,7 @@ public class ConductiveEnergyGuideBlockEntity extends RandomizableContainerBlock
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(409600, 409600, 409600, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.CONDUCTIVE_ENERGY_GUIDE.capacity(), CrystalnexusConfig.MACHINES.CONDUCTIVE_ENERGY_GUIDE.maxReceive(), CrystalnexusConfig.MACHINES.CONDUCTIVE_ENERGY_GUIDE.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

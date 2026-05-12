@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -592,7 +594,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 	}
 
 	// ================= ENERGY =================
-	private final EnergyStorage energyStorage = new EnergyStorage(409600, 20480, 10240, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.QUARRY.capacity(), CrystalnexusConfig.MACHINES.QUARRY.maxReceive(), CrystalnexusConfig.MACHINES.QUARRY.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

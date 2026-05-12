@@ -1,5 +1,6 @@
 package net.crystalnexus.events;
 
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -17,7 +18,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 public class CompoundPickaxeEnergyEvents {
 
-    private static final int ENERGY_COST = 25;
     private static final ResourceLocation BATTERY_TAG =
             ResourceLocation.fromNamespaceAndPath("crystalnexus", "battery");
 
@@ -30,7 +30,8 @@ public class CompoundPickaxeEnergyEvents {
         ItemStack tool = player.getMainHandItem();
         if (!tool.is(CrystalnexusModItems.COMPOUND_PICKAXE.get())) return;
 
-        if (!hasEnoughEnergyInAnyBattery(player, ENERGY_COST)) {
+        int energyCost = CrystalnexusConfig.ITEMS.COMPOUND_PICKAXE.energyCost();
+        if (!hasEnoughEnergyInAnyBattery(player, energyCost)) {
             event.setCanceled(true);
             player.displayClientMessage(
                     Component.literal("Out of power!").withStyle(ChatFormatting.RED),
@@ -49,7 +50,8 @@ public class CompoundPickaxeEnergyEvents {
         ItemStack tool = player.getMainHandItem();
         if (!tool.is(CrystalnexusModItems.COMPOUND_PICKAXE.get())) return;
 
-        if (!consumeEnergyFromAnyBattery(player, ENERGY_COST)) {
+        int energyCost = CrystalnexusConfig.ITEMS.COMPOUND_PICKAXE.energyCost();
+        if (!consumeEnergyFromAnyBattery(player, energyCost)) {
             event.setCanceled(true);
             player.displayClientMessage(
                     Component.literal("Out of power!").withStyle(ChatFormatting.RED),

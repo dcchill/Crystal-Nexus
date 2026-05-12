@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.config.CrystalnexusConfig;
+
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -14,12 +16,13 @@ import net.minecraft.core.BlockPos;
 
 public class WarpPadOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+		int chargeTicks = CrystalnexusConfig.MACHINES.WARP_PAD_BEHAVIOR.chargeTicks();
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
 			BlockState _bs = world.getBlockState(_bp);
 			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", 300);
+				_blockEntity.getPersistentData().putDouble("maxProgress", chargeTicks);
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
@@ -41,7 +44,7 @@ public class WarpPadOnTickUpdateProcedure {
 			}
 		}
 		if (getEnergyStored(world, BlockPos.containing(x, y, z), null) == getMaxEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 300) {
+			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= chargeTicks) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
 					BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -51,7 +54,7 @@ public class WarpPadOnTickUpdateProcedure {
 					if (world instanceof Level _level)
 						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 				}
-			} else if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= 0 && getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < 300) {
+			} else if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= 0 && getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < chargeTicks) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
 					BlockEntity _blockEntity = world.getBlockEntity(_bp);

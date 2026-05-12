@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -135,7 +137,7 @@ public class BiomaticComposterBlockEntity extends RandomizableContainerBlockEnti
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(10240, 2048, 8192, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.BIOMATIC_COMPOSTER.capacity(), CrystalnexusConfig.MACHINES.BIOMATIC_COMPOSTER.maxReceive(), CrystalnexusConfig.MACHINES.BIOMATIC_COMPOSTER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

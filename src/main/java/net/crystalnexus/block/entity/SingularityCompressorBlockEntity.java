@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -135,7 +137,7 @@ public class SingularityCompressorBlockEntity extends RandomizableContainerBlock
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(1024000, 1024000, 1024000, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.SINGULARITY_COMPRESSOR.capacity(), CrystalnexusConfig.MACHINES.SINGULARITY_COMPRESSOR.maxReceive(), CrystalnexusConfig.MACHINES.SINGULARITY_COMPRESSOR.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

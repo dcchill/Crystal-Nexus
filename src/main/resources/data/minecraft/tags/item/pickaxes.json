@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:mining_laser",
     "crystalnexus:compound_pickaxe",
     "crystalnexus:invertium_pickaxe",
     "crystalnexus:polymer_pickaxe",

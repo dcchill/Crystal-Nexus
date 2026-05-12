@@ -1,6 +1,7 @@
 package net.crystalnexus.procedures;
 
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.config.CrystalnexusConfig;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public class ZeroPointMultiblockCheckProcedure {
-	private static final int MAX_OUTPUT = 10240000;
 	private static final String PROGRESS_TAG = "progress";
 	private static final ResourceLocation ACTIVE_SOUND = ResourceLocation.parse("crystalnexus:zero_point_active");
 	private static final Direction[] OUTPUT_SIDES = {Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST, Direction.SOUTH, Direction.NORTH};
@@ -114,7 +114,7 @@ public class ZeroPointMultiblockCheckProcedure {
 
 		int progress = (int) controllerEntity.getPersistentData().getDouble(PROGRESS_TAG);
 		BlockState state = world.getBlockState(controllerPos);
-		if (progress >= 300) {
+		if (progress >= CrystalnexusConfig.MACHINES.ZERO_POINT_MULTIBLOCK.soundCycleTicks()) {
 			controllerEntity.getPersistentData().putDouble(PROGRESS_TAG, 0);
 			if (world instanceof Level level) {
 				level.sendBlockUpdated(controllerPos, state, state, 3);
@@ -139,7 +139,7 @@ public class ZeroPointMultiblockCheckProcedure {
 				continue;
 			}
 
-			int received = storage.receiveEnergy(MAX_OUTPUT, true);
+			int received = storage.receiveEnergy(CrystalnexusConfig.MACHINES.ZERO_POINT_MULTIBLOCK.maxOutputPerSide(), true);
 			if (received > 0) {
 				storage.receiveEnergy(received, false);
 			}

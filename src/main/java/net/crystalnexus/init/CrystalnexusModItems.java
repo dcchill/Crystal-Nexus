@@ -515,7 +515,6 @@ public class CrystalnexusModItems {
 			event.enqueueWork(() -> {
 				ItemProperties.register(FLORATHANE_WAND.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
 				ItemProperties.register(FLAMETHROWER.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
-				ItemProperties.register(MINING_LASER.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
 			});
 		}
 	}

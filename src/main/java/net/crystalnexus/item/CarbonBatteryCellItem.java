@@ -1,5 +1,7 @@
 package net.crystalnexus.item;
 
+import net.crystalnexus.config.CrystalnexusConfig;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Item;
@@ -11,8 +13,17 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class CarbonBatteryCellItem extends Item {
-    public static final int CAPACITY = 1_000_000;
-    public static final int MAX_IO = 50_000;
+    public static int capacity() {
+        return CrystalnexusConfig.ITEMS.CARBON_BATTERY_CELL.capacity();
+    }
+
+    public static int maxReceive() {
+        return CrystalnexusConfig.ITEMS.CARBON_BATTERY_CELL.maxReceive();
+    }
+
+    public static int maxExtract() {
+        return CrystalnexusConfig.ITEMS.CARBON_BATTERY_CELL.maxExtract();
+    }
 
     public CarbonBatteryCellItem() {
         super(new Item.Properties().stacksTo(1));
@@ -27,7 +38,7 @@ public class CarbonBatteryCellItem extends Item {
     @Override
     public int getBarWidth(ItemStack stack) {
         int energy = BatteryData.getEnergy(stack);
-        return Math.round(13f * energy / (float) CAPACITY);
+        return Math.round(13f * Math.min(energy, capacity()) / (float) capacity());
     }
 
     @Override
@@ -38,7 +49,7 @@ public class CarbonBatteryCellItem extends Item {
 @Override
 public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
     int energy = BatteryData.getEnergy(stack);
-    tooltip.add(Component.literal("Energy: " + String.format("%,d", energy) + " / " + String.format("%,d", CAPACITY) + " FE").withStyle(ChatFormatting.GREEN));
+    tooltip.add(Component.literal("Energy: " + String.format("%,d", Math.min(energy, capacity())) + " / " + String.format("%,d", capacity()) + " FE").withStyle(ChatFormatting.GREEN));
 }
 
 }

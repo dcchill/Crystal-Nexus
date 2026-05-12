@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -139,7 +141,7 @@ public class MetallurgicRecrystallizerBlockEntity extends RandomizableContainerB
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(40960, 5120, 20480, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.METALLURGIC_RECRYSTALLIZER.capacity(), CrystalnexusConfig.MACHINES.METALLURGIC_RECRYSTALLIZER.maxReceive(), CrystalnexusConfig.MACHINES.METALLURGIC_RECRYSTALLIZER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

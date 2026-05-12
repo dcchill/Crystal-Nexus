@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -119,7 +121,7 @@ public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBloc
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(8192, 512, 256, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.CHLOROPHYTE_ACCELERATOR.capacity(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_ACCELERATOR.maxReceive(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_ACCELERATOR.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

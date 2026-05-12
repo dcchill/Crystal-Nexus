@@ -19,10 +19,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
-    public static final int PER_BLOCK_CAPACITY = 8_000;
+    public static int perBlockCapacity() {
+        return CrystalnexusConfig.MACHINES.tankPerBlockFluidCapacity();
+    }
 
     private BlockPos controllerPos;
     private int memberCount = 1;
@@ -58,7 +61,7 @@ public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
         return itemHandler;
     }
 
-    private final FluidTank tank = new FluidTank(PER_BLOCK_CAPACITY) {
+    private final FluidTank tank = new FluidTank(perBlockCapacity()) {
         @Override
         protected void onContentsChanged() {
             setChanged();
@@ -89,7 +92,7 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
 
     public void setMemberCount(int count) {
         this.memberCount = Math.max(1, count);
-        tank.setCapacity(this.memberCount * PER_BLOCK_CAPACITY);
+        tank.setCapacity(this.memberCount * perBlockCapacity());
         setChanged();
     }
 
@@ -142,7 +145,7 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
         if (tag.contains("Inv")) itemHandler.deserializeNBT(lookup, tag.getCompound("Inv"));
 
         if (tag.contains("Tank")) tank.readFromNBT(lookup, tag.getCompound("Tank"));
-        tank.setCapacity(memberCount * PER_BLOCK_CAPACITY);
+        tank.setCapacity(memberCount * perBlockCapacity());
     }
 
     @Override

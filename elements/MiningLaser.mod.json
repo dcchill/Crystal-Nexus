@@ -2,12 +2,12 @@
   "_fv": 79,
   "_type": "tool",
   "definition": {
-    "toolType": "Shield",
+    "toolType": "Special",
     "renderType": 1,
-    "blockingRenderType": 1,
+    "blockingRenderType": 0,
     "texture": "ultiminer",
     "customModelName": "mining_laser:default",
-    "blockingModelName": "mining_laser_ads:default",
+    "blockingModelName": "Normal blocking",
     "guiTexture": "",
     "name": "Mining Laser",
     "specialInformation": {

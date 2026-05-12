@@ -3,13 +3,5 @@
   "textures": {
     "0": "crystalnexus:block/mining_laser",
     "particle": "crystalnexus:item/ultiminer"
-  },
-  "overrides": [
-    {
-      "predicate": {
-        "blocking": 1
-      },
-      "model": "crystalnexus:item/mining_laser_0"
-    }
-  ]
+  }
 }

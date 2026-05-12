@@ -21,6 +21,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModItems;
 
 import java.util.List;
@@ -50,25 +51,26 @@ public class AOEChargerOnTickUpdateProcedure {
         // Combined Upgrade Slot
         // ----------------------------------
 
-        int baseInput = 512;
+        CrystalnexusConfig.AoeChargerValues config = CrystalnexusConfig.MACHINES.AOE_CHARGER_BEHAVIOR;
+        int baseInput = config.baseTransferPerTick();
         double inputMult = 1.0;
-        double range = 64;
+        double range = config.baseRange();
 
         ItemStack upgrade = itemHandler.getStackInSlot(0);
 
         if (!upgrade.isEmpty()) {
 
             if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-                inputMult = 1.5;
+                inputMult = config.accelerationUpgradeMultiplier();
 
             else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-                inputMult = 3.0;
+                inputMult = config.carbonAccelerationUpgradeMultiplier();
 
             else if (upgrade.getItem() == CrystalnexusModItems.RANGE_UPGRADE.get())
-                range = 96;
+                range = config.rangeUpgradeRange();
 
             else if (upgrade.getItem() == CrystalnexusModItems.CARBON_RANGE_UPGRADE.get())
-                range = 128;
+                range = config.carbonRangeUpgradeRange();
         }
 
         // SSD override (inverse cook_mult)
@@ -86,7 +88,7 @@ public class AOEChargerOnTickUpdateProcedure {
                 inputMult = 1.0 / cookMult;
         }
 
-        inputMult = Math.max(0.05, Math.min(inputMult, 20.0));
+        inputMult = Math.max(config.minTransferMultiplier(), Math.min(inputMult, config.maxTransferMultiplier()));
         int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
 
         // ----------------------------------
@@ -143,8 +145,7 @@ public class AOEChargerOnTickUpdateProcedure {
 			
 			    setBlockState(world, pos, 2);
 			
-			    // 🎲 15% chance per tick
-			    if (!level.isClientSide() && level.random.nextFloat() < 0.15f) {
+			    if (!level.isClientSide() && level.random.nextDouble() < config.sparkChance()) {
 			
 			        if (level instanceof ServerLevel serverLevel) {
 			

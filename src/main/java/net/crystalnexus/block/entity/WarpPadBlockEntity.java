@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -122,7 +124,7 @@ public class WarpPadBlockEntity extends RandomizableContainerBlockEntity impleme
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(409600, 5120, 409600, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.WARP_PAD.capacity(), CrystalnexusConfig.MACHINES.WARP_PAD.maxReceive(), CrystalnexusConfig.MACHINES.WARP_PAD.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

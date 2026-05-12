@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -149,7 +151,7 @@ public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(40960, 2048, 1024, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.CRAFTING_FACTORY.capacity(), CrystalnexusConfig.MACHINES.CRAFTING_FACTORY.maxReceive(), CrystalnexusConfig.MACHINES.CRAFTING_FACTORY.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

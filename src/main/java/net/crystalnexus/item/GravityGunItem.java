@@ -44,6 +44,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.item.renderer.GravityGunItemRenderer;
 
 import java.util.Map;
@@ -73,6 +74,26 @@ public class GravityGunItem extends Item implements GeoItem {
 
 	public GravityGunItem() {
 		super(new Item.Properties().stacksTo(1).rarity(Rarity.COMMON));
+	}
+
+	private static double pickupRange() {
+		return CrystalnexusConfig.ITEMS.GRAVITY_GUN.pickupRange();
+	}
+
+	private static double maxHoldDistance() {
+		return CrystalnexusConfig.ITEMS.GRAVITY_GUN.maxHoldDistance();
+	}
+
+	private static double throwSpeed() {
+		return CrystalnexusConfig.ITEMS.GRAVITY_GUN.throwSpeed();
+	}
+
+	private static double projectileDamage() {
+		return CrystalnexusConfig.ITEMS.GRAVITY_GUN.projectileDamage();
+	}
+
+	private static int projectileMaxDamage() {
+		return CrystalnexusConfig.ITEMS.GRAVITY_GUN.projectileMaxDamage();
 	}
 
 	@Override
@@ -244,11 +265,11 @@ public class GravityGunItem extends Item implements GeoItem {
 		HELD_ENTITIES.remove(player.getUUID());
 		HELD_FALLING_BLOCKS.remove(held.getUUID());
 		held.setNoGravity(false);
-		held.setDeltaMovement(player.getLookAngle().normalize().scale(THROW_SPEED));
+		held.setDeltaMovement(player.getLookAngle().normalize().scale(throwSpeed()));
 		held.hurtMarked = true;
 		held.fallDistance = 0.0F;
 		if (held instanceof FallingBlockEntity fallingBlock) {
-			fallingBlock.setHurtsEntities((float) PROJECTILE_DAMAGE, PROJECTILE_MAX_DAMAGE);
+			fallingBlock.setHurtsEntities((float) projectileDamage(), projectileMaxDamage());
 			THROWN_BLOCKS.put(fallingBlock.getUUID(), new ThrownBlockProjectile(player.getUUID()));
 		}
 	}
@@ -306,7 +327,7 @@ public class GravityGunItem extends Item implements GeoItem {
 	}
 
 	private static double projectileDamage(Vec3 motion) {
-		return Math.min(PROJECTILE_MAX_DAMAGE, PROJECTILE_DAMAGE + motion.length() * 2.0D);
+		return Math.min(projectileMaxDamage(), projectileDamage() + motion.length() * 2.0D);
 	}
 
 	private static double getHoldDistance(ItemStack stack) {
@@ -315,7 +336,7 @@ public class GravityGunItem extends Item implements GeoItem {
 	}
 
 	private static double clampHoldDistance(double distance) {
-		return Math.max(MIN_HOLD_DISTANCE, Math.min(MAX_HOLD_DISTANCE, distance));
+		return Math.max(MIN_HOLD_DISTANCE, Math.min(maxHoldDistance(), distance));
 	}
 
 	private static Vec3 collisionFreeHoldTarget(Entity held, Vec3 targetPos) {
@@ -348,16 +369,16 @@ public class GravityGunItem extends Item implements GeoItem {
 
 	private static Entity findTargetEntity(ServerPlayer player) {
 		Vec3 eye = player.getEyePosition();
-		Vec3 end = eye.add(player.getLookAngle().scale(PICKUP_RANGE));
-		AABB searchBox = player.getBoundingBox().expandTowards(player.getLookAngle().scale(PICKUP_RANGE)).inflate(1.0D);
+		Vec3 end = eye.add(player.getLookAngle().scale(pickupRange()));
+		AABB searchBox = player.getBoundingBox().expandTowards(player.getLookAngle().scale(pickupRange())).inflate(1.0D);
 		EntityHitResult hit = ProjectileUtil.getEntityHitResult(player, eye, end, searchBox,
-				entity -> entity.isPickable() && entity != player && !entity.isSpectator(), PICKUP_RANGE * PICKUP_RANGE);
+				entity -> entity.isPickable() && entity != player && !entity.isSpectator(), pickupRange() * pickupRange());
 		return hit == null ? null : hit.getEntity();
 	}
 
 	private static FallingBlockEntity tryGrabTargetBlock(ServerPlayer player, ServerLevel level) {
 		Vec3 eye = player.getEyePosition();
-		Vec3 end = eye.add(player.getLookAngle().scale(PICKUP_RANGE));
+		Vec3 end = eye.add(player.getLookAngle().scale(pickupRange()));
 		BlockHitResult hit = level.clip(new ClipContext(eye, end, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
 		if (hit.getType() == HitResult.Type.MISS) {
 			return null;

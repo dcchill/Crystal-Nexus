@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
@@ -127,7 +129,7 @@ public class SteamEngineBlockEntity extends RandomizableContainerBlockEntity imp
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(20480, 1024, 2048, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.STEAM_ENGINE.capacity(), CrystalnexusConfig.MACHINES.STEAM_ENGINE.maxReceive(), CrystalnexusConfig.MACHINES.STEAM_ENGINE.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

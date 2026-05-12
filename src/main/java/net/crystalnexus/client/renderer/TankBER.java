@@ -48,7 +48,7 @@ public class TankBER implements BlockEntityRenderer<TankBlockEntity> {
         int index = members.indexOf(be.getBlockPos());
         if (index < 0) return;
 
-        int per = TankBlockEntity.PER_BLOCK_CAPACITY;
+        int per = TankBlockEntity.perBlockCapacity();
         int start = index * per;
         int blockAmount = Math.max(0, Math.min(per, totalAmount - start));
         if (blockAmount <= 0) return;

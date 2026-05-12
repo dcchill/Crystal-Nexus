@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -23,12 +25,12 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class BasicEnergyCableBlockEntity extends BlockEntity implements WorldlyContainer {
 
-	// Tune these
-	private static final int BUFFER_CAPACITY = 10240;
-	private static final int MAX_IO_PER_TICK = 1024;
+	private static int maxIoPerTick() {
+		return CrystalnexusConfig.MACHINES.BASIC_ENERGY_CABLE.maxExtract();
+	}
 
 
-	private final EnergyStorage energyStorage = new EnergyStorage(BUFFER_CAPACITY, MAX_IO_PER_TICK, MAX_IO_PER_TICK, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.BASIC_ENERGY_CABLE.capacity(), CrystalnexusConfig.MACHINES.BASIC_ENERGY_CABLE.maxReceive(), CrystalnexusConfig.MACHINES.BASIC_ENERGY_CABLE.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int ret = super.receiveEnergy(maxReceive, simulate);
@@ -165,7 +167,7 @@ public void serverTick() {
             if (src == null) src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
             if (src == null || !src.canExtract()) continue;
 
-            int want = Math.min(MAX_IO_PER_TICK, space);
+            int want = Math.min(maxIoPerTick(), space);
             int pulledSim = src.extractEnergy(want, true);
             if (pulledSim <= 0) continue;
 
@@ -197,7 +199,7 @@ public void serverTick() {
         int move = diff / 2;
         if (move <= 0) continue;
 
-        move = Math.min(move, MAX_IO_PER_TICK);
+        move = Math.min(move, maxIoPerTick());
 
         int otherSpace = other.getMaxEnergyStored() - otherStored;
         move = Math.min(move, otherSpace);
@@ -222,7 +224,7 @@ public void serverTick() {
             BlockEntity nBe = lvl.getBlockEntity(nPos);
             if (nBe instanceof BasicEnergyCableBlockEntity) continue;
 
-            int offer = Math.min(MAX_IO_PER_TICK, energyStorage.getEnergyStored());
+            int offer = Math.min(maxIoPerTick(), energyStorage.getEnergyStored());
             if (offer <= 0) break;
 
             IEnergyStorage receiver = findReceiverBySim(ext, nPos, dir, offer);

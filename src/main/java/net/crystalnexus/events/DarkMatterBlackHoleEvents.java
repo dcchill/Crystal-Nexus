@@ -1,6 +1,7 @@
 package net.crystalnexus.events;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -31,16 +32,6 @@ import java.util.List;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public class DarkMatterBlackHoleEvents {
-	private static final int BASE_DURATION_TICKS = 1200;
-	private static final int MAX_DURATION_BONUS_TICKS = 180;
-	private static final double BASE_RADIUS = 64.0D;
-	private static final double MAX_RADIUS_BONUS = 10.0D;
-	private static final double CENTER_CONSUME_DISTANCE = 2.75D;
-	private static final int BLOCK_PULL_ATTEMPTS_PER_TICK = 40;
-	private static final float FALLING_BLOCK_SPAWN_CHANCE = 1.00F;
-	private static final int MIN_BLOCK_DECAY_STEPS_PER_TICK = 900;
-	private static final double FULL_BREAK_RADIUS = CENTER_CONSUME_DISTANCE * 2.0D;
-	private static final double EDGE_BREAK_CHANCE = 0.06D;
 	private static final List<BlackHole> BLACK_HOLES = new ArrayList<>();
 
 	@SubscribeEvent
@@ -79,8 +70,9 @@ public class DarkMatterBlackHoleEvents {
 	}
 
 	private static void spawnBlackHole(ServerLevel level, Vec3 center, int stackSize) {
-		int duration = BASE_DURATION_TICKS + Math.min(MAX_DURATION_BONUS_TICKS, stackSize * 12);
-		double radius = BASE_RADIUS + Math.min(MAX_RADIUS_BONUS, stackSize * 0.75D);
+		CrystalnexusConfig.DarkMatterValues config = CrystalnexusConfig.ITEMS.DARK_MATTER;
+		int duration = config.baseBlackHoleDurationTicks() + Math.min(config.maxDurationBonusTicks(), stackSize * config.durationBonusPerItem());
+		double radius = config.baseRadius() + Math.min(config.maxRadiusBonus(), stackSize * config.radiusBonusPerItem());
 		BLACK_HOLES.add(new BlackHole(level.dimension(), center, radius, duration));
 
 		PacketDistributor.sendToPlayersInDimension(level, new S2C_BlackHoleVisual(center.x, center.y, center.z, radius, duration));
@@ -111,32 +103,33 @@ public class DarkMatterBlackHoleEvents {
 				continue;
 			}
 
-			if (distance < CENTER_CONSUME_DISTANCE) {
+			if (distance < CrystalnexusConfig.ITEMS.DARK_MATTER.centerConsumeDistance()) {
 				if (entity instanceof FallingBlockEntity fallingBlock) {
 					consumeFallingBlock(level, fallingBlock);
 				} else if (entity instanceof ItemEntity) {
 					entity.discard();
 				} else {
-					entity.hurt(level.damageSources().magic(), 8.0F);
+					entity.hurt(level.damageSources().magic(), (float) CrystalnexusConfig.ITEMS.DARK_MATTER.centerDamage());
 				}
 				continue;
 			}
 
-			double pull = 0.17D + (1.0D - distance / radius) * 0.34D;
+			double pull = CrystalnexusConfig.ITEMS.DARK_MATTER.entityPullBase() + (1.0D - distance / radius) * CrystalnexusConfig.ITEMS.DARK_MATTER.entityPullBonus();
 			Vec3 velocity = offset.normalize().scale(pull);
 			entity.setDeltaMovement(entity.getDeltaMovement().scale(0.55D).add(velocity));
 			entity.hurtMarked = true;
 			entity.fallDistance = 0.0F;
 
 			if (entity instanceof LivingEntity && entity.tickCount % 20 == 0 && distance < radius * 0.72D) {
-				entity.hurt(level.damageSources().magic(), 2.0F);
+				entity.hurt(level.damageSources().magic(), (float) CrystalnexusConfig.ITEMS.DARK_MATTER.periodicDamage());
 			}
 		}
 	}
 
 	private static void pullBlocks(ServerLevel level, BlackHole blackHole) {
 		Vec3 center = blackHole.center();
-		for (int i = 0; i < BLOCK_PULL_ATTEMPTS_PER_TICK; i++) {
+		CrystalnexusConfig.DarkMatterValues config = CrystalnexusConfig.ITEMS.DARK_MATTER;
+		for (int i = 0; i < config.blockPullAttemptsPerTick(); i++) {
 			BlockPos pos = blackHole.nextPullBlockPos();
 			if (pos == null) {
 				return;
@@ -147,7 +140,7 @@ public class DarkMatterBlackHoleEvents {
 			}
 
 			BlockState state = level.getBlockState(pos);
-			if (!canEatBlock(level, pos, state) || state.hasBlockEntity() || level.random.nextFloat() >= FALLING_BLOCK_SPAWN_CHANCE) {
+			if (!canEatBlock(level, pos, state) || state.hasBlockEntity() || level.random.nextDouble() >= config.fallingBlockSpawnChance()) {
 				continue;
 			}
 
@@ -155,7 +148,7 @@ public class DarkMatterBlackHoleEvents {
 			fallingBlock.dropItem = false;
 			fallingBlock.disableDrop();
 			fallingBlock.setNoGravity(true);
-			fallingBlock.setDeltaMovement(center.add(0.0D, 0.35D, 0.0D).subtract(fallingBlock.position()).normalize().scale(0.45D));
+			fallingBlock.setDeltaMovement(center.add(0.0D, 0.35D, 0.0D).subtract(fallingBlock.position()).normalize().scale(config.fallingBlockPullSpeed()));
 			fallingBlock.hurtMarked = true;
 			level.sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, state), pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 3, 0.18D, 0.18D, 0.18D, 0.04D);
 		}
@@ -164,7 +157,8 @@ public class DarkMatterBlackHoleEvents {
 	private static void eatBlocks(ServerLevel level, BlackHole blackHole) {
 		Vec3 center = blackHole.center();
 		double radius = blackHole.radius();
-		int steps = Math.max(MIN_BLOCK_DECAY_STEPS_PER_TICK, (int) Math.round(radius * 12.0D));
+		CrystalnexusConfig.DarkMatterValues config = CrystalnexusConfig.ITEMS.DARK_MATTER;
+		int steps = Math.max(config.minBlockDecayStepsPerTick(), (int) Math.round(radius * config.blockDecayStepsPerRadius()));
 		for (int i = 0; i < steps; i++) {
 			BlockPos pos = blackHole.nextDecayBlockPos();
 			if (pos == null) {
@@ -204,14 +198,16 @@ public class DarkMatterBlackHoleEvents {
 	}
 
 	private static double blockBreakChance(double distance, double radius) {
-		if (distance <= FULL_BREAK_RADIUS) {
+		double fullBreakRadius = CrystalnexusConfig.ITEMS.DARK_MATTER.centerConsumeDistance() * 2.0D;
+		if (distance <= fullBreakRadius) {
 			return 1.0D;
 		}
 
-		double falloffRange = Math.max(1.0D, radius - FULL_BREAK_RADIUS);
-		double fromCoreToEdge = Math.min(1.0D, Math.max(0.0D, (distance - FULL_BREAK_RADIUS) / falloffRange));
+		double falloffRange = Math.max(1.0D, radius - fullBreakRadius);
+		double fromCoreToEdge = Math.min(1.0D, Math.max(0.0D, (distance - fullBreakRadius) / falloffRange));
 		double eased = fromCoreToEdge * fromCoreToEdge;
-		return EDGE_BREAK_CHANCE + (1.0D - EDGE_BREAK_CHANCE) * (1.0D - eased);
+		double edgeBreakChance = CrystalnexusConfig.ITEMS.DARK_MATTER.edgeBreakChance();
+		return edgeBreakChance + (1.0D - edgeBreakChance) * (1.0D - eased);
 	}
 
 	private static boolean isInsideActiveBlackHole(ServerLevel level, Vec3 pos) {

@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -140,7 +142,7 @@ public class MatterTransmutationTableBlockEntity extends RandomizableContainerBl
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(20480, 2048, 2048, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_TABLE.capacity(), CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_TABLE.maxReceive(), CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_TABLE.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

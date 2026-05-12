@@ -11,6 +11,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModList;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -37,6 +38,7 @@ import net.crystalnexus.init.CrystalnexusModFluidTypes;
 import net.crystalnexus.init.CrystalnexusModEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.config.CrystalnexusConfig;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
@@ -52,6 +54,7 @@ public class CrystalnexusMod {
 
 	public CrystalnexusMod(IEventBus modEventBus) {
 		// Start of user code block mod constructor
+		ModList.get().getModContainerById(MODID).ifPresent(modContainer -> modContainer.registerConfig(ModConfig.Type.COMMON, CrystalnexusConfig.SPEC));
 		// End of user code block mod constructor
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
@@ -62,14 +65,11 @@ public class CrystalnexusMod {
 		CrystalnexusModEntities.REGISTRY.register(modEventBus);
 		CrystalnexusModTabs.REGISTRY.register(modEventBus);
 		CrystalnexusModVariables.ATTACHMENT_TYPES.register(modEventBus);
-
 		CrystalnexusModMobEffects.REGISTRY.register(modEventBus);
 		CrystalnexusModMenus.REGISTRY.register(modEventBus);
 		CrystalnexusModParticleTypes.REGISTRY.register(modEventBus);
-
 		CrystalnexusModFluids.REGISTRY.register(modEventBus);
 		CrystalnexusModFluidTypes.REGISTRY.register(modEventBus);
-
 		// Start of user code block mod init
 		// End of user code block mod init
 	}

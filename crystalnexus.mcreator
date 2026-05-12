@@ -13609,13 +13609,12 @@
       "name": "MiningLaser",
       "type": "tool",
       "compiles": true,
-      "locked_code": false,
+      "locked_code": true,
       "registry_name": "mining_laser",
       "metadata": {
         "files": [
           "src/main/java/net/crystalnexus/item/MiningLaserItem.java",
-          "src/main/resources/assets/crystalnexus/models/item/mining_laser.json",
-          "src/main/resources/assets/crystalnexus/models/item/mining_laser_0.json"
+          "src/main/resources/assets/crystalnexus/models/item/mining_laser.json"
         ]
       },
       "path": "~/Laser Weapons"
@@ -13649,39 +13648,6 @@
         "return_type": "number",
         "files": [
           "src/main/java/net/crystalnexus/procedures/GetCooldownProcedure.java"
-        ]
-      },
-      "path": "~/Laser Weapons"
-    },
-    {
-      "name": "LaserBatteryOverlay",
-      "type": "overlay",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "laser_battery_overlay",
-      "metadata": {
-        "files": [
-          "src/main/java/net/crystalnexus/client/screens/LaserBatteryOverlayOverlay.java"
-        ]
-      },
-      "path": "~/Laser Weapons"
-    },
-    {
-      "name": "LaserBatteryOverlayChecker",
-      "type": "procedure",
-      "compiles": true,
-      "locked_code": false,
-      "registry_name": "laser_battery_overlay_checker",
-      "metadata": {
-        "dependencies": [
-          {
-            "name": "entity",
-            "type": "entity"
-          }
-        ],
-        "return_type": "logic",
-        "files": [
-          "src/main/java/net/crystalnexus/procedures/LaserBatteryOverlayCheckerProcedure.java"
         ]
       },
       "path": "~/Laser Weapons"
@@ -18619,6 +18585,7 @@
       "CUSTOM:GodlikeCrystal"
     ],
     "ITEMS:minecraft:pickaxes": [
+      "~CUSTOM:MiningLaser",
       "~CUSTOM:InvertiumPickaxe",
       "~CUSTOM:PolymerPickaxe",
       "~CUSTOM:CompoundPickaxe",

@@ -1,5 +1,6 @@
 package net.crystalnexus.events;
 
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,6 @@ import net.neoforged.neoforge.items.IItemHandler;
 
 public class CompoundSwordEnergyEvents {
 
-    private static final int ENERGY_COST_PER_HIT = 50; // tweak
     private static final ResourceLocation BATTERY_TAG =
             ResourceLocation.fromNamespaceAndPath("crystalnexus", "battery");
 
@@ -33,7 +33,7 @@ public class CompoundSwordEnergyEvents {
         if (!weapon.is(CrystalnexusModItems.COMPOUND_SWORD.get())) return;
 
         // If we can't pay, cancel the attack (no damage)
-        if (!consumeBatteryEnergy(player, ENERGY_COST_PER_HIT)) {
+        if (!consumeBatteryEnergy(player, CrystalnexusConfig.ITEMS.COMPOUND_SWORD.energyCost())) {
             event.setCanceled(true);
 
             // optional: throttle spam

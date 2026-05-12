@@ -4,10 +4,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+
+import net.crystalnexus.config.CrystalnexusConfig;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
@@ -18,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
+	private static final ResourceLocation ZERO_POINT_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "zero_point");
+	private static final ResourceLocation ZERO_POINT_CORE_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "zero_point_core");
 
 	private final ItemStack output;
 	private final NonNullList<Ingredient> ingredients;
@@ -56,6 +62,17 @@ public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
 
 	public List<Integer> integers() {
 		return integers;
+	}
+
+	public boolean isEnabledByConfig() {
+		ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(output.getItem());
+		if (ZERO_POINT_ID.equals(outputId)) {
+			return CrystalnexusConfig.RECIPES.enableZeroPointBlockRecipe();
+		}
+		if (ZERO_POINT_CORE_ID.equals(outputId)) {
+			return CrystalnexusConfig.RECIPES.enableZeroPointCoreRecipe();
+		}
+		return true;
 	}
 
 	@Override

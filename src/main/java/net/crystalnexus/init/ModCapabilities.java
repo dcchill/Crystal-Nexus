@@ -17,24 +17,24 @@ public class ModCapabilities {
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerItem(
             Capabilities.EnergyStorage.ITEM,
-            (stack, ctx) -> new BatteryEnergyStorage(stack, BatteryCellItem.CAPACITY, BatteryCellItem.MAX_IO),
+            (stack, ctx) -> new BatteryEnergyStorage(stack, BatteryCellItem.capacity(), BatteryCellItem.maxReceive(), BatteryCellItem.maxExtract()),
             CrystalnexusModItems.BATTERY_CELL.get()
         );
       event.registerItem(
     Capabilities.EnergyStorage.ITEM,
-    (stack, ctx) -> new BatteryEnergyStorage(stack, DenseBatteryCellItem.CAPACITY, DenseBatteryCellItem.MAX_IO),
+    (stack, ctx) -> new BatteryEnergyStorage(stack, DenseBatteryCellItem.capacity(), DenseBatteryCellItem.maxReceive(), DenseBatteryCellItem.maxExtract()),
     CrystalnexusModItems.DENSE_BATTERY_CELL.get()
 );
 
       event.registerItem(
     Capabilities.EnergyStorage.ITEM,
-    (stack, ctx) -> new BatteryEnergyStorage(stack, CarbonBatteryCellItem.CAPACITY, CarbonBatteryCellItem.MAX_IO),
+    (stack, ctx) -> new BatteryEnergyStorage(stack, CarbonBatteryCellItem.capacity(), CarbonBatteryCellItem.maxReceive(), CarbonBatteryCellItem.maxExtract()),
     CrystalnexusModItems.CARBON_BATTERY_CELL.get()
 );
 
       event.registerItem(
     Capabilities.EnergyStorage.ITEM,
-    (stack, ctx) -> new BatteryEnergyStorage(stack, DarkBatteryCellItem.CAPACITY, DarkBatteryCellItem.MAX_IO),
+    (stack, ctx) -> new BatteryEnergyStorage(stack, DarkBatteryCellItem.capacity(), DarkBatteryCellItem.maxReceive(), DarkBatteryCellItem.maxExtract()),
     CrystalnexusModItems.DARK_BATTERY_CELL.get()
 );
 

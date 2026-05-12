@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.MatterTransmutationRecipe;
+import net.crystalnexus.config.CrystalnexusConfig;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -31,8 +32,8 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		// tweakables
-		final int cookTime = 100;
-		final int energyCost = 1024;
+		final int cookTime = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.ticksPerCraft();
+		final int energyCost = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.energyPerCraft();
 		final int inputSlots = 8;
 		final int outputSlot = 8;
 
@@ -101,7 +102,7 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 				.collect(Collectors.toList());
 
 		for (MatterTransmutationRecipe recipe : recipes) {
-			if (recipeMatchesWithCounts(world, pos, recipe, inputSlots)) {
+			if (recipe.isEnabledByConfig() && recipeMatchesWithCounts(world, pos, recipe, inputSlots)) {
 				return recipe;
 			}
 		}

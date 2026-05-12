@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -119,7 +121,7 @@ public class ZeroPointBlockEntity extends RandomizableContainerBlockEntity imple
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(10240000, 10240000, 10240000, 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.ZERO_POINT.capacity(), CrystalnexusConfig.MACHINES.ZERO_POINT.maxReceive(), CrystalnexusConfig.MACHINES.ZERO_POINT.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

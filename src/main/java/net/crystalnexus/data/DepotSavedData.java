@@ -11,6 +11,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.saveddata.SavedData;
 
+import net.crystalnexus.config.CrystalnexusConfig;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,7 +24,6 @@ public class DepotSavedData extends SavedData {
     public static final String ID = "crystalnexus_depot";
 
     // ===== Capacity / Upgrades =====
-    public static final long BASE_CAPACITY = 20480L; // tune this
     private int upgradeLevel = 0;
 
     // ===== Stored items =====
@@ -71,8 +72,9 @@ public class DepotSavedData extends SavedData {
 
     /** Doubles capacity per upgrade (BASE * 2^upgradeLevel). */
     public long getCapacity() {
-        if (upgradeLevel >= 62) return Long.MAX_VALUE / 2; // overflow safety
-        return BASE_CAPACITY << upgradeLevel;
+        long baseCapacity = CrystalnexusConfig.MACHINES.depotBaseCapacity();
+        if (upgradeLevel >= 62 || baseCapacity > (Long.MAX_VALUE >> upgradeLevel)) return Long.MAX_VALUE / 2; // overflow safety
+        return baseCapacity << upgradeLevel;
     }
 
     /** Total items stored (sum of all counts). */
