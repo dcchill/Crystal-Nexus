@@ -40,23 +40,13 @@ Main blocks:
 - Reaction Chamber Computer
 - Reaction Chamber Energy Input
 
-The Reaction Chamber Computer checks for a Reaction Chamber Core next to it, then uses the multiblock checker to decide whether the controller can run.
+The Reaction Chamber Computer is the controller for the Reaction Chamber, and is where the EE-Matter is created.
 
 How it works:
 
 - Output slot accepts EE-Matter or empty space.
-- Each completed operation creates 1 EE-Matter.
-- Each operation costs 10,240,000 FE.
+- One EE-Matter costs 10,240,000 FE.
 - Base processing time is 50 ticks, 25 with Acceleration Upgrade, and 5 with Carbon Acceleration Upgrade.
-
-Related reaction types include:
-
-- Beam Reaction with Endstone
-- Beam Reaction with End Crystal
-- Beam Reaction with Wither Skull
-- Beam Reaction with Chlorophyte
-- Beam Reaction with Chlorophyte Block
-- Beam Reaction EE
 
 ## Particle Accelerator
 
@@ -65,45 +55,25 @@ Main blocks:
 - Particle Accelerator Controller
 - Particle Accelerator Tube
 - Electromagnet
+    - Increases processing speed of Particle Accelerator.
+    - At least one needed.
 
-- Increases processing speed of Particle Accelerator.
-- At least one needed.
-
-Use the Accelerator Controller as the main GUI/controller. Tubes form the accelerator structure, while Electromagnets improve speed.
+Use the Accelerator Controller as controller. Tubes form the accelerator structure, while Electromagnets improve speed.
 
 How it works:
 
-- The controller accepts either a linear accelerator path or a horizontal ring.
+- The Particle Accelerator must be bult in a flat square, with a controller and at least one Electromagnet.
 - Path length must be at least 5 blocks and at most 64 blocks.
 - At least 1 Electromagnet is required.
 - Tubes and Electromagnets form the accelerator path.
 - The accelerator drains 5,120 FE/t total, split across all Electromagnets.
 - More Electromagnets reduce processing time with diminishing returns, down to a 100 tick floor.
-- Inputs are unordered in slots 0, 2, 3, and 4.
-- Output is slot 1.
-- Use JEI for the exact accelerator input/output list.
 
 ## Matter and Singularity Systems
 
 ### Matter Transmutation Table
 
-The Matter Transmutation Table has a GUI with a Craft button. It handles matter recipes and expensive transformations.
-
-Known transmutation recipe targets include:
-
-- Blaze Rod
-- Compound-E
-- Diamond
-- Godlike Crystal
-- Gold
-- Gunpowder
-- Iron
-- Netherite Scrap
-- Nether Star
-- Obsidian
-- Redstone
-- Soul Sand
-- Zero Point
+The Matter Transmutation Table works like an advanced powered crafting table. It handles special recipes and matter transmutations.
 
 ### Singularity Compressor
 
@@ -137,14 +107,6 @@ Guide text:
 - Generates FE with no requirements.
 - Ultimate endgame energy.
 
-Material list:
-
-- 1 Zero Point
-- 1 Zero Point Core
-- 52 Carbon Machine Frames
-- 174 Carbon Fiber Blocks
-- 15 Carbon Fiber Glass
-
 ## Ultima Smelter
 
 The Ultima Smelter is an advanced smelting system.
@@ -154,8 +116,6 @@ Guide text indicates:
 - Smelts four stacks at once.
 - Automatically combines nuggets into ingots.
 - Combines crushing and smelting style processing.
-
-Use it for high-throughput late-game processing.
 
 ## Blueprint Creator
 

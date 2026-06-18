@@ -33,8 +33,6 @@ Forms:
 - Crystalized Alloy Nugget
 - Crystalized Alloy Block
 
-Advancement text says Crystalized Alloy is created in the Crystal Purifier.
-
 ## Machine Structure Materials
 
 Machine frame tiers:

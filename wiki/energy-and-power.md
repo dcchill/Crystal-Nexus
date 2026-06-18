@@ -14,6 +14,13 @@ The Battery Cell block stores FE for machine networks and can push FE to neighbo
 - Energy receive/extract: up to 4,096,000 FE in the element definition.
 - Use: place next to machines, cables, or other batteries to create larger buffers.
 
+How to use it:
+
+1. Place it next to an Energy Generator, cable, beam receiver, or powered machine.
+2. Place more Battery Cells directly touching it if you want a larger shared buffer.
+3. Put machines next to the battery or connect them with cables/beams.
+4. The battery will balance with adjacent Battery blocks and push FE to nearby receivers.
+
 ### Item Battery Cells
 
 The mod includes several battery item tiers:
@@ -27,25 +34,32 @@ These are important for portable powered tools. For example, the Mining Laser dr
 
 ### Battery Monitor
 
-The Battery Monitor has a GUI and tick behavior. It is intended for checking or managing battery networks. Exact display behavior should be checked in-game, but it belongs near battery banks.
+The Battery Monitor shows the current / max FE a battery system can hold.  Place it connected to a Battery multiblock.
 
 ## Cables and Beam Transfer
 
 ### Basic Energy Cable, Energy Cable, and Energy Cable Mk 2
 
-These blocks are the conventional cable tiers. Use them for compact local machine wiring.
+These cables come in three different tiers, with each level increasing the maximum power transfer.
 
-- Basic Energy Cable: early network option.
-- Energy Cable: standard network option.
-- Energy Cable Mk 2: higher-tier network option.
+- Basic Energy Cable: 1,024 FE/t
+- Energy Cable: 51,200 FE/t
+- Energy Cable Mk 2: 512,000 FE/t
 
 ### Crystal Energy Beam
 
 - Transports energy through a beam.
 - Aim the beam at a block that accepts energy.
-- When it has stored FE, it searches up to 8 blocks in its configured direction, passing through blocks tagged `crystalnexus:lasertransparent`.
+- Passes through transparent blocks.
 - It transfers up to 81,920 FE/t into the first energy receiver it finds.
 - Energy Refractors and Energy Splitters can continue the beam path by receiving the beam origin data.
+
+How to use it:
+
+1. Place the Energy Beam so it points toward the receiver or next beam part.
+2. Keep the path clear or use laser-transparent blocks.
+3. Use an Energy Refractor when the beam needs to turn.
+4. Use an Energy Splitter when you want one beam path to feed more than one route.
 
 ### Energy Refractor
 
@@ -57,13 +71,11 @@ Splits an energy beam by diverting a portion to a side output while letting the 
 
 ### Conductive Energy System
 
-Conductive variants exist for more advanced beam networks:
+The Conductive Variants send more FE/t than the basic energy beams:
 
 - Conductive Energy Beam
 - Conductive Energy Refractor
 - Conductive Energy Splitter
-
-The conductive system uses the same general beam/refractor/splitter vocabulary. Check the conductive procedures before documenting exact differences from the normal beam line.
 
 ## Crystal-Based Generation
 
@@ -84,10 +96,13 @@ The Crystal Energy Siphon generates FE from End Crystals in range when supplied 
 - Carbon Range Upgrade raises it to about 6 blocks.
 - The inserted crystal item takes random durability damage while at least one End Crystal is being used.
 
-### Energy Extractor
+How to use it:
 
-- Converts EE-Matter back into FE.
-- Use it as part of the late-game matter-to-energy loop.
+1. Place the machine above the block that should receive FE, such as a Battery Cell or machine.
+2. Put an Energy Crystal in the main crystal slot.
+3. Place End Crystals within range.
+4. Add a Range Upgrade or Carbon Range Upgrade if the End Crystals are farther away.
+5. Make sure the block below can receive FE.
 
 ## Generators
 
@@ -97,11 +112,23 @@ The Piston Generator is an early or mid-game generator with its own GUI.
 
 Use it when you need FE before more advanced crystal, steam, or reactor infrastructure is online.
 
+How to use it:
+
+1. Place it near your first machines or a Battery Cell.
+2. Add the required fuel/input from its GUI.
+3. Route FE into cables, batteries, or nearby machines.
+
 ### Invertium Piston Generator
 
 The Invertium Piston Generator is the higher-tier counterpart to the Piston Generator.
 
 Use it after unlocking Invertium materials.
+
+How to use it:
+
+1. Replace or supplement early Piston Generators once you have Invertium.
+2. Feed it the required generator input.
+3. Buffer the output in batteries before sending it to larger machine lines.
 
 ### Steam Engine
 
@@ -111,6 +138,13 @@ The Steam Engine consumes Steam from its fluid tank and generates FE internally 
 - Drains 1,000 mB Steam when a cycle completes.
 - Generates 64 FE/t internally during the cycle before pushing stored FE to adjacent energy receivers.
 
+How to use it:
+
+1. Pipe Steam into the Steam Engine.
+2. Keep at least 1,000 mB Steam available for each cycle.
+3. Put a Battery Cell, cable, or machine next to it to receive FE.
+4. Add Efficiency Upgrades if your setup supports them.
+
 ### High Pressure Steam Engine
 
 This is the upgraded steam engine tier.
@@ -119,6 +153,12 @@ This is the upgraded steam engine tier.
 - Drains 1,000 mB Steam when a cycle completes.
 - Generates 256 FE/t internally during the cycle before pushing stored FE to adjacent energy receivers.
 
+How to use it:
+
+1. Use it the same way as the normal Steam Engine.
+2. Feed it a steady Steam supply.
+3. Give it strong output storage or transfer, because it produces more FE per tick.
+
 ## Steam Chain
 
 ### Steam Collector
@@ -126,15 +166,29 @@ This is the upgraded steam engine tier.
 - Collects steam from radioactive material in water.
 - Also collects steam from Steam Chambers placed under it.
 
+How to use it:
+
+1. Place it directly above a Steam Chamber for the cleanest setup.
+2. Pipe Steam out of the collector into Steam Engines.
+3. For radioactive-water collection, place the collector above water with radioactive material below it.
+
 ### Steam Chamber
 
 - Requires a Steam Collector directly above it.
-- Requires a water bucket in slot 0.
-- Requires an item tagged as `crystalnexus:steam_fuel` in slot 2.
+- Requires a water bucket in the water input.
+- Requires an item tagged as `crystalnexus:steam_fuel` (blutonium items).
 - Sets itself running while valid; the Steam Collector above fills itself with 25 mB Steam per tick while the chamber is running.
 - Coal Singularity works as non-consumed steam fuel; other fuels are consumed when the chamber completes a cycle.
 
 The normal setup is Steam Chamber below, Steam Collector above, then fluid pipes from the collector to Steam Engines.
+
+How to use it:
+
+1. Place the Steam Chamber.
+2. Place a Steam Collector directly above it.
+3. Put a water bucket in the water input.
+4. Put steam fuel in the fuel input.
+5. Pipe the collector into Steam Engines.
 
 ## Reactor Power
 

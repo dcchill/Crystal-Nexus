@@ -12,7 +12,7 @@ How it works:
 
 - Range defaults to 32 blocks, with actual range read from config.
 - Hold use to fire continuously.
-- It drains sustain FE every tick from battery items in the player inventory or offhand.
+- It drains sustain FE every tick from battery items in the player inventory.
 - It drains additional FE per mined block.
 - It mines at a configurable interval.
 - It cannot mine air, unbreakable blocks, or blocks with block entities.
@@ -20,11 +20,12 @@ How it works:
 - Creative mode bypasses energy use.
 - If no battery power is available, it stops and displays "Out of battery power."
 
-Best use:
+Controls:
 
-- Carry charged Battery Cell items or higher-tier battery cells.
-- Avoid aiming at inventories or machines because block entities are intentionally skipped.
-- Use it for ranged tunnel mining, clearing stone, and harvesting normal blocks.
+- Hold right-click/use to fire.
+- Keep a charged battery item in your inventory.
+- Let go of right-click/use to stop firing.
+- If the laser says "Out of battery power," recharge or swap your battery item.
 
 ### Build Gun
 
@@ -38,9 +39,22 @@ Related blocks:
 
 Build a frame, place the controller near the base, enter a name, and save the schematic. Everything built inside the volume becomes usable by the Build Gun.
 
+Controls:
+
+- Use the Buildgun Schematic Menu keybind to choose saved schematics.
+- Save schematics with the Blu-print Controller before trying to build them.
+- Keep the needed blocks available before placing a schematic.
+
 ### Ore Scanner
 
 The Ore Scanner is a utility item for finding ore. Use it before mining or setting up a quarry.
+
+Controls:
+
+- Right-click/use to scan for nearby ores.
+- Each scan costs 5,120 FE from battery items in your inventory.
+- Sneak + right-click/use while looking at an ore within about to set that ore as the scanner filter.
+- Sneak + right-click/use while not looking at an ore clears the filter back to all ores.
 
 ### Crystal Extractor
 
@@ -48,51 +62,86 @@ Right-click End Crystals to harvest their energy crystal. Crouch + right-click p
 
 ### Florathane Wand
 
-A biological or plant-related utility wand tied to Florathane. Use it with the Florathane and fertilizer branch.
+A wand that grows plants using science!
+
+How to use:
+
+- Hold right-click/use to activate it.
+- Aim at a growable plants.
+- It applies a bonemeal-style growth effect to plants in a radius.
 
 ## Combat and Utility Weapons
 
 ### Paint Gun
 
-Uses paintballs and can recolor blocks or apply paint effects depending on projectile logic.
+Uses paintballs as ammo and fires colored paintball projectiles.
 
-Related ammo includes:
+Controls:
 
-- Paintball
-- White, Orange, Magenta, Light Blue, Yellow, Lime, Pink, Gray, Light Gray, Cyan, Purple, Blue, Brown, Green, Red, Black Paintballs
+- Put paintballs in your offhand.
+- Hold the Paint Gun and right-click/use to fire.
+- Each shot fires 7 paintball projectiles.
+- The Paintball Projectiles dye colorable blocks the color of the paintball.
 
 ### Flamethrower
 
-Has refuel and right-click procedures. Use fuel-related items to refuel before use.
+Shoots fireballs while fueled. Refuel it from lava before use.
+
+Controls:
+
+- Hold right-click/use to fire.
+- It only shoots while the item is in its usable/blocking state.
+- Each firing tick spawns flame particles and 3 small fireballs.
+- Sneak + right-click/use while looking at a lava source within about 5 blocks to refuel.
+- Refueling consumes the lava source and resets the Flamethrower's fuel/damage bar.
 
 ### Gravity Gun
 
-Late utility weapon/tool. Check in-game behavior for exact grab/throw controls.
+The Gravity Gun grabs entities and blocks, holds them in front of you, and can throw them.
+
+Controls:
+
+- Right-click/use an entity or targeted block to grab it.
+- Right-click/use again to release what you are holding.
+- Left-click/attack while holding something to throw it.
+- Scroll the mouse wheel while holding something to move it closer or farther away.
 
 ### Orbital Strike Remote
 
-Late-game remote weapon or utility. Use carefully and test away from important builds.
+Late-game remote weapon or utility. Use carefully.
+
+Controls:
+- Right-click to set target and fire.
 
 ## Mobility Equipment
 
 ### Polymer Jetpack
 
-Uses the Jetpack Jump keybind and has refuel/craft procedures.
+Uses the Jetpack Jump keybind and its stored fuel.
 
-Use for vertical mobility after Polymer progression.
+Uses Gasoline fuel cells as fuel.
+
+Controls:
+
+- Equip it in the chest slot.
+- Hold the Jetpack Jump keybind while airborne to fly.
+- Sprinting changes the thrust: sprint flight pushes you forward more, while normal flight gives stronger upward lift.
+- It consumes fuel while active.
 
 ### Hover Pack
 
-Has dedicated keybinds:
-
-- Rise
-- Forward
-- Backward
-- Left
-- Right
-- Toggle
-
 Use it for controlled flight-like movement and building.
+
+Controls:
+
+- Equip it in the chest slot.
+- Press Hoverpack Toggle [R] to enable or disable the pack.
+- Jump or step off a ledge; the pack only holds you while airborne.
+- Hold [Space] to climb.
+- Use Forward, Backward, Left, and Right to move horizontally.
+- Hold sprint while using it for faster movement and faster climbing.
+- Sneaking disables active hover until you stop sneaking.
+- It drains FE from battery items in your inventory or offhand: 4 FE/t to hover, +8 FE/t while rising, and +12 FE/t while sprint-boosting.
 
 ## Armor and Tool Sets
 
@@ -110,13 +159,12 @@ Tools:
 
 Tools:
 
-- Cystalized Pickaxe
-- Cystalized Axe
-- Cystalized Rapier
-- Cystalized Shovel
-- Cystalized Hoe
+- Crystalized Pickaxe
+- Crystalized Axe
+- Crystalized Rapier
+- Crystalized Shovel
+- Crystalized Hoe
 
-The in-game spelling is "Cystalized" for these item names.
 
 ### Invertium Tools
 
@@ -145,7 +193,7 @@ Items:
 - Compound Paxel
 - Compound Sword
 
-They require an Energy Crystal for power.
+They drain FE from carried battery items, not Energy Crystals.
 
 ### Carbon Armor
 
