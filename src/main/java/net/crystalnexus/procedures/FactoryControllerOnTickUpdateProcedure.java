@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 public class FactoryControllerOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double energy = 0;
-		double slotcheck = 0;
 		if (canReceiveEnergy(world,
 				BlockPos.containing((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getDouble("linkX"),
 						(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getDouble("linkY"),

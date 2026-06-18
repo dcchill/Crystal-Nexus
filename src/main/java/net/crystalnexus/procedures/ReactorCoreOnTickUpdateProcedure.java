@@ -21,12 +21,12 @@ import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
 public class ReactorCoreOnTickUpdateProcedure {
+	private static final int ENERGY_TRANSFER_PER_TICK = 65536;
+
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double computerX = 0;
 		double computerZ = 0;
 		double mbPt = 0;
-		double fePt = 0;
-		double energy = 0;
 		double fluid = 0;
 		BlockState computer = Blocks.AIR.defaultBlockState();
 		BlockState input = Blocks.AIR.defaultBlockState();
@@ -115,75 +115,11 @@ public class ReactorCoreOnTickUpdateProcedure {
 				}
 			}
 		}
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == output.getBlock()) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), 1048576, null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, null);
-			if (getMaxEnergyStored(world, BlockPos.containing(x + 1, y, z), null) != getEnergyStored(world, BlockPos.containing(x + 1, y, z), null)) {
-				if (energy <= getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy((int) energy, false);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + 1, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.receiveEnergy((int) energy, false);
-					}
-				}
-			}
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == output.getBlock()) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), 1048576, null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x - 1, y, z), (int) energy, null);
-			if (getMaxEnergyStored(world, BlockPos.containing(x - 1, y, z), null) != getEnergyStored(world, BlockPos.containing(x - 1, y, z), null)) {
-				if (65536 <= getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(65536, false);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.receiveEnergy(65536, false);
-					}
-				}
-			}
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == output.getBlock()) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), 1048576, null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z + 1), (int) energy, null);
-			if (getMaxEnergyStored(world, BlockPos.containing(x, y, z + 1), null) != getEnergyStored(world, BlockPos.containing(x, y, z + 1), null)) {
-				if (65536 <= getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(65536, false);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z + 1), null);
-						if (_entityStorage != null)
-							_entityStorage.receiveEnergy(65536, false);
-					}
-				}
-			}
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == output.getBlock()) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x + computerX, y, z + computerZ), 1048576, null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z - 1), (int) energy, null);
-			if (getMaxEnergyStored(world, BlockPos.containing(x, y, z - 1), null) != getEnergyStored(world, BlockPos.containing(x, y, z - 1), null)) {
-				if (65536 <= getEnergyStored(world, BlockPos.containing(x + computerX, y, z + computerZ), null)) {
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x + computerX, y, z + computerZ), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(65536, false);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z - 1), null);
-						if (_entityStorage != null)
-							_entityStorage.receiveEnergy(65536, false);
-					}
-				}
-			}
-		}
+		BlockPos computerPos = BlockPos.containing(x + computerX, y, z + computerZ);
+		transferToOutput(world, output, computerPos, BlockPos.containing(x + 1, y, z));
+		transferToOutput(world, output, computerPos, BlockPos.containing(x - 1, y, z));
+		transferToOutput(world, output, computerPos, BlockPos.containing(x, y, z + 1));
+		transferToOutput(world, output, computerPos, BlockPos.containing(x, y, z - 1));
 		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == waste.getBlock()
 				&& (itemFromBlockInventory(world, BlockPos.containing(x + computerX, y, z + computerZ), 2).copy()).getItem() == CrystalnexusModItems.BLUTONIUM_WASTE.get()) {
 			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() != 64) {
@@ -443,6 +379,27 @@ public class ReactorCoreOnTickUpdateProcedure {
 				return energyStorage.receiveEnergy(amount, true);
 		}
 		return 0;
+	}
+
+	private static void transferToOutput(LevelAccessor world, BlockState output, BlockPos computerPos, BlockPos outputPos) {
+		if (world.getBlockState(outputPos).getBlock() != output.getBlock()) {
+			return;
+		}
+
+		int energy = extractEnergySimulate(world, computerPos, ENERGY_TRANSFER_PER_TICK, null);
+		energy = receiveEnergySimulate(world, outputPos, energy, null);
+		if (energy <= 0) {
+			return;
+		}
+
+		if (world instanceof ILevelExtension ext) {
+			IEnergyStorage computerStorage = ext.getCapability(Capabilities.EnergyStorage.BLOCK, computerPos, null);
+			IEnergyStorage outputStorage = ext.getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, null);
+			if (computerStorage != null && outputStorage != null) {
+				computerStorage.extractEnergy(energy, false);
+				outputStorage.receiveEnergy(energy, false);
+			}
+		}
 	}
 
 	public static int getMaxEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {

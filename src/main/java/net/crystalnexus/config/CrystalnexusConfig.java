@@ -183,7 +183,7 @@ public final class CrystalnexusConfig {
 			NODE_MINER = new EnergyValues(builder, "node_miner", 25600, 16384, 8192);
 			ORE_PROCESSOR = new EnergyValues(builder, "ore_processor", 102400, 10240, 20480);
 			PISTON_GENERATOR = new EnergyValues(builder, "piston_generator", 40960, 2048, 1024);
-			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 102400, 2048, 10240);
+			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 512000, 32768, 32768);
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
 			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", 10240000, 512000, 10240000);
 			REACTION_ENERGY_INPUT = new EnergyValues(builder, "reaction_energy_input", 8192000, 4096000, 512000);
@@ -207,7 +207,7 @@ public final class CrystalnexusConfig {
 			WARP_PAD = new EnergyValues(builder, "warp_pad", 409600, 5120, 409600);
 			WARP_PAD_BEHAVIOR = new WarpPadValues(builder);
 			ZERO_POINT = new EnergyValues(builder, "zero_point", 10240000, 10240000, 10240000);
-			ZERO_POINT_MULTIBLOCK = new ZeroPointValues(builder, "zero_point_multiblock", 300, 10240000);
+			ZERO_POINT_MULTIBLOCK = new ZeroPointValues(builder, "zero_point_multiblock", 300, 1024000);
 			builder.pop();
 		}
 
@@ -239,8 +239,8 @@ public final class CrystalnexusConfig {
 			DARK_BATTERY_CELL = new EnergyValues(builder, "dark_battery_cell", 5000000, 250000, 250000);
 			MINING_LASER = new MiningLaserValues(builder);
 			GRAVITY_GUN = new GravityGunValues(builder);
-			COMPOUND_PICKAXE = new CompoundToolValues(builder, "compound_pickaxe", 25, "FE drained from a carried battery for each block mined.");
-			COMPOUND_SWORD = new CompoundToolValues(builder, "compound_sword", 50, "FE drained from a carried battery for each entity hit.");
+			COMPOUND_PICKAXE = new CompoundToolValues(builder, "compound_pickaxe", 200, "FE drained from a carried battery for each block mined.");
+			COMPOUND_SWORD = new CompoundToolValues(builder, "compound_sword", 500, "FE drained from a carried battery for each entity hit.");
 			DARK_MATTER = new DarkMatterValues(builder);
 			builder.pop();
 		}
@@ -309,13 +309,13 @@ public final class CrystalnexusConfig {
 
 	public static final class AoeChargerValues {
 		private static final int DEFAULT_BASE_TRANSFER_PER_TICK = 512;
-		private static final double DEFAULT_BASE_RANGE = 64.0D;
+		private static final double DEFAULT_BASE_RANGE = 24.0D;
 		private static final double DEFAULT_ACCELERATION_UPGRADE_MULTIPLIER = 1.5D;
 		private static final double DEFAULT_CARBON_ACCELERATION_UPGRADE_MULTIPLIER = 3.0D;
-		private static final double DEFAULT_RANGE_UPGRADE_RANGE = 96.0D;
-		private static final double DEFAULT_CARBON_RANGE_UPGRADE_RANGE = 128.0D;
+		private static final double DEFAULT_RANGE_UPGRADE_RANGE = 48.0D;
+		private static final double DEFAULT_CARBON_RANGE_UPGRADE_RANGE = 64.0D;
 		private static final double DEFAULT_MIN_TRANSFER_MULTIPLIER = 0.05D;
-		private static final double DEFAULT_MAX_TRANSFER_MULTIPLIER = 20.0D;
+		private static final double DEFAULT_MAX_TRANSFER_MULTIPLIER = 8.0D;
 		private static final double DEFAULT_SPARK_CHANCE = 0.15D;
 
 		private final ModConfigSpec.IntValue baseTransferPerTick;
@@ -595,8 +595,8 @@ public final class CrystalnexusConfig {
 
 	public static final class MiningLaserValues {
 		private static final double DEFAULT_RANGE = 32.0D;
-		private static final int DEFAULT_SUSTAIN_FE_PER_TICK = 1;
-		private static final int DEFAULT_MINE_FE_PER_BLOCK = 4;
+		private static final int DEFAULT_SUSTAIN_FE_PER_TICK = 16;
+		private static final int DEFAULT_MINE_FE_PER_BLOCK = 256;
 		private static final int DEFAULT_MINE_INTERVAL_TICKS = 2;
 
 		private final ModConfigSpec.DoubleValue range;

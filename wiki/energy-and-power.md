@@ -77,6 +77,16 @@ The Conductive Variants send more FE/t than the basic energy beams:
 - Conductive Energy Refractor
 - Conductive Energy Splitter
 
+### AOE Charger
+
+The AOE Charger fills energy-capable items in nearby player inventories.
+
+- Base range: 24 blocks.
+- Range Upgrade: 48 blocks.
+- Carbon Range Upgrade: 64 blocks.
+- Base transfer: 512 FE/t before upgrade and SSD modifiers.
+- Max transfer multiplier: 8x by default.
+
 ## Crystal-Based Generation
 
 ### Crystal Energy Siphon
@@ -222,3 +232,5 @@ Zero Point is ultimate endgame energy. It is a massive multiblock with a diamete
 - 15 Carbon Fiber Glass
 
 Once built, it generates FE without fuel or coolant.
+
+- Output cap: 1,024,000 FE/t per side by default.

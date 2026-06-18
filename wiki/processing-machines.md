@@ -139,6 +139,17 @@ How to use it:
 2. Put a storage block directly above it if you want drops exported automatically.
 3. Supply FE and it will start right away.
 
+### Quantum Miner
+
+The Quantum Miner creates resources from a weighted resource table instead of mining a real chunk.
+
+- Costs 40,960 FE per completed cycle by default.
+- Base cycle time is 20 ticks, 12 with an Acceleration Upgrade, and 6 with a Carbon Acceleration Upgrade.
+- Output is weighted toward common resources such as raw iron, raw copper, coal, redstone, and lapis.
+- Rare results such as diamonds and emeralds are possible, but much less common.
+- It does not output ancient debris, Blutonium, Invertium, or other progression-gated late-game materials.
+- It only spends FE when it can place the result into its output inventory.
+
 ## Circuit and Computation Processing
 
 ### Chlorophyte Circuit Press

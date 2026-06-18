@@ -105,6 +105,7 @@ Guide text:
 - Massive multiblock.
 - Diameter of 25 blocks.
 - Generates FE with no requirements.
+- Outputs up to 1,024,000 FE/t per side by default.
 - Ultimate endgame energy.
 
 ## Ultima Smelter

@@ -110,28 +110,6 @@ private boolean isLikelyProducer(ILevelExtension ext, Level lvl, BlockPos nPos, 
     return (now - prev) >= 32; // only treat as producer if it rose by at least 32 FE in a tick
 }
 
-	private @Nullable IEnergyStorage findExtractorBySim(ILevelExtension ext, BlockPos pos, Direction fromCableToNeighbor, int want) {
-		// 1) Try face looking back at cable (common)
-		Direction fromNeighbor = fromCableToNeighbor.getOpposite();
-		IEnergyStorage s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, fromNeighbor);
-		if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
-			return s;
-
-		// 2) Try NULL (your blocks often expose here)
-		s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-		if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
-			return s;
-
-		// 3) Try all sides
-		for (Direction d : Direction.values()) {
-			s = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, d);
-			if (s != null && s.canExtract() && s.extractEnergy(want, true) > 0)
-				return s;
-		}
-
-		return null;
-	}
-
 	/**
 	 * Call from your block ticker on the server.
 	 *

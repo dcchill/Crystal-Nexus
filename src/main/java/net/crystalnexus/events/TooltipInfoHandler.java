@@ -94,7 +94,8 @@ public class TooltipInfoHandler {
 
 		addTooltip("zero_point",
 				"Infinite power.",
-				"Core of the full Zero Point Multiblock");
+				"Core of the full Zero Point Multiblock.",
+				"Outputs up to 1,024,000 FE/t per side.");
 		addTooltip("zero_point_core",
 				"Used to craft the Zero Point Block.");
 
@@ -199,7 +200,7 @@ public class TooltipInfoHandler {
 				"Automatically mines resources within a chunk.");
 		addTooltip("quantum_miner",
 				"Quantum resource extraction.",
-				"Pulls resources from another dimension.");
+				"Produces weighted common resources at high FE cost.");
 		addTooltip("node_miner",
 				"Mines from Ore Nodes.",
 				"Slowly mines resources at the cost of power");
@@ -315,7 +316,7 @@ public class TooltipInfoHandler {
 				"Charges tools and batteries.");
 		addTooltip("aoe_charger",
 				"Area-of-effect item charger.",
-				"Charges items in a radius.");
+				"Charges nearby inventory items in a radius.");
 
 		addTooltip("electromagnet",
 				"Powers Particle Accelerator.",
@@ -362,13 +363,13 @@ public class TooltipInfoHandler {
 
 		addTooltip("compound_pickaxe",
 				"Compound Paxel - all-in-one mining tool.",
-				"Mines all block types. Requires battery power.");
+				"Mines all block types. Uses 200 FE per block.");
 		addTooltip("compound_sword",
 				"Energy-powered combat weapon.",
-				"High damage weapon. Requires battery power.");
+				"High damage weapon. Uses 500 FE per hit.");
 		addTooltip("mining_laser",
 				"High-tech mining laser.",
-				"Mines blocks remotely using energy.");
+				"Mines blocks remotely using battery energy.");
 		addTooltip("paint_gun",
 				"Paintball Gun.",
 				"Fires paint to color blocks.");

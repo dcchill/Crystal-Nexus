@@ -26,12 +26,8 @@ import java.util.Comparator;
 public class TurbineEnergyProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double nrgstrt = 0;
-		double yOffset = 0;
-		double xOffset = 0;
 		double T = 0;
-		double zOffset = 0;
 		double energy = 0;
-		boolean on = false;
 		if (CrystalnexusModItems.EFFICIENCY_UPGRADE.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem()) {
 			nrgstrt = 192;
 		} else if (CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem()) {
@@ -49,13 +45,22 @@ public class TurbineEnergyProcedure {
 		T = 1;
 		for (int index0 = 0; index0 < 8; index0++) {
 			if (Blocks.WATER == (world.getBlockState(BlockPos.containing(x, y - T, z))).getBlock()) {
-				if (findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2) != null) {
-					if (Math.floor((findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2)).getX()) == x && Math.floor((findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2)).getZ()) == z) {
-						if (((findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2)) instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).is(ItemTags.create(ResourceLocation.parse("crystalnexus:radioactive")))) {
+				ItemEntity fuelEntity = (ItemEntity) findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2);
+				if (fuelEntity != null) {
+					ItemStack fuel = fuelEntity.getItem();
+					if (Math.floor(fuelEntity.getX()) == x && Math.floor(fuelEntity.getZ()) == z) {
+						if (fuel.is(ItemTags.create(ResourceLocation.parse("crystalnexus:radioactive")))) {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) (nrgstrt * (((findEntityInWorldRange(world, ItemEntity.class, x, (y - T), z, 2)) instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getCount() / 4d)), false);
+								if (_entityStorage != null) {
+									int received = _entityStorage.receiveEnergy((int) (nrgstrt * (fuel.getCount() / 4d)), false);
+									if (received > 0) {
+										fuel.shrink(1);
+										if (fuel.isEmpty()) {
+											fuelEntity.discard();
+										}
+									}
+								}
 							}
 							{
 								int _value = 2;

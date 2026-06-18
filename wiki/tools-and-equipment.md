@@ -12,8 +12,8 @@ How it works:
 
 - Range defaults to 32 blocks, with actual range read from config.
 - Hold use to fire continuously.
-- It drains sustain FE every tick from battery items in the player inventory.
-- It drains additional FE per mined block.
+- It drains 16 FE/t from battery items in the player inventory by default.
+- It drains 256 FE per mined block by default.
 - It mines at a configurable interval.
 - It cannot mine air, unbreakable blocks, or blocks with block entities.
 - It respects player build permission and world interaction checks.
@@ -194,6 +194,9 @@ Items:
 - Compound Sword
 
 They drain FE from carried battery items, not Energy Crystals.
+
+- Compound Paxel: 200 FE per mined block by default.
+- Compound Sword: 500 FE per hit by default.
 
 ### Carbon Armor
 
