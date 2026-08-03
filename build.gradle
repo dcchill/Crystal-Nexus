@@ -4,9 +4,29 @@ plugins {
 }
 
 version = '1.0'
-base.archivesName = "modid"
+base.archivesName = 'crystalnexus'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+repositories {
+    maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven {
+        name = "Progwml6's maven"
+        url = 'https://dvs1.progwml6.com/files/maven/'
+    }
+    maven {
+        name = "Jared's maven"
+        url = 'https://maven.blamejared.com/'
+    }
+    maven { url = 'https://modmaven.dev' }
+}
+
+dependencies {
+    implementation 'software.bernie.geckolib:geckolib-neoforge-1.21.1:4.7.6'
+    compileOnly 'mezz.jei:jei-1.21.1-common-api:19.21.0.247'
+    compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.21.0.247'
+    runtimeOnly 'mezz.jei:jei-1.21.1-neoforge:19.21.0.247'
+}
 
 neoForge {
     version = "21.1.190"
@@ -14,13 +34,6 @@ neoForge {
     runs {
         client {
             client()
-
-            def mcreatorJvmOptions = System.getenv('MCREATOR_JVM_OPTIONS')
-            if (mcreatorJvmOptions) {
-                mcreatorJvmOptions.split("\\s+").findAll { it.trim() }.each { arg ->
-                    jvmArgument(arg)
-                }
-            }
         }
         server {
             server()
@@ -33,7 +46,7 @@ neoForge {
     }
 
     mods {
-        mcreator {
+        crystalnexus {
             sourceSet sourceSets.main
         }
     }
@@ -42,5 +55,3 @@ neoForge {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
-
-apply from: 'mcreator.gradle'

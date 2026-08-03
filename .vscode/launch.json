@@ -12,11 +12,11 @@
       "projectName": "crystalnexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\build\\moddev\\clientRunProgramArgs.txt"
+        "@${workspaceFolder}\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmcreator%%C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\bin\\main"
+        "@${workspaceFolder}\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%${workspaceFolder}\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -34,11 +34,11 @@
       "projectName": "crystalnexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\build\\moddev\\serverRunProgramArgs.txt"
+        "@${workspaceFolder}\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dmcreator%%C:\\Users\\dsmar\\MCreatorWorkspaces\\crystalnexus\\bin\\main"
+        "@${workspaceFolder}\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%${workspaceFolder}\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
