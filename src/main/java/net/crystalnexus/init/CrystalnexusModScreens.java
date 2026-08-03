@@ -62,7 +62,6 @@ import net.crystalnexus.client.gui.BioSIMGuiScreen;
 import net.crystalnexus.client.gui.BioMGuiScreen;
 import net.crystalnexus.client.gui.BioMCGuiScreen;
 import net.crystalnexus.client.gui.BatteryMonitorGuiScreen;
-import net.crystalnexus.client.gui.AccepterGUIScreen;
 import net.crystalnexus.client.gui.AcceleratorGuiScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
@@ -71,7 +70,6 @@ public class CrystalnexusModScreens {
 	@SubscribeEvent
 	public static void clientLoad(RegisterMenuScreensEvent event) {
 		event.register(CrystalnexusModMenus.CRYSTAL_PURIFIER_GUI.get(), CrystalPurifierGUIScreen::new);
-		event.register(CrystalnexusModMenus.ACCEPTER_GUI.get(), AccepterGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRUSHER_GUI.get(), CrusherGuiScreen::new);
 		event.register(CrystalnexusModMenus.SEPARATOR_GUI.get(), SeparatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);

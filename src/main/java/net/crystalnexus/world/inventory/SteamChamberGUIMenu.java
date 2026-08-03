@@ -123,7 +123,7 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:energy_crystals")));
+				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:steam_fuel")));
 			}
 		}));
 		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {

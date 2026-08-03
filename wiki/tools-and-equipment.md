@@ -56,10 +56,6 @@ Controls:
 - Sneak + right-click/use while looking at an ore within about to set that ore as the scanner filter.
 - Sneak + right-click/use while not looking at an ore clears the filter back to all ores.
 
-### Crystal Extractor
-
-Right-click End Crystals to harvest their energy crystal. Crouch + right-click picks it up.
-
 ### Florathane Wand
 
 A wand that grows plants using science!
@@ -193,7 +189,7 @@ Items:
 - Compound Paxel
 - Compound Sword
 
-They drain FE from carried battery items, not Energy Crystals.
+They drain FE from carried battery items.
 
 - Compound Paxel: 200 FE per mined block by default.
 - Compound Sword: 500 FE per hit by default.

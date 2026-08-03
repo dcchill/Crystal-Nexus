@@ -109,28 +109,9 @@ public class TooltipInfoHandler {
 				"Advanced energy transfer cable.",
 				"Transfers energy with high throughput to machines.");
 
-		addTooltip("energy_splitter",
-				"Splits energy into multiple directions.",
-				"Divide energy beams.");
-		addTooltip("energy_refractor",
-				"Redirects energy flow.",
-				"Route energy in specific directions.");
-
-		addTooltip("crystal_energy_guide",
-				"Energy routing through the air.",
-				"Redirects crystal energy into a specific direction.");
 		addTooltip("crystal_guide",
 				"End Crystal beam guide.",
 				"Redirects the End Crystal beam.");
-		addTooltip("conductive_energy_guide",
-				"Upgraded energy routing through the air.",
-				"Guides energy along a beam.");
-		addTooltip("conductive_energy_refractor",
-				"Upgraded energy redirector.",
-				"Redirects conductive energy into a specific direction.");
-		addTooltip("conductive_energy_splitter",
-				"Upgraded energy splitter.",
-				"Divide energy beams.");
 
 		// RESOURCE PROCESSING
 
@@ -164,7 +145,7 @@ public class TooltipInfoHandler {
 				"Extreme high-pressure compressor.",
 				"Condenses thousands of items into Singularities.");
 		addTooltip("crystal_purifier",
-				"Purifies and upgrades energy crystals.");
+				"Creates Crystalized Alloy and Nitrile.");
 		addTooltip("chemical_reaction_chamber",
 				"Combines base resources with reactants.",
 				"Processes chemical reactions for materials.");
@@ -376,9 +357,6 @@ public class TooltipInfoHandler {
 		addTooltip("flamethrower",
 				"Flamethrower weapon.",
 				"Projects flames for combat.");
-		addTooltip("crystal_extractor",
-				"Crystal Extractor tool.",
-				"Extracts crystals from formations.");
 		addTooltip("ore_scanner",
 				"Ore Scanner tool.",
 				"Scans for ore deposits.");
@@ -423,9 +401,6 @@ public class TooltipInfoHandler {
 		addTooltip("carbon_range_upgrade",
 				"Carbon Range Upgrade.",
 				"Advanced range boost.");
-
-		addTooltip("destabilized_crystal",
-				"Needs to be Purified.");
 
 		addTooltip("iron_singularity",
 				"Compressed Iron Singularity.",
@@ -487,9 +462,6 @@ public class TooltipInfoHandler {
 		addTooltip("extractinator",
 				"Resource extraction machine.",
 				"Sifts through loose sediment to find resources.");
-		addTooltip("crystal_accepter",
-				"Crystal Energy Siphon.",
-				"Generates energy from nearby End Crystals.");
 		addTooltip("inverter",
 				"Invertium Inverter.",
 				"Inverts energy types.");

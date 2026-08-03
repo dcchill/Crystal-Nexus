@@ -31,9 +31,9 @@ Use it after crushing to stretch raw ore further.
 
 ### Crystal Smelter
 
-The Crystal Smelter is part of the crystal-tier smelting line.
+The Crystal Smelter is part of the Crystalized Alloy smelting line.
 
-Use it for improved or specialized smelting once Crystal Machine Frames and crystal power are available.
+Use it for improved or specialized smelting once Crystal Machine Frames are available.
 
 ### Iron Smelter
 
@@ -63,13 +63,10 @@ The in-game multiblock guide notes that it can smelt four stacks at once and aut
 
 ### Crystal Purifier
 
-The Crystal Purifier is used to upgrade crystals and create Crystalized Alloy.
+The Crystal Purifier creates Crystalized Alloy and Nitrile.
 
-Important progression:
-
-- Unstable Crystal to Stable Crystal.
-- Higher crystal tiers through combining and purification recipes.
-- Crystalized Alloy creation.
+- One Ancient Crystal plus one Iron Ingot produces two Crystalized Alloy Ingots.
+- One Bone Block produces one Nitrile.
 
 ### Metallurgic Recrystallizer
 

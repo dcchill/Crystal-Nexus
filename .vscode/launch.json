@@ -6,17 +6,17 @@
       "request": "launch",
       "name": "Client",
       "presentation": {
-        "group": "Mod Development - crystalnexus",
+        "group": "Mod Development - Crystal-Nexus",
         "order": 0
       },
-      "projectName": "crystalnexus",
+      "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@${workspaceFolder}\\build\\moddev\\clientRunProgramArgs.txt"
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@${workspaceFolder}\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dcrystalnexus%%${workspaceFolder}\\bin\\main"
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -28,17 +28,17 @@
       "request": "launch",
       "name": "Server",
       "presentation": {
-        "group": "Mod Development - crystalnexus",
+        "group": "Mod Development - Crystal-Nexus",
         "order": 1
       },
-      "projectName": "crystalnexus",
+      "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@${workspaceFolder}\\build\\moddev\\serverRunProgramArgs.txt"
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@${workspaceFolder}\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dcrystalnexus%%${workspaceFolder}\\bin\\main"
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},

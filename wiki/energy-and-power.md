@@ -1,6 +1,6 @@
 # Energy and Power
 
-Crystal Nexus uses FE for most machines. Power can come from crystals, generators, reactors, steam, matter conversion, singularities, and late-game multiblocks.
+Crystal Nexus uses FE for most machines. Power can come from generators, reactors, steam, matter conversion, singularities, and late-game multiblocks.
 
 ## Energy Storage
 
@@ -16,9 +16,9 @@ The Battery Cell block stores FE for machine networks and can push FE to neighbo
 
 How to use it:
 
-1. Place it next to an Energy Generator, cable, beam receiver, or powered machine.
+1. Place it next to an Energy Generator, cable, or powered machine.
 2. Place more Battery Cells directly touching it if you want a larger shared buffer.
-3. Put machines next to the battery or connect them with cables/beams.
+3. Put machines next to the battery or connect them with cables.
 4. The battery will balance with adjacent Battery blocks and push FE to nearby receivers.
 
 ### Item Battery Cells
@@ -36,7 +36,7 @@ These are important for portable powered tools. For example, the Mining Laser dr
 
 The Battery Monitor shows the current / max FE a battery system can hold.  Place it connected to a Battery multiblock.
 
-## Cables and Beam Transfer
+## Energy Cables
 
 ### Basic Energy Cable, Energy Cable, and Energy Cable Mk 2
 
@@ -45,37 +45,6 @@ These cables come in three different tiers, with each level increasing the maxim
 - Basic Energy Cable: 1,024 FE/t
 - Energy Cable: 51,200 FE/t
 - Energy Cable Mk 2: 512,000 FE/t
-
-### Crystal Energy Beam
-
-- Transports energy through a beam.
-- Aim the beam at a block that accepts energy.
-- Passes through transparent blocks.
-- It transfers up to 81,920 FE/t into the first energy receiver it finds.
-- Energy Refractors and Energy Splitters can continue the beam path by receiving the beam origin data.
-
-How to use it:
-
-1. Place the Energy Beam so it points toward the receiver or next beam part.
-2. Keep the path clear or use laser-transparent blocks.
-3. Use an Energy Refractor when the beam needs to turn.
-4. Use an Energy Splitter when you want one beam path to feed more than one route.
-
-### Energy Refractor
-
-Redirects an energy beam. Use it when a straight beam path cannot reach the target machine.
-
-### Energy Splitter
-
-Splits an energy beam by diverting a portion to a side output while letting the rest pass straight through.
-
-### Conductive Energy System
-
-The Conductive Variants send more FE/t than the basic energy beams:
-
-- Conductive Energy Beam
-- Conductive Energy Refractor
-- Conductive Energy Splitter
 
 ### AOE Charger
 
@@ -87,40 +56,13 @@ The AOE Charger fills energy-capable items in nearby player inventories.
 - Base transfer: 512 FE/t before upgrade and SSD modifiers.
 - Max transfer multiplier: 8x by default.
 
-## Crystal-Based Generation
-
-### Crystal Energy Siphon
-
-The Crystal Energy Siphon generates FE from End Crystals in range when supplied with an energy crystal. It inserts generated FE into the energy-capable block directly below it.
-
-- Stable Energy Crystal: 512 FE/t.
-- Controlled Energy Crystal: 1,024 FE/t.
-- Regulated Energy Crystal: 2,048 FE/t.
-- Ultimate Energy Crystal: 4,096 FE/t.
-- Blutonium Energy Crystal: 8,192 FE/t.
-- Godlike Energy Crystal: 10,240 FE/t.
-- Dragon Energy Crystal: 2,048 FE/t.
-- Each value is multiplied by the number of End Crystals found in range.
-- Base End Crystal search reach is about 3 blocks from the Siphon.
-- Range Upgrade raises that search reach to about 4.5 blocks.
-- Carbon Range Upgrade raises it to about 6 blocks.
-- The inserted crystal item takes random durability damage while at least one End Crystal is being used.
-
-How to use it:
-
-1. Place the machine above the block that should receive FE, such as a Battery Cell or machine.
-2. Put an Energy Crystal in the main crystal slot.
-3. Place End Crystals within range.
-4. Add a Range Upgrade or Carbon Range Upgrade if the End Crystals are farther away.
-5. Make sure the block below can receive FE.
-
 ## Generators
 
 ### Piston Generator
 
 The Piston Generator is an early or mid-game generator with its own GUI.
 
-Use it when you need FE before more advanced crystal, steam, or reactor infrastructure is online.
+Use it when you need FE before more advanced steam or reactor infrastructure is online.
 
 How to use it:
 
@@ -186,7 +128,7 @@ How to use it:
 
 - Requires a Steam Collector directly above it.
 - Requires a water bucket in the water input.
-- Requires an item tagged as `crystalnexus:steam_fuel` (blutonium items).
+- Requires an item tagged as `crystalnexus:steam_fuel` (coal, charcoal, or a Coal Singularity).
 - Sets itself running while valid; the Steam Collector above fills itself with 25 mB Steam per tick while the chamber is running.
 - Coal Singularity works as non-consumed steam fuel; other fuels are consumed when the chamber completes a cycle.
 

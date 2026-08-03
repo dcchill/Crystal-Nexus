@@ -17,14 +17,13 @@ The mod has a lot of blocks, items, recipes, and systems. This wiki focuses on t
 
 ## Main Progression Loop
 
-Crystal Nexus starts with End Crystal energy and grows into a broader tech chain:
+Crystal Nexus starts with Ancient Crystal materials and grows into a broader tech chain:
 
-1. Harvest unstable crystal energy from End Crystals with the Crystal Extractor.
-2. Purify and combine energy crystals into higher tiers.
-3. Use Energy Generators and batteries to create and store FE.
-4. Build ore processing machines to turn raw ores into dusts, nuggets, ingots, and advanced materials.
-5. Unlock Chlorophyte, Blutonium, Invertium, Carbon Fiber, Polymer, EE-Matter, and singularities.
-6. Build logistics, factories, reactors, accelerators, quarries, and late-game multiblocks.
+1. Mine Ancient Crystal and craft Crystalized Alloy.
+2. Use generators and batteries to create and store FE.
+3. Build ore processing machines to turn raw ores into dusts, nuggets, ingots, and advanced materials.
+4. Unlock Chlorophyte, Blutonium, Invertium, Carbon Fiber, Polymer, EE-Matter, and singularities.
+5. Build logistics, factories, reactors, accelerators, quarries, and late-game multiblocks.
 
 ## Documentation Conventions
 

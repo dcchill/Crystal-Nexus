@@ -160,7 +160,7 @@ How it works:
 
 How to use it:
 
-1. Charge the Factory Energy Controller with cables, beams, batteries, or another FE source.
+1. Charge the Factory Energy Controller with cables, batteries, or another FE source.
 2. Link cards to the machines you want to power.
 3. Put those cards in the Link Card row.
 4. Make sure the linked machines can receive FE on the bottom side or through a general energy capability.

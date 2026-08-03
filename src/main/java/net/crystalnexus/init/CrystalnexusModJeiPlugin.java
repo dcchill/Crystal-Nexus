@@ -11,8 +11,6 @@ import net.crystalnexus.jei_recipes.UnfurnaceRecipeCategory;
 import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipeCategory;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
-import net.crystalnexus.jei_recipes.SinglePurificationRecipeCategory;
-import net.crystalnexus.jei_recipes.SinglePurificationRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipeCategory;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionMultiblockGuideRecipeCategory;
@@ -60,7 +58,6 @@ import java.util.List;
 
 @JeiPlugin
 public class CrystalnexusModJeiPlugin implements IModPlugin {
-	public static mezz.jei.api.recipe.RecipeType<SinglePurificationRecipe> SinglePurification_Type = new mezz.jei.api.recipe.RecipeType<>(SinglePurificationRecipeCategory.UID, SinglePurificationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PurificationRecipe> Purification_Type = new mezz.jei.api.recipe.RecipeType<>(PurificationRecipeCategory.UID, PurificationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ExtractinatorJEIRecipe> ExtractinatorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(ExtractinatorJEIRecipeCategory.UID, ExtractinatorJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BeamReactionRecipeRecipe> BeamReactionRecipe_Type = new mezz.jei.api.recipe.RecipeType<>(BeamReactionRecipeRecipeCategory.UID, BeamReactionRecipeRecipe.class);
@@ -88,7 +85,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration) {
-		registration.addRecipeCategories(new SinglePurificationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PurificationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ExtractinatorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BeamReactionRecipeRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -113,8 +109,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
 		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-		List<SinglePurificationRecipe> SinglePurificationRecipes = recipeManager.getAllRecipesFor(SinglePurificationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-		registration.addRecipes(SinglePurification_Type, SinglePurificationRecipes);
 		List<PurificationRecipe> PurificationRecipes = recipeManager.getAllRecipesFor(PurificationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
 		registration.addRecipes(Purification_Type, PurificationRecipes);
 		List<ExtractinatorJEIRecipe> ExtractinatorJEIRecipes = recipeManager.getAllRecipesFor(ExtractinatorJEIRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
@@ -157,7 +151,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem()), SinglePurification_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem()), Purification_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_GUIDE.get().asItem()), BeamReactionRecipe_Type);

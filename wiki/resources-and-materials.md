@@ -10,21 +10,6 @@ Found as Ancient Crystal Ore and Ancient Crystal Stone Ore.
 
 Used as a foundation material for the crystal technology chain.
 
-### Energy Crystals
-
-Main crystal tiers:
-
-- Destabilized Crystal
-- Stable Energy Crystal
-- Controlled Energy Crystal
-- Regulated Energy Crystal
-- Ultimate Energy Crystal
-- Blutonium Energy Crystal
-- Godlike Energy Crystal
-- Dragon Energy Crystal
-
-These are used for power generation, machine recipes, steam systems, and late-game crafting.
-
 ### Crystalized Alloy
 
 Forms:
@@ -80,13 +65,12 @@ Forms:
 - Blutonium Nugget
 - Blutonium Ingot
 - Blutonium Block
-- Blutonium Crystal
 - Pure Blutonium
 - Blutonium Waste
 
 Important notes:
 
-- Raw Blutonium, Blutonium Ingot, and Blutonium Crystal are radioactive.
+- Raw Blutonium and Blutonium Ingots are radioactive.
 - The Hazmat enchantment negates the radioactive effect.
 - Pure Blutonium is 75% more efficient than normal Blutonium.
 - Blutonium Waste is associated with reactor waste output and waste recycling.

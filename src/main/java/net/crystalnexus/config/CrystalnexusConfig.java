@@ -86,11 +86,8 @@ public final class CrystalnexusConfig {
 		public final EnergyValues CHLOROPHYTE_SMELTER;
 		public final EnergyValues CIRCUIT_PRESS;
 		public final EnergyValues COMPUTATION_CLUSTER;
-		public final EnergyValues CONDUCTIVE_ENERGY_GUIDE;
 		public final EnergyValues CRAFTING_FACTORY;
-		public final EnergyValues CRYSTAL_ACCEPTER;
 		public final EnergyValues CRYSTAL_CRUSHER;
-		public final EnergyValues CRYSTAL_ENERGY_GUIDE;
 		public final EnergyValues CRYSTAL_PURIFIER;
 		public final EnergyValues CRYSTAL_SMELTER;
 		public final EnergyValues DUST_SEPARATOR;
@@ -152,11 +149,8 @@ public final class CrystalnexusConfig {
 			CHLOROPHYTE_SMELTER = new EnergyValues(builder, "chlorophyte_smelter", 10240, 2048, 2048);
 			CIRCUIT_PRESS = new EnergyValues(builder, "circuit_press", 10240, 2048, 2048);
 			COMPUTATION_CLUSTER = new EnergyValues(builder, "computation_cluster", 409600, 11264, 409600);
-			CONDUCTIVE_ENERGY_GUIDE = new EnergyValues(builder, "conductive_energy_guide", 409600, 409600, 409600);
 			CRAFTING_FACTORY = new EnergyValues(builder, "crafting_factory", 40960, 2048, 1024);
-			CRYSTAL_ACCEPTER = new EnergyValues(builder, "crystal_accepter", 409600, 2048, 2048);
 			CRYSTAL_CRUSHER = new EnergyValues(builder, "crystal_crusher", 10240, 2048, 2048);
-			CRYSTAL_ENERGY_GUIDE = new EnergyValues(builder, "crystal_energy_guide", 409600, 409600, 409600);
 			CRYSTAL_PURIFIER = new EnergyValues(builder, "crystal_purifier", 10240, 2048, 2048);
 			CRYSTAL_SMELTER = new EnergyValues(builder, "crystal_smelter", 10240, 2048, 2048);
 			DUST_SEPARATOR = new EnergyValues(builder, "dust_separator", 10240, 2048, 2048);

@@ -29,8 +29,7 @@ public class NoRadProcedure {
 	private static void execute(@Nullable Event event, LevelAccessor world, Entity entity) {
 		if (entity == null)
 			return;
-		if (!(hasEntityInInventory(entity, new ItemStack(CrystalnexusModItems.BLUTONIUM_INGOT.get())) || hasEntityInInventory(entity, new ItemStack(CrystalnexusModItems.BLUTONIUM_CRYSTAL.get()))
-				|| hasEntityInInventory(entity, new ItemStack(CrystalnexusModItems.RAW_BLUTONIUM.get())))) {
+		if (!(hasEntityInInventory(entity, new ItemStack(CrystalnexusModItems.BLUTONIUM_INGOT.get())) || hasEntityInInventory(entity, new ItemStack(CrystalnexusModItems.RAW_BLUTONIUM.get())))) {
 			CrystalnexusModVariables.MapVariables.get(world).timeSick = 0;
 			CrystalnexusModVariables.MapVariables.get(world).syncData(world);
 		}

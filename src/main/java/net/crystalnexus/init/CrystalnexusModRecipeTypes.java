@@ -13,7 +13,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
-import net.crystalnexus.jei_recipes.SinglePurificationRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionJEIRecipe;
@@ -44,8 +43,6 @@ public class CrystalnexusModRecipeTypes {
 		event.enqueueWork(() -> {
 			RECIPE_TYPES.register(bus);
 			SERIALIZERS.register(bus);
-			RECIPE_TYPES.register("single_purification", () -> SinglePurificationRecipe.Type.INSTANCE);
-			SERIALIZERS.register("single_purification", () -> SinglePurificationRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("purification", () -> PurificationRecipe.Type.INSTANCE);
 			SERIALIZERS.register("purification", () -> PurificationRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("extractination", () -> ExtractinatorJEIRecipe.Type.INSTANCE);

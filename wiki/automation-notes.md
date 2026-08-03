@@ -8,7 +8,7 @@ A compact early processing line can be:
 
 1. Energy Generator creates FE.
 2. A Battery Cell is optional, but useful as a buffer.
-3. Energy cables or Energy Beam Transfer powers the Crystal Ore Crusher.
+3. Energy cables power the Crystal Ore Crusher.
 4. Crusher outputs into Crystal Dust Separator using conveyor belts.
 5. Separator outputs into Smelter using conveyor belts.
 6. Conveyor Belts move outputs to storage.
@@ -28,9 +28,7 @@ The Ultima Smelter automatically combines nuggets into ingots, making it valuabl
 ## Power Layout Tips
 
 - Put Battery Cells next to each other when you want a larger shared buffer.
-- If your Energy Generator is a Crystal Energy Siphon, place the receiving block directly below it.
-- Use beam transfer when cable paths are awkward.
-- Use Refractors for turns and Splitters for branching beam networks.
+- Use the appropriate cable tier for the required FE throughput.
 - Use Tesseracts for long-distance FE transfer. The input Tesseract reads the linked coordinates from its Link Card slot and sends up to 81,920 FE/t to a linked Tesseract Output.
 
 ## Item Routing Tips
