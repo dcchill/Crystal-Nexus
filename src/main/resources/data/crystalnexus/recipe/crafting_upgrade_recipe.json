@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aca",
+    "bdb",
+    "aea"
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:energized_silicon" },
+    "b": { "item": "crystalnexus:depot_cable" },
+    "c": { "item": "minecraft:crafting_table" },
+    "d": { "item": "crystalnexus:omega_chip" },
+    "e": { "item": "crystalnexus:hyper_machine_frame" }
+  },
+  "result": {
+    "id": "crystalnexus:crafting_upgrade",
+    "count": 1
+  }
+}

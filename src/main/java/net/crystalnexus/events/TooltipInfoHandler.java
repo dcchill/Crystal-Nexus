@@ -246,6 +246,15 @@ public class TooltipInfoHandler {
 		addTooltip("depot_downloader",
 				"Wireless item download station.",
 				"Retrieves items from your personal Depot.");
+		addTooltip("depot_controller",
+				"The powered center of your personal Depot system.",
+				"Uses 20 FE/t while keeping wireless Depot access online.");
+		addTooltip("depot_cable",
+				"Links Depot Controllers to Depot components.",
+				"Does not connect to energy cables or transfer FE.");
+		addTooltip("crafting_upgrade",
+				"Adds a crafting grid to the Depot Uplink.",
+				"Must be connected to your powered Controller with Depot Cable.");
 		addTooltip("depot_uplink",
 				"Expandable wireless storage system.",
 				"Transfers items wirelessly to your personal Depot.");

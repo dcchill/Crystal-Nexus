@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
+import net.crystalnexus.data.DepotSavedData;
 
 import io.netty.buffer.Unpooled;
 
@@ -68,6 +69,7 @@ public class DepotDownloaderBlock extends Block implements EntityBlock {
 	public InteractionResult useWithoutItem(BlockState blockstate, Level world, BlockPos pos, Player entity, BlockHitResult hit) {
 		super.useWithoutItem(blockstate, world, pos, entity, hit);
 		if (entity instanceof ServerPlayer player) {
+			if (!DepotSavedData.requirePoweredController(player)) return InteractionResult.FAIL;
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
@@ -76,9 +78,11 @@ public class DepotDownloaderBlock extends Block implements EntityBlock {
 
 				@Override
 				public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-					return new DepotMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
+					FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+					data.writeBlockPos(pos).writeBoolean(false).writeBoolean(false);
+					return new DepotMenu(id, inventory, data);
 				}
-			}, pos);
+			}, buf -> buf.writeBlockPos(pos).writeBoolean(false).writeBoolean(false));
 		}
 		return InteractionResult.SUCCESS;
 	}

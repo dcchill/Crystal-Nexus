@@ -21,10 +21,16 @@ public class ServerHandlers {
         // Ensure this runs on the server thread
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;
+            if (!(sp.containerMenu instanceof DepotMenu menu)) return;
+            if (!DepotSavedData.hasPoweredController(sp)) {
+                sp.closeContainer();
+                return;
+            }
 
-            DepotSavedData depot = DepotSavedData.get(sp.serverLevel());
+            DepotSavedData depot = DepotSavedData.get(sp);
 
             List<DepotSavedData.Entry> page = depot.page(msg.search(), msg.page(), DepotMenu.PAGE_SIZE);
+            menu.setDepotPage(msg.search(), msg.page(), page);
 
             List<S2C_SendPage.Entry> payload = page.stream()
                     .map(e -> new S2C_SendPage.Entry(e.itemId(), e.count()))
@@ -34,6 +40,7 @@ public class ServerHandlers {
                     sp,
                     new S2C_SendPage(
                             payload,
+                            depot.countEntries(msg.search()),
                             depot.getUpgradeLevel(),
                             depot.getUsed(),
                             depot.getCapacity()
@@ -46,18 +53,23 @@ public class ServerHandlers {
     public static void onWithdraw(C2S_Withdraw msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;
+            if (!(sp.containerMenu instanceof DepotMenu)) return;
+            if (!DepotSavedData.hasPoweredController(sp)) {
+                sp.closeContainer();
+                return;
+            }
 
-            DepotSavedData depot = DepotSavedData.get(sp.serverLevel());
+            DepotSavedData depot = DepotSavedData.get(sp);
 
             ResourceLocation itemId = msg.itemId();
             int requested = msg.amount();
             if (requested <= 0) return;
 
-            long taken = depot.remove(itemId, requested);
-            if (taken <= 0) return;
-
             var item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId);
             if (item == null || item == net.minecraft.world.item.Items.AIR) return;
+
+            long taken = depot.remove(itemId, requested);
+            if (taken <= 0) return;
 
             int max = Math.max(1, item.getDefaultInstance().getMaxStackSize());
             long left = taken;
@@ -69,7 +81,8 @@ public class ServerHandlers {
                 var stack = new net.minecraft.world.item.ItemStack(item, give);
 
                 if (!sp.getInventory().add(stack)) {
-                    sp.drop(stack, false);
+                    depot.add(itemId, left + stack.getCount());
+                    return;
                 }
             }
         });

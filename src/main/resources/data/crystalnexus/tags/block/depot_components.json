@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:depot_controller",
+    "crystalnexus:crafting_upgrade"
+  ]
+}

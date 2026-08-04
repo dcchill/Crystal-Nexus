@@ -384,6 +384,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEPOT_UPLINK = REGISTRY.register("depot_uplink", DepotUplinkItem::new);
 	public static final DeferredItem<Item> DEPOT_UPLOADER = block(CrystalnexusModBlocks.DEPOT_UPLOADER);
 	public static final DeferredItem<Item> DEPOT_DOWNLOADER = block(CrystalnexusModBlocks.DEPOT_DOWNLOADER);
+	public static final DeferredItem<Item> DEPOT_CONTROLLER = block(CrystalnexusModBlocks.DEPOT_CONTROLLER);
+	public static final DeferredItem<Item> DEPOT_CABLE = block(CrystalnexusModBlocks.DEPOT_CABLE);
+	public static final DeferredItem<Item> CRAFTING_UPGRADE = block(CrystalnexusModBlocks.CRAFTING_UPGRADE);
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
 	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
 	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);

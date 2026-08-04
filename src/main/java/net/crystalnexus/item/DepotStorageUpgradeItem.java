@@ -4,7 +4,7 @@ import net.crystalnexus.data.DepotSavedData;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -27,14 +27,24 @@ public class DepotStorageUpgradeItem extends Item {
             return InteractionResultHolder.success(stack);
         }
 
-        if (!(level instanceof ServerLevel serverLevel)) {
+        if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResultHolder.pass(stack);
         }
 
-        DepotSavedData depot = DepotSavedData.get(serverLevel);
+        if (!DepotSavedData.requirePoweredController(serverPlayer)) {
+            return InteractionResultHolder.fail(stack);
+        }
 
-        // Apply upgrade
-        depot.addUpgrade();
+        DepotSavedData depot = DepotSavedData.get(serverPlayer);
+
+        if (!depot.addUpgrade()) {
+            player.displayClientMessage(
+                    Component.literal("Dimensional Depot is already at the maximum upgrade level.")
+                            .withStyle(ChatFormatting.YELLOW),
+                    true
+            );
+            return InteractionResultHolder.consume(stack);
+        }
 
         long cap = depot.getCapacity();
 

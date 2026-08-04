@@ -12,6 +12,7 @@ import java.util.List;
 
 public record S2C_SendPage(
         List<Entry> entries,
+        int totalEntries,
         int upgradeLevel,
         long used,
         long capacity
@@ -25,6 +26,9 @@ public record S2C_SendPage(
                     // item entries
                     Entry.STREAM_CODEC.apply(ByteBufCodecs.list()),
                     S2C_SendPage::entries,
+
+                    ByteBufCodecs.VAR_INT,
+                    S2C_SendPage::totalEntries,
 
                     // upgrade level
                     ByteBufCodecs.VAR_INT,

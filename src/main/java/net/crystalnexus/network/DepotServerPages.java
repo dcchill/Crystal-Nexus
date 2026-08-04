@@ -14,9 +14,16 @@ import java.util.List;
 public class DepotServerPages {
 
     public static void handleRequestPage(ServerPlayer player, C2S_RequestPage msg) {
-        DepotSavedData data = DepotSavedData.get(player.serverLevel());
+        if (!DepotSavedData.hasPoweredController(player)) {
+            player.closeContainer();
+            return;
+        }
+        DepotSavedData data = DepotSavedData.get(player);
 
         List<DepotSavedData.Entry> page = data.page(msg.search(), msg.page(), DepotMenu.PAGE_SIZE);
+        if (player.containerMenu instanceof DepotMenu menu) {
+            menu.setDepotPage(msg.search(), msg.page(), page);
+        }
 
         List<S2C_SendPage.Entry> entries = page.stream()
                 .map(e -> new S2C_SendPage.Entry(e.itemId(), e.count()))
@@ -26,6 +33,6 @@ public class DepotServerPages {
         long used = data.getUsed();
         long capacity = data.getCapacity();
 
-        PacketDistributor.sendToPlayer(player, new S2C_SendPage(entries, upgradeLevel, used, capacity));
+        PacketDistributor.sendToPlayer(player, new S2C_SendPage(entries, data.countEntries(msg.search()), upgradeLevel, used, capacity));
     }
 }

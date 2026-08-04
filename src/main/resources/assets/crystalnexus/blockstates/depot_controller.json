@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "powered=false": { "model": "crystalnexus:block/depot_controller" },
+    "powered=true": { "model": "crystalnexus:block/depot_controller_on" }
+  }
+}

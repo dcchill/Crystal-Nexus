@@ -75,6 +75,8 @@ import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
 import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
 import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
+import net.crystalnexus.block.entity.DepotControllerBlockEntity;
+import net.crystalnexus.block.entity.CraftingUpgradeBlockEntity;
 import net.crystalnexus.block.entity.CrystalSmelterBlockEntity;
 import net.crystalnexus.block.entity.CrystalPurifierBlockEntity;
 import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
@@ -171,6 +173,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SINGULARITY_MATRIX = register("singularity_matrix", CrystalnexusModBlocks.SINGULARITY_MATRIX, SingularityMatrixBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_UPLOADER = register("depot_uploader", CrystalnexusModBlocks.DEPOT_UPLOADER, DepotUploaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CONTROLLER = register("depot_controller", CrystalnexusModBlocks.DEPOT_CONTROLLER, DepotControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRAFTING_UPGRADE = register("crafting_upgrade", CrystalnexusModBlocks.CRAFTING_UPGRADE, CraftingUpgradeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ENERGY_CABLE = register("energy_cable", CrystalnexusModBlocks.ENERGY_CABLE, EnergyCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_WASTE_OUTPUT = register("reactor_waste_output", CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT, ReactorWasteOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ENERGY_CABLE_MK_2 = register("energy_cable_mk_2", CrystalnexusModBlocks.ENERGY_CABLE_MK_2, EnergyCableMk2BlockEntity::new);
@@ -319,6 +323,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SINGULARITY_MATRIX.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_UPLOADER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_DOWNLOADER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPOT_CONTROLLER.get(), (blockEntity, side) -> ((DepotControllerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> ((EnergyCableBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_WASTE_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

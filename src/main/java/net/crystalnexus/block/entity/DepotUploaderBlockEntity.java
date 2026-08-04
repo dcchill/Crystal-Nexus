@@ -19,12 +19,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.UUID;
+
 public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyContainer {
 
     private static final int SIZE = 1;
     private NonNullList<ItemStack> items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
 
     private int tickCounter = 0;
+    private UUID owner;
 
     public DepotUploaderBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.DEPOT_UPLOADER.get(), pos, state);
@@ -38,7 +41,9 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         be.tickCounter++;
         if (be.tickCounter % 5 != 0) return; // every 5 ticks
 
-        DepotSavedData data = DepotSavedData.get(serverLevel);
+        if (be.owner == null) return;
+        if (!DepotSavedData.hasPoweredController(serverLevel, be.owner)) return;
+        DepotSavedData data = DepotSavedData.get(serverLevel, be.owner);
 
         boolean changed = false;
 
@@ -141,6 +146,11 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         return true;
     }
 
+    public void setOwner(UUID owner) {
+        this.owner = owner;
+        setChanged();
+    }
+
     @Override
     public void clearContent() {
         items.clear();
@@ -154,6 +164,7 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         super.saveAdditional(tag, provider);
         ContainerHelper.saveAllItems(tag, items, provider);
         tag.putInt("TickCounter", tickCounter);
+        if (owner != null) tag.putUUID("Owner", owner);
     }
 
     @Override
@@ -162,5 +173,6 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         items = NonNullList.withSize(SIZE, ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, items, provider);
         tickCounter = tag.getInt("TickCounter");
+        owner = tag.hasUUID("Owner") ? tag.getUUID("Owner") : null;
     }
 }

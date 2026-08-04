@@ -14,6 +14,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.FriendlyByteBuf;
 
 import net.crystalnexus.world.inventory.DepotMenu;
+import net.crystalnexus.data.DepotSavedData;
+import net.crystalnexus.util.DepotNetwork;
 
 import io.netty.buffer.Unpooled;
 
@@ -26,6 +28,9 @@ public class DepotUplinkItem extends Item {
 	public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
 		InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
 		if (entity instanceof ServerPlayer serverPlayer) {
+			if (!DepotSavedData.requirePoweredController(serverPlayer)) {
+				return InteractionResultHolder.fail(entity.getItemInHand(hand));
+			}
 			serverPlayer.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
@@ -36,12 +41,14 @@ public class DepotUplinkItem extends Item {
 				public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
 					FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
 					packetBuffer.writeBlockPos(entity.blockPosition());
-					packetBuffer.writeByte(hand == InteractionHand.MAIN_HAND ? 0 : 1);
+					packetBuffer.writeBoolean(true);
+					packetBuffer.writeBoolean(DepotNetwork.hasCraftingUpgrade(serverPlayer));
 					return new DepotMenu(id, inventory, packetBuffer);
 				}
 			}, buf -> {
 				buf.writeBlockPos(entity.blockPosition());
-				buf.writeByte(hand == InteractionHand.MAIN_HAND ? 0 : 1);
+				buf.writeBoolean(true);
+				buf.writeBoolean(DepotNetwork.hasCraftingUpgrade(serverPlayer));
 			});
 		}
 		return ar;

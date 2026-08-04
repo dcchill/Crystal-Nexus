@@ -1,0 +1,11 @@
+{
+  "multipart": [
+    { "apply": { "model": "crystalnexus:block/depot_cable_core" } },
+    { "when": { "north": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_north" } },
+    { "when": { "south": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_south" } },
+    { "when": { "east": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_east" } },
+    { "when": { "west": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_west" } },
+    { "when": { "up": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_up" } },
+    { "when": { "down": "true" }, "apply": { "model": "crystalnexus:block/depot_cable_down" } }
+  ]
+}

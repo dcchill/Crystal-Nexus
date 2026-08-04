@@ -6,6 +6,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+
+import net.crystalnexus.world.inventory.DepotMenu;
 
 import net.crystalnexus.jei_recipes.UnfurnaceRecipeCategory;
 import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
@@ -49,12 +55,19 @@ import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.IModPlugin;
 
 import java.util.stream.Collectors;
 import java.util.Objects;
 import java.util.List;
+import java.util.Optional;
 
 @JeiPlugin
 public class CrystalnexusModJeiPlugin implements IModPlugin {
@@ -178,5 +191,38 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem()), AcceleratorJei_Type);
+	}
+
+	@Override
+	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+		IRecipeTransferHandlerHelper helper = registration.getTransferHelper();
+		registration.addRecipeTransferHandler(new IRecipeTransferHandler<DepotMenu, RecipeHolder<CraftingRecipe>>() {
+			@Override
+			public Class<? extends DepotMenu> getContainerClass() {
+				return DepotMenu.class;
+			}
+
+			@Override
+			public Optional<MenuType<DepotMenu>> getMenuType() {
+				return Optional.of(CrystalnexusModMenus.DEPOT.get());
+			}
+
+			@Override
+			public mezz.jei.api.recipe.RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
+				return RecipeTypes.CRAFTING;
+			}
+
+			@Override
+			public IRecipeTransferError transferRecipe(DepotMenu menu, RecipeHolder<CraftingRecipe> recipe,
+					IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+				if (!menu.hasCraftingUpgrade()) {
+					return helper.createUserErrorWithTooltip(Component.literal("Connect a Crafting Upgrade to your depot"));
+				}
+				if (doTransfer && Minecraft.getInstance().gameMode != null) {
+					Minecraft.getInstance().gameMode.handlePlaceRecipe(menu.containerId, recipe, maxTransfer);
+				}
+				return null;
+			}
+		}, RecipeTypes.CRAFTING);
 	}
 }

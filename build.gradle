@@ -19,13 +19,14 @@ repositories {
         url = 'https://maven.blamejared.com/'
     }
     maven { url = 'https://modmaven.dev' }
+    maven { url = 'https://maven.terraformersmc.com/' }
 }
 
 dependencies {
     implementation 'software.bernie.geckolib:geckolib-neoforge-1.21.1:4.7.6'
     compileOnly 'mezz.jei:jei-1.21.1-common-api:19.21.0.247'
     compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.21.0.247'
-    runtimeOnly 'mezz.jei:jei-1.21.1-neoforge:19.21.0.247'
+    compileOnly 'dev.emi:emi-neoforge:1.1.22+1.21.1:api'
 }
 
 neoForge {

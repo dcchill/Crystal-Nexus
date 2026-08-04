@@ -78,7 +78,9 @@ public class DepotDownloaderBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory) {
-		return new DepotMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+		FriendlyByteBuf data = new FriendlyByteBuf(Unpooled.buffer());
+		data.writeBlockPos(this.worldPosition).writeBoolean(false).writeBoolean(false);
+		return new DepotMenu(id, inventory, data);
 	}
 
 	@Override

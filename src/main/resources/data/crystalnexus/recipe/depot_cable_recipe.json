@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a",
+    "b",
+    "a"
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:synthetic_rubber" },
+    "b": { "item": "crystalnexus:energized_silicon" }
+  },
+  "result": {
+    "id": "crystalnexus:depot_cable",
+    "count": 8
+  }
+}
