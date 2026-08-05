@@ -202,22 +202,48 @@ public final class DepotGameTests {
         int syncedChoice = java.util.stream.IntStream.range(0, ironChoices.size())
                 .filter(index -> ironChoices.get(index).id().equals(syncedRecipeId)).findFirst().orElseThrow() + 1;
         var listedRecipes = DepotCliCommandRegistry.INSTANCE.execute(context, "recipe list minecraft:iron_ingot");
+        ResourceLocation rawIron = ResourceLocation.parse("minecraft:raw_iron");
+        ResourceLocation ironIngot = ResourceLocation.parse("minecraft:iron_ingot");
+        ResourceLocation ironNugget = ResourceLocation.parse("minecraft:iron_nugget");
+        playerDepot.deposit(ironNugget, 9);
+        playerDepot.deposit(rawIron, 1);
+        DepotCraftingService.Result defaultCrafting = DepotCraftingService.craft(player, playerDepot, Items.IRON_INGOT, 1);
+        helper.assertTrue(defaultCrafting.success() && !defaultCrafting.job().currentStep().processing(),
+                "Vanilla crafting must win over smelting and synced JEI machine recipes by default");
+        finishCraft(playerDepot, 1);
+        helper.assertTrue(playerDepot.getCount(ironNugget) == 0 && playerDepot.getCount(rawIron) == 1
+                        && playerDepot.getCount(ironIngot) == 1,
+                "Default vanilla crafting must not consume the smeltable raw iron");
+        playerDepot.remove(ironIngot, Long.MAX_VALUE);
+        DepotCraftingService.Result defaultSmelting = DepotCraftingService.craft(player, playerDepot, Items.IRON_INGOT, 1);
+        helper.assertTrue(defaultSmelting.success() && defaultSmelting.job().currentStep().processing()
+                        && defaultSmelting.job().currentStep().machineTypes().equals(List.of(ResourceLocation.parse("minecraft:furnace"))),
+                "Vanilla smelting must win over synced JEI machine recipes and target a furnace");
+        runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
+        helper.assertTrue(playerDepot.getCraftingJob() == null && playerDepot.getCount(ironIngot) == 1,
+                "Vanilla smelting must insert into the furnace and extract its output");
+        playerDepot.remove(ironIngot, Long.MAX_VALUE);
         DepotCliCommandRegistry.INSTANCE.execute(context, "recipe prefer minecraft:iron_ingot " + syncedChoice);
         DepotCliCommandRegistry.INSTANCE.execute(context, "machine prefer minecraft:iron_ingot 1");
         helper.assertTrue(listedRecipes.lines().stream().anyMatch(line -> line.contains(syncedChoice + ". [Enriching]"))
-                        && syncedRecipeId.equals(playerDepot.getPreferredRecipe(ResourceLocation.parse("minecraft:iron_ingot")))
+                        && syncedRecipeId.equals(playerDepot.getPreferredRecipe(ironIngot))
                         && ResourceLocation.parse("minecraft:furnace").equals(
-                                playerDepot.getPreferredMachine(ResourceLocation.parse("minecraft:iron_ingot"))),
+                                playerDepot.getPreferredMachine(ironIngot)),
                 "JEI recipes and catalyst machines must be selectable by friendly numbers instead of recipe ids");
         helper.assertTrue(DepotCraftingService.recipesFor(player, Items.IRON_INGOT).stream()
                         .anyMatch(DepotCraftingService.AvailableRecipe::processing),
                 "The depot must discover machine recipes from the server recipe data shown by JEI");
+        helper.assertTrue(DepotCraftingService.recipesFor(player, Items.IRON_INGOT).stream()
+                        .anyMatch(candidate -> candidate.id().toString().contains("smelting")),
+                "The depot must discover vanilla smelting recipes for iron ingots: "
+                        + DepotCraftingService.recipesFor(player, Items.IRON_INGOT).stream()
+                        .limit(8).map(candidate -> candidate.id().toString()).toList());
         helper.assertTrue(DepotCraftingService.recipesFor(player,
                         BuiltInRegistries.ITEM.get(ResourceLocation.parse("crystalnexus:coal_singularity"))).stream()
                         .anyMatch(candidate -> candidate.recipe() instanceof net.crystalnexus.jei_recipes.CrystalNexusRecipe recipe
                                 && recipe.getInputCount(0) == 10_368),
                 "Automatic processing must preserve custom JEI recipe ingredient counts");
-        playerDepot.deposit(ResourceLocation.parse("minecraft:raw_iron"), 2);
+        playerDepot.deposit(rawIron, 2);
         DepotCraftingService.Result machineCraft = DepotCraftingService.craft(player, playerDepot, Items.IRON_INGOT, 2);
         helper.assertTrue(machineCraft.success() && machineCraft.job().currentStep().processing()
                         && machineCraft.job().currentStep().machineTypes().equals(List.of(ResourceLocation.parse("minecraft:furnace"))),
@@ -225,15 +251,15 @@ public final class DepotGameTests {
                         + machineCraft.success() + ", details=" + machineCraft.details());
         runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
         helper.assertTrue(playerDepot.getCraftingJob() != null
-                        && playerDepot.getCount(ResourceLocation.parse("minecraft:iron_ingot")) == 1,
+                        && playerDepot.getCount(ironIngot) == 1,
                 "Each machine-crafted target item must update depot storage before the job finishes");
         runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
         helper.assertTrue(playerDepot.getCraftingJob() == null
-                        && playerDepot.getCount(ResourceLocation.parse("minecraft:iron_ingot")) == 2,
+                        && playerDepot.getCount(ironIngot) == 2,
                 "The depot must insert machine inputs and extract the completed furnace output");
 
-        playerDepot.remove(ResourceLocation.parse("minecraft:iron_ingot"), Long.MAX_VALUE);
-        playerDepot.deposit(ResourceLocation.parse("minecraft:raw_iron"), 1);
+        playerDepot.remove(ironIngot, Long.MAX_VALUE);
+        playerDepot.deposit(rawIron, 1);
         playerDepot.deposit(ResourceLocation.parse("minecraft:cobblestone"), 4);
         playerDepot.deposit(ResourceLocation.parse("minecraft:redstone"), 1);
         DepotCraftingService.Result processedDependency = DepotCraftingService.craft(player, playerDepot, Items.PISTON, 1);
@@ -252,8 +278,6 @@ public final class DepotGameTests {
         ResourceLocation cobblestone = ResourceLocation.parse("minecraft:cobblestone");
         ResourceLocation redstone = ResourceLocation.parse("minecraft:redstone");
         ResourceLocation ironBlock = ResourceLocation.parse("minecraft:iron_block");
-        ResourceLocation ironIngot = ResourceLocation.parse("minecraft:iron_ingot");
-        ResourceLocation ironNugget = ResourceLocation.parse("minecraft:iron_nugget");
         ResourceLocation piston = ResourceLocation.parse("minecraft:piston");
         playerDepot.deposit(cobblestone, 4);
         playerDepot.deposit(redstone, 1);
