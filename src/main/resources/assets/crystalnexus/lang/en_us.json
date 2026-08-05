@@ -458,7 +458,7 @@
   "block.crystalnexus.depot_downloader": "Depot Downloader",
   "block.crystalnexus.depot_controller": "Depot Controller",
   "block.crystalnexus.depot_cable": "Depot Cable",
-  "block.crystalnexus.crafting_upgrade": "Depot Crafting Upgrade",
+  "block.crystalnexus.crafting_upgrade": "Crafting Processor",
   "block.crystalnexus.hyper_machine_frame": "Hyper Machine Frame",
   "block.crystalnexus.energy_cable": "Energy Cable",
   "item.crystalnexus.blutonium_waste": "Blutonium Waste",
@@ -607,5 +607,8 @@
   "gui.crystalnexus.multiblock_gui_page_7.label_title": "Blu-Print Creator",
   "item.crystalnexus.gravity_gun": "Gravity Gun",
   "block.crystalnexus.black_hole_tnt": "Black Hole Tnt",
-  "item.crystalnexus.orbital_strike_remote": "Orbital Strike Remote"
+  "item.crystalnexus.orbital_strike_remote": "Orbital Strike Remote",
+  "block.crystalnexus.depot_cli": "Depot CLI",
+  "block.crystalnexus.depot_cli.description_0": "§5Command-line access to a connected depot network.",
+  "block.crystalnexus.depot_cli.description_1": "§5Use for advanced storage and crafting operations."
 }

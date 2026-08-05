@@ -29,7 +29,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
-import net.crystalnexus.data.DepotSavedData;
+import net.crystalnexus.util.DepotNetwork;
 
 import io.netty.buffer.Unpooled;
 
@@ -69,7 +69,10 @@ public class DepotDownloaderBlock extends Block implements EntityBlock {
 	public InteractionResult useWithoutItem(BlockState blockstate, Level world, BlockPos pos, Player entity, BlockHitResult hit) {
 		super.useWithoutItem(blockstate, world, pos, entity, hit);
 		if (entity instanceof ServerPlayer player) {
-			if (!DepotSavedData.requirePoweredController(player)) return InteractionResult.FAIL;
+			if (!DepotNetwork.isComponentConnected(player.serverLevel(), pos, player.getUUID())) {
+				player.displayClientMessage(Component.literal("Connect this downloader to your powered Depot Controller with Depot Cables."), true);
+				return InteractionResult.FAIL;
+			}
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {

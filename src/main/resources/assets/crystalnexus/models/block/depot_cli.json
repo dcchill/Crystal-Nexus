@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/blank",
+    "north": "crystalnexus:block/depot_cli_off",
+    "east": "crystalnexus:block/depot_cli_side",
+    "south": "crystalnexus:block/depot_cli_side",
+    "west": "crystalnexus:block/depot_cli_side",
+    "particle": "crystalnexus:block/depot_cli_side"
+  }
+}

@@ -20,7 +20,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Codec;
 
-public class SingularityCompressionRecipe implements Recipe<RecipeInput> {
+public class SingularityCompressionRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
 	private final List<Integer> integers;
@@ -43,6 +43,11 @@ public class SingularityCompressionRecipe implements Recipe<RecipeInput> {
 
 	public List<Integer> integers() {
 		return this.integers;
+	}
+
+	@Override
+	public int getInputCount(int index) {
+		return index >= 0 && index < integers.size() ? Math.max(1, integers.get(index)) : 1;
 	}
 
 	public List<String> strings() {

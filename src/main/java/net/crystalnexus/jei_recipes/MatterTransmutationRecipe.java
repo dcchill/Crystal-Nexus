@@ -21,7 +21,7 @@ import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
+public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 	private static final ResourceLocation ZERO_POINT_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "zero_point");
 	private static final ResourceLocation ZERO_POINT_CORE_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "zero_point_core");
 
@@ -55,6 +55,7 @@ public class MatterTransmutationRecipe implements Recipe<RecipeInput> {
 	/* Helpers                                                      */
 	/* ------------------------------------------------------------ */
 
+	@Override
 	public int getInputCount(int index) {
 		if (index < 0 || index >= integers.size()) return 1;
 		return Math.max(1, integers.get(index));

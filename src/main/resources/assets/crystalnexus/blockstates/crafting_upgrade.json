@@ -1,6 +1,8 @@
 {
   "variants": {
-    "connected=false": { "model": "crystalnexus:block/crafting_upgrade_off" },
-    "connected=true": { "model": "crystalnexus:block/crafting_upgrade_on" }
+    "active=false,connected=false": { "model": "crystalnexus:block/crafting_upgrade_off" },
+    "active=true,connected=false": { "model": "crystalnexus:block/crafting_upgrade_off" },
+    "active=false,connected=true": { "model": "crystalnexus:block/crafting_upgrade_on" },
+    "active=true,connected=true": { "model": "crystalnexus:block/crafting_upgrade_on" }
   }
 }

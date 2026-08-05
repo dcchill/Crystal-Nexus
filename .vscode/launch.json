@@ -26,10 +26,32 @@
     {
       "type": "java",
       "request": "launch",
-      "name": "Server",
+      "name": "GameTestServer",
       "presentation": {
         "group": "Mod Development - Crystal-Nexus",
         "order": 1
+      },
+      "projectName": "Crystal-Nexus",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
+      ],
+      "cwd": "${workspaceFolder}\\run",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - Crystal-Nexus",
+        "order": 2
       },
       "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",

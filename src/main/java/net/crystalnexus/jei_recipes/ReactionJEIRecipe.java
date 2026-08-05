@@ -17,7 +17,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
 
-public class ReactionJEIRecipe implements Recipe<RecipeInput> {
+public class ReactionJEIRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
 

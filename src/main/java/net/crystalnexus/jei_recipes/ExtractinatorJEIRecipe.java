@@ -18,7 +18,7 @@ import com.mojang.serialization.DataResult;
 import java.util.*;
 
 // JEI-only recipe for displaying Extractinator processing
-public class ExtractinatorJEIRecipe implements Recipe<RecipeInput> {
+public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
     private final NonNullList<Ingredient> recipeItems;
     private final List<ItemStack> results;
 

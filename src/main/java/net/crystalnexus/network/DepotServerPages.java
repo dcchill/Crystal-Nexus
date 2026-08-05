@@ -14,16 +14,14 @@ import java.util.List;
 public class DepotServerPages {
 
     public static void handleRequestPage(ServerPlayer player, C2S_RequestPage msg) {
-        if (!DepotSavedData.hasPoweredController(player)) {
+        if (!(player.containerMenu instanceof DepotMenu menu) || !menu.canAccessDepot(player)) {
             player.closeContainer();
             return;
         }
         DepotSavedData data = DepotSavedData.get(player);
 
         List<DepotSavedData.Entry> page = data.page(msg.search(), msg.page(), DepotMenu.PAGE_SIZE);
-        if (player.containerMenu instanceof DepotMenu menu) {
-            menu.setDepotPage(msg.search(), msg.page(), page);
-        }
+        menu.setDepotPage(msg.search(), msg.page(), page);
 
         List<S2C_SendPage.Entry> entries = page.stream()
                 .map(e -> new S2C_SendPage.Entry(e.itemId(), e.count()))

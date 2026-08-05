@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "alltheores:bismuth_dust"
+    }
+  ],
   "type": "crystalnexus:ore_crushing_jei",
   "ingredients": [
     {

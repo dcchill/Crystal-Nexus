@@ -122,6 +122,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.DEPOT_DOWNLOADER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DEPOT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DEPOT_CABLE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.DEPOT_CLI.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_UPGRADE.get().asItem());
 				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModBlocks.ZERO_POINT.get().asItem());

@@ -7,8 +7,19 @@ import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
+import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 
 public class ClientHandlers {
+
+    public static void onDepotCliResponse(final S2C_DepotCliResponse msg, final IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            try {
+                Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
+                hooks.getMethod("handle", S2C_DepotCliResponse.class).invoke(null, msg);
+            } catch (Throwable ignored) {
+            }
+        });
+    }
 
     public static void onSendPage(final S2C_SendPage msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {

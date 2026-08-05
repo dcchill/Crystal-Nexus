@@ -17,7 +17,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
 
-public class EnergyExtractionRecipe implements Recipe<RecipeInput> {
+public class EnergyExtractionRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
 

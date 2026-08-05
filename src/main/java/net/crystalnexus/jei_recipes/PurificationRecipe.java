@@ -20,7 +20,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Codec;
 
-public class PurificationRecipe implements Recipe<RecipeInput> {
+public class PurificationRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
 	private final List<Integer> integers;
@@ -41,6 +41,11 @@ public class PurificationRecipe implements Recipe<RecipeInput> {
 
 	public List<Integer> integers() {
 		return this.integers;
+	}
+
+	@Override
+	public int getInputCount(int index) {
+		return index >= 0 && index < integers.size() ? Math.max(1, integers.get(index)) : 1;
 	}
 
 	@Override

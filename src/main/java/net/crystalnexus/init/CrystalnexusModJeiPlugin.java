@@ -6,12 +6,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.crafting.CraftingRecipe;
-
-import net.crystalnexus.world.inventory.DepotMenu;
 
 import net.crystalnexus.jei_recipes.UnfurnaceRecipeCategory;
 import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
@@ -56,18 +50,11 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
-import mezz.jei.api.constants.RecipeTypes;
-import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
-import mezz.jei.api.recipe.transfer.IRecipeTransferError;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
-import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.IModPlugin;
 
-import java.util.stream.Collectors;
 import java.util.Objects;
 import java.util.List;
-import java.util.Optional;
 
 @JeiPlugin
 public class CrystalnexusModJeiPlugin implements IModPlugin {
@@ -122,44 +109,49 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
 		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-		List<PurificationRecipe> PurificationRecipes = recipeManager.getAllRecipesFor(PurificationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<PurificationRecipe> PurificationRecipes = recipes(recipeManager, PurificationRecipe.class);
 		registration.addRecipes(Purification_Type, PurificationRecipes);
-		List<ExtractinatorJEIRecipe> ExtractinatorJEIRecipes = recipeManager.getAllRecipesFor(ExtractinatorJEIRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<ExtractinatorJEIRecipe> ExtractinatorJEIRecipes = recipes(recipeManager, ExtractinatorJEIRecipe.class);
 		registration.addRecipes(ExtractinatorJEI_Type, ExtractinatorJEIRecipes);
-		List<BeamReactionRecipeRecipe> BeamReactionRecipeRecipes = recipeManager.getAllRecipesFor(BeamReactionRecipeRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<BeamReactionRecipeRecipe> BeamReactionRecipeRecipes = recipes(recipeManager, BeamReactionRecipeRecipe.class);
 		registration.addRecipes(BeamReactionRecipe_Type, BeamReactionRecipeRecipes);
-		List<UnfurnaceRecipe> UnfurnaceRecipes = recipeManager.getAllRecipesFor(UnfurnaceRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<UnfurnaceRecipe> UnfurnaceRecipes = recipes(recipeManager, UnfurnaceRecipe.class);
 		registration.addRecipes(Unfurnace_Type, UnfurnaceRecipes);
-		List<OreCrushingJeiRecipe> OreCrushingJeiRecipes = recipeManager.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<OreCrushingJeiRecipe> OreCrushingJeiRecipes = recipes(recipeManager, OreCrushingJeiRecipe.class);
 		registration.addRecipes(OreCrushingJei_Type, OreCrushingJeiRecipes);
-		List<DustSeperationRecipe> DustSeperationRecipes = recipeManager.getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<DustSeperationRecipe> DustSeperationRecipes = recipes(recipeManager, DustSeperationRecipe.class);
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
-		List<ReactorMultiblockGuideRecipe> ReactorMultiblockGuideRecipes = recipeManager.getAllRecipesFor(ReactorMultiblockGuideRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<ReactorMultiblockGuideRecipe> ReactorMultiblockGuideRecipes = recipes(recipeManager, ReactorMultiblockGuideRecipe.class);
 		registration.addRecipes(ReactorMultiblockGuide_Type, ReactorMultiblockGuideRecipes);
-		List<CircuitPressingRecipe> CircuitPressingRecipes = recipeManager.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<CircuitPressingRecipe> CircuitPressingRecipes = recipes(recipeManager, CircuitPressingRecipe.class);
 		registration.addRecipes(CircuitPressing_Type, CircuitPressingRecipes);
-		List<InverterJeiRecipe> InverterJeiRecipes = recipeManager.getAllRecipesFor(InverterJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<InverterJeiRecipe> InverterJeiRecipes = recipes(recipeManager, InverterJeiRecipe.class);
 		registration.addRecipes(InverterJei_Type, InverterJeiRecipes);
-		List<ReactionJEIRecipe> ReactionJEIRecipes = recipeManager.getAllRecipesFor(ReactionJEIRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<ReactionJEIRecipe> ReactionJEIRecipes = recipes(recipeManager, ReactionJEIRecipe.class);
 		registration.addRecipes(ReactionJEI_Type, ReactionJEIRecipes);
-		List<EnergyExtractionRecipe> EnergyExtractionRecipes = recipeManager.getAllRecipesFor(EnergyExtractionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<EnergyExtractionRecipe> EnergyExtractionRecipes = recipes(recipeManager, EnergyExtractionRecipe.class);
 		registration.addRecipes(EnergyExtraction_Type, EnergyExtractionRecipes);
-		List<ReactionMultiblockGuideRecipe> ReactionMultiblockGuideRecipes = recipeManager.getAllRecipesFor(ReactionMultiblockGuideRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<ReactionMultiblockGuideRecipe> ReactionMultiblockGuideRecipes = recipes(recipeManager, ReactionMultiblockGuideRecipe.class);
 		registration.addRecipes(ReactionMultiblockGuide_Type, ReactionMultiblockGuideRecipes);
-		List<MatterTransmutationRecipe> MatterTransmutationRecipes = recipeManager.getAllRecipesFor(MatterTransmutationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<MatterTransmutationRecipe> MatterTransmutationRecipes = recipes(recipeManager, MatterTransmutationRecipe.class);
 		registration.addRecipes(MatterTransmutation_Type, MatterTransmutationRecipes);
-		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipeManager.getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class);
 		registration.addRecipes(SingularityCompression_Type, SingularityCompressionRecipes);
-		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipeManager.getAllRecipesFor(ChemicalReactionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
 		registration.addRecipes(ChemicalReaction_Type, ChemicalReactionRecipes);
-		List<BiomaticCompostingRecipe> BiomaticCompostingRecipes = recipeManager.getAllRecipesFor(BiomaticCompostingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<BiomaticCompostingRecipe> BiomaticCompostingRecipes = recipes(recipeManager, BiomaticCompostingRecipe.class);
 		registration.addRecipes(BiomaticComposting_Type, BiomaticCompostingRecipes);
-		List<BiomaticSimulationRecipe> BiomaticSimulationRecipes = recipeManager.getAllRecipesFor(BiomaticSimulationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<BiomaticSimulationRecipe> BiomaticSimulationRecipes = recipes(recipeManager, BiomaticSimulationRecipe.class);
 		registration.addRecipes(BiomaticSimulation_Type, BiomaticSimulationRecipes);
-		List<PistonGeneratorJEIRecipe> PistonGeneratorJEIRecipes = recipeManager.getAllRecipesFor(PistonGeneratorJEIRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<PistonGeneratorJEIRecipe> PistonGeneratorJEIRecipes = recipes(recipeManager, PistonGeneratorJEIRecipe.class);
 		registration.addRecipes(PistonGeneratorJEI_Type, PistonGeneratorJEIRecipes);
-		List<AcceleratorJeiRecipe> AcceleratorJeiRecipes = recipeManager.getAllRecipesFor(AcceleratorJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+		List<AcceleratorJeiRecipe> AcceleratorJeiRecipes = recipes(recipeManager, AcceleratorJeiRecipe.class);
 		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
+	}
+
+	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
+		return manager.getRecipes().stream().map(RecipeHolder::value)
+				.filter(recipeClass::isInstance).map(recipeClass::cast).toList();
 	}
 
 	@Override
@@ -195,34 +187,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-		IRecipeTransferHandlerHelper helper = registration.getTransferHelper();
-		registration.addRecipeTransferHandler(new IRecipeTransferHandler<DepotMenu, RecipeHolder<CraftingRecipe>>() {
-			@Override
-			public Class<? extends DepotMenu> getContainerClass() {
-				return DepotMenu.class;
-			}
-
-			@Override
-			public Optional<MenuType<DepotMenu>> getMenuType() {
-				return Optional.of(CrystalnexusModMenus.DEPOT.get());
-			}
-
-			@Override
-			public mezz.jei.api.recipe.RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
-				return RecipeTypes.CRAFTING;
-			}
-
-			@Override
-			public IRecipeTransferError transferRecipe(DepotMenu menu, RecipeHolder<CraftingRecipe> recipe,
-					IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
-				if (!menu.hasCraftingUpgrade()) {
-					return helper.createUserErrorWithTooltip(Component.literal("Connect a Crafting Upgrade to your depot"));
-				}
-				if (doTransfer && Minecraft.getInstance().gameMode != null) {
-					Minecraft.getInstance().gameMode.handlePlaceRecipe(menu.containerId, recipe, maxTransfer);
-				}
-				return null;
-			}
-		}, RecipeTypes.CRAFTING);
+		registration.addUniversalRecipeTransferHandler(new net.crystalnexus.client.DepotCliJeiTransferHandler());
 	}
 }

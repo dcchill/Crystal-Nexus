@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "alltheores:gold_nugget"
+    }
+  ],
   "type": "crystalnexus:dust_seperation",
   "ingredients": [
     {

@@ -8,11 +8,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Predicate;
+import org.jetbrains.annotations.Nullable;
 
 public final class DepotNetwork {
     private static final int MAX_CABLES = 4096;
@@ -20,19 +26,86 @@ public final class DepotNetwork {
     private DepotNetwork() {
     }
 
-    public static boolean hasCraftingUpgrade(ServerPlayer player) {
+    public record MachineEndpoint(ServerLevel level, BlockPos pos) {
+        public MachineEndpoint {
+            pos = pos.immutable();
+        }
+    }
+
+    public static boolean hasCraftingProcessor(ServerPlayer player) {
+        return craftingProcessorCount(player) > 0;
+    }
+
+    public static int craftingProcessorCount(ServerPlayer player) {
         DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
-        if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return false;
-        return scan(level, controller.getBlockPos(),
+        if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return 0;
+        return count(level, controller.getBlockPos(),
                 pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock);
     }
 
-    public static boolean isCraftingUpgradeConnected(ServerLevel level, BlockPos upgradePos) {
-        return scan(level, upgradePos, pos -> {
+    public static boolean isCraftingProcessorConnected(ServerLevel level, BlockPos upgradePos) {
+        return craftingProcessorOwner(level, upgradePos) != null;
+    }
+
+    public static @Nullable UUID craftingProcessorOwner(ServerLevel level, BlockPos upgradePos) {
+        UUID[] owner = {null};
+        scan(level, upgradePos, pos -> {
             if (!(level.getBlockEntity(pos) instanceof DepotControllerBlockEntity controller)
                     || controller.getOwner() == null || !controller.isPowered()) return false;
-            return DepotSavedData.get(level, controller.getOwner()).isController(level, pos);
+            if (!DepotSavedData.get(level, controller.getOwner()).isController(level, pos)) return false;
+            owner[0] = controller.getOwner();
+            return true;
         });
+        return owner[0];
+    }
+
+    public static boolean isComponentConnected(ServerLevel level, BlockPos componentPos, UUID owner) {
+        return owner != null && scan(level, componentPos, pos -> {
+            if (!(level.getBlockEntity(pos) instanceof DepotControllerBlockEntity controller)
+                    || !owner.equals(controller.getOwner()) || !controller.isPowered()) return false;
+            return DepotSavedData.get(level, owner).isController(level, pos);
+        });
+    }
+
+    public static List<MachineEndpoint> processingMachines(ServerPlayer player) {
+        DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
+        if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) {
+            return List.of();
+        }
+        ArrayDeque<BlockPos> open = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        Set<BlockPos> machines = new HashSet<>();
+        for (Direction direction : Direction.values()) {
+            BlockPos cable = controller.getBlockPos().relative(direction);
+            if (level.hasChunkAt(cable) && level.getBlockState(cable).getBlock() instanceof DepotCableBlock) {
+                open.add(cable);
+                visited.add(cable);
+            }
+        }
+        while (!open.isEmpty() && visited.size() <= MAX_CABLES) {
+            BlockPos cable = open.removeFirst();
+            for (Direction direction : Direction.values()) {
+                BlockPos next = cable.relative(direction);
+                if (!level.hasChunkAt(next)) continue;
+                if (level.getBlockState(next).getBlock() instanceof DepotCableBlock) {
+                    if (visited.add(next)) open.addLast(next);
+                } else if (!level.getBlockState(next).is(DepotCableBlock.COMPONENTS) && hasItemHandler(level, next)) {
+                    machines.add(next.immutable());
+                }
+            }
+        }
+        List<MachineEndpoint> result = new ArrayList<>(machines.size());
+        machines.stream().sorted(Comparator.comparingLong(BlockPos::asLong))
+                .forEach(pos -> result.add(new MachineEndpoint(level, pos)));
+        return List.copyOf(result);
+    }
+
+    public static boolean hasItemHandler(ServerLevel level, BlockPos pos) {
+        if (level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) != null) return true;
+        for (Direction direction : Direction.values()) {
+            if (level.getCapability(Capabilities.ItemHandler.BLOCK, pos, direction) != null) return true;
+        }
+        return false;
     }
 
     private static boolean scan(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {
@@ -57,5 +130,28 @@ public final class DepotNetwork {
             }
         }
         return false;
+    }
+
+    private static int count(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {
+        ArrayDeque<BlockPos> open = new ArrayDeque<>();
+        Set<BlockPos> visited = new HashSet<>();
+        Set<BlockPos> targets = new HashSet<>();
+        for (Direction direction : Direction.values()) {
+            BlockPos cable = start.relative(direction);
+            if (level.hasChunkAt(cable) && level.getBlockState(cable).getBlock() instanceof DepotCableBlock) {
+                open.add(cable);
+                visited.add(cable);
+            }
+        }
+        while (!open.isEmpty() && visited.size() <= MAX_CABLES) {
+            BlockPos pos = open.removeFirst();
+            for (Direction direction : Direction.values()) {
+                BlockPos next = pos.relative(direction);
+                if (!level.hasChunkAt(next)) continue;
+                if (target.test(next)) targets.add(next.immutable());
+                if (level.getBlockState(next).getBlock() instanceof DepotCableBlock && visited.add(next)) open.addLast(next);
+            }
+        }
+        return targets.size();
     }
 }

@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "alltheores:raw_palladium"
+    }
+  ],
   "type": "crystalnexus:unfurnace",
   "ingredients": [
     {

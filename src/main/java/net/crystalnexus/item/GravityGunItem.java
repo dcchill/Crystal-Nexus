@@ -443,19 +443,21 @@ public class GravityGunItem extends Item implements GeoItem {
 		});
 	}
 
-	public static final EnumProxy<HumanoidModel.ArmPose> ARM_POSE = new EnumProxy<>(HumanoidModel.ArmPose.class, false, (IArmPoseTransformer) (model, entity, arm) -> {
-		float side = arm == HumanoidArm.RIGHT ? 1.0F : -1.0F;
-		model.rightArm.yRot = -0.3F + model.head.yRot;
-		model.leftArm.yRot = 0.6F + model.head.yRot;
-		model.rightArm.xRot = -1.35F + model.head.xRot + 0.1F;
-		model.leftArm.xRot = -1.25F + model.head.xRot;
-		if (arm == HumanoidArm.LEFT) {
-			model.leftArm.yRot = 0.3F + model.head.yRot;
-			model.rightArm.yRot = -0.6F + model.head.yRot;
-		}
-		model.rightArm.zRot = side * 0.05F;
-		model.leftArm.zRot = -side * 0.05F;
-	});
+	public static final class ClientOnly {
+		public static final EnumProxy<HumanoidModel.ArmPose> ARM_POSE = new EnumProxy<>(HumanoidModel.ArmPose.class, false, (IArmPoseTransformer) (model, entity, arm) -> {
+			float side = arm == HumanoidArm.RIGHT ? 1.0F : -1.0F;
+			model.rightArm.yRot = -0.3F + model.head.yRot;
+			model.leftArm.yRot = 0.6F + model.head.yRot;
+			model.rightArm.xRot = -1.35F + model.head.xRot + 0.1F;
+			model.leftArm.xRot = -1.25F + model.head.xRot;
+			if (arm == HumanoidArm.LEFT) {
+				model.leftArm.yRot = 0.3F + model.head.yRot;
+				model.rightArm.yRot = -0.6F + model.head.yRot;
+			}
+			model.rightArm.zRot = side * 0.05F;
+			model.leftArm.zRot = -side * 0.05F;
+		});
+	}
 
 	@Override
 	public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -465,7 +467,7 @@ public class GravityGunItem extends Item implements GeoItem {
 			public HumanoidModel.ArmPose getArmPose(LivingEntity entityLiving, InteractionHand hand, ItemStack itemStack) {
 				if (!itemStack.isEmpty()) {
 					if (itemStack.getItem() instanceof GravityGunItem) {
-						return (HumanoidModel.ArmPose) ARM_POSE.getValue();
+						return ClientOnly.ARM_POSE.getValue();
 					}
 				}
 				return HumanoidModel.ArmPose.EMPTY;

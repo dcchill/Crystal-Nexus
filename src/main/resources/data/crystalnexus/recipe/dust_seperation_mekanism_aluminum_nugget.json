@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:item_exists",
+      "item": "mekanism:nugget_aluminum"
+    }
+  ],
   "type": "crystalnexus:dust_seperation",
   "ingredients": [
     {

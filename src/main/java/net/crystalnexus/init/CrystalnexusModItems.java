@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 
 import net.crystalnexus.item.inventory.DepotUplinkInventoryCapability;
+import net.crystalnexus.item.DepotCliBlockItem;
 import net.crystalnexus.item.ZeroPointCoreItem;
 import net.crystalnexus.item.YellowPaintballItem;
 import net.crystalnexus.item.WhitePaintballItem;
@@ -386,6 +387,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEPOT_DOWNLOADER = block(CrystalnexusModBlocks.DEPOT_DOWNLOADER);
 	public static final DeferredItem<Item> DEPOT_CONTROLLER = block(CrystalnexusModBlocks.DEPOT_CONTROLLER);
 	public static final DeferredItem<Item> DEPOT_CABLE = block(CrystalnexusModBlocks.DEPOT_CABLE);
+	public static final DeferredItem<Item> DEPOT_CLI = REGISTRY.register("depot_cli", () -> new DepotCliBlockItem(CrystalnexusModBlocks.DEPOT_CLI.get()));
 	public static final DeferredItem<Item> CRAFTING_UPGRADE = block(CrystalnexusModBlocks.CRAFTING_UPGRADE);
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
 	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);

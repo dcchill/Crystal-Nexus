@@ -1,6 +1,7 @@
 package net.crystalnexus.block;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -9,6 +10,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -26,7 +28,7 @@ public class DepotCableBlock extends Block {
     public static final BooleanProperty WEST = BooleanProperty.create("west");
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
-    private static final TagKey<Block> COMPONENTS = BlockTags.create(
+    public static final TagKey<Block> COMPONENTS = BlockTags.create(
             ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "depot_components"));
     private static final VoxelShape CORE = Block.box(6, 6, 6, 10, 10, 10);
     private static final VoxelShape ARM_NORTH = Block.box(6, 6, 0, 10, 10, 6);
@@ -68,8 +70,11 @@ public class DepotCableBlock extends Block {
     }
 
     private boolean connects(LevelAccessor level, BlockPos pos, Direction direction) {
-        BlockState neighbor = level.getBlockState(pos.relative(direction));
-        return neighbor.is(this) || neighbor.is(COMPONENTS);
+        BlockPos neighborPos = pos.relative(direction);
+        BlockState neighbor = level.getBlockState(neighborPos);
+        return neighbor.is(this) || neighbor.is(COMPONENTS)
+                || level instanceof ServerLevel serverLevel
+                && DepotNetwork.hasItemHandler(serverLevel, neighborPos);
     }
 
     @Override

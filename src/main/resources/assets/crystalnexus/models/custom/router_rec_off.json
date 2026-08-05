@@ -6,6 +6,10 @@
     64,
     64
   ],
+  "textures": {
+    "1": "crystalnexus:block/router_off",
+    "particle": "crystalnexus:block/router_off"
+  },
   "elements": [
     {
       "from": [
@@ -92,7 +96,7 @@
         11.99
       ],
       "rotation": {
-        "angle": 20,
+        "angle": 22.5,
         "axis": "x",
         "origin": [
           8,

@@ -15,6 +15,7 @@
     "crystalnexus:depot_controller",
     "crystalnexus:depot_cable",
     "crystalnexus:crafting_upgrade",
+    "crystalnexus:depot_cli",
     "crystalnexus:quantum_miner",
     "crystalnexus:tarrock_brick_stairs",
     "crystalnexus:tarrock_brick_slab",

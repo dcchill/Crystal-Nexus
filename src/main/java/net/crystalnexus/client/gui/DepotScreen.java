@@ -24,7 +24,6 @@ import java.util.Map;
 
 public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("minecraft:textures/gui/container/generic_54.png");
-    private static final ResourceLocation CRAFTING_TEXTURE = ResourceLocation.parse("minecraft:textures/gui/container/crafting_table.png");
     private static final int BAR_X = 178;
     private static final int BAR_Y = 18;
     private static final int BAR_HEIGHT = 108;
@@ -43,7 +42,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
 
     public DepotScreen(DepotMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
-        imageWidth = menu.hasCraftingUpgrade() ? 318 : 190;
+        imageWidth = 190;
         imageHeight = 222;
     }
 
@@ -134,16 +133,6 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, 176, imageHeight, 256, 256);
-        if (menu.hasCraftingUpgrade()) {
-            graphics.fill(leftPos + 190, topPos + 18, leftPos + 318, topPos + 126, 0xFFC6C6C6);
-            graphics.blit(CRAFTING_TEXTURE, leftPos + 190, topPos + 42, 20, 8, 64, 72, 256, 256);
-            graphics.blit(CRAFTING_TEXTURE, leftPos + 254, topPos + 42, 88, 8, 64, 72, 256, 256);
-            graphics.fill(leftPos + 190, topPos + 18, leftPos + 318, topPos + 19, 0xFFFFFFFF);
-            graphics.fill(leftPos + 190, topPos + 18, leftPos + 191, topPos + 126, 0xFFFFFFFF);
-            graphics.fill(leftPos + 190, topPos + 125, leftPos + 318, topPos + 126, 0xFF555555);
-            graphics.fill(leftPos + 317, topPos + 18, leftPos + 318, topPos + 126, 0xFF555555);
-        }
-
         int x = leftPos + BAR_X;
         int y = topPos + BAR_Y;
         graphics.fill(x, y, x + 10, y + BAR_HEIGHT, 0xFF8B8B8B);
@@ -162,7 +151,6 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
         graphics.drawString(font, playerInventoryTitle, 8, 128, 0x404040, false);
         String stats = "U" + uiUpgradeLevel + " " + compact(uiUsed) + "/" + compact(uiCapacity);
         graphics.drawString(font, stats, 168 - font.width(stats), 128, 0x404040, false);
-        if (menu.hasCraftingUpgrade()) graphics.drawString(font, Component.literal("Crafting"), 196, 26, 0x404040, false);
     }
 
     @Override

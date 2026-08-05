@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "crystalnexus:depot_controller",
-    "crystalnexus:crafting_upgrade"
+    "crystalnexus:crafting_upgrade",
+    "crystalnexus:depot_cli",
+    "crystalnexus:depot_downloader"
   ]
 }

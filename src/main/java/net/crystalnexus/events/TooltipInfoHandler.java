@@ -253,8 +253,8 @@ public class TooltipInfoHandler {
 				"Links Depot Controllers to Depot components.",
 				"Does not connect to energy cables or transfer FE.");
 		addTooltip("crafting_upgrade",
-				"Adds a crafting grid to the Depot Uplink.",
-				"Must be connected to your powered Controller with Depot Cable.");
+				"Unlocks timed recursive crafting in the Depot CLI.",
+				"Add more connected processors to craft faster.");
 		addTooltip("depot_uplink",
 				"Expandable wireless storage system.",
 				"Transfers items wirelessly to your personal Depot.");

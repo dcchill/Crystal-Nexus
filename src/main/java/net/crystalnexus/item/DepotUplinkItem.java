@@ -42,13 +42,13 @@ public class DepotUplinkItem extends Item {
 					FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
 					packetBuffer.writeBlockPos(entity.blockPosition());
 					packetBuffer.writeBoolean(true);
-					packetBuffer.writeBoolean(DepotNetwork.hasCraftingUpgrade(serverPlayer));
+					packetBuffer.writeBoolean(false);
 					return new DepotMenu(id, inventory, packetBuffer);
 				}
 			}, buf -> {
 				buf.writeBlockPos(entity.blockPosition());
 				buf.writeBoolean(true);
-				buf.writeBoolean(DepotNetwork.hasCraftingUpgrade(serverPlayer));
+				buf.writeBoolean(false);
 			});
 		}
 		return ar;

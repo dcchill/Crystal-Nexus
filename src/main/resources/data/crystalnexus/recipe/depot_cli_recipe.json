@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ses",
+    "lhl",
+    "scs"
+  ],
+  "key": {
+    "s": { "item": "crystalnexus:energized_silicon" },
+    "e": { "item": "minecraft:ender_eye" },
+    "l": { "item": "crystalnexus:link_card" },
+    "h": { "item": "crystalnexus:hyper_machine_frame" },
+    "c": { "item": "crystalnexus:depot_cable" }
+  },
+  "result": { "id": "crystalnexus:depot_cli", "count": 1 }
+}
