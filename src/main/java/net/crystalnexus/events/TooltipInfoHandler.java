@@ -248,13 +248,16 @@ public class TooltipInfoHandler {
 				"Retrieves items from your personal Depot.");
 		addTooltip("depot_controller",
 				"The powered center of your personal Depot system.",
-				"Uses 20 FE/t while keeping wireless Depot access online.");
+				"Uses 20 FE/t base power; each connected Depot component adds 2 FE/t.");
 		addTooltip("depot_cable",
 				"Links Depot Controllers to Depot components.",
 				"Does not connect to energy cables or transfer FE.");
 		addTooltip("crafting_upgrade",
-				"Unlocks timed recursive crafting in the Depot CLI.",
-				"Add more connected processors to craft faster.");
+				"Unlocks crafting in the Depot CLI.",
+				"Add more processors to increase crafting speed.");
+		addTooltip("crafting_core",
+				"Adds an extra crafting process.",
+				"Increases Depot Controller power draw.");
 		addTooltip("depot_uplink",
 				"Expandable wireless storage system.",
 				"Transfers items wirelessly to your personal Depot.");

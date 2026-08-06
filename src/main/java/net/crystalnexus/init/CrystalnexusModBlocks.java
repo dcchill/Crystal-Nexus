@@ -137,6 +137,7 @@ import net.crystalnexus.block.DepotControllerBlock;
 import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.DepotCliBlock;
 import net.crystalnexus.block.CraftingUpgradeBlock;
+import net.crystalnexus.block.CraftingCoreBlock;
 import net.crystalnexus.block.DeepslateSiliconOreBlock;
 import net.crystalnexus.block.CyanHeavyIronBlockBlock;
 import net.crystalnexus.block.CrystalizedAlloyBlockBlock;
@@ -307,6 +308,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> DEPOT_CABLE = REGISTRY.register("depot_cable", DepotCableBlock::new);
 	public static final DeferredBlock<Block> DEPOT_CLI = REGISTRY.register("depot_cli", DepotCliBlock::new);
 	public static final DeferredBlock<Block> CRAFTING_UPGRADE = REGISTRY.register("crafting_upgrade", CraftingUpgradeBlock::new);
+	public static final DeferredBlock<Block> CRAFTING_CORE = REGISTRY.register("crafting_core", CraftingCoreBlock::new);
 	public static final DeferredBlock<Block> HYPER_MACHINE_FRAME = REGISTRY.register("hyper_machine_frame", HyperMachineFrameBlock::new);
 	public static final DeferredBlock<Block> ENERGY_CABLE = REGISTRY.register("energy_cable", EnergyCableBlock::new);
 	public static final DeferredBlock<Block> REACTOR_WASTE_OUTPUT = REGISTRY.register("reactor_waste_output", ReactorWasteOutputBlock::new);

@@ -94,6 +94,9 @@ public final class DepotGameTests {
         DepotItemResolver.Result ambiguous = DepotItemResolver.registry("planks");
         helper.assertTrue(!ambiguous.found() && !ambiguous.ambiguous().isEmpty(),
                 "Ambiguous names must not resolve to an arbitrary item");
+        DepotItemResolver.Result displayName = DepotItemResolver.registry("Iron Ingot");
+        helper.assertTrue(displayName.found() && displayName.match().id().equals(ResourceLocation.parse("minecraft:iron_ingot")),
+                "Display names must resolve without requiring registry identifiers");
 
         ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
                 new GameProfile(java.util.UUID.randomUUID(), "depot-test-player"), ClientInformation.createDefault());
@@ -146,6 +149,9 @@ public final class DepotGameTests {
         helper.setBlock(processorPos, CrystalnexusModBlocks.CRAFTING_UPGRADE.get());
         helper.assertTrue(net.crystalnexus.util.DepotNetwork.craftingProcessorCount(player) == 1,
                 "The player's depot network must count its connected Crafting Processors");
+        DepotCliCommandRegistry.INSTANCE.execute(context, "machine balance on");
+        helper.assertTrue(playerDepot.isMachineLoadBalancing(),
+                "Machine load balancing must be configurable and persist in depot data");
         DepotCliCommandRegistry.INSTANCE.execute(context, "craft minecraft:oak_planks 64");
         helper.assertTrue(playerDepot.getCount(logs) == 0 && playerDepot.getCount(planks) == 0
                         && playerDepot.getCraftingJob() != null,
@@ -222,6 +228,13 @@ public final class DepotGameTests {
         runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
         helper.assertTrue(playerDepot.getCraftingJob() == null && playerDepot.getCount(ironIngot) == 1,
                 "Vanilla smelting must insert into the furnace and extract its output");
+        playerDepot.deposit(rawIron, 1);
+        DepotCliCommandRegistry.INSTANCE.execute(context, "smelt minecraft:raw_iron 1");
+        helper.assertTrue(playerDepot.getCraftingJob() != null && playerDepot.getCraftingJob().currentStep().processing()
+                        && playerDepot.getCraftingJob().currentStep().inputs().equals(List.of(new DepotSavedData.SlotEntry(rawIron, 1)))
+                        && playerDepot.getCraftingJob().currentStep().machineTypes().contains(ResourceLocation.parse("minecraft:furnace")),
+                "The smelt command must queue a direct single-item furnace step");
+        playerDepot.cancelCraftingJob(playerDepot.getCraftingJob().id());
         playerDepot.remove(ironIngot, Long.MAX_VALUE);
         DepotCliCommandRegistry.INSTANCE.execute(context, "recipe prefer minecraft:iron_ingot " + syncedChoice);
         DepotCliCommandRegistry.INSTANCE.execute(context, "machine prefer minecraft:iron_ingot 1");
@@ -238,6 +251,10 @@ public final class DepotGameTests {
                 "The depot must discover vanilla smelting recipes for iron ingots: "
                         + DepotCraftingService.recipesFor(player, Items.IRON_INGOT).stream()
                         .limit(8).map(candidate -> candidate.id().toString()).toList());
+        DepotCraftingService.Result processOnly = DepotCraftingService.process(player, playerDepot, Items.IRON_INGOT, 1);
+        helper.assertTrue(processOnly.success() && processOnly.job().currentStep().processing(),
+                "The process command must require an external-machine final step");
+        playerDepot.cancelCraftingJob(processOnly.job().id());
         helper.assertTrue(DepotCraftingService.recipesFor(player,
                         BuiltInRegistries.ITEM.get(ResourceLocation.parse("crystalnexus:coal_singularity"))).stream()
                         .anyMatch(candidate -> candidate.recipe() instanceof net.crystalnexus.jei_recipes.CrystalNexusRecipe recipe

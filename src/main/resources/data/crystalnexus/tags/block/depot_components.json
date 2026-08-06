@@ -3,6 +3,7 @@
   "values": [
     "crystalnexus:depot_controller",
     "crystalnexus:crafting_upgrade",
+    "crystalnexus:crafting_core",
     "crystalnexus:depot_cli",
     "crystalnexus:depot_downloader"
   ]

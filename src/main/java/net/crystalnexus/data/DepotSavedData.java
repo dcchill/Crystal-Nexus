@@ -45,6 +45,7 @@ public class DepotSavedData extends SavedData {
     private final Map<ResourceLocation, ResourceLocation> preferredRecipes = new ConcurrentHashMap<>();
     private final Map<ResourceLocation, ResourceLocation> preferredMachines = new ConcurrentHashMap<>();
     private final Map<ResourceLocation, ProcessingPattern> processingPatterns = new ConcurrentHashMap<>();
+    private boolean machineLoadBalancing;
     private CraftingJob craftingJob;
     private ProcessingTask processingTask;
     private int nextCraftingJobId = 1;
@@ -55,14 +56,16 @@ public class DepotSavedData extends SavedData {
     public record Entry(ResourceLocation itemId, long count) {}
     public record SlotEntry(ResourceLocation itemId, long count) {}
     public record ProcessingPattern(ResourceLocation outputId, long outputAmount,
-            Map<ResourceLocation, Long> inputs, Map<ResourceLocation, Long> outputs) {
+            Map<ResourceLocation, Long> inputs, Map<ResourceLocation, Long> outputs,
+            List<ResourceLocation> machineTypes) {
         public ProcessingPattern(ResourceLocation outputId, long outputAmount, Map<ResourceLocation, Long> inputs) {
-            this(outputId, outputAmount, inputs, Map.of(outputId, outputAmount));
+            this(outputId, outputAmount, inputs, Map.of(outputId, outputAmount), List.of());
         }
 
         public ProcessingPattern {
             inputs = Map.copyOf(inputs);
             outputs = Map.copyOf(outputs);
+            machineTypes = List.copyOf(machineTypes);
         }
     }
     public record ProcessingTask(ResourceLocation dimension, BlockPos machinePos,
@@ -171,6 +174,7 @@ public class DepotSavedData extends SavedData {
             ResourceLocation machineId = ResourceLocation.tryParse(machines.getString(key));
             if (itemId != null && machineId != null) data.preferredMachines.put(itemId, machineId);
         }
+        data.machineLoadBalancing = tag.getBoolean("machineLoadBalancing");
 
         ListTag patterns = tag.getList("processingPatterns", Tag.TAG_COMPOUND);
         for (int i = 0; i < patterns.size(); i++) {
@@ -181,7 +185,8 @@ public class DepotSavedData extends SavedData {
             if (outputId != null && amount > 0 && !inputs.isEmpty()) {
                 Map<ResourceLocation, Long> outputs = loadCounts(pattern.getCompound("outputs"));
                 data.processingPatterns.put(outputId, new ProcessingPattern(outputId, amount, inputs,
-                        outputs.isEmpty() ? Map.of(outputId, amount) : outputs));
+                    outputs.isEmpty() ? Map.of(outputId, amount) : outputs,
+                    loadIds(pattern.getList("machineTypes", Tag.TAG_STRING))));
             }
         }
 
@@ -235,6 +240,7 @@ public class DepotSavedData extends SavedData {
         CompoundTag machines = new CompoundTag();
         preferredMachines.forEach((itemId, machineId) -> machines.putString(itemId.toString(), machineId.toString()));
         tag.put("preferredMachines", machines);
+        tag.putBoolean("machineLoadBalancing", machineLoadBalancing);
 
         ListTag patterns = new ListTag();
         processingPatterns.values().stream().sorted(Comparator.comparing(pattern -> pattern.outputId().toString()))
@@ -244,6 +250,7 @@ public class DepotSavedData extends SavedData {
                     saved.putLong("amount", pattern.outputAmount());
                     saved.put("inputs", saveCounts(pattern.inputs()));
                     saved.put("outputs", saveCounts(pattern.outputs()));
+                    saved.put("machineTypes", saveIds(pattern.machineTypes()));
                     patterns.add(saved);
                 });
         tag.put("processingPatterns", patterns);
@@ -405,6 +412,16 @@ public class DepotSavedData extends SavedData {
         return true;
     }
 
+    public boolean isMachineLoadBalancing() {
+        return machineLoadBalancing;
+    }
+
+    public void setMachineLoadBalancing(boolean enabled) {
+        if (machineLoadBalancing == enabled) return;
+        machineLoadBalancing = enabled;
+        setDirty();
+    }
+
     public List<ProcessingPattern> getProcessingPatterns() {
         return processingPatterns.values().stream()
                 .sorted(Comparator.comparing(pattern -> pattern.outputId().toString())).toList();
@@ -422,7 +439,14 @@ public class DepotSavedData extends SavedData {
 
     public void setProcessingPattern(ResourceLocation outputId, long outputAmount,
             Map<ResourceLocation, Long> inputs, Map<ResourceLocation, Long> outputs) {
-        processingPatterns.put(outputId, new ProcessingPattern(outputId, outputAmount, inputs, outputs));
+        processingPatterns.put(outputId, new ProcessingPattern(outputId, outputAmount, inputs, outputs, List.of()));
+        setDirty();
+    }
+
+    public void setProcessingPattern(ResourceLocation outputId, long outputAmount,
+            Map<ResourceLocation, Long> inputs, Map<ResourceLocation, Long> outputs,
+            List<ResourceLocation> machineTypes) {
+        processingPatterns.put(outputId, new ProcessingPattern(outputId, outputAmount, inputs, outputs, machineTypes));
         setDirty();
     }
 

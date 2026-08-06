@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "crystalnexus:blocks/crafting_core",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [{ "type": "minecraft:item", "name": "crystalnexus:crafting_core" }],
+      "conditions": [{ "condition": "minecraft:survives_explosion" }]
+    }
+  ]
+}

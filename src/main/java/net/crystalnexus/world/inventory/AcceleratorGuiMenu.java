@@ -111,6 +111,11 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 			public boolean mayPlace(ItemStack stack) {
 				return false;
 			}
+
+			@Override
+			public boolean mayPickup(Player player) {
+				return true;
+			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 43, 26) {
 			private final int slot = 2;

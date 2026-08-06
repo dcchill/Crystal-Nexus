@@ -33,11 +33,12 @@ public final class DepotCliCommandRegistry {
         register(command("list", List.of("ls"), "list [--sort name|amount|amount-desc] [--page N]", "List stored item types", DepotCliCommand.Permission.VIEW, true, this::list));
         register(command("take", List.of("retrieve", "withdraw"), "take <item> <amount>", "Move items to your inventory", DepotCliCommand.Permission.WITHDRAW, true, this::take));
         register(command("deposit", List.of("put"), "deposit <item> <amount>|held|inventory", "Move items into the depot", DepotCliCommand.Permission.DEPOSIT, true, this::deposit));
-        register(command("craft", List.of(), "craft [--machine <id>] <item> <amount>", "Craft into depot storage", DepotCliCommand.Permission.CRAFT, true, this::craft));
-        register(command("recipe", List.of("recipes"), "recipe list <item>|prefer <item> <number>|clear <item>", "Manage recursive crafting recipe preferences", DepotCliCommand.Permission.CRAFT, true, this::recipe));
-        register(command("machine", List.of("machines"), "machine list <item>|prefer <item> <number>|clear <item>", "Choose the machine used for an item", DepotCliCommand.Permission.CRAFT, true, this::machine));
-        register(command("process", List.of("processing"), "process list|add <output_id> <count> <input_id> <count>... [--byproduct <id> <count>...]|remove <output_id>", "Manage machine-processing patterns", DepotCliCommand.Permission.CRAFT, true, this::process));
-        register(command("queue", List.of(), "queue [cancel <id>]", "Show crafting jobs", DepotCliCommand.Permission.VIEW, true, this::queue));
+        register(command("craft", List.of(), "craft <item> <amount>", "Craft using standard crafting recipes", DepotCliCommand.Permission.CRAFT, true, this::craft));
+        register(command("smelt", List.of(), "smelt <item> <amount>", "Smelt stored items into depot storage", DepotCliCommand.Permission.CRAFT, true, this::smelt));
+        register(command("recipe", List.of("recipes"), "recipe add <machine> <output> <count> <input> <count>...|list <item>|prefer <item> <number>|clear <item>", "Manage recursive crafting recipe preferences", DepotCliCommand.Permission.CRAFT, true, this::recipe));
+        register(command("machine", List.of("machines"), "machine list <item>|prefer <item> <number>|clear <item>|balance on|off", "Choose machines and load balancing", DepotCliCommand.Permission.CRAFT, true, this::machine));
+        register(command("process", List.of("processing"), "process <item> <amount>|list|add <output_id> <count> <input_id> <count>...|remove <output_id>", "Process items with external machines", DepotCliCommand.Permission.CRAFT, true, this::process));
+        register(command("queue", List.of(), "queue [clear|cancel <id>]", "Show or cancel crafting jobs", DepotCliCommand.Permission.VIEW, true, this::queue));
         register(command("jei", List.of("show"), "jei [--machine <id>] <item> [<amount>]", "Open JEI recipes for an item, or autofill craft command", DepotCliCommand.Permission.VIEW, false, this::jeiCmd));
         register(command("clear", List.of("cls"), "clear", "Clear local terminal output", DepotCliCommand.Permission.VIEW, false, (ctx, args) -> DepotCliCommandResult.ok("Output cleared.")));
         register(command("history", List.of(), "history", "Show local command history", DepotCliCommand.Permission.VIEW, false, (ctx, args) -> DepotCliCommandResult.info("Command history is stored locally.")));
@@ -105,16 +106,26 @@ public final class DepotCliCommandRegistry {
         if (command.name().equals("deposit")) {
             List<String> suggestions = new ArrayList<>(List.of("held", "inventory").stream()
                     .filter(value -> value.startsWith(current)).map(base::concat).toList());
-            context.player().getInventory().items.stream().filter(stack -> !stack.isEmpty())
-                    .map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()).distinct()
-                    .filter(id -> id.contains(current)).limit(12 - suggestions.size()).map(base::concat).forEach(suggestions::add);
+                context.player().getInventory().items.stream().filter(stack -> !stack.isEmpty())
+                    .flatMap(stack -> java.util.stream.Stream.of(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(),
+                        "\"" + stack.getHoverName().getString() + "\""))
+                    .distinct().filter(value -> value.toLowerCase(Locale.ROOT).contains(current))
+                    .limit(12 - suggestions.size()).map(base::concat).forEach(suggestions::add);
             return suggestions;
         }
         if (command.name().equals("craft")) {
             return DepotCraftingService.availableRecipes(context.player()).stream()
+                    .filter(candidate -> !candidate.processing())
                     .map(DepotCraftingService.AvailableRecipe::output)
-                    .filter(stack -> !stack.isEmpty()).map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()).distinct()
-                    .filter(id -> id.contains(current)).limit(12).map(base::concat).toList();
+                .filter(stack -> !stack.isEmpty()).flatMap(stack -> java.util.stream.Stream.of(
+                    BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(),
+                    "\"" + stack.getHoverName().getString() + "\""))
+                .distinct().filter(value -> value.toLowerCase(Locale.ROOT).contains(current)).limit(12).map(base::concat).toList();
+        }
+        if (command.name().equals("smelt")) {
+            return context.depot().entries().stream().flatMap(entry -> java.util.stream.Stream.of(
+                    entry.itemId().toString(), "\"" + new ItemStack(BuiltInRegistries.ITEM.get(entry.itemId())).getHoverName().getString() + "\""))
+                .filter(value -> value.toLowerCase(Locale.ROOT).contains(current)).distinct().limit(12).map(base::concat).toList();
         }
         if (command.name().equals("jei") || command.name().equals("show")) {
             if (tokens.size() == 1 || tokens.size() == 2 && !trailingSpace) {
@@ -167,8 +178,17 @@ public final class DepotCliCommandRegistry {
             }
         }
         if (command.name().equals("process")) {
-            return List.of("list", "add ", "remove ").stream().filter(value -> value.startsWith(current))
-                    .map(base::concat).toList();
+            java.util.stream.Stream<String> actions = List.of("list", "add ", "remove ").stream()
+                .filter(value -> value.startsWith(current));
+            java.util.stream.Stream<String> outputs = java.util.stream.Stream.concat(
+                DepotCraftingService.availableRecipes(context.player()).stream().filter(DepotCraftingService.AvailableRecipe::processing)
+                    .map(DepotCraftingService.AvailableRecipe::output),
+                DepotJeiRecipeCache.recipes(context.player()).stream().map(recipe -> new ItemStack(
+                    BuiltInRegistries.ITEM.get(recipe.primaryOutput().itemId()), recipe.primaryOutput().count())))
+                .filter(stack -> !stack.isEmpty()).flatMap(stack -> java.util.stream.Stream.of(
+                    BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(), "\"" + stack.getHoverName().getString() + "\""))
+                .filter(value -> value.toLowerCase(Locale.ROOT).contains(current));
+            return java.util.stream.Stream.concat(actions, outputs).distinct().limit(12).map(base::concat).toList();
         }
         if (command.name().equals("list")) return List.of("--sort name", "--sort amount", "--sort amount-desc", "--page ").stream()
                 .filter(value -> value.startsWith(current)).map(base::concat).toList();
@@ -188,6 +208,7 @@ public final class DepotCliCommandRegistry {
             int processors = DepotNetwork.craftingProcessorCount(context.player());
             lines.add("Crafting Processors: " + processors);
             lines.add("Processing Machines: " + DepotNetwork.processingMachines(context.player()).size());
+            lines.add("Machine Load Balancing: " + (context.depot().isMachineLoadBalancing() ? "On" : "Off"));
             lines.add("JEI Machine Recipes: " + DepotJeiRecipeCache.recipes(context.player()).size());
             lines.add("Processing Patterns: " + context.depot().getProcessingPatterns().size());
             lines.add("Crafting Service: " + (processors > 0 ? "Available" : "Unavailable"));
@@ -219,10 +240,11 @@ public final class DepotCliCommandRegistry {
         lines.add("Stored Items: " + format(context.depot().getUsed()));
         lines.add("Unique Types: " + format(context.depot().countEntries("")));
         lines.add("Capacity: " + format(context.depot().getFree()) + " free / " + format(context.depot().getCapacity()));
-        if (controller != null) lines.add("Power: " + format(controller.getEnergyStorage().getEnergyStored()) + " / " + format(controller.getEnergyStorage().getMaxEnergyStored()) + " FE");
+        if (controller != null) lines.add("Power: " + format(controller.getEnergyStorage().getEnergyStored()) + " / " + format(controller.getEnergyStorage().getMaxEnergyStored()) + " FE (" + controller.getPowerDraw() + " FE/t)");
         int processors = DepotNetwork.craftingProcessorCount(context.player());
         lines.add("Crafting Processors: " + processors);
         lines.add("Processing Machines: " + DepotNetwork.processingMachines(context.player()).size());
+        lines.add("Machine Load Balancing: " + (context.depot().isMachineLoadBalancing() ? "On" : "Off"));
         lines.add("JEI Machine Recipes: " + DepotJeiRecipeCache.recipes(context.player()).size());
         lines.add("Processing Patterns: " + context.depot().getProcessingPatterns().size());
         lines.add("Crafting Service: " + (processors > 0 ? "Available" : "Unavailable"));
@@ -374,9 +396,35 @@ public final class DepotCliCommandRegistry {
         return new DepotCliCommandResult(lines);
     }
 
+    private DepotCliCommandResult smelt(DepotCliCommandContext context, List<String> args) {
+        ParsedItemAmount parsed = itemAmount(args);
+        if (parsed == null) return itemSyntax("smelt <item> <amount>");
+        DepotItemResolver.Result resolved = DepotItemResolver.stored(context.depot(), parsed.query());
+        if (!resolved.found()) return DepotItemResolver.unresolved(parsed.query(), resolved);
+        DepotCraftingService.Result result = DepotCraftingService.smelt(
+                context.player(), context.depot(), resolved.match().item(), parsed.amount());
+        if (result.success()) {
+            return DepotCliCommandResult.ok("Queued smelting job #" + result.job().id() + ": "
+                    + result.output().getCount() + " " + result.output().getHoverName().getString() + ".");
+        }
+        List<String> lines = new ArrayList<>();
+        lines.add("[ERROR] Unable to smelt " + resolved.match().name() + " x" + parsed.amount() + ".");
+        result.details().forEach(line -> lines.add("[WARN] " + line));
+        return new DepotCliCommandResult(lines);
+    }
+
     private DepotCliCommandResult recipe(DepotCliCommandContext context, List<String> args) {
-        if (args.size() < 2) return syntax("recipe list <item>|prefer <item> <number>|clear <item>");
+        if (args.size() < 2) return syntax("recipe add|remove <item>|list <item>|prefer <item> <number>|clear <item>");
         String action = args.getFirst().toLowerCase(Locale.ROOT);
+        if (action.equals("add")) return addRecipe(context, args);
+        if (action.equals("remove")) {
+            String query = String.join(" ", args.subList(1, args.size()));
+            DepotItemResolver.Result output = DepotItemResolver.registry(query);
+            if (!output.found()) return DepotItemResolver.unresolved(query, output);
+            return context.depot().removeProcessingPattern(output.match().id())
+                ? DepotCliCommandResult.ok("Removed programmed machine recipe for " + output.match().name() + ".")
+                : DepotCliCommandResult.warn("No programmed machine recipe exists for " + output.match().name() + ".");
+        }
         int itemEnd = action.equals("prefer") ? args.size() - 1 : args.size();
         if (itemEnd <= 1) return syntax("recipe list <item>|prefer <item> <number>|clear <item>");
         String query = String.join(" ", args.subList(1, itemEnd));
@@ -418,8 +466,41 @@ public final class DepotCliCommandRegistry {
         return syntax("recipe list <item>|prefer <item> <number>|clear <item>");
     }
 
+    private DepotCliCommandResult addRecipe(DepotCliCommandContext context, List<String> args) {
+        if (args.size() < 6 || (args.size() - 4) % 2 != 0) {
+            return syntax("recipe add <machine> <output> <count> <input> <count>...");
+        }
+        ResourceLocation machine = ResourceLocation.tryParse(args.get(1));
+        if (machine == null || BuiltInRegistries.BLOCK.get(machine) == net.minecraft.world.level.block.Blocks.AIR) {
+            return DepotCliCommandResult.error("Unknown machine block: " + args.get(1));
+        }
+        DepotItemResolver.Result output = DepotItemResolver.registry(args.get(2));
+        if (!output.found()) return DepotItemResolver.unresolved(args.get(2), output);
+        java.util.OptionalInt outputCount = DepotCliParser.positiveQuantity(args.get(3), MAX_QUANTITY);
+        if (outputCount.isEmpty()) return DepotCliCommandResult.error("Invalid recipe output count.");
+        Map<ResourceLocation, Long> inputs = new LinkedHashMap<>();
+        for (int index = 4; index < args.size(); index += 2) {
+            DepotItemResolver.Result input = DepotItemResolver.registry(args.get(index));
+            if (!input.found()) return DepotItemResolver.unresolved(args.get(index), input);
+            java.util.OptionalInt count = DepotCliParser.positiveQuantity(args.get(index + 1), MAX_QUANTITY);
+            if (count.isEmpty()) return DepotCliCommandResult.error("Invalid ingredient count near: " + args.get(index));
+            inputs.merge(input.match().id(), (long) count.getAsInt(), Long::sum);
+        }
+        ResourceLocation outputId = output.match().id();
+        context.depot().setProcessingPattern(outputId, outputCount.getAsInt(), inputs,
+                Map.of(outputId, (long) outputCount.getAsInt()), List.of(machine));
+        return DepotCliCommandResult.ok("Programmed " + output.match().name() + " into "
+                + new ItemStack(BuiltInRegistries.BLOCK.get(machine)).getHoverName().getString() + ".");
+    }
+
     private DepotCliCommandResult machine(DepotCliCommandContext context, List<String> args) {
-        if (args.size() < 2) return syntax("machine list <item>|prefer <item> <number>|clear <item>");
+        if (args.size() == 2 && args.getFirst().equalsIgnoreCase("balance")) {
+            String value = args.get(1).toLowerCase(Locale.ROOT);
+            if (!value.equals("on") && !value.equals("off")) return syntax("machine balance on|off");
+            context.depot().setMachineLoadBalancing(value.equals("on"));
+            return DepotCliCommandResult.ok("Machine load balancing " + value + ".");
+        }
+        if (args.size() < 2) return syntax("machine list <item>|prefer <item> <number>|clear <item>|balance on|off");
         String action = args.getFirst().toLowerCase(Locale.ROOT);
         int itemEnd = action.equals("prefer") ? args.size() - 1 : args.size();
         if (itemEnd <= 1) return syntax("machine list <item>|prefer <item> <number>|clear <item>");
@@ -456,7 +537,7 @@ public final class DepotCliCommandRegistry {
                     ? DepotCliCommandResult.ok("Cleared the preferred machine for " + resolved.match().name() + ".")
                     : DepotCliCommandResult.warn("No preferred machine was set for " + resolved.match().name() + ".");
         }
-        return syntax("machine list <item>|prefer <item> <number>|clear <item>");
+        return syntax("machine list <item>|prefer <item> <number>|clear <item>|balance on|off");
     }
 
     private DepotCliCommandResult jeiCmd(DepotCliCommandContext context, List<String> args) {
@@ -482,8 +563,24 @@ public final class DepotCliCommandRegistry {
     }
 
     private DepotCliCommandResult process(DepotCliCommandContext context, List<String> args) {
-        if (args.isEmpty()) return syntax("process list|add <output_id> <count> <input_id> <count>...|remove <output_id>");
+        if (args.isEmpty()) return syntax("process <item> <amount>|list|add <output_id> <count> <input_id> <count>...|remove <output_id>");
         String action = args.getFirst().toLowerCase(Locale.ROOT);
+        if (!action.equals("list") && !action.equals("add") && !action.equals("remove")) {
+            ParsedItemAmount parsed = itemAmount(args);
+            if (parsed == null) return itemSyntax("process <item> <amount>");
+            DepotItemResolver.Result resolved = DepotItemResolver.registry(parsed.query());
+            if (!resolved.found()) return DepotItemResolver.unresolved(parsed.query(), resolved);
+            DepotCraftingService.Result result = DepotCraftingService.process(
+                    context.player(), context.depot(), resolved.match().item(), parsed.amount());
+            if (result.success()) {
+                return DepotCliCommandResult.ok("Queued processing job #" + result.job().id() + ": "
+                        + result.output().getCount() + " " + result.output().getHoverName().getString() + ".");
+            }
+            List<String> lines = new ArrayList<>();
+            lines.add("[ERROR] Unable to process " + resolved.match().name() + " x" + parsed.amount() + ".");
+            result.details().forEach(line -> lines.add("[WARN] " + line));
+            return new DepotCliCommandResult(lines);
+        }
         if (action.equals("list")) {
             if (args.size() != 1) return syntax("process list");
             List<DepotSavedData.ProcessingPattern> patterns = context.depot().getProcessingPatterns();
@@ -498,7 +595,9 @@ public final class DepotCliCommandRegistry {
         }
         if (action.equals("remove")) {
             if (args.size() != 2) return syntax("process remove <output_id>");
-            ResourceLocation outputId = validItemId(args.get(1));
+            DepotItemResolver.Result output = DepotItemResolver.registry(args.get(1));
+            if (!output.found()) return DepotItemResolver.unresolved(args.get(1), output);
+            ResourceLocation outputId = output.match().id();
             if (outputId == null) return DepotCliCommandResult.error("Unknown output item: " + args.get(1));
             return context.depot().removeProcessingPattern(outputId)
                     ? DepotCliCommandResult.ok("Removed processing pattern for " + outputId + ".")
@@ -512,14 +611,18 @@ public final class DepotCliCommandRegistry {
                     || (args.size() - byproduct - 1) % 2 != 0)) {
                 return syntax("process add <output_id> <count> <input_id> <count>... [--byproduct <id> <count>...]");
             }
-            ResourceLocation outputId = validItemId(args.get(1));
+            DepotItemResolver.Result output = DepotItemResolver.registry(args.get(1));
+            if (!output.found()) return DepotItemResolver.unresolved(args.get(1), output);
+            ResourceLocation outputId = output.match().id();
             java.util.OptionalInt outputCount = DepotCliParser.positiveQuantity(args.get(2), MAX_QUANTITY);
             if (outputId == null || outputCount.isEmpty() || !context.depot().accepts(outputId)) {
                 return DepotCliCommandResult.error("Invalid processing output or amount.");
             }
             Map<ResourceLocation, Long> inputs = new LinkedHashMap<>();
             for (int i = 3; i < inputEnd; i += 2) {
-                ResourceLocation inputId = validItemId(args.get(i));
+                DepotItemResolver.Result input = DepotItemResolver.registry(args.get(i));
+                if (!input.found()) return DepotItemResolver.unresolved(args.get(i), input);
+                ResourceLocation inputId = input.match().id();
                 java.util.OptionalInt inputCount = DepotCliParser.positiveQuantity(args.get(i + 1), MAX_QUANTITY);
                 if (inputId == null || inputCount.isEmpty() || !context.depot().accepts(inputId)) {
                     return DepotCliCommandResult.error("Invalid processing input or amount near: " + args.get(i));
@@ -529,7 +632,9 @@ public final class DepotCliCommandRegistry {
             Map<ResourceLocation, Long> outputs = new LinkedHashMap<>();
             outputs.put(outputId, (long) outputCount.getAsInt());
             for (int i = byproduct + 1; byproduct >= 0 && i < args.size(); i += 2) {
-                ResourceLocation byproductId = validItemId(args.get(i));
+                DepotItemResolver.Result byproductResult = DepotItemResolver.registry(args.get(i));
+                if (!byproductResult.found()) return DepotItemResolver.unresolved(args.get(i), byproductResult);
+                ResourceLocation byproductId = byproductResult.match().id();
                 java.util.OptionalInt count = DepotCliParser.positiveQuantity(args.get(i + 1), MAX_QUANTITY);
                 if (byproductId == null || count.isEmpty() || !context.depot().accepts(byproductId)) {
                     return DepotCliCommandResult.error("Invalid byproduct or amount near: " + args.get(i));
@@ -543,7 +648,7 @@ public final class DepotCliCommandRegistry {
             return DepotCliCommandResult.ok("Processing pattern saved: " + outputCount.getAsInt() + " x "
                     + outputId + " from " + inputs.size() + " input type(s).");
         }
-        return syntax("process list|add <output_id> <count> <input_id> <count>...|remove <output_id>");
+        return syntax("process <item> <amount>|list|add <output_id> <count> <input_id> <count>...|remove <output_id>");
     }
 
     private DepotCliCommandResult queue(DepotCliCommandContext context, List<String> args) {
@@ -571,6 +676,15 @@ public final class DepotCliCommandRegistry {
                     : "Remaining: " + duration(ticks) + " with " + processors + " processor" + (processors == 1 ? "" : "s") + ".");
             return new DepotCliCommandResult(lines);
         }
+        if (args.size() == 1 && args.getFirst().equalsIgnoreCase("clear")) {
+            if (!context.hasPermission(DepotCliCommand.Permission.CANCEL)) {
+                return DepotCliCommandResult.error("You do not have permission to clear crafting jobs.");
+            }
+            DepotSavedData.CraftingJob active = context.depot().getCraftingJob();
+            if (active == null) return DepotCliCommandResult.info("No active crafting jobs to clear.");
+            context.depot().cancelCraftingJob(active.id());
+            return DepotCliCommandResult.ok("Cleared crafting job #" + active.id() + ". Current materials were returned to storage.");
+        }
         if (args.size() == 2 && args.getFirst().equalsIgnoreCase("cancel")) {
             if (!context.hasPermission(DepotCliCommand.Permission.CANCEL)) return DepotCliCommandResult.error("You do not have permission to cancel crafting jobs.");
             int id;
@@ -583,7 +697,7 @@ public final class DepotCliCommandRegistry {
             return cancelled == null ? DepotCliCommandResult.warn("No queued job with ID " + id + ".")
                     : DepotCliCommandResult.ok("Cancelled crafting job #" + id + ". Current materials were returned to storage.");
         }
-        return syntax("queue [cancel <id>]");
+        return syntax("queue [clear|cancel <id>]");
     }
 
     private static ParsedItemAmount itemAmount(List<String> args) {

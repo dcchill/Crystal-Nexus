@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "crystalnexus:block/crafting_core_on_connected_q0" }
+}

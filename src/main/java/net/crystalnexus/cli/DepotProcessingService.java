@@ -19,8 +19,11 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class DepotProcessingService {
+    private static final Map<UUID, Map<ResourceLocation, Integer>> NEXT_MACHINE_INDEX = new ConcurrentHashMap<>();
     private DepotProcessingService() {
     }
 
@@ -42,8 +45,7 @@ public final class DepotProcessingService {
         DepotSavedData.ProcessingTask task = depot.getProcessingTask();
         DepotNetwork.MachineEndpoint machine;
         if (task == null) {
-            machine = machines.stream().filter(endpoint -> canInsertAll(endpoint, step.inputs()))
-                    .filter(endpoint -> clearOldOutputs(endpoint, step.outputs(), depot)).findFirst().orElse(null);
+            machine = selectMachine(player, depot, machines, step);
             if (machine == null) return null;
             task = new DepotSavedData.ProcessingTask(machine.level().dimension().location(), machine.pos(),
                     step.inputs(), step.outputs());
@@ -90,6 +92,28 @@ public final class DepotProcessingService {
                 remainingInputs, remainingOutputs), inserted, extracted);
     }
 
+        private static DepotNetwork.MachineEndpoint selectMachine(ServerPlayer player, DepotSavedData depot,
+            List<DepotNetwork.MachineEndpoint> machines, DepotSavedData.CraftingStep step) {
+        List<DepotNetwork.MachineEndpoint> eligible = machines.stream()
+            .filter(endpoint -> canInsertAll(endpoint, step.inputs()))
+            .filter(endpoint -> clearOldOutputs(endpoint, step.outputs(), depot)).toList();
+        if (eligible.isEmpty()) return null;
+        if (!depot.isMachineLoadBalancing()) return eligible.getFirst();
+
+        ResourceLocation preferred = depot.getPreferredMachine(step.outputId());
+        ResourceLocation type = preferred != null ? preferred : blockId(eligible.getFirst());
+        List<DepotNetwork.MachineEndpoint> matching = eligible.stream()
+            .filter(endpoint -> type.equals(blockId(endpoint))).toList();
+        if (matching.size() < 2) return matching.isEmpty() ? eligible.getFirst() : matching.getFirst();
+        int next = NEXT_MACHINE_INDEX.computeIfAbsent(player.getUUID(), ignored -> new ConcurrentHashMap<>())
+            .merge(type, 1, (current, increment) -> current == Integer.MAX_VALUE ? 0 : current + 1);
+        return matching.get(Math.floorMod(next - 1, matching.size()));
+        }
+
+        private static ResourceLocation blockId(DepotNetwork.MachineEndpoint endpoint) {
+        return BuiltInRegistries.BLOCK.getKey(endpoint.level().getBlockState(endpoint.pos()).getBlock());
+        }
+
     private static boolean canInsertAll(DepotNetwork.MachineEndpoint endpoint,
             List<DepotSavedData.SlotEntry> inputs) {
         List<IItemHandler> handlers = handlers(endpoint.level(), endpoint.pos());
@@ -128,6 +152,14 @@ public final class DepotProcessingService {
                 }
                 ItemStack existing = handler.getStackInSlot(slot);
                 if (!existing.isEmpty() && !BuiltInRegistries.ITEM.getKey(existing.getItem()).equals(id)) {
+                    cursor++;
+                    continue;
+                }
+                // Capability insertion can bypass menu-level mayPlace checks.
+                // Respect the handler's slot validity first so output-only slots
+                // (for example the Particle Accelerator output) never receive an
+                // ingredient from the depot.
+                if (!handler.isItemValid(slot, new ItemStack(item))) {
                     cursor++;
                     continue;
                 }

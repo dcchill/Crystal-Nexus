@@ -191,7 +191,16 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             handleJeiCommand(command);
             return;
         }
+        rememberProgrammedRecipe(command);
         PacketDistributor.sendToServer(new C2S_DepotCliRequest(menu.containerId, command, false));
+    }
+
+    private static void rememberProgrammedRecipe(String command) {
+        List<String> tokens = DepotCliParser.parse(command);
+        if (tokens.size() < 4 || !tokens.getFirst().equalsIgnoreCase("recipe")
+                || !tokens.get(1).equalsIgnoreCase("add")) return;
+        ResourceLocation output = ResourceLocation.tryParse(tokens.get(3));
+        if (output != null) net.crystalnexus.client.DepotCliJeiTransferHandler.markProgrammed(output);
     }
 
     private void handleJeiCommand(String command) {

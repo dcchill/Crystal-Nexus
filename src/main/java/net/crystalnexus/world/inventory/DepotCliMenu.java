@@ -24,9 +24,12 @@ public class DepotCliMenu extends AbstractContainerMenu {
     public DepotCliMenu(int id, Inventory inventory, BlockPos blockPos) {
         super(CrystalnexusModMenus.DEPOT_CLI.get(), id);
         this.blockPos = blockPos.immutable();
-        // Add a hidden slot at an off-screen position so JEI/EMI detects this
-        // container as valid and shows the recipe/item side panel.
-        addSlot(new Slot(inventory, 0, -9999, -9999));
+        // JEI requires a real player inventory range to consider a transfer
+        // handler applicable. Keep the slots off-screen because the Depot CLI is
+        // command-driven, but expose all inventory stacks rather than one slot.
+        for (int index = 0; index < inventory.items.size(); index++) {
+            addSlot(new Slot(inventory, index, -9999, -9999));
+        }
     }
 
     public BlockPos getBlockPos() {

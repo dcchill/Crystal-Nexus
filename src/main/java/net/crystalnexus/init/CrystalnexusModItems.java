@@ -318,6 +318,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> INVERTIUM_HOE = REGISTRY.register("invertium_hoe", InvertiumHoeItem::new);
 	public static final DeferredItem<Item> MULTIBLOCK_RESEARCH_STATION = block(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION);
 	public static final DeferredItem<Item> SILICON = REGISTRY.register("silicon", SiliconItem::new);
+	public static final DeferredItem<Item> SILICON_WAFER = REGISTRY.register("silicon_wafer", net.crystalnexus.item.SiliconWaferItem::new);
 	public static final DeferredItem<Item> ENERGIZED_SILICON = REGISTRY.register("energized_silicon", EnergizedSiliconItem::new);
 	public static final DeferredItem<Item> COFFEE = REGISTRY.register("coffee", CoffeeItem::new);
 	public static final DeferredItem<Item> ATOMIC_COFFEE = REGISTRY.register("atomic_coffee", AtomicCoffeeItem::new);
@@ -389,6 +390,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEPOT_CABLE = block(CrystalnexusModBlocks.DEPOT_CABLE);
 	public static final DeferredItem<Item> DEPOT_CLI = REGISTRY.register("depot_cli", () -> new DepotCliBlockItem(CrystalnexusModBlocks.DEPOT_CLI.get()));
 	public static final DeferredItem<Item> CRAFTING_UPGRADE = block(CrystalnexusModBlocks.CRAFTING_UPGRADE);
+	public static final DeferredItem<Item> CRAFTING_CORE = block(CrystalnexusModBlocks.CRAFTING_CORE);
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
 	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
 	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);

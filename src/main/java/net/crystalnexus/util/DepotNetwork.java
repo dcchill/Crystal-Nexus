@@ -1,6 +1,7 @@
 package net.crystalnexus.util;
 
 import net.crystalnexus.block.CraftingUpgradeBlock;
+import net.crystalnexus.block.CraftingCoreBlock;
 import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.data.DepotSavedData;
@@ -40,7 +41,72 @@ public final class DepotNetwork {
         DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return 0;
         return count(level, controller.getBlockPos(),
-                pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock);
+                pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock)
+                + craftingCoreCapacity(level, controller.getBlockPos());
+    }
+
+    /** Each core block in a valid cabled horizontal 1x1–2x2 core adds one crafting lane. */
+    private static int craftingCoreCapacity(ServerLevel level, BlockPos controllerPos) {
+        Set<BlockPos> remaining = collect(level, controllerPos,
+                pos -> level.getBlockState(pos).getBlock() instanceof CraftingCoreBlock);
+        int capacity = 0;
+        while (!remaining.isEmpty()) {
+            BlockPos first = remaining.iterator().next();
+            Set<BlockPos> cluster = coreCluster(level, first);
+            remaining.removeAll(cluster);
+            capacity += validCoreCluster(cluster) ? cluster.size() : 0;
+        }
+        return capacity;
+    }
+
+    public static int craftingCoreSize(ServerLevel level, BlockPos pos) {
+        if (!(level.getBlockState(pos).getBlock() instanceof CraftingCoreBlock)) return 0;
+        Set<BlockPos> cluster = coreCluster(level, pos);
+        return validCoreCluster(cluster) ? cluster.size() : 0;
+    }
+
+
+    private static Set<BlockPos> coreCluster(ServerLevel level, BlockPos pos) {
+        Set<BlockPos> cluster = new HashSet<>();
+        ArrayDeque<BlockPos> open = new ArrayDeque<>();
+        open.add(pos);
+        // Traverse the complete touching cluster. Truncating at five blocks could
+        // accidentally split an oversized cluster into a valid 1x1 remainder.
+        while (!open.isEmpty() && cluster.size() <= MAX_CABLES) {
+            BlockPos current = open.removeFirst();
+            if (!cluster.add(current)) continue;
+            for (Direction direction : new Direction[] {Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST}) {
+                BlockPos next = current.relative(direction);
+                if (level.hasChunkAt(next) && level.getBlockState(next).getBlock() instanceof CraftingCoreBlock
+                        && !cluster.contains(next)) open.add(next);
+            }
+        }
+        return cluster;
+    }
+
+    private static boolean validCoreCluster(Set<BlockPos> cluster) {
+        if (cluster.isEmpty()) return false;
+        int minX = cluster.stream().mapToInt(BlockPos::getX).min().orElse(0);
+        int maxX = cluster.stream().mapToInt(BlockPos::getX).max().orElse(0);
+        int minZ = cluster.stream().mapToInt(BlockPos::getZ).min().orElse(0);
+        int maxZ = cluster.stream().mapToInt(BlockPos::getZ).max().orElse(0);
+        return cluster.size() <= 4 && maxX - minX < 2 && maxZ - minZ < 2;
+    }
+
+    public static @Nullable UUID componentOwner(ServerLevel level, BlockPos componentPos) {
+        UUID[] owner = {null};
+        scan(level, componentPos, pos -> {
+            if (!(level.getBlockEntity(pos) instanceof DepotControllerBlockEntity controller)
+                    || controller.getOwner() == null || !controller.isPowered()) return false;
+            if (!DepotSavedData.get(level, controller.getOwner()).isController(level, pos)) return false;
+            owner[0] = controller.getOwner();
+            return true;
+        });
+        return owner[0];
+    }
+
+    public static int poweredComponentCount(ServerLevel level, BlockPos controllerPos) {
+        return collect(level, controllerPos, pos -> level.getBlockState(pos).is(DepotCableBlock.COMPONENTS)).size();
     }
 
     public static boolean isCraftingProcessorConnected(ServerLevel level, BlockPos upgradePos) {
@@ -133,6 +199,10 @@ public final class DepotNetwork {
     }
 
     private static int count(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {
+        return collect(level, start, target).size();
+    }
+
+    private static Set<BlockPos> collect(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {
         ArrayDeque<BlockPos> open = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         Set<BlockPos> targets = new HashSet<>();
@@ -152,6 +222,6 @@ public final class DepotNetwork {
                 if (level.getBlockState(next).getBlock() instanceof DepotCableBlock && visited.add(next)) open.addLast(next);
             }
         }
-        return targets.size();
+        return targets;
     }
 }

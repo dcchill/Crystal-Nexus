@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.CrystalnexusMod;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,7 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
     private static Object connection;
     private static int synced;
     private static boolean syncing;
+    private static final Map<ResourceLocation, Class<?>> CATEGORY_RECIPE_CLASSES = new LinkedHashMap<>();
 
     private record Work(IRecipeCategory<Object> category, Object recipe, List<ResourceLocation> machines) {}
 
@@ -90,13 +93,20 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
             needsSync = true;
         }
         if (needsSync) beginSync(jeiRuntime);
-        int remaining = 24;
+        // Send external-machine recipes promptly. A large pack otherwise takes
+        // several minutes to reach categories at the end of JEI's registry.
+        int remaining = 128;
         while (remaining-- > 0 && workIndex < work.size()) {
-            DepotJeiRecipeCache.Recipe recipe = extract(jeiRuntime, work.get(workIndex++));
+            Work current = work.get(workIndex++);
+            DepotJeiRecipeCache.Recipe recipe = extract(jeiRuntime, current);
             if (recipe != null) {
                 outgoing.add(recipe);
                 synced++;
             }
+            current.machines().stream().findFirst().ifPresent(machine ->
+                    net.crystalnexus.client.DepotCliJeiTransferHandler.registerMachine(current.recipe(), machine));
+                net.crystalnexus.client.DepotCliJeiTransferHandler.registerCategory(current.recipe(),
+                    current.category().getRecipeType().getUid());
             if (outgoing.size() >= DepotJeiRecipeCache.MAX_CHUNK) flush(false);
         }
         if (workIndex >= work.size() && !outgoing.isEmpty()) flush(false);
@@ -115,24 +125,65 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
         syncing = true;
         generation++;
         IRecipeManager manager = jeiRuntime.getRecipeManager();
-        manager.createRecipeCategoryLookup().get().forEach(category -> addCategory(manager, category));
+        manager.createRecipeCategoryLookup().get().sorted(Comparator.comparingInt(
+            (IRecipeCategory<?> category) -> categoryPriority(category.getRecipeType().getUid()))
+            .thenComparing(category -> category.getRecipeType().getUid().toString()))
+                .forEach(category -> addCategory(manager, category));
         PacketDistributor.sendToServer(new C2S_DepotJeiRecipes(generation, true, List.of()));
+    }
+
+    private static int categoryPriority(ResourceLocation id) {
+        return switch (id.toString()) {
+            case "mekanism:metallurgic_infusing" -> 0;
+            case "ae2:inscriber" -> 1;
+            default -> id.getNamespace().equals("mekanism") ? 2 : 10;
+        };
     }
 
     @SuppressWarnings("unchecked")
     private static void addCategory(IRecipeManager manager, IRecipeCategory<?> rawCategory) {
         IRecipeCategory<Object> category = (IRecipeCategory<Object>) rawCategory;
         ResourceLocation categoryId = category.getRecipeType().getUid();
+        CATEGORY_RECIPE_CLASSES.putIfAbsent(categoryId, category.getRecipeType().getRecipeClass());
         if (categoryId.equals(ResourceLocation.fromNamespaceAndPath("minecraft", "crafting"))) return;
         // Skip JEI tag/lookup categories (Item Tags, Block Tags, Fluid Tags, etc.)
         // These are informational groupings, not real machine recipes.
         String path = categoryId.getPath().toLowerCase(java.util.Locale.ROOT);
         if (path.contains("tag") || path.contains("lookup")) return;
-        List<ResourceLocation> machines = manager.createRecipeCatalystLookup(category.getRecipeType()).getItemStack()
+        List<ResourceLocation> discoveredMachines = manager.createRecipeCatalystLookup(category.getRecipeType()).getItemStack()
                 .map(ItemStack::getItem).filter(BlockItem.class::isInstance).map(BlockItem.class::cast)
                 .map(BlockItem::getBlock).map(BuiltInRegistries.BLOCK::getKey).distinct().toList();
+        // Several integrations expose extra or incorrect catalysts. For categories
+        // with a single known machine, use the authoritative mapping rather than
+        // allowing a visually similar Crystal Nexus machine to receive the recipe.
+        List<ResourceLocation> knownMachines = inferredMachines(categoryId);
+        final List<ResourceLocation> machines = knownMachines.isEmpty()
+            ? discoveredMachines : knownMachines;
         manager.createRecipeLookup(category.getRecipeType()).get()
                 .forEach(recipe -> work.add(new Work(category, recipe, machines)));
+    }
+
+    /** Called after JEI categories are available; registers exact handlers so they
+     * override third-party category handlers that would otherwise disable +. */
+    public static void registerCategoryTransferHandlers(IRecipeTransferRegistration registration) {
+        net.crystalnexus.client.DepotCliJeiTransferHandler delegate = new net.crystalnexus.client.DepotCliJeiTransferHandler();
+        CATEGORY_RECIPE_CLASSES.forEach((id, recipeClass) -> registration.addRecipeTransferHandler(
+                new net.crystalnexus.client.DepotCliJeiTransferHandler.CategoryHandler(id, recipeClass, delegate),
+                new mezz.jei.api.recipe.RecipeType<>(id, (Class) recipeClass)));
+    }
+
+    private static List<ResourceLocation> inferredMachines(ResourceLocation categoryId) {
+        return switch (categoryId.toString()) {
+            case "ae2:inscriber" -> List.of(ResourceLocation.parse("ae2:inscriber"));
+            case "mekanism:enriching" -> List.of(ResourceLocation.parse("mekanism:enrichment_chamber"));
+            case "mekanism:smelting" -> List.of(ResourceLocation.parse("mekanism:energized_smelter"));
+            case "mekanism:crushing" -> List.of(ResourceLocation.parse("mekanism:crusher"));
+            case "mekanism:compressing" -> List.of(ResourceLocation.parse("mekanism:osmium_compressor"));
+            case "mekanism:purifying" -> List.of(ResourceLocation.parse("mekanism:purification_chamber"));
+            case "mekanism:injecting" -> List.of(ResourceLocation.parse("mekanism:chemical_injection_chamber"));
+            case "mekanism:metallurgic_infusing" -> List.of(ResourceLocation.parse("mekanism:metallurgic_infuser"));
+            default -> List.of();
+        };
     }
 
     private static DepotJeiRecipeCache.Recipe extract(IJeiRuntime jeiRuntime, Work work) {

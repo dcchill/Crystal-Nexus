@@ -7,7 +7,7 @@
     "aea"
   ],
   "key": {
-    "a": { "item": "crystalnexus:energized_silicon" },
+    "a": { "item": "crystalnexus:silicon_wafer" },
     "b": { "item": "crystalnexus:depot_cable" },
     "c": { "item": "minecraft:crafting_table" },
     "d": { "item": "crystalnexus:omega_chip" },

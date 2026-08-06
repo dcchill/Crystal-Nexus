@@ -7,9 +7,9 @@
     "scs"
   ],
   "key": {
-    "s": { "item": "crystalnexus:energized_silicon" },
-    "e": { "item": "minecraft:ender_eye" },
-    "l": { "item": "crystalnexus:link_card" },
+    "s": { "item": "crystalnexus:silicon" },
+    "e": { "item": "crystalnexus:computation_node" },
+    "l": { "item": "crystalnexus:silicon_wafer" },
     "h": { "item": "crystalnexus:hyper_machine_frame" },
     "c": { "item": "crystalnexus:depot_cable" }
   },

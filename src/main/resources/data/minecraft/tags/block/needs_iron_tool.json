@@ -9,6 +9,7 @@
     "crystalnexus:depot_downloader",
     "crystalnexus:depot_controller",
     "crystalnexus:crafting_upgrade",
+    "crystalnexus:crafting_core",
     "crystalnexus:node_miner",
     "crystalnexus:silicon_ore",
     "crystalnexus:ancient_crystal_ore_stone",

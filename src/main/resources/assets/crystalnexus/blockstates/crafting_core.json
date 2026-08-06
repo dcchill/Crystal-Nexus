@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "active=false,connected=false": { "model": "crystalnexus:block/crafting_core_off" },
+    "active=false,connected=true": { "model": "crystalnexus:block/crafting_core_off" },
+    "active=true,connected=false": { "model": "crystalnexus:block/crafting_core_off" },
+    "active=true,connected=true": { "model": "crystalnexus:block/crafting_core_on" }
+  }
+}

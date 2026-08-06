@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": { "item": "crystalnexus:synthetic_rubber" },
-    "b": { "item": "crystalnexus:energized_silicon" }
+    "b": { "item": "crystalnexus:silicon_wafer" }
   },
   "result": {
     "id": "crystalnexus:depot_cable",

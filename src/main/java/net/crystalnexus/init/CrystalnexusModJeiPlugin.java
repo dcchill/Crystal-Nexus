@@ -188,5 +188,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
 		registration.addUniversalRecipeTransferHandler(new net.crystalnexus.client.DepotCliJeiTransferHandler());
+		net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin.registerCategoryTransferHandlers(registration);
 	}
 }

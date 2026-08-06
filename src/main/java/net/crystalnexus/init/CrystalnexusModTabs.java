@@ -124,10 +124,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.DEPOT_CABLE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DEPOT_CLI.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_UPGRADE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CRAFTING_CORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.DEPOT_STORAGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModBlocks.ZERO_POINT.get().asItem());
 				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
+				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());

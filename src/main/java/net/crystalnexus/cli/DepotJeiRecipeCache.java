@@ -11,7 +11,10 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DepotJeiRecipeCache {
-    public static final int MAX_RECIPES = 20_000;
+    // Large modpacks can contain more than 20,000 JEI machine recipes. Retain the
+    // full per-player index so categories scanned later (notably Mekanism) are not
+    // silently discarded after earlier recipe categories fill the old cap.
+    public static final int MAX_RECIPES = 100_000;
     public static final int MAX_CHUNK = 64;
     public static final int MAX_SLOTS = 32;
     public static final int MAX_ALTERNATIVES = 256;

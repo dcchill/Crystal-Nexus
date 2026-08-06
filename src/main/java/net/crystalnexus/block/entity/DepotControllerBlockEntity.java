@@ -3,6 +3,7 @@ package net.crystalnexus.block.entity;
 import net.crystalnexus.block.DepotControllerBlock;
 import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +19,7 @@ public class DepotControllerBlockEntity extends BlockEntity {
     public static final int CAPACITY = 100_000;
     public static final int MAX_RECEIVE = 1_000;
     public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_COMPONENT = 2;
 
     private UUID owner;
     private boolean active;
@@ -30,14 +32,17 @@ public class DepotControllerBlockEntity extends BlockEntity {
     public static void tick(ServerLevel level, BlockPos pos, BlockState state, DepotControllerBlockEntity controller) {
         DepotSavedData depot = controller.owner == null ? null : DepotSavedData.get(level, controller.owner);
         if (depot != null) depot.setControllerIfAbsent(level, pos);
+        int powerDraw = ENERGY_PER_TICK + DepotNetwork.poweredComponentCount(level, pos) * ENERGY_PER_COMPONENT;
         controller.active = depot != null && depot.isController(level, pos)
-                && controller.energyStorage.consume(ENERGY_PER_TICK);
+            && controller.energyStorage.consume(powerDraw);
         if (state.getValue(DepotControllerBlock.POWERED) != controller.active) {
             level.setBlock(pos, state.setValue(DepotControllerBlock.POWERED, controller.active), 3);
         }
     }
 
     public boolean isPowered() {
+        // Network discovery calls this method, so it must not calculate its own
+        // component draw here (that would recurse through the cable scan).
         return energyStorage.getEnergyStored() >= ENERGY_PER_TICK;
     }
 
@@ -52,6 +57,11 @@ public class DepotControllerBlockEntity extends BlockEntity {
 
     public EnergyStorage getEnergyStorage() {
         return energyStorage;
+    }
+
+    public int getPowerDraw() {
+        if (!(level instanceof ServerLevel serverLevel)) return ENERGY_PER_TICK;
+        return ENERGY_PER_TICK + DepotNetwork.poweredComponentCount(serverLevel, worldPosition) * ENERGY_PER_COMPONENT;
     }
 
     @Override

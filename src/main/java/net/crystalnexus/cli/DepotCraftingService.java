@@ -2,6 +2,7 @@ package net.crystalnexus.cli;
 
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.crystalnexus.data.DepotSavedData;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.jei_recipes.CrystalNexusRecipe;
 import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.NonNullList;
@@ -35,17 +36,28 @@ public final class DepotCraftingService {
     private static final int MAX_DEPTH = 32;
     private static final int MAX_STEPS = 20_000;
     private static final int TICKS_PER_CRAFT = 20;
+    private enum PlanMode { CRAFT, PROCESS }
 
     public record Result(boolean success, ItemStack output, DepotSavedData.CraftingJob job, List<String> details) {}
     public record IngredientPlan(IntArrayList choices, Map<ResourceLocation, Integer> required) {}
     public record AvailableRecipe(ResourceLocation id, Recipe<?> recipe, ItemStack output, boolean processing) {}
     public record RecipeChoice(ResourceLocation id, ItemStack output, boolean processing, String category,
             List<DepotJeiRecipeCache.Slot> inputs, List<ResourceLocation> machineTypes) {}
+    private record SmeltChoice(ResourceLocation outputId, int outputCount, List<ResourceLocation> machineTypes) {}
 
     private DepotCraftingService() {
     }
 
     public static Result craft(ServerPlayer player, DepotSavedData depot, Item target, int requested) {
+        return create(player, depot, target, requested, PlanMode.CRAFT);
+    }
+
+    /** Queues a recipe whose final step must run in an external processing machine. */
+    public static Result process(ServerPlayer player, DepotSavedData depot, Item target, int requested) {
+        return create(player, depot, target, requested, PlanMode.PROCESS);
+    }
+
+    private static Result create(ServerPlayer player, DepotSavedData depot, Item target, int requested, PlanMode mode) {
         int processors = DepotNetwork.craftingProcessorCount(player);
         if (processors <= 0) {
             return new Result(false, ItemStack.EMPTY, null, List.of(
@@ -62,7 +74,7 @@ public final class DepotCraftingService {
             return new Result(false, ItemStack.EMPTY, null, List.of("Invalid crafting target."));
         }
 
-        Planner planner = new Planner(player, depot);
+        Planner planner = new Planner(player, depot, mode);
         Optional<Planned> planned = planner.plan(targetId, requested);
         if (planned.isEmpty()) {
             List<String> details = planner.missingDetails();
@@ -85,6 +97,78 @@ public final class DepotCraftingService {
                 execution.get().baseInputs(), execution.get().outputs(), planned.get().steps());
         if (job == null) return new Result(false, ItemStack.EMPTY, null, List.of("Unable to reserve the crafting ingredients."));
         return new Result(true, new ItemStack(target, job.amount()), job, List.of());
+    }
+
+    /** Queues a direct item-to-item smelting operation without considering crafting recipes. */
+    public static Result smelt(ServerPlayer player, DepotSavedData depot, Item input, int requested) {
+        int processors = DepotNetwork.craftingProcessorCount(player);
+        if (processors <= 0) return new Result(false, ItemStack.EMPTY, null, List.of(
+                "Crafting service unavailable.", "Connect a Crafting Processor to use this command."));
+        if (depot.getCraftingJob() != null) return new Result(false, ItemStack.EMPTY, null, List.of(
+                "A crafting job is already active.", "Use queue to inspect it or queue clear to cancel it."));
+        if (input == null || input == Items.AIR || requested <= 0) {
+            return new Result(false, ItemStack.EMPTY, null, List.of("Invalid smelting input."));
+        }
+        ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input);
+        if (inputId == null || depot.getCount(inputId) < requested) {
+            return new Result(false, ItemStack.EMPTY, null, List.of("Insufficient stored input items."));
+        }
+        SmeltChoice choice = smeltingChoices(player, input).stream().findFirst().orElse(null);
+        if (choice == null) return new Result(false, ItemStack.EMPTY, null, List.of(
+                "No supported furnace or electric-furnace recipe produces an item from " + new ItemStack(input).getHoverName().getString() + "."));
+        long outputTotal = (long) choice.outputCount() * requested;
+        if (outputTotal <= 0 || outputTotal > Integer.MAX_VALUE || !depot.accepts(choice.outputId())) {
+            return new Result(false, ItemStack.EMPTY, null, List.of("The smelting result cannot be stored."));
+        }
+        long reservation = Math.max(requested, outputTotal);
+        List<DepotSavedData.CraftingStep> steps = new ArrayList<>(requested);
+        for (int craft = 0; craft < requested; craft++) {
+            steps.add(new DepotSavedData.CraftingStep(choice.outputId(), choice.outputCount(), 1,
+                List.of(new DepotSavedData.SlotEntry(inputId, 1)),
+                Map.of(choice.outputId(), (long) choice.outputCount()), true, choice.machineTypes()));
+        }
+        DepotSavedData.CraftingJob job = depot.startCraftingJob(choice.outputId(), (int) outputTotal, requested, reservation,
+            Map.of(inputId, (long) requested), Map.of(choice.outputId(), outputTotal), steps);
+        if (job == null) return new Result(false, ItemStack.EMPTY, null, List.of("Depot storage capacity reached."));
+        return new Result(true, new ItemStack(BuiltInRegistries.ITEM.get(choice.outputId()), (int) outputTotal), job, List.of());
+    }
+
+    private static List<SmeltChoice> smeltingChoices(ServerPlayer player, Item input) {
+        List<SmeltChoice> result = new ArrayList<>();
+        RecipeManager manager = player.serverLevel().getRecipeManager();
+        for (RecipeHolder<?> holder : recipesForType(manager, RecipeType.SMELTING)) {
+            Recipe<?> recipe = holder.value();
+            if (recipe.getIngredients().isEmpty() || !recipe.getIngredients().getFirst().test(new ItemStack(input))) continue;
+            ItemStack output = recipe.getResultItem(player.serverLevel().registryAccess());
+            if (!output.isEmpty()) result.add(new SmeltChoice(BuiltInRegistries.ITEM.getKey(output.getItem()),
+                    output.getCount(), smeltingMachines()));
+        }
+        ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input);
+        for (DepotJeiRecipeCache.Recipe recipe : DepotJeiRecipeCache.recipes(player)) {
+            if (!isSmeltingMachine(recipe.machineTypes()) || recipe.inputs().isEmpty()
+                    || recipe.inputs().getFirst().alternatives().stream().noneMatch(stack -> stack.itemId().equals(inputId))) continue;
+            DepotJeiRecipeCache.StackRef output = recipe.primaryOutput();
+            result.add(new SmeltChoice(output.itemId(), output.count(), recipe.machineTypes()));
+        }
+        return result.stream().sorted(Comparator.comparing(choice -> choice.outputId().toString())).toList();
+    }
+
+    private static boolean isSmeltingMachine(List<ResourceLocation> machines) {
+        return machines.stream().anyMatch(smeltingMachines()::contains);
+    }
+
+    private static List<ResourceLocation> smeltingMachines() {
+        return List.of(ResourceLocation.fromNamespaceAndPath("minecraft", "furnace"),
+                BuiltInRegistries.BLOCK.getKey(CrystalnexusModBlocks.IRON_SMELTER.get()),
+                BuiltInRegistries.BLOCK.getKey(CrystalnexusModBlocks.CRYSTAL_SMELTER.get()),
+                BuiltInRegistries.BLOCK.getKey(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get()),
+                BuiltInRegistries.BLOCK.getKey(CrystalnexusModBlocks.INVERTIUM_SMELTER.get()),
+                BuiltInRegistries.BLOCK.getKey(CrystalnexusModBlocks.ULTIMA_SMELTER.get()),
+                ResourceLocation.parse("mekanism:energized_smelter"),
+                ResourceLocation.parse("mekanism:basic_smelting_factory"),
+                ResourceLocation.parse("mekanism:advanced_smelting_factory"),
+                ResourceLocation.parse("mekanism:elite_smelting_factory"),
+                ResourceLocation.parse("mekanism:ultimate_smelting_factory"));
     }
 
     public static long estimatedTicks(long remainingWork, int processors) {
@@ -164,18 +248,36 @@ public final class DepotCraftingService {
     }
 
     private static boolean vanillaProcessing(AvailableRecipe candidate) {
-        return !vanillaMachines(candidate).isEmpty();
+        return !machineTypes(candidate).isEmpty();
     }
 
-    private static List<ResourceLocation> vanillaMachines(AvailableRecipe candidate) {
+    private static List<ResourceLocation> machineTypes(AvailableRecipe candidate) {
         ResourceLocation type = BuiltInRegistries.RECIPE_TYPE.getKey(candidate.recipe().getType());
-        if (type == null || !type.getNamespace().equals("minecraft")) return List.of();
+        if (type == null) return List.of();
+        List<ResourceLocation> known = knownMachines(type);
+        if (!known.isEmpty()) return known;
+        if (!type.getNamespace().equals("minecraft")) return List.of();
         return switch (type.getPath()) {
-            case "smelting" -> List.of(ResourceLocation.fromNamespaceAndPath("minecraft", "furnace"));
+            case "smelting" -> smeltingMachines();
             case "blasting" -> List.of(ResourceLocation.fromNamespaceAndPath("minecraft", "blast_furnace"));
             case "smoking" -> List.of(ResourceLocation.fromNamespaceAndPath("minecraft", "smoker"));
             case "campfire_cooking" -> List.of(ResourceLocation.fromNamespaceAndPath("minecraft", "campfire"),
                     ResourceLocation.fromNamespaceAndPath("minecraft", "soul_campfire"));
+            default -> List.of();
+        };
+    }
+
+    /** Machine identities that are safe to derive from a server recipe type. */
+    private static List<ResourceLocation> knownMachines(ResourceLocation type) {
+        return switch (type.toString()) {
+            case "ae2:inscriber" -> List.of(ResourceLocation.parse("ae2:inscriber"));
+            case "mekanism:enriching" -> List.of(ResourceLocation.parse("mekanism:enrichment_chamber"));
+            case "mekanism:smelting" -> List.of(ResourceLocation.parse("mekanism:energized_smelter"));
+            case "mekanism:crushing" -> List.of(ResourceLocation.parse("mekanism:crusher"));
+            case "mekanism:compressing" -> List.of(ResourceLocation.parse("mekanism:osmium_compressor"));
+            case "mekanism:purifying" -> List.of(ResourceLocation.parse("mekanism:purification_chamber"));
+            case "mekanism:injecting" -> List.of(ResourceLocation.parse("mekanism:chemical_injection_chamber"));
+            case "mekanism:metallurgic_infusing" -> List.of(ResourceLocation.parse("mekanism:metallurgic_infuser"));
             default -> List.of();
         };
     }
@@ -197,8 +299,12 @@ public final class DepotCraftingService {
             for (RecipeHolder<?> holder : recipesForType(manager, type)) {
                 Recipe<?> recipe = holder.value();
                 ItemStack output = recipe.getResultItem(player.serverLevel().registryAccess());
-                if (!output.isEmpty() && output.getCount() > 0 && !recipe.getIngredients().isEmpty()) {
-                    result.add(new AvailableRecipe(holder.id(), recipe, output.copy(), processing));
+                AvailableRecipe candidate = new AvailableRecipe(holder.id(), recipe, output.copy(), processing);
+                // A recipe with no deterministic machine target must be imported via
+                // the JEI bridge. Never send it to an arbitrary item handler.
+                if (!output.isEmpty() && output.getCount() > 0 && !recipe.getIngredients().isEmpty()
+                        && (!processing || !machineTypes(candidate).isEmpty())) {
+                    result.add(candidate);
                 }
             }
         }
@@ -293,6 +399,7 @@ public final class DepotCraftingService {
     private static final class Planner {
         private final ServerPlayer player;
         private final DepotSavedData depot;
+        private final PlanMode mode;
         private final Map<ResourceLocation, Long> initial = new HashMap<>();
         private final Map<ResourceLocation, List<RecipeHolder<CraftingRecipe>>> recipes = new HashMap<>();
         private final Map<ResourceLocation, List<AvailableRecipe>> processingRecipes = new HashMap<>();
@@ -305,9 +412,10 @@ public final class DepotCraftingService {
         private boolean processingMachineRequired;
         private int steps;
 
-        private Planner(ServerPlayer player, DepotSavedData depot) {
+        private Planner(ServerPlayer player, DepotSavedData depot, PlanMode mode) {
             this.player = player;
             this.depot = depot;
+            this.mode = mode;
             List<DepotNetwork.MachineEndpoint> machines = DepotNetwork.processingMachines(player);
             this.processingAvailable = !machines.isEmpty();
             machines.stream().map(endpoint -> BuiltInRegistries.BLOCK.getKey(endpoint.level()
@@ -342,9 +450,17 @@ public final class DepotCraftingService {
             if (depth >= MAX_DEPTH || ++steps > MAX_STEPS || !visiting.add(itemId)) return Optional.empty();
             try {
                 List<RecipeHolder<CraftingRecipe>> candidates = new ArrayList<>(recipes.getOrDefault(itemId, List.of()));
+                // `process` requires the requested final item to come from an
+                // external machine. Recursive dependencies may still use a normal
+                // crafting recipe when that is their only available path.
+                if (mode == PlanMode.PROCESS && depth == 0) candidates.clear();
                 ResourceLocation preferred = depot.getPreferredRecipe(itemId);
                 candidates.sort(Comparator
                         .comparing((RecipeHolder<CraftingRecipe> holder) -> preferred == null || !holder.id().equals(preferred))
+                    // Without an explicit user preference, consume the fewest
+                    // missing inputs first, then favor compact, high-yield recipes.
+                    .thenComparingLong(holder -> directMissing(holder.value(), inventory))
+                    .thenComparingLong(holder -> recipeCost(holder.value()))
                         .thenComparing(holder -> holder.id().toString()));
                 long deficit = needed - inventory.getOrDefault(itemId, 0L);
                 ResourceLocation preferredMachine = depot.getPreferredMachine(itemId);
@@ -357,6 +473,7 @@ public final class DepotCraftingService {
                                 && !candidate.machineTypes().contains(preferredMachine))
                         .thenComparing(candidate -> !compatibleMachine(candidate.machineTypes()))
                         .thenComparingLong(candidate -> directMissing(candidate, inventory))
+                        .thenComparingLong(candidate -> recipeCost(candidate))
                         .thenComparing(candidate -> candidate.id().toString()));
                 DepotJeiRecipeCache.Recipe eagerJei = preferred == null ? null : jeiCandidates.stream()
                         .filter(candidate -> candidate.id().equals(preferred))
@@ -372,8 +489,9 @@ public final class DepotCraftingService {
                         processingRecipes.getOrDefault(itemId, List.of()));
                 machineCandidates.sort(Comparator
                         .comparing((AvailableRecipe candidate) -> preferred == null || !candidate.id().equals(preferred))
-                        .thenComparing(candidate -> !compatibleMachine(vanillaMachines(candidate)))
+                        .thenComparing(candidate -> !compatibleMachine(machineTypes(candidate)))
                         .thenComparingLong(candidate -> directMissing(candidate, inventory))
+                        .thenComparingLong(candidate -> recipeCost(candidate))
                         .thenComparing(candidate -> candidate.id().toString()));
                 AvailableRecipe eagerMachine = preferred == null ? null : machineCandidates.stream()
                         .filter(candidate -> candidate.id().equals(preferred))
@@ -396,7 +514,23 @@ public final class DepotCraftingService {
                     if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
                     craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                 }
-                if (processingAvailable) {
+                // Standard `craft` must be able to recursively make ordinary
+                // crafting-table dependencies. The direct attempt above is kept
+                // first because it is cheaper when all inputs are already stored.
+                if (mode == PlanMode.CRAFT) {
+                    for (RecipeHolder<CraftingRecipe> holder : candidates) {
+                        int beforeSteps = craftingSteps.size();
+                        ItemStack output = holder.value().getResultItem(player.serverLevel().registryAccess());
+                        if (output.isEmpty() || output.getCount() <= 0) continue;
+                        long craftsLong = (deficit + output.getCount() - 1L) / output.getCount();
+                        if (craftsLong <= 0 || craftsLong > Integer.MAX_VALUE) continue;
+                        Optional<Map<ResourceLocation, Long>> result = craftRecipe(
+                                new HashMap<>(inventory), holder.value(), (int) craftsLong, visiting, depth);
+                        if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
+                        craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                    }
+                }
+                if (mode == PlanMode.PROCESS && processingAvailable) {
                     for (AvailableRecipe candidate : machineCandidates.stream().filter(DepotCraftingService::vanillaProcessing).toList()) {
                         if (eagerMachine != null && candidate.id().equals(eagerMachine.id())) continue;
                         int beforeSteps = craftingSteps.size();
@@ -433,7 +567,8 @@ public final class DepotCraftingService {
                         craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                     }
                 }
-                DepotSavedData.ProcessingPattern pattern = depot.getProcessingPattern(itemId);
+                DepotSavedData.ProcessingPattern pattern = mode == PlanMode.PROCESS
+                    ? depot.getProcessingPattern(itemId) : null;
                 if (pattern != null) {
                     if (!processingAvailable) {
                         processingMachineRequired = true;
@@ -505,6 +640,45 @@ public final class DepotCraftingService {
             return missing;
         }
 
+        private long directMissing(CraftingRecipe candidate, Map<ResourceLocation, Long> inventory) {
+            long missing = 0;
+            for (Ingredient ingredient : candidate.getIngredients()) {
+                if (ingredient.isEmpty()) continue;
+                long available = java.util.Arrays.stream(ingredient.getItems())
+                        .map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()))
+                        .mapToLong(id -> inventory.getOrDefault(id, 0L)).max().orElse(0);
+                missing = add(missing, Math.max(0, 1 - available));
+                if (missing < 0) return Long.MAX_VALUE;
+            }
+            return missing;
+        }
+
+        private long recipeCost(CraftingRecipe recipe) {
+            long ingredients = recipe.getIngredients().stream().filter(ingredient -> !ingredient.isEmpty()).count();
+            ItemStack output = recipe.getResultItem(player.serverLevel().registryAccess());
+            return output.isEmpty() || output.getCount() <= 0 ? Long.MAX_VALUE
+                    : (ingredients * 1_000L) / output.getCount();
+        }
+
+                private static long recipeCost(DepotJeiRecipeCache.Recipe recipe) {
+                    long ingredients = recipe.inputs().stream().mapToLong(slot -> slot.alternatives().stream()
+                        .mapToLong(DepotJeiRecipeCache.StackRef::count).min().orElse(Long.MAX_VALUE)).sum();
+                    int output = recipe.primaryOutput().count();
+                    return output <= 0 || ingredients < 0 ? Long.MAX_VALUE : (ingredients * 1_000L) / output;
+                }
+
+                private long recipeCost(AvailableRecipe recipe) {
+                    long ingredients = 0;
+                    NonNullList<Ingredient> declared = recipe.recipe().getIngredients();
+                    for (int index = 0; index < declared.size(); index++) {
+                    if (declared.get(index).isEmpty()) continue;
+                    ingredients = add(ingredients, recipe.recipe() instanceof CrystalNexusRecipe custom
+                        ? custom.getInputCount(index) : 1);
+                    }
+                    return ingredients < 0 || recipe.output().getCount() <= 0 ? Long.MAX_VALUE
+                        : (ingredients * 1_000L) / recipe.output().getCount();
+                }
+
         private Optional<Map<ResourceLocation, Long>> processPattern(Map<ResourceLocation, Long> inventory,
                 DepotSavedData.ProcessingPattern pattern, int crafts, Set<ResourceLocation> visiting, int depth) {
             if (craftingSteps.size() > MAX_STEPS - crafts) return Optional.empty();
@@ -526,7 +700,7 @@ public final class DepotCraftingService {
                     if (!increase(result, output.getKey(), output.getValue())) return Optional.empty();
                 }
                 craftingSteps.add(new DepotSavedData.CraftingStep(pattern.outputId(), pattern.outputAmount(), 1,
-                        inputs, pattern.outputs(), true));
+                    inputs, pattern.outputs(), true, pattern.machineTypes()));
             }
             return Optional.of(result);
         }
@@ -559,7 +733,7 @@ public final class DepotCraftingService {
             Map<ResourceLocation, Long> outputs = Map.of(outputId, outputAmount);
             for (int craft = 0; craft < crafts; craft++) {
                 craftingSteps.add(new DepotSavedData.CraftingStep(outputId, outputAmount, 1,
-                        prepared.get().inputs(), outputs, true, vanillaMachines(candidate)));
+                        prepared.get().inputs(), outputs, true, machineTypes(candidate)));
             }
             return Optional.of(prepared.get().counts());
         }
@@ -760,10 +934,13 @@ public final class DepotCraftingService {
                     .toList();
             for (ResourceLocation candidate : candidates) {
                 int beforeSteps = craftingSteps.size();
+                Set<ResourceLocation> missingBefore = new LinkedHashSet<>(missing);
+                Map<String, Long> missingIngredientsBefore = new java.util.LinkedHashMap<>(missingIngredients);
                 Map<ResourceLocation, Long> next = new HashMap<>(inventory);
                 Optional<Map<ResourceLocation, Long>> supplied = ensure(next, candidate, crafts, visiting, depth + 1);
                 if (supplied.isEmpty()) {
                     craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                    restoreMissing(missingBefore, missingIngredientsBefore);
                     continue;
                 }
                 Map<ResourceLocation, Long> consumed = supplied.get();
@@ -775,9 +952,17 @@ public final class DepotCraftingService {
                 if (rest.isPresent()) return rest;
                 choices.removeLast();
                 craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                restoreMissing(missingBefore, missingIngredientsBefore);
             }
             rememberMissing(ingredients.get(index), crafts);
             return Optional.empty();
+        }
+
+        private void restoreMissing(Set<ResourceLocation> missingBefore, Map<String, Long> ingredientsBefore) {
+            missing.clear();
+            missing.addAll(missingBefore);
+            missingIngredients.clear();
+            missingIngredients.putAll(ingredientsBefore);
         }
 
         private boolean fits(Map<ResourceLocation, Long> finalCounts) {
