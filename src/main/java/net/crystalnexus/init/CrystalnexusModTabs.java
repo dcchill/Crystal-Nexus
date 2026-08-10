@@ -36,6 +36,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLUID_PACKAGER.get().asItem());
 				tabData.accept(CrystalnexusModItems.ANCIENT_CRYSTAL.get());
+				tabData.accept(CrystalnexusModItems.CRYSTALALLOY_HAMMER.get());
+				tabData.accept(CrystalnexusModItems.CRYSTAL_WRENCH.get());
 				tabData.accept(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_STAIRS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_SLAB.get().asItem());
@@ -350,6 +352,7 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.COFFEE.get());
 			tabData.accept(CrystalnexusModItems.ATOMIC_COFFEE.get());
 		} else if (tabData.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
+			tabData.accept(CrystalnexusModItems.CRYSTALALLOY_HAMMER.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_PICKAXE.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_AXE.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_SHOVEL.get());

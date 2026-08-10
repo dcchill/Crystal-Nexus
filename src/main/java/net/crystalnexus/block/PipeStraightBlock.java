@@ -73,7 +73,7 @@ public class PipeStraightBlock extends Block implements EntityBlock {
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context) {
 	    return this.defaultBlockState()
-	        .setValue(FACING, context.getHorizontalDirection());
+	        .setValue(FACING, context.getNearestLookingDirection());
 	}
 
 	public BlockState rotate(BlockState state, Rotation rot) {

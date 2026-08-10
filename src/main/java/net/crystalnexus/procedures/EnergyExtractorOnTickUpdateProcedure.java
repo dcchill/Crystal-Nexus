@@ -23,6 +23,8 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.EnergyExtractionRecipe;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -112,11 +114,9 @@ public class EnergyExtractorOnTickUpdateProcedure {
 							}
 
 							// charge internal FE
-							if (world instanceof ILevelExtension ext) {
-								IEnergyStorage es = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-								if (es != null)
-									es.receiveEnergy((int) energyBase, false);
-							}
+							GeneratorEnergyStorage generator = generatorStorage(world, pos);
+							if (generator != null)
+								generator.generateEnergy((int) energyBase, false);
 
 							// reset progress and sync
 							setNBTAndSync(world, pos, "progress", 0);
@@ -149,16 +149,15 @@ public class EnergyExtractorOnTickUpdateProcedure {
 						int request = Math.min(rate, room);
 
 						int simPull = battery.extractEnergy(request, true);
-						int simPush = receiveEnergySimulate(world, pos, simPull, null);
+						GeneratorEnergyStorage generator = generatorStorage(world, pos);
+						int simPush = generator == null ? 0 : generator.generateEnergy(simPull, true);
 						int move = Math.min(simPull, simPush);
 
 						if (move > 0) {
 							int pulled = battery.extractEnergy(move, false);
 
 							if (pulled > 0) {
-								IEnergyStorage blockES = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-								if (blockES != null)
-									blockES.receiveEnergy(pulled, false);
+								generator.generateEnergy(pulled, false);
 
 								// IMPORTANT: re-set stack to force save/sync
 								inv.setStackInSlot(0, batteryStack);
@@ -263,5 +262,9 @@ public class EnergyExtractorOnTickUpdateProcedure {
 				return es.receiveEnergy(amount, true);
 		}
 		return 0;
+	}
+
+	private static GeneratorEnergyStorage generatorStorage(LevelAccessor world, BlockPos pos) {
+		return world.getBlockEntity(pos) instanceof EnergyExtractorBlockEntity extractor ? extractor.getEnergyStorage() : null;
 	}
 }

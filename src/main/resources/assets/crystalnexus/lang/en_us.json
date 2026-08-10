@@ -12,6 +12,8 @@
   "item.crystalnexus.efficiency_upgrade": "Efficiency Upgrade",
   "block.crystalnexus.ancient_crystal_ore": "Ancient Crystal Stone Ore",
   "item.crystalnexus.ancient_crystal": "Ancient Crystal",
+  "item.crystalnexus.crystalalloy_hammer": "Crystal Alloy Hammer",
+  "item.crystalnexus.crystal_wrench": "Crystal Wrench",
   "block.crystalnexus.dust_separator": "Crystal Dust Separator",
   "jei.crystalnexus.dust_separator_jei": "Converts Dusts into Nuggets. (12 by default, 15 with Efficiency Upgrade)",
   "gui.crystalnexus.ore_gen_gui.tooltip_fill_with_crystal_gloop_and_powe": "Fill with Crystal Gloop and power to start generating ores.",

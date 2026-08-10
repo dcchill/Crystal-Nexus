@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
 
 public class ReactorCoreOnTickUpdateProcedure {
 	private static final int ENERGY_TRANSFER_PER_TICK = 65536;
@@ -387,17 +388,19 @@ public class ReactorCoreOnTickUpdateProcedure {
 		}
 
 		int energy = extractEnergySimulate(world, computerPos, ENERGY_TRANSFER_PER_TICK, null);
-		energy = receiveEnergySimulate(world, outputPos, energy, null);
+		if (!(world.getBlockEntity(outputPos) instanceof ReactorEnergyOutputBlockEntity outputEntity)) {
+			return;
+		}
+		energy = outputEntity.getEnergyStorage().generateEnergy(energy, true);
 		if (energy <= 0) {
 			return;
 		}
 
 		if (world instanceof ILevelExtension ext) {
 			IEnergyStorage computerStorage = ext.getCapability(Capabilities.EnergyStorage.BLOCK, computerPos, null);
-			IEnergyStorage outputStorage = ext.getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, null);
-			if (computerStorage != null && outputStorage != null) {
+			if (computerStorage != null) {
 				computerStorage.extractEnergy(energy, false);
-				outputStorage.receiveEnergy(energy, false);
+				outputEntity.getEnergyStorage().generateEnergy(energy, false);
 			}
 		}
 	}

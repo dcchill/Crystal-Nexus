@@ -2,22 +2,20 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aba",
-    " c "
+    "  a",
+    " b ",
+    "b  "
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "item": "crystalnexus:ancient_crystal"
     },
     "b": {
       "item": "minecraft:iron_ingot"
-    },
-    "c": {
-      "tag": "c:stones"
     }
   },
   "result": {
-    "id": "crystalnexus:conveyer_belt",
-    "count": 8
+    "id": "crystalnexus:crystal_wrench",
+    "count": 1
   }
 }

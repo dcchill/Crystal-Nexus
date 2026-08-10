@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -103,20 +105,12 @@ public class ReactorComputerOnTickUpdateProcedure {
 								if (world instanceof Level _level)
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 							}
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) energy, false);
-							}
+							generateEnergy(world, BlockPos.containing(x, y, z), (int) energy);
 							if (world instanceof ServerLevel _level)
 								_level.sendParticles(ParticleTypes.VAULT_CONNECTION, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.5, 0, 0.5, 0);
 						}
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) energy, false);
-							}
+							generateEnergy(world, BlockPos.containing(x, y, z), (int) energy);
 							if (world instanceof ILevelExtension _ext) {
 								IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_fluidHandler != null)
@@ -192,20 +186,12 @@ public class ReactorComputerOnTickUpdateProcedure {
 								if (world instanceof Level _level)
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 							}
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) (energy * 1.75), false);
-							}
+							generateEnergy(world, BlockPos.containing(x, y, z), (int) (energy * 1.75));
 							if (world instanceof ServerLevel _level)
 								_level.sendParticles(ParticleTypes.VAULT_CONNECTION, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.5, 0, 0.5, 0);
 						}
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.receiveEnergy((int) (energy * 1.75), false);
-							}
+							generateEnergy(world, BlockPos.containing(x, y, z), (int) (energy * 1.75));
 							if (world instanceof ILevelExtension _ext) {
 								IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_fluidHandler != null)
@@ -370,6 +356,11 @@ public class ReactorComputerOnTickUpdateProcedure {
 				return energyStorage.getEnergyStored();
 		}
 		return 0;
+	}
+
+	private static void generateEnergy(LevelAccessor world, BlockPos pos, int amount) {
+		if (world.getBlockEntity(pos) instanceof ReactorComputerBlockEntity computer)
+			computer.getEnergyStorage().generateEnergy(amount, false);
 	}
 
 	private static int getFluidTankLevel(LevelAccessor level, BlockPos pos, int tank, Direction direction) {

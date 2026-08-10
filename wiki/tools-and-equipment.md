@@ -4,6 +4,39 @@ Crystal Nexus includes many handheld tools and armor pieces. Some are regular eq
 
 ## Mining and Building Tools
 
+### Crystal Alloy Hammer
+
+The Crystal Alloy Hammer converts common stone types into useful building materials and has a small chance to uncover an infinite resource node.
+
+Crafting:
+
+- Arrange 3 Crystalized Alloy Blocks across the top of a crafting grid.
+- Place 2 sticks below the center block, like a pickaxe recipe.
+
+Controls and results:
+
+- Right-click Stone to make Cobblestone, with a 5% chance to make an Oil Node instead.
+- Right-click Deepslate to make Cobbled Deepslate, with a 5% chance to make a random Copper, Iron, or Gold Node instead.
+- Right-click Blackstone to make Tarrock, with a 1% chance to make an Ancient Debris Node instead.
+- Right-click Netherrack to make a Nether Wart Block, with a 5% chance to make a Lava Node instead.
+- Each successful smash uses 4 of the hammer's 256 durability, for up to 64 smashes.
+- Smashing a block produces stone-breaking sounds and particles.
+
+### Crystal Wrench
+
+The Crystal Wrench rotates blocks, changes Depot Cable modes, and safely dismantles machines and cables.
+
+Crafting:
+
+- Craft it from 1 Ancient Crystal and 2 Iron Ingots arranged diagonally.
+
+Controls:
+
+- Right-click a rotatable block to rotate it clockwise.
+- Right-click a Depot Cable to cycle its operating mode.
+- Sneak + right-click a machine, block with stored data, or cable to dismantle it and drop it as an item.
+- Dismantled blocks preserve their block-entity data, including stored contents where supported.
+
 ### Mining Laser
 
 The Mining Laser is a powered mining tool.

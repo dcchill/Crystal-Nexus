@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:reactor_block"
+    },
+    "b": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_waste_output",
+    "count": 1
+  }
+}

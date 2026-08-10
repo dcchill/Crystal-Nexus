@@ -1,25 +1,33 @@
 package net.crystalnexus.block;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class DepotCableBlock extends Block {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
@@ -28,6 +36,7 @@ public class DepotCableBlock extends Block {
     public static final BooleanProperty WEST = BooleanProperty.create("west");
     public static final BooleanProperty UP = BooleanProperty.create("up");
     public static final BooleanProperty DOWN = BooleanProperty.create("down");
+    public static final EnumProperty<DepotCableMode> MODE = EnumProperty.create("mode", DepotCableMode.class);
     public static final TagKey<Block> COMPONENTS = BlockTags.create(
             ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "depot_components"));
     private static final VoxelShape CORE = Block.box(6, 6, 6, 10, 10, 10);
@@ -41,12 +50,13 @@ public class DepotCableBlock extends Block {
     public DepotCableBlock() {
         super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f).noOcclusion());
         registerDefaultState(stateDefinition.any().setValue(NORTH, false).setValue(EAST, false)
-                .setValue(SOUTH, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
+                .setValue(SOUTH, false).setValue(WEST, false).setValue(UP, false).setValue(DOWN, false)
+                .setValue(MODE, DepotCableMode.DEFAULT));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, MODE);
     }
 
     @Override
@@ -92,5 +102,100 @@ public class DepotCableBlock extends Block {
     @Override
     protected boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
+            serverLevel.scheduleTick(pos, this, 20);
+        }
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+        if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
+            serverLevel.scheduleTick(pos, this, 20);
+        }
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!isImportMode(state)) return;
+
+        importFromNeighbors(level, pos);
+
+        level.scheduleTick(pos, this, 20);
+    }
+
+    public static boolean isImportMode(BlockState state) {
+        return state.hasProperty(MODE) && state.getValue(MODE) == DepotCableMode.IMPORT;
+    }
+
+        private void importFromNeighbors(ServerLevel level, BlockPos pos) {
+        var owner = DepotNetwork.componentOwner(level, pos);
+        if (owner == null) return;
+
+        DepotSavedData depot = DepotSavedData.get(level, owner);
+        if (depot == null) return;
+
+        int remaining = 64; // Maximum items imported per tick
+
+        for (Direction direction : Direction.values()) {
+            if (remaining <= 0) return;
+
+            BlockPos neighborPos = pos.relative(direction);
+            if (!level.hasChunkAt(neighborPos)) continue;
+
+            IItemHandler handler = level.getCapability(
+                    Capabilities.ItemHandler.BLOCK,
+                    neighborPos,
+                    direction.getOpposite()
+            );
+
+            if (handler == null) {
+                handler = level.getCapability(
+                        Capabilities.ItemHandler.BLOCK,
+                        neighborPos,
+                        null
+                );
+            }
+
+            if (handler == null) continue;
+
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                if (remaining <= 0 || depot.getFree() <= 0) return;
+
+                ItemStack simulated = handler.extractItem(slot, remaining, true);
+                if (simulated.isEmpty()) continue;
+
+                ResourceLocation itemId =
+                        BuiltInRegistries.ITEM.getKey(simulated.getItem());
+
+                if (itemId == null) continue;
+
+                long accepted = depot.addCapped(
+                        itemId,
+                        Math.min(simulated.getCount(), remaining)
+                );
+
+                if (accepted <= 0) continue;
+
+                ItemStack actual = handler.extractItem(
+                        slot,
+                        (int) accepted,
+                        false
+                );
+
+                int actuallyExtracted = actual.getCount();
+
+                if (actuallyExtracted < accepted) {
+                    depot.remove(itemId, accepted - actuallyExtracted);
+                }
+
+                remaining -= actuallyExtracted;
+            }
+        }
     }
 }

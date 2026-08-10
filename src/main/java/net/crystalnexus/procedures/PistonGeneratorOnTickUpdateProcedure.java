@@ -18,6 +18,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModFluids;
+import net.crystalnexus.block.entity.PistonGeneratorBlockEntity;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 
 public class PistonGeneratorOnTickUpdateProcedure {
 
@@ -29,10 +31,9 @@ public class PistonGeneratorOnTickUpdateProcedure {
         BlockPos pos = BlockPos.containing(x, y, z);
 
         BlockEntity be = level.getBlockEntity(pos);
-        if (be == null) return;
+        if (!(be instanceof PistonGeneratorBlockEntity generator)) return;
 
-        IEnergyStorage energyStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        if (energyStorage == null) return;
+        GeneratorEnergyStorage energyStorage = generator.getEnergyStorage();
 
         // --- Progress / GUI ---
         double progress = be.getPersistentData().getDouble("progress");
@@ -45,11 +46,11 @@ public class PistonGeneratorOnTickUpdateProcedure {
 
         // Energy upgrade
         if (upgradeStack.getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-            ENERGY_PER_TICK = 160;
+            ENERGY_PER_TICK = 320;
         } else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-            ENERGY_PER_TICK = 192;
+            ENERGY_PER_TICK = 384;
         } else {
-            ENERGY_PER_TICK = 128;
+            ENERGY_PER_TICK = 256;
         }
 
         // Acceleration upgrade
@@ -58,7 +59,7 @@ public class PistonGeneratorOnTickUpdateProcedure {
         } else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
             COOK_TIME = 500;
         } else {
-            COOK_TIME = 499;
+            COOK_TIME = 350;
         }
 
         be.getPersistentData().putDouble("maxProgress", COOK_TIME);
@@ -127,7 +128,7 @@ public class PistonGeneratorOnTickUpdateProcedure {
 				    energyOutput *= 2; // 2x power for Overfuel
 				}
 				
-				energyStorage.receiveEnergy(energyOutput, false);
+				energyStorage.generateEnergy(energyOutput, false);
 
             // Consume fuel on full cook cycle
             if (progress >= COOK_TIME) {

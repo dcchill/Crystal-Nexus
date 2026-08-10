@@ -17,15 +17,25 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.block.PipeStraightBlock;
+
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
 
 import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PipeJunctionBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+	private static final int MAX_TRANSFER = 100;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(0, ItemStack.EMPTY);
+	private int nextOutput;
 
 	public PipeJunctionBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.PIPE_JUNCTION.get(), position, state);
@@ -130,4 +140,42 @@ public class PipeJunctionBlockEntity extends RandomizableContainerBlockEntity im
 	public FluidTank getFluidTank() {
 		return fluidTank;
 	}
+
+	public static void tick(Level level, BlockPos pos, PipeJunctionBlockEntity junction) {
+		FluidStack available = junction.fluidTank.drain(MAX_TRANSFER, IFluidHandler.FluidAction.SIMULATE);
+		if (available.isEmpty()) return;
+
+		List<IFluidHandler> outputs = new ArrayList<>();
+		List<Integer> capacities = new ArrayList<>();
+		for (Direction direction : Direction.values()) {
+			BlockPos neighborPos = pos.relative(direction);
+			BlockState neighborState = level.getBlockState(neighborPos);
+			if (!(neighborState.getBlock() instanceof PipeStraightBlock)
+					|| neighborState.getValue(PipeStraightBlock.FACING) != direction) continue;
+
+			IFluidHandler handler = level.getCapability(
+					Capabilities.FluidHandler.BLOCK, neighborPos, direction.getOpposite());
+			if (handler == null) continue;
+
+			int capacity = handler.fill(available, IFluidHandler.FluidAction.SIMULATE);
+			if (capacity > 0) {
+				outputs.add(handler);
+				capacities.add(capacity);
+			}
+		}
+
+		if (outputs.isEmpty()) return;
+		int[] capacityArray = capacities.stream().mapToInt(Integer::intValue).toArray();
+		int[] shares = FluidSplitMath.fairShares(available.getAmount(), capacityArray, junction.nextOutput);
+		junction.nextOutput = (junction.nextOutput + 1) % outputs.size();
+
+		for (int i = 0; i < outputs.size(); i++) {
+			if (shares[i] == 0) continue;
+			FluidStack share = available.copy();
+			share.setAmount(shares[i]);
+			int moved = outputs.get(i).fill(share, IFluidHandler.FluidAction.EXECUTE);
+			if (moved > 0) junction.fluidTank.drain(moved, IFluidHandler.FluidAction.EXECUTE);
+		}
+	}
+
 }

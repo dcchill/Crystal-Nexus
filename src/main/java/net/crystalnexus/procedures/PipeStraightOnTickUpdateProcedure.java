@@ -14,6 +14,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import net.crystalnexus.block.PipeStraightBlock;
+import net.crystalnexus.block.PipeJunctionBlock;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 
 public class PipeStraightOnTickUpdateProcedure {
@@ -62,6 +63,9 @@ public class PipeStraightOnTickUpdateProcedure {
     // Pull only if the neighbor is a valid fluid source
     private static boolean isValidFluidSource(LevelAccessor world, BlockPos pos, Direction side) {
         BlockState neighborState = world.getBlockState(pos);
+
+        // Junctions push a fair share into each outgoing pipe themselves.
+        if (neighborState.getBlock() instanceof PipeJunctionBlock) return false;
 
         // Disallow pulling from another straight pipe’s side
         if (neighborState.getBlock() instanceof PipeStraightBlock) {

@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.block.entity.SteamEngineUpgradeBlockEntity;
+
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -79,11 +81,8 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 				}
 				if (world instanceof ServerLevel _level)
 					_level.sendParticles(ParticleTypes.CLOUD, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-				if (world instanceof ILevelExtension _ext) {
-					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-					if (_entityStorage != null)
-						_entityStorage.receiveEnergy((int) (256 * outputAmount), false);
-				}
+				if (world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof SteamEngineUpgradeBlockEntity engine)
+					engine.getEnergyStorage().generateEnergy((int) (256 * outputAmount), false);
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 				if (!world.isClientSide()) {

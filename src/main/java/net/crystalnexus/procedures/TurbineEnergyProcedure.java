@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.block.entity.TurbineBlockEntity;
 
 import java.util.Comparator;
 
@@ -50,17 +51,14 @@ public class TurbineEnergyProcedure {
 					ItemStack fuel = fuelEntity.getItem();
 					if (Math.floor(fuelEntity.getX()) == x && Math.floor(fuelEntity.getZ()) == z) {
 						if (fuel.is(ItemTags.create(ResourceLocation.parse("crystalnexus:radioactive")))) {
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null) {
-									int received = _entityStorage.receiveEnergy((int) (nrgstrt * (fuel.getCount() / 4d)), false);
+							if (world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof TurbineBlockEntity turbine) {
+									int received = turbine.getEnergyStorage().generateEnergy((int) (nrgstrt * (fuel.getCount() / 4d)), false);
 									if (received > 0) {
 										fuel.shrink(1);
 										if (fuel.isEmpty()) {
 											fuelEntity.discard();
 										}
 									}
-								}
 							}
 							{
 								int _value = 2;

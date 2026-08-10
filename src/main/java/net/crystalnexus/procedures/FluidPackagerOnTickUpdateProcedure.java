@@ -54,11 +54,11 @@ public class FluidPackagerOnTickUpdateProcedure {
 
 		// --- cook time from upgrade in slot 2 ---
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 75;
+			cookTime = 30;
 		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 50;
+			cookTime = 10;
 		} else {
-			cookTime = 100;
+			cookTime = 50;
 		}
 
 		// --- decide output item based on the actual fluid in tank 1 ---

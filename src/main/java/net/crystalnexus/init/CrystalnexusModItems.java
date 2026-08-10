@@ -119,6 +119,8 @@ import net.crystalnexus.item.CystalizedAlloyItem;
 import net.crystalnexus.item.CyanPaintballItem;
 import net.crystalnexus.item.CrystalizedAlloyMagnetItem;
 import net.crystalnexus.item.CrystalAlloyNuggetItem;
+import net.crystalnexus.item.CrystalAlloyHammerItem;
+import net.crystalnexus.item.CrystalWrenchItem;
 import net.crystalnexus.item.CrudeOilItem;
 import net.crystalnexus.item.CopperSingularityItem;
 import net.crystalnexus.item.ConductiveAlloyItem;
@@ -172,6 +174,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> EFFICIENCY_UPGRADE = REGISTRY.register("efficiency_upgrade", EfficiencyUpgradeItem::new);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL_ORE = block(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL = REGISTRY.register("ancient_crystal", RawAncientCrystalItem::new);
+	public static final DeferredItem<Item> CRYSTALALLOY_HAMMER = REGISTRY.register("crystalalloy_hammer", CrystalAlloyHammerItem::new);
+	public static final DeferredItem<Item> CRYSTAL_WRENCH = REGISTRY.register("crystal_wrench", CrystalWrenchItem::new);
 	public static final DeferredItem<Item> DUST_SEPARATOR = block(CrystalnexusModBlocks.DUST_SEPARATOR);
 	public static final DeferredItem<Item> CRYSTAL_GUIDE = block(CrystalnexusModBlocks.CRYSTAL_GUIDE);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK);

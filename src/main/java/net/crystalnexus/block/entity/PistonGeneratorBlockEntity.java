@@ -3,7 +3,7 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -146,29 +146,14 @@ public class PistonGeneratorBlockEntity extends RandomizableContainerBlockEntity
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.PISTON_GENERATOR.capacity(), CrystalnexusConfig.MACHINES.PISTON_GENERATOR.maxReceive(), CrystalnexusConfig.MACHINES.PISTON_GENERATOR.maxExtract(), 0) {
-		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
-			int retval = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-			}
-			return retval;
-		}
+	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.PISTON_GENERATOR.capacity(), CrystalnexusConfig.MACHINES.PISTON_GENERATOR.maxExtract(), this::syncEnergy);
 
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
-			int retval = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-			}
-			return retval;
-		}
-	};
+	private void syncEnergy() {
+		setChanged();
+		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+	}
 
-	public EnergyStorage getEnergyStorage() {
+	public GeneratorEnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
 
