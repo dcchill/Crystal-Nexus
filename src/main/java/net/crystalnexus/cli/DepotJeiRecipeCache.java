@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -36,7 +37,24 @@ public final class DepotJeiRecipeCache {
         public StackRef primaryOutput() { return outputs.getFirst(); }
     }
 
-    private record State(int generation, LinkedHashMap<ResourceLocation, Recipe> recipes) {}
+    private static final class State {
+        private final int generation;
+        private final LinkedHashMap<ResourceLocation, Recipe> recipes = new LinkedHashMap<>();
+        private final Map<ResourceLocation, List<Recipe>> byOutput = new LinkedHashMap<>();
+
+        private State(int generation) {
+            this.generation = generation;
+        }
+
+        private void put(Recipe recipe) {
+            Recipe old = recipes.put(recipe.id(), recipe);
+            if (old != null) {
+                List<Recipe> oldOutput = byOutput.get(old.primaryOutput().itemId());
+                if (oldOutput != null) oldOutput.removeIf(value -> value.id().equals(old.id()));
+            }
+            byOutput.computeIfAbsent(recipe.primaryOutput().itemId(), ignored -> new ArrayList<>()).add(recipe);
+        }
+    }
     private static final Map<UUID, State> BY_PLAYER = new ConcurrentHashMap<>();
 
     private DepotJeiRecipeCache() {}
@@ -44,27 +62,28 @@ public final class DepotJeiRecipeCache {
     public static void accept(ServerPlayer player, int generation, boolean reset, List<Recipe> recipes) {
         if (recipes.size() > MAX_CHUNK || recipes.stream().anyMatch(recipe -> !valid(recipe))) return;
         BY_PLAYER.compute(player.getUUID(), (ignored, old) -> {
-            LinkedHashMap<ResourceLocation, Recipe> updated = reset || old == null || old.generation() != generation
-                    ? new LinkedHashMap<>() : new LinkedHashMap<>(old.recipes());
+            State updated = reset || old == null || old.generation != generation ? new State(generation) : old;
             for (Recipe recipe : recipes) {
-                if (updated.size() >= MAX_RECIPES && !updated.containsKey(recipe.id())) break;
-                updated.put(recipe.id(), recipe);
+                if (updated.recipes.size() >= MAX_RECIPES && !updated.recipes.containsKey(recipe.id())) break;
+                updated.put(recipe);
             }
-            return new State(generation, updated);
+            return updated;
         });
     }
 
     public static List<Recipe> recipes(ServerPlayer player) {
         State state = BY_PLAYER.get(player.getUUID());
-        return state == null ? List.of() : List.copyOf(state.recipes().values());
+        return state == null ? List.of() : List.copyOf(state.recipes.values());
     }
 
     public static List<Recipe> recipesFor(ServerPlayer player, ResourceLocation outputId) {
-        List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : recipes(player)) {
-            if (recipe.primaryOutput().itemId().equals(outputId)) result.add(recipe);
-        }
-        return result;
+        State state = BY_PLAYER.get(player.getUUID());
+        return state == null ? List.of() : List.copyOf(state.byOutput.getOrDefault(outputId, List.of()));
+    }
+
+    public static Set<ResourceLocation> outputIds(ServerPlayer player) {
+        State state = BY_PLAYER.get(player.getUUID());
+        return state == null ? Set.of() : Set.copyOf(state.byOutput.keySet());
     }
 
     private static boolean valid(Recipe recipe) {

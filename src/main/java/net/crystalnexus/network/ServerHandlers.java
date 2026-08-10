@@ -10,11 +10,18 @@ import net.crystalnexus.cli.DepotCliCommandContext;
 import net.crystalnexus.cli.DepotCliCommandRegistry;
 import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
+import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
+import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
+import net.crystalnexus.cli.DepotCraftingService;
+import net.crystalnexus.util.DepotNetwork;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -22,6 +29,108 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.List;
 
 public class ServerHandlers {
+
+    public static void onDepotCraftingRequest(C2S_DepotCraftingRequest msg, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (!(ctx.player() instanceof ServerPlayer player)
+                    || !(player.containerMenu instanceof DepotCliMenu menu)
+                    || menu.containerId != msg.menuId()) return;
+            if (!menu.stillValid(player) || !menu.hasPermission(player)) {
+                player.closeContainer();
+                return;
+            }
+            if (!menu.allowCommand(player)) {
+                sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, false, "Please wait a moment."));
+                return;
+            }
+            if (!menu.isConnected(player)) {
+                sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, false, "Depot network is offline."));
+                return;
+            }
+            DepotSavedData depot = DepotSavedData.get(player);
+            try {
+                switch (msg.action()) {
+                    case CATALOG -> sendCrafting(player, S2C_DepotCraftingResponse.catalog(menu.containerId,
+                            DepotCraftingService.catalog(player, depot, msg.search(), msg.page())));
+                    case PREVIEW -> {
+                        Item target = validItem(msg.targetId());
+                        if (target == null || msg.amount() <= 0 || msg.amount() > DepotCliCommandRegistry.MAX_QUANTITY) {
+                            sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, false, "Invalid target or amount."));
+                        } else sendCrafting(player, S2C_DepotCraftingResponse.preview(menu.containerId,
+                                DepotCraftingService.preview(player, depot, target, msg.amount())));
+                    }
+                    case START -> {
+                        Item target = validItem(msg.targetId());
+                        if (target == null || msg.amount() <= 0 || msg.amount() > DepotCliCommandRegistry.MAX_QUANTITY) {
+                            sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, false, "Invalid target or amount."));
+                            break;
+                        }
+                        DepotCraftingService.Result result = DepotCraftingService.craftVisual(player, depot, target, msg.amount());
+                        String message = result.success() ? "Queued crafting job #" + result.job().id() + "."
+                                : String.join(" ", result.details());
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, result.success(), message));
+                    }
+                    case SET_ROUTE -> {
+                        Item subject = validItem(msg.subjectId());
+                        DepotCraftingService.RecipeChoice route = subject == null ? null
+                                : DepotCraftingService.visualRecipeChoices(player, depot, subject).stream()
+                                .filter(choice -> choice.id().equals(msg.choiceId())).findFirst().orElse(null);
+                        java.util.Set<ResourceLocation> connectedTypes = DepotNetwork.processingMachines(player).stream()
+                                .map(endpoint -> BuiltInRegistries.BLOCK.getKey(
+                                        endpoint.level().getBlockState(endpoint.pos()).getBlock()))
+                                .collect(java.util.stream.Collectors.toSet());
+                        boolean valid = route != null && (!route.processing()
+                                || route.machineTypes().isEmpty() && !connectedTypes.isEmpty()
+                                || route.machineTypes().stream().anyMatch(connectedTypes::contains));
+                        if (valid) depot.setPreferredRecipe(msg.subjectId(), msg.choiceId());
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, valid,
+                                valid ? "Preferred route saved." : "That route is not available."));
+                    }
+                    case CLEAR_ROUTE -> {
+                        boolean changed = validItem(msg.subjectId()) != null && depot.clearPreferredRecipe(msg.subjectId());
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, true,
+                                changed ? "Preferred route cleared." : "Route is already automatic."));
+                    }
+                    case SET_MACHINE -> {
+                        Item subject = validItem(msg.subjectId());
+                        boolean recipeSupports = subject != null && DepotCraftingService.visualRecipeChoices(player, depot, subject)
+                                .stream().flatMap(choice -> choice.machineTypes().stream()).anyMatch(msg.choiceId()::equals);
+                        boolean connected = DepotNetwork.processingMachines(player).stream().anyMatch(endpoint ->
+                                msg.choiceId().equals(BuiltInRegistries.BLOCK.getKey(
+                                        endpoint.level().getBlockState(endpoint.pos()).getBlock())));
+                        boolean valid = recipeSupports && connected;
+                        if (valid) depot.setPreferredMachine(msg.subjectId(), msg.choiceId());
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, valid,
+                                valid ? "Preferred machine saved." : "That compatible machine is not connected."));
+                    }
+                    case CLEAR_MACHINE -> {
+                        boolean changed = validItem(msg.subjectId()) != null && depot.clearPreferredMachine(msg.subjectId());
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, true,
+                                changed ? "Preferred machine cleared." : "Machine selection is already automatic."));
+                    }
+                    case CANCEL -> {
+                        DepotSavedData.CraftingJob job = depot.getCraftingJob();
+                        boolean cancelled = job != null && job.id() == msg.jobId() && depot.cancelCraftingJob(job.id()) != null;
+                        sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, cancelled,
+                                cancelled ? "Crafting job cancelled; current materials were returned."
+                                        : "That crafting job is no longer active."));
+                    }
+                }
+            } catch (RuntimeException exception) {
+                sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, false,
+                        "Request failed safely: " + exception.getClass().getSimpleName()));
+            }
+        });
+    }
+
+    private static Item validItem(ResourceLocation id) {
+        Item item = id == null ? null : BuiltInRegistries.ITEM.get(id);
+        return item == null || item == Items.AIR ? null : item;
+    }
+
+    private static void sendCrafting(ServerPlayer player, S2C_DepotCraftingResponse response) {
+        PacketDistributor.sendToPlayer(player, response);
+    }
 
     public static void onDepotJeiRecipes(C2S_DepotJeiRecipes msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {

@@ -201,15 +201,9 @@ public final class DepotProcessingService {
                 ItemStack stack = handler.getStackInSlot(slot).copy();
                 if (stack.isEmpty() || !BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(id)) continue;
                 ItemStack taken = handler.extractItem(slot, (int) Math.min(Integer.MAX_VALUE, remaining), simulate);
-                if (simulate) {
-                    if (!taken.isEmpty() && BuiltInRegistries.ITEM.getKey(taken.getItem()).equals(id))
-                        remaining -= taken.getCount();
-                    continue;
+                if (!taken.isEmpty() && BuiltInRegistries.ITEM.getKey(taken.getItem()).equals(id)) {
+                    remaining -= Math.min(remaining, taken.getCount());
                 }
-                ItemStack after = handler.getStackInSlot(slot);
-                int afterCount = !after.isEmpty() && BuiltInRegistries.ITEM.getKey(after.getItem()).equals(id)
-                        ? after.getCount() : 0;
-                remaining -= Math.min(remaining, Math.max(0, stack.getCount() - afterCount));
             }
             if (remaining == 0) break;
         }

@@ -149,6 +149,12 @@ public final class DepotGameTests {
         helper.setBlock(processorPos, CrystalnexusModBlocks.CRAFTING_UPGRADE.get());
         helper.assertTrue(net.crystalnexus.util.DepotNetwork.craftingProcessorCount(player) == 1,
                 "The player's depot network must count its connected Crafting Processors");
+        DepotCraftingService.Preview plankPreview = DepotCraftingService.preview(player, playerDepot, Items.OAK_PLANKS, 64);
+        helper.assertTrue(plankPreview.success() && plankPreview.startable()
+                        && plankPreview.nodes().stream().anyMatch(node -> node.itemId().equals(logs)
+                        && node.source() == DepotCraftingService.PreviewSource.STORED)
+                        && playerDepot.getCount(logs) == 16 && playerDepot.getCraftingJob() == null,
+                "Visual crafting previews must show stored dependencies without reserving or changing them");
         DepotCliCommandRegistry.INSTANCE.execute(context, "machine balance on");
         helper.assertTrue(playerDepot.isMachineLoadBalancing(),
                 "Machine load balancing must be configurable and persist in depot data");
@@ -221,10 +227,17 @@ public final class DepotGameTests {
                         && playerDepot.getCount(ironIngot) == 1,
                 "Default vanilla crafting must not consume the smeltable raw iron");
         playerDepot.remove(ironIngot, Long.MAX_VALUE);
+        DepotCraftingService.Preview manualMachinePreview = DepotCraftingService.preview(player, playerDepot, Items.IRON_INGOT, 1);
+        helper.assertTrue(!manualMachinePreview.success() && manualMachinePreview.nodes().getFirst().alternatives()
+                        .stream().anyMatch(DepotCraftingService.RecipeChoice::processing)
+                        && playerDepot.getCount(rawIron) == 1,
+                "The visual planner must expose machine routes without selecting them automatically");
         DepotCraftingService.Result defaultSmelting = DepotCraftingService.craft(player, playerDepot, Items.IRON_INGOT, 1);
         helper.assertTrue(defaultSmelting.success() && defaultSmelting.job().currentStep().processing()
                         && defaultSmelting.job().currentStep().machineTypes().equals(List.of(ResourceLocation.parse("minecraft:furnace"))),
-                "Vanilla smelting must win over synced JEI machine recipes and target a furnace");
+                "Vanilla smelting must win over synced JEI machine recipes and target a furnace: success="
+                        + defaultSmelting.success() + ", details=" + defaultSmelting.details() + ", step="
+                        + (defaultSmelting.job() == null ? null : defaultSmelting.job().currentStep()));
         runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
         helper.assertTrue(playerDepot.getCraftingJob() == null && playerDepot.getCount(ironIngot) == 1,
                 "Vanilla smelting must insert into the furnace and extract its output");

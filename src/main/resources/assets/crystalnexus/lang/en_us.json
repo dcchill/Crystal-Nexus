@@ -613,6 +613,12 @@
   "block.crystalnexus.black_hole_tnt": "Black Hole Tnt",
   "item.crystalnexus.orbital_strike_remote": "Orbital Strike Remote",
   "block.crystalnexus.depot_cli": "Depot CLI",
+  "gui.crystalnexus.depot_cli.crafting": "Crafting",
+  "gui.crystalnexus.depot_cli.terminal": "Terminal",
+  "gui.crystalnexus.depot_cli.search": "Search outputs",
+  "gui.crystalnexus.depot_cli.start": "Start",
+  "gui.crystalnexus.depot_cli.cancel": "Cancel Job",
+  "gui.crystalnexus.depot_cli.automatic": "Use Auto",
   "block.crystalnexus.depot_cli.description_0": "§5Command-line access to a connected depot network.",
   "block.crystalnexus.depot_cli.description_1": "§5Use for advanced storage and crafting operations."
 }

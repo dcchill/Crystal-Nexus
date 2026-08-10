@@ -8,8 +8,19 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
+import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 
 public class ClientHandlers {
+
+    public static void onDepotCraftingResponse(final S2C_DepotCraftingResponse msg, final IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            try {
+                Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
+                hooks.getMethod("handle", S2C_DepotCraftingResponse.class).invoke(null, msg);
+            } catch (Throwable ignored) {
+            }
+        });
+    }
 
     public static void onDepotCliResponse(final S2C_DepotCliResponse msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
