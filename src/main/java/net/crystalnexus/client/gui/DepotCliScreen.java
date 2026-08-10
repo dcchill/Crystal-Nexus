@@ -2,12 +2,14 @@ package net.crystalnexus.client.gui;
 
 import net.crystalnexus.cli.DepotCliParser;
 import net.crystalnexus.cli.DepotCraftingService;
+import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
 import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 import net.crystalnexus.world.inventory.DepotCliMenu;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -76,6 +78,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private String message = "Select an item to preview its crafting tree.";
     private boolean messageSuccess = true;
     private ItemStack hoveredStack = ItemStack.EMPTY;
+    private List<Component> hoveredRecipe = List.of();
 
     public DepotCliScreen(DepotCliMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -219,7 +222,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         DepotCraftingService.PreviewNode node = selectedNode();
         if (node != null && mouseX >= leftPos + imageWidth - 142) {
             routeScroll = Mth.clamp(routeScroll + (deltaY < 0 ? 1 : -1), 0,
-                    Math.max(0, node.alternatives().size() - 4));
+                    Math.max(0, node.alternatives().size() - routeRows(node)));
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
@@ -252,14 +255,16 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             if (node != null && mouseX >= leftPos + imageWidth - 138 && mouseX < leftPos + imageWidth - 8) {
                 int routeIndex = (int) ((mouseY - topPos - 72) / 25);
                 routeIndex += routeScroll;
-                if (routeIndex >= routeScroll && routeIndex < Math.min(routeScroll + 4, node.alternatives().size())) {
+                if (mouseY >= topPos + 72 && routeIndex >= routeScroll
+                        && routeIndex < Math.min(routeScroll + routeRows(node), node.alternatives().size())) {
                     setPreference(C2S_DepotCraftingRequest.Action.SET_ROUTE, node.itemId(),
                             node.alternatives().get(routeIndex).id());
                     return true;
                 }
                 List<ResourceLocation> machines = machines(node);
-                int machineIndex = (int) ((mouseY - topPos - 189) / 18);
-                if (machineIndex >= 0 && machineIndex < Math.min(3, machines.size())) {
+                int machineStart = machineStart(machines.size());
+                int machineIndex = (int) ((mouseY - machineStart) / 18);
+                if (mouseY >= machineStart && machineIndex >= 0 && machineIndex < Math.min(3, machines.size())) {
                     setPreference(C2S_DepotCraftingRequest.Action.SET_MACHINE, node.itemId(), machines.get(machineIndex));
                     return true;
                 }
@@ -271,9 +276,11 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         hoveredStack = ItemStack.EMPTY;
+        hoveredRecipe = List.of();
         renderBackground(graphics, mouseX, mouseY, partialTick);
         super.render(graphics, mouseX, mouseY, partialTick);
-        if (!hoveredStack.isEmpty()) graphics.renderTooltip(font, hoveredStack, mouseX, mouseY);
+        if (!hoveredRecipe.isEmpty()) graphics.renderComponentTooltip(font, hoveredRecipe, mouseX, mouseY);
+        else if (!hoveredStack.isEmpty()) graphics.renderTooltip(font, hoveredStack, mouseX, mouseY);
     }
 
     @Override
@@ -333,9 +340,15 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 case MISSING -> 0xFFFF6B6B;
             };
             String label = compact(node.required()) + "x " + stack.getHoverName().getString();
+            if (node.source() == DepotCraftingService.PreviewSource.MISSING) {
+                label += " [" + compact(node.stored()) + "/" + compact(node.required()) + "]";
+            }
             graphics.drawString(font, font.plainSubstrByWidth(label, Math.max(30, imageWidth - 315 - depth * 11)),
                     x + 19, y + 4, color, false);
-            if (inside(mouseX, mouseY, x, y, imageWidth - 285, 17)) hoveredStack = stack;
+            if (inside(mouseX, mouseY, x, y, imageWidth - 285, 17)) {
+                hoveredStack = stack;
+                if (node.source() == DepotCraftingService.PreviewSource.MISSING) hoveredRecipe = problemTooltip(node);
+            }
         }
     }
 
@@ -350,7 +363,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         graphics.renderItem(selected, x, topPos + 53);
         graphics.drawString(font, font.plainSubstrByWidth(selected.getHoverName().getString(), 105),
                 x + 19, topPos + 57, 0xFFE8F4F3, false);
-        for (int i = 0; i < Math.min(4, node.alternatives().size() - routeScroll); i++) {
+        int routeRows = routeRows(node);
+        for (int i = 0; i < Math.min(routeRows, node.alternatives().size() - routeScroll); i++) {
             DepotCraftingService.RecipeChoice choice = node.alternatives().get(routeScroll + i);
             int y = topPos + 72 + i * 25;
             boolean preferred = choice.id().equals(node.selectedRoute());
@@ -359,12 +373,14 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                     choice.processing() ? 0xFFFFD166 : 0xFF69FF91, false);
             String inputs = choice.inputs().size() + " input" + (choice.inputs().size() == 1 ? "" : "s");
             graphics.drawString(font, inputs, x + 3, y + 12, 0xFF8FA8A5, false);
+            if (inside(mouseX, mouseY, x, y, 128, 22)) hoveredRecipe = recipeTooltip(choice);
         }
         List<ResourceLocation> machines = machines(node);
-        if (!machines.isEmpty()) graphics.drawString(font, "Machine", x, topPos + 177, 0xFF55FFF2, false);
+        int machineStart = machineStart(machines.size());
+        if (!machines.isEmpty()) graphics.drawString(font, "Machine", x, machineStart - 12, 0xFF55FFF2, false);
         for (int i = 0; i < Math.min(3, machines.size()); i++) {
             ResourceLocation machine = machines.get(i);
-            int y = topPos + 189 + i * 18;
+            int y = machineStart + i * 18;
             ItemStack stack = new ItemStack(BuiltInRegistries.BLOCK.get(machine));
             boolean preferred = machine.equals(node.selectedMachine());
             graphics.fill(x, y, leftPos + imageWidth - 8, y + 16, preferred ? 0xFF176158 : 0xFF111B1B);
@@ -433,7 +449,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 messageSuccess = preview.success();
                 message = preview.details().isEmpty()
                         ? preview.success() ? "Ready: " + duration(preview.estimatedTicks()) : "No complete route."
-                        : preview.details().getFirst();
+                        : preview.details().stream().filter(detail -> !detail.endsWith("crafting paths:"))
+                                .findFirst().orElse(preview.details().getFirst());
             }
             case RESULT -> {
                 messageSuccess = response.success();
@@ -562,7 +579,57 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     }
 
     private List<ResourceLocation> machines(DepotCraftingService.PreviewNode node) {
-        return node.alternatives().stream().flatMap(choice -> choice.machineTypes().stream()).distinct().limit(3).toList();
+        if (node.selectedRoute() == null) return List.of();
+        return node.alternatives().stream().filter(choice -> choice.id().equals(node.selectedRoute()))
+                .flatMap(choice -> choice.machineTypes().stream()).distinct().limit(3).toList();
+    }
+
+    private int routeRows(DepotCraftingService.PreviewNode node) {
+        List<ResourceLocation> machines = machines(node);
+        int bottom = machines.isEmpty() ? topPos + imageHeight - 31 : machineStart(machines.size()) - 12;
+        return Math.max(1, (bottom - topPos - 72) / 25);
+    }
+
+    private int machineStart(int machineCount) {
+        return topPos + imageHeight - 31 - Math.min(3, machineCount) * 18;
+    }
+
+    private List<Component> recipeTooltip(DepotCraftingService.RecipeChoice choice) {
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.literal(choice.category()).withStyle(ChatFormatting.GOLD));
+        lines.add(Component.literal(choice.id().toString()).withStyle(ChatFormatting.DARK_GRAY));
+        ItemStack output = choice.output();
+        lines.add(Component.literal("Output: " + output.getCount() + "x " + output.getHoverName().getString())
+                .withStyle(ChatFormatting.GREEN));
+        for (int i = 0; i < choice.inputs().size(); i++) {
+            DepotJeiRecipeCache.Slot slot = choice.inputs().get(i);
+            String alternatives = slot.alternatives().stream().map(stack -> stack.count() + "x "
+                    + new ItemStack(BuiltInRegistries.ITEM.get(stack.itemId())).getHoverName().getString())
+                    .reduce((left, right) -> left + " / " + right).orElse("Unknown");
+            lines.add(Component.literal("Input " + (i + 1) + ": " + alternatives));
+        }
+        if (!choice.machineTypes().isEmpty()) {
+            String machines = choice.machineTypes().stream().map(id -> new ItemStack(BuiltInRegistries.BLOCK.get(id))
+                    .getHoverName().getString()).distinct().reduce((left, right) -> left + " / " + right).orElse("");
+            lines.add(Component.literal("Machine: " + machines).withStyle(ChatFormatting.AQUA));
+        }
+        return List.copyOf(lines);
+    }
+
+    private List<Component> problemTooltip(DepotCraftingService.PreviewNode node) {
+        ItemStack item = new ItemStack(BuiltInRegistries.ITEM.get(node.itemId()));
+        long missing = Math.max(0, node.required() - node.stored());
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.literal("Cannot craft " + item.getHoverName().getString()).withStyle(ChatFormatting.RED));
+        lines.add(Component.literal("Required: " + node.required()));
+        lines.add(Component.literal("Stored: " + node.stored()));
+        lines.add(Component.literal("Missing: " + missing).withStyle(ChatFormatting.RED));
+        if (preview != null) preview.details().stream().filter(detail -> !detail.endsWith("crafting paths:"))
+                .forEach(detail -> lines.add(Component.literal(detail).withStyle(ChatFormatting.YELLOW)));
+        if (!node.alternatives().isEmpty()) {
+            lines.add(Component.literal("Select this node to inspect its routes.").withStyle(ChatFormatting.AQUA));
+        }
+        return List.copyOf(lines);
     }
 
     private int treeRows() { return Math.max(1, (imageHeight - 83) / 18); }

@@ -339,19 +339,22 @@ public final class DepotCraftingService {
     private static void appendFailedPreviewNode(ServerPlayer player, DepotSavedData depot, ResourceLocation itemId,
             long required, int parentId, Set<ResourceLocation> path, List<PreviewNode> result) {
         if (result.size() >= 64) return;
+        boolean circular = path.contains(itemId);
+        long stored = depot.getCount(itemId);
+        boolean storedEnough = stored >= required;
         Item item = BuiltInRegistries.ITEM.get(itemId);
         List<RecipeChoice> alternatives = limitedChoices(player, depot, item);
         ResourceLocation selected = depot.getPreferredRecipe(itemId);
         RecipeChoice route = selected == null ? alternatives.stream().filter(choice -> !choice.processing())
                 .findFirst().orElse(null) : alternatives.stream().filter(choice -> choice.id().equals(selected))
                 .findFirst().orElse(null);
-        PreviewSource source = route == null
-                ? depot.getCount(itemId) >= required ? PreviewSource.STORED : PreviewSource.MISSING
+        PreviewSource source = storedEnough ? PreviewSource.STORED : circular ? PreviewSource.MISSING : route == null
+                ? PreviewSource.MISSING
                 : route.processing() ? PreviewSource.MACHINE : PreviewSource.CRAFTING;
         int id = result.size();
-        result.add(new PreviewNode(id, parentId, itemId, required, depot.getCount(itemId), source, selected,
+        result.add(new PreviewNode(id, parentId, itemId, required, stored, source, selected,
                 depot.getPreferredMachine(itemId), alternatives));
-        if (route == null || !path.add(itemId)) return;
+        if (storedEnough || route == null || circular || !path.add(itemId)) return;
         long crafts = (required + Math.max(1, route.output().getCount()) - 1) / Math.max(1, route.output().getCount());
         for (DepotJeiRecipeCache.Slot slot : route.inputs()) {
             DepotJeiRecipeCache.StackRef input = slot.alternatives().stream().max(Comparator
@@ -610,10 +613,12 @@ public final class DepotCraftingService {
         private final Map<ResourceLocation, List<AvailableRecipe>> processingRecipes = new HashMap<>();
         private final Set<ResourceLocation> connectedMachineTypes = new HashSet<>();
         private final Set<ResourceLocation> missing = new LinkedHashSet<>();
+        private final Set<ResourceLocation> circular = new LinkedHashSet<>();
         private final Map<String, Long> missingIngredients = new java.util.LinkedHashMap<>();
         private final List<DepotSavedData.CraftingStep> craftingSteps = new ArrayList<>();
         private final boolean processingAvailable;
         private boolean processingMachineRequired;
+        private boolean processingRouteRequired;
         private int steps;
 
         private Planner(ServerPlayer player, DepotSavedData depot, PlanMode mode) {
@@ -648,7 +653,15 @@ public final class DepotCraftingService {
                 ResourceLocation itemId, long needed, Set<ResourceLocation> visiting, int depth) {
             if (inventory.getOrDefault(itemId, 0L) >= needed) return Optional.of(inventory);
             // ponytail: bounded recursive search; raise these limits only if real recipe packs exceed them.
-            if (depth >= MAX_DEPTH || ++steps > MAX_STEPS || !visiting.add(itemId)) return Optional.empty();
+            if (depth >= MAX_DEPTH || ++steps > MAX_STEPS) {
+                missing.add(itemId);
+                return Optional.empty();
+            }
+            if (!visiting.add(itemId)) {
+                circular.add(itemId);
+                missing.add(itemId);
+                return Optional.empty();
+            }
             try {
                 List<RecipeHolder<CraftingRecipe>> candidates = new ArrayList<>(recipes.getOrDefault(itemId, List.of()));
                 // `process` requires the requested final item to come from an
@@ -818,6 +831,10 @@ public final class DepotCraftingService {
                 }
                 if ((!jeiCandidates.isEmpty() || !machineCandidates.isEmpty()) && !processingAvailable) {
                     processingMachineRequired = true;
+                }
+                if (mode == PlanMode.VISUAL && preferred == null && missingIngredients.isEmpty()
+                        && (!jeiCandidates.isEmpty() || !machineCandidates.isEmpty() || programmed != null)) {
+                    processingRouteRequired = true;
                 }
                 missing.add(itemId);
                 return Optional.empty();
@@ -1048,12 +1065,21 @@ public final class DepotCraftingService {
                     .sorted(Comparator.<ResourceLocation>comparingLong(id -> inventory.getOrDefault(id, 0L)).reversed()
                             .thenComparing(ResourceLocation::toString))
                     .toList();
+            Set<ResourceLocation> missingBeforeIngredient = new LinkedHashSet<>(missing);
+            Map<String, Long> missingIngredientsBeforeIngredient = new java.util.LinkedHashMap<>(missingIngredients);
+            Set<ResourceLocation> deeperMissing = null;
+            Map<String, Long> deeperMissingIngredients = null;
             for (ResourceLocation itemId : candidates) {
                 int beforeSteps = craftingSteps.size();
                 Optional<Map<ResourceLocation, Long>> supplied = ensure(
                         new HashMap<>(inventory), itemId, required, visiting, depth + 1);
                 if (supplied.isEmpty()) {
+                    if (deeperMissing == null) {
+                        deeperMissing = new LinkedHashSet<>(missing);
+                        deeperMissingIngredients = new java.util.LinkedHashMap<>(missingIngredients);
+                    }
                     craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                    restoreMissing(missingBeforeIngredient, missingIngredientsBeforeIngredient);
                     continue;
                 }
                 Map<ResourceLocation, Long> consumed = supplied.get();
@@ -1069,9 +1095,15 @@ public final class DepotCraftingService {
                 Optional<PreparedProcessing> rest = prepareProcessingIngredients(consumed, ingredients, amounts,
                         index + 1, crafts, selected, visiting, depth);
                 if (rest.isPresent()) return rest;
+                if (deeperMissing == null) {
+                    deeperMissing = new LinkedHashSet<>(missing);
+                    deeperMissingIngredients = new java.util.LinkedHashMap<>(missingIngredients);
+                }
                 craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                restoreMissing(missingBeforeIngredient, missingIngredientsBeforeIngredient);
             }
-            rememberMissing(ingredient, required);
+            if (deeperMissing != null) restoreMissing(deeperMissing, deeperMissingIngredients);
+            else rememberMissing(ingredient, required);
             return Optional.empty();
         }
 
@@ -1185,6 +1217,8 @@ public final class DepotCraftingService {
                     .sorted(Comparator.<ResourceLocation>comparingLong(id -> inventory.getOrDefault(id, 0L)).reversed()
                             .thenComparing(ResourceLocation::toString))
                     .toList();
+            Set<ResourceLocation> deeperMissing = null;
+            Map<String, Long> deeperMissingIngredients = null;
             for (ResourceLocation candidate : candidates) {
                 int beforeSteps = craftingSteps.size();
                 Set<ResourceLocation> missingBefore = new LinkedHashSet<>(missing);
@@ -1192,6 +1226,10 @@ public final class DepotCraftingService {
                 Map<ResourceLocation, Long> next = new HashMap<>(inventory);
                 Optional<Map<ResourceLocation, Long>> supplied = ensure(next, candidate, crafts, visiting, depth + 1);
                 if (supplied.isEmpty()) {
+                    if (deeperMissing == null) {
+                        deeperMissing = new LinkedHashSet<>(missing);
+                        deeperMissingIngredients = new java.util.LinkedHashMap<>(missingIngredients);
+                    }
                     craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                     restoreMissing(missingBefore, missingIngredientsBefore);
                     continue;
@@ -1203,9 +1241,17 @@ public final class DepotCraftingService {
                 Optional<Map<ResourceLocation, Long>> rest = prepareIngredients(
                         consumed, ingredients, index + 1, crafts, choices, visiting, depth);
                 if (rest.isPresent()) return rest;
+                if (deeperMissing == null) {
+                    deeperMissing = new LinkedHashSet<>(missing);
+                    deeperMissingIngredients = new java.util.LinkedHashMap<>(missingIngredients);
+                }
                 choices.removeLast();
                 craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                 restoreMissing(missingBefore, missingIngredientsBefore);
+            }
+            if (deeperMissing != null) {
+                restoreMissing(deeperMissing, deeperMissingIngredients);
+                return Optional.empty();
             }
             rememberMissing(ingredients.get(index), crafts);
             return Optional.empty();
@@ -1236,6 +1282,8 @@ public final class DepotCraftingService {
             if (missing.isEmpty() && missingIngredients.isEmpty()) return List.of();
             List<String> lines = new ArrayList<>();
             lines.add("Missing ingredients or crafting paths:");
+            circular.stream().limit(2).forEach(id -> lines.add("Circular recipe path: " + itemName(id)));
+            if (processingRouteRequired) lines.add("Select a machine route for the blocked item.");
             if (processingMachineRequired) lines.add("Connect an item-handling machine to the depot cable network.");
             missingIngredients.entrySet().stream().limit(8)
                     .forEach(entry -> lines.add(entry.getValue() + " x " + entry.getKey()));
@@ -1245,6 +1293,11 @@ public final class DepotCraftingService {
                 lines.add((item == null || item == Items.AIR ? id.toString() : new ItemStack(item).getHoverName().getString()));
             });
             return lines;
+        }
+
+        private static String itemName(ResourceLocation id) {
+            Item item = BuiltInRegistries.ITEM.get(id);
+            return item == null || item == Items.AIR ? id.toString() : new ItemStack(item).getHoverName().getString();
         }
 
         private void rememberMissing(Ingredient ingredient, long amount) {

@@ -155,6 +155,18 @@ public final class DepotGameTests {
                         && node.source() == DepotCraftingService.PreviewSource.STORED)
                         && playerDepot.getCount(logs) == 16 && playerDepot.getCraftingJob() == null,
                 "Visual crafting previews must show stored dependencies without reserving or changing them");
+        ResourceLocation glowstoneDust = ResourceLocation.parse("minecraft:glowstone_dust");
+        playerDepot.deposit(glowstoneDust, 1_000);
+        DepotCraftingService.Preview lampPreview = DepotCraftingService.preview(
+                player, playerDepot, Items.REDSTONE_LAMP, 1);
+        helper.assertTrue(!lampPreview.success()
+                        && lampPreview.details().stream().anyMatch(detail -> detail.toLowerCase().contains("redstone"))
+                        && lampPreview.details().stream().noneMatch(detail -> detail.toLowerCase().contains("glowstone dust"))
+                        && lampPreview.nodes().stream().anyMatch(node -> node.itemId().equals(glowstoneDust)
+                        && node.source() == DepotCraftingService.PreviewSource.STORED),
+                "A failed branch must report the later missing ingredient, not an ingredient already stored in the depot: "
+                        + lampPreview.details());
+        playerDepot.remove(glowstoneDust, Long.MAX_VALUE);
         DepotCliCommandRegistry.INSTANCE.execute(context, "machine balance on");
         helper.assertTrue(playerDepot.isMachineLoadBalancing(),
                 "Machine load balancing must be configurable and persist in depot data");
