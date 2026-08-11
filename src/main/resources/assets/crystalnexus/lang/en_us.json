@@ -616,6 +616,7 @@
   "gui.crystalnexus.depot_cli.crafting": "Crafting",
   "gui.crystalnexus.depot_cli.terminal": "Terminal",
   "gui.crystalnexus.depot_cli.search": "Search outputs",
+  "gui.crystalnexus.depot_cli.craftable_only": "Craftable only",
   "gui.crystalnexus.depot_cli.start": "Start",
   "gui.crystalnexus.depot_cli.cancel": "Cancel Job",
   "gui.crystalnexus.depot_cli.automatic": "Use Auto",

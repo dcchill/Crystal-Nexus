@@ -175,6 +175,16 @@ public final class DepotNetwork {
     }
 
     private static boolean scan(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {
+        return findConnectedBlock(level, start, target) != null;
+    }
+
+    /**
+     * Finds the first loaded block matching {@code target} next to this depot's
+     * cable network. The traversal is bounded in the same way as all other
+     * depot network scans.
+     */
+    public static @Nullable BlockPos findConnectedBlock(ServerLevel level, BlockPos start,
+            Predicate<BlockPos> target) {
         ArrayDeque<BlockPos> open = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         for (Direction direction : Direction.values()) {
@@ -191,11 +201,11 @@ public final class DepotNetwork {
             for (Direction direction : Direction.values()) {
                 BlockPos next = pos.relative(direction);
                 if (!level.hasChunkAt(next)) continue;
-                if (target.test(next)) return true;
+                if (target.test(next)) return next.immutable();
                 if (level.getBlockState(next).getBlock() instanceof DepotCableBlock && visited.add(next)) open.addLast(next);
             }
         }
-        return false;
+        return null;
     }
 
     private static int count(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {

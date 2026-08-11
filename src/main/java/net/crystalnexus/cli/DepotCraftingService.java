@@ -265,7 +265,8 @@ public final class DepotCraftingService {
                 "programmed/" + outputId.getNamespace() + "/" + outputId.getPath());
     }
 
-    public static CatalogPage catalog(ServerPlayer player, DepotSavedData depot, String search, int requestedPage) {
+    public static CatalogPage catalog(ServerPlayer player, DepotSavedData depot, String search, int requestedPage,
+            boolean craftableOnly) {
         String query = search == null ? "" : search.trim().toLowerCase(java.util.Locale.ROOT);
         Set<ResourceLocation> outputs = new HashSet<>();
         Set<ResourceLocation> automatic = new HashSet<>();
@@ -276,7 +277,8 @@ public final class DepotCraftingService {
         }
         outputs.addAll(DepotJeiRecipeCache.outputIds(player));
         depot.getProcessingPatterns().forEach(pattern -> outputs.add(pattern.outputId()));
-        List<ResourceLocation> filtered = outputs.stream().filter(id -> id != null).filter(id -> {
+        List<ResourceLocation> filtered = outputs.stream().filter(id -> id != null)
+                .filter(id -> !craftableOnly || isCatalogCraftable(depot, automatic, id)).filter(id -> {
             Item item = BuiltInRegistries.ITEM.get(id);
             String name = item == null ? "" : new ItemStack(item).getHoverName().getString();
             return query.isEmpty() || id.toString().toLowerCase(java.util.Locale.ROOT).contains(query)
@@ -292,6 +294,11 @@ public final class DepotCraftingService {
                 depot.getCount(id), depot.getCount(id) > 0 || automatic.contains(id)
                         || depot.getPreferredRecipe(id) != null)).toList();
         return new CatalogPage(entries, page, totalPages);
+    }
+
+    private static boolean isCatalogCraftable(DepotSavedData depot, Set<ResourceLocation> automatic,
+            ResourceLocation itemId) {
+        return automatic.contains(itemId) || depot.getPreferredRecipe(itemId) != null || depot.getCount(itemId) > 0;
     }
 
     public static Preview preview(ServerPlayer player, DepotSavedData depot, Item target, int requested) {
@@ -485,8 +492,14 @@ public final class DepotCraftingService {
                 AvailableRecipe candidate = new AvailableRecipe(holder.id(), recipe, output.copy(), processing);
                 // A recipe with no deterministic machine target must be imported via
                 // the JEI bridge. Never send it to an arbitrary item handler.
-                if (!output.isEmpty() && output.getCount() > 0 && !recipe.getIngredients().isEmpty()
-                        && (!processing || !machineTypes(candidate).isEmpty())) {
+                // Check route support before touching ingredients. Some third-party processing
+                // recipes expose cached, immutable ingredient stacks (for example when
+                // AllTheLeaks ingredient deduplication is enabled). Unsupported recipe types
+                // are imported through the JEI bridge, so inspecting their ingredients here is
+                // both unnecessary and can throw ATLUnsupportedOperation.
+                if (!output.isEmpty() && output.getCount() > 0
+                        && (!processing || !machineTypes(candidate).isEmpty())
+                        && !recipe.getIngredients().isEmpty()) {
                     result.add(candidate);
                 }
             }

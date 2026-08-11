@@ -23,6 +23,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.integration.DepotStorageBridge;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -52,6 +53,7 @@ public class DepotSavedData extends SavedData {
 
     // ===== Stored items =====
     private final Object2LongMap<ResourceLocation> counts = new Object2LongOpenHashMap<>();
+    private transient @Nullable DepotStorageBridge storageBridge;
 
     public record Entry(ResourceLocation itemId, long count) {}
     public record SlotEntry(ResourceLocation itemId, long count) {}
@@ -341,6 +343,11 @@ public class DepotSavedData extends SavedData {
 
     /** Doubles capacity per upgrade (BASE * 2^upgradeLevel). */
     public long getCapacity() {
+        if (activeStorageBridge() != null) return Long.MAX_VALUE;
+        return getLocalCapacity();
+    }
+
+    public long getLocalCapacity() {
         long baseCapacity = CrystalnexusConfig.MACHINES.depotBaseCapacity();
         if (upgradeLevel >= 63 || baseCapacity > (Long.MAX_VALUE >> upgradeLevel)) return Long.MAX_VALUE;
         return baseCapacity << upgradeLevel;
@@ -349,8 +356,7 @@ public class DepotSavedData extends SavedData {
     /** Total items stored (sum of all counts). */
     public long getUsed() {
         long sum = 0L;
-        for (var e : counts.object2LongEntrySet()) {
-            long v = e.getLongValue();
+        for (long v : combinedCounts().values()) {
             if (v > 0) {
                 if (v > Long.MAX_VALUE - sum) return Long.MAX_VALUE;
                 sum += v;
@@ -369,6 +375,22 @@ public class DepotSavedData extends SavedData {
         return Math.max(0L, free);
     }
 
+    public long getLocalFree() {
+        long used = 0L;
+        for (var entry : counts.object2LongEntrySet()) {
+            long count = entry.getLongValue();
+            if (count <= 0) continue;
+            if (count > Long.MAX_VALUE - used) return 0L;
+            used += count;
+        }
+        if (craftingJob != null) {
+            long reserved = craftingJob.reservedSpace();
+            if (reserved > Long.MAX_VALUE - used) return 0L;
+            used += reserved;
+        }
+        return Math.max(0L, getLocalCapacity() - used);
+    }
+
     public boolean canInsert(long amount) {
         if (amount <= 0) return true;
         return amount <= getFree();
@@ -376,7 +398,7 @@ public class DepotSavedData extends SavedData {
 
     /** @return whether the depot was upgraded. */
     public boolean addUpgrade() {
-        if (upgradeLevel >= MAX_UPGRADE_LEVEL || getCapacity() == Long.MAX_VALUE) return false;
+        if (upgradeLevel >= MAX_UPGRADE_LEVEL || getLocalCapacity() == Long.MAX_VALUE) return false;
         upgradeLevel++;
         setDirty();
         return true;
@@ -747,15 +769,22 @@ public class DepotSavedData extends SavedData {
     // ===== Storage API (SAFE) =====
 
     public long getCount(ResourceLocation itemId) {
-        return counts.getLong(itemId);
+        long local = getLocalCount(itemId);
+        if (!accepts(itemId)) return local;
+        DepotStorageBridge bridge = activeStorageBridge();
+        return bridge == null ? local : saturatedAdd(local, bridge.getCount(itemId));
+    }
+
+    public long getLocalCount(ResourceLocation itemId) {
+        return itemId == null ? 0L : counts.getLong(itemId);
     }
 
     public void fillStackedContents(StackedContents contents) {
-        counts.object2LongEntrySet().forEach(entry -> {
-            Item item = BuiltInRegistries.ITEM.get(entry.getKey());
-            if (item == null || item == net.minecraft.world.item.Items.AIR || entry.getLongValue() <= 0) return;
+        combinedCounts().forEach((itemId, count) -> {
+            Item item = BuiltInRegistries.ITEM.get(itemId);
+            if (item == null || item == net.minecraft.world.item.Items.AIR || count <= 0) return;
             ItemStack stack = new ItemStack(item);
-            stack.setCount((int) Math.min(Integer.MAX_VALUE, entry.getLongValue()));
+            stack.setCount((int) Math.min(Integer.MAX_VALUE, count));
             contents.accountStack(stack, Integer.MAX_VALUE);
         });
     }
@@ -768,7 +797,16 @@ public class DepotSavedData extends SavedData {
         if (amount <= 0) return 0;
         if (!accepts(itemId)) return 0;
 
-        long free = getFree();
+        long inserted = 0L;
+        DepotStorageBridge bridge = activeStorageBridge();
+        if (bridge != null) inserted = Math.min(amount, Math.max(0L, bridge.insert(itemId, amount)));
+        long remaining = amount - inserted;
+        return saturatedAdd(inserted, depositLocal(itemId, remaining));
+    }
+
+    public long depositLocal(ResourceLocation itemId, long amount) {
+        if (amount <= 0 || !accepts(itemId)) return 0;
+        long free = getLocalFree();
         long toAdd = Math.min(free, amount);
         if (toAdd <= 0) return 0;
 
@@ -818,6 +856,13 @@ public class DepotSavedData extends SavedData {
     public void add(ResourceLocation itemId, long amount) {
         if (amount <= 0) return;
         if (itemId == null) return;
+        DepotStorageBridge bridge = accepts(itemId) ? activeStorageBridge() : null;
+        long inserted = bridge == null ? 0L : Math.min(amount, Math.max(0L, bridge.insert(itemId, amount)));
+        addLocal(itemId, amount - inserted);
+    }
+
+    public void addLocal(ResourceLocation itemId, long amount) {
+        if (amount <= 0 || itemId == null) return;
         counts.put(itemId, counts.getLong(itemId) + amount);
         setDirty();
     }
@@ -825,6 +870,15 @@ public class DepotSavedData extends SavedData {
     public long remove(ResourceLocation itemId, long amount) {
         if (amount <= 0) return 0;
         if (itemId == null) return 0;
+
+        DepotStorageBridge bridge = activeStorageBridge();
+        long extracted = bridge == null ? 0L : Math.min(amount, Math.max(0L, bridge.extract(itemId, amount)));
+        long remaining = amount - extracted;
+        return saturatedAdd(extracted, removeLocal(itemId, remaining));
+    }
+
+    public long removeLocal(ResourceLocation itemId, long amount) {
+        if (amount <= 0 || itemId == null) return 0;
 
         long have = counts.getLong(itemId);
         long take = Math.min(have, amount);
@@ -853,6 +907,14 @@ public class DepotSavedData extends SavedData {
         return List.copyOf(filteredEntries(""));
     }
 
+    public List<Entry> localEntries() {
+        List<Entry> local = new ArrayList<>();
+        counts.object2LongEntrySet().forEach(entry -> {
+            if (entry.getLongValue() > 0) local.add(new Entry(entry.getKey(), entry.getLongValue()));
+        });
+        return List.copyOf(local);
+    }
+
     private List<Entry> filteredEntries(String search) {
         String raw = (search == null ? "" : search).trim().toLowerCase(Locale.ROOT);
 
@@ -875,8 +937,8 @@ public class DepotSavedData extends SavedData {
 
         List<Entry> all = new ArrayList<>();
 
-        for (var e : counts.object2LongEntrySet()) {
-            long count = e.getLongValue();
+        for (var e : combinedCounts().entrySet()) {
+            long count = e.getValue();
             if (count <= 0) continue;
 
             ResourceLocation id = e.getKey();
@@ -897,5 +959,38 @@ public class DepotSavedData extends SavedData {
                 .comparingLong(DepotSavedData.Entry::count).reversed()
                 .thenComparing(a -> a.itemId().toString()));
         return all;
+    }
+
+    public void setStorageBridge(@Nullable DepotStorageBridge bridge) {
+        storageBridge = bridge;
+    }
+
+    public boolean hasStorageBridge(DepotStorageBridge bridge) {
+        return storageBridge == bridge && bridge != null && bridge.isConnected();
+    }
+
+    private @Nullable DepotStorageBridge activeStorageBridge() {
+        DepotStorageBridge bridge = storageBridge;
+        if (bridge == null || !bridge.isConnected()) {
+            storageBridge = null;
+            return null;
+        }
+        return bridge;
+    }
+
+    private Map<ResourceLocation, Long> combinedCounts() {
+        Map<ResourceLocation, Long> result = new ConcurrentHashMap<>();
+        counts.object2LongEntrySet().forEach(entry -> {
+            if (entry.getLongValue() > 0) result.put(entry.getKey(), entry.getLongValue());
+        });
+        DepotStorageBridge bridge = activeStorageBridge();
+        if (bridge != null) {
+            bridge.snapshot().forEach((id, count) -> {
+                if (accepts(id) && count != null && count > 0) {
+                    result.merge(id, count, DepotSavedData::saturatedAdd);
+                }
+            });
+        }
+        return result;
     }
 }

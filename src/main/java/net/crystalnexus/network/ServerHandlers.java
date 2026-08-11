@@ -51,7 +51,7 @@ public class ServerHandlers {
             try {
                 switch (msg.action()) {
                     case CATALOG -> sendCrafting(player, S2C_DepotCraftingResponse.catalog(menu.containerId,
-                            DepotCraftingService.catalog(player, depot, msg.search(), msg.page())));
+                            DepotCraftingService.catalog(player, depot, msg.search(), msg.page(), msg.craftableOnly())));
                     case PREVIEW -> {
                         Item target = validItem(msg.targetId());
                         if (target == null || msg.amount() <= 0 || msg.amount() > DepotCliCommandRegistry.MAX_QUANTITY) {

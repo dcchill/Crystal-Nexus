@@ -12,11 +12,11 @@
       "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunProgramArgs.txt"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunVmArgs.txt",
-        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -34,11 +34,11 @@
       "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunVmArgs.txt",
-        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},
@@ -56,11 +56,11 @@
       "projectName": "Crystal-Nexus",
       "mainClass": "net.neoforged.devlaunch.Main",
       "args": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunProgramArgs.txt"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunProgramArgs.txt"
       ],
       "vmArgs": [
-        "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunVmArgs.txt",
-        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
+        "@C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\daria\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
       "cwd": "${workspaceFolder}\\run",
       "env": {},

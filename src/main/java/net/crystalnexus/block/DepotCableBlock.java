@@ -39,6 +39,8 @@ public class DepotCableBlock extends Block {
     public static final EnumProperty<DepotCableMode> MODE = EnumProperty.create("mode", DepotCableMode.class);
     public static final TagKey<Block> COMPONENTS = BlockTags.create(
             ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "depot_components"));
+    private static final ResourceLocation AE2_CONTROLLER =
+            ResourceLocation.fromNamespaceAndPath("ae2", "controller");
     private static final VoxelShape CORE = Block.box(6, 6, 6, 10, 10, 10);
     private static final VoxelShape ARM_NORTH = Block.box(6, 6, 0, 10, 10, 6);
     private static final VoxelShape ARM_SOUTH = Block.box(6, 6, 10, 10, 10, 16);
@@ -82,9 +84,13 @@ public class DepotCableBlock extends Block {
     private boolean connects(LevelAccessor level, BlockPos pos, Direction direction) {
         BlockPos neighborPos = pos.relative(direction);
         BlockState neighbor = level.getBlockState(neighborPos);
-        return neighbor.is(this) || neighbor.is(COMPONENTS)
+        return neighbor.is(this) || neighbor.is(COMPONENTS) || isAe2Controller(neighbor)
                 || level instanceof ServerLevel serverLevel
                 && DepotNetwork.hasItemHandler(serverLevel, neighborPos);
+    }
+
+    public static boolean isAe2Controller(BlockState state) {
+        return AE2_CONTROLLER.equals(BuiltInRegistries.BLOCK.getKey(state.getBlock()));
     }
 
     @Override
@@ -133,7 +139,7 @@ public class DepotCableBlock extends Block {
         return state.hasProperty(MODE) && state.getValue(MODE) == DepotCableMode.IMPORT;
     }
 
-        private void importFromNeighbors(ServerLevel level, BlockPos pos) {
+    private void importFromNeighbors(ServerLevel level, BlockPos pos) {
         var owner = DepotNetwork.componentOwner(level, pos);
         if (owner == null) return;
 
@@ -165,7 +171,7 @@ public class DepotCableBlock extends Block {
             if (handler == null) continue;
 
             for (int slot = 0; slot < handler.getSlots(); slot++) {
-                if (remaining <= 0 || depot.getFree() <= 0) return;
+                if (remaining <= 0) return;
 
                 ItemStack simulated = handler.extractItem(slot, remaining, true);
                 if (simulated.isEmpty()) continue;

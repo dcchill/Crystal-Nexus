@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.fml.ModList;
 
 import java.util.UUID;
 
@@ -38,6 +39,10 @@ public class DepotControllerBlockEntity extends BlockEntity {
         if (state.getValue(DepotControllerBlock.POWERED) != controller.active) {
             level.setBlock(pos, state.setValue(DepotControllerBlock.POWERED, controller.active), 3);
         }
+        if (level.getGameTime() % 20 == 0 && ModList.get().isLoaded("ae2")) {
+            if (controller.active && depot != null) Ae2Compat.sync(level, pos, depot);
+            else if (depot != null) Ae2Compat.disconnect(depot);
+        }
     }
 
     public boolean isPowered() {
@@ -62,6 +67,15 @@ public class DepotControllerBlockEntity extends BlockEntity {
     public int getPowerDraw() {
         if (!(level instanceof ServerLevel serverLevel)) return ENERGY_PER_TICK;
         return ENERGY_PER_TICK + DepotNetwork.poweredComponentCount(serverLevel, worldPosition) * ENERGY_PER_COMPONENT;
+    }
+
+    @Override
+    public void setRemoved() {
+        if (owner != null && level instanceof ServerLevel serverLevel && ModList.get().isLoaded("ae2")) {
+            DepotSavedData depot = DepotSavedData.get(serverLevel, owner);
+            if (depot != null) Ae2Compat.disconnect(depot);
+        }
+        super.setRemoved();
     }
 
     @Override
@@ -95,6 +109,17 @@ public class DepotControllerBlockEntity extends BlockEntity {
             energy -= amount;
             setChanged();
             return true;
+        }
+    }
+
+    /** Keeps AE2 classes out of this block entity's eager class-loading path. */
+    private static final class Ae2Compat {
+        private static void sync(ServerLevel level, BlockPos controllerPos, DepotSavedData depot) {
+            net.crystalnexus.integration.ae2.Ae2DepotIntegration.sync(level, controllerPos, depot);
+        }
+
+        private static void disconnect(DepotSavedData depot) {
+            net.crystalnexus.integration.ae2.Ae2DepotIntegration.disconnect(depot);
         }
     }
 }

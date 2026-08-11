@@ -12,6 +12,7 @@ import net.crystalnexus.world.inventory.DepotCliMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,6 +60,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private Button startButton;
     private Button cancelButton;
     private Button automaticButton;
+    private Checkbox craftableOnlyCheckbox;
     private Tab tab = Tab.CRAFTING;
     private ResourceLocation selectedTarget;
     private int selectedNodeId;
@@ -73,6 +75,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private int refreshDelay;
     private String lastCatalogQuery;
     private int lastCatalogPage = -1;
+    private boolean lastCatalogCraftableOnly;
+    private boolean craftableOnly = true;
     private boolean terminalStarted;
     private boolean applyingSuggestion;
     private String message = "Select an item to preview its crafting tree.";
@@ -95,6 +99,15 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 .bounds(leftPos + 8, topPos + 5, 72, 18).build());
         terminalTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.terminal"), button -> setTab(Tab.TERMINAL))
                 .bounds(leftPos + 82, topPos + 5, 72, 18).build());
+        craftableOnlyCheckbox = addRenderableWidget(Checkbox.builder(
+                        Component.translatable("gui.crystalnexus.depot_cli.craftable_only"), font)
+                .pos(leftPos + 160, topPos + 5)
+                .selected(craftableOnly)
+                .onValueChange((checkbox, selected) -> {
+                    craftableOnly = selected;
+                    catalogPage = 0;
+                    requestCatalog(true);
+                }).build());
         searchInput = new EditBox(font, leftPos + 8, topPos + 31, 126, 16,
                 Component.translatable("gui.crystalnexus.depot_cli.search"));
         searchInput.setHint(Component.translatable("gui.crystalnexus.depot_cli.search"));
@@ -151,6 +164,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         startButton.visible = crafting;
         cancelButton.visible = crafting && menu.hasJob();
         automaticButton.visible = crafting;
+        craftableOnlyCheckbox.visible = crafting;
         terminalInput.visible = !crafting;
         craftingTab.active = !crafting;
         terminalTab.active = crafting;
@@ -474,12 +488,14 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private void requestCatalog(boolean force) {
         if (tab != Tab.CRAFTING) return;
         String query = searchInput == null ? "" : searchInput.getValue();
-        if (!force && query.equals(lastCatalogQuery) && catalogPage == lastCatalogPage) return;
+        if (!force && query.equals(lastCatalogQuery) && catalogPage == lastCatalogPage
+                && craftableOnly == lastCatalogCraftableOnly) return;
         lastCatalogQuery = query;
         lastCatalogPage = catalogPage;
+        lastCatalogCraftableOnly = craftableOnly;
         PacketDistributor.sendToServer(new C2S_DepotCraftingRequest(menu.containerId,
                 C2S_DepotCraftingRequest.Action.CATALOG, query,
-                catalogPage, C2S_DepotCraftingRequest.NONE, 0, C2S_DepotCraftingRequest.NONE,
+                catalogPage, craftableOnly, C2S_DepotCraftingRequest.NONE, 0, C2S_DepotCraftingRequest.NONE,
                 C2S_DepotCraftingRequest.NONE, 0));
     }
 

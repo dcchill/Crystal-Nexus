@@ -43,6 +43,13 @@ enumExtensions="META-INF/enumextensions.json"
     ordering="NONE"
     side="BOTH"
 
+[[dependencies.crystalnexus]]
+    modId="ae2"
+    type="optional"
+    versionRange="[19.2.0,20.0.0)"
+    ordering="AFTER"
+    side="BOTH"
+
 
 # Start of user code block dependencies configuration
 # End of user code block dependencies configuration
