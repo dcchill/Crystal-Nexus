@@ -162,9 +162,11 @@ public final class DepotGameTests {
         helper.assertTrue(!lampPreview.success()
                         && lampPreview.details().stream().anyMatch(detail -> detail.toLowerCase().contains("redstone"))
                         && lampPreview.details().stream().noneMatch(detail -> detail.toLowerCase().contains("glowstone dust"))
+                        && lampPreview.nodes().stream().filter(node -> node.itemId().equals(Items.REDSTONE.builtInRegistryHolder().key().location()))
+                        .anyMatch(node -> node.required() == 4 && node.source() == DepotCraftingService.PreviewSource.MISSING)
                         && lampPreview.nodes().stream().anyMatch(node -> node.itemId().equals(glowstoneDust)
                         && node.source() == DepotCraftingService.PreviewSource.STORED),
-                "A failed branch must report the later missing ingredient, not an ingredient already stored in the depot: "
+                "A failed branch must aggregate repeated slots and report the later missing ingredient, not an ingredient already stored in the depot: "
                         + lampPreview.details());
         playerDepot.remove(glowstoneDust, Long.MAX_VALUE);
         DepotCliCommandRegistry.INSTANCE.execute(context, "machine balance on");

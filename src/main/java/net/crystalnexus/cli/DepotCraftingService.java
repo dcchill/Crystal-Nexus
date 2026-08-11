@@ -363,13 +363,15 @@ public final class DepotCraftingService {
                 depot.getPreferredMachine(itemId), alternatives));
         if (storedEnough || route == null || circular || !path.add(itemId)) return;
         long crafts = (required + Math.max(1, route.output().getCount()) - 1) / Math.max(1, route.output().getCount());
+        Map<ResourceLocation, Long> inputs = new java.util.LinkedHashMap<>();
         for (DepotJeiRecipeCache.Slot slot : route.inputs()) {
             DepotJeiRecipeCache.StackRef input = slot.alternatives().stream().max(Comparator
                     .comparingLong(stack -> depot.getCount(stack.itemId()))).orElse(null);
             if (input == null) continue;
             long childRequired = multiplyBounded(input.count(), crafts);
-            appendFailedPreviewNode(player, depot, input.itemId(), childRequired, id, path, result);
+            inputs.merge(input.itemId(), childRequired, DepotSavedData::saturatedAdd);
         }
+        inputs.forEach((inputId, amount) -> appendFailedPreviewNode(player, depot, inputId, amount, id, path, result));
         path.remove(itemId);
     }
 
