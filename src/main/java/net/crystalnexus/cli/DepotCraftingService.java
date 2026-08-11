@@ -331,7 +331,20 @@ public final class DepotCraftingService {
         Set<ResourceLocation> connected = DepotNetwork.processingMachines(player).stream()
                 .map(endpoint -> BuiltInRegistries.BLOCK.getKey(endpoint.level().getBlockState(endpoint.pos()).getBlock()))
                 .collect(java.util.stream.Collectors.toSet());
-        return visualRecipeChoices(player, depot, item).stream().limit(8).map(choice -> new RecipeChoice(choice.id(),
+        List<RecipeChoice> choices = visualRecipeChoices(player, depot, item);
+        Set<ResourceLocation> visible = new LinkedHashSet<>();
+        ResourceLocation preferred = depot.getPreferredRecipe(BuiltInRegistries.ITEM.getKey(item));
+        if (preferred != null) visible.add(preferred);
+        Set<String> categories = new HashSet<>();
+        for (RecipeChoice choice : choices) {
+            if (categories.add(choice.processing() + ":" + choice.category().toLowerCase(java.util.Locale.ROOT)))
+                visible.add(choice.id());
+        }
+        for (RecipeChoice choice : choices) {
+            if (visible.size() >= 8) break;
+            visible.add(choice.id());
+        }
+        return choices.stream().filter(choice -> visible.contains(choice.id())).limit(8).map(choice -> new RecipeChoice(choice.id(),
                 choice.output(), choice.processing(), choice.category(), choice.inputs(),
                 choice.machineTypes().stream().filter(connected::contains).toList())).toList();
     }

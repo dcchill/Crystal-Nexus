@@ -2,6 +2,9 @@ package net.crystalnexus.item;
 
 import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.DepotCableMode;
+import net.crystalnexus.block.PipeStraightBlock;
+import net.crystalnexus.block.entity.PipeStraightBlockEntity;
+import net.crystalnexus.util.WrenchLinePlacement;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,6 +47,27 @@ public class CrystalWrenchItem extends Item {
 
         if (player == null) {
             return InteractionResult.PASS;
+        }
+
+        InteractionResult linePlacement = WrenchLinePlacement.use(context);
+        if (linePlacement != InteractionResult.PASS) {
+            return linePlacement;
+        }
+
+        if (level.getBlockState(pos).getBlock() instanceof PipeStraightBlock) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof PipeStraightBlockEntity pipe) {
+                Direction side = PipeStraightBlock.connectionAt(
+                    level.getBlockState(pos), pos, context.getClickLocation(), context.getClickedFace());
+                int mode = pipe.cycleSideMode(side);
+                player.displayClientMessage(Component.literal("Fluid pipe " + side.getName() + ": "
+                    + switch (mode) {
+                        case 1 -> "INPUT";
+                        case 2 -> "OUTPUT";
+                        default -> "DEFAULT";
+                    }), true);
+                playWrenchSound(level, pos);
+            }
+            return InteractionResult.SUCCESS;
         }
 
         if (player.isShiftKeyDown()) {
@@ -745,6 +769,12 @@ public class CrystalWrenchItem extends Item {
         tooltip.add(
                 Component.literal(
                         "§7Shift+Right-click: Dismantle machines, block entities, and cables"
+                )
+        );
+
+        tooltip.add(
+                Component.literal(
+                        "§7Block offhand: Select two points; sneak-use cycles direction"
                 )
         );
     }

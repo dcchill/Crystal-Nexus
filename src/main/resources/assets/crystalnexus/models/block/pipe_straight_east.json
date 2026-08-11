@@ -1,0 +1,5 @@
+{
+  "render_type": "translucent",
+  "parent": "crystalnexus:block/energy_cable_east",
+  "textures": { "texture": "crystalnexus:block/fluid_pipe" }
+}

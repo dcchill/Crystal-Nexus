@@ -404,7 +404,7 @@
   "item.crystalnexus.carbon_leggings": "Carbon Leggings",
   "item.crystalnexus.carbon_chestplate": "Carbon Chestplate",
   "item.crystalnexus.carbon_boots": "Carbon Boots",
-  "block.crystalnexus.pipe_straight": "Pipe Straight",
+  "block.crystalnexus.pipe_straight": "Fluid Pipe",
   "block.crystalnexus.pipe_junction": "Pipe Junction",
   "block.crystalnexus.pipe_junction.description_0": "§5Works like a splitter / corner for pipes.  Does not push fluid to nearby machines or tanks.",
   "fluid_type.crystalnexus.steam": "Steam",

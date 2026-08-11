@@ -150,8 +150,7 @@ public class PipeJunctionBlockEntity extends RandomizableContainerBlockEntity im
 		for (Direction direction : Direction.values()) {
 			BlockPos neighborPos = pos.relative(direction);
 			BlockState neighborState = level.getBlockState(neighborPos);
-			if (!(neighborState.getBlock() instanceof PipeStraightBlock)
-					|| neighborState.getValue(PipeStraightBlock.FACING) != direction) continue;
+			if (!(neighborState.getBlock() instanceof PipeStraightBlock)) continue;
 
 			IFluidHandler handler = level.getCapability(
 					Capabilities.FluidHandler.BLOCK, neighborPos, direction.getOpposite());

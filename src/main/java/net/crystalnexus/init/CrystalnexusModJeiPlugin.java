@@ -45,6 +45,7 @@ import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipeCategory;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipeCategory;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
+import net.crystalnexus.util.CrushingRecipeSupport;
 
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -117,8 +118,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(BeamReactionRecipe_Type, BeamReactionRecipeRecipes);
 		List<UnfurnaceRecipe> UnfurnaceRecipes = recipes(recipeManager, UnfurnaceRecipe.class);
 		registration.addRecipes(Unfurnace_Type, UnfurnaceRecipes);
-		List<OreCrushingJeiRecipe> OreCrushingJeiRecipes = recipes(recipeManager, OreCrushingJeiRecipe.class);
-		registration.addRecipes(OreCrushingJei_Type, OreCrushingJeiRecipes);
+		registration.addRecipes(OreCrushingJei_Type, CrushingRecipeSupport.jeiRecipes(Minecraft.getInstance().level));
 		List<DustSeperationRecipe> DustSeperationRecipes = recipes(recipeManager, DustSeperationRecipe.class);
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
 		List<ReactorMultiblockGuideRecipe> ReactorMultiblockGuideRecipes = recipes(recipeManager, ReactorMultiblockGuideRecipe.class);

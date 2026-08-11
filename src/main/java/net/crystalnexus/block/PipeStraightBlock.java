@@ -1,144 +1,145 @@
 package net.crystalnexus.block;
 
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Containers;
-import net.minecraft.util.RandomSource;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-
-import net.crystalnexus.procedures.PipeStraightOnTickUpdateProcedure;
-import net.crystalnexus.procedures.PipeStraightBlockAddedProcedure;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
+import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeStraightBlock extends Block implements EntityBlock {
-	public static final DirectionProperty FACING = DirectionalBlock.FACING;
+    public static final BooleanProperty NORTH = BooleanProperty.create("north");
+    public static final BooleanProperty EAST = BooleanProperty.create("east");
+    public static final BooleanProperty SOUTH = BooleanProperty.create("south");
+    public static final BooleanProperty WEST = BooleanProperty.create("west");
+    public static final BooleanProperty UP = BooleanProperty.create("up");
+    public static final BooleanProperty DOWN = BooleanProperty.create("down");
 
-	public PipeStraightBlock() {
-		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 11f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-	}
+    private static final VoxelShape CORE = box(5, 5, 5, 11, 11, 11);
+    private static final VoxelShape ARM_NORTH = box(5, 5, 0, 11, 11, 5);
+    private static final VoxelShape ARM_SOUTH = box(5, 5, 11, 11, 11, 16);
+    private static final VoxelShape ARM_WEST = box(0, 5, 5, 5, 11, 11);
+    private static final VoxelShape ARM_EAST = box(11, 5, 5, 16, 11, 11);
+    private static final VoxelShape ARM_DOWN = box(5, 0, 5, 11, 5, 11);
+    private static final VoxelShape ARM_UP = box(5, 11, 5, 11, 16, 11);
 
-	@Override
-	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-		return true;
-	}
+    public PipeStraightBlock() {
+        super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 11f).noOcclusion()
+            .isRedstoneConductor((state, level, pos) -> false));
+        registerDefaultState(stateDefinition.any()
+            .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false)
+            .setValue(WEST, false).setValue(UP, false).setValue(DOWN, false));
+    }
 
-	@Override
-	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
-		return 0;
-	}
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN);
+    }
 
-	@Override
-	public VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return Shapes.empty();
-	}
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return updateConnections(context.getLevel(), context.getClickedPos(), defaultBlockState());
+    }
 
-	@Override
-	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-		return switch (state.getValue(FACING)) {
-			default -> Shapes.or(box(4, 4, 0, 12, 12, 2), box(4, 4, 14, 12, 12, 16), box(5, 5, 2, 11, 11, 14));
-			case NORTH -> Shapes.or(box(4, 4, 14, 12, 12, 16), box(4, 4, 0, 12, 12, 2), box(5, 5, 2, 11, 11, 14));
-			case EAST -> Shapes.or(box(0, 4, 4, 2, 12, 12), box(14, 4, 4, 16, 12, 12), box(2, 5, 5, 14, 11, 11));
-			case WEST -> Shapes.or(box(14, 4, 4, 16, 12, 12), box(0, 4, 4, 2, 12, 12), box(2, 5, 5, 14, 11, 11));
-			case UP -> Shapes.or(box(4, 0, 4, 12, 2, 12), box(4, 14, 4, 12, 16, 12), box(5, 2, 5, 11, 14, 11));
-			case DOWN -> Shapes.or(box(4, 14, 4, 12, 16, 12), box(4, 0, 4, 12, 2, 12), box(5, 2, 5, 11, 14, 11));
-		};
-	}
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState,
+                                  LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        return updateConnections(level, pos, state);
+    }
 
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-		super.createBlockStateDefinition(builder);
-		builder.add(FACING);
-	}
-	
-	@Override
-	public BlockState getStateForPlacement(BlockPlaceContext context) {
-	    return this.defaultBlockState()
-	        .setValue(FACING, context.getNearestLookingDirection());
-	}
+    private BlockState updateConnections(LevelAccessor level, BlockPos pos, BlockState state) {
+        for (Direction direction : Direction.values()) {
+            state = state.setValue(property(direction), canConnect(level, pos.relative(direction), direction));
+        }
+        return state;
+    }
 
-	public BlockState rotate(BlockState state, Rotation rot) {
-		return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-	}
+    private boolean canConnect(LevelAccessor level, BlockPos neighborPos, Direction direction) {
+        if (level.getBlockState(neighborPos).getBlock() instanceof PipeStraightBlock) return true;
+        if (level instanceof Level actualLevel) {
+            if (actualLevel.getCapability(Capabilities.FluidHandler.BLOCK,
+                neighborPos, direction.getOpposite()) != null
+                || actualLevel.getCapability(Capabilities.FluidHandler.BLOCK, neighborPos, null) != null) return true;
+            for (Direction side : Direction.values()) {
+                if (actualLevel.getCapability(Capabilities.FluidHandler.BLOCK, neighborPos, side) != null) return true;
+            }
+        }
+        return false;
+    }
 
-	public BlockState mirror(BlockState state, Mirror mirrorIn) {
-		return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-	}
+    public static BooleanProperty property(Direction direction) {
+        return switch (direction) {
+            case NORTH -> NORTH;
+            case EAST -> EAST;
+            case SOUTH -> SOUTH;
+            case WEST -> WEST;
+            case UP -> UP;
+            case DOWN -> DOWN;
+        };
+    }
 
-	@Override
-	public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-		super.onPlace(blockstate, world, pos, oldState, moving);
-		world.scheduleTick(pos, this, 1);
-		PipeStraightBlockAddedProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ(), blockstate);
-	}
+    public static Direction connectionAt(BlockState state, BlockPos pos, Vec3 hit, Direction fallback) {
+        double x = hit.x - pos.getX() - 0.5;
+        double y = hit.y - pos.getY() - 0.5;
+        double z = hit.z - pos.getZ() - 0.5;
+        double best = 3.0 / 16.0;
+        Direction selected = null;
+        for (Direction direction : Direction.values()) {
+            if (!state.getValue(property(direction))) continue;
+            double distance = x * direction.getStepX() + y * direction.getStepY() + z * direction.getStepZ();
+            if (distance > best) {
+                best = distance;
+                selected = direction;
+            }
+        }
+        return selected == null ? fallback : selected;
+    }
 
-	@Override
-	public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
-		super.tick(blockstate, world, pos, random);
-		PipeStraightOnTickUpdateProcedure.execute(world, pos, blockstate);
-		world.scheduleTick(pos, this, 1);
-	}
+    @Override
+    public VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGetter level,
+                               BlockPos pos, CollisionContext context) {
+        VoxelShape shape = CORE;
+        if (state.getValue(NORTH)) shape = Shapes.or(shape, ARM_NORTH);
+        if (state.getValue(SOUTH)) shape = Shapes.or(shape, ARM_SOUTH);
+        if (state.getValue(WEST)) shape = Shapes.or(shape, ARM_WEST);
+        if (state.getValue(EAST)) shape = Shapes.or(shape, ARM_EAST);
+        if (state.getValue(DOWN)) shape = Shapes.or(shape, ARM_DOWN);
+        if (state.getValue(UP)) shape = Shapes.or(shape, ARM_UP);
+        return shape;
+    }
 
-	@Override
-	public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
-		BlockEntity tileEntity = worldIn.getBlockEntity(pos);
-		return tileEntity instanceof MenuProvider menuProvider ? menuProvider : null;
-	}
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos) {
+        return true;
+    }
 
-	@Override
-	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-		return new PipeStraightBlockEntity(pos, state);
-	}
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new PipeStraightBlockEntity(pos, state);
+    }
 
-	@Override
-	public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-		super.triggerEvent(state, world, pos, eventID, eventParam);
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
-	}
-
-	@Override
-	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-		if (state.getBlock() != newState.getBlock()) {
-			BlockEntity blockEntity = world.getBlockEntity(pos);
-			if (blockEntity instanceof PipeStraightBlockEntity be) {
-				Containers.dropContents(world, pos, be);
-				world.updateNeighbourForOutputSignal(pos, this);
-			}
-			super.onRemove(state, world, pos, newState, isMoving);
-		}
-	}
-
-	@Override
-	public boolean hasAnalogOutputSignal(BlockState state) {
-		return true;
-	}
-
-	@Override
-	public int getAnalogOutputSignal(BlockState blockState, Level world, BlockPos pos) {
-		BlockEntity tileentity = world.getBlockEntity(pos);
-		if (tileentity instanceof PipeStraightBlockEntity be)
-			return AbstractContainerMenu.getRedstoneSignalFromContainer(be);
-		else
-			return 0;
-	}
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(
+        Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide || type != CrystalnexusModBlockEntities.PIPE_STRAIGHT.get()) return null;
+        return (tickLevel, pos, tickState, blockEntity) ->
+            ((PipeStraightBlockEntity) blockEntity).serverTick();
+    }
 }

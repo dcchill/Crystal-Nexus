@@ -1,27 +1,11 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "crystalnexus:block/pipe_straight"
-    },
-    "facing=east": {
-      "model": "crystalnexus:block/pipe_straight",
-      "y": 90
-    },
-    "facing=south": {
-      "model": "crystalnexus:block/pipe_straight",
-      "y": 180
-    },
-    "facing=west": {
-      "model": "crystalnexus:block/pipe_straight",
-      "y": 270
-    },
-    "facing=up": {
-      "model": "crystalnexus:block/pipe_straight",
-      "x": 270
-    },
-    "facing=down": {
-      "model": "crystalnexus:block/pipe_straight",
-      "x": 90
-    }
-  }
+  "multipart": [
+    { "apply": { "model": "crystalnexus:block/pipe_straight_core" } },
+    { "when": { "north": true }, "apply": { "model": "crystalnexus:block/pipe_straight_north" } },
+    { "when": { "south": true }, "apply": { "model": "crystalnexus:block/pipe_straight_south" } },
+    { "when": { "east": true }, "apply": { "model": "crystalnexus:block/pipe_straight_east" } },
+    { "when": { "west": true }, "apply": { "model": "crystalnexus:block/pipe_straight_west" } },
+    { "when": { "up": true }, "apply": { "model": "crystalnexus:block/pipe_straight_up" } },
+    { "when": { "down": true }, "apply": { "model": "crystalnexus:block/pipe_straight_down" } }
+  ]
 }

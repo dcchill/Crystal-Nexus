@@ -134,6 +134,7 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
 
     private static int categoryPriority(ResourceLocation id) {
         return switch (id.toString()) {
+            case "crystalnexus:ore_crushing_jei" -> 0;
             case "mekanism:metallurgic_infusing" -> 0;
             case "ae2:inscriber" -> 1;
             default -> id.getNamespace().equals("mekanism") ? 2 : 10;
@@ -174,6 +175,7 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
 
     private static List<ResourceLocation> inferredMachines(ResourceLocation categoryId) {
         return switch (categoryId.toString()) {
+            case "crystalnexus:ore_crushing_jei" -> List.of(ResourceLocation.parse("crystalnexus:crystal_crusher"));
             case "ae2:inscriber" -> List.of(ResourceLocation.parse("ae2:inscriber"));
             case "mekanism:enriching" -> List.of(ResourceLocation.parse("mekanism:enrichment_chamber"));
             case "mekanism:smelting" -> List.of(ResourceLocation.parse("mekanism:energized_smelter"));

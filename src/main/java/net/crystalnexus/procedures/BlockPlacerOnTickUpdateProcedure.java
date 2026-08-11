@@ -1,85 +1,64 @@
 package net.crystalnexus.procedures;
 
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.common.util.FakePlayerFactory;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
+import net.crystalnexus.block.BlockPlacerBlock;
+
 public class BlockPlacerOnTickUpdateProcedure {
+	private static final int ENERGY_PER_USE = 256;
+
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		double yOffset = 0;
-		double xOffset = 0;
-		double T = 0;
-		double zOffset = 0;
-		double energy = 0;
-		double outputAmount = 0;
-		double cookTime = 0;
-		if (("up").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = 0;
-			yOffset = 1;
-			zOffset = 0;
+		BlockPos placerPos = BlockPos.containing(x, y, z);
+		if (world instanceof ServerLevel level && getEnergyStored(level, placerPos, null) >= ENERGY_PER_USE
+				&& level.getCapability(Capabilities.ItemHandler.BLOCK, placerPos, null) instanceof IItemHandlerModifiable handler
+				&& !handler.getStackInSlot(0).isEmpty()) {
+			Direction facing = level.getBlockState(placerPos).getValue(BlockPlacerBlock.FACING);
+			useItem(level, placerPos, facing, handler);
 		}
-		if (("down").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = 0;
-			yOffset = -1;
-			zOffset = 0;
-		}
-		if (("north").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = 0;
-			yOffset = 0;
-			zOffset = -1;
-		}
-		if (("south").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = 0;
-			yOffset = 0;
-			zOffset = 1;
-		}
-		if (("east").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = 1;
-			yOffset = 0;
-			zOffset = 0;
-		}
-		if (("west").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
-			xOffset = -1;
-			yOffset = 0;
-			zOffset = 0;
-		}
-		if (getEnergyStored(world, BlockPos.containing(x, y, z), null) > 256) {
-			if (Blocks.AIR == (world.getBlockState(BlockPos.containing(x + xOffset, y + yOffset, z + zOffset))).getBlock()) {
-				if (!(Blocks.AIR == ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() instanceof BlockItem _bi ? _bi.getBlock().defaultBlockState() : Blocks.AIR.defaultBlockState()).getBlock())) {
-					world.setBlock(BlockPos.containing(x + xOffset, y + yOffset, z + zOffset),
-							((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() instanceof BlockItem _bi ? _bi.getBlock().defaultBlockState() : Blocks.AIR.defaultBlockState()), 3);
-					if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-						int _slotid = 0;
-						ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-						_stk.shrink(1);
-						_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-					}
-					if (world instanceof ILevelExtension _ext) {
-						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-						if (_entityStorage != null)
-							_entityStorage.extractEnergy(256, false);
-					}
-				}
-			}
-		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, placerPos, null));
 	}
 
-	private static String getBlockNBTString(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getString(tag);
-		return "";
+	private static void useItem(ServerLevel level, BlockPos placerPos, Direction facing, IItemHandlerModifiable handler) {
+		FakePlayer player = FakePlayerFactory.getMinecraft(level);
+		double eyeY = placerPos.getY() + 0.5;
+		player.setPos(placerPos.getX() + 0.5, eyeY - player.getEyeHeight(), placerPos.getZ() + 0.5);
+		player.setYRot(facing.toYRot());
+		player.setXRot(facing == Direction.UP ? -90 : facing == Direction.DOWN ? 90 : 0);
+		player.setItemInHand(InteractionHand.MAIN_HAND, handler.getStackInSlot(0).copy());
+
+		BlockPos targetPos = placerPos.relative(facing);
+		Vec3 hitLocation = new Vec3(targetPos.getX() + 0.5 - facing.getStepX() * 0.5,
+				targetPos.getY() + 0.5 - facing.getStepY() * 0.5,
+				targetPos.getZ() + 0.5 - facing.getStepZ() * 0.5);
+		BlockHitResult hit = new BlockHitResult(hitLocation, facing.getOpposite(), targetPos, false);
+		InteractionResult result = player.gameMode.useItemOn(player, level, player.getMainHandItem(),
+				InteractionHand.MAIN_HAND, hit);
+		if (result == InteractionResult.PASS) {
+			result = player.gameMode.useItem(player, level, player.getMainHandItem(), InteractionHand.MAIN_HAND);
+		}
+
+		handler.setStackInSlot(0, player.getMainHandItem().copy());
+		player.stopUsingItem();
+		player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+		if (result.consumesAction()) {
+			IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, placerPos, null);
+			if (energy != null) energy.extractEnergy(ENERGY_PER_USE, false);
+		}
 	}
 
 	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {
@@ -91,12 +70,4 @@ public class BlockPlacerOnTickUpdateProcedure {
 		return 0;
 	}
 
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
-	}
 }

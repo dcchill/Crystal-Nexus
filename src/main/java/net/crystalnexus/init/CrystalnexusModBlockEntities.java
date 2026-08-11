@@ -302,7 +302,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> ((InvertPistonGeneratorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> ((InvertPistonGeneratorBlockEntity) blockEntity).getFluidTank());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PIPE_STRAIGHT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PIPE_STRAIGHT.get(), (blockEntity, side) -> ((PipeStraightBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PIPE_JUNCTION.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PIPE_JUNCTION.get(), (blockEntity, side) -> ((PipeJunctionBlockEntity) blockEntity).getFluidTank());

@@ -8,6 +8,7 @@ import net.crystalnexus.client.render.ParticleAcceleratorControllerRenderer;
 import net.crystalnexus.client.render.QuarryBlockEntityRenderer;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
 import net.crystalnexus.block.entity.TankBlockEntity;
+import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.QuarryBlockEntity;
 
@@ -44,6 +45,12 @@ public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
         (BlockEntityType<TankBlockEntity>)
             CrystalnexusModBlockEntities.TANK.get(),
         net.crystalnexus.client.renderer.TankBER::new
+    );
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<PipeStraightBlockEntity>)
+            CrystalnexusModBlockEntities.PIPE_STRAIGHT.get(),
+        net.crystalnexus.client.renderer.PipeStraightBER::new
     );
 
     event.registerBlockEntityRenderer(

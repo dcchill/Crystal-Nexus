@@ -1,9 +1,3 @@
 {
-  "parent": "crystalnexus:custom/pipe_straight",
-  "textures": {
-    "all": "crystalnexus:block/pipe",
-    "particle": "crystalnexus:block/pipe",
-    "0": "crystalnexus:block/pipe"
-  },
-  "render_type": "solid"
+  "parent": "crystalnexus:block/pipe_straight_core"
 }

@@ -34,4 +34,22 @@ public final class WorldgenGameTests {
                 "invertium_ore must be registered in End biome generation");
         helper.succeed();
     }
+
+    @GameTest(template = "zero_point")
+    public static void oilNodeStructuresLoad(GameTestHelper helper) {
+        var registries = helper.getLevel().registryAccess();
+        ResourceLocation oilNodes = ResourceLocation.fromNamespaceAndPath("crystalnexus", "oil_nodes");
+        helper.assertTrue(registries.registryOrThrow(Registries.STRUCTURE).containsKey(oilNodes),
+                "Oil node surface structure must be registered");
+        helper.assertTrue(registries.registryOrThrow(Registries.STRUCTURE_SET).containsKey(oilNodes),
+                "Oil node surface structure set must be registered");
+        helper.assertTrue(registries.registryOrThrow(Registries.TEMPLATE_POOL).containsKey(oilNodes),
+                "Oil node template pool must be registered");
+        for (String name : new String[]{"oil_node_a", "oil_node_b"}) {
+            helper.assertTrue(helper.getLevel().getStructureManager().get(
+                            ResourceLocation.fromNamespaceAndPath("crystalnexus", name)).isPresent(),
+                    name + " structure template must load");
+        }
+        helper.succeed();
+    }
 }

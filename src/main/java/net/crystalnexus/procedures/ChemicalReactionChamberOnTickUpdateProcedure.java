@@ -123,15 +123,8 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// ===== Determine base output for this recipe, then apply output_mult, cap to 8 =====
-		int baseAdd;
-		if (resultStack.getItem() == CrystalnexusModItems.SULFUR_DUST.get()) {
-			baseAdd = 8;
-		} else if (resultStack.getItem() == CrystalnexusModItems.SYNTHETIC_RUBBER.get()) {
-			baseAdd = 4;
-		} else {
-			baseAdd = 1;
-		}
+		// ===== Apply output_mult to the recipe's declared output count, capped at 8 =====
+		int baseAdd = resultStack.getCount();
 
 		// Apply output multiplier if present (stacking onto baseAdd)
 		double scaledAddD = baseAdd;

@@ -1,5 +1,5 @@
 {
-  "parent": "crystalnexus:block/pipe_straight",
+  "parent": "crystalnexus:block/pipe_straight_core",
   "display": {
     "thirdperson": {
       "rotation": [

@@ -63,7 +63,7 @@ public class CrystalAlloyHammerItem extends Item {
                     : Blocks.COBBLED_DEEPSLATE;
         }
         if (state.is(Blocks.STONE)) {
-            return CrystalAlloyHammerRoll.createsNode(roll, 0.05F)
+            return CrystalAlloyHammerRoll.createsNode(roll, 0.01F)
                     ? CrystalnexusModBlocks.OIL_NODE.get()
                     : Blocks.COBBLESTONE;
         }

@@ -157,7 +157,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 		return energyStorage;
 	}
 
-	private final FluidTank fluidTank = new FluidTank(32000, fs -> {
+	private final FluidTank fluidTank = new FluidTank(8000, fs -> {
 		if (fs.getFluid() == CrystalnexusModFluids.GASOLINE.get())
 			return true;
 		if (fs.getFluid() == CrystalnexusModFluids.FLOWING_GASOLINE.get())

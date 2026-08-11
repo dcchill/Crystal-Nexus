@@ -423,7 +423,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         String status = menu.isConnected() ? "CONNECTED" : "OFFLINE";
-        graphics.drawString(font, status, imageWidth - 8 - font.width(status), 9,
+        int statusX = imageWidth - 8 - font.width(status);
+        graphics.drawString(font, status, statusX, 9,
                 menu.isConnected() ? 0xFF63FF86 : 0xFFFF6565, false);
         if (tab == Tab.TERMINAL) {
             List<FormattedCharSequence> lines = wrappedOutput();
@@ -442,8 +443,12 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         graphics.drawString(font, "ROUTE", imageWidth - 136, 22, 0xFF55FFF2, false);
         graphics.drawString(font, (catalogPage + 1) + "/" + catalogPages, 49, imageHeight - 20, 0xFF8FA8A5, false);
         graphics.drawString(font, "Qty", 143, imageHeight - 20, 0xFF8FA8A5, false);
-        graphics.drawString(font, font.plainSubstrByWidth(message, Math.max(40, imageWidth - 250)), 160, 10,
-                messageSuccess ? 0xFF69FF91 : 0xFFFF6B6B, false);
+        int messageX = craftableOnlyCheckbox.getX() - leftPos + craftableOnlyCheckbox.getWidth() + 6;
+        int messageWidth = statusX - messageX - 6;
+        if (messageWidth > 0) {
+            graphics.drawString(font, font.plainSubstrByWidth(message, messageWidth), messageX, 10,
+                    messageSuccess ? 0xFF69FF91 : 0xFFFF6B6B, false);
+        }
     }
 
     public void handleCraftingResponse(S2C_DepotCraftingResponse response) {
