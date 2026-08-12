@@ -65,6 +65,8 @@ import net.crystalnexus.world.inventory.ContainerGUIMenu;
 import net.crystalnexus.world.inventory.ComputationClusterGUIMenu;
 import net.crystalnexus.world.inventory.CircuitPressGUIMenu;
 import net.crystalnexus.world.inventory.ChemicalReactionChamberGUIMenu;
+import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
+import net.crystalnexus.world.inventory.TemporalExploiterMenu;
 import net.crystalnexus.world.inventory.BlueprintGUIMenu;
 import net.crystalnexus.world.inventory.BlockPlacerGuiMenu;
 import net.crystalnexus.world.inventory.BioSIMGuiMenu;
@@ -102,6 +104,8 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<BlockPlacerGuiMenu>> BLOCK_PLACER_GUI = REGISTRY.register("block_placer_gui", () -> IMenuTypeExtension.create(BlockPlacerGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityCompressorGUIMenu>> SINGULARITY_COMPRESSOR_GUI = REGISTRY.register("singularity_compressor_gui", () -> IMenuTypeExtension.create(SingularityCompressorGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ChemicalReactionChamberGUIMenu>> CHEMICAL_REACTION_CHAMBER_GUI = REGISTRY.register("chemical_reaction_chamber_gui", () -> IMenuTypeExtension.create(ChemicalReactionChamberGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<FluidChemicalReactionChamberGUIMenu>> FLUID_CHEMICAL_REACTION_CHAMBER_GUI = REGISTRY.register("fluid_chemical_reaction_chamber_gui", () -> IMenuTypeExtension.create(FluidChemicalReactionChamberGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<TemporalExploiterMenu>> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", () -> IMenuTypeExtension.create(TemporalExploiterMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ContainerGUIMenu>> CONTAINER_GUI = REGISTRY.register("container_gui", () -> IMenuTypeExtension.create(ContainerGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<QuantumMinerGUIMenu>> QUANTUM_MINER_GUI = REGISTRY.register("quantum_miner_gui", () -> IMenuTypeExtension.create(QuantumMinerGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TurbineGUIMenu>> TURBINE_GUI = REGISTRY.register("turbine_gui", () -> IMenuTypeExtension.create(TurbineGUIMenu::new));

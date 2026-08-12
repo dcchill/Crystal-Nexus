@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north,blockstate=0": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber" },
+    "facing=east,blockstate=0": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 90 },
+    "facing=south,blockstate=0": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 180 },
+    "facing=west,blockstate=0": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 270 },
+    "facing=north,blockstate=1": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber" },
+    "facing=east,blockstate=1": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 90 },
+    "facing=south,blockstate=1": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 180 },
+    "facing=west,blockstate=1": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber", "y": 270 },
+    "facing=north,blockstate=2": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber_on" },
+    "facing=east,blockstate=2": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber_on", "y": 90 },
+    "facing=south,blockstate=2": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber_on", "y": 180 },
+    "facing=west,blockstate=2": { "model": "crystalnexus:block/fluid_chemical_reaction_chamber_on", "y": 270 }
+  }
+}

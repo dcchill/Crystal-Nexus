@@ -94,6 +94,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.BLUTONIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_WASTE.get());
 				tabData.accept(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TEMPORAL_EXPLOITER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
@@ -234,10 +236,13 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
 				tabData.accept(CrystalnexusModItems.GAS_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.CRUDE_OIL_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.SULFURIC_ACID_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.INVERSION_SOLUTION_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OIL_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.GASOLINE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.TEMPORAL_ESSENCE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.EMPTY_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.WHITE_PAINTBALL.get());
 				tabData.accept(CrystalnexusModItems.LIGHT_GRAY_PAINTBALL.get());

@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:inversion_solution", "amount": 1000 },
+  "item_input_2": { "item": "crystalnexus:dark_matter" },
+  "output": { "fluid": "crystalnexus:temporal_essence", "amount": 250 }
+}

@@ -19,6 +19,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 
@@ -56,7 +57,6 @@ import net.crystalnexus.item.PolyacrylonitrileDustItem;
 import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
-import net.crystalnexus.item.OverfuelItem;
 import net.crystalnexus.item.OverfuelCellItem;
 import net.crystalnexus.item.OreScannerItem;
 import net.crystalnexus.item.OrbitalStrikeRemoteItem;
@@ -91,7 +91,6 @@ import net.crystalnexus.item.GrayPaintballItem;
 import net.crystalnexus.item.GravityGunItem;
 import net.crystalnexus.item.GoldSingularityItem;
 import net.crystalnexus.item.GeigerCounterItem;
-import net.crystalnexus.item.GasolineItem;
 import net.crystalnexus.item.GasFuelCellItem;
 import net.crystalnexus.item.FlorathaneWandItem;
 import net.crystalnexus.item.FlorathaneItem;
@@ -121,7 +120,6 @@ import net.crystalnexus.item.CrystalizedAlloyMagnetItem;
 import net.crystalnexus.item.CrystalAlloyNuggetItem;
 import net.crystalnexus.item.CrystalAlloyHammerItem;
 import net.crystalnexus.item.CrystalWrenchItem;
-import net.crystalnexus.item.CrudeOilItem;
 import net.crystalnexus.item.CopperSingularityItem;
 import net.crystalnexus.item.ConductiveAlloyItem;
 import net.crystalnexus.item.ComputationNodeItem;
@@ -264,6 +262,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_BLOCK = block(CrystalnexusModBlocks.CARBON_BLOCK);
 	public static final DeferredItem<Item> CARBON_MACHINE_FRAME = block(CrystalnexusModBlocks.CARBON_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER);
+	public static final DeferredItem<Item> FLUID_CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER);
+	public static final DeferredItem<Item> TEMPORAL_EXPLOITER = block(CrystalnexusModBlocks.TEMPORAL_EXPLOITER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
 	public static final DeferredItem<Item> SULFUR_DUST = REGISTRY.register("sulfur_dust", PolyacrylonitrileDustItem::new);
 	public static final DeferredItem<Item> POLYMER_SHEET = REGISTRY.register("polymer_sheet", PolymerSheetItem::new);
@@ -334,8 +334,14 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUTONIUM_NUGGET = REGISTRY.register("blutonium_nugget", BlutoniumNuggetItem::new);
 	public static final DeferredItem<Item> WARP_PAD = block(CrystalnexusModBlocks.WARP_PAD);
 	public static final DeferredItem<Item> BLUTONIUM_BLOCK = block(CrystalnexusModBlocks.BLUTONIUM_BLOCK);
-	public static final DeferredItem<Item> CRUDE_OIL_BUCKET = REGISTRY.register("crude_oil_bucket", CrudeOilItem::new);
-	public static final DeferredItem<Item> GASOLINE_BUCKET = REGISTRY.register("gasoline_bucket", GasolineItem::new);
+	public static final DeferredItem<Item> CRUDE_OIL_BUCKET = REGISTRY.register("crude_oil_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.CRUDE_OIL.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> SULFURIC_ACID_BUCKET = REGISTRY.register("sulfuric_acid_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.SULFURIC_ACID.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> INVERSION_SOLUTION_BUCKET = REGISTRY.register("inversion_solution_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.INVERSION_SOLUTION.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> GASOLINE_BUCKET = REGISTRY.register("gasoline_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.GASOLINE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
 	public static final DeferredItem<Item> GAS_FUEL_CELL = REGISTRY.register("gas_fuel_cell", GasFuelCellItem::new);
@@ -462,7 +468,10 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL);
 	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL_STAIRS = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_STAIRS);
 	public static final DeferredItem<Item> REINFORCED_CONCRETE_PANEL_SLAB = block(CrystalnexusModBlocks.REINFORCED_CONCRETE_PANEL_SLAB);
-	public static final DeferredItem<Item> OVERFUEL_BUCKET = REGISTRY.register("overfuel_bucket", OverfuelItem::new);
+	public static final DeferredItem<Item> OVERFUEL_BUCKET = REGISTRY.register("overfuel_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.OVERFUEL.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> TEMPORAL_ESSENCE_BUCKET = REGISTRY.register("temporal_essence_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.TEMPORAL_ESSENCE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> OVERFUEL_CELL = REGISTRY.register("overfuel_cell", OverfuelCellItem::new);
 	public static final DeferredItem<Item> DEEPSLATE_SILICON_ORE = block(CrystalnexusModBlocks.DEEPSLATE_SILICON_ORE);
 	public static final DeferredItem<Item> ITEM_CHARGER = block(CrystalnexusModBlocks.ITEM_CHARGER);

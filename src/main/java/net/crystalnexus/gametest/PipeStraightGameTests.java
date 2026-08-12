@@ -66,9 +66,13 @@ public final class PipeStraightGameTests {
         helper.assertTrue(helper.getBlockState(firstPos).getValue(PipeStraightBlock.EAST)
                 && helper.getBlockState(secondPos).getValue(PipeStraightBlock.WEST),
             "Adjacent fluid pipes must expose connected cable-style arms");
+        helper.assertTrue(second.getFluidTank().isEmpty(),
+            "Fluid must wait before advancing to the next pipe");
+
+        for (int tick = 0; tick < PipeStraightBlockEntity.TRANSFER_DELAY_TICKS; tick++) first.serverTick();
         helper.assertTrue(second.getFluidTank().getFluidAmount() > 0
                 && second.getFluidTank().getFluid().is(Fluids.WATER),
-            "Adjacent pipes must balance and transport their contained fluid");
+            "Fluid must advance after the per-pipe travel delay");
         helper.succeed();
     }
 
@@ -87,7 +91,10 @@ public final class PipeStraightGameTests {
         second.cycleSideMode(Direction.EAST);
         second.cycleSideMode(Direction.EAST);
 
-        second.serverTick();
+        for (int tick = 0; tick < (PipeStraightBlockEntity.TRANSFER_DELAY_TICKS + 1) * 2; tick++) {
+            first.serverTick();
+            second.serverTick();
+        }
 
         helper.assertTrue(first.getFluidTank().isEmpty()
                 && second.getFluidTank().isEmpty()
@@ -115,6 +122,31 @@ public final class PipeStraightGameTests {
                 && sink.getFluidTank().getFluidAmount() == 400
                 && sink.getFluidTank().getFluid().is(Fluids.WATER),
             "A pipe must pull from one connected fluid handler and push into another");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void keepsTheOutputPipeVisiblyFilledBetweenBatches(GameTestHelper helper) {
+        BlockPos sourcePos = new BlockPos(1, 4, 1);
+        BlockPos pipePos = sourcePos.east();
+        BlockPos sinkPos = pipePos.east();
+        helper.setBlock(sourcePos, CrystalnexusModBlocks.PIPE_JUNCTION.get());
+        helper.setBlock(pipePos, CrystalnexusModBlocks.PIPE_STRAIGHT.get());
+        helper.setBlock(sinkPos, CrystalnexusModBlocks.PIPE_JUNCTION.get());
+        PipeJunctionBlockEntity source = helper.getBlockEntity(sourcePos);
+        PipeStraightBlockEntity pipe = helper.getBlockEntity(pipePos);
+        PipeJunctionBlockEntity sink = helper.getBlockEntity(sinkPos);
+        source.getFluidTank().fill(new FluidStack(Fluids.WATER, 2), IFluidHandler.FluidAction.EXECUTE);
+
+        pipe.serverTick();
+        for (int tick = 0; tick <= PipeStraightBlockEntity.TRANSFER_DELAY_TICKS; tick++) pipe.serverTick();
+
+        helper.assertTrue(pipe.getFluidTank().getFluidAmount() == 1 && sink.getFluidTank().getFluidAmount() == 1,
+            "The output pipe must retain a visible reserve while the tank receives a batch");
+
+        for (int tick = 0; tick <= PipeStraightBlockEntity.TRANSFER_DELAY_TICKS; tick++) pipe.serverTick();
+        helper.assertTrue(pipe.getFluidTank().isEmpty() && sink.getFluidTank().getFluidAmount() == 2,
+            "The output pipe must drain its final reserve when the line finishes");
         helper.succeed();
     }
 }

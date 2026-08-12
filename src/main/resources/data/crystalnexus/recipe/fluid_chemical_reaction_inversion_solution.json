@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:sulfuric_acid", "amount": 50 },
+  "item_input_2": { "item": "crystalnexus:invertium_ingot" },
+  "output": { "fluid": "crystalnexus:inversion_solution", "amount": 50 }
+}

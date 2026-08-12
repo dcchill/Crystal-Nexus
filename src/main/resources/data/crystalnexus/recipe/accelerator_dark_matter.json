@@ -2,16 +2,16 @@
   "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "crystalnexus:ee_matter"
+      "item": "crystalnexus:ee_matter_block"
     },
     {
-      "item": "crystalnexus:invertium_block"
+      "item": "crystalnexus:ee_matter_block"
     },
     {
-      "item": "crystalnexus:invertium_block"
+      "item": "crystalnexus:ee_matter_block"
     },
     {
-      "item": "crystalnexus:ee_matter"
+      "item": "crystalnexus:ee_matter_block"
     }
   ],
   "output": {

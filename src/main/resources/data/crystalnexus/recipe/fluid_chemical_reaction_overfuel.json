@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:gasoline", "amount": 100 },
+  "item_input_2": { "item": "crystalnexus:conductive_alloy" },
+  "output": { "fluid": "crystalnexus:overfuel", "amount": 100 }
+}

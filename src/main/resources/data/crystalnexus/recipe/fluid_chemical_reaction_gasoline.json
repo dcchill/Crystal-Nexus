@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:crude_oil", "amount": 50 },
+  "fluid_input_2": { "fluid": "crystalnexus:sulfuric_acid", "amount": 50 },
+  "output": { "fluid": "crystalnexus:gasoline", "amount": 100 }
+}

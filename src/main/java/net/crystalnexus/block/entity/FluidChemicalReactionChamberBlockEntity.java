@@ -1,0 +1,128 @@
+package net.crystalnexus.block.entity;
+
+import io.netty.buffer.Unpooled;
+import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+
+import javax.annotation.Nullable;
+import java.util.stream.IntStream;
+
+public class FluidChemicalReactionChamberBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public static final int TANK_CAPACITY = 4000;
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+    private final FluidTank[] tanks = { createTank(), createTank(), createTank() };
+
+    private FluidTank createTank() {
+        return new FluidTank(TANK_CAPACITY) {
+            @Override protected void onContentsChanged() {
+                setChanged();
+                if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            }
+        };
+    }
+
+    public FluidChemicalReactionChamberBlockEntity(BlockPos pos, BlockState state) {
+        super(CrystalnexusModBlockEntities.FLUID_CHEMICAL_REACTION_CHAMBER.get(), pos, state);
+    }
+
+    @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.loadAdditional(tag, provider);
+        if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag, stacks, provider);
+        if (tag.get("energyStorage") instanceof IntTag energy) energyStorage.deserializeNBT(provider, energy);
+        for (int i = 0; i < tanks.length; i++)
+            if (tag.get("tank" + i) instanceof CompoundTag tank) tanks[i].readFromNBT(provider, tank);
+    }
+
+    @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
+        super.saveAdditional(tag, provider);
+        if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, provider);
+        tag.put("energyStorage", energyStorage.serializeNBT(provider));
+        for (int i = 0; i < tanks.length; i++) tag.put("tank" + i, tanks[i].writeToNBT(provider, new CompoundTag()));
+    }
+
+    @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
+    @Override public CompoundTag getUpdateTag(HolderLookup.Provider provider) { return saveWithFullMetadata(provider); }
+    @Override public int getContainerSize() { return stacks.size(); }
+    @Override public boolean isEmpty() { return stacks.stream().allMatch(ItemStack::isEmpty); }
+    @Override public Component getDefaultName() { return Component.literal("fluid_chemical_reaction_chamber"); }
+    @Override public Component getDisplayName() { return Component.literal("Fluid Chemical Reaction Chamber"); }
+    @Override protected NonNullList<ItemStack> getItems() { return stacks; }
+    @Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
+    @Override public int getMaxStackSize() { return 64; }
+    @Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
+        return new FluidChemicalReactionChamberGUIMenu(id, inventory,
+            new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
+    }
+
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return true; }
+    @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
+    @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
+    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 2; }
+
+    private final EnergyStorage energyStorage = new EnergyStorage(
+        CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.capacity(),
+        CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxReceive(),
+        CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract(), 0) {
+        @Override public int receiveEnergy(int amount, boolean simulate) {
+            int received = super.receiveEnergy(amount, simulate);
+            if (!simulate) changed();
+            return received;
+        }
+        @Override public int extractEnergy(int amount, boolean simulate) {
+            int extracted = super.extractEnergy(amount, simulate);
+            if (!simulate) changed();
+            return extracted;
+        }
+        private void changed() {
+            setChanged();
+            if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+        }
+    };
+
+    private final IFluidHandler fluidHandler = new IFluidHandler() {
+        @Override public int getTanks() { return tanks.length; }
+        @Override public FluidStack getFluidInTank(int tank) { return tanks[tank].getFluid(); }
+        @Override public int getTankCapacity(int tank) { return TANK_CAPACITY; }
+        @Override public boolean isFluidValid(int tank, FluidStack stack) { return tank < 2 && tanks[tank].isFluidValid(stack); }
+        @Override public int fill(FluidStack resource, FluidAction action) {
+            for (int i = 0; i < 2; i++) {
+                if (FluidStack.isSameFluidSameComponents(tanks[i].getFluid(), resource)) {
+                    return tanks[i].fill(resource, action);
+                }
+            }
+            for (int i = 0; i < 2; i++) {
+                if (tanks[i].isEmpty()) return tanks[i].fill(resource, action);
+            }
+            return 0;
+        }
+        @Override public FluidStack drain(FluidStack resource, FluidAction action) { return tanks[2].drain(resource, action); }
+        @Override public FluidStack drain(int amount, FluidAction action) { return tanks[2].drain(amount, action); }
+    };
+
+    public EnergyStorage getEnergyStorage() { return energyStorage; }
+    public FluidTank getTank(int index) { return tanks[index]; }
+    public IFluidHandler getFluidHandler() { return fluidHandler; }
+    public void purge(int tank) { if (tank >= 0 && tank < tanks.length) tanks[tank].setFluid(FluidStack.EMPTY); }
+}

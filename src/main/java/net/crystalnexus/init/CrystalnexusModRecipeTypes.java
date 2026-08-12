@@ -26,6 +26,7 @@ import net.crystalnexus.jei_recipes.EnergyExtractionRecipe;
 import net.crystalnexus.jei_recipes.DustSeperationRecipe;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
+import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipe;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
@@ -73,6 +74,8 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("singularity_compression", () -> SingularityCompressionRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("chemical_reaction", () -> ChemicalReactionRecipe.Type.INSTANCE);
 			SERIALIZERS.register("chemical_reaction", () -> ChemicalReactionRecipe.Serializer.INSTANCE);
+			RECIPE_TYPES.register("fluid_chemical_reaction", () -> FluidChemicalReactionRecipe.Type.INSTANCE);
+			SERIALIZERS.register("fluid_chemical_reaction", () -> FluidChemicalReactionRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("biomatic_composting", () -> BiomaticCompostingRecipe.Type.INSTANCE);
 			SERIALIZERS.register("biomatic_composting", () -> BiomaticCompostingRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("biomatic_simulation", () -> BiomaticSimulationRecipe.Type.INSTANCE);

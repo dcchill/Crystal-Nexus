@@ -74,6 +74,10 @@ public class PipeStraightBlock extends Block implements EntityBlock {
     private boolean canConnect(LevelAccessor level, BlockPos neighborPos, Direction direction) {
         if (level.getBlockState(neighborPos).getBlock() instanceof PipeStraightBlock) return true;
         if (level instanceof Level actualLevel) {
+            if (level.getBlockState(neighborPos).getBlock() instanceof TemporalExploiterBlock) {
+                return actualLevel.getCapability(Capabilities.FluidHandler.BLOCK,
+                    neighborPos, direction.getOpposite()) != null;
+            }
             if (actualLevel.getCapability(Capabilities.FluidHandler.BLOCK,
                 neighborPos, direction.getOpposite()) != null
                 || actualLevel.getCapability(Capabilities.FluidHandler.BLOCK, neighborPos, null) != null) return true;

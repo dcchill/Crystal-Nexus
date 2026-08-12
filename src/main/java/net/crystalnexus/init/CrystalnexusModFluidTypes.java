@@ -10,14 +10,20 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 import net.crystalnexus.fluid.types.SteamFluidType;
 import net.crystalnexus.fluid.types.OverfuelFluidType;
+import net.crystalnexus.fluid.types.TemporalEssenceFluidType;
 import net.crystalnexus.fluid.types.GasolineFluidType;
 import net.crystalnexus.fluid.types.CrudeOilFluidType;
+import net.crystalnexus.fluid.types.SulfuricAcidFluidType;
+import net.crystalnexus.fluid.types.InversionSolutionFluidType;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluidTypes {
 	public static final DeferredRegister<FluidType> REGISTRY = DeferredRegister.create(NeoForgeRegistries.FLUID_TYPES, CrystalnexusMod.MODID);
 	public static final DeferredHolder<FluidType, FluidType> CRUDE_OIL_TYPE = REGISTRY.register("crude_oil", () -> new CrudeOilFluidType());
+	public static final DeferredHolder<FluidType, FluidType> SULFURIC_ACID_TYPE = REGISTRY.register("sulfuric_acid", SulfuricAcidFluidType::new);
+	public static final DeferredHolder<FluidType, FluidType> INVERSION_SOLUTION_TYPE = REGISTRY.register("inversion_solution", InversionSolutionFluidType::new);
 	public static final DeferredHolder<FluidType, FluidType> GASOLINE_TYPE = REGISTRY.register("gasoline", () -> new GasolineFluidType());
 	public static final DeferredHolder<FluidType, FluidType> STEAM_TYPE = REGISTRY.register("steam", () -> new SteamFluidType());
 	public static final DeferredHolder<FluidType, FluidType> OVERFUEL_TYPE = REGISTRY.register("overfuel", () -> new OverfuelFluidType());
+	public static final DeferredHolder<FluidType, FluidType> TEMPORAL_ESSENCE_TYPE = REGISTRY.register("temporal_essence", () -> new TemporalEssenceFluidType());
 }

@@ -37,6 +37,8 @@ import net.crystalnexus.jei_recipes.CircuitPressingRecipeCategory;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipeCategory;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
+import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
+import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipeCategory;
@@ -74,6 +76,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<MatterTransmutationRecipe> MatterTransmutation_Type = new mezz.jei.api.recipe.RecipeType<>(MatterTransmutationRecipeCategory.UID, MatterTransmutationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<SingularityCompressionRecipe> SingularityCompression_Type = new mezz.jei.api.recipe.RecipeType<>(SingularityCompressionRecipeCategory.UID, SingularityCompressionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ChemicalReactionRecipe> ChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(ChemicalReactionRecipeCategory.UID, ChemicalReactionRecipe.class);
+	public static mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> FluidChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(FluidChemicalReactionRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticCompostingRecipe> BiomaticComposting_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticCompostingRecipeCategory.UID, BiomaticCompostingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticSimulationRecipe> BiomaticSimulation_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticSimulationRecipeCategory.UID, BiomaticSimulationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PistonGeneratorJEIRecipe> PistonGeneratorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(PistonGeneratorJEIRecipeCategory.UID, PistonGeneratorJEIRecipe.class);
@@ -101,6 +104,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new MatterTransmutationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SingularityCompressionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new FluidChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticCompostingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticSimulationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -139,6 +143,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(SingularityCompression_Type, SingularityCompressionRecipes);
 		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
 		registration.addRecipes(ChemicalReaction_Type, ChemicalReactionRecipes);
+		List<FluidChemicalReactionRecipe> FluidChemicalReactionRecipes = recipes(recipeManager, FluidChemicalReactionRecipe.class);
+		registration.addRecipes(FluidChemicalReaction_Type, FluidChemicalReactionRecipes);
 		List<BiomaticCompostingRecipe> BiomaticCompostingRecipes = recipes(recipeManager, BiomaticCompostingRecipe.class);
 		registration.addRecipes(BiomaticComposting_Type, BiomaticCompostingRecipes);
 		List<BiomaticSimulationRecipe> BiomaticSimulationRecipes = recipes(recipeManager, BiomaticSimulationRecipe.class);
@@ -179,6 +185,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem()), FluidChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem()), BiomaticComposting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);
