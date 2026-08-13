@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "tct"
+  ],
+  "key": {
+    "t": {
+      "item": "crystalnexus:tank"
+    },
+    "c": {
+      "item": "crystalnexus:chemical_reaction_chamber"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:fluid_chemical_reaction_chamber",
+    "count": 1
+  }
+}
