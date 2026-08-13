@@ -47,8 +47,10 @@ public class FluidChemicalReactionRecipeCategory implements IRecipeCategory<Flui
                 .addIngredient(NeoForgeTypes.FLUID_STACK, input.stack()));
             recipe.itemInput(i).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, x, 64).addIngredients(input));
         }
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 26)
-            .setFluidRenderer(recipe.output().amount(), false, 16, 34)
-            .addIngredient(NeoForgeTypes.FLUID_STACK, recipe.output().stack());
+        recipe.fluidOutput().ifPresent(output -> builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 26)
+            .setFluidRenderer(output.amount(), false, 16, 34)
+            .addIngredient(NeoForgeTypes.FLUID_STACK, output.stack()));
+        recipe.itemOutput().ifPresent(output -> builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 64)
+            .addItemStack(output));
     }
 }

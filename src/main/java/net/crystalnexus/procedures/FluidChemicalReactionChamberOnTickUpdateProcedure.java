@@ -49,10 +49,14 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         }
         FluidChemicalReactionRecipe recipe = match.recipe();
 
-        int outputAmount = Math.max(1, (int) Math.floor(recipe.output().amount() * outputMultiplier));
-        FluidStack output = recipe.output().stack();
-        output.setAmount(outputAmount);
-        if (chamber.getTank(2).fill(output, IFluidHandler.FluidAction.SIMULATE) != outputAmount) {
+        FluidStack fluidOutput = recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY);
+        if (!fluidOutput.isEmpty())
+            fluidOutput.setAmount(Math.max(1, (int) Math.floor(fluidOutput.getAmount() * outputMultiplier)));
+        ItemStack itemOutput = recipe.itemOutput().orElse(ItemStack.EMPTY);
+        if (!itemOutput.isEmpty())
+            itemOutput.setCount(Math.max(1, (int) Math.floor(itemOutput.getCount() * outputMultiplier)));
+        if ((!fluidOutput.isEmpty() && chamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.SIMULATE) != fluidOutput.getAmount())
+                || (!itemOutput.isEmpty() && !canStackOutput(chamber.getItem(2), itemOutput))) {
             setActive(level, pos, false);
             return;
         }
@@ -76,7 +80,12 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
                 .drain(fluid.amount(), IFluidHandler.FluidAction.EXECUTE));
             recipe.itemInput(input).ifPresent(item -> activeChamber.getItem(match.itemSlot(recipeInput)).shrink(1));
         }
-        activeChamber.getTank(2).fill(output, IFluidHandler.FluidAction.EXECUTE);
+        if (!fluidOutput.isEmpty()) activeChamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.EXECUTE);
+        if (!itemOutput.isEmpty()) {
+            ItemStack produced = itemOutput.copy();
+            produced.setCount(activeChamber.getItem(2).getCount() + itemOutput.getCount());
+            activeChamber.setItem(2, produced);
+        }
         activeChamber.getEnergyStorage().extractEnergy(ENERGY_PER_REACTION, false);
         activeChamber.getPersistentData().putDouble("progress", 0);
         setActive(level, pos, false);
@@ -116,6 +125,12 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
     private static boolean itemMatches(FluidChemicalReactionRecipe recipe, int input,
                                        FluidChemicalReactionChamberBlockEntity chamber, int slot) {
         return recipe.itemInput(input).map(ingredient -> ingredient.test(chamber.getItem(slot))).orElse(true);
+    }
+
+    public static boolean canStackOutput(ItemStack current, ItemStack output) {
+        return !output.isEmpty()
+            && (current.isEmpty() || ItemStack.isSameItemSameComponents(current, output))
+            && current.getCount() + output.getCount() <= output.getMaxStackSize();
     }
 
     private record RecipeMatch(FluidChemicalReactionRecipe recipe, int fluid0, int fluid1, int item0, int item1) {

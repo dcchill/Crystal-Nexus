@@ -114,7 +114,7 @@ public class PipeStraightBlockEntity extends BlockEntity {
             if (((inputSides & side) != 0 || defaultMode && (automaticOutputSides & side) == 0)
                 && pullFrom(neighborPos, direction.getOpposite()) > 0) {
                 if (defaultMode) automaticInputSides |= side;
-                return;
+                break;
             }
         }
 

@@ -71,6 +71,43 @@ public final class FluidChemicalReactionChamberGameTests {
     }
 
     @GameTest(template = "zero_point")
+    public static void itemOutputMustFitSharedBucketSlot(GameTestHelper helper) {
+        ItemStack output = new ItemStack(Items.IRON_INGOT, 2);
+        helper.assertTrue(FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(ItemStack.EMPTY, output),
+            "An empty bucket-output slot must accept an item result");
+        helper.assertTrue(FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(new ItemStack(Items.IRON_INGOT, 62), output),
+            "A matching item result must fill the shared slot to its stack limit");
+        helper.assertFalse(FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(new ItemStack(Items.IRON_INGOT, 63), output),
+            "An item result must not overflow the shared slot");
+        helper.assertFalse(FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(new ItemStack(Items.GOLD_INGOT), output),
+            "An item result must not replace a different item in the shared slot");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void reactionCanProduceFluidAndItemTogether(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.SULFURIC_ACID.get(), 250), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(1, new ItemStack(CrystalnexusModItems.TARROCK.get()));
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        FluidChemicalReactionChamberBlockEntity current = helper.getBlockEntity(pos);
+        helper.assertTrue(current.getTank(0).isEmpty() && current.getItem(1).isEmpty(),
+            "A dual-output reaction must consume its fluid and item inputs");
+        helper.assertTrue(current.getTank(2).getFluidAmount() == 100
+                && current.getTank(2).getFluid().is(CrystalnexusModFluids.CRUDE_OIL.get()),
+            "A dual-output reaction must fill the output tank");
+        helper.assertTrue(current.getItem(2).is(Items.BLACKSTONE) && current.getItem(2).getCount() == 1,
+            "A dual-output reaction must place its item in the shared bucket-output slot");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void matchingRecipeWritesProgress(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
@@ -83,7 +120,8 @@ public final class FluidChemicalReactionChamberGameTests {
         int recipes = loaded.size();
         helper.assertTrue(recipes > 0, "The fluid chemical reaction recipe must load");
         FluidChemicalReactionRecipe recipe = loaded.stream().map(net.minecraft.world.item.crafting.RecipeHolder::value)
-            .filter(candidate -> candidate.output().stack().is(CrystalnexusModFluids.OVERFUEL.get())).findFirst().orElseThrow();
+            .filter(candidate -> candidate.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack)
+                .filter(stack -> stack.is(CrystalnexusModFluids.OVERFUEL.get())).isPresent()).findFirst().orElseThrow();
         boolean fluid0 = recipe.fluidInput(0).isPresent()
             && chamber.getTank(1).getFluid().is(recipe.fluidInput(0).get().stack().getFluid())
             && chamber.getTank(1).getFluidAmount() >= recipe.fluidInput(0).get().amount();
@@ -92,9 +130,10 @@ public final class FluidChemicalReactionChamberGameTests {
         boolean item1 = recipe.itemInput(1).isPresent() && recipe.itemInput(1).get().test(chamber.getItem(0));
         helper.assertTrue(fluid0 && fluid1 && item0 && item1,
             "Recipe inputs must match; fluid0=" + fluid0 + ", fluid1=" + fluid1 + ", item0=" + item0 + ", item1=" + item1);
-        FluidStack result = recipe.output().stack();
+        FluidChemicalReactionRecipe.FluidAmount fluidOutput = recipe.fluidOutput().orElseThrow();
+        FluidStack result = fluidOutput.stack();
         int accepted = chamber.getTank(2).fill(result, IFluidHandler.FluidAction.SIMULATE);
-        helper.assertTrue(!result.isEmpty() && accepted == recipe.output().amount(),
+        helper.assertTrue(!result.isEmpty() && accepted == fluidOutput.amount(),
             "Output tank must accept the recipe result; result=" + result + ", accepted=" + accepted);
 
         FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));

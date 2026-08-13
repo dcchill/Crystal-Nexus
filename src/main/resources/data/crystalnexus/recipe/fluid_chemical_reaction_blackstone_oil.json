@@ -1,0 +1,7 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:sulfuric_acid", "amount": 250 },
+  "item_input_2": { "item": "crystalnexus:tarrock" },
+  "item_output": { "id": "minecraft:blackstone", "count": 1 },
+  "output": { "fluid": "crystalnexus:crude_oil", "amount": 100 }
+}

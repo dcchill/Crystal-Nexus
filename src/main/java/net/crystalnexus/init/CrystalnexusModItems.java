@@ -254,6 +254,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> COPPER_SINGULARITY = REGISTRY.register("copper_singularity", CopperSingularityItem::new);
 	public static final DeferredItem<Item> REDSTONE_SINGULARITY = REGISTRY.register("redstone_singularity", RedstoneSingularityItem::new);
 	public static final DeferredItem<Item> QUARTZ_SINGULARITY = REGISTRY.register("quartz_singularity", QuartzSingularityItem::new);
+	public static final DeferredItem<Item> CERAMIC_BALL = REGISTRY.register("ceramic_ball", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> CERAMIC_PLATE = REGISTRY.register("ceramic_plate", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COAL_SINGULARITY = REGISTRY.register("coal_singularity", CoalSingularityItem::new);
 	public static final DeferredItem<Item> CARBON_RANGE_UPGRADE = REGISTRY.register("carbon_range_upgrade", CarbonRangeUpgradeItem::new);
 	public static final DeferredItem<Item> CARBON_ACCELERATION_UPGRADE = REGISTRY.register("carbon_acceleration_upgrade", CarbonAccelerationUpgradeItem::new);

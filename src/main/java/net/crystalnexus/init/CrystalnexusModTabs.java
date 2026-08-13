@@ -187,6 +187,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.FERTILIZER.get());
 				tabData.accept(CrystalnexusModItems.FLORATHANE.get());
 				tabData.accept(CrystalnexusModItems.CONDUCTIVE_ALLOY.get());
+				tabData.accept(CrystalnexusModItems.CERAMIC_BALL.get());
+				tabData.accept(CrystalnexusModItems.CERAMIC_PLATE.get());
 				tabData.accept(CrystalnexusModItems.NETHERITE_SCRAP_PELLET.get());
 				tabData.accept(CrystalnexusModItems.DARK_MATTER.get());
 				tabData.accept(CrystalnexusModItems.IRON_SINGULARITY.get());

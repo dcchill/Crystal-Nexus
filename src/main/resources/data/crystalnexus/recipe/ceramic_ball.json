@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "qc",
+    "cq"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:clay_ball"
+    },
+    "q": {
+      "item": "minecraft:quartz"
+    }
+  },
+  "result": { 
+    "id": "crystalnexus:ceramic_ball",
+    "count": 4
+  }
+}
