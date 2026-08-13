@@ -19,23 +19,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.block.entity.TurbineBlockEntity;
+import net.crystalnexus.util.MachineUpgradeHelper;
 
 import java.util.Comparator;
 
 public class TurbineEnergyProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		double nrgstrt = 0;
+		double energyPerFuel;
 		double T = 0;
 		double energy = 0;
-		if (CrystalnexusModItems.EFFICIENCY_UPGRADE.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem()) {
-			nrgstrt = 192;
-		} else if (CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem()) {
-			nrgstrt = 256;
-		} else {
-			nrgstrt = 128;
-		}
+		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
+		energyPerFuel = 128 * MachineUpgradeHelper.generatorEfficiency(upgrade, 1.5, 2.0);
 		{
 			int _value = 1;
 			BlockPos _pos = BlockPos.containing(x, y, z);
@@ -52,7 +47,7 @@ public class TurbineEnergyProcedure {
 					if (Math.floor(fuelEntity.getX()) == x && Math.floor(fuelEntity.getZ()) == z) {
 						if (fuel.is(ItemTags.create(ResourceLocation.parse("crystalnexus:radioactive")))) {
 							if (world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof TurbineBlockEntity turbine) {
-									int received = turbine.getEnergyStorage().generateEnergy((int) (nrgstrt * (fuel.getCount() / 4d)), false);
+									int received = turbine.getEnergyStorage().generateEnergy((int) (energyPerFuel * (fuel.getCount() / 4d)), false);
 									if (received > 0) {
 										fuel.shrink(1);
 										if (fuel.isEmpty()) {
@@ -79,7 +74,7 @@ public class TurbineEnergyProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y + 1, z), Direction.DOWN)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (nrgstrt * 4), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyPerFuel * 4), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y + 1, z), (int) energy, Direction.DOWN);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -93,7 +88,7 @@ public class TurbineEnergyProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.WEST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (nrgstrt * 4), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyPerFuel * 4), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, Direction.WEST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -107,7 +102,7 @@ public class TurbineEnergyProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x - 1, y, z), Direction.EAST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (nrgstrt * 4), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyPerFuel * 4), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x - 1, y, z), (int) energy, Direction.EAST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -121,7 +116,7 @@ public class TurbineEnergyProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z - 1), Direction.SOUTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (nrgstrt * 4), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyPerFuel * 4), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z - 1), (int) energy, Direction.SOUTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -135,7 +130,7 @@ public class TurbineEnergyProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z + 1), Direction.NORTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (nrgstrt * 4), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (energyPerFuel * 4), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z + 1), (int) energy, Direction.NORTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);

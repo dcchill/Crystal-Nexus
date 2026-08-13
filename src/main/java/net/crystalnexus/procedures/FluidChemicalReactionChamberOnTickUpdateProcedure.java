@@ -4,13 +4,11 @@ import net.crystalnexus.block.ChemicalReactionChamberBlock;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
+import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -26,20 +24,12 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         transferContainers(chamber);
 
         ItemStack upgrade = chamber.getItem(3);
-        double cookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
+        double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
             : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-        double outputMultiplier = 1;
-        if (upgrade.has(DataComponents.CUSTOM_DATA)) {
-            CustomData data = upgrade.get(DataComponents.CUSTOM_DATA);
-            CompoundTag tag = data == null ? null : data.copyTag();
-            if (tag != null) {
-                if (tag.contains("cook_mult")) cookTime *= Math.max(.05, Math.min(10, tag.getDouble("cook_mult")));
-                if (tag.contains("output_mult")) outputMultiplier = Math.max(0, Math.min(10, tag.getDouble("output_mult")));
-            }
-        }
-        cookTime = Math.max(1, cookTime);
+        double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
+        int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_REACTION);
         RecipeMatch match = findRecipe(level, chamber);
-        if (match == null || chamber.getEnergyStorage().getEnergyStored() < ENERGY_PER_REACTION) {
+        if (match == null || chamber.getEnergyStorage().getEnergyStored() < energyCost) {
             setActive(level, pos, false);
             if (level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity current) {
                 current.getPersistentData().putDouble("maxProgress", cookTime);
@@ -50,11 +40,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         FluidChemicalReactionRecipe recipe = match.recipe();
 
         FluidStack fluidOutput = recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY);
-        if (!fluidOutput.isEmpty())
-            fluidOutput.setAmount(Math.max(1, (int) Math.floor(fluidOutput.getAmount() * outputMultiplier)));
         ItemStack itemOutput = recipe.itemOutput().orElse(ItemStack.EMPTY);
-        if (!itemOutput.isEmpty())
-            itemOutput.setCount(Math.max(1, (int) Math.floor(itemOutput.getCount() * outputMultiplier)));
         if ((!fluidOutput.isEmpty() && chamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.SIMULATE) != fluidOutput.getAmount())
                 || (!itemOutput.isEmpty() && !canStackOutput(chamber.getItem(2), itemOutput))) {
             setActive(level, pos, false);
@@ -86,7 +72,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
             produced.setCount(activeChamber.getItem(2).getCount() + itemOutput.getCount());
             activeChamber.setItem(2, produced);
         }
-        activeChamber.getEnergyStorage().extractEnergy(ENERGY_PER_REACTION, false);
+        activeChamber.getEnergyStorage().extractEnergy(energyCost, false);
         activeChamber.getPersistentData().putDouble("progress", 0);
         setActive(level, pos, false);
         if (level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity current) sync(level, pos, current);

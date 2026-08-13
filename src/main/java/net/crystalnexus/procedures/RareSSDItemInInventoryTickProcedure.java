@@ -19,7 +19,7 @@ public class RareSSDItemInInventoryTickProcedure {
 		var tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
 		// Only roll once when tags don't exist yet
-		if (!tag.contains("cook_mult") || !tag.contains("output_mult")) {
+		if (!tag.contains("cook_mult") || !tag.contains("fe_efficiency")) {
 			RandomSource rand = RandomSource.create();
 
 			// cook_mult is a TIME multiplier (smaller = faster, which is "good")
@@ -34,21 +34,21 @@ public class RareSSDItemInInventoryTickProcedure {
 				cookMult = biasedRange(rand, 1.00, 1.50, 2.2);
 			}
 
-			// output_mult: bigger is better
+			// FE efficiency: bigger is better
 			// 75% good: [1.00 .. 5.00] biased toward 1.0-2.0-ish
 			// 25% bad : [0.80 .. 1.00) biased toward 1.0 (so "bad" is usually mild)
-			double outputMult;
+			double feEfficiency;
 			if (rand.nextFloat() < 0.70f) {
 				// bias toward 1.0: power > 1 biases toward min
-				outputMult = biasedRange(rand, 1.00, 5.00, 2.6);
+				feEfficiency = biasedRange(rand, 1.00, 5.00, 2.6);
 			} else {
 				// bias toward 1.0: power < 1 biases toward max (1.0)
-				outputMult = biasedRange(rand, 0.80, 1.00, 0.55);
+				feEfficiency = biasedRange(rand, 0.80, 1.00, 0.55);
 			}
 
 			CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
 				t.putDouble("cook_mult", cookMult);
-				t.putDouble("output_mult", outputMult);
+				t.putDouble("fe_efficiency", feEfficiency);
 			});
 		}
 	}

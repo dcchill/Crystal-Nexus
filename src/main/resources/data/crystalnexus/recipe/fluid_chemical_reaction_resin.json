@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:crude_oil",
+    "amount": 250
+  },
+  "item_input_1": {
+    "tag": "c:slimeballs"
+  },
+  "output": {
+    "fluid": "crystalnexus:resin",
+    "amount": 250
+  }
+}

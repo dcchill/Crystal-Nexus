@@ -23,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.util.MachineUpgradeHelper;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -46,9 +47,11 @@ public class QuantumMinerOnTickUpdateProcedure {
 	};
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		int outputAmount;
+		int outputAmount = 1;
 		int cookTime;
-		if (ENERGY_PER_CYCLE > getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy();
+		int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_CYCLE);
+		if (energyCost > getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -65,20 +68,14 @@ public class QuantumMinerOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 2;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 3;
-		} else {
-			outputAmount = 1;
-		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
+		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = ACCELERATED_COOK_TIME;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
+		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
 			cookTime = CARBON_ACCELERATED_COOK_TIME;
 		} else {
 			cookTime = BASE_COOK_TIME;
 		}
+		cookTime = (int) MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -88,7 +85,7 @@ public class QuantumMinerOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (ENERGY_PER_CYCLE <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+		if (energyCost <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
@@ -110,7 +107,7 @@ public class QuantumMinerOnTickUpdateProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_entityStorage != null)
-						_entityStorage.extractEnergy(ENERGY_PER_CYCLE, false);
+						_entityStorage.extractEnergy(energyCost, false);
 				}
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);

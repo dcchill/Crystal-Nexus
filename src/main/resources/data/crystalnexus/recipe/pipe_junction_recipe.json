@@ -11,7 +11,7 @@
       "item": "crystalnexus:pipe_straight"
     },
     "b": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:plates/titanium"
     }
   },
   "result": {

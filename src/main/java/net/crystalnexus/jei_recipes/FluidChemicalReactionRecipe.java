@@ -7,6 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -16,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.tags.TagKey;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.Optional;
@@ -32,28 +34,48 @@ public class FluidChemicalReactionRecipe implements CrystalNexusRecipe {
         }
     }
 
+    public record TaggedItemOutput(ResourceLocation tag, int count) {
+        static final Codec<TaggedItemOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ResourceLocation.CODEC.fieldOf("tag").forGetter(TaggedItemOutput::tag),
+            Codec.INT.fieldOf("count").forGetter(TaggedItemOutput::count)
+        ).apply(instance, TaggedItemOutput::new));
+
+        public ItemStack stack() {
+            return BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, tag))
+                .flatMap(items -> items.stream().findFirst())
+                .map(item -> new ItemStack(item, count))
+                .orElse(ItemStack.EMPTY);
+        }
+    }
+
     private final Optional<FluidAmount> fluidInput1;
     private final Optional<FluidAmount> fluidInput2;
     private final Optional<Ingredient> itemInput1;
     private final Optional<Ingredient> itemInput2;
     private final Optional<FluidAmount> fluidOutput;
     private final Optional<ItemStack> itemOutput;
+    private final Optional<TaggedItemOutput> taggedItemOutput;
 
     public FluidChemicalReactionRecipe(Optional<FluidAmount> fluidInput1, Optional<FluidAmount> fluidInput2,
                                        Optional<Ingredient> itemInput1, Optional<Ingredient> itemInput2,
-                                       Optional<FluidAmount> fluidOutput, Optional<ItemStack> itemOutput) {
+                                       Optional<FluidAmount> fluidOutput, Optional<ItemStack> itemOutput,
+                                       Optional<TaggedItemOutput> taggedItemOutput) {
         this.fluidInput1 = fluidInput1;
         this.fluidInput2 = fluidInput2;
         this.itemInput1 = itemInput1;
         this.itemInput2 = itemInput2;
         this.fluidOutput = fluidOutput;
         this.itemOutput = itemOutput.map(ItemStack::copy);
+        this.taggedItemOutput = taggedItemOutput;
     }
 
     public Optional<FluidAmount> fluidInput(int tank) { return tank == 0 ? fluidInput1 : fluidInput2; }
     public Optional<Ingredient> itemInput(int slot) { return slot == 0 ? itemInput1 : itemInput2; }
     public Optional<FluidAmount> fluidOutput() { return fluidOutput; }
-    public Optional<ItemStack> itemOutput() { return itemOutput.map(ItemStack::copy); }
+    public Optional<ItemStack> itemOutput() {
+        return itemOutput.map(ItemStack::copy)
+            .or(() -> taggedItemOutput.map(TaggedItemOutput::stack).filter(stack -> !stack.isEmpty()));
+    }
 
     @Override public boolean matches(RecipeInput input, Level level) { return false; }
     @Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) { return getResultItem(provider); }
@@ -81,7 +103,8 @@ public class FluidChemicalReactionRecipe implements CrystalNexusRecipe {
             Ingredient.CODEC.optionalFieldOf("item_input_1").forGetter(recipe -> recipe.itemInput1),
             Ingredient.CODEC.optionalFieldOf("item_input_2").forGetter(recipe -> recipe.itemInput2),
             FluidAmount.CODEC.optionalFieldOf("output").forGetter(recipe -> recipe.fluidOutput),
-            ItemStack.STRICT_CODEC.optionalFieldOf("item_output").forGetter(recipe -> recipe.itemOutput)
+            ItemStack.STRICT_CODEC.optionalFieldOf("item_output").forGetter(recipe -> recipe.itemOutput),
+            TaggedItemOutput.CODEC.optionalFieldOf("item_output_tag").forGetter(recipe -> recipe.taggedItemOutput)
         ).apply(instance, FluidChemicalReactionRecipe::new)).flatXmap(Serializer::validate, DataResult::success);
         public static final StreamCodec<RegistryFriendlyByteBuf, FluidChemicalReactionRecipe> STREAM_CODEC =
             StreamCodec.of(Serializer::encode, Serializer::decode);
@@ -97,17 +120,23 @@ public class FluidChemicalReactionRecipe implements CrystalNexusRecipe {
             writeFluid(buffer, recipe.fluidOutput);
             buffer.writeBoolean(recipe.itemOutput.isPresent());
             recipe.itemOutput.ifPresent(output -> ItemStack.STREAM_CODEC.encode(buffer, output));
+            buffer.writeBoolean(recipe.taggedItemOutput.isPresent());
+            recipe.taggedItemOutput.ifPresent(output -> {
+                buffer.writeResourceLocation(output.tag());
+                buffer.writeVarInt(output.count());
+            });
         }
 
         private static FluidChemicalReactionRecipe decode(RegistryFriendlyByteBuf buffer) {
             return new FluidChemicalReactionRecipe(readFluid(buffer), readFluid(buffer), readIngredient(buffer),
                 readIngredient(buffer), readFluid(buffer),
-                buffer.readBoolean() ? Optional.of(ItemStack.STREAM_CODEC.decode(buffer)) : Optional.empty());
+                buffer.readBoolean() ? Optional.of(ItemStack.STREAM_CODEC.decode(buffer)) : Optional.empty(),
+                buffer.readBoolean() ? Optional.of(new TaggedItemOutput(buffer.readResourceLocation(), buffer.readVarInt())) : Optional.empty());
         }
 
         private static DataResult<FluidChemicalReactionRecipe> validate(FluidChemicalReactionRecipe recipe) {
-            return recipe.fluidOutput.isEmpty() && recipe.itemOutput.isEmpty()
-                ? DataResult.error(() -> "Fluid chemical reaction recipes require output, item_output, or both")
+            return recipe.fluidOutput.isEmpty() && recipe.itemOutput.isEmpty() && recipe.taggedItemOutput.isEmpty()
+                ? DataResult.error(() -> "Fluid chemical reaction recipes require output, item_output, or item_output_tag")
                 : DataResult.success(recipe);
         }
 

@@ -9,9 +9,9 @@ Processing machines turn ores, dusts, fluids, plants, chemicals, and matter into
 The Crystal Ore Crusher converts raw ores into dusts.
 
 - Converts raw ores into dusts.
-- Output: 2 dust by default, 3 with an Efficiency Upgrade, 4 with a Carbon Efficiency Upgrade.
-- Special case: Netherite Scrap Dust recipes output 4 regardless of the normal output amount.
-- Energy cost: 4,096 FE per completed operation.
+- Output: 2 dust per operation.
+- Special case: Carbon Composite recipes output 4 regardless of the normal output amount.
+- Energy cost: 4,096 FE per completed operation, reduced to 2,731 FE with an FE Efficiency Upgrade or 2,048 FE with a Carbon FE Efficiency Upgrade.
 - Base processing time: 100 ticks, 75 with Acceleration Upgrade, 50 with Carbon Acceleration Upgrade.
 - Inventory: input, output, and upgrade slots.
 - Automation can insert raw ores and upgrades, and extract finished dust.
@@ -23,8 +23,8 @@ The Crystal Ore Crusher converts raw ores into dusts.
 The Crystal Dust Separator converts dusts into nuggets.
 
 - Converts dusts into nuggets.
-- Output: 12 nuggets by default, 14 with an Efficiency Upgrade, 16 with a Carbon Efficiency Upgrade.
-- Energy cost: 4,096 FE per completed operation.
+- Output: 12 nuggets per operation.
+- Energy cost: 4,096 FE per completed operation, reduced by FE Efficiency upgrades.
 - Base processing time: 100 ticks, 75 with Acceleration Upgrade, 50 with Carbon Acceleration Upgrade.
 
 Use it after crushing to stretch raw ore further.
@@ -72,8 +72,8 @@ The Crystal Purifier creates Crystalized Alloy and Nitrile.
 
 Converts ingots into raw ores. Put an Invertium Crystal in the middle slot.
 
-- Output: 1 by default.
-- Output with Efficiency Upgrade: 2.
+- Output: 1 per operation.
+- FE Efficiency upgrades reduce the operation's FE cost without changing output quantity.
 - Not OP at all.
 
 This machine is like a reverse-processing machine. It is useful when a recipe specifically needs raw ore rather than ingots.
@@ -97,7 +97,7 @@ Compatible node blocks include:
 - Iron Node: outputs Raw Iron and costs 1,024 FE per operation.
 - Copper Node: outputs Raw Copper and costs 1,024 FE per operation.
 - Gold Node: outputs Raw Gold and costs 2,048 FE per operation.
-- Ancient Debris Node: outputs Netherite Scrap Dust and costs 8,192 FE per operation.
+- Ancient Debris Node: outputs Carbon Composite and costs 8,192 FE per operation.
 
 The miner has three output slots and an upgrade slot. Base processing time is 250 ticks, 200 with Acceleration Upgrade, and 75 with Carbon Acceleration Upgrade.
 
@@ -176,13 +176,13 @@ How to use it:
 
 ### SSD
 
-Decrypted SSDs work like basic machine upgrades but with randomized modifiers. Higher tiers have a better chance of positive multipliers and higher max multipliers, with Epic SSDs having a chance of a god roll.
+Decrypted SSDs provide randomized speed and FE-efficiency modifiers. Higher tiers have a better chance of faster processing and lower FE costs, with Epic SSDs having a chance of a god roll. FE efficiency never changes recipe output quantity.
 
 ## Chemical and Biological Machines
 
 ### Chemical Reaction Chamber
 
-Important machine used for chemical recipes and materials such as Conductive Alloy, Fertilizer, Nitrile/Base Compound, Polymer, and Synthetic Rubber.
+Important machine used for chemical recipes and materials such as Conductive Alloy, Fertilizer, Nitrile/Base Compound, and Synthetic Rubber.
 
 
 ### Biomatic Composter

@@ -20,6 +20,7 @@ import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.block.entity.PistonGeneratorBlockEntity;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
+import net.crystalnexus.util.MachineUpgradeHelper;
 
 public class PistonGeneratorOnTickUpdateProcedure {
 
@@ -44,14 +45,7 @@ public class PistonGeneratorOnTickUpdateProcedure {
         int ENERGY_PER_TICK;
         int COOK_TIME;
 
-        // Energy upgrade
-        if (upgradeStack.getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-            ENERGY_PER_TICK = 320;
-        } else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-            ENERGY_PER_TICK = 384;
-        } else {
-            ENERGY_PER_TICK = 256;
-        }
+        ENERGY_PER_TICK = (int) (256 * MachineUpgradeHelper.generatorEfficiency(upgradeStack, 1.25, 1.5));
 
         // Acceleration upgrade
         if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
@@ -61,6 +55,7 @@ public class PistonGeneratorOnTickUpdateProcedure {
         } else {
             COOK_TIME = 350;
         }
+        COOK_TIME = (int) MachineUpgradeHelper.cookTime(upgradeStack, COOK_TIME);
 
         be.getPersistentData().putDouble("maxProgress", COOK_TIME);
 

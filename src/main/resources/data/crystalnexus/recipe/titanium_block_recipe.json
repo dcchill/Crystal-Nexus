@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:ingots/titanium"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_block",
+    "count": 4
+  }
+}

@@ -20,10 +20,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.util.MachineUpgradeHelper;
 
 public class SteamEngineUpgradeOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		double outputAmount = 0;
+		double feEfficiency;
 		double cookTime = 0;
 		double nrgstrt = 0;
 		double T = 0;
@@ -45,20 +46,16 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 1.5;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 1.75;
-		} else {
-			outputAmount = 1;
-		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
+		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
+		feEfficiency = MachineUpgradeHelper.generatorEfficiency(upgrade, 1.5, 1.75);
+		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 325;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
+		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
 			cookTime = 500;
 		} else {
 			cookTime = 250;
 		}
+		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -82,7 +79,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 				if (world instanceof ServerLevel _level)
 					_level.sendParticles(ParticleTypes.CLOUD, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 				if (world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof SteamEngineUpgradeBlockEntity engine)
-					engine.getEnergyStorage().generateEnergy((int) (256 * outputAmount), false);
+					engine.getEnergyStorage().generateEnergy((int) (256 * feEfficiency), false);
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 				if (!world.isClientSide()) {
@@ -102,7 +99,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y + 1, z), Direction.DOWN)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * outputAmount), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * feEfficiency), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y + 1, z), (int) energy, Direction.DOWN);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -116,7 +113,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.WEST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * outputAmount), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * feEfficiency), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, Direction.WEST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -130,7 +127,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x - 1, y, z), Direction.EAST)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * outputAmount), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * feEfficiency), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x - 1, y, z), (int) energy, Direction.EAST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -144,7 +141,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z - 1), Direction.SOUTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * outputAmount), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * feEfficiency), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z - 1), (int) energy, Direction.SOUTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -158,7 +155,7 @@ public class SteamEngineUpgradeOnTickUpdateProcedure {
 			}
 		}
 		if (canReceiveEnergy(world, BlockPos.containing(x, y, z + 1), Direction.NORTH)) {
-			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * outputAmount), null);
+			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), (int) (2048 * feEfficiency), null);
 			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z + 1), (int) energy, Direction.NORTH);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);

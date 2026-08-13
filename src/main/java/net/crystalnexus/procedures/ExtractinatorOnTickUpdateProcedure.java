@@ -25,6 +25,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.util.MachineUpgradeHelper;
 
 public class ExtractinatorOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
@@ -35,6 +36,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 		double outputAmount = 0;
 		double cookTime = 0;
 		double slotnumbercheck = 0;
+		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy();
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
 			{
 				int _value = 1;
@@ -52,20 +54,15 @@ public class ExtractinatorOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 2;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 3;
-		} else {
-			outputAmount = 1;
-		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
+		outputAmount = 1;
+		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 75;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
+		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
 			cookTime = 50;
 		} else {
 			cookTime = 100;
 		}
+		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -76,7 +73,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		slotnumbercheck = 1;
-		if (4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+		if (MachineUpgradeHelper.energyCost(upgrade, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 					if (!world.isClientSide()) {
@@ -105,7 +102,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(4096, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 4096), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -165,7 +162,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(4096, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 4096), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -225,7 +222,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(1024, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -305,7 +302,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(1024, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -365,7 +362,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(1024, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -445,7 +442,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(1024, false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -494,10 +491,10 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (1 == Mth.nextInt(RandomSource.create(), 1, 64)) {
 							for (int index14 = 0; index14 < 6; index14++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.NETHERITE_SCRAP_DUST.get()) {
+										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.CARBON_COMPOSITE.get()) {
 									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
 										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(CrystalnexusModItems.NETHERITE_SCRAP_DUST.get()).copy();
+											ItemStack _setstack = new ItemStack(CrystalnexusModItems.CARBON_COMPOSITE.get()).copy();
 											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
 											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
 										}

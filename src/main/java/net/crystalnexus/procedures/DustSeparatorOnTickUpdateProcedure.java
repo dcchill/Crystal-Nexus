@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -55,13 +57,7 @@ public class DustSeparatorOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 14;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-			outputAmount = 16;
-		} else {
-			outputAmount = 12;
-		}
+		outputAmount = 12;
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 75;
 		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
@@ -70,7 +66,6 @@ public class DustSeparatorOnTickUpdateProcedure {
 			cookTime = 100;
 		}
 		double _cn_cookMult = 1.0;
-		double _cn_outputMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
 		CompoundTag _cn_data = null;
@@ -79,19 +74,15 @@ public class DustSeparatorOnTickUpdateProcedure {
 			if (_cn_cd != null)
 				_cn_data = _cn_cd.copyTag();
 		}
-		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+		if (_cn_data != null && _cn_data.contains("cook_mult")) {
 			_cn_hasKeys = true;
 			if (_cn_data.contains("cook_mult"))
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
-			if (_cn_data.contains("output_mult"))
-				_cn_outputMult = _cn_data.getDouble("output_mult");
 		}
 		// 2) Apply multipliers (STACK onto existing values)
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-			_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
-			outputAmount = outputAmount * _cn_outputMult;
 		}
 		// 3) Output caps (machine cap + slot space cap)
 		double MACHINE_MAX_OUTPUT = 32; // set per machine
@@ -125,7 +116,7 @@ public class DustSeparatorOnTickUpdateProcedure {
 				return ItemStack.EMPTY;
 			}
 		}.getResult()).getItem())) {
-			if (4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+			if (MachineUpgradeHelper.energyCost(_cn_upg, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 				if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
 					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (new Object() {
 						public ItemStack getResult() {
@@ -193,7 +184,7 @@ public class DustSeparatorOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
-									_entityStorage.extractEnergy(4096, false);
+									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096), false);
 							}
 						}
 					}

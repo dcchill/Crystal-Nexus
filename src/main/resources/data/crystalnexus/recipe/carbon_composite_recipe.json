@@ -1,0 +1,36 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:netherite_scrap"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/carbon"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:carbon_composite",
+    "count": 9
+  }
+}

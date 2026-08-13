@@ -95,7 +95,7 @@ How to use it:
 1. Pipe Steam into the Steam Engine.
 2. Keep at least 1,000 mB Steam available for each cycle.
 3. Put a Battery Cell, cable, or machine next to it to receive FE.
-4. Add Efficiency Upgrades if your setup supports them.
+4. Add FE Efficiency Upgrades if your setup supports them.
 
 ### High Pressure Steam Engine
 

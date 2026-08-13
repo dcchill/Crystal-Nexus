@@ -34,25 +34,25 @@ public class SSDGetStatsProcedure {
 			}
 		}
 
-		String outputLine;
-		if (!tag.contains("output_mult")) {
-			outputLine = "Output Multiplier: §7???§r";
+		String efficiencyLine;
+		if (!tag.contains("fe_efficiency")) {
+			efficiencyLine = "FE Efficiency: §7???§r";
 		} else {
-			double outputMult = tag.getDouble("output_mult");
+			double feEfficiency = tag.getDouble("fe_efficiency");
 
 			if (god) {
-				outputLine = godPrefix + "Output Multiplier: ★ " + df.format(outputMult) + "x" + reset;
-			} else if (outputMult > 1.0) {
-				outputLine = "Output Multiplier: §a▲ " + df.format(outputMult) + "x§r";
-			} else if (outputMult < 1.0) {
-				outputLine = "Output Multiplier: §c▼ " + df.format(outputMult) + "x§r";
+				efficiencyLine = godPrefix + "FE Efficiency: ★ " + df.format(feEfficiency) + "x" + reset;
+			} else if (feEfficiency > 1.0) {
+				efficiencyLine = "FE Efficiency: §a▲ " + df.format(feEfficiency) + "x§r";
+			} else if (feEfficiency < 1.0) {
+				efficiencyLine = "FE Efficiency: §c▼ " + df.format(feEfficiency) + "x§r";
 			} else {
-				outputLine = "Output Multiplier: §e▬ " + df.format(outputMult) + "x§r";
+				efficiencyLine = "FE Efficiency: §e▬ " + df.format(feEfficiency) + "x§r";
 			}
 		}
 
 		// Optional: add a gold header line when jackpot
 
-		return speedLine + "\n" + outputLine;
+		return speedLine + "\n" + efficiencyLine;
 	}
 }

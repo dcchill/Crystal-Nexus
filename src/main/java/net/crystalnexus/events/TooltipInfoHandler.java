@@ -401,11 +401,11 @@ public class TooltipInfoHandler {
 		addTooltip("carbon_acceleration_upgrade",
 				"Carbon Acceleration Upgrade.",
 				"Advanced speed boost.");
-		addTooltip("efficiency_upgrade",
-				"Machine Efficiency Upgrade.",
+		addTooltip("fe_efficiency_upgrade",
+				"Machine FE Efficiency Upgrade.",
 				"Reduces power consumption.");
-		addTooltip("carbon_efficiency_upgrade",
-				"Carbon Efficiency Upgrade.",
+		addTooltip("carbon_fe_efficiency_upgrade",
+				"Carbon FE Efficiency Upgrade.",
 				"Advanced power reduction.");
 		addTooltip("range_upgrade",
 				"Machine Range Upgrade.",
@@ -444,13 +444,13 @@ public class TooltipInfoHandler {
 				"Component for battery construction.");
 
 		addTooltip("ssd",
-				"Randomized machine modifier.",
+				"Randomized speed and FE efficiency.",
 				"Installed in upgrade-capable machines.");
 		addTooltip("rare_ssd",
-				"Rare SSD - improved modifiers.",
+				"Rare SSD - improved speed and FE efficiency.",
 				"Better chance of strong bonuses.");
 		addTooltip("epic_ssd",
-				"Epic SSD - best modifiers.",
+				"Epic SSD - best speed and FE efficiency.",
 				"Highest chance of powerful bonuses.");
 		addTooltip("blank_ssd",
 				"Blank SSD - unformatted.",

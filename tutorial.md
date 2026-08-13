@@ -127,17 +127,17 @@ Crude Oil / Gas Generation: Placed via world generation. Use pumps or extractors
 
 ## 7. EQUIPMENT & ITEMS
 ### Tools & Combat
-- Function: Upgraded equipment sets such as the Compound Paxel, Mining Laser, Polymer/Invertium weapons, and special utility items like the Paintball Gun or Flamethrower.
+- Function: Upgraded equipment sets such as the Compound Paxel, Mining Laser, Titanium/Invertium weapons, and special utility items like the Paintball Gun or Flamethrower.
 
 ### Armor & Mobility
 - Function: Defensive capabilities and flight. 
 - Jetpack vs Hoverpack: The Jetpack uses internal fuel to provide continuous vertical and forward directional thrust (great for moving fast or scaling heights). The Hoverpack provides a stable, gravity-defying hover with fine mid-air control, making it ideal when building or working inside your base. The Hoverpack uses energy from battery items.
 
 ### Machine Upgrades
-- Function: Modifiers placed inside compatible machines to boost their stats with flat multipliers. Includes Acceleration Upgrades (faster processing), Efficiency Upgrades (less power usage), and Range/Storage Upgrades (for logistics blocks like depots).
+- Function: Modifiers placed inside compatible machines to boost their stats with flat multipliers. Includes Acceleration Upgrades (faster processing), FE Efficiency Upgrades (less power usage), and Range/Storage Upgrades (for logistics blocks like depots).
   
 ### SSD / Data Storage Upgrades
-- Function: Solid State Drives (SSDs) are installed as randomized modifiers inside computational machines (like the Computation Cluster or Crafting Factory). Higher tiers (SSD, Rare SSD, Epic SSD) increase the odds of getting better multipliers.
+- Function: Solid State Drives (SSDs) are installed as randomized speed and FE-efficiency modifiers inside compatible machines. Higher tiers (SSD, Rare SSD, Epic SSD) increase the odds of faster processing and lower FE costs.
   
 ### Crystals & Singularities
 - Function: Highly compressed or purely refined resources, typically used as key materials in end-game crafting (such as creating the Zero Point core or accessing dimensional tiers).

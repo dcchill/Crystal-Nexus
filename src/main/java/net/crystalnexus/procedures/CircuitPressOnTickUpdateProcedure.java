@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -70,7 +72,6 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		// Optional multipliers on the upgrade stack (CUSTOM_DATA)
 		double _cn_cookMult = 1.0;
-		double _cn_outputMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
 		CompoundTag _cn_data = null;
@@ -81,20 +82,16 @@ public class CircuitPressOnTickUpdateProcedure {
 				_cn_data = _cn_cd.copyTag();
 		}
 
-		if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+		if (_cn_data != null && _cn_data.contains("cook_mult")) {
 			_cn_hasKeys = true;
 			if (_cn_data.contains("cook_mult"))
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
-			if (_cn_data.contains("output_mult"))
-				_cn_outputMult = _cn_data.getDouble("output_mult");
 		}
 
 		// Apply multipliers
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-			_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
-			outputAmount = outputAmount * _cn_outputMult;
 		}
 
 		// Sync maxProgress for GUI/progress bars
@@ -167,7 +164,7 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		// Main machine logic
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
-			if (4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+			if (MachineUpgradeHelper.energyCost(_cn_upg, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 
 				// Only allow processing if output slot is compatible and has space
 				if (out > 0) {
@@ -240,7 +237,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
-									_entityStorage.extractEnergy(4096, false);
+									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096), false);
 							}
 						}
 					}

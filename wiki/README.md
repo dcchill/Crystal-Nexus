@@ -22,7 +22,7 @@ Crystal Nexus starts with Ancient Crystal materials and grows into a broader tec
 1. Mine Ancient Crystal and craft Crystalized Alloy.
 2. Use generators and batteries to create and store FE.
 3. Build ore processing machines to turn raw ores into dusts, nuggets, ingots, and advanced materials.
-4. Unlock Chlorophyte, Blutonium, Invertium, Carbon Fiber, Polymer, EE-Matter, and singularities.
+4. Unlock Chlorophyte, Blutonium, Invertium, Carbon Fiber, Titanium, EE-Matter, and singularities.
 5. Build logistics, factories, reactors, accelerators, quarries, and late-game multiblocks.
 
 ## Documentation Conventions

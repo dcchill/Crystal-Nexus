@@ -14,7 +14,7 @@
       "item": "crystalnexus:machine_frame"
     },
     "c": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:plates/titanium"
     }
   },
   "result": {

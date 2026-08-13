@@ -53,6 +53,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.IModPlugin;
 
@@ -162,6 +163,11 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem()), Purification_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_GUIDE.get().asItem()), BeamReactionRecipe_Type);

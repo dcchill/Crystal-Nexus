@@ -144,7 +144,7 @@ Controls:
 
 ## Mobility Equipment
 
-### Polymer Jetpack
+### Titanium Jetpack
 
 Uses the Jetpack Jump keybind and its stored fuel.
 
@@ -205,15 +205,15 @@ Tools:
 - Invertium Shovel
 - Invertium Hoe
 
-### Polymer Tools
+### Titanium Tools
 
 Tools:
 
-- Polymer Pickaxe
-- Polymer Axe
-- Polymer Sword
-- Polymer Shovel
-- Polymer Hoe
+- Titanium Pickaxe
+- Titanium Axe
+- Titanium Sword
+- Titanium Shovel
+- Titanium Hoe
 
 ### Compound Tools
 

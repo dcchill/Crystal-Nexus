@@ -11,7 +11,7 @@
       "tag": "c:stones"
     },
     "b": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:ingots/titanium"
     },
     "c": {
       "item": "crystalnexus:chlorophyte_ingot"

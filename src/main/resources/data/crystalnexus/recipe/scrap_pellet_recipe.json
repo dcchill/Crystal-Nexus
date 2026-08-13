@@ -2,7 +2,7 @@
   "type": "crystalnexus:circuit_pressing",
   "ingredients": [
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:carbon_composite"
     },
     {
       "item": "crystalnexus:ee_matter"

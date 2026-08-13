@@ -1,6 +1,6 @@
 # Getting Started and Progression
 
-Crystal Nexus is a tech and energy mod built around crystals, machines, FE transfer, ore processing, and big late-game builds. Early on, you will work with Ancient Crystal materials. Later, the mod opens up into Blutonium, Invertium, Polymer, EE-Matter, singularities, reactors, and Zero Point power.
+Crystal Nexus is a tech and energy mod built around crystals, machines, FE transfer, ore processing, and big late-game builds. Early on, you will work with Ancient Crystal materials. Later, the mod opens up into Blutonium, Invertium, Titanium, EE-Matter, singularities, reactors, and Zero Point power.
 
 ## Early Goals
 

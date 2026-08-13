@@ -11,7 +11,7 @@
       "item": "crystalnexus:sulfur_dust"
     },
     "b": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:ingots/titanium"
     },
     "c": {
       "item": "crystalnexus:battery_part"

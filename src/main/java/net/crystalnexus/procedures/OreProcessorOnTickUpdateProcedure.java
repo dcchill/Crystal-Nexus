@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -75,13 +77,7 @@ public class OreProcessorOnTickUpdateProcedure {
 						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 				}
 			}
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-				outputAmount = 5;
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-				outputAmount = 6;
-			} else {
-				outputAmount = 4;
-			}
+			outputAmount = 4;
 			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 				cookTime = 50;
 			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
@@ -90,7 +86,6 @@ public class OreProcessorOnTickUpdateProcedure {
 				cookTime = 75;
 			}
 			double _cn_cookMult = 1.0;
-			double _cn_outputMult = 1.0;
 			boolean _cn_hasKeys = false;
 			ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
 			CompoundTag _cn_data = null;
@@ -99,18 +94,14 @@ public class OreProcessorOnTickUpdateProcedure {
 				if (_cn_cd != null)
 					_cn_data = _cn_cd.copyTag();
 			}
-			if (_cn_data != null && (_cn_data.contains("cook_mult") || _cn_data.contains("output_mult"))) {
+			if (_cn_data != null && _cn_data.contains("cook_mult")) {
 				_cn_hasKeys = true;
 				if (_cn_data.contains("cook_mult"))
 					_cn_cookMult = _cn_data.getDouble("cook_mult");
-				if (_cn_data.contains("output_mult"))
-					_cn_outputMult = _cn_data.getDouble("output_mult");
 			}
 			if (_cn_hasKeys) {
 				_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-				_cn_outputMult = Math.max(0.0, Math.min(_cn_outputMult, 10.0));
 				cookTime = cookTime * _cn_cookMult;
-				outputAmount = outputAmount * _cn_outputMult;
 			}
 			if (!world.isClientSide()) {
 				BlockPos _bp = BlockPos.containing(x, y, z);
@@ -136,7 +127,7 @@ public class OreProcessorOnTickUpdateProcedure {
 					return ItemStack.EMPTY;
 				}
 			}.getResult()).getItem())) {
-				if (8192 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+				if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 					if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + outputAmount) {
 						if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == (new Object() {
 							public ItemStack getResult() {
@@ -153,7 +144,7 @@ public class OreProcessorOnTickUpdateProcedure {
 								return ItemStack.EMPTY;
 							}
 						}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == Blocks.AIR.asItem()) {
-							if (CrystalnexusModItems.NETHERITE_SCRAP_DUST.get() == (new Object() {
+							if (CrystalnexusModItems.CARBON_COMPOSITE.get() == (new Object() {
 								public ItemStack getResult() {
 									if (world instanceof Level _lvl) {
 										net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
@@ -219,7 +210,7 @@ public class OreProcessorOnTickUpdateProcedure {
 									if (world instanceof ILevelExtension _ext) {
 										IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 										if (_entityStorage != null)
-											_entityStorage.extractEnergy(4096, false);
+											_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096), false);
 									}
 								}
 							} else {
@@ -274,7 +265,7 @@ public class OreProcessorOnTickUpdateProcedure {
 									if (world instanceof ILevelExtension _ext) {
 										IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 										if (_entityStorage != null)
-											_entityStorage.extractEnergy(8192, false);
+											_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
 									}
 								}
 							}
@@ -282,13 +273,7 @@ public class OreProcessorOnTickUpdateProcedure {
 					}
 				}
 			}
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) {
-				outputAmount2 = 16;
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) {
-				outputAmount2 = 18;
-			} else {
 			outputAmount2 = 14;
-			}
 			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 				cookTime2 = 50;
 			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
@@ -298,7 +283,6 @@ public class OreProcessorOnTickUpdateProcedure {
 			}
 			if (_cn_hasKeys) {
 				cookTime2 = cookTime2 * _cn_cookMult;
-				outputAmount2 = outputAmount2 * _cn_outputMult;
 			}
 			outputAmount2 = Math.floor(outputAmount2);
 			if (outputAmount2 < 0)
@@ -329,7 +313,7 @@ public class OreProcessorOnTickUpdateProcedure {
 					return ItemStack.EMPTY;
 				}
 			}.getResult()).getItem())) {
-				if (8192 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+				if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 					if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + outputAmount2) {
 						if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == (new Object() {
 							public ItemStack getResult() {
@@ -397,7 +381,7 @@ public class OreProcessorOnTickUpdateProcedure {
 								if (world instanceof ILevelExtension _ext) {
 									IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 									if (_entityStorage != null)
-										_entityStorage.extractEnergy(8192, false);
+										_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
 								}
 							}
 						}

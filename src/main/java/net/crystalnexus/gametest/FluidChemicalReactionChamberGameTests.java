@@ -5,12 +5,18 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.procedures.FluidChemicalReactionChamberOnTickUpdateProcedure;
+import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -21,6 +27,17 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class FluidChemicalReactionChamberGameTests {
     private FluidChemicalReactionChamberGameTests() {}
+
+    @GameTest(template = "zero_point")
+    public static void feEfficiencyUpgradeCosts(GameTestHelper helper) {
+        helper.assertTrue(MachineUpgradeHelper.energyCost(
+                new ItemStack(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get()), 4096) == 2731,
+            "The FE Efficiency Upgrade must provide 1.5x FE efficiency");
+        helper.assertTrue(MachineUpgradeHelper.energyCost(
+                new ItemStack(CrystalnexusModItems.CARBON_FE_EFFICIENCY_UPGRADE.get()), 4096) == 2048,
+            "The Carbon FE Efficiency Upgrade must provide 2x FE efficiency");
+        helper.succeed();
+    }
 
     @GameTest(template = "zero_point")
     public static void tanksExposeInputsAndOutputSafely(GameTestHelper helper) {
@@ -108,12 +125,101 @@ public final class FluidChemicalReactionChamberGameTests {
     }
 
     @GameTest(template = "zero_point")
+    public static void sulfuricAcidConvertsRawMaterialTagToDustTag(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.SULFURIC_ACID.get(), 50), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(0, new ItemStack(Items.RAW_IRON));
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        ItemStack output = chamber.getItem(2);
+        TagKey<net.minecraft.world.item.Item> ironDusts = TagKey.create(
+            Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/iron"));
+        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getItem(0).isEmpty(),
+            "The reaction must consume one raw iron and 50 mB of sulfuric acid");
+        helper.assertTrue(output.is(ironDusts) && output.getCount() == 3,
+            "The reaction must produce three items from c:dusts/iron; got " + output);
+        helper.assertTrue(chamber.getTank(2).getFluidAmount() == 10
+                && chamber.getTank(2).getFluid().is(CrystalnexusModFluids.ACIDIC_SLURRY.get()),
+            "The reaction must produce 10 mB of acidic slurry");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void crudeOilMakesResinAndResinMakesCarbonFiber(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.CRUDE_OIL.get(), 250), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(0, new ItemStack(Items.SLIME_BALL));
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getItem(0).isEmpty(),
+            "The resin reaction must consume 250 mB crude oil and one slimeball");
+        helper.assertTrue(chamber.getTank(2).getFluidAmount() == 250
+                && chamber.getTank(2).getFluid().is(CrystalnexusModFluids.RESIN.get()),
+            "The resin reaction must produce 250 mB resin");
+
+        chamber.getFluidHandler().drain(250, IFluidHandler.FluidAction.EXECUTE);
+        chamber.getFluidHandler().fill(new FluidStack(CrystalnexusModFluids.RESIN.get(), 250), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(0, new ItemStack(CrystalnexusModItems.CARBON_COMPOSITE.get()));
+        chamber.setItem(1, new ItemStack(CrystalnexusModItems.CERAMIC_PLATE.get()));
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        helper.assertTrue(chamber.getTank(0).getFluidAmount() == 200,
+            "The carbon fiber reaction must consume 50 mB resin");
+        helper.assertTrue(chamber.getItem(0).isEmpty() && chamber.getItem(1).isEmpty()
+                && chamber.getItem(2).is(CrystalnexusModItems.CARBON_FIBER.get()),
+            "Carbon Composite and a Ceramic Plate must produce one Carbon Fiber");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void ssdEfficiencyReducesEnergyWithoutMultiplyingOutputs(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.SULFURIC_ACID.get(), 250), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(1, new ItemStack(CrystalnexusModItems.TARROCK.get()));
+
+        ItemStack ssd = new ItemStack(CrystalnexusModItems.SSD.get());
+        CustomData.update(DataComponents.CUSTOM_DATA, ssd, tag -> {
+            tag.putDouble("cook_mult", 0.05);
+            tag.putDouble("fe_efficiency", 2.0);
+        });
+        chamber.setItem(3, ssd);
+        for (int i = 0; i < 2; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 5; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        FluidChemicalReactionChamberBlockEntity current = helper.getBlockEntity(pos);
+        helper.assertTrue(current.getEnergyStorage().getEnergyStored() == 0,
+            "2x FE efficiency must reduce a 4096 FE reaction to 2048 FE");
+        helper.assertTrue(current.getTank(2).getFluidAmount() == 100,
+            "FE efficiency must not multiply the recipe's fluid output");
+        helper.assertTrue(current.getItem(2).is(Items.BLACKSTONE) && current.getItem(2).getCount() == 1,
+            "FE efficiency must not multiply the recipe's item output");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void matchingRecipeWritesProgress(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
         FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
         chamber.getTank(1).fill(new FluidStack(CrystalnexusModFluids.GASOLINE.get(), 1000), IFluidHandler.FluidAction.EXECUTE);
-        chamber.setItem(0, new ItemStack(CrystalnexusModItems.CONDUCTIVE_ALLOY.get()));
+        chamber.setItem(0, new ItemStack(Items.COAL_BLOCK));
         for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
 
         var loaded = helper.getLevel().getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE);
@@ -150,8 +256,8 @@ public final class FluidChemicalReactionChamberGameTests {
         for (int tick = 1; tick < 100; tick++)
             FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
         current = helper.getBlockEntity(pos);
-        helper.assertTrue(current.getTank(1).getFluidAmount() == 900 && current.getItem(0).isEmpty()
-                && current.getTank(2).getFluidAmount() == 100,
+        helper.assertTrue(current.getTank(1).getFluidAmount() == 750 && current.getItem(0).isEmpty()
+                && current.getTank(2).getFluidAmount() == 250,
             "A shapeless recipe must consume the matched swapped inputs and produce its output");
         helper.succeed();
     }

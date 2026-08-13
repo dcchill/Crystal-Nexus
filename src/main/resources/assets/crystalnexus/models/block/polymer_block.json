@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/polymer_plate_block",
-    "particle": "crystalnexus:block/polymer_plate_block"
-  },
-  "render_type": "solid"
-}

@@ -11,7 +11,7 @@
       "item": "crystalnexus:carbon_fiber_rod"
     },
     "b": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:plates/titanium"
     },
     "c": {
       "item": "crystalnexus:machine_bolt"

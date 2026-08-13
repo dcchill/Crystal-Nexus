@@ -1,0 +1,17 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:resin",
+    "amount": 50
+  },
+  "item_input_1": {
+    "item": "crystalnexus:carbon_composite"
+  },
+  "item_input_2": {
+    "item": "crystalnexus:ceramic_plate"
+  },
+  "item_output": {
+    "id": "crystalnexus:carbon_fiber",
+    "count": 1
+  }
+}

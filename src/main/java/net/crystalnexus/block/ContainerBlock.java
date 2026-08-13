@@ -113,7 +113,7 @@ public class ContainerBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Polymer Container");
+					return Component.literal("Titanium Container");
 				}
 
 				@Override

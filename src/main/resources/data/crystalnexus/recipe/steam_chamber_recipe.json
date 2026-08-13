@@ -14,7 +14,7 @@
       "item": "crystalnexus:turbine_blade"
     },
     "c": {
-      "item": "crystalnexus:polymer_sheet"
+      "tag": "c:ingots/titanium"
     },
     "d": {
       "item": "crystalnexus:silicon"

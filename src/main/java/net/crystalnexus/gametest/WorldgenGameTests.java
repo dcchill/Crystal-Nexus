@@ -22,7 +22,7 @@ public final class WorldgenGameTests {
         var biomes = registries.registryOrThrow(Registries.BIOME);
 
         for (String name : new String[]{"ancient_crystal_ore", "ancient_crystal_ore_stone", "blutonium_ore", "chlorophyte_ore",
-                "deepslate_silicon_ore", "silicon_ore", "sulfur_ore"}) {
+                "deepslate_silicon_ore", "ilmenite_ore", "silicon_ore", "sulfur_ore"}) {
             PlacedFeature feature = placedFeatures.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", name));
             helper.assertTrue(feature != null && biomes.getOrThrow(Biomes.PLAINS).getGenerationSettings().hasFeature(feature),
                     name + " must be registered in overworld biome generation");

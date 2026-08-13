@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "a",
+    "a"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:ingots/titanium"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_sheet",
+    "count": 1
+  }
+}

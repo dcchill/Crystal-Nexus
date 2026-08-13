@@ -2,16 +2,16 @@
   "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:carbon_composite"
     },
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:carbon_composite"
     },
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:carbon_composite"
     },
     {
-      "item": "crystalnexus:netherite_scrap_dust"
+      "item": "crystalnexus:carbon_composite"
     }
   ],
   "output": {

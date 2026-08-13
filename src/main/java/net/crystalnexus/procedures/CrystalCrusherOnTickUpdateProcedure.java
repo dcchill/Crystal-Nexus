@@ -1,14 +1,11 @@
 package net.crystalnexus.procedures;
 
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.util.CrushingRecipeSupport;
+import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,21 +28,10 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		setMachineState(world, pos, getBlockNBTNumber(world, pos, "progress") == 0 ? 1 : 2);
 
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 2);
-		int baseOutput = upgrade.is(CrystalnexusModItems.EFFICIENCY_UPGRADE.get()) ? 3
-				: upgrade.is(CrystalnexusModItems.CARBON_EFFICIENCY_UPGRADE.get()) ? 4 : 2;
-		double cookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
-				: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-		double outputMultiplier = 1;
-
-		CustomData customData = upgrade.get(DataComponents.CUSTOM_DATA);
-		if (customData != null) {
-			CompoundTag data = customData.copyTag();
-			if (data.contains("cook_mult"))
-				cookTime *= Math.clamp(data.getDouble("cook_mult"), 0.05, 10);
-			if (data.contains("output_mult"))
-				outputMultiplier = Math.clamp(data.getDouble("output_mult"), 0, 10);
-		}
-		cookTime = Math.max(1, cookTime);
+		double baseCookTime = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
+				: upgrade.is(net.crystalnexus.init.CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
+		double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
+		int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION);
 		setBlockNBTNumber(world, pos, "maxProgress", cookTime);
 
 		if (!(world instanceof Level level))
@@ -53,13 +39,13 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 		ItemStack input = itemFromBlockInventory(world, pos, 0);
 		ItemStack result = CrushingRecipeSupport.findResult(level, input);
-		int outputCount = Math.min(MAX_OUTPUT, (int) (Math.max(baseOutput, result.getCount()) * outputMultiplier));
+		int outputCount = Math.min(MAX_OUTPUT, Math.max(2, result.getCount()));
 		ItemStack currentOutput = itemFromBlockInventory(world, pos, 1);
 		boolean outputFits = outputCount > 0
 				&& (currentOutput.isEmpty() || ItemStack.isSameItemSameComponents(currentOutput, result))
 				&& currentOutput.getCount() + outputCount <= result.getMaxStackSize();
 
-		if (result.isEmpty() || getEnergyStored(world, pos, null) < ENERGY_PER_OPERATION || !outputFits)
+		if (result.isEmpty() || getEnergyStored(world, pos, null) < energyCost || !outputFits)
 			return energyText(world, pos);
 
 		double progress = getBlockNBTNumber(world, pos, "progress") + 1;
@@ -80,7 +66,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 			IEnergyStorage energy = extension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
 			if (energy != null)
-				energy.extractEnergy(ENERGY_PER_OPERATION, false);
+				energy.extractEnergy(energyCost, false);
 		}
 
 		return energyText(world, pos);

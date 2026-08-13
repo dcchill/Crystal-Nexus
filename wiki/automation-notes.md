@@ -13,7 +13,7 @@ A compact early processing line can be:
 5. Separator outputs into Smelter using conveyor belts.
 6. Conveyor Belts move outputs to storage.
 
-Add Efficiency Upgrades to machines that support them when output quantity matters more than power use.
+Add FE Efficiency Upgrades to supported machines to reduce the FE consumed per operation without changing their output quantity.
 
 ## Ore Doubling and Beyond
 

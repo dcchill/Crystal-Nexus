@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "a a",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:synthetic_rubber"
+    },
+    "b": {
+      "item": "crystalnexus:gas_fuel_cell"
+    },
+    "c": {
+      "item": "crystalnexus:machine_frame"
+    },
+    "d": {
+      "tag": "c:plates/titanium"
+    },
+    "e": {
+      "item": "minecraft:leather"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:jet_pack_chestplate",
+    "count": 1
+  }
+}

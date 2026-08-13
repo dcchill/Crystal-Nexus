@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:sulfuric_acid",
+    "amount": 50
+  },
+  "item_input_1": {
+    "tag": "c:raw_materials/osmium"
+  },
+  "output": {
+    "fluid": "crystalnexus:acidic_slurry",
+    "amount": 10
+  },
+  "item_output_tag": {
+    "tag": "c:dusts/osmium",
+    "count": 3
+  }
+}

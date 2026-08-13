@@ -54,7 +54,7 @@ public abstract class JetPackItem extends ArmorItem {
 				map.put(ArmorItem.Type.CHESTPLATE, 6);
 				map.put(ArmorItem.Type.HELMET, 2);
 				map.put(ArmorItem.Type.BODY, 6);
-			}), 9, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.EMPTY), () -> Ingredient.of(new ItemStack(CrystalnexusModItems.POLYMER_SHEET.get())), List.of(new ArmorMaterial.Layer(ResourceLocation.parse("crystalnexus:jetpack"))), 1f, 0f);
+			}), 9, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.EMPTY), () -> Ingredient.of(TitaniumSheetItem.TAG), List.of(new ArmorMaterial.Layer(ResourceLocation.parse("crystalnexus:jetpack"))), 1f, 0f);
 			registerHelper.register(ResourceLocation.parse("crystalnexus:jet_pack"), armorMaterial);
 			ARMOR_MATERIAL = BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(armorMaterial);
 		});
