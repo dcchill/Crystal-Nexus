@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "minecraft:cactus"
+    },
+    {
+      "item": "minecraft:sugar"
+    },
+    {
+      "item": "crystalnexus:biomass"
+    }
+  ],
+  "output": {
+    "id": "minecraft:slime_ball",
+    "count": 2
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "minecraft:lava",
+    "amount": 250
+  },
+  "item_input_1": {
+    "item": "minecraft:blue_ice"
+  },
+  "item_input_2": {
+    "item": "minecraft:soul_soil"
+  },
+  "item_output": {
+    "id": "minecraft:basalt",
+    "count": 8
+  }
+}

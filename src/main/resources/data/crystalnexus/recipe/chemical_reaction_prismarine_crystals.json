@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "minecraft:prismarine_shard"
+    },
+    {
+      "item": "minecraft:quartz"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    }
+  ],
+  "output": {
+    "id": "minecraft:prismarine_crystals",
+    "count": 2
+  }
+}

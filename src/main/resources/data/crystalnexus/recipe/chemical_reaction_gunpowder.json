@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "tag": "c:dusts/carbon"
+    },
+    {
+      "tag": "c:dusts/sulfur"
+    },
+    {
+      "item": "minecraft:flint"
+    }
+  ],
+  "output": {
+    "id": "minecraft:gunpowder",
+    "count": 4
+  }
+}

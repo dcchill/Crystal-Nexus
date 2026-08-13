@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:acidic_slurry",
+    "amount": 100
+  },
+  "item_input_1": {
+    "item": "minecraft:calcite"
+  },
+  "output": {
+    "fluid": "crystalnexus:sulfuric_acid",
+    "amount": 50
+  }
+}

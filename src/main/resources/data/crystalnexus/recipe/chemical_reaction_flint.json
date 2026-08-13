@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "minecraft:gravel"
+    },
+    {
+      "item": "minecraft:gravel"
+    },
+    {
+      "item": "minecraft:gravel"
+    }
+  ],
+  "output": {
+    "id": "minecraft:flint",
+    "count": 3
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:resin",
+    "amount": 100
+  },
+  "item_input_1": {
+    "item": "minecraft:rotten_flesh"
+  },
+  "item_output": {
+    "id": "minecraft:leather",
+    "count": 1
+  }
+}

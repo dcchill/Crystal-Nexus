@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:chemical_reaction",
+  "ingredients": [
+    {
+      "item": "minecraft:ink_sac"
+    },
+    {
+      "item": "minecraft:glowstone_dust"
+    },
+    {
+      "item": "minecraft:slime_ball"
+    }
+  ],
+  "output": {
+    "id": "minecraft:glow_ink_sac",
+    "count": 2
+  }
+}

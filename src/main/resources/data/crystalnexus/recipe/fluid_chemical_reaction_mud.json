@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "minecraft:water",
+    "amount": 250
+  },
+  "item_input_1": {
+    "item": "minecraft:dirt"
+  },
+  "item_output": {
+    "id": "minecraft:mud",
+    "count": 1
+  }
+}

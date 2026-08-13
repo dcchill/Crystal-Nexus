@@ -125,6 +125,45 @@ public final class FluidChemicalReactionChamberGameTests {
     }
 
     @GameTest(template = "zero_point")
+    public static void waterAndLavaMakeObsidian(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(Fluids.WATER, 100), IFluidHandler.FluidAction.EXECUTE);
+        chamber.getTank(1).fill(new FluidStack(Fluids.LAVA, 100), IFluidHandler.FluidAction.EXECUTE);
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getTank(1).isEmpty(),
+            "The obsidian reaction must consume 100 mB each of Water and Lava");
+        helper.assertTrue(chamber.getItem(2).is(Items.OBSIDIAN) && chamber.getItem(2).getCount() == 1,
+            "The obsidian reaction must produce one Obsidian");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void acidicSlurryRecoversSulfuricAcid(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
+        FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.ACIDIC_SLURRY.get(), 100), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(0, new ItemStack(Items.CALCITE));
+        for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
+
+        for (int tick = 0; tick < 100; tick++)
+            FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+
+        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getItem(0).isEmpty(),
+            "The recovery reaction must consume 100 mB Acidic Slurry and one Calcite");
+        helper.assertTrue(chamber.getTank(2).getFluidAmount() == 50
+                && chamber.getTank(2).getFluid().is(CrystalnexusModFluids.SULFURIC_ACID.get()),
+            "The recovery reaction must produce 50 mB Sulfuric Acid");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void sulfuricAcidConvertsRawMaterialTagToDustTag(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
