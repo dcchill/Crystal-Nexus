@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bpb",
+    "tmt",
+    "sss"
+  ],
+  "key": {
+    "p": { "item": "crystalnexus:pipe_straight" },
+    "m": { "item": "crystalnexus:crystal_machine_frame" },
+    "s": { "tag": "c:stones" },
+    "b": { "tag": "crystalnexus:iron_machine_bolt" },
+    "t": { "item": "crystalnexus:ceramic_plate" }
+  },
+  "result": {
+    "id": "crystalnexus:refinery",
+    "count": 1
+  }
+}

@@ -14,6 +14,13 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
+import net.crystalnexus.init.CrystalnexusModJeiPlugin;
+import net.crystalnexus.jei_recipes.OreCrushingJeiRecipe;
+import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
+import net.crystalnexus.jei_recipes.DustSeperationRecipe;
+import net.crystalnexus.jei_recipes.RefiningRecipe;
+import net.crystalnexus.processing.MaterialProcessingCatalog;
+import net.crystalnexus.util.CrushingRecipeSupport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +51,10 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
     private static int synced;
     private static boolean syncing;
     private static final Map<ResourceLocation, Class<?>> CATEGORY_RECIPE_CLASSES = new LinkedHashMap<>();
+    private static List<OreCrushingJeiRecipe> generatedCrushing = List.of();
+    private static List<FluidChemicalReactionRecipe> generatedFluid = List.of();
+    private static List<RefiningRecipe> generatedRefining = List.of();
+    private static List<DustSeperationRecipe> generatedSeparation = List.of();
 
     private record Work(IRecipeCategory<Object> category, Object recipe, List<ResourceLocation> machines) {}
 
@@ -78,6 +89,37 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
         IFocus<ItemStack> focus = jeiRuntime.getJeiHelpers().getFocusFactory().createFocus(RecipeIngredientRole.OUTPUT, VanillaTypes.ITEM_STACK, stack);
         jeiRuntime.getRecipesGui().show(focus);
         return true;
+    }
+
+    public static void seedMaterialRecipes(List<OreCrushingJeiRecipe> crushing,
+                                           List<FluidChemicalReactionRecipe> fluid,
+                                           List<RefiningRecipe> refining,
+                                           List<DustSeperationRecipe> separation) {
+        generatedCrushing = List.copyOf(crushing);
+        generatedFluid = List.copyOf(fluid);
+        generatedRefining = List.copyOf(refining);
+        generatedSeparation = List.copyOf(separation);
+    }
+
+    /** Replace only the prior generated snapshot; explicit and external JEI recipes remain untouched. */
+    public static void refreshMaterialRecipes() {
+        IJeiRuntime jeiRuntime = runtime;
+        Minecraft minecraft = Minecraft.getInstance();
+        if (jeiRuntime == null || minecraft.level == null) return;
+        IRecipeManager manager = jeiRuntime.getRecipeManager();
+        manager.hideRecipes(CrystalnexusModJeiPlugin.OreCrushingJei_Type, generatedCrushing);
+        manager.hideRecipes(CrystalnexusModJeiPlugin.FluidChemicalReaction_Type, generatedFluid);
+        manager.hideRecipes(CrystalnexusModJeiPlugin.Refining_Type, generatedRefining);
+        manager.hideRecipes(CrystalnexusModJeiPlugin.DustSeperation_Type, generatedSeparation);
+        generatedCrushing = CrushingRecipeSupport.generatedJeiRecipes(minecraft.level);
+        generatedFluid = MaterialProcessingCatalog.generatedFluidRecipes(minecraft.level);
+        generatedRefining = MaterialProcessingCatalog.generatedRefiningRecipes(minecraft.level);
+        generatedSeparation = MaterialProcessingCatalog.generatedSeparatorRecipes(minecraft.level);
+        manager.addRecipes(CrystalnexusModJeiPlugin.OreCrushingJei_Type, generatedCrushing);
+        manager.addRecipes(CrystalnexusModJeiPlugin.FluidChemicalReaction_Type, generatedFluid);
+        manager.addRecipes(CrystalnexusModJeiPlugin.Refining_Type, generatedRefining);
+        manager.addRecipes(CrystalnexusModJeiPlugin.DustSeperation_Type, generatedSeparation);
+        needsSync = true;
     }
 
     private static void clientTick(ClientTickEvent.Post ignored) {

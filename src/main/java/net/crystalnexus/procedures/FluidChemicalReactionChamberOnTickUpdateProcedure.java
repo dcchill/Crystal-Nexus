@@ -5,6 +5,16 @@ import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
 import net.crystalnexus.util.MachineUpgradeHelper;
+import net.crystalnexus.processing.MaterialProcessingCatalog;
+import net.crystalnexus.init.CrystalnexusModFluids;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
+
+import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
@@ -64,7 +74,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
             int recipeInput = input;
             recipe.fluidInput(input).ifPresent(fluid -> activeChamber.getTank(match.fluidSlot(recipeInput))
                 .drain(fluid.amount(), IFluidHandler.FluidAction.EXECUTE));
-            recipe.itemInput(input).ifPresent(item -> activeChamber.getItem(match.itemSlot(recipeInput)).shrink(1));
+            recipe.itemInput(input).ifPresent(item -> activeChamber.getItem(match.itemSlot(recipeInput)).shrink(recipe.itemInputCount(recipeInput)));
         }
         if (!fluidOutput.isEmpty()) activeChamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.EXECUTE);
         if (!itemOutput.isEmpty()) {
@@ -83,7 +93,38 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
             RecipeMatch match = match(holder.value(), chamber);
             if (match != null) return match;
         }
+        return generatedRecipe(level, chamber);
+    }
+
+    private static RecipeMatch generatedRecipe(ServerLevel level, FluidChemicalReactionChamberBlockEntity chamber) {
+        for (MaterialProcessingCatalog.Material material : MaterialProcessingCatalog.get(level).materials().values()) {
+            var profile = material.profile();
+            if (profile.disabledStages().contains("slurry")) continue;
+            int itemSlot = material.matchesSource(chamber.getItem(0)) ? 0
+                : material.matchesSource(chamber.getItem(1)) ? 1 : -1;
+            if (itemSlot < 0) continue;
+            for (int tank = 0; tank < 2; tank++) {
+                FluidStack reagent = chamber.getTank(tank).getFluid();
+                if (reagent.getAmount() < profile.reagentAmount() || !reagentMatches(reagent, profile)) continue;
+                FluidChemicalReactionRecipe recipe = new FluidChemicalReactionRecipe(
+                    Optional.of(new FluidChemicalReactionRecipe.FluidAmount(
+                        profile.reagent(), profile.reagentAmount(), Optional.empty(), profile.reagentTag())), Optional.empty(),
+                    Optional.of(material.sourceIngredient()), Optional.empty(),
+                    Optional.of(new FluidChemicalReactionRecipe.FluidAmount(
+                        BuiltInRegistries.FLUID.getKey(CrystalnexusModFluids.MINERAL_SLURRY.get()),
+                        MaterialProcessingCatalog.SLURRY_AMOUNT, Optional.of(material.id()))),
+                    Optional.empty(), Optional.empty(), 1, 1);
+                return new RecipeMatch(recipe, tank, 1 - tank, itemSlot, 1 - itemSlot);
+            }
+        }
         return null;
+    }
+
+    private static boolean reagentMatches(FluidStack stack, MaterialProcessingCatalog.Profile profile) {
+        if (profile.reagentTag())
+            return stack.is(TagKey.create(Registries.FLUID, profile.reagent()));
+        Fluid required = BuiltInRegistries.FLUID.get(profile.reagent());
+        return stack.is(required);
     }
 
     private static RecipeMatch match(FluidChemicalReactionRecipe recipe, FluidChemicalReactionChamberBlockEntity chamber) {
@@ -103,14 +144,13 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
                                         FluidChemicalReactionChamberBlockEntity chamber, int tank) {
         FluidStack stored = chamber.getTank(tank).getFluid();
         var required = recipe.fluidInput(input);
-        return required.isEmpty() ? stored.isEmpty()
-            : !stored.isEmpty() && stored.is(required.get().stack().getFluid())
-                && stored.getAmount() >= required.get().amount();
+        return required.isEmpty() ? stored.isEmpty() : !stored.isEmpty() && required.get().matches(stored);
     }
 
     private static boolean itemMatches(FluidChemicalReactionRecipe recipe, int input,
                                        FluidChemicalReactionChamberBlockEntity chamber, int slot) {
-        return recipe.itemInput(input).map(ingredient -> ingredient.test(chamber.getItem(slot))).orElse(true);
+        return recipe.itemInput(input).map(ingredient -> ingredient.test(chamber.getItem(slot))
+            && chamber.getItem(slot).getCount() >= recipe.itemInputCount(input)).orElse(true);
     }
 
     public static boolean canStackOutput(ItemStack current, ItemStack output) {

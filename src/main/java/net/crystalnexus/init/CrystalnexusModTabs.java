@@ -95,6 +95,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_WASTE.get());
 				tabData.accept(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TEMPORAL_EXPLOITER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());

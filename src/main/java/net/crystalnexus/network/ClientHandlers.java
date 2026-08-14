@@ -9,8 +9,22 @@ import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
+import net.crystalnexus.network.payload.S2C_MaterialProfiles;
+import net.crystalnexus.processing.MaterialProcessingCatalog;
 
 public class ClientHandlers {
+
+    public static void onMaterialProfiles(final S2C_MaterialProfiles msg, final IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            MaterialProcessingCatalog.installProfiles(msg.entries());
+            net.crystalnexus.client.MineralSlurryColors.clear();
+            try {
+                Class<?> hooks = Class.forName("net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin");
+                hooks.getMethod("refreshMaterialRecipes").invoke(null);
+            } catch (Throwable ignored) {
+            }
+        });
+    }
 
     public static void onDepotCraftingResponse(final S2C_DepotCraftingResponse msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {

@@ -170,6 +170,7 @@ import net.crystalnexus.block.ChlorophyteBlockBlock;
 import net.crystalnexus.block.ChlorophyteAcceleratorBlock;
 import net.crystalnexus.block.ChemicalReactionChamberBlock;
 import net.crystalnexus.block.FluidChemicalReactionChamberBlock;
+import net.crystalnexus.block.RefineryBlock;
 import net.crystalnexus.block.CautionBlockBlock;
 import net.crystalnexus.block.CautionBlockArrowBlock;
 import net.crystalnexus.block.CarbonMachineFrameBlock;
@@ -252,6 +253,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CARBON_MACHINE_FRAME = REGISTRY.register("carbon_machine_frame", CarbonMachineFrameBlock::new);
 	public static final DeferredBlock<Block> CHEMICAL_REACTION_CHAMBER = REGISTRY.register("chemical_reaction_chamber", ChemicalReactionChamberBlock::new);
 	public static final DeferredBlock<Block> FLUID_CHEMICAL_REACTION_CHAMBER = REGISTRY.register("fluid_chemical_reaction_chamber", FluidChemicalReactionChamberBlock::new);
+	public static final DeferredBlock<Block> REFINERY = REGISTRY.register("refinery", RefineryBlock::new);
 	public static final DeferredBlock<Block> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", TemporalExploiterBlock::new);
 	public static final DeferredBlock<Block> CONTAINER = REGISTRY.register("container", ContainerBlock::new);
 	public static final DeferredBlock<Block> TITANIUM_BLOCK = REGISTRY.register("titanium_block", TitaniumBlockBlock::new);

@@ -12,6 +12,7 @@ import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
 import net.crystalnexus.network.payload.S2C_OreScanResult;
 import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
+import net.crystalnexus.network.payload.S2C_MaterialProfiles;
 
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -41,6 +42,7 @@ public class ModNetworking {
 		r.playToClient(S2C_ZeroPointPreview.TYPE, S2C_ZeroPointPreview.STREAM_CODEC, ClientHandlers::onZeroPointPreview);
 		r.playToClient(S2C_BlackHoleVisual.TYPE, S2C_BlackHoleVisual.STREAM_CODEC, ClientHandlers::onBlackHoleVisual);
 		r.playToClient(S2C_OrbitalStrikeBeam.TYPE, S2C_OrbitalStrikeBeam.STREAM_CODEC, ClientHandlers::onOrbitalStrikeBeam);
+		r.playToClient(S2C_MaterialProfiles.TYPE, S2C_MaterialProfiles.STREAM_CODEC, ClientHandlers::onMaterialProfiles);
 
 	}
 }

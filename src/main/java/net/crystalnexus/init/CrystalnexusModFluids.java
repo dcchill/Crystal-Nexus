@@ -25,6 +25,7 @@ import net.crystalnexus.fluid.SulfuricAcidFluid;
 import net.crystalnexus.fluid.AcidicSlurryFluid;
 import net.crystalnexus.fluid.ResinFluid;
 import net.crystalnexus.fluid.InversionSolutionFluid;
+import net.crystalnexus.fluid.MineralSlurryFluid;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluids {
@@ -47,6 +48,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_OVERFUEL = REGISTRY.register("flowing_overfuel", () -> new OverfuelFluid.Flowing());
 	public static final DeferredHolder<Fluid, FlowingFluid> TEMPORAL_ESSENCE = REGISTRY.register("temporal_essence", () -> new TemporalEssenceFluid.Source());
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_TEMPORAL_ESSENCE = REGISTRY.register("flowing_temporal_essence", () -> new TemporalEssenceFluid.Flowing());
+	public static final DeferredHolder<Fluid, FlowingFluid> MINERAL_SLURRY = REGISTRY.register("mineral_slurry", MineralSlurryFluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_MINERAL_SLURRY = REGISTRY.register("flowing_mineral_slurry", MineralSlurryFluid.Flowing::new);
 
 	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class FluidsClientSideHandler {

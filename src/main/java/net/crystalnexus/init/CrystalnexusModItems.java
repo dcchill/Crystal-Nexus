@@ -267,6 +267,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_MACHINE_FRAME = block(CrystalnexusModBlocks.CARBON_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER);
 	public static final DeferredItem<Item> FLUID_CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER);
+	public static final DeferredItem<Item> REFINERY = block(CrystalnexusModBlocks.REFINERY);
 	public static final DeferredItem<Item> TEMPORAL_EXPLOITER = block(CrystalnexusModBlocks.TEMPORAL_EXPLOITER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
 	public static final DeferredItem<Item> SULFUR_DUST = REGISTRY.register("sulfur_dust", PolyacrylonitrileDustItem::new);

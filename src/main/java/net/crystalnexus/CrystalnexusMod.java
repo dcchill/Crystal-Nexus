@@ -37,6 +37,7 @@ import net.crystalnexus.init.CrystalnexusModFluidTypes;
 import net.crystalnexus.init.CrystalnexusModEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.init.CrystalnexusModDataComponents;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class CrystalnexusMod {
 		CrystalnexusModSounds.REGISTRY.register(modEventBus);
 		CrystalnexusModBlocks.REGISTRY.register(modEventBus);
 		CrystalnexusModBlockEntities.REGISTRY.register(modEventBus);
+		CrystalnexusModDataComponents.REGISTRY.register(modEventBus);
 		CrystalnexusModItems.REGISTRY.register(modEventBus);
 		CrystalnexusModEntities.REGISTRY.register(modEventBus);
 		CrystalnexusModTabs.REGISTRY.register(modEventBus);

@@ -164,27 +164,23 @@ public final class FluidChemicalReactionChamberGameTests {
     }
 
     @GameTest(template = "zero_point")
-    public static void sulfuricAcidConvertsRawMaterialTagToDustTag(GameTestHelper helper) {
+    public static void explicitTitaniumShortcutKeepsPriority(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
         FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
-        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.SULFURIC_ACID.get(), 50), IFluidHandler.FluidAction.EXECUTE);
-        chamber.setItem(0, new ItemStack(Items.RAW_IRON));
+        chamber.getTank(0).fill(new FluidStack(CrystalnexusModFluids.SULFURIC_ACID.get(), 100), IFluidHandler.FluidAction.EXECUTE);
+        chamber.setItem(0, new ItemStack(CrystalnexusModItems.RAW_ILMENITE.get()));
+        chamber.setItem(1, new ItemStack(Items.IRON_INGOT));
         for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
 
         for (int tick = 0; tick < 100; tick++)
             FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
 
-        ItemStack output = chamber.getItem(2);
-        TagKey<net.minecraft.world.item.Item> ironDusts = TagKey.create(
-            Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", "dusts/iron"));
-        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getItem(0).isEmpty(),
-            "The reaction must consume one raw iron and 50 mB of sulfuric acid");
-        helper.assertTrue(output.is(ironDusts) && output.getCount() == 3,
-            "The reaction must produce three items from c:dusts/iron; got " + output);
-        helper.assertTrue(chamber.getTank(2).getFluidAmount() == 10
-                && chamber.getTank(2).getFluid().is(CrystalnexusModFluids.ACIDIC_SLURRY.get()),
-            "The reaction must produce 10 mB of acidic slurry");
+        helper.assertTrue(chamber.getTank(0).isEmpty() && chamber.getItem(0).isEmpty() && chamber.getItem(1).isEmpty(),
+            "The explicit shortcut must consume raw ilmenite, iron, and 100 mB sulfuric acid");
+        helper.assertTrue(chamber.getItem(2).is(CrystalnexusModItems.TITANIUM_INGOT.get())
+                && chamber.getItem(2).getCount() == 1,
+            "The explicit titanium recipe must override generated material processing");
         helper.succeed();
     }
 

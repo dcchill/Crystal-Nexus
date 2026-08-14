@@ -17,6 +17,7 @@ import net.crystalnexus.fluid.types.SulfuricAcidFluidType;
 import net.crystalnexus.fluid.types.AcidicSlurryFluidType;
 import net.crystalnexus.fluid.types.ResinFluidType;
 import net.crystalnexus.fluid.types.InversionSolutionFluidType;
+import net.crystalnexus.fluid.types.MineralSlurryFluidType;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluidTypes {
@@ -30,4 +31,5 @@ public class CrystalnexusModFluidTypes {
 	public static final DeferredHolder<FluidType, FluidType> STEAM_TYPE = REGISTRY.register("steam", () -> new SteamFluidType());
 	public static final DeferredHolder<FluidType, FluidType> OVERFUEL_TYPE = REGISTRY.register("overfuel", () -> new OverfuelFluidType());
 	public static final DeferredHolder<FluidType, FluidType> TEMPORAL_ESSENCE_TYPE = REGISTRY.register("temporal_essence", () -> new TemporalEssenceFluidType());
+	public static final DeferredHolder<FluidType, FluidType> MINERAL_SLURRY_TYPE = REGISTRY.register("mineral_slurry", MineralSlurryFluidType::new);
 }

@@ -31,7 +31,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
 
 	public DustSeparatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.DUST_SEPARATOR.get(), position, state);
@@ -111,9 +111,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		if (index == 1)
-			return false;
-		if (index == 2)
+		if (index == 1 || index == 3)
 			return false;
 		return true;
 	}
@@ -130,11 +128,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
-		if (index == 0)
-			return false;
-		if (index == 2)
-			return false;
-		return true;
+		return index == 1 || index == 3;
 	}
 
 	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.DUST_SEPARATOR.capacity(), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxReceive(), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract(), 0) {
@@ -162,4 +156,5 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+
 }

@@ -39,7 +39,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 		ItemStack input = itemFromBlockInventory(world, pos, 0);
 		ItemStack result = CrushingRecipeSupport.findResult(level, input);
-		int outputCount = Math.min(MAX_OUTPUT, Math.max(2, result.getCount()));
+		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
 		ItemStack currentOutput = itemFromBlockInventory(world, pos, 1);
 		boolean outputFits = outputCount > 0
 				&& (currentOutput.isEmpty() || ItemStack.isSameItemSameComponents(currentOutput, result))

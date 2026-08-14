@@ -37,6 +37,7 @@ public final class CrushingRecipeSupport {
 					return result;
 			}
 		}
+
 		return ItemStack.EMPTY;
 	}
 
@@ -46,6 +47,10 @@ public final class CrushingRecipeSupport {
 				.map(recipe -> toJeiRecipe(recipe, level))
 				.filter(recipe -> recipe != null)
 				.toList();
+	}
+
+	public static List<OreCrushingJeiRecipe> generatedJeiRecipes(Level level) {
+		return List.of();
 	}
 
 	private static boolean isExternalCrushing(Recipe<?> recipe) {

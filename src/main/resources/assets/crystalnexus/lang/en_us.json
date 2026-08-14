@@ -171,6 +171,8 @@
   "item.crystalnexus.iron_singularity.description_0": "§5Provides Resistance",
   "block.crystalnexus.chemical_reaction_chamber": "Chemical Reaction Chamber",
   "block.crystalnexus.fluid_chemical_reaction_chamber": "Fluid Chemical Reaction Chamber",
+  "block.crystalnexus.refinery": "Refinery",
+  "gui.crystalnexus.refinery": "Refinery",
   "block.crystalnexus.temporal_exploiter": "Temporal Exploiter",
   "gui.crystalnexus.fluid_chemical_reaction_chamber": "[Fluid Reaction Chamber]",
   "item.crystalnexus.nitrile": "Base Compound",

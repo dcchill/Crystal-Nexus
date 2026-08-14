@@ -2,7 +2,9 @@ package net.crystalnexus.network;
 
 import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
+import net.crystalnexus.block.entity.RefineryBlockEntity;
 import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
+import net.crystalnexus.world.inventory.RefineryMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -28,11 +30,16 @@ public record FluidChemicalReactionChamberPurgeMessage(int tank, BlockPos pos) i
     public static void handle(FluidChemicalReactionChamberPurgeMessage message, IPayloadContext context) {
         if (context.flow() != PacketFlow.SERVERBOUND) return;
         context.enqueueWork(() -> {
-            if (!(context.player().containerMenu instanceof FluidChemicalReactionChamberGUIMenu menu)
-                || menu.x != message.pos.getX() || menu.y != message.pos.getY() || menu.z != message.pos.getZ()
-                || message.tank < 0 || message.tank > 2) return;
-            if (context.player().level().getBlockEntity(message.pos) instanceof FluidChemicalReactionChamberBlockEntity chamber)
+            boolean correctMenu = context.player().containerMenu instanceof FluidChemicalReactionChamberGUIMenu chamberMenu
+                && chamberMenu.x == message.pos.getX() && chamberMenu.y == message.pos.getY() && chamberMenu.z == message.pos.getZ()
+                || context.player().containerMenu instanceof RefineryMenu refineryMenu
+                && refineryMenu.x == message.pos.getX() && refineryMenu.y == message.pos.getY() && refineryMenu.z == message.pos.getZ();
+            if (!correctMenu || message.tank < 0) return;
+            var blockEntity = context.player().level().getBlockEntity(message.pos);
+            if (blockEntity instanceof FluidChemicalReactionChamberBlockEntity chamber && message.tank < 3)
                 chamber.purge(message.tank);
+            else if (blockEntity instanceof RefineryBlockEntity refinery && message.tank < 2)
+                refinery.purge(message.tank);
         }).exceptionally(error -> {
             context.connection().disconnect(Component.literal(error.getMessage()));
             return null;
