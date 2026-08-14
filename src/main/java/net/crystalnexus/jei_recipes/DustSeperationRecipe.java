@@ -28,9 +28,10 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
     private final Optional<ItemStack> secondaryOutput;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedSecondaryOutput;
     private final float secondaryChance;
+    private final int minimumMachineTier;
 
     public DustSeperationRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
-        this(Optional.of(output), Optional.empty(), recipeItems, 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f);
+        this(Optional.of(output), Optional.empty(), recipeItems, 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f, 1);
     }
 
     public DustSeperationRecipe(Optional<ItemStack> output,
@@ -39,7 +40,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
                                 Optional<FluidChemicalReactionRecipe.FluidAmount> fluidInput,
                                 Optional<ItemStack> secondaryOutput,
                                 Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedSecondaryOutput,
-                                float secondaryChance) {
+                                float secondaryChance, int minimumMachineTier) {
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
         this.recipeItems = recipeItems;
@@ -48,6 +49,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
         this.secondaryOutput = secondaryOutput.map(ItemStack::copy);
         this.taggedSecondaryOutput = taggedSecondaryOutput;
         this.secondaryChance = Math.max(0f, Math.min(1f, secondaryChance));
+        this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
     }
 
     public int inputCount() { return inputCount; }
@@ -58,6 +60,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             .orElse(ItemStack.EMPTY);
     }
     public float secondaryChance() { return secondaryChance; }
+    public int minimumMachineTier() { return minimumMachineTier; }
 
     @Override public boolean matches(RecipeInput input, Level level) { return false; }
     @Override public NonNullList<Ingredient> getIngredients() { return recipeItems; }
@@ -87,7 +90,8 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             FluidChemicalReactionRecipe.FluidAmount.CODEC.optionalFieldOf("fluid_input").forGetter(recipe -> recipe.fluidInput),
             ItemStack.STRICT_CODEC.optionalFieldOf("secondary_output").forGetter(recipe -> recipe.secondaryOutput),
             FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("secondary_output_tag").forGetter(recipe -> recipe.taggedSecondaryOutput),
-            Codec.FLOAT.optionalFieldOf("secondary_chance", 0f).forGetter(recipe -> recipe.secondaryChance)
+            Codec.FLOAT.optionalFieldOf("secondary_chance", 0f).forGetter(recipe -> recipe.secondaryChance),
+            Codec.INT.optionalFieldOf("minimum_machine_tier", 1).forGetter(recipe -> recipe.minimumMachineTier)
         ).apply(builder, DustSeperationRecipe::new)).flatXmap(Serializer::validate, DataResult::success);
         public static final StreamCodec<RegistryFriendlyByteBuf, DustSeperationRecipe> STREAM_CODEC =
             StreamCodec.of(Serializer::encode, Serializer::decode);
@@ -108,7 +112,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             recipe.recipeItems.forEach(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient));
             buf.writeVarInt(recipe.inputCount); writeFluid(buf, recipe.fluidInput);
             writeStack(buf, recipe.secondaryOutput); writeTag(buf, recipe.taggedSecondaryOutput);
-            buf.writeFloat(recipe.secondaryChance);
+            buf.writeFloat(recipe.secondaryChance); buf.writeVarInt(recipe.minimumMachineTier);
         }
         private static DustSeperationRecipe decode(RegistryFriendlyByteBuf buf) {
             Optional<ItemStack> output = readStack(buf);
@@ -116,7 +120,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             NonNullList<Ingredient> ingredients = NonNullList.withSize(buf.readVarInt(), Ingredient.EMPTY);
             ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
             int count = buf.readVarInt();
-            return new DustSeperationRecipe(output, tagged, ingredients, count, readFluid(buf), readStack(buf), readTag(buf), buf.readFloat());
+            return new DustSeperationRecipe(output, tagged, ingredients, count, readFluid(buf), readStack(buf), readTag(buf), buf.readFloat(), buf.readVarInt());
         }
         private static void writeStack(RegistryFriendlyByteBuf buf, Optional<ItemStack> stack) {
             buf.writeBoolean(stack.isPresent()); stack.ifPresent(value -> ItemStack.STREAM_CODEC.encode(buf, value));

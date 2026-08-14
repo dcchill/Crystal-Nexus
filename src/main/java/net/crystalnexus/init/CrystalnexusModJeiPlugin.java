@@ -191,7 +191,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(Items.END_CRYSTAL), BeamReactionRecipe_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get().asItem()), Unfurnace_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem()), OreCrushingJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem()), OreCrushingJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem()), OreCrushingJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()), ReactorMultiblockGuide_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem()), ReactorMultiblockGuide_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem()), ReactorMultiblockGuide_Type);
@@ -210,6 +216,9 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem()), FluidChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REFINERY.get().asItem()), Refining_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY.get().asItem()), Refining_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_REFINERY.get().asItem()), Refining_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem()), BiomaticComposting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);

@@ -73,12 +73,12 @@ public final class MaterialProcessingCatalog {
     }
     public record Profile(ResourceLocation primaryMaterial, ResourceLocation reagent, boolean reagentTag,
                           int reagentAmount, int crusherMultiplier, int advancedMultiplier,
-                          Optional<Secondary> secondary, Set<String> disabledStages) {
+                          Optional<Secondary> secondary, Set<String> disabledStages, int minimumMachineTier) {
         static Profile defaults(String material) {
             return new Profile(ResourceLocation.fromNamespaceAndPath("c", material),
                 ResourceLocation.fromNamespaceAndPath("crystalnexus", "sulfuric_acid"), false,
                 SLURRY_AMOUNT, 2, 3,
-                Optional.empty(), Set.of());
+                Optional.empty(), Set.of(), MaterialProcessingNames.requiredMachineTier(material));
         }
     }
     public record Material(String name, ResourceLocation id, TagKey<Item> ores, TagKey<Item> raw,
@@ -199,7 +199,8 @@ public final class MaterialProcessingCatalog {
             if (explicit.stream().anyMatch(recipe -> recipe.input().matches(slurry.stack()))) continue;
             generated.add(new RefiningRecipe(slurry, Optional.empty(),
                 Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
-                    material.dust().location(), material.profile().advancedMultiplier()))));
+                    material.dust().location(), material.profile().advancedMultiplier())),
+                material.profile().minimumMachineTier()));
         }
         return List.copyOf(generated);
     }
@@ -219,7 +220,8 @@ public final class MaterialProcessingCatalog {
             generated.add(new DustSeperationRecipe(Optional.empty(),
                 Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
                     material.nugget().location(), NUGGETS_PER_DUST)),
-                NonNullList.of(Ingredient.EMPTY, dust), 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f));
+                NonNullList.of(Ingredient.EMPTY, dust), 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f,
+                material.profile().minimumMachineTier()));
         }
         return List.copyOf(generated);
     }
@@ -375,7 +377,15 @@ public final class MaterialProcessingCatalog {
                 : Set.of(GSON.fromJson(json.get("disabled_auto_stages"), String[].class)) : Set.of();
         if (amount <= 0 || crusher <= 0 || advanced <= 0)
             throw new IllegalArgumentException("Amounts and multipliers must be positive");
-        return new Profile(primary, reagentId, reagentTag, amount, crusher, advanced, secondary, disabled);
+        int minimumTier = json.has("minimum_machine_tier") ? json.get("minimum_machine_tier").getAsInt()
+            : MaterialProcessingNames.requiredMachineTier(path(primary.toString()));
+        if (minimumTier < 1 || minimumTier > 4)
+            throw new IllegalArgumentException("minimum_machine_tier must be between 1 and 4");
+        return new Profile(primary, reagentId, reagentTag, amount, crusher, advanced, secondary, disabled, minimumTier);
+    }
+
+    public static int defaultRequiredTier(String material) {
+        return MaterialProcessingNames.requiredMachineTier(material);
     }
 
     private static String path(String id) {

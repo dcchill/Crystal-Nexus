@@ -20,15 +20,23 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
     private final FluidChemicalReactionRecipe.FluidAmount input;
     private final Optional<ItemStack> output;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput;
+    private final int minimumMachineTier;
 
     public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<ItemStack> output,
                           Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput) {
+		this(input, output, taggedOutput, 1);
+	}
+
+	public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<ItemStack> output,
+						  Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput, int minimumMachineTier) {
         this.input = input;
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
+		this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
     }
 
     public FluidChemicalReactionRecipe.FluidAmount input() { return input; }
+    public int minimumMachineTier() { return minimumMachineTier; }
     public ItemStack output() {
         return output.map(ItemStack::copy)
             .or(() -> taggedOutput.map(FluidChemicalReactionRecipe.TaggedItemOutput::stack))
@@ -53,7 +61,8 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
         private static final MapCodec<RefiningRecipe> CODEC = RecordCodecBuilder.<RefiningRecipe>mapCodec(instance -> instance.group(
             FluidChemicalReactionRecipe.FluidAmount.CODEC.fieldOf("fluid_input").forGetter(recipe -> recipe.input),
             ItemStack.STRICT_CODEC.optionalFieldOf("item_output").forGetter(recipe -> recipe.output),
-            FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("item_output_tag").forGetter(recipe -> recipe.taggedOutput)
+            FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("item_output_tag").forGetter(recipe -> recipe.taggedOutput),
+			Codec.INT.optionalFieldOf("minimum_machine_tier", 1).forGetter(recipe -> recipe.minimumMachineTier)
         ).apply(instance, RefiningRecipe::new)).flatXmap(recipe -> recipe.output.isEmpty() && recipe.taggedOutput.isEmpty()
             ? DataResult.error(() -> "Refining recipe requires item_output or item_output_tag")
             : DataResult.success(recipe), DataResult::success);
@@ -71,6 +80,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
                     buffer.writeResourceLocation(output.tag());
                     buffer.writeVarInt(output.count());
                 });
+				buffer.writeVarInt(recipe.minimumMachineTier);
             }, buffer -> {
                 var fluid = buffer.readResourceLocation();
                 int amount = buffer.readVarInt();
@@ -83,7 +93,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
                     ? Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
                         buffer.readResourceLocation(), buffer.readVarInt())) : Optional.empty();
                 return new RefiningRecipe(new FluidChemicalReactionRecipe.FluidAmount(fluid, amount, material, tag),
-                    output, tagged);
+                    output, tagged, buffer.readVarInt());
             });
 
         @Override public MapCodec<RefiningRecipe> codec() { return CODEC; }

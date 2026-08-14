@@ -17,4 +17,11 @@ public final class MaterialProcessingNames {
         int slash = path.lastIndexOf('/');
         return slash < 0 ? path : path.substring(slash + 1);
     }
+
+    public static int requiredMachineTier(String material) {
+        String normalized = normalizeMaterial(material);
+        if (normalized.contains("hyper") || normalized.contains("carbon")) return 3;
+        if (normalized.contains("invert") || normalized.contains("platinum")) return 2;
+        return 1;
+    }
 }

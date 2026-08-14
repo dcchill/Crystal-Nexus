@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["ibi","bcb","ifi"],"key":{"i":{"item":"crystalnexus:chlorophyte_ingot"},"b":{"item":"crystalnexus:iron_machine_bolt"},"c":{"item":"crystalnexus:refinery"},"f":{"item":"crystalnexus:chlorophyte_machine_frame"}},"result":{"id":"crystalnexus:chlorophyte_refinery"}}

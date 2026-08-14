@@ -4,6 +4,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.crystalnexus.processing.MachineTier;
 
 import net.crystalnexus.init.CrystalnexusModJeiPlugin;
 import net.crystalnexus.init.CrystalnexusModBlocks;
@@ -56,6 +58,9 @@ public class DustSeperationRecipeCategory implements IRecipeCategory<DustSeperat
 	@Override
 	public void draw(DustSeperationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 		this.background.draw(guiGraphics);
+		guiGraphics.drawString(Minecraft.getInstance().font,
+			Component.literal("Minimum: " + MachineTier.values()[recipe.minimumMachineTier() - 1].displayName()),
+			5, 5, 0xff404040, false);
 	}
 
 	@Override

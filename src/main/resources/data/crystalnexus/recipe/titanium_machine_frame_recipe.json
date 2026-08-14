@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "pmp", "ipi"],
+  "key": {
+    "i": { "item": "crystalnexus:titanium_ingot" },
+    "p": { "tag": "c:plates/titanium" },
+    "m": { "item": "crystalnexus:machine_frame" }
+  },
+  "result": { "id": "crystalnexus:titanium_machine_frame" }
+}

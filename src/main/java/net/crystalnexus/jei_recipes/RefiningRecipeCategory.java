@@ -12,6 +12,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModJeiPlugin;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -31,6 +33,9 @@ public final class RefiningRecipeCategory implements IRecipeCategory<RefiningRec
     @Override public int getHeight() { return background.getHeight(); }
     @Override public void draw(RefiningRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         background.draw(graphics);
+        graphics.drawString(Minecraft.getInstance().font,
+            Component.literal("Minimum: " + MachineTier.values()[recipe.minimumMachineTier() - 1].displayName()),
+            5, 5, 0xff404040, false);
     }
     @Override public void setRecipe(IRecipeLayoutBuilder builder, RefiningRecipe recipe, IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 52, 26).setFluidRenderer(recipe.input().amount(), false, 16, 34)

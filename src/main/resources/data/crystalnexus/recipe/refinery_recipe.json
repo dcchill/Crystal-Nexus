@@ -10,7 +10,7 @@
     "p": { "item": "crystalnexus:pipe_straight" },
     "m": { "item": "crystalnexus:crystal_machine_frame" },
     "s": { "tag": "c:stones" },
-    "b": { "tag": "crystalnexus:iron_machine_bolt" },
+    "b": { "item": "crystalnexus:iron_machine_bolt" },
     "t": { "item": "crystalnexus:ceramic_plate" }
   },
   "result": {

@@ -3,11 +3,14 @@ package net.crystalnexus.gametest;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.block.entity.RefineryBlockEntity;
+import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.procedures.DustSeparatorOnTickUpdateProcedure;
 import net.crystalnexus.procedures.FluidChemicalReactionChamberOnTickUpdateProcedure;
 import net.crystalnexus.procedures.RefineryOnTickUpdateProcedure;
+import net.crystalnexus.procedures.CrystalCrusherOnTickUpdateProcedure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -27,18 +30,27 @@ public final class MaterialProcessingGameTests {
     @GameTest(template = "zero_point")
     public static void defaultAndAdvancedYields(GameTestHelper helper) {
         var catalog = MaterialProcessingCatalog.get(helper.getLevel());
-        var advanced = catalog.materials().values().stream()
-            .filter(material -> !material.profile().reagentTag()
-                && material.profile().reagent().toString().equals("crystalnexus:sulfuric_acid"))
-            .filter(material -> !material.nugget("crystalnexus", 1).isEmpty())
-            .findFirst().orElseThrow();
+        var advanced = java.util.Optional.ofNullable(catalog.materials().get("chlorophyte")).orElseThrow();
         ItemStack source = BuiltInRegistries.ITEM.getTag(advanced.raw()).stream().flatMap(set -> set.stream()).findFirst()
             .or(() -> BuiltInRegistries.ITEM.getTag(advanced.ores()).stream().flatMap(set -> set.stream()).findFirst())
             .map(holder -> new ItemStack(holder.value())).orElseThrow();
-        BlockPos chamberPos = new BlockPos(1, 1, 1);
+        BlockPos crusherPos = new BlockPos(1, 1, 1);
+        helper.setBlock(crusherPos, CrystalnexusModBlocks.CRYSTAL_CRUSHER.get());
+        CrystalCrusherBlockEntity crusher = helper.getBlockEntity(crusherPos);
+        crusher.setItem(0, source);
+        for (int i = 0; i < 4; i++) crusher.getEnergyStorage().receiveEnergy(1024, false);
+        BlockPos absoluteCrusher = helper.absolutePos(crusherPos);
+        for (int tick = 0; tick < 101; tick++)
+            CrystalCrusherOnTickUpdateProcedure.execute(helper.getLevel(), absoluteCrusher.getX(),
+                absoluteCrusher.getY(), absoluteCrusher.getZ());
+        helper.assertTrue(crusher.getItem(1).is(CrystalnexusModItems.CHLOROPHYTE_DUST.get())
+                && crusher.getItem(1).getCount() == 2,
+            "Crystal-tier crushing must begin Chlorophyte wet processing");
+
+        BlockPos chamberPos = new BlockPos(2, 1, 1);
         helper.setBlock(chamberPos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
         FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(chamberPos);
-        chamber.setItem(0, source);
+        chamber.setItem(0, crusher.getItem(1).copy());
         chamber.getTank(0).fill(new FluidStack(net.crystalnexus.init.CrystalnexusModFluids.SULFURIC_ACID.get(), 1000), IFluidHandler.FluidAction.EXECUTE);
         for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
         for (int tick = 0; tick < 100; tick++)
@@ -46,7 +58,7 @@ public final class MaterialProcessingGameTests {
         FluidStack slurry = chamber.getTank(2).getFluid();
         helper.assertTrue(chamber.getItem(0).isEmpty() && slurry.getAmount() == 1000
                 && MaterialProcessingCatalog.slurryMaterial(slurry).filter(advanced.id()::equals).isPresent(),
-            "Raw ore and sulfuric acid must produce identified mineral slurry");
+            "Chlorophyte Dust and sulfuric acid must produce identified mineral slurry");
 
         BlockPos refineryPos = new BlockPos(3, 1, 1);
         helper.setBlock(refineryPos, CrystalnexusModBlocks.REFINERY.get());
@@ -59,7 +71,7 @@ public final class MaterialProcessingGameTests {
                 && refinery.getItem(1).getCount() == 3,
             "One bucket of identified slurry must refine to three dust");
 
-        BlockPos separatorPos = new BlockPos(5, 1, 1);
+        BlockPos separatorPos = new BlockPos(4, 1, 1);
         helper.setBlock(separatorPos, CrystalnexusModBlocks.DUST_SEPARATOR.get());
         DustSeparatorBlockEntity separator = helper.getBlockEntity(separatorPos);
         separator.setItem(0, refinery.getItem(1).copy());
@@ -95,6 +107,38 @@ public final class MaterialProcessingGameTests {
             "An incomplete slurry batch must not be consumed");
         helper.assertTrue(refinery.getItem(1).isEmpty(),
             "One millibucket of slurry must not produce dust");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void invertiumRequiresChlorophyteCrusher(GameTestHelper helper) {
+        BlockPos crystalPos = new BlockPos(1, 1, 1);
+        BlockPos chlorophytePos = new BlockPos(3, 1, 1);
+        helper.setBlock(crystalPos, CrystalnexusModBlocks.CRYSTAL_CRUSHER.get());
+        helper.setBlock(chlorophytePos, CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get());
+        CrystalCrusherBlockEntity crystal = helper.getBlockEntity(crystalPos);
+        CrystalCrusherBlockEntity chlorophyte = helper.getBlockEntity(chlorophytePos);
+        crystal.setItem(0, new ItemStack(CrystalnexusModItems.RAW_INVERTIUM.get()));
+        chlorophyte.setItem(0, new ItemStack(CrystalnexusModItems.RAW_INVERTIUM.get()));
+        for (int i = 0; i < 4; i++) {
+            crystal.getEnergyStorage().receiveEnergy(1024, false);
+            chlorophyte.getEnergyStorage().receiveEnergy(1024, false);
+        }
+
+        BlockPos absoluteCrystal = helper.absolutePos(crystalPos);
+        BlockPos absoluteChlorophyte = helper.absolutePos(chlorophytePos);
+        for (int tick = 0; tick < 100; tick++) {
+            CrystalCrusherOnTickUpdateProcedure.execute(helper.getLevel(), absoluteCrystal.getX(),
+                absoluteCrystal.getY(), absoluteCrystal.getZ());
+            CrystalCrusherOnTickUpdateProcedure.execute(helper.getLevel(), absoluteChlorophyte.getX(),
+                absoluteChlorophyte.getY(), absoluteChlorophyte.getZ());
+        }
+
+        helper.assertTrue(crystal.getItem(1).isEmpty() && crystal.getItem(0).getCount() == 1,
+            "Crystal-tier crushers must reject raw Invertium");
+        helper.assertTrue(chlorophyte.getItem(1).is(CrystalnexusModItems.INVERTIUM_DUST.get())
+                && chlorophyte.getItem(1).getCount() == 2 && chlorophyte.getItem(0).isEmpty(),
+            "Chlorophyte-tier crushers must unlock Invertium processing");
         helper.succeed();
     }
 

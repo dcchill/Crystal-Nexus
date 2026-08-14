@@ -32,6 +32,7 @@ public record S2C_MaterialProfiles(List<Entry> entries) implements CustomPacketP
             buf.writeVarInt(profile.reagentAmount());
             buf.writeVarInt(profile.crusherMultiplier());
             buf.writeVarInt(profile.advancedMultiplier());
+            buf.writeVarInt(profile.minimumMachineTier());
             buf.writeBoolean(profile.secondary().isPresent());
             if (profile.secondary().isPresent()) {
                 var secondary = profile.secondary().get();
@@ -56,6 +57,7 @@ public record S2C_MaterialProfiles(List<Entry> entries) implements CustomPacketP
             int reagentAmount = buf.readVarInt();
             int crusher = buf.readVarInt();
             int advanced = buf.readVarInt();
+            int minimumTier = buf.readVarInt();
             Optional<MaterialProcessingCatalog.Secondary> secondary = Optional.empty();
             if (buf.readBoolean()) secondary = Optional.of(new MaterialProcessingCatalog.Secondary(
                 new MaterialProcessingCatalog.Output(buf.readResourceLocation(), buf.readBoolean(), buf.readVarInt()),
@@ -64,7 +66,7 @@ public record S2C_MaterialProfiles(List<Entry> entries) implements CustomPacketP
             Set<String> disabled = new HashSet<>(disabledSize);
             for (int j = 0; j < disabledSize; j++) disabled.add(buf.readUtf(32));
             entries.add(new Entry(source, new MaterialProcessingCatalog.Profile(primary, reagent, reagentTag,
-                reagentAmount, crusher, advanced, secondary, Set.copyOf(disabled))));
+                reagentAmount, crusher, advanced, secondary, Set.copyOf(disabled), minimumTier)));
         }
         return new S2C_MaterialProfiles(List.copyOf(entries));
     }

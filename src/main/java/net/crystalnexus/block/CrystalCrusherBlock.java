@@ -39,14 +39,20 @@ import net.crystalnexus.world.inventory.CrusherGuiMenu;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.procedures.CrystalCrusherOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.TieredMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class CrystalCrusherBlock extends Block implements EntityBlock {
+public class CrystalCrusherBlock extends Block implements EntityBlock, TieredMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-	public CrystalCrusherBlock() {
+	private final MachineTier machineTier;
+
+	public CrystalCrusherBlock() { this(MachineTier.CRYSTAL); }
+
+	public CrystalCrusherBlock(MachineTier machineTier) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -56,8 +62,11 @@ public class CrystalCrusherBlock extends Block implements EntityBlock {
 				return 0;
 			}
 		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
+		this.machineTier = machineTier;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
+
+	@Override public MachineTier machineTier() { return machineTier; }
 
 	@Override
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
@@ -114,7 +123,7 @@ public class CrystalCrusherBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Crystal Ore Crusher");
+					return Component.literal(machineTier.displayName() + " Crusher");
 				}
 
 				@Override

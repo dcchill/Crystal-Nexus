@@ -1,0 +1,7 @@
+{
+  "primary_material": "c:invertium",
+  "crusher_multiplier": 2,
+  "advanced_multiplier": 3,
+  "minimum_machine_tier": 2,
+  "disabled_auto_stages": ["slurry", "refining", "separation"]
+}

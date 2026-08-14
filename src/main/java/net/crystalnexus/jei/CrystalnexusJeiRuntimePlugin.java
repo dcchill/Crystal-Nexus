@@ -217,7 +217,11 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
 
     private static List<ResourceLocation> inferredMachines(ResourceLocation categoryId) {
         return switch (categoryId.toString()) {
-            case "crystalnexus:ore_crushing_jei" -> List.of(ResourceLocation.parse("crystalnexus:crystal_crusher"));
+            case "crystalnexus:ore_crushing_jei" -> List.of(
+                ResourceLocation.parse("crystalnexus:crystal_crusher"),
+                ResourceLocation.parse("crystalnexus:chlorophyte_crusher"),
+                ResourceLocation.parse("crystalnexus:invertium_crusher"),
+                ResourceLocation.parse("crystalnexus:hyper_crusher"));
             case "ae2:inscriber" -> List.of(ResourceLocation.parse("ae2:inscriber"));
             case "mekanism:enriching" -> List.of(ResourceLocation.parse("mekanism:enrichment_chamber"));
             case "mekanism:smelting" -> List.of(ResourceLocation.parse("mekanism:energized_smelter"));

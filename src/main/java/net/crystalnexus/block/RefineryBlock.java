@@ -3,6 +3,8 @@ package net.crystalnexus.block;
 import io.netty.buffer.Unpooled;
 import net.crystalnexus.block.entity.RefineryBlockEntity;
 import net.crystalnexus.procedures.RefineryOnTickUpdateProcedure;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.TieredMachineBlock;
 import net.crystalnexus.world.inventory.RefineryMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -21,14 +23,18 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public final class RefineryBlock extends ChemicalReactionChamberBlock {
+public final class RefineryBlock extends ChemicalReactionChamberBlock implements TieredMachineBlock {
+    private final MachineTier machineTier;
+    public RefineryBlock() { this(MachineTier.CRYSTAL); }
+    public RefineryBlock(MachineTier machineTier) { this.machineTier = machineTier; }
+    @Override public MachineTier machineTier() { return machineTier; }
     @Override public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         RefineryOnTickUpdateProcedure.execute(level, pos);
         level.scheduleTick(pos, this, 1);
     }
     @Override public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(new MenuProvider() {
-            @Override public Component getDisplayName() { return Component.literal("Refinery"); }
+            @Override public Component getDisplayName() { return Component.literal(machineTier.displayName() + " Refinery"); }
             @Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player ignored) {
                 return new RefineryMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
             }

@@ -1,0 +1,8 @@
+{
+  "primary_material":"c:chlorophyte",
+  "reagent":{"fluid":"crystalnexus:sulfuric_acid","amount":1000},
+  "crusher_multiplier":2,
+  "advanced_multiplier":3,
+  "minimum_machine_tier":1,
+  "disabled_auto_stages":["slurry"]
+}

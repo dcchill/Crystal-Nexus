@@ -16,15 +16,24 @@ import net.minecraft.core.HolderLookup;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Codec;
 
 public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
+	private final int minimumMachineTier;
 
 	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
+		this(output, recipeItems, 1);
+	}
+
+	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, int minimumMachineTier) {
 		this.output = output;
 		this.recipeItems = recipeItems;
+		this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
 	}
+
+	public int minimumMachineTier() { return minimumMachineTier; }
 
 	@Override
 	public boolean matches(RecipeInput pContainer, Level pLevel) {
@@ -81,7 +90,8 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 					} else {
 						return DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
 					}
-				}, DataResult::success).forGetter(recipe -> recipe.recipeItems)).apply(builder, OreCrushingJeiRecipe::new));
+				}, DataResult::success).forGetter(recipe -> recipe.recipeItems), Codec.INT.optionalFieldOf("minimum_machine_tier", 1)
+					.forGetter(recipe -> recipe.minimumMachineTier)).apply(builder, OreCrushingJeiRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, OreCrushingJeiRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
 		@Override
@@ -97,7 +107,8 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 		private static OreCrushingJeiRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
 			NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readVarInt(), Ingredient.EMPTY);
 			inputs.replaceAll(ingredients -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
-			return new OreCrushingJeiRecipe(ItemStack.STREAM_CODEC.decode(buf), inputs);
+			ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+			return new OreCrushingJeiRecipe(output, inputs, buf.readVarInt());
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buf, OreCrushingJeiRecipe recipe) {
@@ -109,6 +120,7 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ing);
 			}
 			ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItem(null));
+			buf.writeVarInt(recipe.minimumMachineTier);
 		}
 	}
 }

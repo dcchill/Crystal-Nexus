@@ -114,8 +114,12 @@ import net.crystalnexus.CrystalnexusMod;
 public class CrystalnexusModBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CrystalnexusMod.MODID);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_PURIFIER = register("crystal_purifier", CrystalnexusModBlocks.CRYSTAL_PURIFIER, CrystalPurifierBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_CRUSHER = register("crystal_crusher", CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalCrusherBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = register("dust_separator", CrystalnexusModBlocks.DUST_SEPARATOR, DustSeparatorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_CRUSHER = registerMany("crystal_crusher", CrystalCrusherBlockEntity::new,
+		CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER,
+		CrystalnexusModBlocks.INVERTIUM_CRUSHER, CrystalnexusModBlocks.HYPER_CRUSHER);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = registerMany("dust_separator", DustSeparatorBlockEntity::new,
+		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR,
+		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_GUIDE = register("crystal_guide", CrystalnexusModBlocks.CRYSTAL_GUIDE, CrystalGuideBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_COLLECTOR = register("item_collector", CrystalnexusModBlocks.ITEM_COLLECTOR, ItemCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> EXTRACTINATOR = register("extractinator", CrystalnexusModBlocks.EXTRACTINATOR, ExtractinatorBlockEntity::new);
@@ -146,7 +150,9 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ZERO_POINT = register("zero_point", CrystalnexusModBlocks.ZERO_POINT, ZeroPointBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHEMICAL_REACTION_CHAMBER = register("chemical_reaction_chamber", CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER, ChemicalReactionChamberBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_CHEMICAL_REACTION_CHAMBER = register("fluid_chemical_reaction_chamber", CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER, FluidChemicalReactionChamberBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = register("refinery", CrystalnexusModBlocks.REFINERY, RefineryBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = registerMany("refinery", RefineryBlockEntity::new,
+		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.CHLOROPHYTE_REFINERY,
+		CrystalnexusModBlocks.INVERTIUM_REFINERY, CrystalnexusModBlocks.HYPER_REFINERY);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TEMPORAL_EXPLOITER = register("temporal_exploiter", CrystalnexusModBlocks.TEMPORAL_EXPLOITER, TemporalExploiterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONTAINER = register("container", CrystalnexusModBlocks.CONTAINER, ContainerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUANTUM_MINER = register("quantum_miner", CrystalnexusModBlocks.QUANTUM_MINER, QuantumMinerBlockEntity::new);
@@ -211,6 +217,13 @@ public class CrystalnexusModBlockEntities {
 	// End of user code block custom block entities
 	private static DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> register(String registryname, DeferredHolder<Block, Block> block, BlockEntityType.BlockEntitySupplier<?> supplier) {
 		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
+	}
+
+	@SafeVarargs
+	private static DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> registerMany(String registryname,
+			BlockEntityType.BlockEntitySupplier<?> supplier, DeferredHolder<Block, Block>... blocks) {
+		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier,
+			java.util.Arrays.stream(blocks).map(DeferredHolder::get).toArray(Block[]::new)).build(null));
 	}
 
 	@SubscribeEvent

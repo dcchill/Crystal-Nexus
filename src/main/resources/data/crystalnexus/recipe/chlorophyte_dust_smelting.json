@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "experience": 1.0,
+  "cookingtime": 200,
+  "ingredient": { "tag": "c:dusts/chlorophyte" },
+  "result": { "id": "crystalnexus:chlorophyte_ingot" }
+}

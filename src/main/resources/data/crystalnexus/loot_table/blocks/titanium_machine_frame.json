@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "crystalnexus:blocks/titanium_machine_frame",
+  "pools": [
+    {
+      "rolls": 1,
+      "conditions": [{ "condition": "minecraft:survives_explosion" }],
+      "entries": [{ "type": "minecraft:item", "name": "crystalnexus:titanium_machine_frame" }]
+    }
+  ]
+}

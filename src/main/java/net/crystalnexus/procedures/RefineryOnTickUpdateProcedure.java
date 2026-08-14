@@ -6,6 +6,7 @@ import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.RefiningRecipe;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.MachineUpgradeHelper;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -23,11 +24,12 @@ public final class RefineryOnTickUpdateProcedure {
         if (!(level.getBlockEntity(pos) instanceof RefineryBlockEntity refinery)) return;
         emptyContainer(refinery);
         ItemStack upgrade = refinery.getItem(2);
-        double cookTime = MachineUpgradeHelper.cookTime(upgrade,
+        MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
+        double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade,
             upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
-                : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100);
-        int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION);
-        RefiningRecipe recipe = findRecipe(level, refinery);
+                : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100));
+        int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
+        RefiningRecipe recipe = findRecipe(level, refinery, machineTier);
         ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.output();
         if (recipe == null || output.isEmpty() || refinery.getEnergyStorage().getEnergyStored() < energyCost
                 || !FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(refinery.getItem(1), output)) {
@@ -52,19 +54,21 @@ public final class RefineryOnTickUpdateProcedure {
         sync(level, pos, refinery);
     }
 
-    private static RefiningRecipe findRecipe(ServerLevel level, RefineryBlockEntity refinery) {
+    private static RefiningRecipe findRecipe(ServerLevel level, RefineryBlockEntity refinery, MachineTier machineTier) {
         FluidStack input = refinery.getTank(0).getFluid();
         for (var holder : level.getRecipeManager().getAllRecipesFor(RefiningRecipe.Type.INSTANCE))
-            if (holder.value().input().matches(input)) return holder.value();
+            if (holder.value().input().matches(input))
+                return machineTier.supports(holder.value().minimumMachineTier()) ? holder.value() : null;
         if (input.getAmount() < MaterialProcessingCatalog.SLURRY_AMOUNT) return null;
         return MaterialProcessingCatalog.slurryMaterial(input).flatMap(MaterialProcessingCatalog.get(level)::byId)
             .filter(material -> !material.profile().disabledStages().contains("refining"))
+            .filter(material -> machineTier.supports(material.profile().minimumMachineTier()))
             .map(material -> new RefiningRecipe(
                 new net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe.FluidAmount(
                     net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(input.getFluid()),
                     MaterialProcessingCatalog.SLURRY_AMOUNT, java.util.Optional.of(material.id())),
                 java.util.Optional.of(material.dust("crystalnexus", material.profile().advancedMultiplier())),
-                java.util.Optional.empty())).orElse(null);
+                java.util.Optional.empty(), material.profile().minimumMachineTier())).orElse(null);
     }
 
     private static void emptyContainer(RefineryBlockEntity refinery) {

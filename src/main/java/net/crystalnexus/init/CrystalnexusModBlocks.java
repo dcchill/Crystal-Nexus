@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.minecraft.world.level.block.Block;
 
 import net.crystalnexus.block.ZeroPointBlock;
+import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.block.YellowHeavyIronBlockBlock;
 import net.crystalnexus.block.WhiteHeavyIronBlockBlock;
 import net.crystalnexus.block.WarpPadBlock;
@@ -204,9 +205,15 @@ public class CrystalnexusModBlocks {
 	public static final DeferredRegister.Blocks REGISTRY = DeferredRegister.createBlocks(CrystalnexusMod.MODID);
 	public static final DeferredBlock<Block> CRYSTAL_PURIFIER = REGISTRY.register("crystal_purifier", CrystalPurifierBlock::new);
 	public static final DeferredBlock<Block> CRYSTALIZED_ALLOY_BLOCK = REGISTRY.register("crystalized_alloy_block", CrystalizedAlloyBlockBlock::new);
-	public static final DeferredBlock<Block> CRYSTAL_CRUSHER = REGISTRY.register("crystal_crusher", CrystalCrusherBlock::new);
+	public static final DeferredBlock<Block> CRYSTAL_CRUSHER = REGISTRY.register("crystal_crusher", () -> new CrystalCrusherBlock());
+	public static final DeferredBlock<Block> CHLOROPHYTE_CRUSHER = REGISTRY.register("chlorophyte_crusher", () -> new CrystalCrusherBlock(MachineTier.CHLOROPHYTE));
+	public static final DeferredBlock<Block> INVERTIUM_CRUSHER = REGISTRY.register("invertium_crusher", () -> new CrystalCrusherBlock(MachineTier.INVERTIUM_PLATINUM));
+	public static final DeferredBlock<Block> HYPER_CRUSHER = REGISTRY.register("hyper_crusher", () -> new CrystalCrusherBlock(MachineTier.HYPER_CARBON));
 	public static final DeferredBlock<Block> ANCIENT_CRYSTAL_ORE = REGISTRY.register("ancient_crystal_ore", AncientCrystalOreBlock::new);
-	public static final DeferredBlock<Block> DUST_SEPARATOR = REGISTRY.register("dust_separator", DustSeparatorBlock::new);
+	public static final DeferredBlock<Block> DUST_SEPARATOR = REGISTRY.register("dust_separator", () -> new DustSeparatorBlock());
+	public static final DeferredBlock<Block> CHLOROPHYTE_DUST_SEPARATOR = REGISTRY.register("chlorophyte_dust_separator", () -> new DustSeparatorBlock(MachineTier.CHLOROPHYTE));
+	public static final DeferredBlock<Block> INVERTIUM_DUST_SEPARATOR = REGISTRY.register("invertium_dust_separator", () -> new DustSeparatorBlock(MachineTier.INVERTIUM_PLATINUM));
+	public static final DeferredBlock<Block> HYPER_DUST_SEPARATOR = REGISTRY.register("hyper_dust_separator", () -> new DustSeparatorBlock(MachineTier.HYPER_CARBON));
 	public static final DeferredBlock<Block> CRYSTAL_GUIDE = REGISTRY.register("crystal_guide", CrystalGuideBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK = REGISTRY.register("raw_crystal_block", RawCrystalBlockBlock::new);
 	public static final DeferredBlock<Block> ITEM_COLLECTOR = REGISTRY.register("item_collector", ItemCollectorBlock::new);
@@ -218,6 +225,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CHLOROPHYTE_ACCELERATOR = REGISTRY.register("chlorophyte_accelerator", ChlorophyteAcceleratorBlock::new);
 	public static final DeferredBlock<Block> BLUTONIUM_ORE = REGISTRY.register("blutonium_ore", BlutoniumOreBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_MACHINE_FRAME = REGISTRY.register("invertium_machine_frame", InvertiumMachineFrameBlock::new);
+	public static final DeferredBlock<Block> TITANIUM_MACHINE_FRAME = REGISTRY.register("titanium_machine_frame", MachineFrameBlock::new);
 	public static final DeferredBlock<Block> METALLURGIC_RECRYSTALLIZER = REGISTRY.register("metallurgic_recrystallizer", MetallurgicRecrystallizerBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_BLOCK = REGISTRY.register("invertium_block", InvertiumBlockBlock::new);
 	public static final DeferredBlock<Block> REACTOR_BLOCK = REGISTRY.register("reactor_block", ReactorBlockBlock::new);
@@ -253,7 +261,10 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CARBON_MACHINE_FRAME = REGISTRY.register("carbon_machine_frame", CarbonMachineFrameBlock::new);
 	public static final DeferredBlock<Block> CHEMICAL_REACTION_CHAMBER = REGISTRY.register("chemical_reaction_chamber", ChemicalReactionChamberBlock::new);
 	public static final DeferredBlock<Block> FLUID_CHEMICAL_REACTION_CHAMBER = REGISTRY.register("fluid_chemical_reaction_chamber", FluidChemicalReactionChamberBlock::new);
-	public static final DeferredBlock<Block> REFINERY = REGISTRY.register("refinery", RefineryBlock::new);
+	public static final DeferredBlock<Block> REFINERY = REGISTRY.register("refinery", () -> new RefineryBlock());
+	public static final DeferredBlock<Block> CHLOROPHYTE_REFINERY = REGISTRY.register("chlorophyte_refinery", () -> new RefineryBlock(MachineTier.CHLOROPHYTE));
+	public static final DeferredBlock<Block> INVERTIUM_REFINERY = REGISTRY.register("invertium_refinery", () -> new RefineryBlock(MachineTier.INVERTIUM_PLATINUM));
+	public static final DeferredBlock<Block> HYPER_REFINERY = REGISTRY.register("hyper_refinery", () -> new RefineryBlock(MachineTier.HYPER_CARBON));
 	public static final DeferredBlock<Block> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", TemporalExploiterBlock::new);
 	public static final DeferredBlock<Block> CONTAINER = REGISTRY.register("container", ContainerBlock::new);
 	public static final DeferredBlock<Block> TITANIUM_BLOCK = REGISTRY.register("titanium_block", TitaniumBlockBlock::new);

@@ -52,6 +52,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.RAW_CHLOROPHYTE.get());
@@ -59,6 +60,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_INGOT.get());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_COLLECTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem());
@@ -70,9 +74,14 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.RAW_INVERTIUM.get());
+				tabData.accept(CrystalnexusModItems.INVERTIUM_DUST.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_INGOT.get());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TITANIUM_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.INVERTIUM_REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem());
@@ -84,6 +93,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.INVERTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.QUARRY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HYPER_REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUTONIUM_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.RAW_BLUTONIUM.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_DUST.get());
