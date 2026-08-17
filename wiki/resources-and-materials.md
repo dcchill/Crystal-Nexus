@@ -41,6 +41,23 @@ Other structural components:
 
 Frames and casings are the backbone of machine progression.
 
+## Metal Forming and Machine Parts
+
+The Parts Assembler produces common formed-metal components from ingots:
+
+- Sheets: Iron, Copper, Gold, and Titanium. These items use the common `c:plates/<material>` tags for recipe compatibility.
+- Rods: Iron, Copper, Gold, and Titanium. These items use `c:rods` and the material-specific `c:rods/<material>` tags.
+- Bolts: Iron bolts use the common `c:bolts` tags.
+
+Electromechanical parts include:
+
+- Stator
+- Heating Coil
+- Iron Bearing and Titanium Bearing
+- Electric Motor and Titanium Electric Motor
+
+These parts are used in machine construction and are grouped together in the Materials & Parts creative tab. Check JEI for their current crafting recipes.
+
 ## Chlorophyte
 
 Forms:

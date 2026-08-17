@@ -20,9 +20,9 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class AutoCrafterOnTickProcedure {
 
@@ -65,16 +65,18 @@ public class AutoCrafterOnTickProcedure {
         RecipeManager manager = serverLevel.getRecipeManager();
         List<RecipeHolder<CraftingRecipe>> recipes = manager.getAllRecipesFor(RecipeType.CRAFTING);
 
-        CraftingRecipe matchedRecipe = null;
+        ItemStack result = ItemStack.EMPTY;
+        int[] consumption = null;
         for (RecipeHolder<CraftingRecipe> holder : recipes) {
             CraftingRecipe r = holder.value();
-            ItemStack result = r.getResultItem(serverLevel.registryAccess());
-            if (!result.isEmpty() && stacksMatch(result, filter)) {
-                matchedRecipe = r;
+            ItemStack candidateResult = r.getResultItem(serverLevel.registryAccess());
+            if (!candidateResult.isEmpty() && stacksMatch(candidateResult, filter)
+                    && (consumption = consumptionPlan(r, grid)) != null) {
+                result = candidateResult;
                 break;
             }
         }
-        if (matchedRecipe == null) {
+        if (consumption == null) {
             updateBlockState(world, pos, crafting);
             return;
         }
@@ -87,45 +89,8 @@ public class AutoCrafterOnTickProcedure {
         }
 
         // -----------------------------
-        // Shape-agnostic, amount-aware ingredient check
-        // -----------------------------
-        Map<ItemStack, Integer> required = new HashMap<>();
-        for (Ingredient ing : matchedRecipe.getIngredients()) {
-            ItemStack[] options = ing.getItems();
-            if (options.length == 0) continue;
-            ItemStack example = options[0];
-            boolean exists = false;
-            for (ItemStack key : required.keySet()) {
-                if (stacksMatch(key, example)) {
-                    required.put(key, required.get(key) + 1);
-                    exists = true;
-                    break;
-                }
-            }
-            if (!exists) required.put(example, 1);
-        }
-
-        Map<ItemStack, Integer> available = new HashMap<>();
-        for (ItemStack stack : grid) {
-            if (stack.isEmpty()) continue;
-            for (ItemStack key : required.keySet()) {
-                if (stacksMatch(stack, key)) {
-                    available.put(key, available.getOrDefault(key, 0) + stack.getCount());
-                }
-            }
-        }
-
-        for (Map.Entry<ItemStack, Integer> req : required.entrySet()) {
-            if (available.getOrDefault(req.getKey(), 0) < req.getValue()) {
-                updateBlockState(world, pos, crafting);
-                return; // Not enough items
-            }
-        }
-
-        // -----------------------------
         // Check output slot has room BEFORE consuming ingredients
         // -----------------------------
-        ItemStack result = matchedRecipe.getResultItem(serverLevel.registryAccess());
         ItemStack output = inv.getStackInSlot(9);
         int maxStack = Math.min(result.getMaxStackSize(), 127);
 
@@ -143,17 +108,8 @@ public class AutoCrafterOnTickProcedure {
         // -----------------------------
         // Consume ingredients
         // -----------------------------
-        for (Map.Entry<ItemStack, Integer> req : required.entrySet()) {
-            int remaining = req.getValue();
-            for (int i = 0; i < 9; i++) {
-                ItemStack slot = inv.getStackInSlot(i);
-                if (!slot.isEmpty() && stacksMatch(slot, req.getKey())) {
-                    int remove = Math.min(slot.getCount(), remaining);
-                    slot.shrink(remove);
-                    remaining -= remove;
-                    if (remaining <= 0) break;
-                }
-            }
+        for (int i = 0; i < consumption.length; i++) {
+            inv.getStackInSlot(i).shrink(consumption[i]);
         }
 
         // -----------------------------
@@ -181,6 +137,41 @@ public class AutoCrafterOnTickProcedure {
         // Update block state based on crafting status
         // -----------------------------
         updateBlockState(world, pos, crafting);
+    }
+
+    private static int[] consumptionPlan(CraftingRecipe recipe, ItemStack[] grid) {
+        List<Ingredient> ingredients = recipe.getIngredients().stream().filter(ingredient -> !ingredient.isEmpty()).toList();
+        List<Integer> units = new ArrayList<>();
+        for (int slot = 0; slot < grid.length; slot++) {
+            for (int count = Math.min(grid[slot].getCount(), ingredients.size()); count > 0; count--) units.add(slot);
+        }
+        if (units.size() < ingredients.size()) return null;
+
+        int[] assignments = new int[units.size()];
+        Arrays.fill(assignments, -1);
+        for (int ingredient = 0; ingredient < ingredients.size(); ingredient++) {
+            if (!assignIngredient(ingredient, ingredients, grid, units, assignments, new boolean[units.size()])) return null;
+        }
+
+        int[] consumption = new int[grid.length];
+        for (int unit = 0; unit < units.size(); unit++) {
+            if (assignments[unit] >= 0) consumption[units.get(unit)]++;
+        }
+        return consumption;
+    }
+
+    private static boolean assignIngredient(int ingredient, List<Ingredient> ingredients, ItemStack[] grid,
+            List<Integer> units, int[] assignments, boolean[] visited) {
+        for (int unit = 0; unit < units.size(); unit++) {
+            if (visited[unit] || !ingredients.get(ingredient).test(grid[units.get(unit)])) continue;
+            visited[unit] = true;
+            int displaced = assignments[unit];
+            if (displaced < 0 || assignIngredient(displaced, ingredients, grid, units, assignments, visited)) {
+                assignments[unit] = ingredient;
+                return true;
+            }
+        }
+        return false;
     }
 
     // -----------------------------

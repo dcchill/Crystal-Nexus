@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " a ",
+    "ada",
     "bcb",
-    " a "
+    "ada"
   ],
   "key": {
     "a": {
@@ -14,7 +14,10 @@
       "item": "crystalnexus:particle_accelerator_tube"
     },
     "c": {
-      "item": "crystalnexus:computation_node"
+      "item": "crystalnexus:titanium_electric_motor"
+    },
+    "d": {
+      "item": "crystalnexus:titanium_bearing"
     }
   },
   "result": {

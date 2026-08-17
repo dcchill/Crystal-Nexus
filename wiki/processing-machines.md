@@ -2,6 +2,19 @@
 
 Processing machines turn ores, dusts, fluids, plants, chemicals, and matter into more advanced materials. Most machines use FE and have GUI-bound inventories.
 
+## Parts Assembler
+
+The Parts Assembler forms metal ingots into standardized machine parts. Its GUI has one input slot, one output slot, an upgrade slot, energy and progress bars, and a selector for Plates, Rods, or Bolts.
+
+- Plate mode supports Iron, Copper, Gold, and Titanium.
+- Rod mode supports Iron, Copper, Gold, and Titanium.
+- Bolt mode currently supports Iron.
+- Base processing time is 100 ticks at 10 FE/t (1,000 FE per operation).
+- Acceleration, FE Efficiency, and SSD upgrades are supported.
+- Recipes use common NeoForge material tags and are shown in JEI.
+
+Put an ingot in the input, choose the desired part with the selector, supply FE, and collect the result from the output.
+
 ## Ore and Dust Processing
 
 ### Crystal Ore Crusher
@@ -183,6 +196,14 @@ Decrypted SSDs provide randomized speed and FE-efficiency modifiers. Higher tier
 ### Chemical Reaction Chamber
 
 Important machine used for chemical recipes and materials such as Conductive Alloy, Fertilizer, Nitrile/Base Compound, and Synthetic Rubber.
+
+### Fluid Chemical Reaction Chamber
+
+Combines fluid and item inputs for fluid-based chemical processing. Use JEI to check the required inputs and outputs for each reaction.
+
+### Refinery Tiers
+
+The Crystal, Chlorophyte, Invertium, and Hyper Refineries provide progressively faster refinery processing as you advance through the machine tiers.
 
 
 ### Biomatic Composter

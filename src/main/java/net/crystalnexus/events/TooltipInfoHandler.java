@@ -118,9 +118,22 @@ public class TooltipInfoHandler {
 		addTooltip("crystal_crusher",
 				"Crushes raw ores into dusts.",
 				"Multiplies ore yield for better efficiency.");
+		addTooltip("chlorophyte_crusher",
+				"Chlorophyte-tier ore crusher.",
+				"Processes recipes available to its machine tier.");
+		addTooltip("invertium_crusher",
+				"Invertium-tier ore crusher.",
+				"Processes advanced crushing recipes faster.");
+		addTooltip("hyper_crusher",
+				"Hyper-tier ore crusher.",
+				"Processes the highest-tier crushing recipes.");
 		addTooltip("ore_processor",
 				"Advanced ore processing plant.",
 				"Processes raw ores.");
+		addTooltip("parts_assembler",
+				"Forms ingots into plates, rods, or bolts.",
+				"Select the output shape from its GUI.",
+				"Accepts machine upgrades in the side slot.");
 
 		addTooltip("chlorophyte_smelter",
 				"Specialized Chlorophyte furnace.",
@@ -149,6 +162,21 @@ public class TooltipInfoHandler {
 		addTooltip("chemical_reaction_chamber",
 				"Combines base resources with reactants.",
 				"Processes chemical reactions for materials.");
+		addTooltip("fluid_chemical_reaction_chamber",
+				"Combines fluids and items into advanced materials.",
+				"Check JEI for valid tagged inputs and outputs.");
+		addTooltip("refinery",
+				"Refines processing fluids into useful materials.",
+				"Basic refinery tier.");
+		addTooltip("chlorophyte_refinery",
+				"Chlorophyte-tier material refinery.",
+				"Handles recipes available to its machine tier.");
+		addTooltip("invertium_refinery",
+				"Invertium-tier material refinery.",
+				"Handles advanced refining recipes.");
+		addTooltip("hyper_refinery",
+				"Hyper-tier material refinery.",
+				"Handles the highest-tier refining recipes.");
 
 		addTooltip("reaction_chamber_computer",
 				"Controls the Reaction Chamber multiblock.",
@@ -169,6 +197,15 @@ public class TooltipInfoHandler {
 		addTooltip("dust_separator",
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
+		addTooltip("chlorophyte_dust_separator",
+				"Chlorophyte-tier dust separator.",
+				"Processes recipes available to its machine tier.");
+		addTooltip("invertium_dust_separator",
+				"Invertium-tier dust separator.",
+				"Processes advanced separation recipes faster.");
+		addTooltip("hyper_dust_separator",
+				"Hyper-tier dust separator.",
+				"Processes the highest-tier separation recipes.");
 		addTooltip("matter_transmutation_table",
 				"Endgame resource conversion block.",
 				"Converts EE-matter into resources,",
@@ -249,6 +286,9 @@ public class TooltipInfoHandler {
 		addTooltip("depot_controller",
 				"The powered center of your personal Depot system.",
 				"Uses 20 FE/t base power; each connected Depot component adds 2 FE/t.");
+		addTooltip("depot_cli",
+				"Terminal for browsing and crafting from Depot storage.",
+				"Connect it to a powered Depot Controller network.");
 		addTooltip("depot_cable",
 				"Links Depot Controllers to Depot components.",
 				"Does not connect to energy cables or transfer FE.");
@@ -287,6 +327,15 @@ public class TooltipInfoHandler {
 		addTooltip("factory_output_controller",
 				"Output controller for Machines.",
 				"Manages item output.");
+		addTooltip("machineblock",
+				"General machine block for factory multiblocks.",
+				"Connect it to the appropriate controllers.");
+		addTooltip("machine_core",
+				"Processing core for factory multiblocks.",
+				"Install it inside the machine structure.");
+		addTooltip("machine_energy_input",
+				"Energy input for factory multiblocks.",
+				"Connect FE cables to this block.");
 
 		addTooltip("biomatic_composter",
 				"Processes organic matter into biomass.",
@@ -310,6 +359,9 @@ public class TooltipInfoHandler {
 		addTooltip("aoe_charger",
 				"Area-of-effect item charger.",
 				"Charges nearby inventory items in a radius.");
+		addTooltip("temporal_exploiter",
+				"Accelerates nearby block ticks using FE.",
+				"Configure its range and operation from the GUI.");
 
 		addTooltip("electromagnet",
 				"Powers Particle Accelerator.",

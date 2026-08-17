@@ -176,7 +176,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     @Override public boolean canPlaceItem(int slot, ItemStack stack) {
         return slot == 0 || slot == 2 && stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
     }
-    @Override public int[] getSlotsForFace(Direction side) { return side == Direction.DOWN ? new int[]{1} : new int[]{0}; }
+    @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2}; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
 }
