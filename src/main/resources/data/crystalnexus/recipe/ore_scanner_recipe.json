@@ -20,7 +20,7 @@
       "item": "crystalnexus:silicon"
     },
     "e": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:rods/iron"
     }
   },
   "result": {

@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "item": "crystalnexus:carbon_fiber" },
+  "result": { "id": "crystalnexus:machine_bolt", "count": 2 },
+  "mode": "bolt"
+}

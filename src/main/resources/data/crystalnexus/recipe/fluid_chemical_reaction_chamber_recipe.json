@@ -2,10 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "tct"
+    " t ",
+    "pcp",
+    " t "
   ],
   "key": {
     "t": {
+      "item": "crystalnexus:heating_coil"
+    },
+    "p": {
       "item": "crystalnexus:pipe_straight"
     },
     "c": {

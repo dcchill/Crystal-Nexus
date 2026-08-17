@@ -150,6 +150,7 @@
     "crystalnexus:reaction_chamber_block",
     "crystalnexus:tesseract_output",
     "crystalnexus:energy_extractor",
-    "crystalnexus:invert_piston_generator"
+    "crystalnexus:invert_piston_generator",
+    "crystalnexus:parts_assembler"
   ]
 }

@@ -60,6 +60,7 @@ import net.crystalnexus.block.entity.ItemElevatorBlockEntity;
 import net.crystalnexus.block.entity.ItemCollectorBlockEntity;
 import net.crystalnexus.block.entity.ItemChargerBlockEntity;
 import net.crystalnexus.block.entity.IronSmelterBlockEntity;
+import net.crystalnexus.block.entity.PartsAssemblerBlockEntity;
 import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
 import net.crystalnexus.block.entity.InverterBlockEntity;
 import net.crystalnexus.block.entity.InvertPistonGeneratorBlockEntity;
@@ -129,6 +130,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_ENERGY_OUTPUT = register("reactor_energy_output", CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT, ReactorEnergyOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_FLUID_INPUT = register("reactor_fluid_input", CrystalnexusModBlocks.REACTOR_FLUID_INPUT, ReactorFluidInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> IRON_SMELTER = register("iron_smelter", CrystalnexusModBlocks.IRON_SMELTER, IronSmelterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTS_ASSEMBLER = register("parts_assembler", CrystalnexusModBlocks.PARTS_ASSEMBLER, PartsAssemblerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_SMELTER = register("crystal_smelter", CrystalnexusModBlocks.CRYSTAL_SMELTER, CrystalSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> INVERTIUM_SMELTER = register("invertium_smelter", CrystalnexusModBlocks.INVERTIUM_SMELTER, InvertiumSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_SMELTER = register("chlorophyte_smelter", CrystalnexusModBlocks.CHLOROPHYTE_SMELTER, ChlorophyteSmelterBlockEntity::new);
@@ -251,6 +253,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REACTOR_FLUID_INPUT.get(), (blockEntity, side) -> ((ReactorFluidInputBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, IRON_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, IRON_SMELTER.get(), (blockEntity, side) -> ((IronSmelterBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PARTS_ASSEMBLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PARTS_ASSEMBLER.get(), (blockEntity, side) -> ((PartsAssemblerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_SMELTER.get(), (blockEntity, side) -> ((CrystalSmelterBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, INVERTIUM_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

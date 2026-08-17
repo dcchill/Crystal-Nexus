@@ -14,10 +14,10 @@
       "item": "crystalnexus:machine_frame"
     },
     "c": {
-      "item": "minecraft:piston"
+      "item": "crystalnexus:electric_motor"
     },
     "d": {
-      "item": "minecraft:copper_block"
+      "tag": "c:plates/copper"
     }
   },
   "result": {

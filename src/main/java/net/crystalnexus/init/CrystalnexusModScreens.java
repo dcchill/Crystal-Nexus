@@ -41,6 +41,7 @@ import net.crystalnexus.client.gui.ItemElevatorGuiDownScreen;
 import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
 import net.crystalnexus.client.gui.ItemChargerGuiScreen;
 import net.crystalnexus.client.gui.IronSmelterGuiScreen;
+import net.crystalnexus.client.gui.PartsAssemblerScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
 import net.crystalnexus.client.gui.FluidPackagerGUIScreen;
 import net.crystalnexus.client.gui.FluidInputGuiScreen;
@@ -83,6 +84,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.M_RECRYSTALL_GUI.get(), MRecrystallGuiScreen::new);
 		event.register(CrystalnexusModMenus.REACTOR_GUI.get(), ReactorGUIScreen::new);
 		event.register(CrystalnexusModMenus.IRON_SMELTER_GUI.get(), IronSmelterGuiScreen::new);
+		event.register(CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PartsAssemblerScreen::new);
 		event.register(CrystalnexusModMenus.TESSERACT_GUI.get(), TesseractGuiScreen::new);
 		event.register(CrystalnexusModMenus.CIRCUIT_PRESS_GUI.get(), CircuitPressGUIScreen::new);
 		event.register(CrystalnexusModMenus.FACTORY_CONTROLLER_GUI.get(), FactoryControllerGuiScreen::new);

@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/copper" },
+  "result": { "id": "crystalnexus:copper_sheet", "count": 1 },
+  "mode": "plate"
+}

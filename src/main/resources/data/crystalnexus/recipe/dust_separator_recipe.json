@@ -4,11 +4,11 @@
   "pattern": [
     "aba",
     "cdc",
-    "eee"
+    "efe"
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "item": "crystalnexus:iron_bearing"
     },
     "b": {
       "item": "minecraft:diamond"
@@ -21,6 +21,9 @@
     },
     "e": {
       "tag": "c:stones"
+    },
+    "f": {
+      "item": "crystalnexus:electric_motor"
     }
   },
   "result": {

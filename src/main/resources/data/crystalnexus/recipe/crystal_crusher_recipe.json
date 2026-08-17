@@ -4,23 +4,26 @@
   "pattern": [
     "aba",
     "cdc",
-    "eee"
+    "efe"
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:iron_bearing"
     },
     "b": {
       "item": "crystalnexus:crystalized_alloy"
     },
     "c": {
-      "item": "minecraft:piston"
+      "tag": "c:rods/iron"
     },
     "d": {
       "item": "crystalnexus:crystal_machine_frame"
     },
     "e": {
       "tag": "c:stones"
+    },
+    "f": {
+      "item": "crystalnexus:electric_motor"
     }
   },
   "result": {

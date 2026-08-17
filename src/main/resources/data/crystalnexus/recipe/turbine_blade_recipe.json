@@ -8,10 +8,10 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     },
     "b": {
-      "item": "minecraft:iron_block"
+      "tag": "c:rods/iron"
     }
   },
   "result": {

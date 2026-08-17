@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/titanium" },
+  "result": { "id": "crystalnexus:titanium_sheet", "count": 1 },
+  "mode": "plate"
+}

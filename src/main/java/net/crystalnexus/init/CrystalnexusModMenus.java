@@ -48,6 +48,7 @@ import net.crystalnexus.world.inventory.ItemElevatorGuiDownMenu;
 import net.crystalnexus.world.inventory.ItemCollectorGUIMenu;
 import net.crystalnexus.world.inventory.ItemChargerGuiMenu;
 import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
+import net.crystalnexus.world.inventory.PartsAssemblerMenu;
 import net.crystalnexus.world.inventory.InverterGuiMenu;
 import net.crystalnexus.world.inventory.FluidPackagerGUIMenu;
 import net.crystalnexus.world.inventory.FluidInputGuiMenu;
@@ -92,6 +93,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<MRecrystallGuiMenu>> M_RECRYSTALL_GUI = REGISTRY.register("m_recrystall_gui", () -> IMenuTypeExtension.create(MRecrystallGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ReactorGUIMenu>> REACTOR_GUI = REGISTRY.register("reactor_gui", () -> IMenuTypeExtension.create(ReactorGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<IronSmelterGuiMenu>> IRON_SMELTER_GUI = REGISTRY.register("iron_smelter_gui", () -> IMenuTypeExtension.create(IronSmelterGuiMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<PartsAssemblerMenu>> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", () -> IMenuTypeExtension.create(PartsAssemblerMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TesseractGuiMenu>> TESSERACT_GUI = REGISTRY.register("tesseract_gui", () -> IMenuTypeExtension.create(TesseractGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CircuitPressGUIMenu>> CIRCUIT_PRESS_GUI = REGISTRY.register("circuit_press_gui", () -> IMenuTypeExtension.create(CircuitPressGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<FactoryControllerGuiMenu>> FACTORY_CONTROLLER_GUI = REGISTRY.register("factory_controller_gui", () -> IMenuTypeExtension.create(FactoryControllerGuiMenu::new));

@@ -10,7 +10,7 @@
       "item": "crystalnexus:iron_machine_bolt"
     },
     "b": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:rods/iron"
     },
     "c": {
       "tag": "c:stones"

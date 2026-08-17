@@ -232,6 +232,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_FLUID_INPUT = block(CrystalnexusModBlocks.REACTOR_FLUID_INPUT);
 	public static final DeferredItem<Item> REACTOR_CORE = block(CrystalnexusModBlocks.REACTOR_CORE);
 	public static final DeferredItem<Item> IRON_SMELTER = block(CrystalnexusModBlocks.IRON_SMELTER);
+	public static final DeferredItem<Item> PARTS_ASSEMBLER = block(CrystalnexusModBlocks.PARTS_ASSEMBLER);
 	public static final DeferredItem<Item> CRYSTAL_SMELTER = block(CrystalnexusModBlocks.CRYSTAL_SMELTER);
 	public static final DeferredItem<Item> INVERTIUM_SMELTER = block(CrystalnexusModBlocks.INVERTIUM_SMELTER);
 	public static final DeferredItem<Item> CHLOROPHYTE_SMELTER = block(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER);

@@ -17,7 +17,7 @@
       "item": "crystalnexus:crystalized_alloy"
     },
     "d": {
-      "item": "minecraft:copper_block"
+      "tag": "c:plates/copper"
     },
     "e": {
       "item": "crystalnexus:pipe_junction"

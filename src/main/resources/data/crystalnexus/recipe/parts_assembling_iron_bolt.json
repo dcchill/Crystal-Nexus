@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/iron" },
+  "result": { "id": "crystalnexus:iron_machine_bolt", "count": 2 },
+  "mode": "bolt"
+}

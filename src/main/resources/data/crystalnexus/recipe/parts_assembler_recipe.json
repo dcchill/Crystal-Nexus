@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["pbp", "rmr", "pep"],
+  "key": {
+    "p": { "tag": "c:plates/iron" },
+    "b": { "item": "crystalnexus:iron_bearing" },
+    "r": { "tag": "c:rods/gold" },
+    "m": { "item": "crystalnexus:crystal_machine_frame" },
+    "e": { "item": "crystalnexus:electric_motor" }
+  },
+  "result": { "id": "crystalnexus:parts_assembler", "count": 1 }
+}

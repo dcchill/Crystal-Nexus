@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/gold" },
+  "result": { "id": "crystalnexus:gold_rod", "count": 1 },
+  "mode": "rod"
+}

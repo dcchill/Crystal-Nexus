@@ -14,7 +14,7 @@
       "item": "crystalnexus:ceramic_plate"
     },
     "c": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     }
   },
   "result": {

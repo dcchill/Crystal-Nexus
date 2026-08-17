@@ -26,6 +26,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());

@@ -2,15 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "bpb",
+    "hph",
     "tmt",
-    "sss"
+    "ses"
   ],
   "key": {
     "p": { "item": "crystalnexus:pipe_straight" },
     "m": { "item": "crystalnexus:crystal_machine_frame" },
     "s": { "tag": "c:stones" },
-    "b": { "item": "crystalnexus:iron_machine_bolt" },
+    "h": { "item": "crystalnexus:heating_coil" },
+    "e": { "item": "crystalnexus:electric_motor" },
     "t": { "item": "crystalnexus:ceramic_plate" }
   },
   "result": {

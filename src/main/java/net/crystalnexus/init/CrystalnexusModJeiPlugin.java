@@ -23,6 +23,8 @@ import net.crystalnexus.jei_recipes.PistonGeneratorJEIRecipeCategory;
 import net.crystalnexus.jei_recipes.PistonGeneratorJEIRecipe;
 import net.crystalnexus.jei_recipes.OreCrushingJeiRecipeCategory;
 import net.crystalnexus.jei_recipes.OreCrushingJeiRecipe;
+import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
+import net.crystalnexus.jei_recipes.PartsAssemblingRecipeCategory;
 import net.crystalnexus.jei_recipes.MatterTransmutationRecipeCategory;
 import net.crystalnexus.jei_recipes.MatterTransmutationRecipe;
 import net.crystalnexus.jei_recipes.InverterJeiRecipeCategory;
@@ -71,6 +73,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<BeamReactionRecipeRecipe> BeamReactionRecipe_Type = new mezz.jei.api.recipe.RecipeType<>(BeamReactionRecipeRecipeCategory.UID, BeamReactionRecipeRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<UnfurnaceRecipe> Unfurnace_Type = new mezz.jei.api.recipe.RecipeType<>(UnfurnaceRecipeCategory.UID, UnfurnaceRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<OreCrushingJeiRecipe> OreCrushingJei_Type = new mezz.jei.api.recipe.RecipeType<>(OreCrushingJeiRecipeCategory.UID, OreCrushingJeiRecipe.class);
+	public static mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PartsAssembling_Type = new mezz.jei.api.recipe.RecipeType<>(PartsAssemblingRecipeCategory.UID, PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ReactorMultiblockGuideRecipe> ReactorMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactorMultiblockGuideRecipeCategory.UID, ReactorMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<CircuitPressingRecipe> CircuitPressing_Type = new mezz.jei.api.recipe.RecipeType<>(CircuitPressingRecipeCategory.UID, CircuitPressingRecipe.class);
@@ -100,6 +103,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new BeamReactionRecipeRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new UnfurnaceRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new OreCrushingJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactorMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CircuitPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -132,6 +136,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(OreCrushingJei_Type, CrushingRecipeSupport.jeiRecipes(Minecraft.getInstance().level));
 		List<OreCrushingJeiRecipe> generatedCrushing = CrushingRecipeSupport.generatedJeiRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(OreCrushingJei_Type, generatedCrushing);
+		registration.addRecipes(PartsAssembling_Type, recipes(recipeManager, PartsAssemblingRecipe.class));
 		List<DustSeperationRecipe> DustSeperationRecipes = recipes(recipeManager, DustSeperationRecipe.class);
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
 		List<DustSeperationRecipe> generatedSeparation = MaterialProcessingCatalog.generatedSeparatorRecipes(Minecraft.getInstance().level);
@@ -194,6 +199,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem()), OreCrushingJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem()), PartsAssembling_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);

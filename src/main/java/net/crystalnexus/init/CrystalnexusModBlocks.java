@@ -110,6 +110,7 @@ import net.crystalnexus.block.ItemElevatorBlock;
 import net.crystalnexus.block.ItemCollectorBlock;
 import net.crystalnexus.block.ItemChargerBlock;
 import net.crystalnexus.block.IronSmelterBlock;
+import net.crystalnexus.block.PartsAssemblerBlock;
 import net.crystalnexus.block.IronNodeBlock;
 import net.crystalnexus.block.InvertiumSmelterBlock;
 import net.crystalnexus.block.InvertiumOreBlock;
@@ -234,6 +235,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_FLUID_INPUT = REGISTRY.register("reactor_fluid_input", ReactorFluidInputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_CORE = REGISTRY.register("reactor_core", ReactorCoreBlock::new);
 	public static final DeferredBlock<Block> IRON_SMELTER = REGISTRY.register("iron_smelter", IronSmelterBlock::new);
+	public static final DeferredBlock<Block> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", PartsAssemblerBlock::new);
 	public static final DeferredBlock<Block> CRYSTAL_SMELTER = REGISTRY.register("crystal_smelter", CrystalSmelterBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_SMELTER = REGISTRY.register("invertium_smelter", InvertiumSmelterBlock::new);
 	public static final DeferredBlock<Block> CHLOROPHYTE_SMELTER = REGISTRY.register("chlorophyte_smelter", ChlorophyteSmelterBlock::new);

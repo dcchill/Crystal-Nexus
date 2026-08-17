@@ -1,0 +1,12 @@
+{
+  "variants": {
+    "facing=north,lit=false": { "model": "crystalnexus:block/parts_assembler" },
+    "facing=east,lit=false": { "model": "crystalnexus:block/parts_assembler", "y": 90 },
+    "facing=south,lit=false": { "model": "crystalnexus:block/parts_assembler", "y": 180 },
+    "facing=west,lit=false": { "model": "crystalnexus:block/parts_assembler", "y": 270 },
+    "facing=north,lit=true": { "model": "crystalnexus:block/parts_assembler_on" },
+    "facing=east,lit=true": { "model": "crystalnexus:block/parts_assembler_on", "y": 90 },
+    "facing=south,lit=true": { "model": "crystalnexus:block/parts_assembler_on", "y": 180 },
+    "facing=west,lit=true": { "model": "crystalnexus:block/parts_assembler_on", "y": 270 }
+  }
+}

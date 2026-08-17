@@ -8,10 +8,10 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "item": "crystalnexus:heating_coil"
     },
     "b": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     },
     "c": {
       "item": "crystalnexus:machine_frame"

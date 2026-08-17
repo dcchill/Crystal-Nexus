@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     },
     "b": {
       "item": "crystalnexus:pipe_junction"
