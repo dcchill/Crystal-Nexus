@@ -7,14 +7,14 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     },
     "b": {
-      "item": "minecraft:iron_nugget"
+      "tag": "c:rods/iron"
     }
   },
   "result": {
     "id": "crystalnexus:iron_machine_bolt",
-    "count": 8
+    "count": 4
   }
 }

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:gold_rod",
+    "crystalnexus:iron_rod",
+    "crystalnexus:copper_rod",
+    "crystalnexus:titanium_rod"
+  ]
+}

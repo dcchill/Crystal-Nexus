@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bib",
+    "set",
+    "rrr"
+  ],
+  "key": {
+    "r": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "s": {
+      "tag": "c:rods/titanium"
+    },
+      "e": {
+      "item": "crystalnexus:titanium_bearing"
+    },
+    "t": {
+      "item": "crystalnexus:stator"
+    },
+    "i": {
+      "tag": "c:plates/titanium"
+    },
+    "b": {
+      "item" : "crystalnexus:iron_machine_bolt"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_electric_motor",
+    "count": 1
+  }
+}

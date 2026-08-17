@@ -1,12 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "a",
-    "a"
+    "h",
+    "t",
+    "t"
   ],
   "key": {
-    "a": {
-      "tag": "c:ingots/titanium"
+    "h": {
+      "tag": "c:hammers"
+    },
+    "t": {
+      "item": "crystalnexus:titanium_ingot"
     }
   },
   "result": {

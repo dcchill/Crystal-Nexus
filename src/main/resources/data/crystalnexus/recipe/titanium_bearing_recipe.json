@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " p ",
+    "prp",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/titanium"
+    },
+    "r": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_bearing",
+    "count": 1
+  }
+}

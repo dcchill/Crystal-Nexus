@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bib",
+    "set",
+    "rrr"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone"
+    },
+    "s": {
+      "tag": "c:rods/iron"
+    },
+    "e": {
+      "item": "crystalnexus:iron_bearing"
+    },
+    "t": {
+      "item": "crystalnexus:stator"
+    },
+    "i": {
+      "tag": "c:plates/iron"
+    },
+    "b": {
+      "item" : "crystalnexus:iron_machine_bolt"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:electric_motor",
+    "count": 1
+  }
+}

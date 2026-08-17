@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "h i",
+    " i ",
+    "i  "
+  ],
+  "key": {
+    "h": {
+      "tag": "c:hammers"
+    },
+    "i": {
+      "item": "crystalnexus:titanium_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_rod",
+    "count": 1
+  }
+}

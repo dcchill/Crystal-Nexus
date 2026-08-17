@@ -11,7 +11,7 @@
       "item": "minecraft:slime_ball"
     },
     "b": {
-      "item": "minecraft:copper_ingot"
+      "tag": "c:rods/copper"
     }
   },
   "result": {

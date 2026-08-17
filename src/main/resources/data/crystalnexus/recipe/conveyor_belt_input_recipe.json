@@ -7,7 +7,7 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:hopper"
+      "item": "crystalnexus:electric_motor"
     },
     "b": {
       "item": "crystalnexus:conveyer_belt"

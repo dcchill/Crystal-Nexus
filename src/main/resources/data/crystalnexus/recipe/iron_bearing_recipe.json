@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " p ",
+    "prp",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/iron"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:iron_bearing",
+    "count": 1
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  r",
+    "crc",
+    "r  "
+  ],
+  "key": {
+    "c": {
+      "tag": "c:ingots/copper"
+    },
+    "r": {
+      "tag": "c:rods/iron"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:heating_coil",
+    "count": 1
+  }
+}

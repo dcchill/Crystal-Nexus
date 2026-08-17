@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "cic",
+    "i i",
+    "cic"
+  ],
+  "key": {
+    "c": {
+      "tag": "c:rods/copper"
+    },
+    "i": {
+      "tag": "c:plates/iron"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:stator",
+    "count": 1
+  }
+}

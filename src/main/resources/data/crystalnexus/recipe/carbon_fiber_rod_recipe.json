@@ -1,17 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
   "pattern": [
-    "a",
-    "a"
+    "h i",
+    " i "
   ],
   "key": {
-    "a": {
+    "h": {
+      "tag": "c:hammers"
+    },
+    "i": {
       "item": "crystalnexus:carbon_fiber"
     }
   },
   "result": {
     "id": "crystalnexus:carbon_fiber_rod",
-    "count": 2
+    "count": 1
   }
 }

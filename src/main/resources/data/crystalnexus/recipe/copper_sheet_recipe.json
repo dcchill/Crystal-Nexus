@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "h",
+    "c",
+    "c"
+  ],
+  "key": {
+    "h": {
+      "tag": "c:hammers"
+    },
+    "c": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:copper_sheet",
+    "count": 1
+  }
+}

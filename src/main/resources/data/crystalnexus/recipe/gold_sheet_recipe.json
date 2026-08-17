@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "h",
+    "g",
+    "g"
+  ],
+  "key": {
+    "h": {
+      "tag": "c:hammers"
+    },
+    "g": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:gold_sheet",
+    "count": 1
+  }
+}

@@ -37,6 +37,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FLUID_PACKAGER.get().asItem());
 				tabData.accept(CrystalnexusModItems.ANCIENT_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.CRYSTALALLOY_HAMMER.get());
+				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_HAMMER.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_HAMMER.get());
+				tabData.accept(CrystalnexusModItems.INVERTIUM_HAMMER.get());
 				tabData.accept(CrystalnexusModItems.CRYSTAL_WRENCH.get());
 				tabData.accept(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_STAIRS.get().asItem());
@@ -181,7 +184,20 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.DEEPSLATE_ILMENITE_ORE.get().asItem());
 				tabData.accept(CrystalnexusModItems.RAW_ILMENITE.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.GOLD_SHEET.get());
+				tabData.accept(CrystalnexusModItems.IRON_SHEET.get());
+				tabData.accept(CrystalnexusModItems.COPPER_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_SHEET.get());
+				tabData.accept(CrystalnexusModItems.GOLD_ROD.get());
+				tabData.accept(CrystalnexusModItems.IRON_ROD.get());
+				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_ROD.get());
+				tabData.accept(CrystalnexusModItems.STATOR.get());
+				tabData.accept(CrystalnexusModItems.HEATING_COIL.get());
+				tabData.accept(CrystalnexusModItems.IRON_BEARING.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_BEARING.get());
+				tabData.accept(CrystalnexusModItems.ELECTRIC_MOTOR.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.BIOMASS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_COMPOSITE.get());
@@ -379,6 +395,9 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.ATOMIC_COFFEE.get());
 		} else if (tabData.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
 			tabData.accept(CrystalnexusModItems.CRYSTALALLOY_HAMMER.get());
+			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_HAMMER.get());
+			tabData.accept(CrystalnexusModItems.TITANIUM_HAMMER.get());
+			tabData.accept(CrystalnexusModItems.INVERTIUM_HAMMER.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_PICKAXE.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_AXE.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_SHOVEL.get());

@@ -120,7 +120,12 @@ import net.crystalnexus.item.CystalizedAlloyItem;
 import net.crystalnexus.item.CyanPaintballItem;
 import net.crystalnexus.item.CrystalizedAlloyMagnetItem;
 import net.crystalnexus.item.CrystalAlloyNuggetItem;
+
 import net.crystalnexus.item.CrystalAlloyHammerItem;
+import net.crystalnexus.item.ChlorophyteHammerItem;
+import net.crystalnexus.item.InvertiumHammerItem;
+import net.crystalnexus.item.TitaniumHammerItem;
+
 import net.crystalnexus.item.CrystalWrenchItem;
 import net.crystalnexus.item.CopperSingularityItem;
 import net.crystalnexus.item.ConductiveAlloyItem;
@@ -177,6 +182,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> FE_EFFICIENCY_UPGRADE = REGISTRY.register("fe_efficiency_upgrade", FEEfficiencyUpgradeItem::new);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL_ORE = block(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL = REGISTRY.register("ancient_crystal", RawAncientCrystalItem::new);
+	
+	public static final DeferredItem<Item> INVERTIUM_HAMMER = REGISTRY.register("invertium_hammer", InvertiumHammerItem::new);
+	public static final DeferredItem<Item> CHLOROPHYTE_HAMMER = REGISTRY.register("chlorophyte_hammer", ChlorophyteHammerItem::new);
+	public static final DeferredItem<Item> TITANIUM_HAMMER = REGISTRY.register("titanium_hammer", TitaniumHammerItem::new);
+
 	public static final DeferredItem<Item> CRYSTALALLOY_HAMMER = REGISTRY.register("crystalalloy_hammer", CrystalAlloyHammerItem::new);
 	public static final DeferredItem<Item> CRYSTAL_WRENCH = REGISTRY.register("crystal_wrench", CrystalWrenchItem::new);
 	public static final DeferredItem<Item> DUST_SEPARATOR = block(CrystalnexusModBlocks.DUST_SEPARATOR);
@@ -281,6 +291,19 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TEMPORAL_EXPLOITER = block(CrystalnexusModBlocks.TEMPORAL_EXPLOITER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
 	public static final DeferredItem<Item> SULFUR_DUST = REGISTRY.register("sulfur_dust", PolyacrylonitrileDustItem::new);
+	public static final DeferredItem<Item> GOLD_SHEET = REGISTRY.register("gold_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> IRON_SHEET = REGISTRY.register("iron_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> COPPER_SHEET = REGISTRY.register("copper_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> GOLD_ROD = REGISTRY.register("gold_rod", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> IRON_ROD = REGISTRY.register("iron_rod", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> COPPER_ROD = REGISTRY.register("copper_rod", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TITANIUM_ROD = REGISTRY.register("titanium_rod", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> STATOR = REGISTRY.register("stator", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> HEATING_COIL = REGISTRY.register("heating_coil", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> IRON_BEARING = REGISTRY.register("iron_bearing", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TITANIUM_BEARING = REGISTRY.register("titanium_bearing", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> ELECTRIC_MOTOR = REGISTRY.register("electric_motor", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TITANIUM_ELECTRIC_MOTOR = REGISTRY.register("titanium_electric_motor", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_SHEET = REGISTRY.register("titanium_sheet", TitaniumSheetItem::new);
 	public static final DeferredItem<Item> TITANIUM_INGOT = REGISTRY.register("titanium_ingot", TitaniumIngotItem::new);
 	public static final DeferredItem<Item> RAW_ILMENITE = REGISTRY.register("raw_ilmenite", RawIlmeniteItem::new);
