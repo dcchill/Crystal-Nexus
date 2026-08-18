@@ -8,13 +8,13 @@
   ],
   "key": {
     "a": {
-      "item": "minecraft:iron_ingot"
+      "tag": "c:plates/iron"
     },
     "b": {
       "item": "crystalnexus:iron_machine_bolt"
     },
     "c": {
-      "item": "minecraft:copper_ingot"
+      "tag": "c:plates/copper"
     }
   },
   "result": {

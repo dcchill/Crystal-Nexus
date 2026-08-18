@@ -79,7 +79,6 @@ public static void onZeroPointPreview(final S2C_ZeroPointPreview msg, final IPay
             ));
         }
 
-        System.out.println("[ZeroPointPreview] activated at " + msg.controllerPos() + " template=" + msg.templateId());
     });
 }
 

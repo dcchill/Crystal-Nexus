@@ -35,24 +35,16 @@ public class ReactorComputerOnTickUpdateProcedure {
 		String registry_name_ore = "";
 		String registry_name = "";
 		String registry_name_nugget = "";
-		BlockState core = Blocks.AIR.defaultBlockState();
 		double outputAmount = 0;
 		double cookTime = 0;
 		double energy = 0;
-		core = CrystalnexusModBlocks.REACTOR_CORE.get().defaultBlockState();
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == core.getBlock()) {
-			BlocksCheckerProcedure.execute(world, x + 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == core.getBlock()) {
-			BlocksCheckerProcedure.execute(world, x - 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == core.getBlock()) {
-			BlocksCheckerProcedure.execute(world, x, y, z + 1);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == core.getBlock()) {
-			BlocksCheckerProcedure.execute(world, x, y, z - 1);
-		}
+		BlockPos controllerPos = BlockPos.containing(x, y, z);
+		BlocksCheckerProcedure.executeFromController(world, controllerPos);
+		int sizeMultiplier = CenteredMultiblockDimensions.sizeMultiplier((int) getBlockNBTNumber(world, controllerPos, "multiblockRadius"));
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.REACTOR_UPGRADE.get()) {
-			energy = 32768;
+			energy = 32768 * sizeMultiplier;
 		} else {
-			energy = 16384;
+			energy = 16384 * sizeMultiplier;
 		}
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()) {
 			if (!world.isClientSide()) {

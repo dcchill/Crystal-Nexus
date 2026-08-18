@@ -127,7 +127,8 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxReceive(), CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxReceive() * 4,
+			CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

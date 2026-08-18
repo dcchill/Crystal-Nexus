@@ -41,4 +41,9 @@ class MaterialProcessingNamesTest {
             previousEnergy = energy;
         }
     }
+
+    @Test
+    void tierThreeUsesItsPlayerFacingTechnologyName() {
+        assertEquals("Titanium", MachineTier.INVERTIUM_TITANIUM.displayName());
+    }
 }

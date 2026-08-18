@@ -11,7 +11,7 @@
       "tag": "c:plates/titanium"
     },
     "b": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "tag": "c:rods/titanium"
     },
     "c": {
       "item": "minecraft:chest"

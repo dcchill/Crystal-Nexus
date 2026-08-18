@@ -8,8 +8,19 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
+import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
+import net.crystalnexus.init.CrystalnexusModBlocks;
+
 public class ReactorEnergyOutputOnTickUpdateProcedure {
+	private static final int CONTROLLER_TRANSFER_PER_TICK = 65536;
+
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+		BlockPos portPos = BlockPos.containing(x, y, z);
+		CenteredMultiblockValidator.Link controller = CenteredMultiblockValidator.validateFromPort(world, portPos,
+				CrystalnexusModBlocks.REACTOR_CORE.get(), CrystalnexusModBlocks.REACTOR_COMPUTER.get(), BlocksCheckerProcedure.CASING);
+		if (controller != null) {
+			pullFromController(world, controller.pos(), portPos, CenteredMultiblockDimensions.sizeMultiplier(controller.radius()));
+		}
 		double energy = 0;
 		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.WEST)) {
 			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
@@ -66,6 +77,23 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) energy, false);
 			}
+		}
+	}
+
+	private static void pullFromController(LevelAccessor world, BlockPos controllerPos, BlockPos portPos, int sizeMultiplier) {
+		if (!(world instanceof ILevelExtension ext)
+				|| !(world.getBlockEntity(portPos) instanceof ReactorEnergyOutputBlockEntity output)) {
+			return;
+		}
+		IEnergyStorage controller = ext.getCapability(Capabilities.EnergyStorage.BLOCK, controllerPos, null);
+		if (controller == null) {
+			return;
+		}
+		int energy = controller.extractEnergy(CONTROLLER_TRANSFER_PER_TICK * sizeMultiplier, true);
+		energy = output.getEnergyStorage().generateEnergy(energy, true);
+		if (energy > 0) {
+			controller.extractEnergy(energy, false);
+			output.getEnergyStorage().generateEnergy(energy, false);
 		}
 	}
 

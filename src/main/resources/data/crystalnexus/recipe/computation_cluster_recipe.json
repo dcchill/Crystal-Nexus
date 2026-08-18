@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "tag": "c:rods/gold"
     },
     "b": {
       "item": "crystalnexus:computation_node"

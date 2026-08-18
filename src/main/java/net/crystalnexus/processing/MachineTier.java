@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public enum MachineTier {
     CRYSTAL(1, 1.00, 1.00, "Crystal"),
     CHLOROPHYTE(2, 0.75, 0.80, "Chlorophyte"),
-    INVERTIUM_PLATINUM(3, 0.50, 0.60, "Invertium/Platinum"),
+    INVERTIUM_TITANIUM(3, 0.50, 0.60, "Titanium"),
     HYPER_CARBON(4, 0.30, 0.40, "Hyper/Carbon Fiber");
 
     private final int level;

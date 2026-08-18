@@ -11,7 +11,7 @@
       "item": "crystalnexus:ceramic_plate"
     },
     "b": {
-      "item": "crystalnexus:blutonium_ingot"
+      "tag": "c:plates/iron"
     }
   },
   "result": {

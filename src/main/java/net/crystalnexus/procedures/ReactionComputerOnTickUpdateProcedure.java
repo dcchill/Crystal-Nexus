@@ -28,20 +28,12 @@ public class ReactionComputerOnTickUpdateProcedure {
 		String registry_name_ore = "";
 		String registry_name = "";
 		String registry_name_nugget = "";
-		BlockState core = Blocks.AIR.defaultBlockState();
 		double outputAmount = 0;
 		double cookTime = 0;
 		double energy = 0;
-		core = CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get().defaultBlockState();
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x + 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x - 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x, y, z + 1);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x, y, z - 1);
-		}
+		BlockPos controllerPos = BlockPos.containing(x, y, z);
+		ReactionBlocksCheckerProcedure.executeFromController(world, controllerPos);
+		outputAmount = CenteredMultiblockDimensions.sizeMultiplier((int) getBlockNBTNumber(world, controllerPos, "multiblockRadius"));
 		energy = 10240000;
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			if (!world.isClientSide()) {
@@ -83,7 +75,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EE_MATTER.get() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem()) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount()) {
+				if (64 - itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() >= outputAmount) {
 					if (energy <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
 							if (!world.isClientSide()) {
@@ -117,7 +109,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 								_level.sendParticles(ParticleTypes.ELECTRIC_SPARK, (x + 0.5), (y + 0.5), (z + 0.5), 5, 0.5, 0, 0.5, 0);
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								ItemStack _setstack = new ItemStack(CrystalnexusModItems.EE_MATTER.get()).copy();
-								_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + 1);
+								_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (int) outputAmount);
 								_itemHandlerModifiable.setStackInSlot(0, _setstack);
 							}
 						}

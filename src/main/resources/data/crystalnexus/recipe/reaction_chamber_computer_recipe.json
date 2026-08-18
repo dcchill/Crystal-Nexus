@@ -2,22 +2,25 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aba",
-    "bcb",
-    "dbd"
+    "bsb",
+    "ici",
+    "bpb"
   ],
   "key": {
-    "a": {
-      "item": "crystalnexus:chlorophyte_nugget"
-    },
     "b": {
-      "item": "crystalnexus:reaction_chamber_block"
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "s": {
+      "item": "crystalnexus:silicon_wafer"
     },
     "c": {
       "item": "crystalnexus:computation_node"
     },
-    "d": {
-      "item": "crystalnexus:crystalized_alloy"
+    "i": {
+      "tag": "c:ingots/titanium"
+    },
+    "p": {
+      "tag": "c:plates/titanium"
     }
   },
   "result": {

@@ -27,17 +27,7 @@ public class ReactionComputerOnBlockRightClickedProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z, Entity entity) {
 		if (entity == null)
 			return;
-		BlockState core = Blocks.AIR.defaultBlockState();
-		core = CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get().defaultBlockState();
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x + 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x - 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x, y, z + 1);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == core.getBlock()) {
-			ReactionBlocksCheckerProcedure.execute(world, x, y, z - 1);
-		}
+		ReactionBlocksCheckerProcedure.executeFromController(world, BlockPos.containing(x, y, z));
 		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory")) {
 			if (entity instanceof ServerPlayer _ent) {
 				BlockPos _bpos = BlockPos.containing(x, y, z);

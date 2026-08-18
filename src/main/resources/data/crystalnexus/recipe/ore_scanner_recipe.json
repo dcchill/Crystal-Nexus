@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:iron_machine_bolt"
+      "tag": "c:plates/gold"
     },
     "b": {
       "item": "crystalnexus:laser_diode"
@@ -20,7 +20,7 @@
       "item": "crystalnexus:silicon"
     },
     "e": {
-      "tag": "c:rods/iron"
+      "tag": "c:rods/gold"
     }
   },
   "result": {

@@ -5,7 +5,7 @@
       "item": "crystalnexus:pure_blutonium"
     },
     {
-      "item": "crystalnexus:iron_machine_bolt"
+      "item": "crystalnexus:machine_bolt"
     },
     {
       "item": "crystalnexus:ee_matter"
@@ -23,7 +23,7 @@
       "item": "crystalnexus:ee_matter"
     },
     {
-      "item": "crystalnexus:iron_machine_bolt"
+      "item": "crystalnexus:machine_bolt"
     }
   ],
   "integers": [

@@ -1,0 +1,152 @@
+package net.crystalnexus.procedures;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+
+public final class CenteredMultiblockValidator {
+	public static final int MAX_RADIUS = CenteredMultiblockDimensions.MAX_RADIUS;
+	private static final Direction[] HORIZONTAL_DIRECTIONS = {Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST};
+
+	private CenteredMultiblockValidator() {
+	}
+
+	public static Link validateFromController(LevelAccessor world, BlockPos controllerPos, Block core, Block controller, TagKey<Block> casingTag) {
+		Link link = findValidCore(world, controllerPos, core, controller, casingTag);
+		setControllerState(world, controllerPos, link != null, link != null ? link.radius() : 0);
+		return link;
+	}
+
+	public static Link validateFromCore(LevelAccessor world, BlockPos corePos, Block core, Block controller, TagKey<Block> casingTag) {
+		Link link = findAlongHorizontalAxis(world, corePos, controller);
+		if (link == null) {
+			return null;
+		}
+		if (!isValid(world, corePos, link.pos(), link.radius(), core, controller, casingTag)) {
+			return null;
+		}
+		setControllerState(world, link.pos(), true, link.radius());
+		return link;
+	}
+
+	public static Link validateFromPort(LevelAccessor world, BlockPos portPos, Block core, Block controller, TagKey<Block> casingTag) {
+		BlockEntity portEntity = world.getBlockEntity(portPos);
+		if (portEntity != null && portEntity.getPersistentData().contains("multiblockController")) {
+			BlockPos cachedPos = BlockPos.of(portEntity.getPersistentData().getLong("multiblockController"));
+			Link cached = validatePortController(world, portPos, cachedPos, core, controller, casingTag);
+			if (cached != null) {
+				return cached;
+			}
+			portEntity.getPersistentData().remove("multiblockController");
+		}
+
+		int horizontalReach = MAX_RADIUS * 2;
+		for (int dy = -MAX_RADIUS; dy <= MAX_RADIUS; dy++) {
+			for (int dx = -horizontalReach; dx <= horizontalReach; dx++) {
+				for (int dz = -horizontalReach; dz <= horizontalReach; dz++) {
+					BlockPos controllerPos = portPos.offset(dx, dy, dz);
+					Link link = validatePortController(world, portPos, controllerPos, core, controller, casingTag);
+					if (link != null) {
+						if (portEntity != null) {
+							portEntity.getPersistentData().putLong("multiblockController", controllerPos.asLong());
+						}
+						return link;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Link validatePortController(LevelAccessor world, BlockPos portPos, BlockPos controllerPos, Block core, Block controller, TagKey<Block> casingTag) {
+		if (world.getBlockState(controllerPos).getBlock() != controller) {
+			return null;
+		}
+		Link structure = findValidCore(world, controllerPos, core, controller, casingTag);
+		if (structure == null) {
+			return null;
+		}
+		int dx = portPos.getX() - structure.pos().getX();
+		int dy = portPos.getY() - structure.pos().getY();
+		int dz = portPos.getZ() - structure.pos().getZ();
+		if (!world.getBlockState(portPos).is(casingTag)
+				|| !CenteredMultiblockDimensions.isShellOffset(dx, dy, dz, structure.radius())) {
+			return null;
+		}
+		setControllerState(world, controllerPos, true, structure.radius());
+		return new Link(controllerPos, structure.radius());
+	}
+
+	private static Link findValidCore(LevelAccessor world, BlockPos controllerPos, Block core, Block controller, TagKey<Block> casingTag) {
+		for (Direction direction : HORIZONTAL_DIRECTIONS) {
+			for (int radius = 1; radius <= MAX_RADIUS; radius++) {
+				BlockPos corePos = controllerPos.relative(direction, radius);
+				if (world.getBlockState(corePos).getBlock() == core
+						&& isValid(world, corePos, controllerPos, radius, core, controller, casingTag)) {
+					return new Link(corePos, radius);
+				}
+			}
+		}
+		return null;
+	}
+
+	private static Link findAlongHorizontalAxis(LevelAccessor world, BlockPos origin, Block target) {
+		for (Direction direction : HORIZONTAL_DIRECTIONS) {
+			for (int radius = 1; radius <= MAX_RADIUS; radius++) {
+				BlockPos candidate = origin.relative(direction, radius);
+				if (world.getBlockState(candidate).getBlock() == target) {
+					return new Link(candidate, radius);
+				}
+			}
+		}
+		return null;
+	}
+
+	private static boolean isValid(LevelAccessor world, BlockPos corePos, BlockPos controllerPos, int radius, Block core, Block controller, TagKey<Block> casingTag) {
+		if (CenteredMultiblockDimensions.radiusBetween(corePos.getX(), corePos.getY(), corePos.getZ(), controllerPos.getX(), controllerPos.getY(), controllerPos.getZ()) != radius
+				|| world.getBlockState(corePos).getBlock() != core
+				|| world.getBlockState(controllerPos).getBlock() != controller) {
+			return false;
+		}
+		for (int dx = -radius; dx <= radius; dx++) {
+			for (int dy = -radius; dy <= radius; dy++) {
+				for (int dz = -radius; dz <= radius; dz++) {
+					BlockPos pos = corePos.offset(dx, dy, dz);
+					if (CenteredMultiblockDimensions.isShellOffset(dx, dy, dz, radius)) {
+						if (!pos.equals(controllerPos) && !world.getBlockState(pos).is(casingTag)) {
+							return false;
+						}
+					} else if (world.getBlockState(pos).getBlock() != core) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	private static void setControllerState(LevelAccessor world, BlockPos pos, boolean valid, int radius) {
+		if (world.isClientSide()) {
+			return;
+		}
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity == null || blockEntity.getPersistentData().getBoolean("canOpenInventory") == valid
+				&& blockEntity.getPersistentData().getInt("multiblockRadius") == radius) {
+			return;
+		}
+		blockEntity.getPersistentData().putBoolean("canOpenInventory", valid);
+		blockEntity.getPersistentData().putInt("multiblockRadius", radius);
+		BlockState state = world.getBlockState(pos);
+		if (world instanceof Level level) {
+			level.sendBlockUpdated(pos, state, state, 3);
+		}
+	}
+
+	public record Link(BlockPos pos, int radius) {
+	}
+}

@@ -4,11 +4,14 @@
   "pattern": [
     "bib",
     "set",
-    "rrr"
+    "crc"
   ],
   "key": {
     "r": {
       "item": "minecraft:redstone"
+    },
+    "c": {
+      "tag": "c:plates/copper"
     },
     "s": {
       "tag": "c:rods/iron"

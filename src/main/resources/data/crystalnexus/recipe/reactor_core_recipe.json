@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
+    "cbc",
     "aba"
   ],
   "key": {
@@ -11,13 +11,10 @@
       "item": "crystalnexus:synthetic_rubber"
     },
     "b": {
-      "item": "crystalnexus:turbine"
+      "item": "crystalnexus:heating_coil"
     },
     "c": {
-      "item": "crystalnexus:reactor_block"
-    },
-    "d": {
-      "item": "crystalnexus:invertium_block"
+      "item": "crystalnexus:ceramic_plate"
     }
   },
   "result": {
