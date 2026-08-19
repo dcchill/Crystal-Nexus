@@ -61,6 +61,12 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 					}
 				}
 			}
+		} else if (entity instanceof ServerPlayer player) {
+			String reason = getBlockNBTString(world, BlockPos.containing(x, y, z), "validationReason");
+			if (reason.isEmpty()) {
+				reason = "Invalid reactor structure";
+			}
+			player.displayClientMessage(Component.literal("Reactor disabled: " + reason), false);
 		}
 	}
 
@@ -69,5 +75,12 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 		if (blockEntity != null)
 			return blockEntity.getPersistentData().getBoolean(tag);
 		return false;
+	}
+
+	private static String getBlockNBTString(LevelAccessor world, BlockPos pos, String tag) {
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity != null)
+			return blockEntity.getPersistentData().getString(tag);
+		return "";
 	}
 }

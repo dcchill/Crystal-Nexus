@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "crystalnexus:blocks/reactor_coolant_channel",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "crystalnexus:reactor_coolant_channel"
+        }
+      ]
+    }
+  ]
+}

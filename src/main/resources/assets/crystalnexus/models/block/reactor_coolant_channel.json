@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "crystalnexus:block/coolant_channel_top",
+    "side": "crystalnexus:block/coolant_channel_side",
+    "particle": "crystalnexus:block/coolant_channel_top"
+  }
+}

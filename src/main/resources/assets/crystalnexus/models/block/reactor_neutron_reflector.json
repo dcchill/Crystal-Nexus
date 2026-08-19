@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/neutron_reflector",
+    "particle": "crystalnexus:block/neutron_reflector"
+  }
+}

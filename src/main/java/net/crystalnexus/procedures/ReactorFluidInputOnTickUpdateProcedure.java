@@ -46,7 +46,7 @@ public class ReactorFluidInputOnTickUpdateProcedure {
 			return;
 		}
 		IFluidHandler source = ext.getCapability(Capabilities.FluidHandler.BLOCK, portPos, null);
-		IFluidHandler destination = ext.getCapability(Capabilities.FluidHandler.BLOCK, controller.pos(), null);
+		IFluidHandler destination = ext.getCapability(Capabilities.FluidHandler.BLOCK, controller.pos, null);
 		if (source == null || destination == null) {
 			return;
 		}

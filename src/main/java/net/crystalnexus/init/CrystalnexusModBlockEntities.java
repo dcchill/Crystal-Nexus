@@ -111,7 +111,7 @@ import net.crystalnexus.block.entity.BasicEnergyCableBlockEntity;
 import net.crystalnexus.block.entity.AOEChargerBlockEntity;
 import net.crystalnexus.CrystalnexusMod;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class CrystalnexusModBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CrystalnexusMod.MODID);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_PURIFIER = register("crystal_purifier", CrystalnexusModBlocks.CRYSTAL_PURIFIER, CrystalPurifierBlockEntity::new);

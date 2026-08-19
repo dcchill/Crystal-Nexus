@@ -167,7 +167,7 @@ import net.crystalnexus.item.AtomicCoffeeItem;
 import net.crystalnexus.item.AccelerationUpgradeItem;
 import net.crystalnexus.CrystalnexusMod;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber
 public class CrystalnexusModItems {
 	public static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(CrystalnexusMod.MODID);
 	public static final DeferredItem<Item> CRYSTAL_PURIFIER = block(CrystalnexusModBlocks.CRYSTAL_PURIFIER);
@@ -231,6 +231,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_ENERGY_OUTPUT = block(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT);
 	public static final DeferredItem<Item> REACTOR_FLUID_INPUT = block(CrystalnexusModBlocks.REACTOR_FLUID_INPUT);
 	public static final DeferredItem<Item> REACTOR_CORE = block(CrystalnexusModBlocks.REACTOR_CORE);
+	public static final DeferredItem<Item> REACTOR_CONTROL_ROD = block(CrystalnexusModBlocks.REACTOR_CONTROL_ROD);
+	public static final DeferredItem<Item> REACTOR_GRAPHITE_MODERATOR = block(CrystalnexusModBlocks.REACTOR_GRAPHITE_MODERATOR);
+	public static final DeferredItem<Item> REACTOR_NEUTRON_REFLECTOR = block(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR);
+	public static final DeferredItem<Item> REACTOR_COOLANT_CHANNEL = block(CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL);
+	public static final DeferredItem<Item> REACTOR_HEAT_CONDUCTOR = block(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR);
 	public static final DeferredItem<Item> IRON_SMELTER = block(CrystalnexusModBlocks.IRON_SMELTER);
 	public static final DeferredItem<Item> PARTS_ASSEMBLER = block(CrystalnexusModBlocks.PARTS_ASSEMBLER);
 	public static final DeferredItem<Item> CRYSTAL_SMELTER = block(CrystalnexusModBlocks.CRYSTAL_SMELTER);
@@ -550,7 +555,7 @@ public class CrystalnexusModItems {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
 	}
 
-	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+	@EventBusSubscriber(value = Dist.CLIENT)
 	public static class ItemsClientSideHandler {
 		@SubscribeEvent
 		@OnlyIn(Dist.CLIENT)

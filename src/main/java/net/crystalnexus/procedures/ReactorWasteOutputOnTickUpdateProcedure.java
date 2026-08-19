@@ -19,7 +19,7 @@ public final class ReactorWasteOutputOnTickUpdateProcedure {
 		if (controller == null || !(world instanceof ILevelExtension ext)) {
 			return;
 		}
-		IItemHandler source = ext.getCapability(Capabilities.ItemHandler.BLOCK, controller.pos(), null);
+		IItemHandler source = ext.getCapability(Capabilities.ItemHandler.BLOCK, controller.pos, null);
 		IItemHandler destination = ext.getCapability(Capabilities.ItemHandler.BLOCK, portPos, null);
 		if (source == null || destination == null) {
 			return;

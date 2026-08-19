@@ -119,6 +119,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_GRAPHITE_MODERATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_ENERGY_INPUT.get().asItem());

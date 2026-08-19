@@ -20,11 +20,11 @@ public final class ReactionEnergyInputOnTickUpdateProcedure {
 			return;
 		}
 		IEnergyStorage source = ext.getCapability(Capabilities.EnergyStorage.BLOCK, portPos, null);
-		IEnergyStorage destination = ext.getCapability(Capabilities.EnergyStorage.BLOCK, controller.pos(), null);
+		IEnergyStorage destination = ext.getCapability(Capabilities.EnergyStorage.BLOCK, controller.pos, null);
 		if (source == null || destination == null) {
 			return;
 		}
-		int transferLimit = TRANSFER_PER_TICK * CenteredMultiblockDimensions.sizeMultiplier(controller.radius());
+		int transferLimit = TRANSFER_PER_TICK * CenteredMultiblockDimensions.sizeMultiplier(controller.radius);
 		int energy = source.extractEnergy(transferLimit, true);
 		energy = destination.receiveEnergy(energy, true);
 		if (energy > 0) {

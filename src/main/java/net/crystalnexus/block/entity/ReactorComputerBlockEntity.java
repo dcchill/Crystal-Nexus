@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.reactor.ReactorLayout;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
 
@@ -31,6 +32,8 @@ import java.util.stream.IntStream;
 
 public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private ReactorLayout cachedLayout = ReactorLayout.invalid("Offline");
+	private int layoutCheckDelay = 0;
 
 	public ReactorComputerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.REACTOR_COMPUTER.get(), position, state);
@@ -156,5 +159,23 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	public FluidTank getFluidTank() {
 		return fluidTank;
+	}
+
+	public ReactorLayout getCachedLayout() {
+		return cachedLayout;
+	}
+
+	public void updateLayoutCache(ReactorLayout layout) {
+		this.cachedLayout = layout;
+		this.layoutCheckDelay = 0;
+		setChanged();
+	}
+
+	public boolean shouldRecheckLayout(int interval) {
+		if (layoutCheckDelay-- <= 0) {
+			layoutCheckDelay = interval;
+			return true;
+		}
+		return false;
 	}
 }

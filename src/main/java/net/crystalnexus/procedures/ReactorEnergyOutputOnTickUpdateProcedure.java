@@ -7,6 +7,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.Block;
 
 import net.crystalnexus.block.entity.ReactorEnergyOutputBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlocks;
@@ -19,12 +20,12 @@ public class ReactorEnergyOutputOnTickUpdateProcedure {
 		CenteredMultiblockValidator.Link controller = CenteredMultiblockValidator.validateFromPort(world, portPos,
 				CrystalnexusModBlocks.REACTOR_CORE.get(), CrystalnexusModBlocks.REACTOR_COMPUTER.get(), BlocksCheckerProcedure.CASING);
 		if (controller != null) {
-			pullFromController(world, controller.pos(), portPos, CenteredMultiblockDimensions.sizeMultiplier(controller.radius()));
+			pullFromController(world, controller.pos, portPos, CenteredMultiblockDimensions.sizeMultiplier(controller.radius));
 		}
 		double energy = 0;
 		if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), Direction.WEST)) {
 			energy = extractEnergySimulate(world, BlockPos.containing(x, y, z), 10024000, null);
-			energy = receiveEnergySimulate(world, BlockPos.containing(x + 1, y, z), (int) energy, Direction.WEST);
+			energy = receiveEnergySimulate(world, BlockPos.containing(x, y, z), (int) energy, Direction.WEST);
 			if (world instanceof ILevelExtension _ext) {
 				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 				if (_entityStorage != null)

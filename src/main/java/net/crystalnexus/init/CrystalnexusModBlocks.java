@@ -7,6 +7,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.network.chat.Component;
 
 import net.crystalnexus.block.ZeroPointBlock;
 import net.crystalnexus.processing.MachineTier;
@@ -63,9 +64,11 @@ import net.crystalnexus.block.RedHeavyIronBlockBlock;
 import net.crystalnexus.block.ReactorWasteOutputBlock;
 import net.crystalnexus.block.ReactorFluidInputBlock;
 import net.crystalnexus.block.ReactorEnergyOutputBlock;
+import net.crystalnexus.block.ReactorInternalComponentBlock;
 import net.crystalnexus.block.ReactorCoreBlock;
 import net.crystalnexus.block.ReactorComputerBlock;
 import net.crystalnexus.block.ReactorBlockBlock;
+import net.crystalnexus.block.CarbonModeratorBlock;
 import net.crystalnexus.block.ReactionEnergyInputBlock;
 import net.crystalnexus.block.ReactionChamberCoreBlock;
 import net.crystalnexus.block.ReactionChamberComputerBlock;
@@ -234,6 +237,12 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_ENERGY_OUTPUT = REGISTRY.register("reactor_energy_output", ReactorEnergyOutputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_FLUID_INPUT = REGISTRY.register("reactor_fluid_input", ReactorFluidInputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_CORE = REGISTRY.register("reactor_core", ReactorCoreBlock::new);
+	public static final DeferredBlock<Block> REACTOR_CONTROL_ROD = REGISTRY.register("reactor_control_rod", () -> new ReactorInternalComponentBlock(Component.literal("Control Rod: Absorbs neutrons to regulate reactor reaction")));
+	public static final DeferredBlock<Block> REACTOR_GRAPHITE_MODERATOR = REGISTRY.register("reactor_graphite_moderator", () -> new ReactorInternalComponentBlock(Component.literal("Graphite Moderator: Slows neutrons for more efficient fission reactions")));
+	public static final DeferredBlock<Block> REACTOR_NEUTRON_REFLECTOR = REGISTRY.register("reactor_neutron_reflector", () -> new ReactorInternalComponentBlock(Component.literal("Neutron Reflector: Reflects neutrons back into the core to increase efficiency")));
+	public static final DeferredBlock<Block> REACTOR_CARBON_MODERATOR = REGISTRY.register("reactor_carbon_moderator", () -> new CarbonModeratorBlock());
+	public static final DeferredBlock<Block> REACTOR_COOLANT_CHANNEL = REGISTRY.register("reactor_coolant_channel", () -> new ReactorInternalComponentBlock(Component.literal("Coolant Channel: Circulates coolant to remove heat from the reactor")));
+	public static final DeferredBlock<Block> REACTOR_HEAT_CONDUCTOR = REGISTRY.register("reactor_heat_conductor", () -> new ReactorInternalComponentBlock(Component.literal("Heat Conductor: Transfers heat from core to energy output for power generation")));
 	public static final DeferredBlock<Block> IRON_SMELTER = REGISTRY.register("iron_smelter", IronSmelterBlock::new);
 	public static final DeferredBlock<Block> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", PartsAssemblerBlock::new);
 	public static final DeferredBlock<Block> CRYSTAL_SMELTER = REGISTRY.register("crystal_smelter", CrystalSmelterBlock::new);

@@ -6,8 +6,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.crystalnexus.world.inventory.ReactorGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
@@ -79,6 +81,12 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_reactor_controller"), 62, -10, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_fluid"), 26, 6, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_stock_energy"), 105, 5, -12829636, false);
+		BlockEntity blockEntity = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+		if (blockEntity != null) {
+			CompoundTag data = blockEntity.getPersistentData();
+			guiGraphics.drawString(this.font, "Status: " + data.getString("reactorStatus"), 8, 66, -12829636, false);
+			guiGraphics.drawString(this.font, "Temp: " + (int) data.getDouble("heat") + "C  FE/t: " + (int) data.getDouble("lastFEt"), 8, 75, -12829636, false);
+		}
 	}
 
 	@Override
