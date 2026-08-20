@@ -22,7 +22,7 @@ public final class PartsAssemblingRecipeCategory implements IRecipeCategory<Part
     private final IDrawable icon;
 
     public PartsAssemblingRecipeCategory(IGuiHelper helper) {
-        background = helper.createDrawable(ResourceLocation.parse("crystalnexus:textures/screens/iron_smelter_gui.png"), 0, 0, 176, 80);
+        background = helper.createDrawable(ResourceLocation.parse("crystalnexus:textures/screens/iron_smelter_jei.png"), 0, 0, 176, 80);
         icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get()));
     }
 

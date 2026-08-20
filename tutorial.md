@@ -16,8 +16,8 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 
 ### Reactor (Multiblock)
 - Function: A massive multiblock structure for advanced, high-yield power generation.
-- How to Build: Requires Reactor Blocks forming the outer casing, Reactor Core internally, and a Reactor Computer as the master control block. You will also need Reactor Fluid Input and Reactor Energy Output blocks integrated into the wall.
-- Configuration: Provide coolant via the Fluid Input and extract energy via the Energy Output. Right-click the Reactor Computer to manage the reaction process.
+- How to Build: Requires Reactor Blocks forming the outer casing, Reactor Core columns internally, and a Reactor Computer as the master control block. Put a Reactor Control Rod directly above every core column. You will also need Reactor Fluid Input, Reactor Energy Output, and Reactor Waste Output blocks integrated into the wall.
+- Configuration: Provide coolant via the Fluid Input to connected Coolant Channels; Heat Conductors can extend cooling from the core to channels up to four blocks away. Carbon Moderators between cores improve efficiency and reduce heat, while Neutron Reflectors beside cores increase output. Right-click a Control Rod to throttle its core column and the Reactor Computer to manage the reaction process.
 
 ### Zero Point (Multiblock)
 - Function: Endgame, extreme power generation. 

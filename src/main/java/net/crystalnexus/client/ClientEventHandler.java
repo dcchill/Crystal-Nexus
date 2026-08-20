@@ -11,6 +11,7 @@ import net.crystalnexus.block.entity.TankBlockEntity;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.QuarryBlockEntity;
+import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -63,6 +64,12 @@ public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
         (BlockEntityType<QuarryBlockEntity>)
             CrystalnexusModBlockEntities.QUARRY.get(),
         QuarryBlockEntityRenderer::new
+    );
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<GravitationalArrayControllerBlockEntity>)
+            CrystalnexusModBlockEntities.GRAVITATIONAL_ARRAY_CONTROLLER.get(),
+        net.crystalnexus.client.renderer.GravitationalArrayRenderer::new
     );
 }
 }

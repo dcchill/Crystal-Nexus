@@ -20,6 +20,7 @@ import net.crystalnexus.client.gui.SingularityMatrixGUIScreen;
 import net.crystalnexus.client.gui.SingularityCompressorGUIScreen;
 import net.crystalnexus.client.gui.SeparatorGuiScreen;
 import net.crystalnexus.client.gui.ReactorGUIScreen;
+import net.crystalnexus.client.gui.ControlRodGuiScreen;
 import net.crystalnexus.client.gui.ReactionGUIScreen;
 import net.crystalnexus.client.gui.QuarryGUIScreen;
 import net.crystalnexus.client.gui.QuantumMinerGUIScreen;
@@ -69,6 +70,7 @@ import net.crystalnexus.client.gui.BioMGuiScreen;
 import net.crystalnexus.client.gui.BioMCGuiScreen;
 import net.crystalnexus.client.gui.BatteryMonitorGuiScreen;
 import net.crystalnexus.client.gui.AcceleratorGuiScreen;
+import net.crystalnexus.client.gui.GravitationalArrayScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -83,6 +85,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.EXTRACTINATOR_GUI.get(), ExtractinatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.M_RECRYSTALL_GUI.get(), MRecrystallGuiScreen::new);
 		event.register(CrystalnexusModMenus.REACTOR_GUI.get(), ReactorGUIScreen::new);
+		event.register(CrystalnexusModMenus.CONTROL_ROD_GUI.get(), ControlRodGuiScreen::new);
 		event.register(CrystalnexusModMenus.IRON_SMELTER_GUI.get(), IronSmelterGuiScreen::new);
 		event.register(CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PartsAssemblerScreen::new);
 		event.register(CrystalnexusModMenus.TESSERACT_GUI.get(), TesseractGuiScreen::new);
@@ -137,6 +140,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.AOE_CHARGER_GUI.get(), AOEChargerGuiScreen::new);
 		event.register(CrystalnexusModMenus.BLUEPRINT_GUI.get(), BlueprintGUIScreen::new);
 		event.register(CrystalnexusModMenus.MULTIBLOCK_GUI_PAGE_6.get(), MultiblockGuiPage6Screen::new);
+		event.register(CrystalnexusModMenus.GRAVITATIONAL_ARRAY.get(), GravitationalArrayScreen::new);
 	}
 
 	public interface ScreenAccessor {

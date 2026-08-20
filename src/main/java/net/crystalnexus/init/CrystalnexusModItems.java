@@ -231,8 +231,12 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_ENERGY_OUTPUT = block(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT);
 	public static final DeferredItem<Item> REACTOR_FLUID_INPUT = block(CrystalnexusModBlocks.REACTOR_FLUID_INPUT);
 	public static final DeferredItem<Item> REACTOR_CORE = block(CrystalnexusModBlocks.REACTOR_CORE);
+	public static final DeferredItem<Item> GRAVITY_CONTROL_POINT = block(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT);
+	public static final DeferredItem<Item> GRAVITATIONAL_ARRAY_CONTROLLER = block(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER);
+	public static final DeferredItem<Item> YELLOW_DWARF_STAR = REGISTRY.register("yellow_dwarf_star",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
 	public static final DeferredItem<Item> REACTOR_CONTROL_ROD = block(CrystalnexusModBlocks.REACTOR_CONTROL_ROD);
-	public static final DeferredItem<Item> REACTOR_GRAPHITE_MODERATOR = block(CrystalnexusModBlocks.REACTOR_GRAPHITE_MODERATOR);
+	public static final DeferredItem<Item> REACTOR_CARBON_MODERATOR = block(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR);
 	public static final DeferredItem<Item> REACTOR_NEUTRON_REFLECTOR = block(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR);
 	public static final DeferredItem<Item> REACTOR_COOLANT_CHANNEL = block(CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL);
 	public static final DeferredItem<Item> REACTOR_HEAT_CONDUCTOR = block(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR);
@@ -355,6 +359,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ORE_PROCESSOR = block(CrystalnexusModBlocks.ORE_PROCESSOR);
 	public static final DeferredItem<Item> MACHINE_CORE = block(CrystalnexusModBlocks.MACHINE_CORE);
 	public static final DeferredItem<Item> MACHINE_ENERGY_INPUT = block(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT);
+	public static final DeferredItem<Item> MACHINE_FLUID_INPUT = block(CrystalnexusModBlocks.MACHINE_FLUID_INPUT);
 	public static final DeferredItem<Item> ENERGY_SINGULARITY = REGISTRY.register("energy_singularity", EnergySingularityItem::new);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK_SLAB = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_SLAB);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK_STAIRS = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_STAIRS);
@@ -554,6 +559,7 @@ public class CrystalnexusModItems {
 	private static DeferredItem<Item> block(DeferredHolder<Block, Block> block) {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
 	}
+
 
 	@EventBusSubscriber(value = Dist.CLIENT)
 	public static class ItemsClientSideHandler {

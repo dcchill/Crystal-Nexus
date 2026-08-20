@@ -12,6 +12,11 @@ Main blocks:
 - Reactor Energy Output
 - Reactor Fluid Input
 - Reactor Waste Output
+- Reactor Control Rod
+- Carbon Moderator
+- Neutron Reflector
+- Coolant Channel
+- Heat Conductor
 
 Related items:
 
@@ -21,7 +26,13 @@ Related items:
 - Pure Blutonium
 - Coal Singularity
 
-The reactor GUI tracks stock energy and fluid. The Energy Output block exports power, Fluid Input handles coolant or fluid supply, and Waste Output handles byproducts.
+The reactor GUI tracks stock energy and fluid. The Energy Output block exports power, Fluid Input supplies coolant to connected Coolant Channels, and Waste Output collects Blutonium Waste.
+
+Internal layout rules:
+
+- Every Reactor Core column needs a Control Rod directly above it; right-click the rod to set its insertion and throttle that column.
+- Carbon Moderators placed between two cores improve fuel efficiency and reduce heat. Neutron Reflectors beside a core increase its output.
+- Coolant Channels must connect to a Reactor Fluid Input. Heat Conductors extend cooling from the core to connected channels up to four blocks away.
 
 Important notes:
 

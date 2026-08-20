@@ -70,21 +70,33 @@ public class TooltipInfoHandler {
 				"Outer casing for the Reactor multiblock.",
 				"Forms the walls of the reactor structure.");
 		addTooltip("reactor_core",
-				"Core component of the Reactor multiblock.",
-				"Place internally within the reactor structure.");
+				"Fuel-bearing core component.",
+				"Every core column needs a Control Rod directly above it.");
 		addTooltip("reactor_computer",
 				"Master control block for the Reactor.",
-				"Uses Blutonium and water to generate energy.",
-				"Requires Reactor Blocks, Core, Fluid Input, and Energy Output.");
+				"Holds fuel and upgrades, and controls the reaction.");
 		addTooltip("reactor_fluid_input",
 				"Provides coolant to the Reactor.",
-				"Integrate into the reactor wall for fluid input.");
+				"Connect Coolant Channels to this wall port.");
 		addTooltip("reactor_energy_output",
 				"Extracts energy from the Reactor.",
 				"Integrate into the reactor wall for power output.");
 		addTooltip("reactor_waste_output",
 				"Outputs waste from the Reactor.",
-				"Handles byproducts of the reactor process.");
+				"Collects Blutonium Waste produced by the reaction.");
+		addTooltip("reactor_control_rod",
+				"Regulates the core column directly below it.",
+				"Right-click to set insertion and throttle the reaction.");
+		addTooltip("reactor_carbon_moderator",
+				"Between cores, improves fuel efficiency and reduces heat.");
+		addTooltip("reactor_neutron_reflector",
+				"Next to a core, reflects neutrons to increase output.");
+		addTooltip("reactor_coolant_channel",
+				"Carries coolant from a connected Fluid Input.",
+				"Removes reactor heat.");
+		addTooltip("reactor_heat_conductor",
+				"Extends cooling from the core to coolant channels.",
+				"Works up to four blocks from the core.");
 		addTooltip("reactor_upgrade",
 				"Reactor energy upgrade.",
 				"Boosts reactor energy production.");

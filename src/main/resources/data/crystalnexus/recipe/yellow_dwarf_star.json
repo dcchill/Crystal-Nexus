@@ -1,0 +1,34 @@
+{
+  "type": "crystalnexus:gravitational_array",
+  "ingredients": [
+    {
+      "ingredient": { "item": "crystalnexus:iron_singularity" },
+      "count": 2
+    },
+    {
+      "ingredient": { "item": "crystalnexus:gold_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:coal_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    }
+  ],
+  "temporal_fluid": 250000,
+  "energy": 500000,
+  "duration": 200,
+  "output": {
+    "id": "crystalnexus:yellow_dwarf_star",
+    "count": 1
+  },
+  "visuals": {
+    "red": 1.0,
+    "green": 0.9,
+    "blue": 0.35,
+    "scale": 1.2
+  }
+}

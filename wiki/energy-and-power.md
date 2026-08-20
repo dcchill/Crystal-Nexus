@@ -152,10 +152,15 @@ The reactor system uses a multiblock-like set of blocks:
 - Reactor Energy Output
 - Reactor Fluid Input
 - Reactor Waste Output
+- Reactor Control Rod
+- Carbon Moderator
+- Neutron Reflector
+- Coolant Channel
+- Heat Conductor
 - Reactor Upgrade Chip
 - Reactor Permafrost Upgrade Chip
 
-The reactor GUI displays stock energy and fluid. The Permafrost Upgrade removes the need for coolant, while the Reactor Upgrade increases energy produced.
+The reactor GUI displays stock energy and fluid. Each Reactor Core column needs a Control Rod above it, which can be inserted to throttle that column. Carbon Moderators between cores improve fuel efficiency and reduce heat, while adjacent Neutron Reflectors increase output. Coolant Channels must connect to a Fluid Input; Heat Conductors can link core heat to those channels from up to four blocks away. The Permafrost Upgrade removes the need for coolant, while the Reactor Upgrade increases energy produced.
 
 The gamerule `disableMeltdowns` disables reactor meltdowns.
 

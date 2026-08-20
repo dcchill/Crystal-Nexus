@@ -63,6 +63,7 @@ import net.crystalnexus.block.ReinforcedConcreteBlock;
 import net.crystalnexus.block.RedHeavyIronBlockBlock;
 import net.crystalnexus.block.ReactorWasteOutputBlock;
 import net.crystalnexus.block.ReactorFluidInputBlock;
+import net.crystalnexus.block.ReactorControlRodBlock;
 import net.crystalnexus.block.ReactorEnergyOutputBlock;
 import net.crystalnexus.block.ReactorInternalComponentBlock;
 import net.crystalnexus.block.ReactorCoreBlock;
@@ -101,6 +102,7 @@ import net.crystalnexus.block.MagentaHeavyIronBlockBlock;
 import net.crystalnexus.block.MachineblockBlock;
 import net.crystalnexus.block.MachineFrameBlock;
 import net.crystalnexus.block.MachineEnergyInputBlock;
+import net.crystalnexus.block.MachineFluidInputBlock;
 import net.crystalnexus.block.MachineCoreBlock;
 import net.crystalnexus.block.MachineCasingBlock;
 import net.crystalnexus.block.LimeHeavyIronBlockBlock;
@@ -128,6 +130,7 @@ import net.crystalnexus.block.HeavyIronBlockBlock;
 import net.crystalnexus.block.GreenHeavyIronBlockBlock;
 import net.crystalnexus.block.GrayHeavyIronBlockBlock;
 import net.crystalnexus.block.GoldNodeBlock;
+import net.crystalnexus.block.GravitationalArrayControllerBlock;
 import net.crystalnexus.block.GasolineBlock;
 import net.crystalnexus.block.FluidPackagerBlock;
 import net.crystalnexus.block.FactoryOutputControllerBlock;
@@ -237,12 +240,11 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_ENERGY_OUTPUT = REGISTRY.register("reactor_energy_output", ReactorEnergyOutputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_FLUID_INPUT = REGISTRY.register("reactor_fluid_input", ReactorFluidInputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_CORE = REGISTRY.register("reactor_core", ReactorCoreBlock::new);
-	public static final DeferredBlock<Block> REACTOR_CONTROL_ROD = REGISTRY.register("reactor_control_rod", () -> new ReactorInternalComponentBlock(Component.literal("Control Rod: Absorbs neutrons to regulate reactor reaction")));
-	public static final DeferredBlock<Block> REACTOR_GRAPHITE_MODERATOR = REGISTRY.register("reactor_graphite_moderator", () -> new ReactorInternalComponentBlock(Component.literal("Graphite Moderator: Slows neutrons for more efficient fission reactions")));
+	public static final DeferredBlock<Block> REACTOR_CONTROL_ROD = REGISTRY.register("reactor_control_rod", ReactorControlRodBlock::new);
 	public static final DeferredBlock<Block> REACTOR_NEUTRON_REFLECTOR = REGISTRY.register("reactor_neutron_reflector", () -> new ReactorInternalComponentBlock(Component.literal("Neutron Reflector: Reflects neutrons back into the core to increase efficiency")));
 	public static final DeferredBlock<Block> REACTOR_CARBON_MODERATOR = REGISTRY.register("reactor_carbon_moderator", () -> new CarbonModeratorBlock());
 	public static final DeferredBlock<Block> REACTOR_COOLANT_CHANNEL = REGISTRY.register("reactor_coolant_channel", () -> new ReactorInternalComponentBlock(Component.literal("Coolant Channel: Circulates coolant to remove heat from the reactor")));
-	public static final DeferredBlock<Block> REACTOR_HEAT_CONDUCTOR = REGISTRY.register("reactor_heat_conductor", () -> new ReactorInternalComponentBlock(Component.literal("Heat Conductor: Transfers heat from core to energy output for power generation")));
+	public static final DeferredBlock<Block> REACTOR_HEAT_CONDUCTOR = REGISTRY.register("reactor_heat_conductor", () -> new ReactorInternalComponentBlock(Component.literal("Heat Conductor: Relays reactor core heat to connected coolant channel networks")));
 	public static final DeferredBlock<Block> IRON_SMELTER = REGISTRY.register("iron_smelter", IronSmelterBlock::new);
 	public static final DeferredBlock<Block> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", PartsAssemblerBlock::new);
 	public static final DeferredBlock<Block> CRYSTAL_SMELTER = REGISTRY.register("crystal_smelter", CrystalSmelterBlock::new);
@@ -287,6 +289,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ORE_PROCESSOR = REGISTRY.register("ore_processor", OreProcessorBlock::new);
 	public static final DeferredBlock<Block> MACHINE_CORE = REGISTRY.register("machine_core", MachineCoreBlock::new);
 	public static final DeferredBlock<Block> MACHINE_ENERGY_INPUT = REGISTRY.register("machine_energy_input", MachineEnergyInputBlock::new);
+	public static final DeferredBlock<Block> MACHINE_FLUID_INPUT = REGISTRY.register("machine_fluid_input", MachineFluidInputBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK_SLAB = REGISTRY.register("raw_crystal_block_slab", RawCrystalBlockSlabBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK_STAIRS = REGISTRY.register("raw_crystal_block_stairs", RawCrystalBlockStairsBlock::new);
 	public static final DeferredBlock<Block> BIOMATIC_COMPOSTER = REGISTRY.register("biomatic_composter", BiomaticComposterBlock::new);
@@ -415,5 +418,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> BLUEPRINT_CONTROLLER = REGISTRY.register("blueprint_controller", BlueprintControllerBlock::new);
 	public static final DeferredBlock<Block> BLACK_HOLE_TNT = REGISTRY.register("black_hole_tnt", BlackHoleTntBlock::new);
 	// Start of user code block custom blocks
+	public static final DeferredBlock<Block> GRAVITY_CONTROL_POINT = REGISTRY.register("gravity_control_point",
+			() -> new Block(Block.Properties.of().sound(net.minecraft.world.level.block.SoundType.METAL).strength(1.75f, 18f)
+					.requiresCorrectToolForDrops().lightLevel(state -> 15)));
+	public static final DeferredBlock<Block> GRAVITATIONAL_ARRAY_CONTROLLER = REGISTRY.register("gravitational_array_controller", GravitationalArrayControllerBlock::new);
 	// End of user code block custom blocks
 }

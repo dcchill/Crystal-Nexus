@@ -15,6 +15,21 @@
     },
     {
       "item": "crystalnexus:reactor_core"
+    },
+    {
+      "item": "crystalnexus:reactor_control_rod"
+    },
+    {
+      "item": "crystalnexus:reactor_carbon_moderator"
+    },
+    {
+      "item": "crystalnexus:reactor_neutron_reflector"
+    },
+    {
+      "item": "crystalnexus:reactor_coolant_channel"
+    },
+    {
+      "item": "crystalnexus:reactor_heat_conductor"
     }
   ],
   "output": {

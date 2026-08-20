@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " i ",
+    "drd",
+    " i "
+  ],
+  "key": {
+    "i": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "r": {
+      "item": "crystalnexus:reactor_block"
+    },
+    "d": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_neutron_reflector",
+    "count": 1
+  }
+}

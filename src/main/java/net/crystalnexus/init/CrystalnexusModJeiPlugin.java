@@ -51,6 +51,8 @@ import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipeCategory;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipeCategory;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
+import net.crystalnexus.jei_recipes.GravitationalArrayRecipeCategory;
+import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
@@ -90,6 +92,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<BiomaticSimulationRecipe> BiomaticSimulation_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticSimulationRecipeCategory.UID, BiomaticSimulationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PistonGeneratorJEIRecipe> PistonGeneratorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(PistonGeneratorJEIRecipeCategory.UID, PistonGeneratorJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<AcceleratorJeiRecipe> AcceleratorJei_Type = new mezz.jei.api.recipe.RecipeType<>(AcceleratorJeiRecipeCategory.UID, AcceleratorJeiRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<GravitationalArrayRecipe> GravitationalArray_Type = new mezz.jei.api.recipe.RecipeType<>(GravitationalArrayRecipeCategory.UID, GravitationalArrayRecipe.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -120,6 +123,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new BiomaticSimulationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new AcceleratorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
@@ -176,6 +180,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(PistonGeneratorJEI_Type, PistonGeneratorJEIRecipes);
 		List<AcceleratorJeiRecipe> AcceleratorJeiRecipes = recipes(recipeManager, AcceleratorJeiRecipe.class);
 		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
+		registration.addRecipes(GravitationalArray_Type, recipes(recipeManager, GravitationalArrayRecipe.class));
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
@@ -229,6 +234,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get().asItem()), AcceleratorJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem()), GravitationalArray_Type);
 	}
 
 	@Override

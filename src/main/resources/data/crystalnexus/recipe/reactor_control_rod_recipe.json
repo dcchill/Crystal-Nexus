@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " i ",
+    "iri",
+    " i "
+  ],
+  "key": {
+    "i": {
+      "tag": "c:rods/iron"
+    },
+    "r": {
+      "item": "crystalnexus:reactor_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_control_rod",
+    "count": 1
+  }
+}

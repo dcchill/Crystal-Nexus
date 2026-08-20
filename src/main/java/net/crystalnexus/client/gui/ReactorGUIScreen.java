@@ -1,5 +1,7 @@
 package net.crystalnexus.client.gui;
 
+import java.util.List;
+
 import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
@@ -44,10 +46,22 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 	}
 
 	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/reactor_gui.png");
+	private static final ResourceLocation tooltipTexture = ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png");
 
 	@Override
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		if (mouseX >= leftPos + 3 && mouseX < leftPos + 19 && mouseY >= topPos + 64 && mouseY < topPos + 80) {
+			BlockEntity blockEntity = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+			if (blockEntity != null) {
+				CompoundTag data = blockEntity.getPersistentData();
+				guiGraphics.renderComponentTooltip(font, List.of(
+						Component.literal("Status: " + data.getString("reactorStatus")),
+						Component.literal("Temp: " + (int) data.getDouble("heat") + "C"),
+						Component.literal("FE/t: " + (int) data.getDouble("lastFEt"))), mouseX, mouseY);
+				return;
+			}
+		}
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -64,6 +78,7 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), this.leftPos + 6, this.topPos + 16, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 71, this.topPos + 7, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarsmelt.png"), this.leftPos + 71, this.topPos + 54, 0, Mth.clamp((int) HeatDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+		guiGraphics.blit(tooltipTexture, this.leftPos + 3, this.topPos + 64, 0, 0, 16, 16, 16, 16);
 		RenderSystem.disableBlend();
 	}
 
@@ -81,12 +96,6 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_reactor_controller"), 62, -10, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_fluid"), 26, 6, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_stock_energy"), 105, 5, -12829636, false);
-		BlockEntity blockEntity = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
-		if (blockEntity != null) {
-			CompoundTag data = blockEntity.getPersistentData();
-			guiGraphics.drawString(this.font, "Status: " + data.getString("reactorStatus"), 8, 66, -12829636, false);
-			guiGraphics.drawString(this.font, "Temp: " + (int) data.getDouble("heat") + "C  FE/t: " + (int) data.getDouble("lastFEt"), 8, 75, -12829636, false);
-		}
 	}
 
 	@Override

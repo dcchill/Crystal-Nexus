@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "ccc",
+    "crc",
+    "ccc"
+  ],
+  "key": {
+    "c": {
+      "item": "minecraft:coal"
+    },
+    "r": {
+      "item": "crystalnexus:reactor_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_carbon_moderator",
+    "count": 1
+  }
+}

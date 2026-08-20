@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/titanium_plate_block",
+    "up": "crystalnexus:block/titanium_plate_block",
+    "north": "crystalnexus:block/gravitational_array_controller",
+    "east": "crystalnexus:block/titanium_plate_block",
+    "south": "crystalnexus:block/titanium_plate_block",
+    "west": "crystalnexus:block/titanium_plate_block",
+    "particle": "crystalnexus:block/titanium_plate_block"
+  }
+}

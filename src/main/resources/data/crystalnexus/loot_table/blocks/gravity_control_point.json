@@ -1,13 +1,12 @@
 {
   "type": "minecraft:block",
-  "random_sequence": "crystalnexus:blocks/reactor_graphite_moderator",
   "pools": [
     {
       "rolls": 1,
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "crystalnexus:reactor_graphite_moderator"
+          "name": "crystalnexus:gravity_control_point"
         }
       ]
     }

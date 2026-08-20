@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " h ",
+    "hrh",
+    " h "
+  ],
+  "key": {
+    "h": {
+      "tag": "c:plates/titanium"
+    },
+    "r": {
+      "item": "crystalnexus:reactor_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_heat_conductor",
+    "count": 1
+  }
+}

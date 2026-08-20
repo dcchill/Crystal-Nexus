@@ -31,35 +31,15 @@ public final class ReactorSimulation {
 		}
 		ItemStack fuel = computer.getItem(0);
 		boolean hasFuel = isFuel(fuel) && computer.getItem(2).getCount() < 64;
-		double temperature = Math.max(20, data.getDouble("heat"));
+		double temperature = Math.max(ReactorBalance.AMBIENT_TEMPERATURE, data.getDouble("heat"));
 		
 		if (!hasFuel) {
-			// Passive cooling when no fuel
-			if (temperature <= 20) {
-				setStatus(world, pos, computer, "Offline", 1);
-				return;
-			}
-			// Apply passive cooling
-			double nextTemperature = Math.max(20, temperature - ReactorBalance.PASSIVE_HEAT_LOSS);
-			data.putDouble("heat", nextTemperature);
-			data.putDouble("maxHeat", ReactorBalance.MAX_TEMPERATURE);
-			data.putDouble("lastFEt", 0);
-			data.putDouble("heatGenerated", 0);
-			data.putDouble("heatRemoved", ReactorBalance.PASSIVE_HEAT_LOSS);
-			data.putDouble("coolantDemand", 0);
-			data.putDouble("coolantCapacity", 0);
-			data.putDouble("coolantUsed", 0);
-			data.putDouble("fuelEfficiency", layout.fuelEfficiency);
-			data.putDouble("fuelColumns", layout.fuelColumns);
-			data.putDouble("activeCoolantChannels", layout.activeCoolantChannels);
-			setStatus(world, pos, computer, "Cooling", 1);
+			coolIdle(world, pos, computer, layout, temperature);
 			return;
 		}
-		double insertion = data.getDouble("controlRodInsertion");
-		insertion = Math.max(0, Math.min(100, insertion));
-		double control = 1.0 - insertion / 100.0;
-		if (control <= 0.0) {
-			setStatus(world, pos, computer, "Offline", 1);
+		ReactorLayout.OperatingTotals operatingTotals = layout.operatingTotals(world);
+		if (operatingTotals.reactiveFuelRods() <= 0) {
+			coolIdle(world, pos, computer, layout, temperature);
 			return;
 		}
 		double fuelPower = fuel.getItem() == CrystalnexusModItems.PURE_BLUTONIUM.get() ? 1.75 : 1.0;
@@ -71,18 +51,22 @@ public final class ReactorSimulation {
 		}
 		boolean permafrost = computer.getItem(1).getItem() == CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get();
 		double tempEfficiency = temperatureCurve(temperature);
-		int fe = (int) Math.round(ReactorBalance.BASE_FE_PER_ROD_T * layout.fuelRods * layout.outputMultiplier * layout.fuelEfficiency * fuelPower * control * tempEfficiency);
-		double heatGenerated = ReactorBalance.BASE_HEAT_PER_ROD_T * layout.fuelRods * layout.heatMultiplier * fuelPower * control;
-		heatGenerated *= 1.0 + Math.max(0, layout.fuelRods - layout.fuelColumns) * 0.08;
-		double reachableHeat = heatGenerated * layout.conductorCoolingAccess;
-		int coolantDemand = permafrost ? 0 : (int) Math.ceil(reachableHeat / ReactorBalance.HEAT_PER_MB_COOLANT);
+		int unthrottledFe = (int) Math.round(ReactorBalance.BASE_FE_PER_ROD_T * operatingTotals.output() * layout.fuelEfficiency * fuelPower * tempEfficiency);
+		double unthrottledHeat = ReactorBalance.BASE_HEAT_PER_ROD_T * operatingTotals.heat() * fuelPower;
+		unthrottledHeat *= 1.0 + Math.max(0, layout.fuelRods - layout.fuelColumns) * 0.08;
+		int coolantDemand = runningCoolantDemand(temperature, unthrottledHeat);
 		int coolantCapacity = permafrost ? coolantDemand : layout.coolantCapacityMbT;
 		int coolantUsed = 0;
-		if (coolantDemand > 0 && coolantCapacity > 0) {
+		if (!permafrost && coolantDemand > 0 && coolantCapacity > 0) {
 			coolantUsed = computer.getFluidTank().drain(Math.min(coolantDemand, coolantCapacity), IFluidHandler.FluidAction.EXECUTE).getAmount();
 		}
-		double heatRemoved = permafrost ? heatGenerated : coolantUsed * ReactorBalance.HEAT_PER_MB_COOLANT;
-		double nextTemperature = Math.max(20, temperature + heatGenerated - heatRemoved - ReactorBalance.PASSIVE_HEAT_LOSS);
+		double operatingFactor = permafrost || coolantDemand == 0 ? 1.0
+				: Math.max(ReactorBalance.MIN_OPERATING_FACTOR, coolantUsed / (double) coolantDemand);
+		int fe = (int) Math.round(unthrottledFe * operatingFactor);
+		double heatGenerated = unthrottledHeat * operatingFactor;
+		double heatRemoved = (permafrost ? coolantDemand : coolantUsed) * ReactorBalance.HEAT_PER_MB_COOLANT;
+		double passiveHeatLoss = passiveHeatLoss(temperature);
+		double nextTemperature = Math.max(ReactorBalance.AMBIENT_TEMPERATURE, temperature + heatGenerated - heatRemoved - passiveHeatLoss);
 		data.putDouble("heat", Math.min(nextTemperature, ReactorBalance.MAX_TEMPERATURE + 250));
 		data.putDouble("maxHeat", ReactorBalance.MAX_TEMPERATURE);
 		data.putDouble("lastFEt", fe);
@@ -94,16 +78,57 @@ public final class ReactorSimulation {
 		data.putDouble("fuelEfficiency", layout.fuelEfficiency);
 		data.putDouble("fuelColumns", layout.fuelColumns);
 		data.putDouble("activeCoolantChannels", layout.activeCoolantChannels);
-		if (nextTemperature >= ReactorBalance.SCRAM_TEMPERATURE || (!permafrost && coolantDemand > 0 && coolantUsed < Math.min(coolantDemand, coolantCapacity))) {
-			setStatus(world, pos, computer, nextTemperature >= ReactorBalance.SCRAM_TEMPERATURE ? "SCRAM" : "Coolant Limited", 1);
+		if (nextTemperature >= ReactorBalance.SCRAM_TEMPERATURE) {
+			setStatus(world, pos, computer, "SCRAM", 1);
 			return;
 		}
 		computer.getEnergyStorage().generateEnergy(fe, false);
-		progressFuelCycle(computer, fuel, layout, control);
-		setStatus(world, pos, computer, "Stable", 2);
+		progressFuelCycle(computer, fuel, layout, operatingTotals, operatingFactor);
+		setStatus(world, pos, computer, !permafrost && coolantDemand > coolantUsed ? "Coolant Limited" : "Stable", 2);
 		if (world instanceof ServerLevel level) {
 			level.sendParticles(ParticleTypes.VAULT_CONNECTION, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, 0.5, 0, 0.5, 0);
 		}
+	}
+
+	private static void coolIdle(LevelAccessor world, BlockPos pos, ReactorComputerBlockEntity computer, ReactorLayout layout, double temperature) {
+		if (temperature <= ReactorBalance.AMBIENT_TEMPERATURE) {
+			setStatus(world, pos, computer, "Offline", 1);
+			return;
+		}
+		CompoundTag data = computer.getPersistentData();
+		int coolantCapacity = layout.coolantCapacityMbT;
+		int coolantDemand = idleCoolantDemand(temperature);
+		int coolantUsed = computer.getFluidTank().drain(Math.min(coolantDemand, coolantCapacity), IFluidHandler.FluidAction.EXECUTE).getAmount();
+		double coolantHeatRemoved = coolantUsed * ReactorBalance.HEAT_PER_MB_COOLANT;
+		double passiveHeatLoss = passiveHeatLoss(temperature);
+		double nextTemperature = Math.max(ReactorBalance.AMBIENT_TEMPERATURE, temperature - coolantHeatRemoved - passiveHeatLoss);
+		data.putDouble("heat", nextTemperature);
+		data.putDouble("maxHeat", ReactorBalance.MAX_TEMPERATURE);
+		data.putDouble("lastFEt", 0);
+		data.putDouble("heatGenerated", 0);
+		data.putDouble("heatRemoved", coolantHeatRemoved + passiveHeatLoss);
+		data.putDouble("coolantDemand", coolantDemand);
+		data.putDouble("coolantCapacity", coolantCapacity);
+		data.putDouble("coolantUsed", coolantUsed);
+		data.putDouble("fuelEfficiency", layout.fuelEfficiency);
+		data.putDouble("fuelColumns", layout.fuelColumns);
+		data.putDouble("activeCoolantChannels", layout.activeCoolantChannels);
+		setStatus(world, pos, computer, "Cooling", 1);
+	}
+
+	private static int runningCoolantDemand(double temperature, double heatGenerated) {
+		double requestedHeatRemoval = heatGenerated - passiveHeatLoss(temperature)
+				+ (temperature - ReactorBalance.TARGET_TEMPERATURE) * ReactorBalance.COOLING_FEEDBACK_PER_DEGREE;
+		return (int) Math.ceil(Math.max(0, requestedHeatRemoval) / ReactorBalance.HEAT_PER_MB_COOLANT);
+	}
+
+	private static int idleCoolantDemand(double temperature) {
+		double requestedHeatRemoval = (temperature - ReactorBalance.AMBIENT_TEMPERATURE) * ReactorBalance.IDLE_COOLING_PER_DEGREE;
+		return (int) Math.ceil(Math.max(0, requestedHeatRemoval) / ReactorBalance.HEAT_PER_MB_COOLANT);
+	}
+
+	private static double passiveHeatLoss(double temperature) {
+		return Math.max(0, temperature - ReactorBalance.AMBIENT_TEMPERATURE) * ReactorBalance.PASSIVE_HEAT_LOSS_PER_DEGREE;
 	}
 
 	private static boolean isFuel(ItemStack fuel) {
@@ -112,9 +137,11 @@ public final class ReactorSimulation {
 				|| fuel.getItem() == CrystalnexusModItems.COAL_SINGULARITY.get();
 	}
 
-	private static void progressFuelCycle(ReactorComputerBlockEntity computer, ItemStack fuel, ReactorLayout layout, double control) {
+	private static void progressFuelCycle(ReactorComputerBlockEntity computer, ItemStack fuel, ReactorLayout layout,
+			ReactorLayout.OperatingTotals operatingTotals, double operatingFactor) {
 		CompoundTag data = computer.getPersistentData();
-		double burn = Math.max(1, layout.fuelRods * control / Math.max(0.25, layout.fuelEfficiency) * ReactorBalance.FUEL_BURN_RATE_MULTIPLIER);
+		double burn = operatingTotals.reactiveFuelRods() * operatingFactor
+				/ Math.max(0.25, layout.fuelEfficiency) * ReactorBalance.FUEL_BURN_RATE_MULTIPLIER;
 		double maxProgress = 2000;
 		double progress = data.getDouble("progress") + burn;
 		data.putDouble("maxProgress", maxProgress);
@@ -128,21 +155,26 @@ public final class ReactorSimulation {
 			computer.setItem(0, fuel);
 		}
 		ItemStack waste = new ItemStack(CrystalnexusModItems.BLUTONIUM_WASTE.get());
-		waste.setCount(Math.min(64, computer.getItem(2).getCount() + (int) Math.round(Math.max(1, layout.fuelColumns) * ReactorBalance.WASTE_MULTIPLIER)));
+		int wasteProduced = Math.max(1, (int) Math.round(operatingTotals.reactiveFuelColumns() * ReactorBalance.WASTE_MULTIPLIER));
+		waste.setCount(Math.min(64, computer.getItem(2).getCount() + wasteProduced));
 		computer.setItem(2, waste);
 	}
 
 	private static double temperatureCurve(double temperature) {
-		if (temperature < 200) {
+		if (temperature <= 200) {
 			return 0.55;
 		}
-		if (temperature < 500) {
-			return 0.9;
+		if (temperature <= 500) {
+			return interpolate(temperature, 200, 0.55, 500, 0.9);
 		}
-		if (temperature < 900) {
-			return 1.15;
+		if (temperature <= 900) {
+			return interpolate(temperature, 500, 0.9, 900, 1.15);
 		}
-		return 1.35;
+		return interpolate(temperature, 900, 1.15, ReactorBalance.MAX_TEMPERATURE, 1.35);
+	}
+
+	private static double interpolate(double value, double lowerX, double lowerY, double upperX, double upperY) {
+		return lowerY + (upperY - lowerY) * Math.min(1, Math.max(0, (value - lowerX) / (upperX - lowerX)));
 	}
 
 	private static void setStatus(LevelAccessor world, BlockPos pos, ReactorComputerBlockEntity computer, String status, int blockState) {

@@ -50,7 +50,7 @@ public class ReactorFluidInputOnTickUpdateProcedure {
 		if (source == null || destination == null) {
 			return;
 		}
-		FluidStack available = source.drain(100, IFluidHandler.FluidAction.SIMULATE);
+		FluidStack available = source.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
 		int accepted = destination.fill(available, IFluidHandler.FluidAction.SIMULATE);
 		if (accepted > 0) {
 			FluidStack drained = source.drain(accepted, IFluidHandler.FluidAction.EXECUTE);

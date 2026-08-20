@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " r ",
+    "rpr",
+    " r "
+  ],
+  "key": {
+    "p": {
+      "item": "crystalnexus:pipe_straight"
+    },
+    "r": {
+      "item": "crystalnexus:reactor_block"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:reactor_coolant_channel",
+    "count": 1
+  }
+}

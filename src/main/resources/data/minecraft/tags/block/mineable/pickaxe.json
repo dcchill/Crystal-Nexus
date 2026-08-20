@@ -134,7 +134,7 @@
     "crystalnexus:machine_frame",
     "crystalnexus:reactor_core",
     "crystalnexus:reactor_control_rod",
-    "crystalnexus:reactor_graphite_moderator",
+    "crystalnexus:reactor_carbon_moderator",
     "crystalnexus:reactor_neutron_reflector",
     "crystalnexus:reactor_coolant_channel",
     "crystalnexus:reactor_heat_conductor",
@@ -156,6 +156,9 @@
     "crystalnexus:tesseract_output",
     "crystalnexus:energy_extractor",
     "crystalnexus:invert_piston_generator",
-    "crystalnexus:parts_assembler"
+    "crystalnexus:parts_assembler",
+    "crystalnexus:gravity_control_point",
+    "crystalnexus:gravitational_array_controller",
+    "crystalnexus:machine_fluid_input"
   ]
 }

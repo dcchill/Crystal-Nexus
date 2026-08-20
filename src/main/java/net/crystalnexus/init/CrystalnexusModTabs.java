@@ -119,8 +119,11 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModItems.YELLOW_DWARF_STAR.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_GRAPHITE_MODERATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get().asItem());
@@ -135,6 +138,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.MACHINEBLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ORE_PROCESSOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_CORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem());
@@ -449,6 +453,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.SINGULARITY_MATRIX.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CORE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get().asItem());
+				tabData.accept(CrystalnexusModItems.YELLOW_DWARF_STAR.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());

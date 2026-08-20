@@ -15,6 +15,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
@@ -29,6 +30,7 @@ import java.util.stream.IntStream;
 
 public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(0, ItemStack.EMPTY);
+	@Nullable private BlockPos gravitationalController;
 
 	public MachineEnergyInputBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.MACHINE_ENERGY_INPUT.get(), position, state);
@@ -42,6 +44,8 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
+		gravitationalController = compound.contains("gravitationalController", Tag.TAG_LONG)
+			? BlockPos.of(compound.getLong("gravitationalController")) : null;
 	}
 
 	@Override
@@ -51,6 +55,8 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
+		if (gravitationalController != null)
+			compound.putLong("gravitationalController", gravitationalController.asLong());
 	}
 
 	@Override
@@ -145,5 +151,21 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
+	}
+
+	public void bindGravitationalController(BlockPos controller) {
+		if (controller.equals(gravitationalController)) return;
+		gravitationalController = controller.immutable();
+		setChanged();
+	}
+
+	public void unbindGravitationalController(BlockPos controller) {
+		if (!controller.equals(gravitationalController)) return;
+		gravitationalController = null;
+		setChanged();
+	}
+
+	public boolean isBoundTo(BlockPos controller) {
+		return controller.equals(gravitationalController);
 	}
 }
