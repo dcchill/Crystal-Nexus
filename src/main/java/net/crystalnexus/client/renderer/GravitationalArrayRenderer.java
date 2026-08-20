@@ -61,9 +61,13 @@ public final class GravitationalArrayRenderer implements BlockEntityRenderer<Gra
         poseStack.pushPose();
         poseStack.translate(center.x - controller.getBlockPos().getX(),
             center.y - controller.getBlockPos().getY(), center.z - controller.getBlockPos().getZ());
+
+        poseStack.pushPose();
         poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
         renderHalo(poseStack, buffers, scale, time, recipe);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(time * (0.7F + fraction * 1.4F)));
+        poseStack.popPose();
+
+        poseStack.mulPose(Axis.YP.rotationDegrees(time * (1.4F + fraction * 1.8F)));
         poseStack.scale(scale, scale, scale);
         itemRenderer.renderStatic(recipe.output(), ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT,
             OverlayTexture.NO_OVERLAY, poseStack, buffers, controller.getLevel(),

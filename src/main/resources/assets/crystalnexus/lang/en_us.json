@@ -699,6 +699,7 @@
   "block.crystalnexus.machine_fluid_input": "Machine Fluid Input",
   "message.crystalnexus.gravitational_array_incomplete": "The Gravitational Confinement Array is incomplete.",
   "item.crystalnexus.yellow_dwarf_star": "Yellow Dwarf Star",
+  "item.crystalnexus.bear": "Bear",
   "block.crystalnexus.depot_cli.description_0": "§5Command-line access to a connected depot network.",
   "block.crystalnexus.depot_cli.description_1": "§5Use for advanced storage and crafting operations."
 }

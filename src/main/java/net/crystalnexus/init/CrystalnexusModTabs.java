@@ -122,6 +122,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.YELLOW_DWARF_STAR.get());
+				tabData.accept(CrystalnexusModItems.BEAR.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR.get().asItem());

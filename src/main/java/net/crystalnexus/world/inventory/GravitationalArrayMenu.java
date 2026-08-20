@@ -28,13 +28,13 @@ public final class GravitationalArrayMenu extends AbstractContainerMenu {
 		BlockPos pos = controller == null ? BlockPos.ZERO : controller.getBlockPos();
 		access = ContainerLevelAccess.create(inventory.player.level(), pos);
 		Container container = controller == null ? new SimpleContainer(5) : controller;
-		addSlot(new Slot(container, 0, 53, 39));
-		addSlot(new Slot(container, 1, 107, 39));
-		addSlot(new Slot(container, 2, 80, 11));
-		addSlot(new Slot(container, 3, 80, 65));
-		addSlot(new Slot(container, 4, 80, 39) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
-		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 84 + row * 18));
-		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 142));
+		addSlot(new Slot(container, 0, 53, 37));
+		addSlot(new Slot(container, 1, 107, 37));
+		addSlot(new Slot(container, 2, 80, 9));
+		addSlot(new Slot(container, 3, 80, 63));
+		addSlot(new Slot(container, 4, 80, 37) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 99 + row * 18));
+		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 157));
 	}
 
 	private static GravitationalArrayControllerBlockEntity controllerAt(Inventory inventory, BlockPos pos) {

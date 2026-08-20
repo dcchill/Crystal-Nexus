@@ -235,6 +235,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> GRAVITATIONAL_ARRAY_CONTROLLER = block(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER);
 	public static final DeferredItem<Item> YELLOW_DWARF_STAR = REGISTRY.register("yellow_dwarf_star",
 			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> BEAR = REGISTRY.register("bear", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> REACTOR_CONTROL_ROD = block(CrystalnexusModBlocks.REACTOR_CONTROL_ROD);
 	public static final DeferredItem<Item> REACTOR_CARBON_MODERATOR = block(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR);
 	public static final DeferredItem<Item> REACTOR_NEUTRON_REFLECTOR = block(CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR);
