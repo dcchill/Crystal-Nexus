@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /** Validates world blocks against a Structure NBT while allowing explicit block substitutions. */
@@ -34,10 +35,15 @@ public final class StructureNbtValidator {
     private StructureNbtValidator() {
     }
 
-    public record Match(BlockPos origin, Vec3 center, List<BlockPos> substitutionPositions) {
+    public record Match(BlockPos origin, Vec3 center, List<BlockPos> substitutionPositions,
+                        Map<Block, List<BlockPos>> templatePositions) {
         public Match {
             substitutionPositions = List.copyOf(substitutionPositions);
+            templatePositions = templatePositions.entrySet().stream().collect(java.util.stream.Collectors.toUnmodifiableMap(
+                Map.Entry::getKey, entry -> List.copyOf(entry.getValue())));
         }
+
+        public List<BlockPos> positionsFor(Block block) { return templatePositions.getOrDefault(block, List.of()); }
     }
 
     public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
@@ -45,6 +51,15 @@ public final class StructureNbtValidator {
                                            Block controllerBlock, Property<Direction> facingProperty,
                                            Map<Block, Set<Block>> substitutions, boolean requireSubstitution,
                                            boolean centerMustBeAir) {
+        return validate(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, Set.of(), requireSubstitution, centerMustBeAir);
+    }
+
+    public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
+                                           BlockPos controllerPos, Direction controllerFacing,
+                                           Block controllerBlock, Property<Direction> facingProperty,
+                                           Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
+                                           boolean requireSubstitution, boolean centerMustBeAir) {
         Optional<StructureTemplate> loaded = level.getStructureManager().get(structureId);
         if (loaded.isEmpty()) return Optional.empty();
 
@@ -71,13 +86,16 @@ public final class StructureNbtValidator {
         BlockPos origin = controllerPos.subtract(transformedAnchor);
 
         List<BlockPos> replacements = new ArrayList<>();
+        Map<Block, List<BlockPos>> templatePositions = new HashMap<>();
         for (TemplateBlock entry : parsed.rotated(rotation)) {
             BlockPos worldPos = origin.offset(entry.pos);
+            templatePositions.computeIfAbsent(entry.state.getBlock(), ignored -> new ArrayList<>()).add(worldPos.immutable());
             BlockState actual = level.getBlockState(worldPos);
             Set<Block> replacementsForBlock = substitutions.get(entry.state.getBlock());
             if (replacementsForBlock != null && replacementsForBlock.stream().anyMatch(actual::is)) {
                 replacements.add(worldPos.immutable());
-            } else if (!actual.equals(entry.state)) {
+            } else if (!(stateAgnosticBlocks.contains(entry.state.getBlock()) && actual.is(entry.state.getBlock()))
+                && !actual.equals(entry.state)) {
                 return Optional.empty();
             }
         }
@@ -86,7 +104,7 @@ public final class StructureNbtValidator {
         Vec3 center = StructureTemplate.transform(parsed.center, Mirror.NONE, rotation, BlockPos.ZERO)
             .add(origin.getX(), origin.getY(), origin.getZ());
         if (centerMustBeAir && !level.getBlockState(BlockPos.containing(center)).isAir()) return Optional.empty();
-        return Optional.of(new Match(origin, center, replacements));
+        return Optional.of(new Match(origin, center, replacements, templatePositions));
     }
 
     private static ParsedTemplate parse(StructureTemplate template, ServerLevel level) {

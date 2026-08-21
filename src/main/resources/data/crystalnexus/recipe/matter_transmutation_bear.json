@@ -1,0 +1,44 @@
+{
+  "type": "crystalnexus:matter_transmutation",
+  "ingredients": [
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    },
+    {
+      "item": "crystalnexus:zero_point_core"
+    }
+  ],
+  "integers": [
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32,
+    32
+  ],
+  "strings": [],
+  "output": {
+    "id": "crystalnexus:bear",
+    "count": 1
+  }
+}

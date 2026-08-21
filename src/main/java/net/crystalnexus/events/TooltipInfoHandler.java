@@ -502,6 +502,15 @@ public class TooltipInfoHandler {
 		addTooltip("energy_singularity",
 				"Compressed Energy Singularity.",
 				"Dense advanced material.");
+		addTooltip("wood_singularity",
+				"Contains 102,400 logs.",
+				"Craft alone to extract a stack of oak logs.");
+		addTooltip("stone_singularity",
+				"Contains 102,400 stone blocks.",
+				"Craft alone to extract a stack of stone.");
+		addTooltip("dirt_singularity",
+				"Contains 102,400 dirt blocks.",
+				"Craft alone to extract a stack of dirt.");
 
 		addTooltip("battery_part",
 				"Battery Part.",

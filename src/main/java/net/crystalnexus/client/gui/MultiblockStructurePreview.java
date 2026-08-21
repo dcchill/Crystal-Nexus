@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,11 +47,14 @@ public class MultiblockStructurePreview {
     private static final int PREVIEW_Y = 7;
     private static final int PREVIEW_SIZE = 128;
     private static final int FULL_BRIGHT = 0xF000F0;
+    private static final float DEFAULT_YAW = -45.0f;
+    private static final float DEFAULT_PITCH = 25.0f;
+    private static final float PREVIEW_ORIGIN_Y = 80.0f;
     private static final Map<String, StructurePreviewData> CACHE = new HashMap<>();
 
     private final String structureId;
-    private float yaw = -35.0f;
-    private float pitch = 25.0f;
+    private float yaw = DEFAULT_YAW;
+    private float pitch = DEFAULT_PITCH;
     private int visibleLayer = Integer.MAX_VALUE;
     private boolean dragging;
     private double lastMouseX;
@@ -62,6 +66,19 @@ public class MultiblockStructurePreview {
 
     public MultiblockStructurePreview(String structureId) {
         this.structureId = structureId;
+    }
+
+    public List<ItemStack> getRequiredBlocks(RegistryAccess registryAccess) {
+        Map<Block, Integer> counts = new LinkedHashMap<>();
+        for (PreviewBlock previewBlock : getData(registryAccess).blocks) {
+            Block block = previewBlock.state.getBlock();
+            if (block.asItem() != net.minecraft.world.item.Items.AIR) {
+                counts.merge(block, 1, Integer::sum);
+            }
+        }
+        return counts.entrySet().stream()
+                .map(entry -> new ItemStack(entry.getKey(), entry.getValue()))
+                .toList();
     }
 
     public void render(GuiGraphics guiGraphics, Font font, RegistryAccess registryAccess, int leftPos, int topPos, int mouseX, int mouseY) {
@@ -259,9 +276,9 @@ public class MultiblockStructurePreview {
     private PreviewTransform getPreviewTransform(StructurePreviewData data) {
         float baseScale = 72.0f / Math.max(Math.max(data.sizeX, data.sizeY), data.sizeZ);
         if ("zero_point".equals(this.structureId)) {
-            return new PreviewTransform(baseScale * 1.18f, 96.0f);
+            return new PreviewTransform(baseScale * 1.18f, PREVIEW_ORIGIN_Y);
         }
-        return new PreviewTransform(baseScale, 104.0f);
+        return new PreviewTransform(baseScale, PREVIEW_ORIGIN_Y);
     }
 
     private static void renderHighlight(PoseStack pose, MultiBufferSource bufferSource, BlockPos pos) {

@@ -1,0 +1,34 @@
+{
+  "type": "crystalnexus:gravitational_array",
+  "ingredients": [
+    {
+      "ingredient": { "item": "crystalnexus:dirt_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:wood_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:stone_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    }
+  ],
+  "temporal_fluid": 100000,
+  "energy": 250000,
+  "duration": 200,
+  "output": {
+    "id": "crystalnexus:terra",
+    "count": 1
+  },
+  "visuals": {
+    "red": 0.25,
+    "green": 0.35,
+    "blue": 0.41,
+    "scale": 1.2
+  }
+}

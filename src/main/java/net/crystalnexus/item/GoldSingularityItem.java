@@ -15,9 +15,9 @@ import net.crystalnexus.procedures.GoldSingularityItemInInventoryTickProcedure;
 
 import java.util.List;
 
-public class GoldSingularityItem extends Item {
+public class GoldSingularityItem extends ResourceSingularityItem {
 	public GoldSingularityItem() {
-		super(new Item.Properties().rarity(Rarity.RARE));
+		super(10_368, Rarity.RARE);
 	}
 
 	@Override

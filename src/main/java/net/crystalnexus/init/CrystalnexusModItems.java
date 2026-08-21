@@ -34,6 +34,7 @@ import net.crystalnexus.item.SyntheticRubberItem;
 import net.crystalnexus.item.SiliconItem;
 import net.crystalnexus.item.SSDItem;
 import net.crystalnexus.item.RedstoneSingularityItem;
+import net.crystalnexus.item.ResourceSingularityItem;
 import net.crystalnexus.item.RedPaintballItem;
 import net.crystalnexus.item.ReactorUpgradePermafrostItem;
 import net.crystalnexus.item.ReactorUpgradeItem;
@@ -233,8 +234,29 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_CORE = block(CrystalnexusModBlocks.REACTOR_CORE);
 	public static final DeferredItem<Item> GRAVITY_CONTROL_POINT = block(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT);
 	public static final DeferredItem<Item> GRAVITATIONAL_ARRAY_CONTROLLER = block(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER);
+	public static final DeferredItem<Item> SOLAR_SIMULATOR_CONTROLLER = block(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER);
+	public static final DeferredItem<Item> SOLAR_ENGINE_CONTROLLER = block(CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER);
+	public static final DeferredItem<Item> MULTIBLOCK_ITEM_OUTPUT = block(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT);
 	public static final DeferredItem<Item> YELLOW_DWARF_STAR = REGISTRY.register("yellow_dwarf_star",
 			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> ORANGE_STAR = REGISTRY.register("orange_star",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> BLUE_STAR = REGISTRY.register("blue_star",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> PINK_STAR = REGISTRY.register("pink_star",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> TERRA = REGISTRY.register("terra",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> CAELUS = REGISTRY.register("caelus",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> BOREAS = REGISTRY.register("boreas",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> METEOR = REGISTRY.register("meteor",
+			() -> new Item(new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<Item> METEORITE_SCRAP = REGISTRY.register("meteorite_scrap", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TUNGSTEN_DUST = REGISTRY.register("tungsten_dust", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TUNGSTEN = REGISTRY.register("tungsten", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TUNGSTEN_BLOCK = block(CrystalnexusModBlocks.TUNGSTEN_BLOCK);
 	public static final DeferredItem<Item> BEAR = REGISTRY.register("bear", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> REACTOR_CONTROL_ROD = block(CrystalnexusModBlocks.REACTOR_CONTROL_ROD);
 	public static final DeferredItem<Item> REACTOR_CARBON_MODERATOR = block(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR);
@@ -278,12 +300,16 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_UPGRADE = REGISTRY.register("reactor_upgrade", ReactorUpgradeItem::new);
 	public static final DeferredItem<Item> IRON_SINGULARITY = REGISTRY.register("iron_singularity", IronSingularityItem::new);
 	public static final DeferredItem<Item> DIAMOND_SINGULARITY = REGISTRY.register("diamond_singularity", DiamondSingularityItem::new);
+	public static final DeferredItem<Item> EMERALD_SINGULARITY = REGISTRY.register("emerald_singularity", () -> ResourceSingularityItem.withCapacity(10_368));
 	public static final DeferredItem<Item> ZERO_POINT = block(CrystalnexusModBlocks.ZERO_POINT);
 	public static final DeferredItem<Item> CARBON_GLASS = block(CrystalnexusModBlocks.CARBON_GLASS);
 	public static final DeferredItem<Item> GOLD_SINGULARITY = REGISTRY.register("gold_singularity", GoldSingularityItem::new);
 	public static final DeferredItem<Item> COPPER_SINGULARITY = REGISTRY.register("copper_singularity", CopperSingularityItem::new);
 	public static final DeferredItem<Item> REDSTONE_SINGULARITY = REGISTRY.register("redstone_singularity", RedstoneSingularityItem::new);
 	public static final DeferredItem<Item> QUARTZ_SINGULARITY = REGISTRY.register("quartz_singularity", QuartzSingularityItem::new);
+	public static final DeferredItem<Item> WOOD_SINGULARITY = REGISTRY.register("wood_singularity", ResourceSingularityItem::new);
+	public static final DeferredItem<Item> STONE_SINGULARITY = REGISTRY.register("stone_singularity", ResourceSingularityItem::new);
+	public static final DeferredItem<Item> DIRT_SINGULARITY = REGISTRY.register("dirt_singularity", ResourceSingularityItem::new);
 	public static final DeferredItem<Item> CERAMIC_BALL = REGISTRY.register("ceramic_ball", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> CERAMIC_PLATE = REGISTRY.register("ceramic_plate", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COAL_SINGULARITY = REGISTRY.register("coal_singularity", CoalSingularityItem::new);
@@ -360,6 +386,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ORE_PROCESSOR = block(CrystalnexusModBlocks.ORE_PROCESSOR);
 	public static final DeferredItem<Item> MACHINE_CORE = block(CrystalnexusModBlocks.MACHINE_CORE);
 	public static final DeferredItem<Item> MACHINE_ENERGY_INPUT = block(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT);
+	public static final DeferredItem<Item> MACHINE_ENERGY_OUTPUT = block(CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT);
 	public static final DeferredItem<Item> MACHINE_FLUID_INPUT = block(CrystalnexusModBlocks.MACHINE_FLUID_INPUT);
 	public static final DeferredItem<Item> ENERGY_SINGULARITY = REGISTRY.register("energy_singularity", EnergySingularityItem::new);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK_SLAB = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK_SLAB);

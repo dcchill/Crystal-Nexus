@@ -34,6 +34,7 @@ import net.crystalnexus.jei_recipes.BiomaticCompostingRecipe;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
+import net.crystalnexus.recipe.SingularityBreakdownRecipe;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -77,6 +78,7 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("matter_transmutation", () -> MatterTransmutationRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("singularity_compression", () -> SingularityCompressionRecipe.Type.INSTANCE);
 			SERIALIZERS.register("singularity_compression", () -> SingularityCompressionRecipe.Serializer.INSTANCE);
+			SERIALIZERS.register("singularity_breakdown", () -> SingularityBreakdownRecipe.SERIALIZER);
 			RECIPE_TYPES.register("chemical_reaction", () -> ChemicalReactionRecipe.Type.INSTANCE);
 			SERIALIZERS.register("chemical_reaction", () -> ChemicalReactionRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("fluid_chemical_reaction", () -> FluidChemicalReactionRecipe.Type.INSTANCE);

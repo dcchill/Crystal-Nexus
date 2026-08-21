@@ -15,9 +15,9 @@ import net.crystalnexus.procedures.QuartzSingularityItemInInventoryTickProcedure
 
 import java.util.List;
 
-public class QuartzSingularityItem extends Item {
+public class QuartzSingularityItem extends ResourceSingularityItem {
 	public QuartzSingularityItem() {
-		super(new Item.Properties().rarity(Rarity.RARE));
+		super(10_368, Rarity.RARE);
 	}
 
 	@Override

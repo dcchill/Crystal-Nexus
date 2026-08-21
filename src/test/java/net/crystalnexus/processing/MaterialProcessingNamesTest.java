@@ -26,6 +26,7 @@ class MaterialProcessingNamesTest {
         assertEquals(2, MaterialProcessingNames.requiredMachineTier("platinum"));
         assertEquals(3, MaterialProcessingNames.requiredMachineTier("carbon"));
         assertEquals(3, MaterialProcessingNames.requiredMachineTier("hyper_alloy"));
+        assertEquals(3, MaterialProcessingNames.requiredMachineTier("tungsten"));
     }
 
     @Test

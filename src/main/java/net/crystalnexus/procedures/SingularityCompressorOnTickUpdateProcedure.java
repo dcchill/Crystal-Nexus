@@ -38,26 +38,14 @@ public class SingularityCompressorOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (("crystalnexus:ee_matter").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "setItem"))) {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxItem", 1728);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-		} else {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxItem", 10368);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
+		if (!world.isClientSide()) {
+			BlockPos _bp = BlockPos.containing(x, y, z);
+			BlockEntity _blockEntity = world.getBlockEntity(_bp);
+			BlockState _bs = world.getBlockState(_bp);
+			if (_blockEntity != null)
+				_blockEntity.getPersistentData().putDouble("maxItem", getRequiredItemCount(world, _bp));
+			if (world instanceof Level _level)
+				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
 			if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())) {
@@ -169,6 +157,23 @@ public class SingularityCompressorOnTickUpdateProcedure {
 				}
 			}
 		}
+	}
+
+	private static int getRequiredItemCount(LevelAccessor world, BlockPos pos) {
+		if (!(world instanceof Level level))
+			return 0;
+		String itemId = getBlockNBTString(world, pos, "setItem");
+		ItemStack input = itemId.isEmpty()
+				? itemFromBlockInventory(world, pos, 0).copy()
+				: new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId)));
+		if (input.isEmpty())
+			return 0;
+		for (RecipeHolder<SingularityCompressionRecipe> holder : level.getRecipeManager().getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE)) {
+			SingularityCompressionRecipe recipe = holder.value();
+			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
+				return recipe.getInputCount(0);
+		}
+		return 0;
 	}
 
 	private static String getBlockNBTString(LevelAccessor world, BlockPos pos, String tag) {

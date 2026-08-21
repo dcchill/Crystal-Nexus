@@ -2,7 +2,6 @@ package net.crystalnexus.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.minecraft.client.Minecraft;
@@ -67,7 +66,6 @@ public final class GravitationalArrayRenderer implements BlockEntityRenderer<Gra
         renderHalo(poseStack, buffers, scale, time, recipe);
         poseStack.popPose();
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(time * (1.4F + fraction * 1.8F)));
         poseStack.scale(scale, scale, scale);
         itemRenderer.renderStatic(recipe.output(), ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT,
             OverlayTexture.NO_OVERLAY, poseStack, buffers, controller.getLevel(),

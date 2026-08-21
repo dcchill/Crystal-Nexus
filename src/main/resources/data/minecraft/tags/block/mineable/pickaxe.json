@@ -159,6 +159,9 @@
     "crystalnexus:parts_assembler",
     "crystalnexus:gravity_control_point",
     "crystalnexus:gravitational_array_controller",
-    "crystalnexus:machine_fluid_input"
+    "crystalnexus:machine_fluid_input",
+    "crystalnexus:tungsten_block",
+    "crystalnexus:solar_engine_controller",
+    "crystalnexus:machine_energy_output"
   ]
 }

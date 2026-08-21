@@ -33,6 +33,9 @@
     "crystalnexus:smooth_tarrock",
     "crystalnexus:tarrock_bricks",
     "crystalnexus:hyper_machine_frame",
-    "crystalnexus:titanium_machine_frame"
+    "crystalnexus:titanium_machine_frame",
+    "crystalnexus:tungsten_block",
+    "crystalnexus:solar_engine_controller",
+    "crystalnexus:machine_energy_output"
   ]
 }

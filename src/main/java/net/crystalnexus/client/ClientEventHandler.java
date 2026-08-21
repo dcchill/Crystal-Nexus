@@ -1,9 +1,17 @@
 package net.crystalnexus.client;
 
+import java.util.List;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+
+import net.crystalnexus.CrystalnexusMod;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.BakedModelWrapper;
 import net.crystalnexus.client.render.ParticleAcceleratorControllerRenderer;
 import net.crystalnexus.client.render.QuarryBlockEntityRenderer;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
@@ -12,14 +20,55 @@ import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.QuarryBlockEntity;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
+import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
+import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 
 import net.crystalnexus.client.render.ConveyerBeltBER;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventHandler {
+	private static final List<String> ROTATING_MODELS = List.of(
+			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "terra", "caelus", "boreas", "meteor");
+
+	@SubscribeEvent
+	public static void animateModels(ModelEvent.ModifyBakingResult event) {
+		for (String name : ROTATING_MODELS) {
+			ModelResourceLocation location = new ModelResourceLocation(
+					ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, name), "inventory");
+			event.getModels().computeIfPresent(location, (ignored, model) -> new RotatingItemModel(model));
+		}
+	}
+
+	private static final class RotatingItemModel extends BakedModelWrapper<BakedModel> {
+		private RotatingItemModel(BakedModel originalModel) {
+			super(originalModel);
+		}
+
+		@Override
+		public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+			return List.of(this);
+		}
+
+		@Override
+		public BakedModel applyTransform(ItemDisplayContext context, PoseStack poseStack, boolean leftHand) {
+			originalModel.applyTransform(context, poseStack, leftHand);
+			if (context == ItemDisplayContext.FIRST_PERSON_LEFT_HAND
+					|| context == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND
+					|| context == ItemDisplayContext.THIRD_PERSON_LEFT_HAND
+					|| context == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND) {
+				poseStack.mulPose(Axis.YP.rotationDegrees((System.currentTimeMillis() % 6000L) * 0.06F));
+			}
+			return this;
+		}
+	}
 
 @SubscribeEvent
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
@@ -70,6 +119,18 @@ public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
         (BlockEntityType<GravitationalArrayControllerBlockEntity>)
             CrystalnexusModBlockEntities.GRAVITATIONAL_ARRAY_CONTROLLER.get(),
         net.crystalnexus.client.renderer.GravitationalArrayRenderer::new
+    );
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<SolarSimulatorControllerBlockEntity>)
+            CrystalnexusModBlockEntities.SOLAR_SIMULATOR_CONTROLLER.get(),
+        net.crystalnexus.client.renderer.SolarSimulatorRenderer::new
+    );
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<SolarEngineControllerBlockEntity>)
+            CrystalnexusModBlockEntities.SOLAR_ENGINE_CONTROLLER.get(),
+        net.crystalnexus.client.renderer.SolarEngineRenderer::new
     );
 }
 }

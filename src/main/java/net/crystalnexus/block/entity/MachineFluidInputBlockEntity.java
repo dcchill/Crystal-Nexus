@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModFluids;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
 public final class MachineFluidInputBlockEntity extends BlockEntity {
     public static final int CAPACITY = 1_000_000;
     private final FluidTank tank = new FluidTank(CAPACITY,
-        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
+        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get()) || stack.is(Fluids.WATER)) {
         @Override protected void onContentsChanged() { sync(); }
     };
     private final IFluidHandler input = new IFluidHandler() {
@@ -30,7 +31,7 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
         @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY; }
         @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY; }
     };
-    @Nullable private BlockPos gravitationalController;
+    @Nullable private BlockPos machineController;
 
     public MachineFluidInputBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.MACHINE_FLUID_INPUT.get(), pos, state);
@@ -39,7 +40,7 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
     public IFluidHandler getFluidInput() { return input; }
 
     public int transferTo(FluidTank target, int limit, BlockPos controller) {
-        if (!controller.equals(gravitationalController) || tank.isEmpty() || limit <= 0) return 0;
+        if (!controller.equals(machineController) || tank.isEmpty() || limit <= 0) return 0;
         FluidStack offered = tank.getFluid().copyWithAmount(Math.min(limit, tank.getFluidAmount()));
         int accepted = target.fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted == 0) return 0;
@@ -47,30 +48,38 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
     }
 
     public void bindGravitationalController(BlockPos controller) {
-        if (controller.equals(gravitationalController)) return;
-        gravitationalController = controller.immutable();
-        sync();
+        bindController(controller);
     }
 
     public void unbindGravitationalController(BlockPos controller) {
-        if (!controller.equals(gravitationalController)) return;
-        gravitationalController = null;
+        unbindController(controller);
+    }
+
+    public void bindController(BlockPos controller) {
+        if (controller.equals(machineController)) return;
+        machineController = controller.immutable();
         sync();
     }
 
-    public boolean isBoundTo(BlockPos controller) { return controller.equals(gravitationalController); }
+    public void unbindController(BlockPos controller) {
+        if (!controller.equals(machineController)) return;
+        machineController = null;
+        sync();
+    }
+
+    public boolean isBoundTo(BlockPos controller) { return controller.equals(machineController); }
 
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.get("fluidTank") instanceof CompoundTag fluid) tank.readFromNBT(registries, fluid);
-        gravitationalController = tag.contains("gravitationalController", Tag.TAG_LONG)
-            ? BlockPos.of(tag.getLong("gravitationalController")) : null;
+        String key = tag.contains("machineController", Tag.TAG_LONG) ? "machineController" : "gravitationalController";
+        machineController = tag.contains(key, Tag.TAG_LONG) ? BlockPos.of(tag.getLong(key)) : null;
     }
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("fluidTank", tank.writeToNBT(registries, new CompoundTag()));
-        if (gravitationalController != null) tag.putLong("gravitationalController", gravitationalController.asLong());
+        if (machineController != null) tag.putLong("machineController", machineController.asLong());
     }
 
     private void sync() {

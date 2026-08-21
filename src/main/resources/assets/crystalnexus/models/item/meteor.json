@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:item/moon",
+  "textures": {
+    "0": "crystalnexus:item/meteor",
+    "particle": "crystalnexus:item/meteor"
+  }
+}

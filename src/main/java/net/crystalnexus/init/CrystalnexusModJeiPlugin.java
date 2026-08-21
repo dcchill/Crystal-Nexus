@@ -11,6 +11,8 @@ import net.crystalnexus.jei_recipes.UnfurnaceRecipeCategory;
 import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipeCategory;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
+import net.crystalnexus.jei_recipes.MultiblockStructureRecipeCategory;
+import net.crystalnexus.jei_recipes.MultiblockStructureRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipeCategory;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionMultiblockGuideRecipeCategory;
@@ -56,6 +58,7 @@ import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
+import net.crystalnexus.client.gui.MultiblockStructurePreview;
 
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -77,12 +80,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<OreCrushingJeiRecipe> OreCrushingJei_Type = new mezz.jei.api.recipe.RecipeType<>(OreCrushingJeiRecipeCategory.UID, OreCrushingJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PartsAssembling_Type = new mezz.jei.api.recipe.RecipeType<>(PartsAssemblingRecipeCategory.UID, PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
-	public static mezz.jei.api.recipe.RecipeType<ReactorMultiblockGuideRecipe> ReactorMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactorMultiblockGuideRecipeCategory.UID, ReactorMultiblockGuideRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<MultiblockStructureRecipe> MultiblockStructure_Type = new mezz.jei.api.recipe.RecipeType<>(MultiblockStructureRecipeCategory.UID, MultiblockStructureRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<ReactorMultiblockGuideRecipe> ReactorMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactorMultiblockGuideRecipeCategory.UID, ReactorMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<CircuitPressingRecipe> CircuitPressing_Type = new mezz.jei.api.recipe.RecipeType<>(CircuitPressingRecipeCategory.UID, CircuitPressingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<InverterJeiRecipe> InverterJei_Type = new mezz.jei.api.recipe.RecipeType<>(InverterJeiRecipeCategory.UID, InverterJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ReactionJEIRecipe> ReactionJEI_Type = new mezz.jei.api.recipe.RecipeType<>(ReactionJEIRecipeCategory.UID, ReactionJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<EnergyExtractionRecipe> EnergyExtraction_Type = new mezz.jei.api.recipe.RecipeType<>(EnergyExtractionRecipeCategory.UID, EnergyExtractionRecipe.class);
-	public static mezz.jei.api.recipe.RecipeType<ReactionMultiblockGuideRecipe> ReactionMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactionMultiblockGuideRecipeCategory.UID, ReactionMultiblockGuideRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<ReactionMultiblockGuideRecipe> ReactionMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactionMultiblockGuideRecipeCategory.UID, ReactionMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<MatterTransmutationRecipe> MatterTransmutation_Type = new mezz.jei.api.recipe.RecipeType<>(MatterTransmutationRecipeCategory.UID, MatterTransmutationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<SingularityCompressionRecipe> SingularityCompression_Type = new mezz.jei.api.recipe.RecipeType<>(SingularityCompressionRecipeCategory.UID, SingularityCompressionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ChemicalReactionRecipe> ChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(ChemicalReactionRecipeCategory.UID, ChemicalReactionRecipe.class);
@@ -108,12 +112,11 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new OreCrushingJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new ReactorMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new MultiblockStructureRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CircuitPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new InverterJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactionJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new EnergyExtractionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new ReactionMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MatterTransmutationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SingularityCompressionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -145,8 +148,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
 		List<DustSeperationRecipe> generatedSeparation = MaterialProcessingCatalog.generatedSeparatorRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(DustSeperation_Type, generatedSeparation);
-		List<ReactorMultiblockGuideRecipe> ReactorMultiblockGuideRecipes = recipes(recipeManager, ReactorMultiblockGuideRecipe.class);
-		registration.addRecipes(ReactorMultiblockGuide_Type, ReactorMultiblockGuideRecipes);
+		registration.addRecipes(MultiblockStructure_Type, multiblockStructures());
 		List<CircuitPressingRecipe> CircuitPressingRecipes = recipes(recipeManager, CircuitPressingRecipe.class);
 		registration.addRecipes(CircuitPressing_Type, CircuitPressingRecipes);
 		List<InverterJeiRecipe> InverterJeiRecipes = recipes(recipeManager, InverterJeiRecipe.class);
@@ -155,8 +157,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(ReactionJEI_Type, ReactionJEIRecipes);
 		List<EnergyExtractionRecipe> EnergyExtractionRecipes = recipes(recipeManager, EnergyExtractionRecipe.class);
 		registration.addRecipes(EnergyExtraction_Type, EnergyExtractionRecipes);
-		List<ReactionMultiblockGuideRecipe> ReactionMultiblockGuideRecipes = recipes(recipeManager, ReactionMultiblockGuideRecipe.class);
-		registration.addRecipes(ReactionMultiblockGuide_Type, ReactionMultiblockGuideRecipes);
 		List<MatterTransmutationRecipe> MatterTransmutationRecipes = recipes(recipeManager, MatterTransmutationRecipe.class);
 		registration.addRecipes(MatterTransmutation_Type, MatterTransmutationRecipes);
 		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class);
@@ -188,6 +188,22 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				.filter(recipeClass::isInstance).map(recipeClass::cast).toList();
 	}
 
+	private static List<MultiblockStructureRecipe> multiblockStructures() {
+		var access = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
+		return List.of(
+				multiblockStructure("zero_point", CrystalnexusModBlocks.ZERO_POINT.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("gravitational_array", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("ultima_smelter", CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem().getDefaultInstance(), access));
+	}
+
+	private static MultiblockStructureRecipe multiblockStructure(String id, ItemStack icon, net.minecraft.core.RegistryAccess access) {
+		MultiblockStructurePreview preview = new MultiblockStructurePreview(id);
+		return new MultiblockStructureRecipe(ResourceLocation.fromNamespaceAndPath("crystalnexus", id), icon.getHoverName(), preview.getRequiredBlocks(access), preview);
+	}
+
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
@@ -209,19 +225,17 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()), ReactorMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem()), ReactorMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem()), ReactorMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem()), ReactorMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_CORE.get().asItem()), ReactorMultiblockGuide_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTER.get().asItem()), InverterJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), ReactionJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem()), EnergyExtraction_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_ENERGY_INPUT.get().asItem()), ReactionMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), ReactionMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get().asItem()), ReactionMultiblockGuide_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_BLOCK.get().asItem()), ReactionMultiblockGuide_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ZERO_POINT.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);

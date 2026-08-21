@@ -7,6 +7,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredBlock;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.network.chat.Component;
 
 import net.crystalnexus.block.ZeroPointBlock;
@@ -102,6 +104,7 @@ import net.crystalnexus.block.MagentaHeavyIronBlockBlock;
 import net.crystalnexus.block.MachineblockBlock;
 import net.crystalnexus.block.MachineFrameBlock;
 import net.crystalnexus.block.MachineEnergyInputBlock;
+import net.crystalnexus.block.MachineEnergyOutputBlock;
 import net.crystalnexus.block.MachineFluidInputBlock;
 import net.crystalnexus.block.MachineCoreBlock;
 import net.crystalnexus.block.MachineCasingBlock;
@@ -131,6 +134,9 @@ import net.crystalnexus.block.GreenHeavyIronBlockBlock;
 import net.crystalnexus.block.GrayHeavyIronBlockBlock;
 import net.crystalnexus.block.GoldNodeBlock;
 import net.crystalnexus.block.GravitationalArrayControllerBlock;
+import net.crystalnexus.block.SolarSimulatorControllerBlock;
+import net.crystalnexus.block.SolarEngineControllerBlock;
+import net.crystalnexus.block.MultiblockItemOutputBlock;
 import net.crystalnexus.block.GasolineBlock;
 import net.crystalnexus.block.FluidPackagerBlock;
 import net.crystalnexus.block.FactoryOutputControllerBlock;
@@ -289,6 +295,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ORE_PROCESSOR = REGISTRY.register("ore_processor", OreProcessorBlock::new);
 	public static final DeferredBlock<Block> MACHINE_CORE = REGISTRY.register("machine_core", MachineCoreBlock::new);
 	public static final DeferredBlock<Block> MACHINE_ENERGY_INPUT = REGISTRY.register("machine_energy_input", MachineEnergyInputBlock::new);
+	public static final DeferredBlock<Block> MACHINE_ENERGY_OUTPUT = REGISTRY.register("machine_energy_output", MachineEnergyOutputBlock::new);
 	public static final DeferredBlock<Block> MACHINE_FLUID_INPUT = REGISTRY.register("machine_fluid_input", MachineFluidInputBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK_SLAB = REGISTRY.register("raw_crystal_block_slab", RawCrystalBlockSlabBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK_STAIRS = REGISTRY.register("raw_crystal_block_stairs", RawCrystalBlockStairsBlock::new);
@@ -422,5 +429,10 @@ public class CrystalnexusModBlocks {
 			() -> new Block(Block.Properties.of().sound(net.minecraft.world.level.block.SoundType.METAL).strength(1.75f, 18f)
 					.requiresCorrectToolForDrops().lightLevel(state -> 15)));
 	public static final DeferredBlock<Block> GRAVITATIONAL_ARRAY_CONTROLLER = REGISTRY.register("gravitational_array_controller", GravitationalArrayControllerBlock::new);
+	public static final DeferredBlock<Block> SOLAR_SIMULATOR_CONTROLLER = REGISTRY.register("solar_simulator_controller", SolarSimulatorControllerBlock::new);
+	public static final DeferredBlock<Block> SOLAR_ENGINE_CONTROLLER = REGISTRY.register("solar_engine_controller", SolarEngineControllerBlock::new);
+	public static final DeferredBlock<Block> MULTIBLOCK_ITEM_OUTPUT = REGISTRY.register("multiblock_item_output", MultiblockItemOutputBlock::new);
+	public static final DeferredBlock<Block> TUNGSTEN_BLOCK = REGISTRY.register("tungsten_block",
+			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()));
 	// End of user code block custom blocks
 }

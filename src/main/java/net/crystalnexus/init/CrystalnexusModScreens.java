@@ -71,6 +71,8 @@ import net.crystalnexus.client.gui.BioMCGuiScreen;
 import net.crystalnexus.client.gui.BatteryMonitorGuiScreen;
 import net.crystalnexus.client.gui.AcceleratorGuiScreen;
 import net.crystalnexus.client.gui.GravitationalArrayScreen;
+import net.crystalnexus.client.gui.SolarSimulatorScreen;
+import net.crystalnexus.client.gui.SolarEngineScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -141,6 +143,8 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.BLUEPRINT_GUI.get(), BlueprintGUIScreen::new);
 		event.register(CrystalnexusModMenus.MULTIBLOCK_GUI_PAGE_6.get(), MultiblockGuiPage6Screen::new);
 		event.register(CrystalnexusModMenus.GRAVITATIONAL_ARRAY.get(), GravitationalArrayScreen::new);
+		event.register(CrystalnexusModMenus.SOLAR_SIMULATOR.get(), SolarSimulatorScreen::new);
+		event.register(CrystalnexusModMenus.SOLAR_ENGINE.get(), SolarEngineScreen::new);
 	}
 
 	public interface ScreenAccessor {

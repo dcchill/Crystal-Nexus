@@ -27,8 +27,8 @@
   },
   "visuals": {
     "red": 1.0,
-    "green": 0.9,
-    "blue": 0.35,
+    "green": 0.98,
+    "blue": 0.41,
     "scale": 1.2
   }
 }

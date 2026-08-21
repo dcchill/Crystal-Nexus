@@ -20,9 +20,9 @@ import net.crystalnexus.procedures.CopperSingularityRightclickedOnBlockProcedure
 
 import java.util.List;
 
-public class CopperSingularityItem extends Item {
+public class CopperSingularityItem extends ResourceSingularityItem {
 	public CopperSingularityItem() {
-		super(new Item.Properties().rarity(Rarity.RARE));
+		super(10_368, Rarity.RARE);
 	}
 
 	@Override

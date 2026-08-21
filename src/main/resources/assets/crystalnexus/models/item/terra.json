@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:item/planet",
+  "textures": {
+    "0": "crystalnexus:item/terra",
+    "particle": "crystalnexus:item/terra"
+  }
+}

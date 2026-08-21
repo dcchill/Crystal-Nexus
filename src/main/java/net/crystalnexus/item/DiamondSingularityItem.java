@@ -17,9 +17,9 @@ import net.crystalnexus.procedures.DiamondSingularityItemInInventoryTickProcedur
 
 import java.util.List;
 
-public class DiamondSingularityItem extends Item {
+public class DiamondSingularityItem extends ResourceSingularityItem {
 	public DiamondSingularityItem() {
-		super(new Item.Properties().rarity(Rarity.RARE));
+		super(10_368, Rarity.RARE);
 	}
 
 	@Override

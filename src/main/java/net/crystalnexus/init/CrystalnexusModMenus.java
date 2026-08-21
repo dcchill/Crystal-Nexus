@@ -28,6 +28,7 @@ import net.crystalnexus.world.inventory.SingularityCompressorGUIMenu;
 import net.crystalnexus.world.inventory.SeparatorGuiMenu;
 import net.crystalnexus.world.inventory.ReactorGUIMenu;
 import net.crystalnexus.world.inventory.ControlRodGuiMenu;
+import net.crystalnexus.world.inventory.SolarEngineMenu;
 import net.crystalnexus.world.inventory.ReactionGUIMenu;
 import net.crystalnexus.world.inventory.QuarryGUIMenu;
 import net.crystalnexus.world.inventory.QuantumMinerGUIMenu;
@@ -78,6 +79,7 @@ import net.crystalnexus.world.inventory.BioMCGuiMenu;
 import net.crystalnexus.world.inventory.BatteryMonitorGuiMenu;
 import net.crystalnexus.world.inventory.AcceleratorGuiMenu;
 import net.crystalnexus.world.inventory.GravitationalArrayMenu;
+import net.crystalnexus.world.inventory.SolarSimulatorMenu;
 import net.crystalnexus.world.inventory.AOEChargerGuiMenu;
 import net.crystalnexus.network.MenuStateUpdateMessage;
 import net.crystalnexus.CrystalnexusMod;
@@ -150,6 +152,8 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<BlueprintGUIMenu>> BLUEPRINT_GUI = REGISTRY.register("blueprint_gui", () -> IMenuTypeExtension.create(BlueprintGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<MultiblockGuiPage6Menu>> MULTIBLOCK_GUI_PAGE_6 = REGISTRY.register("multiblock_gui_page_6", () -> IMenuTypeExtension.create(MultiblockGuiPage6Menu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<GravitationalArrayMenu>> GRAVITATIONAL_ARRAY = REGISTRY.register("gravitational_array", () -> IMenuTypeExtension.create(GravitationalArrayMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<SolarSimulatorMenu>> SOLAR_SIMULATOR = REGISTRY.register("solar_simulator", () -> IMenuTypeExtension.create(SolarSimulatorMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<SolarEngineMenu>> SOLAR_ENGINE = REGISTRY.register("solar_engine", () -> IMenuTypeExtension.create(SolarEngineMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

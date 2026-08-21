@@ -11,9 +11,9 @@ import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class CoalSingularityItem extends Item {
+public class CoalSingularityItem extends ResourceSingularityItem {
 	public CoalSingularityItem() {
-		super(new Item.Properties().rarity(Rarity.RARE));
+		super(10_368, Rarity.RARE);
 	}
 
 	@Override

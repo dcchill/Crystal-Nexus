@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/tungsten_block",
+    "up": "crystalnexus:block/tungsten_block",
+    "north": "crystalnexus:block/solar_engine_controller",
+    "east": "crystalnexus:block/tungsten_block",
+    "south": "crystalnexus:block/tungsten_block",
+    "west": "crystalnexus:block/tungsten_block",
+    "particle": "crystalnexus:block/tungsten_block"
+  }
+}

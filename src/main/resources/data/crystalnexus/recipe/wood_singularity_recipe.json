@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:singularity_compression",
+  "ingredients": [
+    { "tag": "crystalnexus:wood_singularity_items" }
+  ],
+  "integers": [102400],
+  "strings": [],
+  "output": { "id": "crystalnexus:wood_singularity", "count": 1 }
+}

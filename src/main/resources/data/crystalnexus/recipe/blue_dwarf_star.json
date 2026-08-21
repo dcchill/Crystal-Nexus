@@ -1,0 +1,34 @@
+{
+  "type": "crystalnexus:gravitational_array",
+  "ingredients": [
+    {
+      "ingredient": { "item": "crystalnexus:diamond_singularity" },
+      "count": 2
+    },
+    {
+      "ingredient": { "item": "crystalnexus:emerald_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:quartz_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    }
+  ],
+  "temporal_fluid": 250000,
+  "energy": 500000,
+  "duration": 200,
+  "output": {
+    "id": "crystalnexus:blue_star",
+    "count": 1
+  },
+  "visuals": {
+    "red": 0.45,
+    "green": 0.79,
+    "blue": 1.0,
+    "scale": 1.2
+  }
+}

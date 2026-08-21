@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 
 public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(0, ItemStack.EMPTY);
-	@Nullable private BlockPos gravitationalController;
+	@Nullable private BlockPos machineController;
 
 	public MachineEnergyInputBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.MACHINE_ENERGY_INPUT.get(), position, state);
@@ -44,8 +44,8 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
-		gravitationalController = compound.contains("gravitationalController", Tag.TAG_LONG)
-			? BlockPos.of(compound.getLong("gravitationalController")) : null;
+		String controllerKey = compound.contains("machineController", Tag.TAG_LONG) ? "machineController" : "gravitationalController";
+		machineController = compound.contains(controllerKey, Tag.TAG_LONG) ? BlockPos.of(compound.getLong(controllerKey)) : null;
 	}
 
 	@Override
@@ -55,8 +55,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
-		if (gravitationalController != null)
-			compound.putLong("gravitationalController", gravitationalController.asLong());
+		if (machineController != null) compound.putLong("machineController", machineController.asLong());
 	}
 
 	@Override
@@ -154,18 +153,26 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 	}
 
 	public void bindGravitationalController(BlockPos controller) {
-		if (controller.equals(gravitationalController)) return;
-		gravitationalController = controller.immutable();
-		setChanged();
+		bindController(controller);
 	}
 
 	public void unbindGravitationalController(BlockPos controller) {
-		if (!controller.equals(gravitationalController)) return;
-		gravitationalController = null;
-		setChanged();
+		unbindController(controller);
 	}
 
 	public boolean isBoundTo(BlockPos controller) {
-		return controller.equals(gravitationalController);
+		return controller.equals(machineController);
+	}
+
+	public void bindController(BlockPos controller) {
+		if (controller.equals(machineController)) return;
+		machineController = controller.immutable();
+		setChanged();
+	}
+
+	public void unbindController(BlockPos controller) {
+		if (!controller.equals(machineController)) return;
+		machineController = null;
+		setChanged();
 	}
 }
