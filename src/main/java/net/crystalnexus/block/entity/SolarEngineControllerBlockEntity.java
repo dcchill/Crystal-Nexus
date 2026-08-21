@@ -244,10 +244,10 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 	}
 
 	@Nullable private static StarProfile profile(ItemStack stack) {
-		if (stack.is(CrystalnexusModItems.YELLOW_DWARF_STAR.get())) return new StarProfile(250_000, 8, 2, 1500);
-		if (stack.is(CrystalnexusModItems.ORANGE_STAR.get())) return new StarProfile(750_000, 16, 5, 2500);
-		if (stack.is(CrystalnexusModItems.BLUE_STAR.get())) return new StarProfile(2_000_000, 32, 10, 4000);
-		if (stack.is(CrystalnexusModItems.PINK_STAR.get())) return new StarProfile(5_000_000, 64, 20, 6000);
+		if (stack.is(CrystalnexusModItems.YELLOW_DWARF_STAR.get())) return new StarProfile(250_000, 8, 20, 1500);
+		if (stack.is(CrystalnexusModItems.ORANGE_STAR.get())) return new StarProfile(750_000, 16, 50, 2500);
+		if (stack.is(CrystalnexusModItems.BLUE_STAR.get())) return new StarProfile(2_000_000, 32, 100, 4000);
+		if (stack.is(CrystalnexusModItems.PINK_STAR.get())) return new StarProfile(5_000_000, 64, 200, 6000);
 		return null;
 	}
 
