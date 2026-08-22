@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:machineblock"
+    },
+    "b": {
+      "item": "crystalnexus:energy_cable_mk_2"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:machine_energy_output",
+    "count": 1
+  }
+}

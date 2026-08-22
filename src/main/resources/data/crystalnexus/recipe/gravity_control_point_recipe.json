@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:heating_coil"
+    },
+    "c": {
+      "item": "crystalnexus:energy_singularity"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:gravity_control_point",
+    "count": 4
+  }
+}

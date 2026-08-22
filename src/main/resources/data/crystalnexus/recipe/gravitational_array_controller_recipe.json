@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "tag": "c:plates/titanium"
+    },
+    "b": {
+      "item": "crystalnexus:silicon_wafer"
+    },
+    "c": {
+      "item": "crystalnexus:computation_node"
+    },
+    "d": {
+      "item": "crystalnexus:titanium_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:gravitational_array_controller",
+    "count": 1
+  }
+}

@@ -59,6 +59,22 @@ class ProgressionRecipeAuditTest {
         assertContains("hyper_refinery_recipe.json", "crystalnexus:invertium_refinery");
     }
 
+    @Test
+    void lateGameMachinesAndMultiblockPortsRemainCraftable() throws IOException {
+        assertContains("machine_energy_output_recipe.json", "crystalnexus:machine_energy_output",
+            "crystalnexus:energy_cable_mk_2");
+        assertContains("multiblock_item_output_recipe.json", "crystalnexus:multiblock_item_output",
+            "crystalnexus:smart_splitter");
+        assertContains("gravity_control_point_recipe.json", "crystalnexus:gravity_control_point",
+            "crystalnexus:energy_singularity", "c:plates/titanium");
+        assertContains("gravitational_array_controller_recipe.json", "crystalnexus:gravitational_array_controller",
+            "crystalnexus:gravity_control_point", "crystalnexus:singularity_compressor");
+        assertContains("solar_simulator_controller_recipe.json", "crystalnexus:solar_simulator_controller",
+            "crystalnexus:multiblock_item_output", "crystalnexus:hyper_machine_frame");
+        assertContains("solar_engine_controller_recipe.json", "crystalnexus:solar_engine_controller",
+            "crystalnexus:machine_energy_output", "crystalnexus:machine_fluid_input", "crystalnexus:tungsten");
+    }
+
     private static void assertContains(String recipe, String... values) throws IOException {
         String json = compact(RECIPES.resolve(recipe));
         for (String value : values) assertTrue(json.contains(value), recipe + " must contain " + value);

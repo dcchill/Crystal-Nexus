@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "aba",
+    " a "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:machineblock"
+    },
+    "b": {
+      "item": "crystalnexus:smart_splitter"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:multiblock_item_output",
+    "count": 1
+  }
+}

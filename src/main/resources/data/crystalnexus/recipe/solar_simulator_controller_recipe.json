@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "b": {
+      "item": "crystalnexus:computation_node"
+    },
+    "c": {
+      "item": "crystalnexus:multiblock_item_output"
+    },
+    "d": {
+      "item": "crystalnexus:hyper_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:solar_simulator_controller",
+    "count": 1
+  }
+}

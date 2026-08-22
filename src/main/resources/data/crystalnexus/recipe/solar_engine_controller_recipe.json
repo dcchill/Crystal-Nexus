@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bdb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:tungsten"
+    },
+    "b": {
+      "item": "crystalnexus:tungsten_block"
+    },
+    "d": {
+      "item": "crystalnexus:hyper_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:solar_engine_controller",
+    "count": 1
+  }
+}
