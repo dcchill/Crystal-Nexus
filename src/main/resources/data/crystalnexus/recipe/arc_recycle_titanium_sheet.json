@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [{ "item": "crystalnexus:titanium_sheet" }],
+  "output": { "id": "crystalnexus:titanium_ingot", "count": 1 }
+}

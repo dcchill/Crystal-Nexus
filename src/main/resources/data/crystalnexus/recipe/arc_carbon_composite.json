@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "minecraft:netherite_scrap" },
+    { "item": "crystalnexus:raw_carbon" }
+  ],
+  "output": { "id": "crystalnexus:carbon_composite", "count": 9 }
+}

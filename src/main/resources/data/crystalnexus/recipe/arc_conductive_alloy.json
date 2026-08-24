@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "minecraft:redstone" },
+    { "item": "crystalnexus:nitrile" }
+  ],
+  "output": { "id": "crystalnexus:conductive_alloy", "count": 1 }
+}

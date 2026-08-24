@@ -181,6 +181,9 @@ public final class FluidChemicalReactionChamberGameTests {
         helper.assertTrue(chamber.getItem(2).is(CrystalnexusModItems.TITANIUM_INGOT.get())
                 && chamber.getItem(2).getCount() == 1,
             "The explicit titanium recipe must override generated material processing");
+        helper.assertTrue(chamber.getTank(2).getFluidAmount() == 500
+                && chamber.getTank(2).getFluid().is(CrystalnexusModFluids.OXYGEN.get()),
+            "The titanium reaction must produce 500 mB Oxygen as a byproduct");
         helper.succeed();
     }
 

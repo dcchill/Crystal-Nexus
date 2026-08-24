@@ -3,11 +3,11 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "crystalnexus:multiblock_item_output"
+      "item": "crystalnexus:multiblock_item_input"
     }
   ],
   "result": {
-    "id": "crystalnexus:multiblock_item_input",
+    "id": "crystalnexus:multiblock_item_output",
     "count": 1
   }
 }

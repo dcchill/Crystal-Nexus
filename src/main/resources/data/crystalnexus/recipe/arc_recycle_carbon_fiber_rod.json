@@ -1,0 +1,7 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:carbon_fiber_rod" }
+  ],
+  "output": { "id": "crystalnexus:carbon_fiber", "count": 1 }
+}

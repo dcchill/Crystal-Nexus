@@ -711,7 +711,7 @@
   "block.crystalnexus.machine_fluid_input": "Machine Fluid Input",
   "message.crystalnexus.gravitational_array_incomplete": "The Gravitational Confinement Array is incomplete.",
   "message.crystalnexus.solar_simulator_incomplete": "The Solar Simulator is incomplete.",
-  "block.crystalnexus.multiblock_item_output": "Multiblock Item Output",
+  "block.crystalnexus.multiblock_item_output": "Machine Item Output",
   "item.crystalnexus.yellow_dwarf_star": "§eYellow Dwarf Star",
   "item.crystalnexus.orange_star": "§6Orange Star",
   "item.crystalnexus.blue_star": "§bBlue Star",
@@ -736,6 +736,6 @@
   "block.crystalnexus.plasma_generator_controller": "Plasma Generator Controller",
   "item.crystalnexus.titanium_heating_coil": "Titanium Heating Coil",
   "block.crystalnexus.heating_core": "Heating Core",
-  "block.crystalnexus.multiblock_item_input": "Multiblock Item Input",
+  "block.crystalnexus.multiblock_item_input": "Machine Item Input",
   "gui.crystalnexus.waste_output_gui.label_item_input": "[Item Input]"
 }

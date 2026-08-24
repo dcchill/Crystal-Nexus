@@ -4,5 +4,5 @@
   "item_input_1": { "item": "crystalnexus:raw_ilmenite" },
   "item_input_2": { "item": "minecraft:iron_ingot" },
   "item_output": { "id": "crystalnexus:titanium_ingot", "count": 1 },
-  "fluid_output": { "id": "crystalnexus:oxygen", "amount": 500 }
+  "output": { "fluid": "crystalnexus:oxygen", "amount": 500 }
 }

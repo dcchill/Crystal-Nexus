@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "minecraft:netherite_scrap" },
+    { "tag": "c:ingots/gold" }
+  ],
+  "output": { "id": "minecraft:netherite_ingot", "count": 1 }
+}

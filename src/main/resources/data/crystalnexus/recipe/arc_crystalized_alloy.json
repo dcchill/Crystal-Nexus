@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:ancient_crystal" },
+    { "item": "minecraft:iron_ingot" }
+  ],
+  "output": { "id": "crystalnexus:crystalized_alloy", "count": 3 }
+}

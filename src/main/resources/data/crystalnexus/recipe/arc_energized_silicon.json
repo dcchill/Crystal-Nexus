@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:silicon" },
+    { "item": "crystalnexus:conductive_alloy" }
+  ],
+  "output": { "id": "crystalnexus:energized_silicon", "count": 1 }
+}

@@ -1,0 +1,7 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:copper_rod" }
+  ],
+  "output": { "id": "minecraft:copper_ingot", "count": 1 }
+}
