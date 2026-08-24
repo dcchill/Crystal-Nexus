@@ -24,7 +24,7 @@ public class EpicSSDItemInInventoryTickProcedure {
 			// === JACKPOT (hidden) ===
 			if (rand.nextFloat() < 0.02f) {
 				CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
-					t.putDouble("cook_mult", 0.01);     // max (fastest)
+					t.putDouble("cook_mult", 0.05);     // 20x (fastest supported)
 					t.putDouble("fe_efficiency", 8.0);   // max (highest)
 					t.putInt("god_roll", 1);            // <-- FLAG
 				});
@@ -34,7 +34,7 @@ public class EpicSSDItemInInventoryTickProcedure {
 			// Not jackpot -> normal roll (also clear flag)
 			double cookMult;
 			if (rand.nextFloat() < 0.85f) {
-				cookMult = biasedRange(rand, 0.01, 1.00, 0.55);
+				cookMult = biasedRange(rand, 0.05, 1.00, 0.55);
 			} else {
 				cookMult = biasedRange(rand, 1.00, 1.25, 2.4);
 			}

@@ -254,7 +254,7 @@ public final class FluidChemicalReactionChamberGameTests {
         helper.setBlock(pos, CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get());
         FluidChemicalReactionChamberBlockEntity chamber = helper.getBlockEntity(pos);
         chamber.getTank(1).fill(new FluidStack(CrystalnexusModFluids.GASOLINE.get(), 1000), IFluidHandler.FluidAction.EXECUTE);
-        chamber.setItem(0, new ItemStack(Items.COAL_BLOCK));
+		chamber.setItem(0, new ItemStack(Items.COAL_BLOCK, 3));
         for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
 
         var loaded = helper.getLevel().getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE);
@@ -293,7 +293,7 @@ public final class FluidChemicalReactionChamberGameTests {
         current = helper.getBlockEntity(pos);
         helper.assertTrue(current.getTank(1).getFluidAmount() == 750 && current.getItem(0).isEmpty()
                 && current.getTank(2).getFluidAmount() == 250,
-            "A shapeless recipe must consume the matched swapped inputs and produce its output");
+			"The Overfuel recipe must consume three matched coal blocks and produce its output");
         helper.succeed();
     }
 }

@@ -1,257 +1,151 @@
 package net.crystalnexus.procedures;
 
-import net.crystalnexus.util.MachineUpgradeHelper;
-
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.common.extensions.ILevelExtension;
-import net.neoforged.neoforge.capabilities.Capabilities;
-
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.crafting.SingleRecipeInput;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.util.RandomSource;
-import net.minecraft.util.Mth;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.util.MachineUpgradeHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-public class UltimaSmelterOnTickUpdateProcedure {
+public final class UltimaSmelterOnTickUpdateProcedure {
+	private static final int ENERGY_PER_BATCH = 8192;
+	private static final int[] INPUT_SLOTS = {0, 3, 5, 6};
+	private static final int[] OUTPUT_SLOTS = {1, 7, 9, 10};
+
+	private UltimaSmelterOnTickUpdateProcedure() {
+	}
+
 	public static String execute(LevelAccessor world, double x, double y, double z) {
-		String registry_name_no_namespace = "";
-		String registry_name_nugget = "";
-		String registry_name = "";
-		BlockState core = Blocks.AIR.defaultBlockState();
-		double outputAmount = 0;
-		double cookTime = 0;
-		double outputAmount2 = 0;
-		double cookTime2 = 0;
-		core = CrystalnexusModBlocks.MACHINE_CORE.get().defaultBlockState();
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x + 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x - 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x, y, z + 1);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x, y, z - 1);
+		BlockPos pos = BlockPos.containing(x, y, z);
+		checkMachineCore(world, pos);
+		if (!(world instanceof Level level) || level.isClientSide() || !getBlockNBTLogic(world, pos, "canOpenInventory")) {
+			return energyText(world, pos);
 		}
-		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory") == true) {
-			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
-				{
-					int _value = 1;
-					BlockPos _pos = BlockPos.containing(x, y, z);
-					BlockState _bs = world.getBlockState(_pos);
-					if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
+		IItemHandler handler = itemHandler(world, pos);
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (!(handler instanceof IItemHandlerModifiable inventory) || blockEntity == null) {
+			return energyText(world, pos);
+		}
+
+		ItemStack upgrade = inventory.getStackInSlot(2);
+		double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 25
+				: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 10 : 50;
+		double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
+		blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
+
+		ItemStack[] results = new ItemStack[INPUT_SLOTS.length];
+		boolean hasWork = false;
+		for (int lane = 0; lane < INPUT_SLOTS.length; lane++) {
+			results[lane] = smeltingResult(level, inventory.getStackInSlot(INPUT_SLOTS[lane]));
+			if (!results[lane].isEmpty()) {
+				results[lane].setCount(results[lane].getCount() * 2);
+				if (!fits(inventory.getStackInSlot(OUTPUT_SLOTS[lane]), results[lane])) {
+					results[lane] = ItemStack.EMPTY;
+				} else {
+					hasWork = true;
 				}
-			} else {
-				{
-					int _value = 2;
-					BlockPos _pos = BlockPos.containing(x, y, z);
-					BlockState _bs = world.getBlockState(_pos);
-					if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
-				}
 			}
-			outputAmount = 2;
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-				cookTime = 25;
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-				cookTime = 10;
-			} else {
-				cookTime = 50;
+		}
+
+		IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+		int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_BATCH);
+		if (!hasWork) {
+			blockEntity.getPersistentData().putDouble("progress", 0);
+			setActive(level, pos, false);
+		} else if (energy != null && energy.getEnergyStored() >= energyCost) {
+			double progress = blockEntity.getPersistentData().getDouble("progress") + 1;
+			blockEntity.getPersistentData().putDouble("progress", progress);
+			setActive(level, pos, true);
+			if (level instanceof ServerLevel serverLevel) {
+				serverLevel.sendParticles(ParticleTypes.DRAGON_BREATH, pos.getX() + 0.5, pos.getY() + 0.5,
+						pos.getZ() + 0.5, 1, 0.25, 0, 0.25, 0);
 			}
-			double _cn_cookMult = 1.0;
-			boolean _cn_hasKeys = false;
-			ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
-			CompoundTag _cn_data = null;
-			if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
-				CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
-				if (_cn_cd != null)
-					_cn_data = _cn_cd.copyTag();
-			}
-			if (_cn_data != null && _cn_data.contains("cook_mult")) {
-				_cn_hasKeys = true;
-				if (_cn_data.contains("cook_mult"))
-					_cn_cookMult = _cn_data.getDouble("cook_mult");
-			}
-			// 2) Apply multipliers (STACK onto existing values)
-			if (_cn_hasKeys) {
-				_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-				cookTime = cookTime * _cn_cookMult;
-			}
-			// 3) Output caps (machine cap + slot space cap)
-			double MACHINE_MAX_OUTPUT = 16; // set per machine
-			if (outputAmount > MACHINE_MAX_OUTPUT)
-				outputAmount = MACHINE_MAX_OUTPUT;
-			double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
-			double _cn_spaceLeft = 64 - _cn_currentCount; // assuming stack size 64
-			if (outputAmount > _cn_spaceLeft)
-				outputAmount = _cn_spaceLeft;
-			if (outputAmount < 0)
-				outputAmount = 0;
-			if (cookTime < 1)
-				cookTime = 1;
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-			if (true == (world instanceof Level _level24 && _level24.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _level24).isPresent())
-					|| true == (world instanceof Level _level26 && _level26.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())), _level26).isPresent())
-					|| true == (world instanceof Level _level28 && _level28.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())), _level28).isPresent())
-					|| true == (world instanceof Level _level30 && _level30.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())), _level30).isPresent())) {
-				if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-					if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount && 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).getCount() + outputAmount
-							&& 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).getCount() + outputAmount && 64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 10).getCount() + outputAmount) {
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							if (world instanceof ServerLevel _level)
-								_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-						}
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
-							}
-							if (0 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount()) {
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									ItemStack _setstack = (world instanceof Level _lvlSmeltResult
-											? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
-													.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-											: ItemStack.EMPTY).copy();
-									_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount));
-									_itemHandlerModifiable.setStackInSlot(1, _setstack);
-								}
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									int _slotid = 0;
-									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-									_stk.shrink(1);
-									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-								}
-							}
-							if (0 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount()) {
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									ItemStack _setstack = (world instanceof Level _lvlSmeltResult
-											? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy())), _lvlSmeltResult)
-													.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-											: ItemStack.EMPTY).copy();
-									_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).getCount() + outputAmount));
-									_itemHandlerModifiable.setStackInSlot(7, _setstack);
-								}
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									int _slotid = 3;
-									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-									_stk.shrink(1);
-									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-								}
-							}
-							if (0 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).getCount()) {
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									ItemStack _setstack = (world instanceof Level _lvlSmeltResult
-											? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 5).copy())), _lvlSmeltResult)
-													.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-											: ItemStack.EMPTY).copy();
-									_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).getCount() + outputAmount));
-									_itemHandlerModifiable.setStackInSlot(9, _setstack);
-								}
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									int _slotid = 5;
-									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-									_stk.shrink(1);
-									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-								}
-							}
-							if (0 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).getCount()) {
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									ItemStack _setstack = (world instanceof Level _lvlSmeltResult
-											? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 6).copy())), _lvlSmeltResult)
-													.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-											: ItemStack.EMPTY).copy();
-									_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 10).getCount() + outputAmount));
-									_itemHandlerModifiable.setStackInSlot(10, _setstack);
-								}
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									int _slotid = 6;
-									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-									_stk.shrink(1);
-									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-								}
-							}
-						}
+			if (progress >= cookTime) {
+				for (int lane = 0; lane < INPUT_SLOTS.length; lane++) {
+					if (results[lane].isEmpty()) {
+						continue;
 					}
+					inventory.setStackInSlot(OUTPUT_SLOTS[lane], merged(inventory.getStackInSlot(OUTPUT_SLOTS[lane]), results[lane]));
+					ItemStack input = inventory.getStackInSlot(INPUT_SLOTS[lane]).copy();
+					input.shrink(1);
+					inventory.setStackInSlot(INPUT_SLOTS[lane], input);
 				}
+				energy.extractEnergy(energyCost, false);
+				blockEntity.getPersistentData().putDouble("progress", 0);
 			}
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+
+		blockEntity.setChanged();
+		level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+		return energyText(world, pos);
+	}
+
+	private static ItemStack smeltingResult(Level level, ItemStack input) {
+		if (input.isEmpty()) {
+			return ItemStack.EMPTY;
+		}
+		return level.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(input), level)
+				.map(recipe -> recipe.value().getResultItem(level.registryAccess()).copy()).orElse(ItemStack.EMPTY);
+	}
+
+	private static boolean fits(ItemStack current, ItemStack result) {
+		return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
+				&& current.getCount() + result.getCount() <= current.getMaxStackSize();
+	}
+
+	private static ItemStack merged(ItemStack current, ItemStack result) {
+		ItemStack merged = result.copy();
+		merged.setCount(current.getCount() + result.getCount());
+		return merged;
+	}
+
+	private static void checkMachineCore(LevelAccessor world, BlockPos pos) {
+		for (Direction direction : Direction.Plane.HORIZONTAL) {
+			BlockPos core = pos.relative(direction);
+			if (world.getBlockState(core).is(CrystalnexusModBlocks.MACHINE_CORE.get())) {
+				MachineBlocksCheckerProcedure.execute(world, core.getX(), core.getY(), core.getZ());
+				return;
+			}
+		}
+	}
+
+	private static void setActive(Level level, BlockPos pos, boolean active) {
+		BlockState state = level.getBlockState(pos);
+		if (state.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty property) {
+			int value = active ? 2 : 1;
+			if (property.getPossibleValues().contains(value) && state.getValue(property) != value) {
+				level.setBlock(pos, state.setValue(property, value), 3);
+			}
+		}
 	}
 
 	private static boolean getBlockNBTLogic(LevelAccessor world, BlockPos pos, String tag) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getBoolean(tag);
-		return false;
+		return blockEntity != null && blockEntity.getPersistentData().getBoolean(tag);
 	}
 
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
+	private static IItemHandler itemHandler(LevelAccessor world, BlockPos pos) {
+		return world instanceof ILevelExtension extension
+				? extension.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) : null;
 	}
 
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
-	}
-
-	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.getEnergyStored();
-		}
-		return 0;
+	private static String energyText(LevelAccessor world, BlockPos pos) {
+		IEnergyStorage energy = world instanceof ILevelExtension extension
+				? extension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null) : null;
+		return new java.text.DecimalFormat("FE: ##.##").format(energy == null ? 0 : energy.getEnergyStored());
 	}
 }

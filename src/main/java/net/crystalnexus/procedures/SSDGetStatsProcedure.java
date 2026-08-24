@@ -1,5 +1,6 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +21,7 @@ public class SSDGetStatsProcedure {
 		if (!tag.contains("cook_mult")) {
 			speedLine = "Speed Multiplier: §7???§r";
 		} else {
-			double cookMult = tag.getDouble("cook_mult");
+			double cookMult = MachineUpgradeHelper.cookMultiplier(itemstack);
 			double speedMult = (cookMult <= 0) ? 0 : (1.0 / cookMult);
 
 			if (god) {

@@ -1,6 +1,7 @@
 {
   "type": "crystalnexus:fluid_chemical_reaction",
   "fluid_input_1": { "fluid": "crystalnexus:gasoline", "amount": 250 },
-  "item_input_2": { "item": "minecraft:coal_block", "count": 3 },
+  "item_input_2": { "item": "minecraft:coal_block" },
+  "item_input_2_count": 3,
   "output": { "fluid": "crystalnexus:overfuel", "amount": 250 }
 }

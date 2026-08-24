@@ -40,11 +40,16 @@ public final class MachineUpgradeHelper {
 	}
 
 	public static double cookTime(ItemStack upgrade, double baseCookTime) {
+		return Math.max(1.0, baseCookTime * cookMultiplier(upgrade));
+	}
+
+	public static double cookMultiplier(ItemStack upgrade) {
 		CompoundTag data = customData(upgrade);
-		double multiplier = data != null && data.contains("cook_mult")
-				? Math.clamp(data.getDouble("cook_mult"), MIN_MULTIPLIER, MAX_MULTIPLIER)
-				: 1.0;
-		return Math.max(1.0, baseCookTime * multiplier);
+		return data != null && data.contains("cook_mult") ? clampCookMultiplier(data.getDouble("cook_mult")) : 1.0;
+	}
+
+	static double clampCookMultiplier(double multiplier) {
+		return Math.clamp(multiplier, MIN_MULTIPLIER, MAX_MULTIPLIER);
 	}
 
 	private static CompoundTag customData(ItemStack upgrade) {

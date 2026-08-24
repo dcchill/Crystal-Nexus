@@ -233,6 +233,78 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
+	public static void multiRodEfficiencyIsAnAverage(GameTestHelper helper) {
+		ReactorLayout layout = layout(helper, 0, 1, "FCF");
+
+		helper.assertTrue(layout.valid, "Expected a valid multi-rod layout, got: " + layout.reason);
+		helper.assertTrue(Math.abs(layout.fuelEfficiency - 1.0) < 0.0001,
+				"Two unmodified fuel rods must average to 1.0 efficiency, got " + layout.fuelEfficiency);
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void airDoesNotHideMixedInteriorColumns(GameTestHelper helper) {
+		BlockPos minBounds = new BlockPos(1, 0, 1);
+		BlockPos maxBounds = new BlockPos(3, 4, 3);
+		helper.setBlock(new BlockPos(2, 1, 2), CrystalnexusModBlocks.REACTOR_CORE.get());
+		helper.setBlock(new BlockPos(2, 2, 2), Blocks.AIR);
+		helper.setBlock(new BlockPos(2, 3, 2), CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL.get());
+
+		ReactorLayout layout = ReactorLayout.analyze(helper.getLevel(), helper.absolutePos(minBounds), helper.absolutePos(maxBounds));
+
+		helper.assertTrue(!layout.valid && layout.reason.contains("mixes"),
+				"Air gaps must not hide a mixed core/coolant column; got: " + layout.reason);
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void fullInsertionStillCoolsStoredHeat(GameTestHelper helper) {
+		ReactorLayout layout = layout(helper, 0, 1, "FC");
+		ReactorControlRodBlockEntity controlRod = helper.getBlockEntity(new BlockPos(2, 2, 2));
+		controlRod.setInsertion(100);
+		BlockPos computerPos = new BlockPos(15, 1, 15);
+		helper.setBlock(computerPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		ReactorComputerBlockEntity computer = helper.getBlockEntity(computerPos);
+		computer.updateLayoutCache(layout);
+		computer.getPersistentData().putBoolean("canOpenInventory", true);
+		computer.getPersistentData().putInt("multiblockRadius", 1);
+		computer.getPersistentData().putDouble("heat", 800);
+		computer.setItem(0, new ItemStack(CrystalnexusModItems.BLUTONIUM_INGOT.get()));
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 1_000), IFluidHandler.FluidAction.EXECUTE);
+
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") == 0
+				&& computer.getPersistentData().getDouble("heatGenerated") == 0
+				&& computer.getPersistentData().getDouble("heat") < 800
+				&& computer.getPersistentData().getDouble("coolantUsed") > 0,
+				"A fully inserted reactor must stop fission while continuing to cool");
+		helper.assertTrue(computer.getItem(0).getCount() == 1 && computer.getPersistentData().getDouble("progress") == 0,
+				"A fully inserted reactor must not consume fuel");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void undersizedCoolingHardwareHasItsOwnWarning(GameTestHelper helper) {
+		ReactorLayout layout = layout(helper, 0, 4, "FFFFC");
+		BlockPos computerPos = new BlockPos(15, 1, 15);
+		helper.setBlock(computerPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		ReactorComputerBlockEntity computer = helper.getBlockEntity(computerPos);
+		computer.updateLayoutCache(layout);
+		computer.getPersistentData().putBoolean("canOpenInventory", true);
+		computer.getPersistentData().putInt("multiblockRadius", 1);
+		computer.getPersistentData().putDouble("heat", 700);
+		computer.setItem(0, new ItemStack(CrystalnexusModItems.BLUTONIUM_INGOT.get()));
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 10_000), IFluidHandler.FluidAction.EXECUTE);
+
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+
+		helper.assertTrue("Cooling Capacity Limited".equals(computer.getPersistentData().getString("reactorStatus")),
+				"Insufficient installed cooling capacity must have a distinct warning");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
 	public static void insertionScalesOutputHeatFuelAndWaste(GameTestHelper helper) {
 		ReactorLayout layout = layout(helper, 0, 1, "FC");
 		ReactorControlRodBlockEntity controlRod = helper.getBlockEntity(new BlockPos(2, 2, 2));

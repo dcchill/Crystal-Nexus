@@ -84,7 +84,9 @@ public final class ReactorSimulation {
 		}
 		computer.getEnergyStorage().generateEnergy(fe, false);
 		progressFuelCycle(computer, fuel, layout, operatingTotals, operatingFactor);
-		setStatus(world, pos, computer, !permafrost && coolantDemand > coolantUsed ? "Coolant Limited" : "Stable", 2);
+		String status = !permafrost && coolantCapacity < coolantDemand ? "Cooling Capacity Limited"
+				: !permafrost && coolantUsed < coolantDemand ? "Coolant Limited" : "Stable";
+		setStatus(world, pos, computer, status, 2);
 		if (world instanceof ServerLevel level) {
 			level.sendParticles(ParticleTypes.VAULT_CONNECTION, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 1, 0.5, 0, 0.5, 0);
 		}
@@ -92,6 +94,13 @@ public final class ReactorSimulation {
 
 	private static void coolIdle(LevelAccessor world, BlockPos pos, ReactorComputerBlockEntity computer, ReactorLayout layout, double temperature) {
 		if (temperature <= ReactorBalance.AMBIENT_TEMPERATURE) {
+			CompoundTag data = computer.getPersistentData();
+			data.putDouble("heat", ReactorBalance.AMBIENT_TEMPERATURE);
+			data.putDouble("lastFEt", 0);
+			data.putDouble("heatGenerated", 0);
+			data.putDouble("heatRemoved", 0);
+			data.putDouble("coolantDemand", 0);
+			data.putDouble("coolantUsed", 0);
 			setStatus(world, pos, computer, "Offline", 1);
 			return;
 		}

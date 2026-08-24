@@ -44,7 +44,7 @@ public class ComputationClusterOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		outputAmount = 3;
+		outputAmount = 1;
 		cookTime = 500;
 		rand = Mth.nextInt(RandomSource.create(), 1, 100);
 		if (!world.isClientSide()) {

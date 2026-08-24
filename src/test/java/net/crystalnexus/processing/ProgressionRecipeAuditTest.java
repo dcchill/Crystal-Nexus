@@ -75,6 +75,25 @@ class ProgressionRecipeAuditTest {
             "crystalnexus:machine_energy_output", "crystalnexus:machine_fluid_input", "crystalnexus:tungsten");
     }
 
+	@Test
+	void balanceFixesStayOnCentralizedCounts() throws IOException {
+		String oreProcessor = Files.readString(Path.of(
+			"src/main/java/net/crystalnexus/procedures/OreProcessorOnTickUpdateProcedure.java"));
+		assertTrue(oreProcessor.contains("CrushingRecipeSupport.findResult"));
+		assertTrue(oreProcessor.contains("MaterialProcessingCatalog.NUGGETS_PER_DUST"));
+		assertFalse(oreProcessor.contains("outputAmount = 4"));
+		assertFalse(oreProcessor.contains("outputAmount2 = 14"));
+
+		String ultimaSmelter = Files.readString(Path.of(
+			"src/main/java/net/crystalnexus/procedures/UltimaSmelterOnTickUpdateProcedure.java"));
+		assertTrue(ultimaSmelter.contains("int[] INPUT_SLOTS = {0, 3, 5, 6}"));
+		assertTrue(ultimaSmelter.contains("if (results[lane].isEmpty())"));
+
+		String overfuel = compact(RECIPES.resolve("fluid_chemical_reaction_overfuel.json"));
+		assertTrue(overfuel.contains("\"item_input_2_count\":3"));
+		assertFalse(overfuel.contains("\"coal_block\",\"count\""));
+	}
+
     private static void assertContains(String recipe, String... values) throws IOException {
         String json = compact(RECIPES.resolve(recipe));
         for (String value : values) assertTrue(json.contains(value), recipe + " must contain " + value);

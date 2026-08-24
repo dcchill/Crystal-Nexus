@@ -14,6 +14,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -235,7 +236,8 @@ public final class CenteredMultiblockValidator {
 	}
 
 	private static boolean isAllowedInterior(Block block, Block core) {
-		return block == core || core == CrystalnexusModBlocks.REACTOR_CORE.get() && ReactorLayout.isInteriorComponent(block);
+		return block == core || core == CrystalnexusModBlocks.REACTOR_CORE.get()
+				&& (block == Blocks.AIR || ReactorLayout.isInteriorComponent(block));
 	}
 
 	private static void storeLayout(LevelAccessor world, Link link, Block core) {

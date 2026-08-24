@@ -67,7 +67,7 @@ public final class ReactorLayout {
 		int hash = 1;
 		double output = 0;
 		double heat = 0;
-		double efficiency = 1;
+		double efficiency = 0;
 		Map<BlockPos, FuelColumn> fuelColumnData = new HashMap<>();
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int y = minBounds.getY() + 1; y < maxBounds.getY(); y++) {
@@ -90,15 +90,17 @@ public final class ReactorLayout {
 		if (fuel.isEmpty()) {
 			return invalid("Missing fuel rods");
 		}
-		// Enforce the vertical column rule: every interior (x,z) column must be a
-		// single, uniform component type (no mixing of core/coolant/conductor/etc per column).
-		// Air, ports, control rods and other shell blocks are not valid interior components.
+		// Enforce the vertical column rule: every interior (x,z) column's non-air
+		// blocks must be one uniform, allowed component type.
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int z = minBounds.getZ() + 1; z < maxBounds.getZ(); z++) {
 				Block columnType = null;
 				for (int y = minBounds.getY() + 1; y < maxBounds.getY(); y++) {
 					BlockPos pos = new BlockPos(x, y, z);
 					Block block = world.getBlockState(pos).getBlock();
+					if (block == Blocks.AIR) {
+						continue;
+					}
 					if (!isInteriorComponent(block)) {
 						return invalid("Invalid interior block at " + pos.toShortString() + ": " + blockName(block));
 					}
@@ -155,7 +157,7 @@ public final class ReactorLayout {
 			}
 			output += rodOutput;
 			heat += rodHeat;
-			efficiency += Math.max(0.25, rodEfficiency) - 1;
+			efficiency += Math.max(0.25, rodEfficiency);
 			BlockPos controlRodPos = new BlockPos(rod.getX(), maxBounds.getY(), rod.getZ());
 			fuelColumnData.merge(controlRodPos, new FuelColumn(controlRodPos, 1, rodOutput, rodHeat), FuelColumn::merge);
 		}
@@ -306,8 +308,8 @@ public final class ReactorLayout {
 	}
 
 	/**
-	 * Valid interior column components. Air, ports, control rods and other shell
-	 * blocks are NOT valid interior components.
+	 * Valid non-air interior column components. Ports, control rods and other
+	 * shell blocks are not valid interior components.
 	 */
 	public static boolean isInteriorComponent(Block block) {
 		return block == CrystalnexusModBlocks.REACTOR_CORE.get()

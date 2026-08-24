@@ -1,485 +1,197 @@
 package net.crystalnexus.procedures;
 
-import net.crystalnexus.util.MachineUpgradeHelper;
+import java.util.Optional;
 
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.common.extensions.ILevelExtension;
-import net.neoforged.neoforge.capabilities.Capabilities;
-
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Item;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.Direction;
-import net.minecraft.core.BlockPos;
-
-import net.crystalnexus.jei_recipes.OreCrushingJeiRecipe;
-import net.crystalnexus.jei_recipes.DustSeperationRecipe;
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.jei_recipes.DustSeperationRecipe;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MaterialProcessingCatalog;
+import net.crystalnexus.util.CrushingRecipeSupport;
+import net.crystalnexus.util.MachineUpgradeHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import java.util.stream.Collectors;
-import java.util.List;
+public final class OreProcessorOnTickUpdateProcedure {
+	private static final int ENERGY_PER_OPERATION = 8192;
 
-public class OreProcessorOnTickUpdateProcedure {
+	private OreProcessorOnTickUpdateProcedure() {
+	}
+
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		String registry_name_dust = "";
-		String registry_name_no_namespace = "";
-		String registry_name_ore = "";
-		String registry_name = "";
-		String registry_name_nugget = "";
-		BlockState core = Blocks.AIR.defaultBlockState();
-		double outputAmount = 0;
-		double cookTime = 0;
-		double energy = 0;
-		double outputAmount2 = 0;
-		double cookTime2 = 0;
-		core = CrystalnexusModBlocks.MACHINE_CORE.get().defaultBlockState();
-		if ((world.getBlockState(BlockPos.containing(x + 1, y, z))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x + 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x - 1, y, z))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x - 1, y, z);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z + 1))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x, y, z + 1);
-		} else if ((world.getBlockState(BlockPos.containing(x, y, z - 1))).getBlock() == core.getBlock()) {
-			MachineBlocksCheckerProcedure.execute(world, x, y, z - 1);
+		BlockPos pos = BlockPos.containing(x, y, z);
+		checkMachineCore(world, pos);
+		if (!(world instanceof Level level) || level.isClientSide() || !getBlockNBTLogic(world, pos, "canOpenInventory")) {
+			return;
 		}
-		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory") == true) {
-			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") != 0 || getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress2") != 0) {
-				{
-					int _value = 2;
-					BlockPos _pos = BlockPos.containing(x, y, z);
-					BlockState _bs = world.getBlockState(_pos);
-					if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
-				}
-			} else {
-				{
-					int _value = 1;
-					BlockPos _pos = BlockPos.containing(x, y, z);
-					BlockState _bs = world.getBlockState(_pos);
-					if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
-						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
-				}
+		IItemHandler handler = itemHandler(world, pos);
+		if (!(handler instanceof IItemHandlerModifiable inventory)) {
+			return;
+		}
+
+		ItemStack upgrade = inventory.getStackInSlot(0);
+		double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 50
+				: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 25 : 75;
+		double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity == null) {
+			return;
+		}
+		blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
+		blockEntity.getPersistentData().putDouble("maxProgress2", cookTime);
+
+		ItemStack crushingResult = CrushingRecipeSupport.findResult(level, inventory.getStackInSlot(1), MachineTier.CRYSTAL);
+		int crushingEnergy = crushingResult.is(CrystalnexusModItems.CARBON_COMPOSITE.get()) ? 4096 : ENERGY_PER_OPERATION;
+		processStage(level, pos, inventory, upgrade, 1, 2, "progress", cookTime, crushingResult, 1, crushingEnergy);
+
+		SeparationMatch separation = findSeparation(level, inventory.getStackInSlot(2));
+		processStage(level, pos, inventory, upgrade, 2, 3, "progress2", cookTime,
+				separation.output(), separation.inputCount(), ENERGY_PER_OPERATION);
+		combineNuggets(inventory);
+		setActive(level, pos, blockEntity.getPersistentData().getDouble("progress") > 0
+				|| blockEntity.getPersistentData().getDouble("progress2") > 0);
+		blockEntity.setChanged();
+		level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+	}
+
+	private static void processStage(Level level, BlockPos pos, IItemHandlerModifiable inventory, ItemStack upgrade,
+			int inputSlot, int outputSlot, String progressKey, double cookTime, ItemStack result,
+			int inputCount, int baseEnergy) {
+		BlockEntity blockEntity = level.getBlockEntity(pos);
+		if (result.isEmpty() || inventory.getStackInSlot(inputSlot).getCount() < inputCount
+				|| !fits(inventory.getStackInSlot(outputSlot), result)) {
+			blockEntity.getPersistentData().putDouble(progressKey, 0);
+			return;
+		}
+		int energyCost = MachineUpgradeHelper.energyCost(upgrade, baseEnergy);
+		IEnergyStorage energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
+		if (energy == null || energy.getEnergyStored() < energyCost) {
+			return;
+		}
+		double progress = blockEntity.getPersistentData().getDouble(progressKey) + 1;
+		blockEntity.getPersistentData().putDouble(progressKey, progress);
+		if (level instanceof ServerLevel serverLevel) {
+			serverLevel.sendParticles(ParticleTypes.DRAGON_BREATH, pos.getX() + 0.5, pos.getY() + 0.5,
+					pos.getZ() + 0.5, 1, 0.25, 0, 0.25, 0);
+		}
+		if (progress < cookTime) {
+			return;
+		}
+		inventory.setStackInSlot(outputSlot, merged(inventory.getStackInSlot(outputSlot), result));
+		ItemStack input = inventory.getStackInSlot(inputSlot).copy();
+		input.shrink(inputCount);
+		inventory.setStackInSlot(inputSlot, input);
+		energy.extractEnergy(energyCost, false);
+		blockEntity.getPersistentData().putDouble(progressKey, 0);
+	}
+
+	private static SeparationMatch findSeparation(Level level, ItemStack input) {
+		for (var holder : level.getRecipeManager().getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE)) {
+			DustSeperationRecipe recipe = holder.value();
+			if (!recipe.fluidInput().isEmpty() || recipe.getIngredients().isEmpty()
+					|| !recipe.getIngredients().getFirst().test(input) || input.getCount() < recipe.inputCount()) {
+				continue;
 			}
-			outputAmount = 4;
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-				cookTime = 50;
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-				cookTime = 25;
-			} else {
-				cookTime = 75;
+			ItemStack output = recipe.getResultItem(level.registryAccess());
+			return output.isEmpty() || !MachineTier.CRYSTAL.supports(recipe.minimumMachineTier())
+					? SeparationMatch.NONE : new SeparationMatch(output, recipe.inputCount());
+		}
+		Optional<MaterialProcessingCatalog.Material> material = MaterialProcessingCatalog.get(level).dust(input)
+				.filter(value -> !value.profile().disabledStages().contains("separation"))
+				.filter(value -> MachineTier.CRYSTAL.supports(value.profile().minimumMachineTier()));
+		if (material.isEmpty()) {
+			return SeparationMatch.NONE;
+		}
+		ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input.getItem());
+		ItemStack output = material.get().nugget(inputId.getNamespace(), MaterialProcessingCatalog.NUGGETS_PER_DUST);
+		return output.isEmpty() ? SeparationMatch.NONE : new SeparationMatch(output, 1);
+	}
+
+	private static void combineNuggets(IItemHandlerModifiable inventory) {
+		ItemStack nuggets = inventory.getStackInSlot(3);
+		if (nuggets.getCount() < 9) {
+			return;
+		}
+		ResourceLocation nuggetId = BuiltInRegistries.ITEM.getKey(nuggets.getItem());
+		String path = nuggetId.getPath();
+		String ingotPath = path.endsWith("_nugget") ? path.substring(0, path.length() - 7) + "_ingot"
+				: path.startsWith("nugget_") ? "ingot_" + path.substring(7) : null;
+		if (ingotPath == null) {
+			return;
+		}
+		Item ingot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(nuggetId.getNamespace(), ingotPath));
+		if (ingot == Items.AIR) {
+			ingot = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("minecraft", ingotPath));
+		}
+		ItemStack result = new ItemStack(ingot);
+		if (ingot == Items.AIR || !fits(inventory.getStackInSlot(4), result)) {
+			return;
+		}
+		ItemStack remaining = nuggets.copy();
+		remaining.shrink(9);
+		inventory.setStackInSlot(3, remaining);
+		inventory.setStackInSlot(4, merged(inventory.getStackInSlot(4), result));
+	}
+
+	private static boolean fits(ItemStack current, ItemStack result) {
+		return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
+				&& current.getCount() + result.getCount() <= current.getMaxStackSize();
+	}
+
+	private static ItemStack merged(ItemStack current, ItemStack result) {
+		ItemStack merged = result.copy();
+		merged.setCount(current.getCount() + result.getCount());
+		return merged;
+	}
+
+	private static void checkMachineCore(LevelAccessor world, BlockPos pos) {
+		for (Direction direction : Direction.Plane.HORIZONTAL) {
+			BlockPos core = pos.relative(direction);
+			if (world.getBlockState(core).is(CrystalnexusModBlocks.MACHINE_CORE.get())) {
+				MachineBlocksCheckerProcedure.execute(world, core.getX(), core.getY(), core.getZ());
+				return;
 			}
-			double _cn_cookMult = 1.0;
-			boolean _cn_hasKeys = false;
-			ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
-			CompoundTag _cn_data = null;
-			if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
-				CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
-				if (_cn_cd != null)
-					_cn_data = _cn_cd.copyTag();
-			}
-			if (_cn_data != null && _cn_data.contains("cook_mult")) {
-				_cn_hasKeys = true;
-				if (_cn_data.contains("cook_mult"))
-					_cn_cookMult = _cn_data.getDouble("cook_mult");
-			}
-			if (_cn_hasKeys) {
-				_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-				cookTime = cookTime * _cn_cookMult;
-			}
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-			if (!(Blocks.AIR.asItem() == (new Object() {
-				public ItemStack getResult() {
-					if (world instanceof Level _lvl) {
-						net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-						List<OreCrushingJeiRecipe> recipes = rm.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-						for (OreCrushingJeiRecipe recipe : recipes) {
-							NonNullList<Ingredient> ingredients = recipe.getIngredients();
-							if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-								continue;
-							return recipe.getResultItem(null);
-						}
-					}
-					return ItemStack.EMPTY;
-				}
-			}.getResult()).getItem())) {
-				if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-					if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + outputAmount) {
-						if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == (new Object() {
-							public ItemStack getResult() {
-								if (world instanceof Level _lvl) {
-									net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-									List<OreCrushingJeiRecipe> recipes = rm.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-									for (OreCrushingJeiRecipe recipe : recipes) {
-										NonNullList<Ingredient> ingredients = recipe.getIngredients();
-										if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-											continue;
-										return recipe.getResultItem(null);
-									}
-								}
-								return ItemStack.EMPTY;
-							}
-						}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == Blocks.AIR.asItem()) {
-							if (CrystalnexusModItems.CARBON_COMPOSITE.get() == (new Object() {
-								public ItemStack getResult() {
-									if (world instanceof Level _lvl) {
-										net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-										List<OreCrushingJeiRecipe> recipes = rm.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-										for (OreCrushingJeiRecipe recipe : recipes) {
-											NonNullList<Ingredient> ingredients = recipe.getIngredients();
-											if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-												continue;
-											return recipe.getResultItem(null);
-										}
-									}
-									return ItemStack.EMPTY;
-								}
-							}.getResult()).getItem()) {
-								if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-									if (!world.isClientSide()) {
-										BlockPos _bp = BlockPos.containing(x, y, z);
-										BlockEntity _blockEntity = world.getBlockEntity(_bp);
-										BlockState _bs = world.getBlockState(_bp);
-										if (_blockEntity != null)
-											_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-										if (world instanceof Level _level)
-											_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-									}
-									if (world instanceof ServerLevel _level)
-										_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-								}
-								if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = (new Object() {
-											public ItemStack getResult() {
-												if (world instanceof Level _lvl) {
-													net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-													List<OreCrushingJeiRecipe> recipes = rm.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-													for (OreCrushingJeiRecipe recipe : recipes) {
-														NonNullList<Ingredient> ingredients = recipe.getIngredients();
-														if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-															continue;
-														return recipe.getResultItem(null);
-													}
-												}
-												return ItemStack.EMPTY;
-											}
-										}.getResult()).copy();
-										_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + 2);
-										_itemHandlerModifiable.setStackInSlot(2, _setstack);
-									}
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										int _slotid = 1;
-										ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-										_stk.shrink(1);
-										_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-									}
-									if (!world.isClientSide()) {
-										BlockPos _bp = BlockPos.containing(x, y, z);
-										BlockEntity _blockEntity = world.getBlockEntity(_bp);
-										BlockState _bs = world.getBlockState(_bp);
-										if (_blockEntity != null)
-											_blockEntity.getPersistentData().putDouble("progress", 0);
-										if (world instanceof Level _level)
-											_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-									}
-									if (world instanceof ILevelExtension _ext) {
-										IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-										if (_entityStorage != null)
-											_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096), false);
-									}
-								}
-							} else {
-								if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-									if (!world.isClientSide()) {
-										BlockPos _bp = BlockPos.containing(x, y, z);
-										BlockEntity _blockEntity = world.getBlockEntity(_bp);
-										BlockState _bs = world.getBlockState(_bp);
-										if (_blockEntity != null)
-											_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-										if (world instanceof Level _level)
-											_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-									}
-									if (world instanceof ServerLevel _level)
-										_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-								}
-								if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = (new Object() {
-											public ItemStack getResult() {
-												if (world instanceof Level _lvl) {
-													net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-													List<OreCrushingJeiRecipe> recipes = rm.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-													for (OreCrushingJeiRecipe recipe : recipes) {
-														NonNullList<Ingredient> ingredients = recipe.getIngredients();
-														if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy())))
-															continue;
-														return recipe.getResultItem(null);
-													}
-												}
-												return ItemStack.EMPTY;
-											}
-										}.getResult()).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).getCount() + outputAmount));
-										_itemHandlerModifiable.setStackInSlot(2, _setstack);
-									}
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										int _slotid = 1;
-										ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-										_stk.shrink(1);
-										_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-									}
-									if (!world.isClientSide()) {
-										BlockPos _bp = BlockPos.containing(x, y, z);
-										BlockEntity _blockEntity = world.getBlockEntity(_bp);
-										BlockState _bs = world.getBlockState(_bp);
-										if (_blockEntity != null)
-											_blockEntity.getPersistentData().putDouble("progress", 0);
-										if (world instanceof Level _level)
-											_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-									}
-									if (world instanceof ILevelExtension _ext) {
-										IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-										if (_entityStorage != null)
-											_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			outputAmount2 = 14;
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-				cookTime2 = 50;
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-				cookTime2 = 25;
-			} else {
-				cookTime2 = 75;
-			}
-			if (_cn_hasKeys) {
-				cookTime2 = cookTime2 * _cn_cookMult;
-			}
-			outputAmount2 = Math.floor(outputAmount2);
-			if (outputAmount2 < 0)
-				outputAmount2 = 0;
-			if (cookTime2 < 1)
-				cookTime2 = 1;
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress2", cookTime2);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-			if (!(Blocks.AIR.asItem() == (new Object() {
-				public ItemStack getResult() {
-					if (world instanceof Level _lvl) {
-						net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-						List<DustSeperationRecipe> recipes = rm.getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-						for (DustSeperationRecipe recipe : recipes) {
-							NonNullList<Ingredient> ingredients = recipe.getIngredients();
-							if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-								continue;
-							return recipe.getResultItem(null);
-						}
-					}
-					return ItemStack.EMPTY;
-				}
-			}.getResult()).getItem())) {
-				if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-					if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + outputAmount2) {
-						if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == (new Object() {
-							public ItemStack getResult() {
-								if (world instanceof Level _lvl) {
-									net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-									List<DustSeperationRecipe> recipes = rm.getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-									for (DustSeperationRecipe recipe : recipes) {
-										NonNullList<Ingredient> ingredients = recipe.getIngredients();
-										if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-											continue;
-										return recipe.getResultItem(null);
-									}
-								}
-								return ItemStack.EMPTY;
-							}
-						}.getResult()).getItem() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == Blocks.AIR.asItem()) {
-							if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress2") < cookTime2) {
-								if (!world.isClientSide()) {
-									BlockPos _bp = BlockPos.containing(x, y, z);
-									BlockEntity _blockEntity = world.getBlockEntity(_bp);
-									BlockState _bs = world.getBlockState(_bp);
-									if (_blockEntity != null)
-										_blockEntity.getPersistentData().putDouble("progress2", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress2") + 1));
-									if (world instanceof Level _level)
-										_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-								}
-								if (world instanceof ServerLevel _level)
-									_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
-							}
-							if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress2") >= cookTime2) {
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									ItemStack _setstack = (new Object() {
-										public ItemStack getResult() {
-											if (world instanceof Level _lvl) {
-												net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-												List<DustSeperationRecipe> recipes = rm.getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-												for (DustSeperationRecipe recipe : recipes) {
-													NonNullList<Ingredient> ingredients = recipe.getIngredients();
-													if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-														continue;
-													return recipe.getResultItem(null);
-												}
-											}
-											return ItemStack.EMPTY;
-										}
-									}.getResult()).copy();
-									_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() + outputAmount2));
-									_itemHandlerModifiable.setStackInSlot(3, _setstack);
-								}
-								if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-									int _slotid = 2;
-									ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-									_stk.shrink(1);
-									_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-								}
-								if (!world.isClientSide()) {
-									BlockPos _bp = BlockPos.containing(x, y, z);
-									BlockEntity _blockEntity = world.getBlockEntity(_bp);
-									BlockState _bs = world.getBlockState(_bp);
-									if (_blockEntity != null)
-										_blockEntity.getPersistentData().putDouble("progress2", 0);
-									if (world instanceof Level _level)
-										_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-								}
-								if (world instanceof ILevelExtension _ext) {
-									IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-									if (_entityStorage != null)
-										_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
-								}
-							}
-						}
-					}
-				}
-			}
-			if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() >= 9) {
-				if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).getCount() != 64) {// === Nugget Combiner Section ===
-					if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).getCount() >= 9) {
-						if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 4).getCount() < 64) {
-							if (world instanceof Level level && !level.isClientSide()) {
-								BlockPos posHere = BlockPos.containing(x, y, z);
-								if (world instanceof ILevelExtension ext) {
-									IItemHandler cap = ext.getCapability(Capabilities.ItemHandler.BLOCK, posHere, null);
-									if (cap instanceof IItemHandlerModifiable itemHandler) {
-										ItemStack input = itemHandler.getStackInSlot(3).copy();
-										if (!input.isEmpty() && input.getCount() >= 9) {
-											ResourceLocation nuggetId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(input.getItem());
-											if (nuggetId != null) {
-												String path = nuggetId.getPath();
-												String ingotPath = null;
-												// Detect both name patterns
-												if (path.endsWith("_nugget")) {
-													ingotPath = path.replace("_nugget", "_ingot");
-												} else if (path.startsWith("nugget_")) {
-													ingotPath = path.replaceFirst("nugget_", "ingot_");
-												}
-												if (ingotPath != null) {
-													// First try same namespace
-													ResourceLocation ingotId = ResourceLocation.fromNamespaceAndPath(nuggetId.getNamespace(), ingotPath);
-													Item ingotItem = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(ingotId);
-													// If not found, try "minecraft" namespace as a fallback
-													if (ingotItem == null || ingotItem == net.minecraft.world.item.Items.AIR) {
-														ResourceLocation mcIngotId = ResourceLocation.fromNamespaceAndPath("minecraft", ingotPath);
-														Item mcIngotItem = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(mcIngotId);
-														if (mcIngotItem != null && mcIngotItem != net.minecraft.world.item.Items.AIR) {
-															ingotItem = mcIngotItem;
-														}
-													}
-													if (ingotItem != null && ingotItem != net.minecraft.world.item.Items.AIR) {
-														ItemStack output = itemHandler.getStackInSlot(4).copy();
-														if (output.isEmpty() || (output.is(ingotItem) && output.getCount() < output.getMaxStackSize())) {
-															// Consume 9 nuggets
-															ItemStack newInput = itemHandler.getStackInSlot(3).copy();
-															newInput.shrink(9);
-															itemHandler.setStackInSlot(3, newInput);
-															// Add 1 ingot
-															if (output.isEmpty()) {
-																itemHandler.setStackInSlot(4, new ItemStack(ingotItem, 1));
-															} else {
-																output.grow(1);
-																itemHandler.setStackInSlot(4, output);
-															}
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					// === End Nugget Combiner Section ===
-				}
+		}
+	}
+
+	private static void setActive(Level level, BlockPos pos, boolean active) {
+		BlockState state = level.getBlockState(pos);
+		if (state.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty property) {
+			int value = active ? 2 : 1;
+			if (property.getPossibleValues().contains(value) && state.getValue(property) != value) {
+				level.setBlock(pos, state.setValue(property, value), 3);
 			}
 		}
 	}
 
 	private static boolean getBlockNBTLogic(LevelAccessor world, BlockPos pos, String tag) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getBoolean(tag);
-		return false;
+		return blockEntity != null && blockEntity.getPersistentData().getBoolean(tag);
 	}
 
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
+	private static IItemHandler itemHandler(LevelAccessor world, BlockPos pos) {
+		return world instanceof ILevelExtension extension
+				? extension.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) : null;
 	}
 
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
-	}
-
-	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {
-		if (level instanceof ILevelExtension levelExtension) {
-			IEnergyStorage energyStorage = levelExtension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
-			if (energyStorage != null)
-				return energyStorage.getEnergyStored();
-		}
-		return 0;
+	private record SeparationMatch(ItemStack output, int inputCount) {
+		private static final SeparationMatch NONE = new SeparationMatch(ItemStack.EMPTY, 1);
 	}
 }
