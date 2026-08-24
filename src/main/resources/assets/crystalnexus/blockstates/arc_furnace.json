@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north,blockstate=0": { "model": "crystalnexus:block/arc_furnace" },
+    "facing=east,blockstate=0": { "model": "crystalnexus:block/arc_furnace", "y": 90 },
+    "facing=south,blockstate=0": { "model": "crystalnexus:block/arc_furnace", "y": 180 },
+    "facing=west,blockstate=0": { "model": "crystalnexus:block/arc_furnace", "y": 270 },
+    "facing=north,blockstate=1": { "model": "crystalnexus:block/arc_furnace" },
+    "facing=east,blockstate=1": { "model": "crystalnexus:block/arc_furnace", "y": 90 },
+    "facing=south,blockstate=1": { "model": "crystalnexus:block/arc_furnace", "y": 180 },
+    "facing=west,blockstate=1": { "model": "crystalnexus:block/arc_furnace", "y": 270 },
+    "facing=north,blockstate=2": { "model": "crystalnexus:block/arc_furnace_on" },
+    "facing=east,blockstate=2": { "model": "crystalnexus:block/arc_furnace_on", "y": 90 },
+    "facing=south,blockstate=2": { "model": "crystalnexus:block/arc_furnace_on", "y": 180 },
+    "facing=west,blockstate=2": { "model": "crystalnexus:block/arc_furnace_on", "y": 270 }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:coal",
+    "minecraft:charcoal",
+    "minecraft:redstone",
+    "minecraft:lapis_lazuli"
+  ]
+}

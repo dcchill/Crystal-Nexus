@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:meteorite_scrap" },
+    { "item": "crystalnexus:invertium_ingot" }
+  ],
+  "output": { "id": "crystalnexus:meteorite_alloy", "count": 1 }
+}

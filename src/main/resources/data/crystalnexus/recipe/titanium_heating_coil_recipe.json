@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  r",
+    "crc",
+    "r  "
+  ],
+  "key": {
+    "c": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "r": {
+      "tag": "c:rods/titanium"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_heating_coil",
+    "count": 1
+  }
+}

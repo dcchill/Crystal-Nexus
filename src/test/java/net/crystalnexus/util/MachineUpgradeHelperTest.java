@@ -10,4 +10,10 @@ class MachineUpgradeHelperTest {
 		assertEquals(0.05, MachineUpgradeHelper.clampCookMultiplier(0.01));
 		assertEquals(20.0, 1.0 / MachineUpgradeHelper.clampCookMultiplier(0.01));
 	}
+
+	@Test
+	void generatorSpeedUsesOutputMultiplierInsteadOfFuelDuration() {
+		assertEquals(20.0, 1.0 / MachineUpgradeHelper.clampCookMultiplier(0.01));
+		assertEquals(0.1, 1.0 / MachineUpgradeHelper.clampCookMultiplier(20.0));
+	}
 }

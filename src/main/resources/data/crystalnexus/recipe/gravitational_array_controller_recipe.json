@@ -3,21 +3,27 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
-    "aba"
+    "cde",
+    "afa"
   ],
   "key": {
     "a": {
       "tag": "c:plates/titanium"
     },
     "b": {
-      "item": "crystalnexus:silicon_wafer"
+      "item": "crystalnexus:gravity_control_point"
     },
     "c": {
       "item": "crystalnexus:computation_node"
     },
     "d": {
       "item": "crystalnexus:titanium_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:silicon_wafer"
+    },
+    "f": {
+      "item": "crystalnexus:singularity_compressor"
     }
   },
   "result": {

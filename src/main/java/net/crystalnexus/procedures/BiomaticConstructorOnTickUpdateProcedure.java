@@ -17,6 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +30,12 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.init.CrystalnexusModItems;
 
 public class BiomaticConstructorOnTickUpdateProcedure {
+	private static final TagKey<Item> BIOMATIC_TEMPLATES = ItemTags.create(ResourceLocation.fromNamespaceAndPath("crystalnexus", "biomatic_templates"));
+
 	public static String execute(LevelAccessor world, double x, double y, double z) {
 		double outputAmount = 0;
 		double cookTime = 0;
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -93,14 +97,12 @@ public class BiomaticConstructorOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-			if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
-				if (((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).is(ItemTags.create(ResourceLocation.parse("minecraft:saplings")))
-						|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).is(ItemTags.create(ResourceLocation.parse("minecraft:flowers")))
-						|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).is(ItemTags.create(ResourceLocation.parse("c:seeds")))
-						|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).is(ItemTags.create(ResourceLocation.parse("c:crops"))))
+			ItemStack template = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
+			if (template.getMaxStackSize() >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
+				if (template.is(BIOMATIC_TEMPLATES)
 						&& (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.BIOMASS.get()
-						&& ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem()
-								|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem())) {
+						&& (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).isEmpty()
+								|| ItemStack.isSameItemSameComponents(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1), template))) {
 					if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 						if (!world.isClientSide()) {
 							BlockPos _bp = BlockPos.containing(x, y, z);

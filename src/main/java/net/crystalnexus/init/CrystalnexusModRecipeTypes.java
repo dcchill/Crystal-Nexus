@@ -11,8 +11,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.core.registries.BuiltInRegistries;
 
-import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
+import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionMultiblockGuideRecipe;
 import net.crystalnexus.jei_recipes.ReactionJEIRecipe;
@@ -49,13 +49,13 @@ public class CrystalnexusModRecipeTypes {
 			RECIPE_TYPES.register(bus);
 			SERIALIZERS.register(bus);
 			RECIPE_TYPES.register("purification", () -> PurificationRecipe.Type.INSTANCE);
+			RECIPE_TYPES.register("arc_furnace", () -> ArcFurnaceRecipe.Type.INSTANCE);
+			SERIALIZERS.register("arc_furnace", () -> ArcFurnaceRecipe.Serializer.INSTANCE);
 			SERIALIZERS.register("purification", () -> PurificationRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("extractination", () -> ExtractinatorJEIRecipe.Type.INSTANCE);
 			SERIALIZERS.register("extractination", () -> ExtractinatorJEIRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("beam_reaction_recipe", () -> BeamReactionRecipeRecipe.Type.INSTANCE);
 			SERIALIZERS.register("beam_reaction_recipe", () -> BeamReactionRecipeRecipe.Serializer.INSTANCE);
-			RECIPE_TYPES.register("unfurnace", () -> UnfurnaceRecipe.Type.INSTANCE);
-			SERIALIZERS.register("unfurnace", () -> UnfurnaceRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("ore_crushing_jei", () -> OreCrushingJeiRecipe.Type.INSTANCE);
 			SERIALIZERS.register("ore_crushing_jei", () -> OreCrushingJeiRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("parts_assembling", () -> PartsAssemblingRecipe.Type.INSTANCE);

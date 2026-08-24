@@ -9,6 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.api.distmarker.Dist;
 
 import net.crystalnexus.client.gui.WasteOutputGuiScreen;
+import net.crystalnexus.client.gui.ArcFurnaceScreen;
 import net.crystalnexus.client.gui.WarpPadGuiScreen;
 import net.crystalnexus.client.gui.UltimaSmelterGuiScreen;
 import net.crystalnexus.client.gui.TurbineGUIScreen;
@@ -36,7 +37,6 @@ import net.crystalnexus.client.gui.MultiblockGuiPage3Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage2Screen;
 import net.crystalnexus.client.gui.MultiblockGuiPage1Screen;
 import net.crystalnexus.client.gui.MatterTransmutationGUIScreen;
-import net.crystalnexus.client.gui.MRecrystallGuiScreen;
 import net.crystalnexus.client.gui.ItemElevatorGuiScreen;
 import net.crystalnexus.client.gui.ItemElevatorGuiDownScreen;
 import net.crystalnexus.client.gui.ItemCollectorGUIScreen;
@@ -73,6 +73,7 @@ import net.crystalnexus.client.gui.AcceleratorGuiScreen;
 import net.crystalnexus.client.gui.GravitationalArrayScreen;
 import net.crystalnexus.client.gui.SolarSimulatorScreen;
 import net.crystalnexus.client.gui.SolarEngineScreen;
+import net.crystalnexus.client.gui.PlasmaGeneratorScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -85,10 +86,10 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);
 		event.register(CrystalnexusModMenus.ITEM_COLLECTOR_GUI.get(), ItemCollectorGUIScreen::new);
 		event.register(CrystalnexusModMenus.EXTRACTINATOR_GUI.get(), ExtractinatorGuiScreen::new);
-		event.register(CrystalnexusModMenus.M_RECRYSTALL_GUI.get(), MRecrystallGuiScreen::new);
 		event.register(CrystalnexusModMenus.REACTOR_GUI.get(), ReactorGUIScreen::new);
 		event.register(CrystalnexusModMenus.CONTROL_ROD_GUI.get(), ControlRodGuiScreen::new);
 		event.register(CrystalnexusModMenus.IRON_SMELTER_GUI.get(), IronSmelterGuiScreen::new);
+		event.register(CrystalnexusModMenus.ARC_FURNACE.get(), ArcFurnaceScreen::new);
 		event.register(CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PartsAssemblerScreen::new);
 		event.register(CrystalnexusModMenus.TESSERACT_GUI.get(), TesseractGuiScreen::new);
 		event.register(CrystalnexusModMenus.CIRCUIT_PRESS_GUI.get(), CircuitPressGUIScreen::new);
@@ -145,6 +146,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.GRAVITATIONAL_ARRAY.get(), GravitationalArrayScreen::new);
 		event.register(CrystalnexusModMenus.SOLAR_SIMULATOR.get(), SolarSimulatorScreen::new);
 		event.register(CrystalnexusModMenus.SOLAR_ENGINE.get(), SolarEngineScreen::new);
+		event.register(CrystalnexusModMenus.PLASMA_GENERATOR.get(), PlasmaGeneratorScreen::new);
 	}
 
 	public interface ScreenAccessor {

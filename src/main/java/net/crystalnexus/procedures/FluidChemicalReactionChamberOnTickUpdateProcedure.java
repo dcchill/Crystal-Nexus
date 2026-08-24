@@ -84,7 +84,6 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         }
         activeChamber.getEnergyStorage().extractEnergy(energyCost, false);
         activeChamber.getPersistentData().putDouble("progress", 0);
-        setActive(level, pos, false);
         if (level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity current) sync(level, pos, current);
     }
 

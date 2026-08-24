@@ -39,7 +39,7 @@ public class InverterOnTickUpdateProcedure {
 		String registry_name_no_namespace = "";
 		String registry_name_nugget = "";
 		String registry_name = "";
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);

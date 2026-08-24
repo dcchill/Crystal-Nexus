@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class CenteredMultiblockValidator {
+	private static final int MAX_CONNECTED_CASING = 2_048;
+
 	private CenteredMultiblockValidator() {
 	}
 
@@ -95,8 +97,13 @@ public final class CenteredMultiblockValidator {
 			return null;
 		}
 		Bounds bounds = discoverBounds(world, controllerPos, casingTag);
-		if (bounds == null || !CenteredMultiblockDimensions.isValidBounds(bounds.min, bounds.max)) {
-			lastReason = "Reactor dimensions must each be at least 3 blocks";
+		if (bounds == null) {
+			if (lastReason.isEmpty()) lastReason = "Could not discover connected casing bounds";
+			return null;
+		}
+		if (!CenteredMultiblockDimensions.isValidBounds(bounds.min, bounds.max)) {
+			lastReason = "Multiblock dimensions must be 3-" + CenteredMultiblockDimensions.MAX_DIMENSION
+					+ " blocks with volume at most " + CenteredMultiblockDimensions.MAX_VOLUME;
 			return null;
 		}
 		if (!CenteredMultiblockDimensions.isShellPosition(controllerPos, bounds.min, bounds.max)) {
@@ -145,6 +152,7 @@ public final class CenteredMultiblockValidator {
 			return null;
 		}
 		Set<BlockPos> shell = collectShell(world, shellStart, casingTag);
+		if (shell == null || shell.isEmpty()) return null;
 		int minX = Integer.MAX_VALUE;
 		int minY = Integer.MAX_VALUE;
 		int minZ = Integer.MAX_VALUE;
@@ -164,7 +172,9 @@ public final class CenteredMultiblockValidator {
 
 	private static BlockPos findControllerOnShell(LevelAccessor world, BlockPos shellStart,
 			Block controller, TagKey<Block> casingTag) {
-		for (BlockPos pos : collectShell(world, shellStart, casingTag)) {
+		Set<BlockPos> shell = collectShell(world, shellStart, casingTag);
+		if (shell == null) return null;
+		for (BlockPos pos : shell) {
 			if (world.getBlockState(pos).getBlock() == controller) {
 				return pos;
 			}
@@ -175,6 +185,12 @@ public final class CenteredMultiblockValidator {
 	private static Set<BlockPos> collectShell(LevelAccessor world, BlockPos start, TagKey<Block> casingTag) {
 		Set<BlockPos> visited = new HashSet<>();
 		ArrayDeque<BlockPos> queue = new ArrayDeque<>();
+		int minX = start.getX();
+		int minY = start.getY();
+		int minZ = start.getZ();
+		int maxX = minX;
+		int maxY = minY;
+		int maxZ = minZ;
 		visited.add(start.immutable());
 		queue.add(start.immutable());
 		while (!queue.isEmpty()) {
@@ -184,6 +200,19 @@ public final class CenteredMultiblockValidator {
 				if (!visited.contains(next) && world.getBlockState(next).is(casingTag)) {
 					BlockPos immutable = next.immutable();
 					visited.add(immutable);
+					minX = Math.min(minX, immutable.getX());
+					minY = Math.min(minY, immutable.getY());
+					minZ = Math.min(minZ, immutable.getZ());
+					maxX = Math.max(maxX, immutable.getX());
+					maxY = Math.max(maxY, immutable.getY());
+					maxZ = Math.max(maxZ, immutable.getZ());
+					if (visited.size() > MAX_CONNECTED_CASING
+							|| maxX - minX + 1 > CenteredMultiblockDimensions.MAX_DIMENSION
+							|| maxY - minY + 1 > CenteredMultiblockDimensions.MAX_DIMENSION
+							|| maxZ - minZ + 1 > CenteredMultiblockDimensions.MAX_DIMENSION) {
+						lastReason = "Connected casing network exceeds multiblock safety limits";
+						return null;
+					}
 					queue.add(immutable);
 				}
 			}

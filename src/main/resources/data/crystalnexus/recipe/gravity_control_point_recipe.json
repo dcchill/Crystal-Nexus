@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aba",
+    "ada",
     "bcb",
-    "aba"
+    "ada"
   ],
   "key": {
     "a": {
@@ -15,6 +15,9 @@
     },
     "c": {
       "item": "crystalnexus:energy_singularity"
+    },
+    "d": {
+      "tag": "c:plates/titanium"
     }
   },
   "result": {

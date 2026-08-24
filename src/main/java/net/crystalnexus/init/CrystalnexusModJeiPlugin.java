@@ -7,10 +7,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.Minecraft;
 
-import net.crystalnexus.jei_recipes.UnfurnaceRecipeCategory;
-import net.crystalnexus.jei_recipes.UnfurnaceRecipe;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipeCategory;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
+import net.crystalnexus.jei_recipes.ArcFurnaceRecipeCategory;
+import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.jei_recipes.MultiblockStructureRecipeCategory;
 import net.crystalnexus.jei_recipes.MultiblockStructureRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipeCategory;
@@ -76,7 +76,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<PurificationRecipe> Purification_Type = new mezz.jei.api.recipe.RecipeType<>(PurificationRecipeCategory.UID, PurificationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ExtractinatorJEIRecipe> ExtractinatorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(ExtractinatorJEIRecipeCategory.UID, ExtractinatorJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BeamReactionRecipeRecipe> BeamReactionRecipe_Type = new mezz.jei.api.recipe.RecipeType<>(BeamReactionRecipeRecipeCategory.UID, BeamReactionRecipeRecipe.class);
-	public static mezz.jei.api.recipe.RecipeType<UnfurnaceRecipe> Unfurnace_Type = new mezz.jei.api.recipe.RecipeType<>(UnfurnaceRecipeCategory.UID, UnfurnaceRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<OreCrushingJeiRecipe> OreCrushingJei_Type = new mezz.jei.api.recipe.RecipeType<>(OreCrushingJeiRecipeCategory.UID, OreCrushingJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PartsAssembling_Type = new mezz.jei.api.recipe.RecipeType<>(PartsAssemblingRecipeCategory.UID, PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
@@ -89,6 +88,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static final mezz.jei.api.recipe.RecipeType<ReactionMultiblockGuideRecipe> ReactionMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactionMultiblockGuideRecipeCategory.UID, ReactionMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<MatterTransmutationRecipe> MatterTransmutation_Type = new mezz.jei.api.recipe.RecipeType<>(MatterTransmutationRecipeCategory.UID, MatterTransmutationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<SingularityCompressionRecipe> SingularityCompression_Type = new mezz.jei.api.recipe.RecipeType<>(SingularityCompressionRecipeCategory.UID, SingularityCompressionRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<ArcFurnaceRecipe> ArcFurnace_Type = new mezz.jei.api.recipe.RecipeType<>(ArcFurnaceRecipeCategory.UID, ArcFurnaceRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ChemicalReactionRecipe> ChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(ChemicalReactionRecipeCategory.UID, ChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> FluidChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(FluidChemicalReactionRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<RefiningRecipe> Refining_Type = new mezz.jei.api.recipe.RecipeType<>(RefiningRecipeCategory.UID, RefiningRecipe.class);
@@ -108,7 +108,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new PurificationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ExtractinatorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BeamReactionRecipeRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new UnfurnaceRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new OreCrushingJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -119,6 +118,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new EnergyExtractionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MatterTransmutationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SingularityCompressionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new ArcFurnaceRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new FluidChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new RefiningRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -138,8 +138,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(ExtractinatorJEI_Type, ExtractinatorJEIRecipes);
 		List<BeamReactionRecipeRecipe> BeamReactionRecipeRecipes = recipes(recipeManager, BeamReactionRecipeRecipe.class);
 		registration.addRecipes(BeamReactionRecipe_Type, BeamReactionRecipeRecipes);
-		List<UnfurnaceRecipe> UnfurnaceRecipes = recipes(recipeManager, UnfurnaceRecipe.class);
-		registration.addRecipes(Unfurnace_Type, UnfurnaceRecipes);
 		registration.addRecipes(OreCrushingJei_Type, CrushingRecipeSupport.jeiRecipes(Minecraft.getInstance().level));
 		List<OreCrushingJeiRecipe> generatedCrushing = CrushingRecipeSupport.generatedJeiRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(OreCrushingJei_Type, generatedCrushing);
@@ -161,6 +159,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(MatterTransmutation_Type, MatterTransmutationRecipes);
 		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class);
 		registration.addRecipes(SingularityCompression_Type, SingularityCompressionRecipes);
+		registration.addRecipes(ArcFurnace_Type, recipes(recipeManager, ArcFurnaceRecipe.class));
 		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
 		registration.addRecipes(ChemicalReaction_Type, ChemicalReactionRecipes);
 		List<FluidChemicalReactionRecipe> FluidChemicalReactionRecipes = recipes(recipeManager, FluidChemicalReactionRecipe.class);
@@ -215,7 +214,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_GUIDE.get().asItem()), BeamReactionRecipe_Type);
 		registration.addRecipeCatalyst(new ItemStack(Items.END_CRYSTAL), BeamReactionRecipe_Type);
-		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get().asItem()), Unfurnace_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem()), OreCrushingJei_Type);
@@ -238,6 +236,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ARC_FURNACE.get().asItem()), ArcFurnace_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem()), FluidChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REFINERY.get().asItem()), Refining_Type);

@@ -39,6 +39,23 @@ class CenteredMultiblockValidatorTest {
 		assertEquals(4, CenteredMultiblockDimensions.sizeMultiplier(3));
 	}
 
+	@Test
+	void reactionOutputUsesCappedInteriorVolumeScaling() {
+		assertEquals(1, CenteredMultiblockDimensions.reactionOutputMultiplier(3, 3, 3));
+		assertEquals(2, CenteredMultiblockDimensions.reactionOutputMultiplier(5, 5, 5));
+		assertEquals(3, CenteredMultiblockDimensions.reactionOutputMultiplier(7, 7, 7));
+		assertEquals(4, CenteredMultiblockDimensions.reactionOutputMultiplier(9, 9, 9));
+		assertEquals(2, CenteredMultiblockDimensions.reactionOutputMultiplier(3, 3, 17));
+		assertEquals(4, CenteredMultiblockDimensions.reactionOutputMultiplier(17, 17, 17));
+	}
+
+	@Test
+	void rejectsOversizedBounds() {
+		assertTrue(validSize(17, 17, 17));
+		assertFalse(validSize(18, 3, 3));
+		assertFalse(validSize(17, 17, 18));
+	}
+
 	private static boolean validSize(int x, int y, int z) {
 		return CenteredMultiblockDimensions.isValidBounds(0, 0, 0, x - 1, y - 1, z - 1);
 	}

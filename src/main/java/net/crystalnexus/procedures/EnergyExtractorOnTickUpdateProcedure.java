@@ -25,6 +25,7 @@ import net.crystalnexus.jei_recipes.EnergyExtractionRecipe;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
+import net.crystalnexus.util.EeMatterEconomy;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -42,7 +43,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		// ======================
 		// VISUAL STATE
 		// ======================
-		int state = getBlockNBTNumber(world, pos, "progress") == 0 ? 1 : 2;
+		int state = net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress")) ? 1 : 2;
 		BlockState bs = world.getBlockState(pos);
 		if (bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty prop
 				&& prop.getPossibleValues().contains(state)) {
@@ -54,7 +55,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		// ======================
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 1);
 
-		energyBase = 4096000;
+		energyBase = EeMatterEconomy.EXTRACTION_FE_PER_ITEM;
 		cookTime = 200;
 
 		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
@@ -78,13 +79,13 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		// =========================================================
 		if (hasRecipe) {
 
-			if (getEnergyStored(world, pos, null) < getMaxEnergyStored(world, pos, null)) {
+			if (getMaxEnergyStored(world, pos, null) - getEnergyStored(world, pos, null) >= (int) energyBase) {
 
 				// output slot room + match
-				if (64 != itemFromBlockInventory(world, pos, 2).getCount()) {
+				if (itemFromBlockInventory(world, pos, 2).getCount() < recipeResult.getMaxStackSize()) {
 
 					ItemStack outSlot = itemFromBlockInventory(world, pos, 2).copy();
-					if (outSlot.isEmpty() || outSlot.getItem() == recipeResult.getItem()) {
+					if (outSlot.isEmpty() || ItemStack.isSameItemSameComponents(outSlot, recipeResult)) {
 
 						double prog = getBlockNBTNumber(world, pos, "progress");
 
@@ -115,7 +116,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 
 							// charge internal FE
 							GeneratorEnergyStorage generator = generatorStorage(world, pos);
-							if (generator != null)
+							if (generator != null && generator.generateEnergy((int) energyBase, true) == (int) energyBase)
 								generator.generateEnergy((int) energyBase, false);
 
 							// reset progress and sync

@@ -35,9 +35,6 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ### Chlorophyte Smelter / Iron Smelter / Invertium Smelter / Crystal Smelter / Ultima Smelter
 - Function: Specialized furnaces that melt down dusts or raw clustered materials into ingots or purified forms. Ultima Smelter acts as a multi-purpose high-tier furnace.
 
-### Metallurgic Recrystallizer
-- Function: Recrystallizes components with specific metallurgical properties, essential for higher-tier crafting.
-
 ### Singularity Compressor
 - Function: Extremely high-pressure compressor that condenses thousands of single items (like iron, coal, quartz) into Singularities (dense crafting materials for endgame components).
 

@@ -26,7 +26,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
-		setMachineState(world, pos, getBlockNBTNumber(world, pos, "progress") == 0 ? 1 : 2);
+		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress")) ? 1 : 2);
 
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 2);
 		MachineTier machineTier = MachineTier.from(world.getBlockState(pos));

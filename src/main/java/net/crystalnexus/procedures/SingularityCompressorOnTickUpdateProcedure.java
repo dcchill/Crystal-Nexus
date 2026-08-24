@@ -23,12 +23,9 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
 
-import java.util.stream.Collectors;
-import java.util.List;
-
 public class SingularityCompressorOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		String setitem = "";
+		BlockPos pos = BlockPos.containing(x, y, z);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -47,7 +44,8 @@ public class SingularityCompressorOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (!itemFromBlockInventory(world, pos, 1).isEmpty()) return;
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "item") == 0) {
 					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).is(ItemTags.create(ResourceLocation.parse("crystalnexus:singularity_craftable")))) {
@@ -100,7 +98,8 @@ public class SingularityCompressorOnTickUpdateProcedure {
 			}
 		}
 		if (getEnergyStored(world, BlockPos.containing(x, y, z), null) >= 1024000) {
-			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "item") >= getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxItem")) {
+			if (getBlockNBTNumber(world, pos, "maxItem") > 0
+					&& getBlockNBTNumber(world, pos, "item") >= getBlockNBTNumber(world, pos, "maxItem")) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < 300) {
 					if (!world.isClientSide()) {
 						BlockPos _bp = BlockPos.containing(x, y, z);
@@ -112,29 +111,16 @@ public class SingularityCompressorOnTickUpdateProcedure {
 							_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 					}
 				} else if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= 300) {
+					ItemStack result = getRecipeResult(world, pos);
+					if (result.isEmpty()) return;
 					if (world instanceof ILevelExtension _ext) {
 						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_entityStorage != null)
 							_entityStorage.extractEnergy(1024000, false);
 					}
 					if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-						ItemStack _setstack = (new Object() {
-							public ItemStack getResult() {
-								if (world instanceof Level _lvl) {
-									net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-									List<SingularityCompressionRecipe> recipes = rm.getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
-									for (SingularityCompressionRecipe recipe : recipes) {
-										NonNullList<Ingredient> ingredients = recipe.getIngredients();
-										if (!ingredients.get(0).test(new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(((getBlockNBTString(world, BlockPos.containing(x, y, z), "setItem"))).toLowerCase(java.util.Locale.ENGLISH))))))
-											continue;
-										return recipe.getResultItem(null);
-									}
-								}
-								return ItemStack.EMPTY;
-							}
-						}.getResult()).copy();
-						_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
-						_itemHandlerModifiable.setStackInSlot(1, _setstack);
+						result.setCount(1);
+						_itemHandlerModifiable.setStackInSlot(1, result);
 					}
 					if (!world.isClientSide()) {
 						BlockPos _bp = BlockPos.containing(x, y, z);
@@ -157,6 +143,19 @@ public class SingularityCompressorOnTickUpdateProcedure {
 				}
 			}
 		}
+	}
+
+	private static ItemStack getRecipeResult(LevelAccessor world, BlockPos pos) {
+		if (!(world instanceof Level level)) return ItemStack.EMPTY;
+		String itemId = getBlockNBTString(world, pos, "setItem");
+		if (itemId.isEmpty()) return ItemStack.EMPTY;
+		ItemStack input = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.parse(itemId)));
+		for (RecipeHolder<SingularityCompressionRecipe> holder : level.getRecipeManager().getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE)) {
+			SingularityCompressionRecipe recipe = holder.value();
+			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
+				return recipe.getResultItem(null).copy();
+		}
+		return ItemStack.EMPTY;
 	}
 
 	private static int getRequiredItemCount(LevelAccessor world, BlockPos pos) {

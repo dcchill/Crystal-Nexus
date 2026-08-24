@@ -22,7 +22,6 @@ public class CrystalnexusModJeiInformation implements IModPlugin {
 	public void registerRecipes(IRecipeRegistration registration) {
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.cystal_crusher"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.dust_separator_jei"));
-		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModBlocks.METALLURGIC_RECRYSTALLIZER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.m_recrystallizer_info"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EE_MATTER.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.ee_matter_fe"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get())), VanillaTypes.ITEM_STACK, Component.translatable("jei.crystalnexus.energy_singularity_fe"));
 		registration.addIngredientInfo(List.of(new ItemStack(CrystalnexusModItems.EMPTY_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.OIL_FUEL_CELL.get()), new ItemStack(CrystalnexusModItems.GAS_FUEL_CELL.get()),

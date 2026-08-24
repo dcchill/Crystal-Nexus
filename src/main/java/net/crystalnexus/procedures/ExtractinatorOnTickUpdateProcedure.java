@@ -37,7 +37,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 		double cookTime = 0;
 		double slotnumbercheck = 0;
 		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy();
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);

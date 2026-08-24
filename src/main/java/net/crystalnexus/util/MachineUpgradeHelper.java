@@ -48,6 +48,10 @@ public final class MachineUpgradeHelper {
 		return data != null && data.contains("cook_mult") ? clampCookMultiplier(data.getDouble("cook_mult")) : 1.0;
 	}
 
+	public static double generatorSpeed(ItemStack upgrade) {
+		return 1.0 / cookMultiplier(upgrade);
+	}
+
 	static double clampCookMultiplier(double multiplier) {
 		return Math.clamp(multiplier, MIN_MULTIPLIER, MAX_MULTIPLIER);
 	}

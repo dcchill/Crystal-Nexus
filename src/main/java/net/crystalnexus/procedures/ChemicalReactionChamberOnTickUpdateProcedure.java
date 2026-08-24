@@ -38,7 +38,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		// --- blockstate based on progress ---
-		if (getBlockNBTNumber(world, pos, "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress"))) {
 			setIntegerBlockState(world, pos, "blockstate", 1);
 		} else {
 			setIntegerBlockState(world, pos, "blockstate", 2);

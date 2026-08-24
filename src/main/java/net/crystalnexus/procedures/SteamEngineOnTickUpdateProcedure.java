@@ -29,7 +29,7 @@ public class SteamEngineOnTickUpdateProcedure {
 		double nrgstrt = 0;
 		double T = 0;
 		double energy = 0;
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -47,7 +47,7 @@ public class SteamEngineOnTickUpdateProcedure {
 			}
 		}
 		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
-		feEfficiency = MachineUpgradeHelper.generatorEfficiency(upgrade, 1.25, 1.5);
+		feEfficiency = MachineUpgradeHelper.generatorEfficiency(upgrade, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgrade);
 		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			cookTime = 325;
 		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
@@ -55,7 +55,6 @@ public class SteamEngineOnTickUpdateProcedure {
 		} else {
 			cookTime = 250;
 		}
-		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -135,7 +134,7 @@ public class SteamEngineOnTickUpdateProcedure {
 					_entityStorage.extractEnergy((int) energy, false);
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), Direction.DOWN);
+				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), Direction.EAST);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) energy, false);
 			}

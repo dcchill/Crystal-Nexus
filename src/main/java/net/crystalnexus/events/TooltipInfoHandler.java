@@ -163,9 +163,6 @@ public class TooltipInfoHandler {
 				"Multi-purpose high-tier furnace.",
 				"Smelts multiple stacks of materials.");
 
-		addTooltip("metallurgic_recrystallizer",
-				"Recrystallizes materials.",
-				"Converts refined materials back into raw form.");
 		addTooltip("singularity_compressor",
 				"Extreme high-pressure compressor.",
 				"Condenses thousands of items into Singularities.");

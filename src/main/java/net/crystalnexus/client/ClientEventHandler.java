@@ -22,6 +22,7 @@ import net.crystalnexus.block.entity.QuarryBlockEntity;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
+import net.crystalnexus.block.entity.PlasmaGeneratorControllerBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.client.resources.model.BakedModel;
@@ -131,6 +132,12 @@ public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
         (BlockEntityType<SolarEngineControllerBlockEntity>)
             CrystalnexusModBlockEntities.SOLAR_ENGINE_CONTROLLER.get(),
         net.crystalnexus.client.renderer.SolarEngineRenderer::new
+    );
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<PlasmaGeneratorControllerBlockEntity>)
+            CrystalnexusModBlockEntities.PLASMA_GENERATOR_CONTROLLER.get(),
+        net.crystalnexus.client.renderer.PlasmaGeneratorRenderer::new
     );
 }
 }

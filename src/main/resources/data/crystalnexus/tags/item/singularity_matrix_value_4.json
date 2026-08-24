@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:raw_copper",
+    "minecraft:raw_iron",
+    "minecraft:raw_gold",
+    "crystalnexus:raw_blutonium",
+    "crystalnexus:raw_carbon"
+  ]
+}

@@ -1,14 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "category": "misc",
+  "category": "building",
   "pattern": [
-    "ttt",
-    "ttt",
-    "ttt"
+    "bb ",
+    "bb ",
+    "h  "
   ],
   "key": {
-    "t": {
+    "b": {
       "item": "crystalnexus:tungsten"
+    },
+    "h": {
+      "tag": "c:hammers"
     }
   },
   "result": {

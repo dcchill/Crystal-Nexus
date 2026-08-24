@@ -72,7 +72,7 @@ Now with four times the smelting.
 
 The in-game multiblock guide notes that it can smelt four stacks at once and automatically combines nuggets into ingots. It belongs in late-game bulk processing.
 
-## Purification and Recrystallization
+## Purification
 
 ### Crystal Purifier
 
@@ -80,16 +80,6 @@ The Crystal Purifier creates Crystalized Alloy and Nitrile.
 
 - One Ancient Crystal plus one Iron Ingot produces two Crystalized Alloy Ingots.
 - One Bone Block produces one Nitrile.
-
-### Metallurgic Recrystallizer
-
-Converts ingots into raw ores. Put an Invertium Crystal in the middle slot.
-
-- Output: 1 per operation.
-- FE Efficiency upgrades reduce the operation's FE cost without changing output quantity.
-- Not OP at all.
-
-This machine is like a reverse-processing machine. It is useful when a recipe specifically needs raw ore rather than ingots.
 
 ## Extraction and Generation
 

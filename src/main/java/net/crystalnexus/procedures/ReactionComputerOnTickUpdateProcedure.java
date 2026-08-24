@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.util.EeMatterEconomy;
 
 public class ReactionComputerOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
@@ -28,13 +29,13 @@ public class ReactionComputerOnTickUpdateProcedure {
 		String registry_name_ore = "";
 		String registry_name = "";
 		String registry_name_nugget = "";
-		double outputAmount = 0;
+		int outputAmount;
 		double cookTime = 0;
 		double energy = 0;
 		BlockPos controllerPos = BlockPos.containing(x, y, z);
-		ReactionBlocksCheckerProcedure.executeFromController(world, controllerPos);
-		outputAmount = CenteredMultiblockDimensions.sizeMultiplier((int) getBlockNBTNumber(world, controllerPos, "multiblockRadius"));
-		energy = 10240000;
+		CenteredMultiblockValidator.Link structure = ReactionBlocksCheckerProcedure.executeFromController(world, controllerPos);
+		outputAmount = structure == null ? 1 : CenteredMultiblockDimensions.reactionOutputMultiplier(structure.minBounds, structure.maxBounds);
+		energy = EeMatterEconomy.creationCost(outputAmount);
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
 			if (!world.isClientSide()) {
 				BlockPos _bp = BlockPos.containing(x, y, z);
@@ -75,7 +76,8 @@ public class ReactionComputerOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EE_MATTER.get() || (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem()) {
-				if (64 - itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() >= outputAmount) {
+				int maxStackSize = new ItemStack(CrystalnexusModItems.EE_MATTER.get()).getMaxStackSize();
+				if (maxStackSize - itemFromBlockInventory(world, controllerPos, 0).getCount() >= outputAmount) {
 					if (energy <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < getBlockNBTNumber(world, BlockPos.containing(x, y, z), "maxProgress")) {
 							if (!world.isClientSide()) {
@@ -109,7 +111,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 								_level.sendParticles(ParticleTypes.ELECTRIC_SPARK, (x + 0.5), (y + 0.5), (z + 0.5), 5, 0.5, 0, 0.5, 0);
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								ItemStack _setstack = new ItemStack(CrystalnexusModItems.EE_MATTER.get()).copy();
-								_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (int) outputAmount);
+								_setstack.setCount(itemFromBlockInventory(world, controllerPos, 0).getCount() + outputAmount);
 								_itemHandlerModifiable.setStackInSlot(0, _setstack);
 							}
 						}

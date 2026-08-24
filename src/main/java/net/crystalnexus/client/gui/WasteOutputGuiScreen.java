@@ -10,6 +10,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.WasteOutputGuiMenu;
 import net.crystalnexus.init.CrystalnexusModScreens;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -65,7 +66,10 @@ public class WasteOutputGuiScreen extends AbstractContainerScreen<WasteOutputGui
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.waste_output_gui.label_waste_output"), 77, -10, -12829636, false);
+		String key = world.getBlockState(new net.minecraft.core.BlockPos(x, y, z)).is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get())
+			? "gui.crystalnexus.waste_output_gui.label_item_input"
+			: "gui.crystalnexus.waste_output_gui.label_waste_output";
+		guiGraphics.drawString(this.font, Component.translatable(key), 77, -10, -12829636, false);
 	}
 
 	@Override

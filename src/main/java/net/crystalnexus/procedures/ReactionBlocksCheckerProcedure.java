@@ -17,8 +17,8 @@ public class ReactionBlocksCheckerProcedure {
 				CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get(), CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get(), CASING);
 	}
 
-	public static void executeFromController(LevelAccessor world, BlockPos controllerPos) {
-		CenteredMultiblockValidator.validateFromController(world, controllerPos,
+	public static CenteredMultiblockValidator.Link executeFromController(LevelAccessor world, BlockPos controllerPos) {
+		return CenteredMultiblockValidator.validateFromController(world, controllerPos,
 				CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get(), CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get(), CASING);
 	}
 }

@@ -52,35 +52,24 @@ public class ItemCollectorOnTickUpdateProcedure {
 			{
 				final Vec3 _center = new Vec3(x, y, z);
 				for (Entity entityiterator : world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(3 / 2d), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center))).toList()) {
-					if (entityiterator instanceof ItemEntity) {
-						if ((entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem()) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getItem()) {
-								if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getCount() <= 64) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).copy();
-										_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getCount());
-										_itemHandlerModifiable.setStackInSlot(0, _setstack);
-									}
-									if (!entityiterator.level().isClientSide())
-										entityiterator.discard();
-								}
-							}
-						} else if (Blocks.AIR.asItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem()) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getItem()) {
-								if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getCount() <= 64) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).copy();
-										_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount() + (entityiterator instanceof ItemEntity _itemEnt ? _itemEnt.getItem() : ItemStack.EMPTY).getCount());
-										_itemHandlerModifiable.setStackInSlot(0, _setstack);
-									}
-									if (!entityiterator.level().isClientSide())
-										entityiterator.discard();
-								}
-							}
-						}
-					}
+					if (!(entityiterator instanceof ItemEntity itemEntity)) continue;
+					ItemStack incoming = itemEntity.getItem().copy();
+					ItemStack filter = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2);
+					if (!filter.isEmpty() && !ItemStack.isSameItemSameComponents(filter, incoming)) continue;
+					if (!(world instanceof ILevelExtension ext)
+							|| !(ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable inventory)) continue;
+					ItemStack current = inventory.getStackInSlot(0).copy();
+					if (!current.isEmpty() && !ItemStack.isSameItemSameComponents(current, incoming)) continue;
+					int currentCount = current.getCount();
+					int maxStackSize = current.isEmpty() ? incoming.getMaxStackSize() : current.getMaxStackSize();
+					int moved = Math.min(incoming.getCount(), Math.max(0, maxStackSize - currentCount));
+					if (moved <= 0) continue;
+					ItemStack collected = current.isEmpty() ? incoming.copy() : current;
+					collected.setCount(currentCount + moved);
+					inventory.setStackInSlot(0, collected);
+					incoming.shrink(moved);
+					if (incoming.isEmpty()) itemEntity.discard();
+					else itemEntity.setItem(incoming);
 				}
 			}
 		}

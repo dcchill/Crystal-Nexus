@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [{ "item": "crystalnexus:titanium_carbide_block" }],
+  "result": { "id": "crystalnexus:titanium_carbide_ingot", "count": 9 }
+}

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/carbide_block",
+    "up": "crystalnexus:block/carbide_block",
+    "north": "crystalnexus:block/arc_furnace_on",
+    "east": "crystalnexus:block/carbide_block",
+    "south": "crystalnexus:block/carbide_block",
+    "west": "crystalnexus:block/carbide_block",
+    "particle": "crystalnexus:block/carbide_block"
+  },
+  "render_type": "solid"
+}

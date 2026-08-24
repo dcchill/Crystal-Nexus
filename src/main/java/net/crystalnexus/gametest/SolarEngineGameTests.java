@@ -82,6 +82,34 @@ public final class SolarEngineGameTests {
 		helper.succeed();
 	}
 
+	@GameTest(template = "solar_engine")
+	public static void runningStructureBreakCausesContainmentCollapse(GameTestHelper helper) {
+		BlockPos controllerPos = find(helper, CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get());
+		List<BlockPos> tungsten = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
+		helper.assertTrue(tungsten.size() >= 3, "Solar Engine template must expose casing for ports and a breach");
+		BlockState controllerState = helper.getBlockState(controllerPos);
+		helper.setBlock(controllerPos, Blocks.AIR);
+		helper.setBlock(controllerPos, controllerState);
+		helper.setBlock(tungsten.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+		helper.setBlock(tungsten.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
+		SolarEngineControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
+		MachineFluidInputBlockEntity input = helper.getBlockEntity(tungsten.get(1));
+		input.getFluidInput().fill(new FluidStack(Fluids.WATER, 1_000), IFluidHandler.FluidAction.EXECUTE);
+		helper.assertTrue(controller.validateStructureNow(), "Solar Engine must form before its casing is breached");
+		controller.setItem(0, new ItemStack(CrystalnexusModItems.YELLOW_DWARF_STAR.get()));
+		controller.setExtractionPercent(100);
+		controller.serverTick();
+		helper.assertTrue(controller.isOperating(), "Solar Engine must be running when its casing is breached");
+
+		int casingBeforeBreach = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get()).size();
+		helper.setBlock(tungsten.get(2), Blocks.AIR);
+		helper.assertTrue(!controller.validateStructureNow(), "A breached Solar Engine must collapse");
+		helper.assertTrue(controller.getItem(0).isEmpty(), "The stellar collapse must consume the artificial star");
+		helper.assertTrue(findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get()).size() < casingBeforeBreach - 1,
+			"The stellar collapse must destroy additional tungsten casing");
+		helper.succeed();
+	}
+
 	private static BlockPos find(GameTestHelper helper, net.minecraft.world.level.block.Block block) {
 		return findAll(helper, block).stream().findFirst().orElseThrow(() -> new IllegalStateException("Template is missing " + block));
 	}

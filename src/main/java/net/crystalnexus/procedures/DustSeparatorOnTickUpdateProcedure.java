@@ -76,7 +76,6 @@ public final class DustSeparatorOnTickUpdateProcedure {
         separator.getEnergyStorage().extractEnergy(energyCost, false);
         separator.getPersistentData().putDouble("progress", 0);
         separator.getPersistentData().remove("pendingSecondary");
-        setActive(level, pos, false);
         sync(level, pos, separator);
         return energyText(separator);
     }

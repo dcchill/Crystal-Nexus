@@ -1,187 +1,82 @@
 package net.crystalnexus.procedures;
 
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.common.extensions.ILevelExtension;
-import net.neoforged.neoforge.capabilities.Capabilities;
-
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.BlockPos;
-
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.extensions.ILevelExtension;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 public class SingularityMatrixOnTickUpdateProcedure {
+	private static final int REQUIRED_MATTER = 2_048;
+	private static final TagKey<Item> VALUE_1 = valueTag(1);
+	private static final TagKey<Item> VALUE_4 = valueTag(4);
+	private static final TagKey<Item> VALUE_8 = valueTag(8);
+	private static final TagKey<Item> VALUE_12 = valueTag(12);
+
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		double outputAmount = 0;
-		double cookTime = 0;
-		double slotnumbercheck = 0;
-		cookTime = 2048;
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+		if (world.isClientSide()) return;
+		BlockPos pos = BlockPos.containing(x, y, z);
+		setNumber(world, pos, "maxProgress", REQUIRED_MATTER);
+
+		if (!(world instanceof ILevelExtension ext)
+				|| !(ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inventory)) return;
+
+		ItemStack input = inventory.getStackInSlot(0);
+		ItemStack output = inventory.getStackInSlot(1);
+		ItemStack eeMatter = new ItemStack(CrystalnexusModItems.EE_MATTER.get());
+		int value = matterValue(input);
+		if (value <= 0 || input.is(CrystalnexusModItems.UNSTABLE_EE_MATTER.get())
+				|| !output.isEmpty() && !ItemStack.isSameItemSameComponents(output, eeMatter)
+				|| output.getCount() >= eeMatter.getMaxStackSize()) return;
+
+		ItemStack remaining = input.copy();
+		remaining.shrink(1);
+		inventory.setStackInSlot(0, remaining);
+		double progress = getNumber(world, pos, "progress") + value;
+		if (progress < REQUIRED_MATTER) {
+			setNumber(world, pos, "progress", progress);
+			return;
 		}
-		if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.UNSTABLE_EE_MATTER.get())
-				&& !((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())
-				&& ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.EE_MATTER.get() && itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() != 64
-						|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem())) {
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).is(ItemTags.create(ResourceLocation.parse("c:gems")))) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 12));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).is(ItemTags.create(ResourceLocation.parse("c:ingots")))) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 8));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).is(ItemTags.create(ResourceLocation.parse("c:raw_materials")))) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 4));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getRarity() == Rarity.UNCOMMON) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 64));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getRarity() == Rarity.RARE) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 128));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getRarity() == Rarity.EPIC) {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 256));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			} else {
-				if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-					int _slotid = 0;
-					ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-					_stk.shrink(1);
-					_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-				}
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
-			}
-		}
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("progress", 0);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-			if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-				ItemStack _setstack = new ItemStack(CrystalnexusModItems.EE_MATTER.get()).copy();
-				_setstack.setCount(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + 1);
-				_itemHandlerModifiable.setStackInSlot(1, _setstack);
-			}
-		}
+
+		setNumber(world, pos, "progress", 0);
+		eeMatter.setCount(output.getCount() + 1);
+		inventory.setStackInSlot(1, eeMatter);
 	}
 
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
+	static int matterValue(ItemStack stack) {
+		if (stack.isEmpty()) return 0;
+		if (stack.is(VALUE_12)) return 12;
+		if (stack.is(VALUE_8)) return 8;
+		if (stack.is(VALUE_4)) return 4;
+		return stack.is(VALUE_1) ? 1 : 0;
 	}
 
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
+	private static TagKey<Item> valueTag(int value) {
+		return ItemTags.create(ResourceLocation.fromNamespaceAndPath("crystalnexus", "singularity_matrix_value_" + value));
+	}
+
+	private static double getNumber(LevelAccessor world, BlockPos pos, String key) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
+		return blockEntity == null ? 0 : blockEntity.getPersistentData().getDouble(key);
+	}
+
+	private static void setNumber(LevelAccessor world, BlockPos pos, String key, double value) {
+		BlockEntity blockEntity = world.getBlockEntity(pos);
+		if (blockEntity == null || blockEntity.getPersistentData().getDouble(key) == value) return;
+		blockEntity.getPersistentData().putDouble(key, value);
+		if (world instanceof Level level) {
+			BlockState state = world.getBlockState(pos);
+			level.sendBlockUpdated(pos, state, state, 3);
+		}
 	}
 }

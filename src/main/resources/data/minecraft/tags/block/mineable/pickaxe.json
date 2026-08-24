@@ -106,7 +106,6 @@
     "crystalnexus:light_gray_heavy_iron_block",
     "crystalnexus:reinforced_concrete_slab",
     "crystalnexus:turbine",
-    "crystalnexus:metallurgic_recrystallizer",
     "crystalnexus:ore_processor",
     "crystalnexus:chlorophyte_smelter",
     "crystalnexus:small_sulfur_crystal",
@@ -162,6 +161,11 @@
     "crystalnexus:machine_fluid_input",
     "crystalnexus:tungsten_block",
     "crystalnexus:solar_engine_controller",
-    "crystalnexus:machine_energy_output"
+    "crystalnexus:machine_energy_output",
+    "crystalnexus:arc_furnace",
+    "crystalnexus:titanium_carbide_block",
+    "crystalnexus:plasma_generator_controller",
+    "crystalnexus:heating_core",
+    "crystalnexus:multiblock_item_input"
   ]
 }

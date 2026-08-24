@@ -110,7 +110,7 @@ public class TurbineEnergyProcedure {
 					_entityStorage.extractEnergy((int) energy, false);
 			}
 			if (world instanceof ILevelExtension _ext) {
-				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), Direction.DOWN);
+				IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x - 1, y, z), Direction.EAST);
 				if (_entityStorage != null)
 					_entityStorage.receiveEnergy((int) energy, false);
 			}

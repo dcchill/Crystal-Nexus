@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "bb ",
+    "bb ",
+    "h  "
+  ],
+  "key": {
+    "b": {
+      "item": "crystalnexus:titanium_carbide_ingot"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_carbide_block",
+    "count": 1
+  }
+}

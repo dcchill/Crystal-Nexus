@@ -3,18 +3,24 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "bdb",
-    "aba"
+    "cdc",
+    "aea"
   ],
   "key": {
     "a": {
       "item": "crystalnexus:tungsten"
     },
     "b": {
+      "item": "crystalnexus:machine_energy_output"
+    },
+    "c": {
       "item": "crystalnexus:tungsten_block"
     },
     "d": {
       "item": "crystalnexus:hyper_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:machine_fluid_input"
     }
   },
   "result": {

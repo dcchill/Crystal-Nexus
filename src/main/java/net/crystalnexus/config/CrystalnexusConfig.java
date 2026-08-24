@@ -1,6 +1,7 @@
 package net.crystalnexus.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.crystalnexus.util.EeMatterEconomy;
 
 public final class CrystalnexusConfig {
 	private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -74,6 +75,7 @@ public final class CrystalnexusConfig {
 		private static final int DEFAULT_DEPOT_BASE_CAPACITY = 20480;
 
 		public final EnergyValues AOE_CHARGER;
+		public final EnergyValues ARC_FURNACE;
 		public final AoeChargerValues AOE_CHARGER_BEHAVIOR;
 		public final EnergyValues BASIC_ENERGY_CABLE;
 		public final EnergyValues BATTERY;
@@ -109,7 +111,6 @@ public final class CrystalnexusConfig {
 		public final EnergyValues MACHINE_ENERGY_INPUT;
 		public final EnergyValues MATTER_TRANSMUTATION_TABLE;
 		public final MachineProcessValues MATTER_TRANSMUTATION_PROCESS;
-		public final EnergyValues METALLURGIC_RECRYSTALLIZER;
 		public final EnergyValues NODE_EXTRACTOR;
 		public final EnergyValues NODE_MINER;
 		public final EnergyValues ORE_PROCESSOR;
@@ -137,6 +138,7 @@ public final class CrystalnexusConfig {
 		private Machines(ModConfigSpec.Builder builder) {
 			builder.push("machines");
 			AOE_CHARGER = new EnergyValues(builder, "aoe_charger", 20480, 20480, 10240);
+			ARC_FURNACE = new EnergyValues(builder, "arc_furnace", 40960, 5120, 5120);
 			AOE_CHARGER_BEHAVIOR = new AoeChargerValues(builder);
 			BASIC_ENERGY_CABLE = new EnergyValues(builder, "basic_energy_cable", 10240, 1024, 1024);
 			BATTERY = new EnergyValues(builder, "battery", 4096000, 512000, 512000);
@@ -158,7 +160,7 @@ public final class CrystalnexusConfig {
 			ELECTROMAGNET = new EnergyValues(builder, "electromagnet", 512000, 20480, 10240);
 			ENERGY_CABLE = new EnergyValues(builder, "energy_cable", 102400, 51200, 51200);
 			ENERGY_CABLE_MK2 = new EnergyValues(builder, "energy_cable_mk2", 1024000, 512000, 512000);
-			ENERGY_EXTRACTOR = new EnergyValues(builder, "energy_extractor", 2048000, 512000, 512000);
+			ENERGY_EXTRACTOR = new EnergyValues(builder, "energy_extractor", EeMatterEconomy.EXTRACTION_FE_PER_ITEM * 2, 512000, 512000);
 			EXTRACTINATOR = new EnergyValues(builder, "extractinator", 10240, 2048, 2048);
 			FACTORY_CONTROLLER = new EnergyValues(builder, "factory_controller", 65536, 65536, 65536);
 			FACTORY_ITEM_CONTROLLER = new EnergyValues(builder, "factory_item_controller", 65536, 65536, 65536);
@@ -172,14 +174,13 @@ public final class CrystalnexusConfig {
 			MACHINE_ENERGY_INPUT = new EnergyValues(builder, "machine_energy_input", 40960, 20480, 40960);
 			MATTER_TRANSMUTATION_TABLE = new EnergyValues(builder, "matter_transmutation_table", 20480, 2048, 2048);
 			MATTER_TRANSMUTATION_PROCESS = new MachineProcessValues(builder, "matter_transmutation_process", 100, 1024);
-			METALLURGIC_RECRYSTALLIZER = new EnergyValues(builder, "metallurgic_recrystallizer", 40960, 5120, 20480);
 			NODE_EXTRACTOR = new EnergyValues(builder, "node_extractor", 25600, 16384, 8192);
 			NODE_MINER = new EnergyValues(builder, "node_miner", 25600, 16384, 8192);
 			ORE_PROCESSOR = new EnergyValues(builder, "ore_processor", 102400, 10240, 20480);
 			PISTON_GENERATOR = new EnergyValues(builder, "piston_generator", 40960, 2048, 1024);
 			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 512000, 32768, 32768);
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
-			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", 10240000, 512000, 10240000);
+			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", EeMatterEconomy.creationCost(4), 512000, EeMatterEconomy.creationCost(4));
 			REACTION_ENERGY_INPUT = new EnergyValues(builder, "reaction_energy_input", 8192000, 4096000, 512000);
 			REACTOR_COMPUTER = new EnergyValues(builder, "reactor_computer", 4096000, 1024000, 1024000);
 			REACTOR_ENERGY_OUTPUT = new EnergyValues(builder, "reactor_energy_output", 10024000, 512000, 10024000);

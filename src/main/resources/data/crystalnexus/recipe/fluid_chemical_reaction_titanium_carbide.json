@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:sulfuric_acid", "amount": 100 },
+  "fluid_input_2": { "fluid": "crystalnexus:overfuel", "amount": 10 },
+  "item_input_1": { "item": "minecraft:netherite_scrap" },
+  "item_input_2": { "item": "crystalnexus:titanium_ingot" },
+  "item_output": { "id": "crystalnexus:titanium_carbide_ingot", "count": 1 }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "rcr",
+    "ccc",
+    "rcr"
+  ],
+  "key": {
+    "c": {
+      "item": "crystalnexus:titanium_heating_coil"
+    },
+    "r": {
+      "tag": "c:plates/titanium"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:heating_core",
+    "count": 1
+  }
+}

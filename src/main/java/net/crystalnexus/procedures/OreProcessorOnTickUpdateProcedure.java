@@ -9,6 +9,7 @@ import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.util.MachineUpgradeHelper;
+import net.crystalnexus.util.MachineAnimationHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -65,8 +66,9 @@ public final class OreProcessorOnTickUpdateProcedure {
 		processStage(level, pos, inventory, upgrade, 2, 3, "progress2", cookTime,
 				separation.output(), separation.inputCount(), ENERGY_PER_OPERATION);
 		combineNuggets(inventory);
-		setActive(level, pos, blockEntity.getPersistentData().getDouble("progress") > 0
-				|| blockEntity.getPersistentData().getDouble("progress2") > 0);
+		double visualProgress = Math.max(blockEntity.getPersistentData().getDouble("progress"),
+			blockEntity.getPersistentData().getDouble("progress2"));
+		setActive(level, pos, !MachineAnimationHelper.shouldIdle(level, pos, visualProgress));
 		blockEntity.setChanged();
 		level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
 	}

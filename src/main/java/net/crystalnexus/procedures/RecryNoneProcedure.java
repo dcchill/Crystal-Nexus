@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 
 public class RecryNoneProcedure {
 	public static boolean execute(LevelAccessor world, double x, double y, double z) {
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			return true;
 		}
 		return false;

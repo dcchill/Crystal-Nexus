@@ -36,9 +36,10 @@
     "crystalnexus:extractinator",
     "crystalnexus:steam_engine",
     "crystalnexus:energy_extractor",
-    "crystalnexus:metallurgic_recrystallizer",
     "crystalnexus:invert_piston_generator",
     "crystalnexus:chlorophyte_smelter",
-    "crystalnexus:ore_processor"
+    "crystalnexus:ore_processor",
+    "crystalnexus:arc_furnace",
+    "crystalnexus:plasma_generator_controller"
   ]
 }

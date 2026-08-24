@@ -19,7 +19,8 @@ import javax.annotation.Nullable;
 public final class MachineFluidInputBlockEntity extends BlockEntity {
     public static final int CAPACITY = 1_000_000;
     private final FluidTank tank = new FluidTank(CAPACITY,
-        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get()) || stack.is(Fluids.WATER)) {
+        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())
+            || stack.is(CrystalnexusModFluids.ARGON.get()) || stack.is(Fluids.WATER)) {
         @Override protected void onContentsChanged() { sync(); }
     };
     private final IFluidHandler input = new IFluidHandler() {

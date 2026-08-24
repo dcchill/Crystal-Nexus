@@ -3,6 +3,9 @@ package net.crystalnexus.procedures;
 import net.minecraft.core.BlockPos;
 
 final class CenteredMultiblockDimensions {
+	static final int MAX_DIMENSION = 17;
+	static final long MAX_VOLUME = 4_913;
+
 	private CenteredMultiblockDimensions() {
 	}
 
@@ -11,7 +14,11 @@ final class CenteredMultiblockDimensions {
 	}
 
 	static boolean isValidBounds(int minX, int minY, int minZ, int maxX, int maxY, int maxZ) {
-		return size(minX, maxX) >= 3 && size(minY, maxY) >= 3 && size(minZ, maxZ) >= 3;
+		int sizeX = size(minX, maxX);
+		int sizeY = size(minY, maxY);
+		int sizeZ = size(minZ, maxZ);
+		return sizeX >= 3 && sizeY >= 3 && sizeZ >= 3 && sizeX <= MAX_DIMENSION && sizeY <= MAX_DIMENSION
+				&& sizeZ <= MAX_DIMENSION && (long) sizeX * sizeY * sizeZ <= MAX_VOLUME;
 	}
 
 	static boolean isInside(BlockPos pos, BlockPos min, BlockPos max) {
@@ -48,6 +55,18 @@ final class CenteredMultiblockDimensions {
 
 	static int sizeMultiplier(int radius) {
 		return 1 << Math.max(0, Math.min(30, radius - 1));
+	}
+
+	static int reactionOutputMultiplier(BlockPos min, BlockPos max) {
+		return reactionOutputMultiplier(size(min.getX(), max.getX()), size(min.getY(), max.getY()), size(min.getZ(), max.getZ()));
+	}
+
+	static int reactionOutputMultiplier(int sizeX, int sizeY, int sizeZ) {
+		long interiorVolume = (long) Math.max(1, sizeX - 2) * Math.max(1, sizeY - 2) * Math.max(1, sizeZ - 2);
+		if (interiorVolume <= 1) return 1;
+		if (interiorVolume <= 64) return 2;
+		if (interiorVolume <= 216) return 3;
+		return 4;
 	}
 
 	private static int size(int min, int max) {

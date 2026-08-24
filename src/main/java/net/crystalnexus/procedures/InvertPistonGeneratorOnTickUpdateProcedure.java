@@ -45,7 +45,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
         int ENERGY_PER_TICK;
         int COOK_TIME;
 
-        ENERGY_PER_TICK = (int) (1024 * MachineUpgradeHelper.generatorEfficiency(upgradeStack, 1.25, 1.5));
+        ENERGY_PER_TICK = (int) (1024 * MachineUpgradeHelper.generatorEfficiency(upgradeStack, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgradeStack));
 
         // Acceleration upgrade
         if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
@@ -55,8 +55,6 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
         } else {
             COOK_TIME = 350;
         }
-        COOK_TIME = (int) MachineUpgradeHelper.cookTime(upgradeStack, COOK_TIME);
-
         be.getPersistentData().putDouble("maxProgress", COOK_TIME);
 
         // --- Slots ---

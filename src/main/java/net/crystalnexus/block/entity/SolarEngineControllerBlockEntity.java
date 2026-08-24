@@ -146,6 +146,12 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 			.filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get())).toList();
 		List<BlockPos> nextInputs = substitutions.stream()
 			.filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get())).toList();
+		boolean nextFormed = match.isPresent() && !nextOutputs.isEmpty() && !nextInputs.isEmpty()
+			&& nextOutputs.size() + nextInputs.size() == substitutions.size();
+		if (formed && operating && !nextFormed) {
+			containmentFailure(level);
+			return;
+		}
 
 		for (BlockPos old : List.copyOf(energyOutputs)) if (!nextOutputs.contains(old)
 			&& level.getBlockEntity(old) instanceof MachineEnergyOutputBlockEntity output) output.unbindController(worldPosition);
@@ -162,8 +168,6 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 			fluidInputs.add(pos);
 		}
 
-		boolean nextFormed = match.isPresent() && !energyOutputs.isEmpty() && !fluidInputs.isEmpty()
-			&& energyOutputs.size() + fluidInputs.size() == substitutions.size();
 		Vec3 nextCenter = nextFormed ? match.orElseThrow().center() : null;
 		if (formed != nextFormed || !Objects.equals(formationCenter, nextCenter)) {
 			formed = nextFormed;
@@ -229,6 +233,10 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 	}
 
 	public void onControllerRemoved() {
+		if (operating && level instanceof ServerLevel serverLevel) {
+			containmentFailure(serverLevel);
+			return;
+		}
 		if (level != null) {
 			for (BlockPos pos : energyOutputs) if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output)
 				output.unbindController(worldPosition);

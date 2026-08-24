@@ -32,7 +32,7 @@ public class FluidPackagerOnTickUpdateProcedure {
 		outputAmount = 1;
 
 		// --- visuals: blockstate 1 when idle, 2 when working ---
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);

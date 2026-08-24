@@ -27,7 +27,7 @@ public class SteamChamberOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		double outputAmount = 0;
 		double cookTime = 0;
-		if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") == 0) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			if ((world.getBlockState(BlockPos.containing(x, y + 1, z))).getBlock() == CrystalnexusModBlocks.STEAM_COLLECTOR.get()) {
 				{
 					int _value = 3;

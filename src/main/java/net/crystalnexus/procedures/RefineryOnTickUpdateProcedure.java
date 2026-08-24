@@ -50,7 +50,6 @@ public final class RefineryOnTickUpdateProcedure {
         refinery.setItem(1, produced);
         refinery.getEnergyStorage().extractEnergy(energyCost, false);
         refinery.getPersistentData().putDouble("progress", 0);
-        setActive(level, pos, false);
         sync(level, pos, refinery);
     }
 

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.WorldlyContainer;
@@ -68,6 +69,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 
 	// How many air/unmineable positions we can skip per tick while searching
 	private static final int SKIP_LIMIT_PER_TICK = 1024;
+	private static final ItemStack VIRTUAL_TOOL = new ItemStack(Items.NETHERITE_PICKAXE);
 
 	// ----------------- INVENTORY -----------------
 	// Slots: 0..8 output, 9 upgrade
@@ -264,12 +266,13 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 
 		LootParams.Builder builder = new LootParams.Builder((net.minecraft.server.level.ServerLevel) level)
 			.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-			.withParameter(LootContextParams.TOOL, ItemStack.EMPTY);
+			.withParameter(LootContextParams.TOOL, VIRTUAL_TOOL.copy());
 
 		BlockEntity maybeBe = level.getBlockEntity(pos);
 		if (maybeBe != null) builder.withOptionalParameter(LootContextParams.BLOCK_ENTITY, maybeBe);
 
 		List<ItemStack> drops = state.getDrops(builder);
+		if (drops.isEmpty()) return true;
 
 		if (!canAcceptAllDrops(level, drops)) return false;
 
