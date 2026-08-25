@@ -125,7 +125,7 @@ public class CraftingFactoryBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Crafting Factory");
+					return Component.translatable(getDescriptionId());
 				}
 
 				@Override

@@ -11,6 +11,7 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.CraftingFactoryGUIMenu;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
+import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -61,6 +62,7 @@ public class CraftingFactoryGUIScreen extends AbstractContainerScreen<CraftingFa
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), this.leftPos + -33, this.topPos + -1, 0, 0, 48, 48, 48, 48);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow.png"), this.leftPos + 73, this.topPos + 36, 0, 0, 18, 14, 18, 14);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 89, this.topPos + 47, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/red.png"), this.leftPos + 132, this.topPos + 34, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		RenderSystem.disableBlend();

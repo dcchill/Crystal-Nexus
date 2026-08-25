@@ -42,6 +42,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_HAMMER.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_HAMMER.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_INGOT.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_MACHINE_FRAME.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_CIRCUIT_PRESS.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_SHEET.get());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_CARBIDE_GLASS.get().asItem());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_HAMMER.get());
@@ -220,6 +223,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.IRON_SHEET.get());
 				tabData.accept(CrystalnexusModItems.COPPER_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_SHEET.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.GOLD_ROD.get());
 				tabData.accept(CrystalnexusModItems.IRON_ROD.get());
 				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());
@@ -465,6 +469,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ITEM_COLLECTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());
@@ -524,6 +530,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.IRON_SHEET.get());
 				tabData.accept(CrystalnexusModItems.COPPER_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_SHEET.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.GOLD_ROD.get());
 				tabData.accept(CrystalnexusModItems.IRON_ROD.get());
 				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());

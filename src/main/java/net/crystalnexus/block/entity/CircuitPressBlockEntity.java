@@ -96,7 +96,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Chlorophyte Circuit Press");
+		return Component.translatable(getBlockState().getBlock().getDescriptionId());
 	}
 
 	@Override

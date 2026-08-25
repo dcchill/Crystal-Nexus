@@ -1,34 +1,23 @@
 package net.crystalnexus.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 
 public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBlockEntity> {
-    private static final ResourceLocation BELT_TEXTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "block/cbelt_anim");
-    private static final double BELT_Y = 0.505D;
     private static final double ITEM_Y = 0.56D;
-    private static final double BELT_HALF_WIDTH = 0.34D;
-    private static final int CURVE_SAMPLES = 12;
 
     public ConveyerBeltBER(BlockEntityRendererProvider.Context ctx) {}
 
@@ -47,46 +36,7 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         LocalCurve curve = curveFor(be, facing);
 
-        renderBeltSurface(poseStack, buffer, packedLight, packedOverlay, curve);
         renderItems(be, partialTick, poseStack, buffer, packedLight, packedOverlay, curve);
-    }
-
-    private void renderBeltSurface(PoseStack poseStack, MultiBufferSource buffer, int packedLight, int packedOverlay, LocalCurve curve) {
-        TextureAtlasSprite sprite = Minecraft.getInstance()
-                .getTextureAtlas(TextureAtlas.LOCATION_BLOCKS)
-                .apply(BELT_TEXTURE);
-        VertexConsumer consumer = buffer.getBuffer(Sheets.translucentCullBlockSheet());
-        Matrix4f matrix = poseStack.last().pose();
-
-        Vec3 previous = curve.position(0.0D);
-        double traveled = 0.0D;
-        for (int i = 1; i <= CURVE_SAMPLES; i++) {
-            double t = (double) i / (double) CURVE_SAMPLES;
-            Vec3 current = curve.position(t);
-            Vec3 delta = current.subtract(previous);
-            double len = Math.sqrt(delta.x * delta.x + delta.z * delta.z);
-            if (len < 1.0E-5D) {
-                previous = current;
-                continue;
-            }
-
-            double nx = -delta.z / len * BELT_HALF_WIDTH;
-            double nz = delta.x / len * BELT_HALF_WIDTH;
-
-            Vec3 left0 = new Vec3(previous.x + nx, BELT_Y, previous.z + nz);
-            Vec3 right0 = new Vec3(previous.x - nx, BELT_Y, previous.z - nz);
-            Vec3 left1 = new Vec3(current.x + nx, BELT_Y, current.z + nz);
-            Vec3 right1 = new Vec3(current.x - nx, BELT_Y, current.z - nz);
-
-            float v0 = wrapV(sprite, traveled);
-            traveled += len * 3.5D;
-            float v1 = wrapV(sprite, traveled);
-            float u0 = sprite.getU0();
-            float u1 = sprite.getU1();
-
-            quad(consumer, matrix, left0, right0, right1, left1, u0, u1, v0, v1, packedLight, packedOverlay);
-            previous = current;
-        }
     }
 
     private void renderItems(ConveyerBeltBaseBlockEntity be, float partialTick, PoseStack poseStack,
@@ -232,31 +182,6 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
             return neighborFacing == ownFacing || neighborFacing == ownFacing.getClockWise() || neighborFacing == ownFacing.getCounterClockWise() ? candidatePos : null;
         }
         return neighborFacing == ownFacing || neighborFacing == ownFacing.getClockWise() || neighborFacing == ownFacing.getCounterClockWise() ? candidatePos : null;
-    }
-
-    private float wrapV(TextureAtlasSprite sprite, double traveled) {
-        float wrapped = (float) ((traveled * 16.0D) % 16.0D);
-        if (wrapped < 0.0F) {
-            wrapped += 16.0F;
-        }
-        return sprite.getV(wrapped);
-    }
-
-    private void quad(VertexConsumer consumer, Matrix4f matrix, Vec3 a, Vec3 b, Vec3 c, Vec3 d,
-                      float u0, float u1, float v0, float v1, int packedLight, int packedOverlay) {
-        vertex(consumer, matrix, a, u0, v0, packedLight, packedOverlay);
-        vertex(consumer, matrix, b, u1, v0, packedLight, packedOverlay);
-        vertex(consumer, matrix, c, u1, v1, packedLight, packedOverlay);
-        vertex(consumer, matrix, d, u0, v1, packedLight, packedOverlay);
-    }
-
-    private void vertex(VertexConsumer consumer, Matrix4f matrix, Vec3 point, float u, float v, int packedLight, int packedOverlay) {
-        consumer.addVertex(matrix, (float) point.x, (float) point.y, (float) point.z)
-                .setColor(1.0F, 1.0F, 1.0F, 1.0F)
-                .setUv(u, v)
-                .setOverlay(packedOverlay)
-                .setUv2(packedLight & 0xFFFF, (packedLight >> 16) & 0xFFFF)
-                .setNormal(0.0F, 1.0F, 0.0F);
     }
 
     private record LocalCurve(Vec3 start, Vec3 control, Vec3 end) {

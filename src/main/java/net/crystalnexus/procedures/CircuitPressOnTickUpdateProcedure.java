@@ -28,6 +28,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -41,6 +42,10 @@ public class CircuitPressOnTickUpdateProcedure {
 		String registry_name_ore = "";
 		String registry_name_nugget = "";
 		outputAmount = 1;
+		BlockPos pressPos = BlockPos.containing(x, y, z);
+		boolean batchPress = world.getBlockState(pressPos).is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get());
+		int batchSize = batchPress ? 8 : 1;
+		outputAmount = batchSize;
 
 		// Blockstate animation
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
@@ -133,8 +138,8 @@ public class CircuitPressOnTickUpdateProcedure {
 		}
 
 		// ---- OUTPUT LIMIT FIX (respects handler slot limit + item max stack size) ----
-		int MACHINE_MAX_OUTPUT = 4; // per craft
-		int out = (int) Math.floor(outputAmount);
+		int MACHINE_MAX_OUTPUT = batchPress ? 8 : 4;
+		int out = (int) Math.floor(outputAmount * _cn_result.getCount());
 		if (out < 0)
 			out = 0;
 		if (out > MACHINE_MAX_OUTPUT)
@@ -164,7 +169,10 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		// Main machine logic
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
-			if (MachineUpgradeHelper.energyCost(_cn_upg, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
+			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
+			if (_cn_input.getCount() >= batchSize && _cn_material.getCount() >= batchSize
+					&& MachineUpgradeHelper.energyCost(_cn_upg, 4096 * batchSize) <= getEnergyStored(world, pressPos, null)) {
 
 				// Only allow processing if output slot is compatible and has space
 				if (out > 0) {
@@ -212,13 +220,13 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 0;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
+								_stk.shrink(batchSize);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 2;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(1);
+								_stk.shrink(batchSize);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
 
@@ -237,7 +245,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
-									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096), false);
+									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096 * batchSize), false);
 							}
 						}
 					}

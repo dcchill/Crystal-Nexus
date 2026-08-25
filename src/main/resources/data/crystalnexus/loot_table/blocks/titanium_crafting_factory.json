@@ -1,0 +1,1 @@
+{"type":"minecraft:block","random_sequence":"crystalnexus:blocks/titanium_crafting_factory","pools":[{"rolls":1.0,"conditions":[{"condition":"minecraft:survives_explosion"}],"entries":[{"type":"minecraft:item","name":"crystalnexus:titanium_crafting_factory"}]}]}

@@ -11,10 +11,10 @@
       "item": "crystalnexus:carbon_fiber"
     },
     "b": {
-      "item": "crystalnexus:heating_coil"
+      "item": "crystalnexus:titanium_heating_coil"
     },
     "c": {
-      "item": "crystalnexus:energy_singularity"
+      "item": "crystalnexus:dark_matter"
     },
     "d": {
       "tag": "c:plates/titanium"

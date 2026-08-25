@@ -275,6 +275,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TESSERACT_OUTPUT = block(CrystalnexusModBlocks.TESSERACT_OUTPUT);
 	public static final DeferredItem<Item> BLANK_CHIP = REGISTRY.register("blank_chip", BlankChipItem::new);
 	public static final DeferredItem<Item> CIRCUIT_PRESS = block(CrystalnexusModBlocks.CIRCUIT_PRESS);
+	public static final DeferredItem<Item> TITANIUM_CARBIDE_MACHINE_FRAME = block(CrystalnexusModBlocks.TITANIUM_CARBIDE_MACHINE_FRAME);
+	public static final DeferredItem<Item> TITANIUM_CARBIDE_CIRCUIT_PRESS = block(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS);
 	public static final DeferredItem<Item> BLU_TNT = block(CrystalnexusModBlocks.BLU_TNT);
 	public static final DeferredItem<Item> FACTORY_CONTROLLER = block(CrystalnexusModBlocks.FACTORY_CONTROLLER);
 	public static final DeferredItem<Item> FACTORY_ITEM_CONTROLLER = block(CrystalnexusModBlocks.FACTORY_ITEM_CONTROLLER);
@@ -349,6 +351,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TITANIUM_SHEET = REGISTRY.register("titanium_sheet", TitaniumSheetItem::new);
 	public static final DeferredItem<Item> TITANIUM_INGOT = REGISTRY.register("titanium_ingot", TitaniumIngotItem::new);
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_INGOT = REGISTRY.register("titanium_carbide_ingot", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TITANIUM_CARBIDE_SHEET = REGISTRY.register("titanium_carbide_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_BLOCK = block(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK);
 	public static final DeferredItem<Item> ARC_FURNACE = block(CrystalnexusModBlocks.ARC_FURNACE);
 	public static final DeferredItem<Item> RAW_ILMENITE = REGISTRY.register("raw_ilmenite", RawIlmeniteItem::new);
@@ -477,6 +480,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ITEM_ELEVATOR = block(CrystalnexusModBlocks.ITEM_ELEVATOR);
 	public static final DeferredItem<Item> ITEM_ELEVATOR_DOWN = block(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN);
 	public static final DeferredItem<Item> CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRAFTING_FACTORY);
+	public static final DeferredItem<Item> CRYSTAL_CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY);
+	public static final DeferredItem<Item> TITANIUM_CRAFTING_FACTORY = block(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY);
 	public static final DeferredItem<Item> MACHINE_BOLT = REGISTRY.register("machine_bolt", MachineBoltItem::new);
 	public static final DeferredItem<Item> PURE_BLUTONIUM = REGISTRY.register("pure_blutonium", PureBlutoniumItem::new);
 	public static final DeferredItem<Item> IRON_MACHINE_BOLT = REGISTRY.register("iron_machine_bolt", IronMachineBoltItem::new);

@@ -183,7 +183,15 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	public void neighborChanged(BlockState blockstate, Level world, BlockPos pos, Block neighborBlock, BlockPos fromPos, boolean moving) {
 		super.neighborChanged(blockstate, world, pos, neighborBlock, fromPos, moving);
 		ConveyerBeltNeighbourBlockChangesProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+		if (!world.isClientSide) {
+			ConveyerBeltMode.updateAutomatic(world, pos);
+		}
 		updateCurveState(world, pos);
+	}
+
+	@Override
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+		ConveyerBeltMode.updateAutomatic(world, pos);
 	}
 
 	private void updateCurveState(Level world, BlockPos pos) {

@@ -2,6 +2,12 @@ package net.crystalnexus.item;
 
 import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.DepotCableMode;
+import net.crystalnexus.block.ConveyerBeltMode;
+import net.crystalnexus.block.ConveyerBeltBlock;
+import net.crystalnexus.block.ConveyerBeltInputBlock;
+import net.crystalnexus.block.ConveyerBeltOutputBlock;
+import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.block.PipeStraightBlock;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.util.WrenchLinePlacement;
@@ -47,6 +53,18 @@ public class CrystalWrenchItem extends Item {
 
         if (player == null) {
             return InteractionResult.PASS;
+        }
+
+        Block block = level.getBlockState(pos).getBlock();
+        if (!player.isShiftKeyDown() && (block instanceof ConveyerBeltBlock
+                || block instanceof ConveyerBeltInputBlock
+                || block instanceof ConveyerBeltOutputBlock)) {
+            if (!level.isClientSide) {
+                ConveyerBeltMode.Mode mode = ConveyerBeltMode.cycle(level, pos);
+                player.displayClientMessage(Component.literal("Conveyor Belt: " + mode), true);
+                playWrenchSound(level, pos);
+            }
+            return InteractionResult.SUCCESS;
         }
 
         InteractionResult linePlacement = WrenchLinePlacement.use(context);
@@ -553,15 +571,16 @@ public class CrystalWrenchItem extends Item {
         /*
          * Create the block item before removing the block.
          */
-        ItemStack blockItem =
-                new ItemStack(
-                        block.asItem()
-                );
+        boolean isConveyor = block instanceof ConveyerBeltBlock
+                || block instanceof ConveyerBeltInputBlock
+                || block instanceof ConveyerBeltOutputBlock;
+        boolean preserveBeltContents = blockEntity instanceof ConveyerBeltBaseBlockEntity belt && !belt.isEmpty();
+        ItemStack blockItem = new ItemStack(isConveyor ? CrystalnexusModBlocks.CONVEYER_BELT.get() : block.asItem());
 
         /*
          * Preserve BlockEntity data.
          */
-        if (blockEntity != null) {
+        if (blockEntity != null && (!isConveyor || preserveBeltContents)) {
             CustomData.update(
                     DataComponents.CUSTOM_DATA,
                     blockItem,
@@ -578,6 +597,10 @@ public class CrystalWrenchItem extends Item {
                         );
                     }
             );
+        }
+
+        if (isConveyor && blockEntity instanceof ConveyerBeltBaseBlockEntity belt) {
+            belt.clearContent();
         }
 
         /*

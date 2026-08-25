@@ -26,6 +26,7 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     private static final String PREV_POS_TAG = "SplinePrevPos";
     private static final String NEXT_POS_TAG = "SplineNextPos";
     private static final String INCOMING_TIME_TAG = "IncomingTransferTime";
+    private static final String MANUAL_MODE_TAG = "ManualMode";
 
     public static final int SEGMENTS = 4;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
@@ -37,6 +38,7 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     private static final int TICKS_PER_MOVE = 4;
     private long lastMoveGameTime = 0L;
     private long incomingTransferGameTime = Long.MIN_VALUE;
+    private boolean manualMode;
     @Nullable
     private BlockPos splinePrevPos;
     @Nullable
@@ -85,6 +87,15 @@ public float getIncomingTransferProgress(float partialTick) {
         splinePrevPos = prevPos;
         splineNextPos = nextPos;
         sync();
+    }
+
+    public boolean isManualMode() {
+        return manualMode;
+    }
+
+    public void setManualMode(boolean manualMode) {
+        this.manualMode = manualMode;
+        setChanged();
     }
 
     // ======== Belt Simulation (server) ========
@@ -463,6 +474,9 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
     if (splineNextPos != null) {
         tag.putLong(NEXT_POS_TAG, splineNextPos.asLong());
     }
+    if (manualMode) {
+        tag.putBoolean(MANUAL_MODE_TAG, true);
+    }
 }
 
 
@@ -486,6 +500,7 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
     incomingTransferGameTime = tag.contains(INCOMING_TIME_TAG) ? tag.getLong(INCOMING_TIME_TAG) : Long.MIN_VALUE;
     splinePrevPos = tag.contains(PREV_POS_TAG) ? BlockPos.of(tag.getLong(PREV_POS_TAG)) : null;
     splineNextPos = tag.contains(NEXT_POS_TAG) ? BlockPos.of(tag.getLong(NEXT_POS_TAG)) : null;
+    manualMode = tag.getBoolean(MANUAL_MODE_TAG);
     }
 
     @Override

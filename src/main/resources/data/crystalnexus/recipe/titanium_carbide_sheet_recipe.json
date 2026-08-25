@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["h", "t", "t"],
+  "key": {
+    "h": { "tag": "c:hammers" },
+    "t": { "item": "crystalnexus:titanium_carbide_ingot" }
+  },
+  "result": { "id": "crystalnexus:titanium_carbide_sheet", "count": 1 }
+}

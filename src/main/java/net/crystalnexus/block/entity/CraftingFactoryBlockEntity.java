@@ -96,7 +96,7 @@ public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Crafting Factory");
+		return Component.translatable(getBlockState().getBlock().getDescriptionId());
 	}
 
 	@Override

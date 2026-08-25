@@ -47,7 +47,9 @@ public final class CraftingFactoryGameTests {
         for (SlottedStack input : inputs) factory.setItem(input.slot(), input.stack());
         factory.setItem(10, new ItemStack(output));
         BlockPos absolute = helper.absolutePos(pos);
-        AutoCrafterOnTickProcedure.execute(helper.getLevel(), absolute.getX(), absolute.getY(), absolute.getZ());
+        for (int tick = 0; tick < 50; tick++) {
+            AutoCrafterOnTickProcedure.execute(helper.getLevel(), absolute.getX(), absolute.getY(), absolute.getZ());
+        }
         helper.assertTrue(factory.getItem(9).is(output) && factory.getItem(9).getCount() == count,
             "Expected shape-agnostic recipe output " + output + " x" + count + ", got " + factory.getItem(9));
     }

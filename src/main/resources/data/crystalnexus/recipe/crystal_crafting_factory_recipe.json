@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["aba","cdc","aba"],"key":{"a":{"item":"crystalnexus:iron_machine_bolt"},"b":{"item":"crystalnexus:ancient_crystal"},"c":{"item":"crystalnexus:crystalized_alloy"},"d":{"item":"crystalnexus:crafting_factory"}},"result":{"id":"crystalnexus:crystal_crafting_factory"}}

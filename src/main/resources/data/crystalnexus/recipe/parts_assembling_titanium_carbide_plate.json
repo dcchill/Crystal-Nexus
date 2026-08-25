@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "item": "crystalnexus:titanium_carbide_ingot" },
+  "result": { "id": "crystalnexus:titanium_carbide_sheet", "count": 1 },
+  "mode": "plate"
+}

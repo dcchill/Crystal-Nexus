@@ -7,10 +7,12 @@ import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +39,11 @@ public class AutoCrafterOnTickProcedure {
 
         if (!(world instanceof ILevelExtension ext)) return;
         BlockPos pos = BlockPos.containing(x, y, z);
+		boolean crystalFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get());
+		boolean titaniumFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
+		int craftTime = titaniumFactory ? 10 : crystalFactory ? 25 : 50;
+		int energyPerCraft = titaniumFactory ? 1024 : crystalFactory ? 512 : 256;
+		setMaxProgress(world, pos, craftTime);
 
         var cap = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
         if (!(cap instanceof IItemHandlerModifiable inv)) return;
@@ -50,6 +58,7 @@ public class AutoCrafterOnTickProcedure {
             if (!grid[i].isEmpty()) empty = false;
         }
         if (empty) {
+			setProgress(world, pos, 0);
             updateBlockState(world, pos, crafting);
             return;
         }
@@ -58,6 +67,7 @@ public class AutoCrafterOnTickProcedure {
 
         ItemStack filter = inv.getStackInSlot(10);
         if (filter.isEmpty()) {
+			setProgress(world, pos, 0);
             updateBlockState(world, pos, crafting);
             return;
         }
@@ -77,12 +87,13 @@ public class AutoCrafterOnTickProcedure {
             }
         }
         if (consumption == null) {
+			setProgress(world, pos, 0);
             updateBlockState(world, pos, crafting);
             return;
         }
 
         IEnergyStorage energy = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        boolean canCraftEnergy = energy == null || energy.getEnergyStored() >= 256;
+        boolean canCraftEnergy = energy == null || energy.getEnergyStored() >= energyPerCraft;
         if (!canCraftEnergy) {
             updateBlockState(world, pos, crafting);
             return;
@@ -105,6 +116,13 @@ public class AutoCrafterOnTickProcedure {
             }
         }
 
+		int progress = getProgress(world, pos);
+		if (progress + 1 < craftTime) {
+			setProgress(world, pos, progress + 1);
+			updateBlockState(world, pos, true);
+			return;
+		}
+
         // -----------------------------
         // Consume ingredients
         // -----------------------------
@@ -126,7 +144,8 @@ public class AutoCrafterOnTickProcedure {
         // -----------------------------
         // Drain energy
         // -----------------------------
-        if (energy != null) energy.extractEnergy(256, false);
+        if (energy != null) energy.extractEnergy(energyPerCraft, false);
+		setProgress(world, pos, 0);
 
         // -----------------------------
         // Crafting happened
@@ -185,6 +204,29 @@ public class AutoCrafterOnTickProcedure {
             world.setBlock(pos, bs.setValue(prop, value), 3);
         }
     }
+
+	private static int getProgress(LevelAccessor world, BlockPos pos) {
+		BlockEntity entity = world.getBlockEntity(pos);
+		return entity == null ? 0 : entity.getPersistentData().getInt("progress");
+	}
+
+	private static void setProgress(LevelAccessor world, BlockPos pos, int progress) {
+		BlockEntity entity = world.getBlockEntity(pos);
+		if (entity != null) {
+			entity.getPersistentData().putInt("progress", progress);
+			entity.setChanged();
+			if (world instanceof Level level)
+				level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+		}
+	}
+
+	private static void setMaxProgress(LevelAccessor world, BlockPos pos, int progress) {
+		BlockEntity entity = world.getBlockEntity(pos);
+		if (entity != null) {
+			entity.getPersistentData().putInt("maxProgress", progress);
+			entity.setChanged();
+		}
+	}
 
     // -----------------------------
     // Helper methods
