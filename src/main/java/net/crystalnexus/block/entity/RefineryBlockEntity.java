@@ -3,6 +3,7 @@ package net.crystalnexus.block.entity;
 import io.netty.buffer.Unpooled;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.world.inventory.RefineryMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,7 +82,7 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
 
     private final EnergyStorage energyStorage = new EnergyStorage(
-        CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.capacity(),
+        MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.capacity(), 4096),
         CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxReceive(),
         CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract(), 0) {
         @Override public int receiveEnergy(int amount, boolean simulate) {

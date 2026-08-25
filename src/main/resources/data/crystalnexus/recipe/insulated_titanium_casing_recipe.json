@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "tct",
+    "tct",
+    "tct"
+  ],
+  "key": {
+    "t": {
+      "item": "crystalnexus:titanium_sheet"
+    },
+    "c": {
+      "item": "crystalnexus:ceramic_plate"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:insulated_titanium_casing",
+    "count": 4
+  }
+}

@@ -142,7 +142,7 @@ public final class PipeStraightGameTests {
     }
 
     @GameTest(template = "zero_point")
-    public static void keepsTheOutputPipeVisiblyFilledBetweenBatches(GameTestHelper helper) {
+    public static void drainsTinyBatchesImmediately(GameTestHelper helper) {
         BlockPos sourcePos = new BlockPos(1, 4, 1);
         BlockPos pipePos = sourcePos.east();
         BlockPos sinkPos = pipePos.east();
@@ -156,12 +156,8 @@ public final class PipeStraightGameTests {
 
         pipe.serverTick();
 
-        helper.assertTrue(pipe.getFluidTank().getFluidAmount() == 1 && sink.getFluidTank().getFluidAmount() == 1,
-            "The output pipe must retain a visible reserve while the tank receives a batch");
-
-        pipe.serverTick();
         helper.assertTrue(pipe.getFluidTank().isEmpty() && sink.getFluidTank().getFluidAmount() == 2,
-            "The output pipe must drain its final reserve when the line finishes");
+            "Even a two-millibucket batch must drain immediately without a display reserve");
         helper.succeed();
     }
 }

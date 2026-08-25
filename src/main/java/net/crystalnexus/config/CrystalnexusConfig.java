@@ -92,6 +92,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues CRYSTAL_CRUSHER;
 		public final EnergyValues CRYSTAL_PURIFIER;
 		public final EnergyValues CRYSTAL_SMELTER;
+		public final EnergyValues CRYOGENIC_FLASH_FREEZER;
 		public final EnergyValues DUST_SEPARATOR;
 		public final EnergyValues EE_BATTERY;
 		public final EnergyValues ELECTROMAGNET;
@@ -155,6 +156,7 @@ public final class CrystalnexusConfig {
 			CRYSTAL_CRUSHER = new EnergyValues(builder, "crystal_crusher", 10240, 2048, 2048);
 			CRYSTAL_PURIFIER = new EnergyValues(builder, "crystal_purifier", 10240, 2048, 2048);
 			CRYSTAL_SMELTER = new EnergyValues(builder, "crystal_smelter", 10240, 2048, 2048);
+			CRYOGENIC_FLASH_FREEZER = new EnergyValues(builder, "cryogenic_flash_freezer", 40960, 4096, 4096);
 			DUST_SEPARATOR = new EnergyValues(builder, "dust_separator", 10240, 2048, 2048);
 			EE_BATTERY = new EnergyValues(builder, "ee_battery", 20480000, 1024000, 1024000);
 			ELECTROMAGNET = new EnergyValues(builder, "electromagnet", 512000, 20480, 10240);

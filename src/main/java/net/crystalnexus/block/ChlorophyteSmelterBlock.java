@@ -39,10 +39,12 @@ import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.procedures.ChlorophyteSmelterOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.TieredMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class ChlorophyteSmelterBlock extends Block implements EntityBlock {
+public class ChlorophyteSmelterBlock extends Block implements EntityBlock, TieredMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -169,4 +171,6 @@ public class ChlorophyteSmelterBlock extends Block implements EntityBlock {
 		else
 			return 0;
 	}
+
+	@Override public MachineTier machineTier() { return MachineTier.CHLOROPHYTE; }
 }

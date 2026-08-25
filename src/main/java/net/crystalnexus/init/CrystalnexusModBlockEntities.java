@@ -54,6 +54,7 @@ import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
 import net.crystalnexus.block.entity.PlasmaGeneratorControllerBlockEntity;
 import net.crystalnexus.block.entity.MultiblockItemOutputBlockEntity;
 import net.crystalnexus.block.entity.MultiblockItemInputBlockEntity;
+import net.crystalnexus.block.entity.MultiblockFluidOutputBlockEntity;
 import net.crystalnexus.block.entity.OreProcessorBlockEntity;
 import net.crystalnexus.block.entity.NodeMinerBlockEntity;
 import net.crystalnexus.block.entity.NodeExtractorBlockEntity;
@@ -105,6 +106,7 @@ import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteAcceleratorBlockEntity;
 import net.crystalnexus.block.entity.ChemicalReactionChamberBlockEntity;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
+import net.crystalnexus.block.entity.CryogenicFlashFreezerBlockEntity;
 import net.crystalnexus.block.entity.RefineryBlockEntity;
 import net.crystalnexus.block.entity.BlueprintControllerBlockEntity;
 import net.crystalnexus.block.entity.BlueprintBaseBlockEntity;
@@ -163,6 +165,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ZERO_POINT = register("zero_point", CrystalnexusModBlocks.ZERO_POINT, ZeroPointBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHEMICAL_REACTION_CHAMBER = register("chemical_reaction_chamber", CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER, ChemicalReactionChamberBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_CHEMICAL_REACTION_CHAMBER = register("fluid_chemical_reaction_chamber", CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER, FluidChemicalReactionChamberBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYOGENIC_FLASH_FREEZER = register("cryogenic_flash_freezer", CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH, CryogenicFlashFreezerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = registerMany("refinery", RefineryBlockEntity::new,
 		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.CHLOROPHYTE_REFINERY,
 		CrystalnexusModBlocks.INVERTIUM_REFINERY, CrystalnexusModBlocks.HYPER_REFINERY);
@@ -241,7 +244,9 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MULTIBLOCK_ITEM_OUTPUT = register("multiblock_item_output", CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT,
 			MultiblockItemOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MULTIBLOCK_ITEM_INPUT = register("multiblock_item_input", CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT,
-			MultiblockItemInputBlockEntity::new);
+		MultiblockItemInputBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MULTIBLOCK_FLUID_OUTPUT = register("multiblock_fluid_output", CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT,
+		MultiblockFluidOutputBlockEntity::new);
 	// End of user code block custom block entities
 	private static DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> register(String registryname, DeferredHolder<Block, Block> block, BlockEntityType.BlockEntitySupplier<?> supplier) {
 		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
@@ -323,6 +328,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FLUID_CHEMICAL_REACTION_CHAMBER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FLUID_CHEMICAL_REACTION_CHAMBER.get(), (blockEntity, side) -> ((FluidChemicalReactionChamberBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FLUID_CHEMICAL_REACTION_CHAMBER.get(), (blockEntity, side) -> ((FluidChemicalReactionChamberBlockEntity) blockEntity).getFluidHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> ((CryogenicFlashFreezerBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> ((CryogenicFlashFreezerBlockEntity) blockEntity).getFluidHandler());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getFluidHandler());
@@ -425,5 +433,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SOLAR_ENGINE_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_ITEM_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_ITEM_INPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MULTIBLOCK_FLUID_OUTPUT.get(), (blockEntity, side) -> ((MultiblockFluidOutputBlockEntity) blockEntity).getFluidOutput());
 	}
 }

@@ -1,10 +1,12 @@
 package net.crystalnexus.util;
 
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.block.state.BlockState;
 
 public final class MachineUpgradeHelper {
 	private static final double MIN_MULTIPLIER = 0.05;
@@ -26,6 +28,10 @@ public final class MachineUpgradeHelper {
 
 	public static int energyCost(ItemStack upgrade, int baseCost) {
 		return Math.max(1, (int) Math.ceil(baseCost / feEfficiency(upgrade)));
+	}
+
+	public static int energyCost(BlockState state, ItemStack upgrade, int baseCost) {
+		return MachineTier.from(state).energyCost(energyCost(upgrade, baseCost));
 	}
 
 	public static double generatorEfficiency(ItemStack upgrade, double basicUpgrade, double carbonUpgrade) {

@@ -43,6 +43,7 @@ import net.crystalnexus.jei_recipes.ChemicalReactionRecipeCategory;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipeCategory;
+import net.crystalnexus.jei_recipes.CryogenicFlashFreezerRecipeCategory;
 import net.crystalnexus.jei_recipes.RefiningRecipe;
 import net.crystalnexus.jei_recipes.RefiningRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipeCategory;
@@ -91,6 +92,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static final mezz.jei.api.recipe.RecipeType<ArcFurnaceRecipe> ArcFurnace_Type = new mezz.jei.api.recipe.RecipeType<>(ArcFurnaceRecipeCategory.UID, ArcFurnaceRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ChemicalReactionRecipe> ChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(ChemicalReactionRecipeCategory.UID, ChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> FluidChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(FluidChemicalReactionRecipeCategory.UID, FluidChemicalReactionRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> CryogenicFlashFreezer_Type = new mezz.jei.api.recipe.RecipeType<>(CryogenicFlashFreezerRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<RefiningRecipe> Refining_Type = new mezz.jei.api.recipe.RecipeType<>(RefiningRecipeCategory.UID, RefiningRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticCompostingRecipe> BiomaticComposting_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticCompostingRecipeCategory.UID, BiomaticCompostingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticSimulationRecipe> BiomaticSimulation_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticSimulationRecipeCategory.UID, BiomaticSimulationRecipe.class);
@@ -121,6 +123,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new ArcFurnaceRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new FluidChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CryogenicFlashFreezerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new RefiningRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticCompostingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticSimulationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -162,8 +165,9 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(ArcFurnace_Type, recipes(recipeManager, ArcFurnaceRecipe.class));
 		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
 		registration.addRecipes(ChemicalReaction_Type, ChemicalReactionRecipes);
-		List<FluidChemicalReactionRecipe> FluidChemicalReactionRecipes = recipes(recipeManager, FluidChemicalReactionRecipe.class);
+		List<FluidChemicalReactionRecipe> FluidChemicalReactionRecipes = freezerRecipes(recipeManager, false);
 		registration.addRecipes(FluidChemicalReaction_Type, FluidChemicalReactionRecipes);
+		registration.addRecipes(CryogenicFlashFreezer_Type, freezerRecipes(recipeManager, true));
 		List<FluidChemicalReactionRecipe> generatedFluid = MaterialProcessingCatalog.generatedFluidRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(FluidChemicalReaction_Type, generatedFluid);
 		List<RefiningRecipe> RefiningRecipes = recipes(recipeManager, RefiningRecipe.class);
@@ -185,6 +189,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
 		return manager.getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipeClass::isInstance).map(recipeClass::cast).toList();
+	}
+
+	private static List<FluidChemicalReactionRecipe> freezerRecipes(RecipeManager manager, boolean freezer) {
+		return manager.getRecipes().stream()
+			.filter(holder -> (holder.id().getPath().startsWith("cryogenic_flash_freezer_")) == freezer)
+			.map(RecipeHolder::value).filter(FluidChemicalReactionRecipe.class::isInstance)
+			.map(FluidChemicalReactionRecipe.class::cast).toList();
 	}
 
 	private static List<MultiblockStructureRecipe> multiblockStructures() {
@@ -239,6 +250,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ARC_FURNACE.get().asItem()), ArcFurnace_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem()), FluidChemicalReaction_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), CryogenicFlashFreezer_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_REFINERY.get().asItem()), Refining_Type);

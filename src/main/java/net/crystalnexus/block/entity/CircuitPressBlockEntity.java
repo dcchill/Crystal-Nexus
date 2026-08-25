@@ -2,6 +2,8 @@ package net.crystalnexus.block.entity;
 
 
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.processing.MachineTier;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -139,7 +141,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.capacity(), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxReceive(), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.capacity(), getBlockState().is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get()) ? 16384 : 2048), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxReceive(), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

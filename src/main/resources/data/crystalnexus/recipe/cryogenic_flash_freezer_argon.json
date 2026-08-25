@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:oxygen",
+    "amount": 1000
+  },
+  "output": {
+    "fluid": "crystalnexus:argon",
+    "amount": 25
+  }
+}

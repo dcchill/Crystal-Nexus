@@ -59,7 +59,7 @@ public class DustSeperationRecipeCategory implements IRecipeCategory<DustSeperat
 	public void draw(DustSeperationRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 		this.background.draw(guiGraphics);
 		guiGraphics.drawString(Minecraft.getInstance().font,
-			Component.literal("Minimum: " + MachineTier.values()[recipe.minimumMachineTier() - 1].displayName()),
+			Component.literal("Minimum: " + MachineTier.forLevel(recipe.minimumMachineTier()).displayName()),
 			5, 5, 0xff404040, false);
 	}
 

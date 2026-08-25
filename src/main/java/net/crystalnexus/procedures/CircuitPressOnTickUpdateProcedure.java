@@ -172,7 +172,7 @@ public class CircuitPressOnTickUpdateProcedure {
 			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
 			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
 			if (_cn_input.getCount() >= batchSize && _cn_material.getCount() >= batchSize
-					&& MachineUpgradeHelper.energyCost(_cn_upg, 4096 * batchSize) <= getEnergyStored(world, pressPos, null)) {
+					&& MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048 * batchSize) <= getEnergyStored(world, pressPos, null)) {
 
 				// Only allow processing if output slot is compatible and has space
 				if (out > 0) {
@@ -245,7 +245,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
-									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 4096 * batchSize), false);
+									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048 * batchSize), false);
 							}
 						}
 					}

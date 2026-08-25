@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": {
+    "tag": "minecraft:leaves",
+    "amount": 16
+  },
+  "output": {
+    "fluid": "crystalnexus:oxygen",
+    "amount": 25
+  }
+}

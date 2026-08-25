@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "crystalnexus:block/multiblock_fluid_output" }
+  }
+}

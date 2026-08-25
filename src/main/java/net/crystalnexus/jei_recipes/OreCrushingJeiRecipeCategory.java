@@ -59,7 +59,7 @@ public class OreCrushingJeiRecipeCategory implements IRecipeCategory<OreCrushing
 	public void draw(OreCrushingJeiRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 		this.background.draw(guiGraphics);
 		guiGraphics.drawString(Minecraft.getInstance().font,
-			Component.literal("Minimum: " + MachineTier.values()[recipe.minimumMachineTier() - 1].displayName()),
+			Component.literal("Minimum: " + MachineTier.forLevel(recipe.minimumMachineTier()).displayName()),
 			5, 5, 0xff404040, false);
 	}
 

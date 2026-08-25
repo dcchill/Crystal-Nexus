@@ -4,5 +4,5 @@
     { "item": "crystalnexus:meteorite_scrap" },
     { "item": "crystalnexus:invertium_ingot" }
   ],
-  "output": { "id": "crystalnexus:meteorite_alloy", "count": 1 }
+  "output": { "id": "crystalnexus:hot_meteorite_alloy", "count": 1 }
 }

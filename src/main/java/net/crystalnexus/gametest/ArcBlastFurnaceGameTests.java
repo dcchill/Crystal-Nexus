@@ -136,7 +136,7 @@ public final class ArcBlastFurnaceGameTests {
         process(helper, controllerPos, controller, ItemStack.EMPTY,
             new ItemStack(CrystalnexusModItems.TITANIUM_SHEET.get()), CrystalnexusModItems.TITANIUM_INGOT.get(), 2);
         process(helper, controllerPos, controller, new ItemStack(CrystalnexusModItems.TUNGSTEN_DUST.get()),
-            ItemStack.EMPTY, CrystalnexusModItems.TUNGSTEN.get(), 1);
+            ItemStack.EMPTY, CrystalnexusModItems.HOT_TUNGSTEN.get(), 1);
 
         controller.setItem(0, new ItemStack(Items.QUARTZ));
         controller.setItem(1, new ItemStack(CrystalnexusModItems.RAW_CARBON.get()));

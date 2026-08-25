@@ -1,8 +1,8 @@
 package net.crystalnexus.block.entity;
 
 
-import net.crystalnexus.config.CrystalnexusConfig;
-import net.neoforged.neoforge.energy.EnergyStorage;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -14,7 +14,6 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
-import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
@@ -42,8 +41,6 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
-		if (compound.get("energyStorage") instanceof IntTag intTag)
-			energyStorage.deserializeNBT(lookupProvider, intTag);
 		String controllerKey = compound.contains("machineController", Tag.TAG_LONG) ? "machineController" : "gravitationalController";
 		machineController = compound.contains(controllerKey, Tag.TAG_LONG) ? BlockPos.of(compound.getLong(controllerKey)) : null;
 	}
@@ -54,7 +51,6 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		if (!this.trySaveLootTable(compound)) {
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
-		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
 		if (machineController != null) compound.putLong("machineController", machineController.asLong());
 	}
 
@@ -126,30 +122,25 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(), CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(), CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract(), 0) {
-		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate) {
-			int retval = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-			}
-			return retval;
+	private final IEnergyStorage energyStorage = new IEnergyStorage() {
+		@Override public int receiveEnergy(int amount, boolean simulate) {
+			IEnergyStorage target = target(); return target == null ? 0 : target.receiveEnergy(amount, simulate);
 		}
-
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate) {
-			int retval = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
-			}
-			return retval;
-		}
+		@Override public int extractEnergy(int amount, boolean simulate) { return 0; }
+		@Override public int getEnergyStored() { IEnergyStorage target = target(); return target == null ? 0 : target.getEnergyStored(); }
+		@Override public int getMaxEnergyStored() { IEnergyStorage target = target(); return target == null ? 0 : target.getMaxEnergyStored(); }
+		@Override public boolean canExtract() { return false; }
+		@Override public boolean canReceive() { IEnergyStorage target = target(); return target != null && target.canReceive(); }
 	};
 
-	public EnergyStorage getEnergyStorage() {
+	public IEnergyStorage getEnergyStorage() {
 		return energyStorage;
+	}
+
+	@Nullable private IEnergyStorage target() {
+		if (level == null || machineController == null
+			|| !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)) return null;
+		return target.multiblockEnergyInput();
 	}
 
 	public void bindGravitationalController(BlockPos controller) {

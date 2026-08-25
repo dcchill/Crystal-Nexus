@@ -21,7 +21,8 @@ import java.util.List;
 
 public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScreen<FluidChemicalReactionChamberGUIMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/fluid_chemical_reaction_chamber_gui.png");
-    private static final int[] TANK_X = {28, 52, 115};
+    private static final int[] TANK_X = {37, 61, 124};
+    private static final int TANK_Y = 16;
     private static final int TANK_HEIGHT = 34;
 
     public FluidChemicalReactionChamberGUIScreen(FluidChemicalReactionChamberGUIMenu menu, Inventory inventory, Component title) {
@@ -39,7 +40,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
                 return;
             }
             for (int i = 0; i < TANK_X.length; i++) {
-                if (isHovering(TANK_X[i], 26, 16, TANK_HEIGHT, mouseX, mouseY)) {
+                if (isHovering(TANK_X[i], TANK_Y, 16, TANK_HEIGHT, mouseX, mouseY)) {
                     FluidStack fluid = chamber.getTank(i).getFluid();
                     Component name = fluid.isEmpty() ? Component.literal("Empty") : fluid.getHoverName();
                     graphics.renderComponentTooltip(font,
@@ -57,11 +58,11 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
         RenderSystem.defaultBlendFunc();
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
         FluidChemicalReactionChamberBlockEntity chamber = menu.chamber();
-        if (chamber != null) for (int i = 0; i < TANK_X.length; i++) drawTank(graphics, chamber.getTank(i).getFluid(), TANK_X[i], 26);
+        if (chamber != null) for (int i = 0; i < TANK_X.length; i++) drawTank(graphics, chamber.getTank(i).getFluid(), TANK_X[i], TANK_Y);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), leftPos - 33, topPos - 1, 0, 0, 48, 48, 48, 48);
-        graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), leftPos + 76, topPos + 27, 0,
+        graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), leftPos + 85, topPos + 17, 0,
             Mth.clamp((int) ProgressDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), leftPos - 25, topPos + 5, 0,
             Mth.clamp((int) EnergyDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);
@@ -99,7 +100,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
             addRenderableWidget(Button.builder(Component.literal("X"), button ->
                 PacketDistributor.sendToServer(new FluidChemicalReactionChamberPurgeMessage(tank,
                     new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z))))
-                .bounds(leftPos + TANK_X[i], topPos + 15, 16, 10).build());
+                .bounds(leftPos + TANK_X[i], topPos + 5, 16, 10).build());
         }
     }
 }

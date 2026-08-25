@@ -4,7 +4,9 @@ import net.crystalnexus.block.SolarEngineControllerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 import net.crystalnexus.multiblock.StructureNbtValidator;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.world.inventory.SolarEngineMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +14,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -32,6 +35,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -42,7 +46,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-public final class SolarEngineControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public final class SolarEngineControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
 	public static final int TANK_CAPACITY = 1_000_000;
 	public static final int MAX_HEAT = 50_000;
 	public static final int MAX_CONTAINMENT_STRESS = 10_000;
@@ -56,6 +60,8 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 	private final FluidTank coolant = new FluidTank(TANK_CAPACITY, stack -> stack.is(Fluids.WATER)) {
 		@Override protected void onContentsChanged() { sync(); }
 	};
+	private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(
+		100_000_000, MachineEnergyOutputBlockEntity.MAX_TRANSFER, this::sync);
 	private final List<BlockPos> energyOutputs = new ArrayList<>();
 	private final List<BlockPos> fluidInputs = new ArrayList<>();
 	@Nullable private StructureNbtValidator.Match structure;
@@ -102,7 +108,6 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 		energyOutputs.forEach(pos -> {
 			if (serverLevel.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.pushEnergy();
 		});
-		if (formed) relayFluid();
 
 		StarProfile profile = profile(stacks.get(STAR_SLOT));
 		if (!formed || profile == null || extractionPercent == 0) {
@@ -180,24 +185,13 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 		}
 	}
 
-	private void relayFluid() {
-		int space = coolant.getSpace();
-		for (BlockPos pos : fluidInputs) {
-			if (space <= 0) return;
-			if (level.getBlockEntity(pos) instanceof MachineFluidInputBlockEntity input)
-				space -= input.transferTo(coolant, space, worldPosition);
-		}
-	}
+	@Override public IFluidHandler multiblockFluidInput() { return coolant; }
 
 	private int distributeEnergy(int requested) {
-		int remaining = requested;
-		for (BlockPos pos : energyOutputs) {
-			if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output && output.isBoundTo(worldPosition))
-				remaining -= output.generateEnergy(remaining);
-			if (remaining <= 0) break;
-		}
-		return requested - remaining;
+		return energy.generateEnergy(requested, false);
 	}
+
+	@Override public IEnergyStorage multiblockEnergyOutput() { return energy; }
 
 	private void containmentFailure(ServerLevel level) {
 		stacks.set(STAR_SLOT, ItemStack.EMPTY);
@@ -276,6 +270,7 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 		if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, stacks, registries);
 		if (tag.get("coolant") instanceof CompoundTag fluid) coolant.readFromNBT(registries, fluid);
+		if (tag.get("energy") instanceof IntTag stored) energy.deserializeNBT(registries, stored);
 		formed = tag.getBoolean("formed");
 		operating = tag.getBoolean("operating");
 		extractionPercent = Mth.clamp(tag.getInt("extraction"), 0, 100);
@@ -289,6 +284,7 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 		super.saveAdditional(tag, registries);
 		if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, registries);
 		tag.put("coolant", coolant.writeToNBT(registries, new CompoundTag()));
+		tag.put("energy", energy.serializeNBT(registries));
 		tag.putBoolean("formed", formed);
 		tag.putBoolean("operating", operating);
 		tag.putInt("extraction", extractionPercent);

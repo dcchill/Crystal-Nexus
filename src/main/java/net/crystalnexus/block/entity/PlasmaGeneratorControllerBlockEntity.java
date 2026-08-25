@@ -5,11 +5,14 @@ import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModFluids;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 import net.crystalnexus.multiblock.StructureNbtValidator;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -27,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -36,8 +40,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider {
-    public static final int TANK_CAPACITY = 15;
+public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget {
+    public static final int TANK_CAPACITY = 100;
     public static final int ARGON_PER_TICK = 1;
     public static final int GENERATION_PER_TICK = 512_000;
     private static final int VALIDATION_INTERVAL = 20;
@@ -47,6 +51,8 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         stack -> stack.is(CrystalnexusModFluids.ARGON.get())) {
         @Override protected void onContentsChanged() { sync(); }
     };
+	private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(
+		100_000_000, MachineEnergyOutputBlockEntity.MAX_TRANSFER, this::sync);
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private final List<BlockPos> heatingCores = new ArrayList<>();
@@ -84,7 +90,6 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         energyOutputs.forEach(pos -> {
             if (serverLevel.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.pushEnergy();
         });
-        if (formed) relayArgon();
 
         if (!formed) { updateOperating(false, 0, "Incomplete Structure"); return; }
         if (argonTank.getFluidAmount() < ARGON_PER_TICK) { updateOperating(false, 0, "Waiting for Argon"); return; }
@@ -143,34 +148,17 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         } else formed = nextFormed;
     }
 
-    private void relayArgon() {
-        int space = argonTank.getSpace();
-        for (BlockPos pos : fluidInputs) {
-            if (space <= 0) return;
-            if (level.getBlockEntity(pos) instanceof MachineFluidInputBlockEntity input)
-                space -= input.transferTo(argonTank, space, worldPosition);
-        }
-    }
+	@Override public IFluidHandler multiblockFluidInput() { return argonTank; }
 
     private int availableOutputCapacity(int requested) {
-        int remaining = requested;
-        for (BlockPos pos : energyOutputs) {
-            if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output && output.isBoundTo(worldPosition))
-                remaining -= output.getEnergyStorage().generateEnergy(remaining, true);
-            if (remaining <= 0) break;
-        }
-        return requested - remaining;
+		return energy.generateEnergy(requested, true);
     }
 
     private int distributeEnergy(int requested) {
-        int remaining = requested;
-        for (BlockPos pos : energyOutputs) {
-            if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output && output.isBoundTo(worldPosition))
-                remaining -= output.generateEnergy(remaining);
-            if (remaining <= 0) break;
-        }
-        return requested - remaining;
+		return energy.generateEnergy(requested, false);
     }
+
+	@Override public IEnergyStorage multiblockEnergyOutput() { return energy; }
 
     private void updateOperating(boolean nextOperating, int nextOutput, String nextStatus) {
         setHeatingCoresActive(heatingCores, nextOperating);
@@ -238,6 +226,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (tag.get("argon") instanceof CompoundTag fluid) argonTank.readFromNBT(registries, fluid);
+		if (tag.get("energy") instanceof IntTag stored) energy.deserializeNBT(registries, stored);
         formed = tag.getBoolean("formed");
         operating = tag.getBoolean("operating");
         outputPerTick = tag.getInt("outputPerTick");
@@ -249,6 +238,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         tag.put("argon", argonTank.writeToNBT(registries, new CompoundTag()));
+		tag.put("energy", energy.serializeNBT(registries));
         tag.putBoolean("formed", formed);
         tag.putBoolean("operating", operating);
         tag.putInt("outputPerTick", outputPerTick);

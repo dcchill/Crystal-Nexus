@@ -1,10 +1,12 @@
 package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.SolarSimulatorControllerBlock;
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.multiblock.StructureNbtValidator;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.recipe.GravitationalArrayCostSchedule;
 import net.crystalnexus.world.inventory.SolarSimulatorMenu;
 import net.minecraft.core.BlockPos;
@@ -14,6 +16,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +32,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -39,7 +43,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
     public static final int DURATION = 50;
     private static final int ENERGY_PER_ITEM = 200_000;
     private static final int STAR_SLOT = 4;
@@ -51,6 +55,17 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private static final List<TagKey<Item>> METEOR = tags("raw_materials/tungsten", "raw_materials/uranium", "raw_materials/platinum");
 
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+	private final EnergyStorage energyStorage = new EnergyStorage(
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(),
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(),
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract()) {
+		@Override public int receiveEnergy(int amount, boolean simulate) {
+			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+		}
+		@Override public int extractEnergy(int amount, boolean simulate) {
+			int moved = super.extractEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+		}
+	};
     private final List<BlockPos> energyInputs = new ArrayList<>();
     private final List<BlockPos> outputs = new ArrayList<>();
     private boolean formed;
@@ -204,14 +219,10 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     private int extractEnergy(int amount, boolean simulate) {
-        int remaining = amount;
-        for (BlockPos pos : energyInputs) {
-            if (level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input && input.isBoundTo(worldPosition))
-                remaining -= input.getEnergyStorage().extractEnergy(remaining, simulate);
-            if (remaining <= 0) break;
-        }
-        return amount - remaining;
+		return energyStorage.extractEnergy(amount, simulate);
     }
+
+	@Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
 
     public void onControllerRemoved() {
         if (level != null) for (BlockPos pos : energyInputs)
@@ -266,6 +277,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         super.loadAdditional(tag, registries);
         if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, stacks, registries);
+		if (tag.get("energy") instanceof IntTag energy) energyStorage.deserializeNBT(registries, energy);
         formed = tag.getBoolean("formed"); progress = tag.getInt("progress"); consumedEnergy = tag.getLong("consumedEnergy");
         renderActive = tag.getBoolean("renderActive");
         formationCenter = tag.contains("formationX")
@@ -274,6 +286,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     @Override public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, registries);
+		tag.put("energy", energyStorage.serializeNBT(registries));
         tag.putBoolean("formed", formed); tag.putInt("progress", progress); tag.putLong("consumedEnergy", consumedEnergy);
         tag.putBoolean("renderActive", renderActive);
         if (formationCenter != null) {

@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": {
+    "item": "crystalnexus:hot_meteorite_alloy"
+  },
+  "item_output": {
+    "id": "crystalnexus:meteorite_alloy",
+    "count": 1
+  }
+}

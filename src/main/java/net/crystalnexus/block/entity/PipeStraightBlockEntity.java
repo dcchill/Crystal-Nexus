@@ -14,17 +14,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class PipeStraightBlockEntity extends BlockEntity {
     public static final int CAPACITY = 15_000; // mB
     public static final int MAX_TRANSFER = 5_000; // mB per tick
     public static final int TRANSFER_DELAY_TICKS = 0;
-    private static final int DISPLAY_RESERVE = 1;
 
     private int inputSides;
     private int outputSides;
@@ -134,13 +128,8 @@ public class PipeStraightBlockEntity extends BlockEntity {
             BlockPos neighborPos = worldPosition.relative(direction);
             if (level.getBlockEntity(neighborPos) instanceof PipeStraightBlockEntity) continue;
             boolean defaultMode = (inputSides & side) == 0 && (outputSides & side) == 0;
-            boolean knownOutput = ((outputSides | automaticOutputSides) & side) != 0;
-            if (fluidTank.getFluidAmount() <= DISPLAY_RESERVE && knownOutput) {
-                if (gatherFromNetwork()) return;
-            }
             if (((outputSides & side) != 0 || defaultMode && (automaticInputSides & side) == 0)
-                && pushTo(neighborPos, direction.getOpposite(),
-                    fluidTank.getFluidAmount() > DISPLAY_RESERVE ? DISPLAY_RESERVE : 0) > 0 && defaultMode) {
+                && pushTo(neighborPos, direction.getOpposite()) > 0 && defaultMode) {
                 automaticOutputSides |= side;
             }
         }
@@ -169,16 +158,16 @@ public class PipeStraightBlockEntity extends BlockEntity {
         return 0;
     }
 
-    private int pushTo(BlockPos pos, Direction preferredSide, int reserve) {
+    private int pushTo(BlockPos pos, Direction preferredSide) {
         IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, preferredSide);
-        int moved = handler == null ? 0 : pushTo(handler, reserve);
+        int moved = handler == null ? 0 : pushTo(handler);
         if (moved > 0) return moved;
         handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
-        moved = handler == null ? 0 : pushTo(handler, reserve);
+        moved = handler == null ? 0 : pushTo(handler);
         if (moved > 0) return moved;
         for (Direction side : Direction.values()) {
             handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
-            moved = handler == null ? 0 : pushTo(handler, reserve);
+            moved = handler == null ? 0 : pushTo(handler);
             if (moved > 0) return moved;
         }
         return 0;
@@ -195,9 +184,8 @@ public class PipeStraightBlockEntity extends BlockEntity {
         return moved;
     }
 
-    private int pushTo(IFluidHandler destination, int reserve) {
-        FluidStack offered = fluidTank.drain(
-            Math.min(MAX_TRANSFER, fluidTank.getFluidAmount() - reserve), IFluidHandler.FluidAction.SIMULATE);
+    private int pushTo(IFluidHandler destination) {
+        FluidStack offered = fluidTank.drain(MAX_TRANSFER, IFluidHandler.FluidAction.SIMULATE);
         if (offered.isEmpty()) return 0;
         int accepted = destination.fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return 0;
@@ -225,42 +213,6 @@ public class PipeStraightBlockEntity extends BlockEntity {
         delayTransfer();
         other.delayTransfer();
         return true;
-    }
-
-    private boolean gatherFromNetwork() {
-        ArrayDeque<PipeStraightBlockEntity> pending = new ArrayDeque<>();
-        Set<BlockPos> visited = new HashSet<>();
-        Map<BlockPos, PipeStraightBlockEntity> towardOutput = new HashMap<>();
-        pending.add(this);
-        visited.add(worldPosition);
-
-        while (!pending.isEmpty()) {
-            PipeStraightBlockEntity current = pending.removeFirst();
-            BlockState currentState = current.getBlockState();
-            for (Direction direction : Direction.values()) {
-                if (!currentState.getValue(PipeStraightBlock.property(direction))) continue;
-                BlockEntity neighbor = level.getBlockEntity(current.worldPosition.relative(direction));
-                if (!(neighbor instanceof PipeStraightBlockEntity other)
-                    || !other.getBlockState().getValue(PipeStraightBlock.property(direction.getOpposite()))
-                    || !visited.add(other.worldPosition)) continue;
-                towardOutput.put(other.worldPosition, current);
-                pending.addLast(other);
-                if (other.fluidTank.isEmpty()) continue;
-                if (other.transferCooldown > 0) return true;
-
-                PipeStraightBlockEntity destination = towardOutput.get(other.worldPosition);
-                FluidStack offered = other.fluidTank.drain(MAX_TRANSFER, IFluidHandler.FluidAction.SIMULATE);
-                int accepted = destination.fluidTank.fill(offered, IFluidHandler.FluidAction.SIMULATE);
-                if (accepted <= 0) continue;
-                FluidStack drained = other.fluidTank.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
-                if (drained.isEmpty()) continue;
-                destination.fluidTank.fill(drained, IFluidHandler.FluidAction.EXECUTE);
-                other.delayTransfer();
-                destination.delayTransfer();
-                return true;
-            }
-        }
-        return false;
     }
 
     private void delayTransfer() {

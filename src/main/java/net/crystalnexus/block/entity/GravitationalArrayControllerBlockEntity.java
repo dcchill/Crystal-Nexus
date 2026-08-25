@@ -1,10 +1,12 @@
 package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.GravitationalArrayControllerBlock;
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.multiblock.StructureNbtValidator;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.crystalnexus.recipe.GravitationalArrayCostSchedule;
 import net.crystalnexus.world.inventory.GravitationalArrayMenu;
@@ -15,6 +17,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -33,6 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.energy.EnergyStorage;
 import org.joml.Vector3f;
 
 import javax.annotation.Nullable;
@@ -44,7 +48,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-public final class GravitationalArrayControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public final class GravitationalArrayControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
     public static final int TANK_CAPACITY = 1_000_000;
     private static final double FORMATION_Y_OFFSET = -10.0D;
     private static final int VALIDATION_INTERVAL = 20;
@@ -55,6 +59,17 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
         @Override protected void onContentsChanged() { sync(); }
     };
+	private final EnergyStorage energyStorage = new EnergyStorage(
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(),
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(),
+		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract()) {
+		@Override public int receiveEnergy(int amount, boolean simulate) {
+			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+		}
+		@Override public int extractEnergy(int amount, boolean simulate) {
+			int moved = super.extractEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+		}
+	};
     private final List<BlockPos> energyInputs = new ArrayList<>();
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     @Nullable private StructureNbtValidator.Match structure;
@@ -99,7 +114,6 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
             validationDelay = VALIDATION_INTERVAL;
         }
         if (structure == null) return;
-        relayFluid();
 
         RecipeHolder<GravitationalArrayRecipe> holder = activeRecipe == null
             ? findRecipe(serverLevel).orElse(null) : findRecipe(serverLevel, activeRecipe).orElse(null);
@@ -177,15 +191,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         if (wasFormed != formed || !Objects.equals(previousCenter, formationCenter)) sync();
     }
 
-    private void relayFluid() {
-        int space = temporalFluid.getSpace();
-        for (BlockPos pos : fluidInputs) {
-            if (space <= 0) return;
-            if (level.getBlockEntity(pos) instanceof MachineFluidInputBlockEntity input)
-                space -= input.transferTo(temporalFluid, space, worldPosition);
-        }
-    }
-
+	@Override public IFluidHandler multiblockFluidInput() { return temporalFluid; }
     private Optional<RecipeHolder<GravitationalArrayRecipe>> findRecipe(ServerLevel level) {
         return level.getRecipeManager().getAllRecipesFor(GravitationalArrayRecipe.Type.INSTANCE).stream()
             .filter(holder -> holder.value().consumptionPlan(inputStacks()).length != 0)
@@ -209,15 +215,10 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
     }
 
     private long extractEnergy(long requested) {
-        long remaining = requested;
-        for (BlockPos pos : energyInputs) {
-            if (!(level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input)
-                || !input.isBoundTo(worldPosition)) continue;
-            remaining -= input.getEnergyStorage().extractEnergy((int) Math.min(Integer.MAX_VALUE, remaining), false);
-            if (remaining <= 0) break;
-        }
-        return requested - remaining;
+		return energyStorage.extractEnergy((int) Math.min(Integer.MAX_VALUE, requested), false);
     }
+
+	@Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
 
     private void complete(ServerLevel level, GravitationalArrayRecipe recipe) {
         int[] plan = recipe.consumptionPlan(inputStacks());
@@ -307,6 +308,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, stacks, registries);
         if (tag.get("temporalFluid") instanceof CompoundTag fluid) temporalFluid.readFromNBT(registries, fluid);
+		if (tag.get("energy") instanceof IntTag energy) energyStorage.deserializeNBT(registries, energy);
         activeRecipe = tag.contains("activeRecipe") ? ResourceLocation.tryParse(tag.getString("activeRecipe")) : null;
         formed = tag.getBoolean("formed");
         formationCenter = tag.contains("formationX", Tag.TAG_DOUBLE)
@@ -321,6 +323,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         super.saveAdditional(tag, registries);
         if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, registries);
         tag.put("temporalFluid", temporalFluid.writeToNBT(registries, new CompoundTag()));
+		tag.put("energy", energyStorage.serializeNBT(registries));
         if (activeRecipe != null) tag.putString("activeRecipe", activeRecipe.toString());
         tag.putBoolean("formed", formed);
         if (formationCenter != null) {

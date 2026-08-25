@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/multiblock_fluid_output",
+    "up": "crystalnexus:block/multiblock_fluid_output",
+    "north": "crystalnexus:block/multiblock_fluid_output",
+    "east": "crystalnexus:block/multiblock_fluid_output",
+    "south": "crystalnexus:block/multiblock_fluid_output",
+    "west": "crystalnexus:block/multiblock_fluid_output",
+    "particle": "crystalnexus:block/multiblock_fluid_output"
+  }
+}

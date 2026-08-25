@@ -726,7 +726,9 @@
   "item.crystalnexus.meteor": "Meteor",
   "item.crystalnexus.meteorite_scrap": "Meteorite Scrap",
   "item.crystalnexus.meteorite_alloy": "Meteorite Alloy",
+  "item.crystalnexus.hot_meteorite_alloy": "Hot Meteorite Alloy",
   "item.crystalnexus.tungsten_dust": "Tungsten Dust",
+  "item.crystalnexus.hot_tungsten": "Hot Tungsten",
   "item.crystalnexus.tungsten": "Tungsten",
   "block.crystalnexus.tungsten_block": "Tungsten Block",
   "item.crystalnexus.bear": "§cBear",
@@ -742,5 +744,10 @@
   "item.crystalnexus.titanium_heating_coil": "Titanium Heating Coil",
   "block.crystalnexus.heating_core": "Heating Core",
   "block.crystalnexus.multiblock_item_input": "Machine Item Input",
-  "gui.crystalnexus.waste_output_gui.label_item_input": "[Item Input]"
+  "gui.crystalnexus.waste_output_gui.label_item_input": "[Item Input]",
+  "block.crystalnexus.insulated_titanium_casing": "Insulated Titanium Casing",
+  "block.crystalnexus.cryogenic_flash_freezer_hatch": "Cryogenic Flash Freezer Hatch",
+  "gui.crystalnexus.cryogenic_flash_freezer": "[Cryogenic Flash Freezer]",
+  "block.crystalnexus.cooling_coil": "Cooling Coil",
+  "block.crystalnexus.multiblock_fluid_output": "Machine Fluid Output"
 }

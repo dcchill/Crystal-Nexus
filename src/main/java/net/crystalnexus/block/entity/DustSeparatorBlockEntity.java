@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.processing.MachineTier;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -131,7 +132,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 		return index == 1 || index == 3;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.DUST_SEPARATOR.capacity(), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxReceive(), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.DUST_SEPARATOR.capacity(), 4096), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxReceive(), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

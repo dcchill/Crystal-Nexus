@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "crystalnexus:blocks/cryogenic_flash_freezer_hatch",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "crystalnexus:cryogenic_flash_freezer_hatch"
+        }
+      ]
+    }
+  ]
+}

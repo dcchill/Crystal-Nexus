@@ -87,6 +87,7 @@ The depot system works like cloud storage for items. The uploader and downloader
 
 - Automatically crafts based on the filtered item.
 - Treats all recipes as shapeless/stackless.
+- Energy per craft follows the machine material: Iron 256 FE, Crystal 512 FE, and Titanium 2,048 FE before FE-efficiency upgrades.
 
 How it works:
 

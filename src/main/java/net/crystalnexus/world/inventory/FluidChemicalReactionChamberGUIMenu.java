@@ -30,9 +30,9 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         chamber = entity.level().getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity be ? be : null;
         InvWrapper items = new InvWrapper(chamber == null ? new net.minecraft.world.SimpleContainer(4) : chamber);
 
-        addSlot(new SlotItemHandler(items, 0, 28, 64));
-        addSlot(new SlotItemHandler(items, 1, 52, 64));
-        addSlot(new SlotItemHandler(items, 2, 115, 64));
+        addSlot(new SlotItemHandler(items, 0, 37, 54));
+        addSlot(new SlotItemHandler(items, 1, 61, 54));
+        addSlot(new SlotItemHandler(items, 2, 124, 54));
         addSlot(new SlotItemHandler(items, 3, 180, 8) {
             @Override public boolean mayPlace(ItemStack stack) {
                 return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));

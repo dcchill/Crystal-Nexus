@@ -89,6 +89,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
 
     private static RecipeMatch findRecipe(ServerLevel level, FluidChemicalReactionChamberBlockEntity chamber) {
         for (var holder : level.getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE)) {
+            if (holder.id().getPath().startsWith("cryogenic_flash_freezer_")) continue;
             RecipeMatch match = match(holder.value(), chamber);
             if (match != null) return match;
         }

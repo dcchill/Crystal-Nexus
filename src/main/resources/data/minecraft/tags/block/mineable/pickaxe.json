@@ -171,6 +171,10 @@
     "crystalnexus:titanium_carbide_block",
     "crystalnexus:plasma_generator_controller",
     "crystalnexus:heating_core",
+    "crystalnexus:cooling_coil",
+    "crystalnexus:insulated_titanium_casing",
+    "crystalnexus:cryogenic_flash_freezer_hatch",
+    "crystalnexus:multiblock_fluid_output",
     "crystalnexus:multiblock_item_input"
   ]
 }

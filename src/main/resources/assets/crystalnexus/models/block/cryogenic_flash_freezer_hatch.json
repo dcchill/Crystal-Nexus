@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/insulated_titanium_casing",
+    "up": "crystalnexus:block/insulated_titanium_casing",
+    "north": "crystalnexus:block/cryogenic_flash_freezer_hatch",
+    "east": "crystalnexus:block/insulated_titanium_casing",
+    "south": "crystalnexus:block/insulated_titanium_casing",
+    "west": "crystalnexus:block/insulated_titanium_casing",
+    "particle": "crystalnexus:block/insulated_titanium_casing"
+  },
+  "render_type": "solid"
+}

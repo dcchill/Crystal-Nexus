@@ -17,6 +17,8 @@ Put an ingot in the input, choose the desired part with the selector, supply FE,
 
 ## Ore and Dust Processing
 
+Machine material tiers consume twice as much base energy per operation as the previous tier: Iron 0.5x, Crystal 1x, Chlorophyte 2x, Titanium/Invertium 4x, and Hyper/Carbon 8x. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, and 32,768 FE before FE-efficiency upgrades. Machines with missing intermediate variants still use the multiplier for their crafting material.
+
 ### Crystal Ore Crusher
 
 The Crystal Ore Crusher converts raw ores into dusts.
@@ -28,7 +30,7 @@ The Crystal Ore Crusher converts raw ores into dusts.
 - Base processing time: 100 ticks, 75 with Acceleration Upgrade, 50 with Carbon Acceleration Upgrade.
 - Inventory: input, output, and upgrade slots.
 - Automation can insert raw ores and upgrades, and extract finished dust.
-- Energy capacity: 10,240 FE.
+- Crystal-tier energy capacity: 10,240 FE by default; upper-tier buffers expand when necessary to hold one operation's energy cost.
 - Max receive/extract: 2,048 FE.
 
 ### Crystal Dust Separator
@@ -54,17 +56,19 @@ The Iron Smelter is the lower-tier powered smelter.
 
 Use it as a first FE-powered furnace replacement.
 
-### Invertium Smelter
-
-The Invertium Smelter is the Invertium-tier smelting machine.
-
-Build it once Invertium production is established.
-
 ### Chlorophyte Smelter
 
 The Chlorophyte Smelter is the Chlorophyte-tier smelting machine.
 
 Use it in the Chlorophyte processing branch.
+
+### Invertium Smelter
+
+The Invertium Smelter is the Invertium-tier smelting machine and upgrades from the Chlorophyte Smelter.
+
+Build it once Invertium production is established.
+
+Smelter energy costs before FE-efficiency upgrades are 1,024 FE for Iron, 2,048 FE for Crystal, 4,096 FE for Chlorophyte, and 8,192 FE for Invertium.
 
 ### Ultima Smelter
 
@@ -154,7 +158,7 @@ The Quantum Miner creates resources from a weighted resource table instead of mi
 
 ### Chlorophyte Circuit Press
 
-The Circuit Press creates circuits and chips.
+The Circuit Press creates circuits and chips. The Chlorophyte model costs 4,096 FE per item. The Titanium Carbide model costs 8,192 FE per item and processes eight items per batch, for 65,536 FE per completed batch before FE-efficiency upgrades.
 
 ### Computation Cluster
 

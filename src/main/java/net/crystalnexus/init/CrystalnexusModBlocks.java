@@ -142,6 +142,7 @@ import net.crystalnexus.block.SolarEngineControllerBlock;
 import net.crystalnexus.block.PlasmaGeneratorControllerBlock;
 import net.crystalnexus.block.MultiblockItemOutputBlock;
 import net.crystalnexus.block.MultiblockItemInputBlock;
+import net.crystalnexus.block.MultiblockFluidOutputBlock;
 import net.crystalnexus.block.GasolineBlock;
 import net.crystalnexus.block.FluidPackagerBlock;
 import net.crystalnexus.block.FactoryOutputControllerBlock;
@@ -175,6 +176,7 @@ import net.crystalnexus.block.CrystalGuideBlock;
 import net.crystalnexus.block.CrystalCrusherBlock;
 import net.crystalnexus.block.CrudeOilBlock;
 import net.crystalnexus.block.CraftingFactoryBlock;
+import net.crystalnexus.block.CryogenicFlashFreezerHatchBlock;
 import net.crystalnexus.block.CrystalCraftingFactoryBlock;
 import net.crystalnexus.block.TitaniumCraftingFactoryBlock;
 import net.crystalnexus.block.CopperNodeBlock;
@@ -263,6 +265,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CRYSTAL_SMELTER = REGISTRY.register("crystal_smelter", CrystalSmelterBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_SMELTER = REGISTRY.register("invertium_smelter", InvertiumSmelterBlock::new);
 	public static final DeferredBlock<Block> CHLOROPHYTE_SMELTER = REGISTRY.register("chlorophyte_smelter", ChlorophyteSmelterBlock::new);
+	public static final DeferredBlock<Block> CRYOGENIC_FLASH_FREEZER_HATCH = REGISTRY.register("cryogenic_flash_freezer_hatch", CryogenicFlashFreezerHatchBlock::new);
 	public static final DeferredBlock<Block> TESSERACT = REGISTRY.register("tesseract", TesseractBlock::new);
 	public static final DeferredBlock<Block> TESSERACT_OUTPUT = REGISTRY.register("tesseract_output", TesseractOutputBlock::new);
 	public static final DeferredBlock<Block> CIRCUIT_PRESS = REGISTRY.register("circuit_press", CircuitPressBlock::new);
@@ -301,6 +304,8 @@ public class CrystalnexusModBlocks {
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 15f).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> HEATING_CORE = REGISTRY.register("heating_core",
 			HeatingCoreBlock::new);
+	public static final DeferredBlock<Block> COOLING_COIL = REGISTRY.register("cooling_coil",
+			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 15f).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> ARC_FURNACE = REGISTRY.register("arc_furnace", ArcFurnaceBlock::new);
 	public static final DeferredBlock<Block> QUANTUM_MINER = REGISTRY.register("quantum_miner", QuantumMinerBlock::new);
 	public static final DeferredBlock<Block> BATTERY = REGISTRY.register("battery", BatteryBlock::new);
@@ -400,6 +405,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> RAD_PLACEHOLDER = REGISTRY.register("rad_placeholder", RadPlaceholderBlock::new);
 	public static final DeferredBlock<Block> HEAVY_IRON_BLOCK = REGISTRY.register("heavy_iron_block", HeavyIronBlockBlock::new);
 	public static final DeferredBlock<Block> MACHINE_CASING = REGISTRY.register("machine_casing", MachineCasingBlock::new);
+	public static final DeferredBlock<Block> INSULATED_TITANIUM_CASING = REGISTRY.register("insulated_titanium_casing", MachineCasingBlock::new);
 	public static final DeferredBlock<Block> CAUTION_BLOCK = REGISTRY.register("caution_block", CautionBlockBlock::new);
 	public static final DeferredBlock<Block> CAUTION_BLOCK_ARROW = REGISTRY.register("caution_block_arrow", CautionBlockArrowBlock::new);
 	public static final DeferredBlock<Block> FACTORY_LIGHT = REGISTRY.register("factory_light", FactoryLightBlock::new);
@@ -453,6 +459,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> PLASMA_GENERATOR_CONTROLLER = REGISTRY.register("plasma_generator_controller", PlasmaGeneratorControllerBlock::new);
 	public static final DeferredBlock<Block> MULTIBLOCK_ITEM_OUTPUT = REGISTRY.register("multiblock_item_output", MultiblockItemOutputBlock::new);
 	public static final DeferredBlock<Block> MULTIBLOCK_ITEM_INPUT = REGISTRY.register("multiblock_item_input", MultiblockItemInputBlock::new);
+	public static final DeferredBlock<Block> MULTIBLOCK_FLUID_OUTPUT = REGISTRY.register("multiblock_fluid_output", MultiblockFluidOutputBlock::new);
 	public static final DeferredBlock<Block> TUNGSTEN_BLOCK = REGISTRY.register("tungsten_block",
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()));
 	// End of user code block custom blocks

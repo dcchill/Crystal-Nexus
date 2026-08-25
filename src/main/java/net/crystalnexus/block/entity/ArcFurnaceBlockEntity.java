@@ -5,6 +5,7 @@ import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.multiblock.StructureNbtValidator;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.world.inventory.ArcFurnaceMenu;
@@ -36,7 +37,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.IntStream;
 
-public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
 	private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "arc_blast_furnace");
 	private static final int VALIDATION_INTERVAL = 20;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
@@ -112,7 +113,6 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 			validationDelay = VALIDATION_INTERVAL;
 		}
 		if (!formed) return false;
-		relayEnergy();
 		flushOutput();
 		pullInputs();
 		return true;
@@ -211,17 +211,7 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 		setChanged();
 	}
 
-	private void relayEnergy() {
-		int space = energyStorage.getMaxEnergyStored() - energyStorage.getEnergyStored();
-		for (BlockPos pos : energyInputs) {
-			if (space <= 0) break;
-			if (!(level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input)
-				|| !input.isBoundTo(worldPosition)) continue;
-			int moved = input.getEnergyStorage().extractEnergy(space, false);
-			energyStorage.receiveEnergy(moved, false);
-			space -= moved;
-		}
-	}
+	@Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
 
 	private void flushOutput() {
 		ItemStack source = stacks.get(2);

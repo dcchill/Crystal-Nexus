@@ -75,6 +75,27 @@ class ProgressionRecipeAuditTest {
             "crystalnexus:machine_energy_output", "crystalnexus:machine_fluid_input", "crystalnexus:tungsten");
     }
 
+    @Test
+    void tieredMachineRecipesFollowTheirMaterialProgression() throws IOException {
+        assertContains("iron_smelter_recipe.json", "crystalnexus:machine_frame");
+        assertContains("crystal_smelter_recipe.json", "crystalnexus:crystal_machine_frame",
+            "crystalnexus:iron_smelter");
+        assertContains("chlorophyte_smelter_recipe.json", "crystalnexus:chlorophyte_machine_frame",
+            "crystalnexus:crystal_smelter");
+        assertContains("invertium_smelter_recipe.json", "crystalnexus:invertium_machine_frame",
+            "crystalnexus:chlorophyte_smelter");
+
+        assertContains("crafting_factory_recipe.json", "crystalnexus:iron_machine_frame");
+        assertContains("crystal_crafting_factory_recipe.json", "crystalnexus:ancient_crystal",
+            "crystalnexus:crafting_factory");
+        assertContains("titanium_crafting_factory_recipe.json", "c:plates/titanium",
+            "crystalnexus:crystal_crafting_factory");
+
+        assertContains("circuit_press_recipe.json", "crystalnexus:chlorophyte_machine_frame");
+        assertContains("titanium_carbide_circuit_press_recipe.json",
+            "crystalnexus:titanium_carbide_machine_frame");
+    }
+
 	@Test
 	void balanceFixesStayOnCentralizedCounts() throws IOException {
 		String oreProcessor = Files.readString(Path.of(

@@ -43,16 +43,21 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.world.inventory.CraftingFactoryGUIMenu;
 import net.crystalnexus.procedures.AutoCrafterOnTickProcedure;
 import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.TieredMachineBlock;
 
 import java.util.List;
 
 import io.netty.buffer.Unpooled;
 
-public class CraftingFactoryBlock extends Block implements EntityBlock {
+public class CraftingFactoryBlock extends Block implements EntityBlock, TieredMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	private final MachineTier machineTier;
 
-	public CraftingFactoryBlock() {
+	public CraftingFactoryBlock() { this(MachineTier.IRON); }
+
+	protected CraftingFactoryBlock(MachineTier machineTier) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.45f, 13f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -62,8 +67,11 @@ public class CraftingFactoryBlock extends Block implements EntityBlock {
 				return 0;
 			}
 		}.getLightLevel())).dynamicShape());
+		this.machineTier = machineTier;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
+
+	@Override public MachineTier machineTier() { return machineTier; }
 
 	@Override
 	@OnlyIn(Dist.CLIENT)

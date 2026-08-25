@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/cooling_coils_top",
+    "up": "crystalnexus:block/cooling_coils_top",
+    "north": "crystalnexus:block/cooling_coils",
+    "east": "crystalnexus:block/cooling_coils",
+    "south": "crystalnexus:block/cooling_coils",
+    "west": "crystalnexus:block/cooling_coils",
+    "particle": "crystalnexus:block/cooling_coils"
+  },
+  "render_type": "solid"
+}

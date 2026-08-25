@@ -34,7 +34,7 @@ public final class RefiningRecipeCategory implements IRecipeCategory<RefiningRec
     @Override public void draw(RefiningRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         background.draw(graphics);
         graphics.drawString(Minecraft.getInstance().font,
-            Component.literal("Minimum: " + MachineTier.values()[recipe.minimumMachineTier() - 1].displayName()),
+            Component.literal("Minimum: " + MachineTier.forLevel(recipe.minimumMachineTier()).displayName()),
             5, 5, 0xff404040, false);
     }
     @Override public void setRecipe(IRecipeLayoutBuilder builder, RefiningRecipe recipe, IFocusGroup focuses) {

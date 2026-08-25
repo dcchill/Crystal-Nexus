@@ -70,6 +70,7 @@ import net.crystalnexus.world.inventory.ComputationClusterGUIMenu;
 import net.crystalnexus.world.inventory.CircuitPressGUIMenu;
 import net.crystalnexus.world.inventory.ChemicalReactionChamberGUIMenu;
 import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
+import net.crystalnexus.world.inventory.CryogenicFlashFreezerMenu;
 import net.crystalnexus.world.inventory.RefineryMenu;
 import net.crystalnexus.world.inventory.TemporalExploiterMenu;
 import net.crystalnexus.world.inventory.BlueprintGUIMenu;
@@ -114,6 +115,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityCompressorGUIMenu>> SINGULARITY_COMPRESSOR_GUI = REGISTRY.register("singularity_compressor_gui", () -> IMenuTypeExtension.create(SingularityCompressorGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ChemicalReactionChamberGUIMenu>> CHEMICAL_REACTION_CHAMBER_GUI = REGISTRY.register("chemical_reaction_chamber_gui", () -> IMenuTypeExtension.create(ChemicalReactionChamberGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<FluidChemicalReactionChamberGUIMenu>> FLUID_CHEMICAL_REACTION_CHAMBER_GUI = REGISTRY.register("fluid_chemical_reaction_chamber_gui", () -> IMenuTypeExtension.create(FluidChemicalReactionChamberGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<CryogenicFlashFreezerMenu>> CRYOGENIC_FLASH_FREEZER = REGISTRY.register("cryogenic_flash_freezer", () -> IMenuTypeExtension.create(CryogenicFlashFreezerMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<RefineryMenu>> REFINERY_GUI = REGISTRY.register("refinery_gui", () -> IMenuTypeExtension.create(RefineryMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TemporalExploiterMenu>> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", () -> IMenuTypeExtension.create(TemporalExploiterMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ContainerGUIMenu>> CONTAINER_GUI = REGISTRY.register("container_gui", () -> IMenuTypeExtension.create(ContainerGUIMenu::new));

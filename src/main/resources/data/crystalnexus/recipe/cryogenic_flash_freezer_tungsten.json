@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": {
+    "item": "crystalnexus:hot_tungsten"
+  },
+  "item_output": {
+    "id": "crystalnexus:tungsten",
+    "count": 1
+  }
+}

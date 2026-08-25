@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.processing.MachineTier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,7 @@ public class AutoCrafterOnTickProcedure {
 		boolean crystalFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get());
 		boolean titaniumFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
 		int craftTime = titaniumFactory ? 10 : crystalFactory ? 25 : 50;
-		int energyPerCraft = titaniumFactory ? 1024 : crystalFactory ? 512 : 256;
+		int energyPerCraft = MachineTier.from(world.getBlockState(pos)).energyCost(512);
 		setMaxProgress(world, pos, craftTime);
 
         var cap = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);

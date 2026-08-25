@@ -100,7 +100,7 @@ public class IronSmelterOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		if (true == (world instanceof Level _level9 && _level9.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _level9).isPresent())) {
-			if (MachineUpgradeHelper.energyCost(_cn_upg, 1024) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+			if (MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() && ((world instanceof Level _lvlSmeltResult
 						? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
 								.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
@@ -145,7 +145,7 @@ public class IronSmelterOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 1024), false);
+								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048), false);
 						}
 					}
 				}
