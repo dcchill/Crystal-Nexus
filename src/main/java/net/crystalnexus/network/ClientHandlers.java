@@ -7,22 +7,12 @@ import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
+import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 import net.crystalnexus.network.payload.S2C_MaterialProfiles;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
-import net.crystalnexus.network.payload.S2C_DepotProgramResponse;
 
 public class ClientHandlers {
-
-    public static void onDepotProgramResponse(final S2C_DepotProgramResponse msg, final IPayloadContext ctx) {
-        ctx.enqueueWork(() -> {
-            try {
-                Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
-                hooks.getMethod("handle", S2C_DepotProgramResponse.class).invoke(null, msg);
-            } catch (Throwable ignored) {
-            }
-        });
-    }
 
     public static void onMaterialProfiles(final S2C_MaterialProfiles msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
@@ -41,6 +31,16 @@ public class ClientHandlers {
             try {
                 Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
                 hooks.getMethod("handle", S2C_DepotCraftingResponse.class).invoke(null, msg);
+            } catch (Throwable ignored) {
+            }
+        });
+    }
+
+    public static void onDepotCliResponse(final S2C_DepotCliResponse msg, final IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            try {
+                Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
+                hooks.getMethod("handle", S2C_DepotCliResponse.class).invoke(null, msg);
             } catch (Throwable ignored) {
             }
         });

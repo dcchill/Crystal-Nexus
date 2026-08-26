@@ -18,10 +18,6 @@ import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.PurificationRecipe;
-import net.crystalnexus.program.DepotProgram;
-import net.crystalnexus.program.DepotProgramRun;
-import net.crystalnexus.program.DepotProgramRunner;
-import net.crystalnexus.program.DepotProgramValidator;
 import net.crystalnexus.world.inventory.DepotCliMenu;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.world.inventory.CraftingProcessorMenu;
@@ -88,32 +84,6 @@ public final class DepotGameTests {
                         && restored.getProcessingPattern(persistedOutput).outputs()
                         .getOrDefault(persistedByproduct, 0L) == 2,
                 "Processing patterns, byproducts, active machine steps, and tasks must survive save/load");
-
-        DepotProgram.Variable enabled = new DepotProgram.Variable("enabled", DepotProgram.ValueType.BOOLEAN,
-                DepotProgram.Value.bool(false));
-        DepotProgram.Node setEnabled = new DepotProgram.Node(java.util.UUID.randomUUID(), "set_variable",
-                Map.of("variable", "enabled"),
-                Map.of("value", DepotProgram.Node.literal(DepotProgram.Value.bool(true))), Map.of());
-        DepotProgram.Node stop = DepotProgram.Node.statement("stop");
-        DepotProgram program = new DepotProgram(java.util.UUID.randomUUID(), "GameTest program", 1,
-                List.of(enabled), List.of(setEnabled, stop));
-        helper.assertTrue(DepotProgramValidator.validate(program).isEmpty(),
-                "A typed variable program must pass authoritative validation");
-        DepotSavedData programDepot = new DepotSavedData();
-        helper.assertTrue(programDepot.saveProgram(program), "A valid program must save");
-        programDepot.setProgramRun(DepotProgramRun.start(program));
-        helper.assertTrue(!programDepot.deleteProgram(program.id()), "An active program must not be deleted");
-        DepotSavedData restoredProgramDepot = DepotSavedData.load(
-                programDepot.save(new CompoundTag(), helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
-        helper.assertTrue(program.equals(restoredProgramDepot.getProgram(program.id()))
-                        && restoredProgramDepot.getProgramRun() != null,
-                "Program trees and active interpreter state must survive NBT round trips");
-        DepotProgramRunner.tick(helper.getLevel().getServer(), java.util.UUID.randomUUID(), restoredProgramDepot);
-        helper.assertTrue(restoredProgramDepot.getProgramRun().status() == DepotProgramRun.Status.COMPLETED
-                        && restoredProgramDepot.getProgramRun().variables().get("enabled").bool(),
-                "The bounded interpreter must execute typed variable and stop blocks");
-        restoredProgramDepot.setProgramRun(null);
-        helper.assertTrue(restoredProgramDepot.deleteProgram(program.id()), "An inactive program must be deletable");
         restored.cancelCraftingJob(restored.getCraftingJob().id());
         helper.assertTrue(restored.getProcessingTask() == null,
                 "Cancelling a processing job must stop tracking its machine without undoing dispatched inputs");

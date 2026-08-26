@@ -38,11 +38,7 @@ public final class DepotNetwork {
     }
 
     public static int craftingProcessorCount(ServerPlayer player) {
-        return craftingProcessorCount(player.serverLevel(), player.getUUID());
-    }
-
-    public static int craftingProcessorCount(ServerLevel lookupLevel, UUID owner) {
-        DepotControllerBlockEntity controller = DepotSavedData.getController(lookupLevel, owner);
+        DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return 0;
         return count(level, controller.getBlockPos(),
                 pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock)
