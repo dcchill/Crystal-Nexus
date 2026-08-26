@@ -1,11 +1,31 @@
-# Depot CLI
+# Depot Programmer
 
-The **Crafting** tab is the primary interface. Search the output catalog, select an amount, and inspect the expandable crafting tree before pressing Start. Blue nodes are already stored, green nodes use crafting-table recipes, yellow nodes use a selected connected machine, and red nodes are missing or need a route selection. Select a tree node to persist a recipe or compatible machine preference. Crafting-table routes remain automatic; machine routes are only used after you select them. The active-job bar shows live progress and can safely cancel the job, returning its current materials.
+The Depot Programmer is an in-game visual editor for depot automation. Its registry identifier remains `crystalnexus:depot_cli`, so existing blocks, items, recipes, menus, and worlds remain compatible.
 
-The **Terminal** tab retains every command-line feature, including custom processing-pattern administration, storage commands, history, autocomplete, and JEI transfer.
+## Programs
 
-Place the Depot CLI on the same Depot Cable network as your powered Depot Controller. The screen and status label turn on when the owner’s player-based depot is connected. Other players cannot use the terminal or its storage permissions.
+Open the block to enter the Programs tab. Choose **New**, drag blocks from the categorized palette into the central workspace, configure the selected block in the inspector, then choose **Test**, **Save**, and **Run**. Programs are saved per depot owner and execute on the server.
 
-Use registry identifiers when names are ambiguous, for example `take minecraft:iron_ingot 64`. `find iron`, `find mod:create`, `find tag:c:ingots`, and amount filters search storage. `list --sort amount-desc --page 2` pages through large depots. `deposit held`, `deposit inventory`, and `deposit <item> <amount>` preserve rejected items. `craft <item> <amount>` recursively crafts using standard crafting-table recipes. `process <item> <amount>` recursively creates an item whose final step runs in an external machine such as Mekanism or AE2; it also retains `process list`, `process add`, and `process remove` for custom processing patterns. `smelt <item> <amount>` runs only compatible furnace or electric-furnace recipes. Use `recipe add <machine_id> <output> <count> <input> <count>...` to program a machine recipe manually; a single input is valid. Use `recipe remove <output>` to delete a programmed machine recipe. Its machine target and ingredients are saved with the depot. Clicking JEI's plus button from the Depot CLI pre-fills this command for unprogrammed recipes, and then pre-fills `process` for that output after the recipe is added during the current session. Use `recipe list <item>`, `recipe prefer <item> <recipe_id>`, and `recipe clear <item>` to control which recipe is tried first for any intermediate or final item. Use `queue clear` to cancel the active crafting job and return its current materials to storage.
+- Left-drag a palette block to create it.
+- Drag workspace blocks to reorder them or place them inside control blocks.
+- Drag reporter blocks onto compatible inputs.
+- Middle- or right-drag to pan; use the mouse wheel to zoom.
+- Press Delete to remove the selected block, or drag it to Trash.
+- Declare variables with semicolon-separated `name:type=default` entries, such as `count:number=4; enabled:boolean=true`.
+- Test validates without mutating the world. Run requires a saved, unchanged, valid revision.
 
-Press Up/Down for command history, Tab for server-limited autocomplete, Page Up/Page Down or the mouse wheel to scroll, Enter to submit, and Escape to close. `help`, `help take`, and `help craft` show syntax. All storage and crafting commands are validated and executed by the server.
+The initial palette provides depot actions, crafting and processing actions, variables, integer operators, conditions, loops, waits, and depot state reporters. Block colors and shapes identify their category and value type. Hover a palette block for help. Validation and runtime errors highlight the responsible block.
+
+See the [complete block-by-block tutorial](depot_programming_blocks.md) for every palette block, its inputs, its inspector fields, and worked examples.
+
+Programs are bounded to 32 programs and 32 variables per owner, 256 nodes, nesting depth 16, 64 immediate instructions per tick, 10,000 loop iterations, and 100,000 executed instructions per run. One program can run at a time. Active programs and interpreter state survive world saves and restarts.
+
+Crafting, smelting, and processing blocks reuse the depot crafting lifecycle. They wait for the captured job to complete and report cancellation or failure at the originating block. Unloaded or unpowered networks pause without force-loading chunks. Offline player-inventory actions fail clearly; synced third-party recipe work waits for the owner to reconnect when necessary.
+
+JEI's recipe-transfer button inserts a configured Craft, Process, or Define Pattern block directly into the open program.
+
+## Depot panel
+
+The Crafting tab remains a native inventory and status panel. Search and page through available outputs, inspect the expandable crafting tree, select recipe and machine routes, start crafting jobs, and cancel active work safely. It replaces the former `find`, `list`, `status`, `queue`, and preference command workflows without opening a console.
+
+All saves, validation, execution, ownership checks, registry checks, rate limits, distance checks, and depot mutations are authoritative on the server.

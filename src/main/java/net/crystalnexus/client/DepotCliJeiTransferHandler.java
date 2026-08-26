@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.transfer.IUniversalRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.RecipeType;
 import net.crystalnexus.init.CrystalnexusModMenus;
+import net.crystalnexus.program.DepotProgram;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -21,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandler<DepotCliMenu> {
-    public static final AtomicReference<String> pendingCommand = new AtomicReference<>();
+    public static final AtomicReference<DepotProgram.Node> pendingBlock = new AtomicReference<>();
     private static final Set<ResourceLocation> PROGRAMMED_OUTPUTS = new java.util.concurrent.ConcurrentSkipListSet<>();
         private static final Map<String, ResourceLocation> RECIPE_MACHINES = new java.util.concurrent.ConcurrentHashMap<>();
         private static final Map<String, ResourceLocation> RECIPE_CATEGORIES = new java.util.concurrent.ConcurrentHashMap<>();
@@ -83,11 +86,11 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
         // distinguish it from a machine recipe.
         if (ResourceLocation.fromNamespaceAndPath("minecraft", "crafting").equals(category)
             || isCraftingTableRecipe(recipe)) {
-            pendingCommand.set("craft " + outputId + " " + count);
+            pendingBlock.set(action("craft", outputId, count));
             return;
         }
         if (PROGRAMMED_OUTPUTS.contains(outputId)) {
-            pendingCommand.set("process " + outputId + " " + count);
+            pendingBlock.set(action("process", outputId, count));
             return;
         }
         List<String> parts = new ArrayList<>();
@@ -98,10 +101,22 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
             parts.add(Integer.toString(Math.max(1, input.getCount())));
         }
         if (!parts.isEmpty()) {
-            String machineId = machine == null ? "<machine_id>" : machine.toString();
-            pendingCommand.set("recipe add " + machineId + " " + outputId + " " + count + " "
-                    + String.join(" ", parts));
+            Map<String, String> fields = new LinkedHashMap<>();
+            fields.put("machine", machine == null ? "minecraft:furnace" : machine.toString());
+            fields.put("output", outputId.toString());
+            fields.put("amount", Integer.toString(count));
+            List<String> inputs = new ArrayList<>();
+            for (int i = 0; i + 1 < parts.size(); i += 2) inputs.add(parts.get(i) + "=" + parts.get(i + 1));
+            fields.put("inputs", String.join(";", inputs));
+            fields.put("outputs", outputId + "=" + count);
+            pendingBlock.set(new DepotProgram.Node(UUID.randomUUID(), "define_pattern", fields, Map.of(), Map.of()));
         }
+    }
+
+    private static DepotProgram.Node action(String opcode, ResourceLocation item, int amount) {
+        return new DepotProgram.Node(UUID.randomUUID(), opcode, Map.of(), Map.of(
+                "item", DepotProgram.Node.literal(DepotProgram.Value.text(DepotProgram.ValueType.ITEM, item.toString())),
+                "amount", DepotProgram.Node.literal(DepotProgram.Value.number(amount))), Map.of());
     }
 
     private static ResourceLocation machineFor(Object recipe) {

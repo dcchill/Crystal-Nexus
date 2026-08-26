@@ -24,6 +24,9 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.integration.DepotStorageBridge;
+import net.crystalnexus.program.DepotProgram;
+import net.crystalnexus.program.DepotProgramRun;
+import net.crystalnexus.program.DepotProgramValidator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,6 +53,10 @@ public class DepotSavedData extends SavedData {
     private CraftingJob craftingJob;
     private ProcessingTask processingTask;
     private int nextCraftingJobId = 1;
+    private final Map<UUID, DepotProgram> programs = new ConcurrentHashMap<>();
+    private DepotProgramRun programRun;
+    private int lastCompletedJobId;
+    private int lastCancelledJobId;
 
     // ===== Stored items =====
     private final Object2LongMap<ResourceLocation> counts = new Object2LongOpenHashMap<>();
@@ -220,6 +227,18 @@ public class DepotSavedData extends SavedData {
                         loadCounts(task.getCompound("remainingOutputs")));
             }
         }
+        ListTag programs = tag.getList("programs", Tag.TAG_COMPOUND);
+        for (int i = 0; i < programs.size() && data.programs.size() < DepotProgram.MAX_PROGRAMS; i++) {
+            try {
+                DepotProgram program = DepotProgram.load(programs.getCompound(i));
+                if (DepotProgramValidator.validate(program).isEmpty()) data.programs.put(program.id(), program);
+            } catch (RuntimeException ignored) {
+                // Ignore corrupt or future-schema programs without discarding the owner's existing depot data.
+            }
+        }
+        if (tag.contains("programRun", Tag.TAG_COMPOUND)) data.programRun = DepotProgramRun.load(tag.getCompound("programRun"));
+        data.lastCompletedJobId = tag.getInt("lastCompletedJobId");
+        data.lastCancelledJobId = tag.getInt("lastCancelledJobId");
 
         return data;
     }
@@ -280,6 +299,13 @@ public class DepotSavedData extends SavedData {
             task.put("remainingOutputs", saveCounts(processingTask.remainingOutputs()));
             tag.put("processingTask", task);
         }
+        ListTag savedPrograms = new ListTag();
+        programs.values().stream().sorted(Comparator.comparing(DepotProgram::name, String.CASE_INSENSITIVE_ORDER))
+                .forEach(program -> savedPrograms.add(program.save()));
+        tag.put("programs", savedPrograms);
+        if (programRun != null) tag.put("programRun", programRun.save());
+        tag.putInt("lastCompletedJobId", lastCompletedJobId);
+        tag.putInt("lastCancelledJobId", lastCancelledJobId);
 
         return tag;
     }
@@ -569,10 +595,51 @@ public class DepotSavedData extends SavedData {
         CraftingJob cancelled = craftingJob;
         craftingJob = null;
         processingTask = null;
+        lastCancelledJobId = id;
         (cancelled.steps().isEmpty() ? cancelled.reservedInputs() : cancelled.workingItems()).forEach(this::add);
         setDirty();
         return cancelled;
     }
+
+    // ===== Visual programs =====
+
+    public List<DepotProgram> getPrograms() {
+        return programs.values().stream().sorted(Comparator.comparing(DepotProgram::name, String.CASE_INSENSITIVE_ORDER)).toList();
+    }
+
+    public @Nullable DepotProgram getProgram(UUID id) { return programs.get(id); }
+
+    public boolean saveProgram(DepotProgram program) {
+        if (program == null || !programs.containsKey(program.id()) && programs.size() >= DepotProgram.MAX_PROGRAMS) return false;
+        boolean duplicate = programs.values().stream().anyMatch(existing -> !existing.id().equals(program.id())
+                && existing.name().equalsIgnoreCase(program.name()));
+        if (duplicate || programRun != null && programRun.active() && programRun.programId().equals(program.id())) return false;
+        programs.put(program.id(), program);
+        setDirty();
+        return true;
+    }
+
+    public boolean deleteProgram(UUID id) {
+        if (programRun != null && programRun.active() && programRun.programId().equals(id)) return false;
+        if (programs.remove(id) == null) return false;
+        setDirty();
+        return true;
+    }
+
+    public @Nullable DepotProgramRun getProgramRun() { return programRun; }
+
+    public void setProgramRun(@Nullable DepotProgramRun run) {
+        programRun = run;
+        setDirty();
+    }
+
+    public void recordCompletedJob(int id) {
+        lastCompletedJobId = id;
+        setDirty();
+    }
+
+    public int getLastCompletedJobId() { return lastCompletedJobId; }
+    public int getLastCancelledJobId() { return lastCancelledJobId; }
 
     public @Nullable CraftingJob updateProcessingTask(ProcessingTask task,
             Map<ResourceLocation, Long> inserted, Map<ResourceLocation, Long> extracted) {

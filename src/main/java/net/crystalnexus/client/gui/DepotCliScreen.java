@@ -1,13 +1,13 @@
 package net.crystalnexus.client.gui;
 
-import net.crystalnexus.cli.DepotCliParser;
 import net.crystalnexus.cli.DepotCraftingService;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
-import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
-import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
-import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
+import net.crystalnexus.network.payload.C2S_DepotProgramRequest;
+import net.crystalnexus.network.payload.S2C_DepotProgramResponse;
+import net.crystalnexus.program.DepotProgram;
+import net.crystalnexus.program.DepotProgramBlocks;
 import net.crystalnexus.world.inventory.DepotCliMenu;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,12 +18,9 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -34,41 +31,33 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.LinkedHashMap;
 
 public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
-    private static final int MAX_OUTPUT = 200;
-    private static final int MAX_HISTORY = 50;
-    private enum Tab { CRAFTING, TERMINAL }
+    private enum Tab { PROGRAMS, CRAFTING }
 
-    private final List<String> output = new ArrayList<>();
-    private final List<String> history = new ArrayList<>();
     private final Set<Integer> collapsed = new HashSet<>();
     private final Map<Integer, DepotCraftingService.PreviewNode> nodesById = new HashMap<>();
     private final Map<Integer, Integer> nodeDepths = new HashMap<>();
     private final Set<Integer> parents = new HashSet<>();
-    private List<String> suggestions = List.of();
     private List<DepotCraftingService.CatalogEntry> catalog = List.of();
     private List<DepotCraftingService.PreviewNode> visibleNodeCache = List.of();
     private DepotCraftingService.Preview preview;
-    private EditBox terminalInput;
     private EditBox searchInput;
     private EditBox amountInput;
     private Button craftingTab;
-    private Button terminalTab;
     private Button previousPage;
     private Button nextPage;
     private Button startButton;
     private Button cancelButton;
     private Button automaticButton;
     private Checkbox craftableOnlyCheckbox;
-    private Tab tab = Tab.CRAFTING;
+    private Tab tab = Tab.PROGRAMS;
     private ResourceLocation selectedTarget;
     private int selectedNodeId;
     private int catalogPage;
     private int catalogPages = 1;
-    private int historyIndex;
-    private int suggestionIndex;
-    private int terminalScroll;
     private int treeScroll;
     private int routeScroll;
     private int searchDelay;
@@ -77,12 +66,50 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private int lastCatalogPage = -1;
     private boolean lastCatalogCraftableOnly;
     private boolean craftableOnly = true;
-    private boolean terminalStarted;
-    private boolean applyingSuggestion;
     private String message = "Select an item to preview its crafting tree.";
     private boolean messageSuccess = true;
     private ItemStack hoveredStack = ItemStack.EMPTY;
     private List<Component> hoveredRecipe = List.of();
+    private List<S2C_DepotProgramResponse.Summary> programSummaries = List.of();
+    private final List<DepotProgram.Node> programBody = new ArrayList<>();
+    private List<DepotProgram.Variable> programVariables = List.of();
+    private UUID programId = UUID.randomUUID();
+    private int programRevision;
+    private int programIndex;
+    private boolean programDirty;
+    private boolean programStarted;
+    private String programRunStatus = "IDLE";
+    private UUID programCurrentNode = S2C_DepotProgramResponse.NONE;
+    private final Map<UUID, String> programProblems = new HashMap<>();
+    private DepotProgramBlocks.Definition draggedDefinition;
+    private DepotProgram.Node draggedNode;
+    private UUID selectedProgramNode;
+    private double dragMouseX;
+    private double dragMouseY;
+    private double workspacePanX;
+    private double workspacePanY;
+    private double workspaceZoom = 1.0;
+    private boolean panning;
+    private int paletteScroll;
+    private int programStatusDelay;
+    private EditBox programName;
+    private EditBox programArguments;
+    private EditBox programVariableInput;
+    private Button programTab;
+    private Button newProgramButton;
+    private Button saveProgramButton;
+    private Button deleteProgramButton;
+    private Button testProgramButton;
+    private Button runProgramButton;
+    private Button stopProgramButton;
+    private Button previousProgramButton;
+    private Button nextProgramButton;
+    private Button applyProgramInputButton;
+    private final Map<UUID, ProgramRect> programHitboxes = new HashMap<>();
+    private boolean loadingProgram;
+    private record ProgramRect(int x, int y, int width, int height) {
+        boolean contains(double px, double py) { return px >= x && px < x + width && py >= y && py < y + height; }
+    }
 
     public DepotCliScreen(DepotCliMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -95,9 +122,9 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         imageWidth = Math.min(500, width - 16);
         imageHeight = Math.min(300, height - 16);
         super.init();
-        craftingTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.crafting"), button -> setTab(Tab.CRAFTING))
+        programTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_program.programs"), button -> setTab(Tab.PROGRAMS))
                 .bounds(leftPos + 8, topPos + 5, 72, 18).build());
-        terminalTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.terminal"), button -> setTab(Tab.TERMINAL))
+        craftingTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.crafting"), button -> setTab(Tab.CRAFTING))
                 .bounds(leftPos + 82, topPos + 5, 72, 18).build());
         craftableOnlyCheckbox = addRenderableWidget(Checkbox.builder(
                         Component.translatable("gui.crystalnexus.depot_cli.craftable_only"), font)
@@ -132,25 +159,50 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         automaticButton = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.automatic"), button -> clearRoute())
                 .bounds(leftPos + imageWidth - 88, topPos + 31, 80, 18).build());
 
-        terminalInput = new EditBox(font, leftPos + 21, topPos + imageHeight - 24, imageWidth - 33, 16,
-                Component.literal("Depot command"));
-        terminalInput.setMaxLength(256);
-        terminalInput.setBordered(false);
-        terminalInput.setTextColor(0xFFE8E8E8);
-        terminalInput.setResponder(value -> { if (!applyingSuggestion) suggestions = List.of(); });
-        addRenderableWidget(terminalInput);
+        programName = new EditBox(font, leftPos + 34, topPos + 29, 104, 16, Component.literal("Program name"));
+        programName.setMaxLength(32);
+        programName.setValue("New Program");
+        programName.setResponder(value -> { if (!loadingProgram) markProgramDirty(); });
+        addRenderableWidget(programName);
+        previousProgramButton = addRenderableWidget(Button.builder(Component.literal("<"), button -> cycleProgram(-1))
+                .bounds(leftPos + 8, topPos + 28, 22, 18).build());
+        nextProgramButton = addRenderableWidget(Button.builder(Component.literal(">"), button -> cycleProgram(1))
+                .bounds(leftPos + 142, topPos + 28, 22, 18).build());
+        newProgramButton = addRenderableWidget(Button.builder(Component.literal("New"), button -> newProgram())
+                .bounds(leftPos + 170, topPos + 28, 42, 18).build());
+        saveProgramButton = addRenderableWidget(Button.builder(Component.literal("Save"), button -> saveProgram())
+                .bounds(leftPos + 214, topPos + 28, 42, 18).build());
+        deleteProgramButton = addRenderableWidget(Button.builder(Component.literal("Delete"), button -> deleteProgram())
+                .bounds(leftPos + 258, topPos + 28, 48, 18).build());
+        testProgramButton = addRenderableWidget(Button.builder(Component.literal("Test"), button -> testProgram())
+                .bounds(leftPos + 308, topPos + 28, 42, 18).build());
+        runProgramButton = addRenderableWidget(Button.builder(Component.literal("Run"), button -> runProgram())
+                .bounds(leftPos + 352, topPos + 28, 42, 18).build());
+        stopProgramButton = addRenderableWidget(Button.builder(Component.literal("Stop"), button -> stopProgram())
+                .bounds(leftPos + 396, topPos + 28, 42, 18).build());
+        programVariableInput = new EditBox(font, leftPos + imageWidth - 147, topPos + 59, 139, 16, Component.literal("Variables"));
+        programVariableInput.setMaxLength(128);
+        programVariableInput.setHint(Component.literal("count:number=0"));
+        programVariableInput.setResponder(value -> { if (!loadingProgram) markProgramDirty(); });
+        addRenderableWidget(programVariableInput);
+        programArguments = new EditBox(font, leftPos + imageWidth - 147, topPos + 99, 139, 16, Component.literal("Block inputs"));
+        programArguments.setMaxLength(256);
+        programArguments.setHint(Component.literal("item=minecraft:iron_ingot, amount=1"));
+        addRenderableWidget(programArguments);
+        applyProgramInputButton = addRenderableWidget(Button.builder(Component.literal("Apply inputs"), button -> applyProgramInputs())
+                .bounds(leftPos + imageWidth - 147, topPos + 119, 90, 18).build());
         updateWidgets();
-        requestCatalog(true);
+        requestPrograms(C2S_DepotProgramRequest.Action.LIST, C2S_DepotProgramRequest.NONE, null);
     }
 
     private void setTab(Tab next) {
         tab = next;
         updateWidgets();
-        if (next == Tab.TERMINAL) {
-            setInitialFocus(terminalInput);
-            if (!terminalStarted) {
-                terminalStarted = true;
-                PacketDistributor.sendToServer(new C2S_DepotCliRequest(menu.containerId, "", false));
+        if (next == Tab.PROGRAMS) {
+            setInitialFocus(programName);
+            if (!programStarted) {
+                programStarted = true;
+                requestPrograms(C2S_DepotProgramRequest.Action.LIST, C2S_DepotProgramRequest.NONE, null);
             }
         } else setInitialFocus(searchInput);
     }
@@ -165,9 +217,21 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         cancelButton.visible = crafting && menu.hasJob();
         automaticButton.visible = crafting;
         craftableOnlyCheckbox.visible = crafting;
-        terminalInput.visible = !crafting;
+        programName.visible = !crafting;
+        programVariableInput.visible = !crafting;
+        programArguments.visible = !crafting;
+        programTab.active = crafting;
         craftingTab.active = !crafting;
-        terminalTab.active = crafting;
+        for (Button button : List.of(newProgramButton, saveProgramButton, deleteProgramButton, testProgramButton,
+                runProgramButton, stopProgramButton, previousProgramButton, nextProgramButton, applyProgramInputButton)) {
+            if (button != null) button.visible = !crafting;
+        }
+        saveProgramButton.active = programDirty;
+        deleteProgramButton.active = programRevision > 0 && !programRunStatus.startsWith("RUNNING") && !programRunStatus.startsWith("WAITING");
+        runProgramButton.active = programRevision > 0 && !programDirty && programProblems.isEmpty()
+                && !programRunStatus.startsWith("RUNNING") && !programRunStatus.startsWith("WAITING");
+        stopProgramButton.active = programRunStatus.startsWith("RUNNING") || programRunStatus.startsWith("WAITING");
+        applyProgramInputButton.active = selectedProgramNode != null;
         previousPage.active = catalogPage > 0;
         nextPage.active = catalogPage + 1 < catalogPages;
         startButton.active = preview != null && preview.startable() && !menu.hasJob();
@@ -178,6 +242,15 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     @Override
     public void containerTick() {
         super.containerTick();
+        DepotProgram.Node jeiBlock = net.crystalnexus.client.DepotCliJeiTransferHandler.pendingBlock.getAndSet(null);
+        if (jeiBlock != null) {
+            programBody.add(jeiBlock);
+            selectedProgramNode = jeiBlock.id();
+            programArguments.setValue(arguments(jeiBlock));
+            markProgramDirty();
+            messageSuccess = true;
+            message = "JEI recipe added to the program.";
+        }
         if (searchDelay > 0 && --searchDelay == 0) {
             catalogPage = 0;
             requestCatalog(false);
@@ -185,17 +258,26 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         if (refreshDelay > 0 && --refreshDelay == 0) {
             requestPreview();
         }
+        if (tab == Tab.PROGRAMS && ++programStatusDelay >= 20) {
+            programStatusDelay = 0;
+            requestPrograms(C2S_DepotProgramRequest.Action.STATUS, programId, null);
+        }
         updateWidgets();
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            if (draggedDefinition != null || draggedNode != null || panning) {
+                draggedDefinition = null; draggedNode = null; panning = false;
+                return true;
+            }
             onClose();
             return true;
         }
+        if (getFocused() instanceof EditBox && minecraft != null
+                && minecraft.options.keyInventory.matches(keyCode, scanCode)) return true;
         if (tab == Tab.CRAFTING) {
-            if (searchInput.isFocused() && keyCode == GLFW.GLFW_KEY_E) return true;
             if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
                 if (searchInput.isFocused()) requestCatalog(true);
                 else if (amountInput.isFocused()) requestPreview();
@@ -203,20 +285,9 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             }
             return super.keyPressed(keyCode, scanCode, modifiers);
         }
-        if (keyCode == GLFW.GLFW_KEY_PAGE_UP) {
-            terminalScroll = Math.max(0, terminalScroll - visibleTerminalLines());
-            return true;
-        }
-        if (keyCode == GLFW.GLFW_KEY_PAGE_DOWN) {
-            terminalScroll = Math.min(maxTerminalScroll(), terminalScroll + visibleTerminalLines());
-            return true;
-        }
-        if (terminalInput.isFocused()) {
-            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) { submit(); return true; }
-            if (keyCode == GLFW.GLFW_KEY_UP) { moveHistory(-1); return true; }
-            if (keyCode == GLFW.GLFW_KEY_DOWN) { moveHistory(1); return true; }
-            if (keyCode == GLFW.GLFW_KEY_TAB) { autocomplete(); return true; }
-            terminalInput.keyPressed(keyCode, scanCode, modifiers);
+        if (keyCode == GLFW.GLFW_KEY_DELETE && selectedProgramNode != null) {
+            if (removeNode(programBody, selectedProgramNode) != null) markProgramDirty();
+            selectedProgramNode = null;
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -224,8 +295,9 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-        if (tab == Tab.TERMINAL) {
-            terminalScroll = Mth.clamp(terminalScroll + (deltaY < 0 ? 1 : -1), 0, maxTerminalScroll());
+        if (tab == Tab.PROGRAMS) {
+            if (mouseX < leftPos + 120) paletteScroll = Math.max(0, paletteScroll + (deltaY < 0 ? 1 : -1));
+            else workspaceZoom = Mth.clamp(workspaceZoom + deltaY * 0.1, 0.5, 1.5);
             return true;
         }
         if (mouseX >= leftPos + 140 && mouseX < leftPos + imageWidth - 145) {
@@ -244,6 +316,26 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (tab == Tab.PROGRAMS) {
+            if (button == 1 || button == 2) {
+                panning = true; dragMouseX = mouseX; dragMouseY = mouseY; return true;
+            }
+            if (button == 0 && mouseY >= topPos + 52) {
+                int paletteIndex = paletteScroll + (int) ((mouseY - topPos - 58) / 24);
+                List<DepotProgramBlocks.Definition> palette = paletteDefinitions();
+                if (mouseX >= leftPos + 7 && mouseX < leftPos + 119 && paletteIndex >= 0 && paletteIndex < palette.size()) {
+                    draggedDefinition = palette.get(paletteIndex); dragMouseX = mouseX; dragMouseY = mouseY; return true;
+                }
+                DepotProgram.Node hit = nodeAt(mouseX, mouseY);
+                if (hit != null) {
+                    selectedProgramNode = hit.id();
+                    programArguments.setValue(arguments(hit));
+                    draggedNode = removeNode(programBody, hit.id());
+                    dragMouseX = mouseX; dragMouseY = mouseY;
+                    return true;
+                }
+            }
+        }
         if (tab == Tab.CRAFTING && button == 0) {
             int catalogIndex = (int) ((mouseY - topPos - 51) / 18);
             if (mouseX >= leftPos + 8 && mouseX < leftPos + 134 && mouseY >= topPos + 51
@@ -288,6 +380,32 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     }
 
     @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (tab == Tab.PROGRAMS && panning) {
+            workspacePanX += mouseX - dragMouseX; workspacePanY += mouseY - dragMouseY;
+            dragMouseX = mouseX; dragMouseY = mouseY; return true;
+        }
+        if (tab == Tab.PROGRAMS && (draggedDefinition != null || draggedNode != null)) {
+            dragMouseX = mouseX; dragMouseY = mouseY; return true;
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (tab == Tab.PROGRAMS && (button == 1 || button == 2)) { panning = false; return true; }
+        if (tab == Tab.PROGRAMS && button == 0 && (draggedDefinition != null || draggedNode != null)) {
+            DepotProgram.Node node = draggedNode != null ? draggedNode : defaultNode(draggedDefinition);
+            boolean trash = mouseX >= leftPos + imageWidth - 55 && mouseY >= topPos + imageHeight - 34;
+            if (!trash) dropNode(node, mouseX, mouseY);
+            draggedDefinition = null; draggedNode = null;
+            markProgramDirty();
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         hoveredStack = ItemStack.EMPTY;
         hoveredRecipe = List.of();
@@ -301,10 +419,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF080D0D);
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 2, 0xFF3FCFC5);
-        if (tab == Tab.TERMINAL) {
-            graphics.fill(leftPos, topPos + imageHeight - 31, leftPos + imageWidth, topPos + imageHeight - 30, 0xFF245E5A);
-            graphics.fill(leftPos + 10, topPos + imageHeight - 26, leftPos + imageWidth - 10,
-                    topPos + imageHeight - 6, 0xFF111B1B);
+        if (tab == Tab.PROGRAMS) {
+            renderProgramEditor(graphics, mouseX, mouseY);
             return;
         }
         int divider = leftPos + 138;
@@ -426,16 +542,16 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         int statusX = imageWidth - 8 - font.width(status);
         graphics.drawString(font, status, statusX, 9,
                 menu.isConnected() ? 0xFF63FF86 : 0xFFFF6565, false);
-        if (tab == Tab.TERMINAL) {
-            List<FormattedCharSequence> lines = wrappedOutput();
-            int start = Math.min(terminalScroll, Math.max(0, lines.size() - visibleTerminalLines()));
-            int end = Math.min(lines.size(), start + visibleTerminalLines());
-            int y = 30;
-            for (int i = start; i < end; i++) {
-                graphics.drawString(font, lines.get(i), 11, y, 0xFFFFFFFF, false);
-                y += font.lineHeight + 1;
-            }
-            graphics.drawString(font, ">", 11, imageHeight - 22, 0xFF55FFF2, false);
+        if (tab == Tab.PROGRAMS) {
+            graphics.drawString(font, "BLOCKS", 8, 48, 0xFF55FFF2, false);
+            graphics.drawString(font, "WORKSPACE", 126, 48, 0xFF55FFF2, false);
+            graphics.drawString(font, "INSPECTOR", imageWidth - 147, 48, 0xFF55FFF2, false);
+            graphics.drawString(font, "Variables", imageWidth - 147, 78, 0xFF8FA8A5, false);
+            graphics.drawString(font, "Selected block inputs", imageWidth - 147, 88, 0xFF8FA8A5, false);
+            graphics.drawString(font, font.plainSubstrByWidth(message, imageWidth - 175), 8, imageHeight - 17,
+                    messageSuccess ? 0xFF69FF91 : 0xFFFF6B6B, false);
+            graphics.drawString(font, programRunStatus, imageWidth - 145, imageHeight - 17,
+                    programRunStatus.equals("ERROR") ? 0xFFFF6B6B : 0xFFFFD166, false);
             return;
         }
         graphics.drawString(font, "OUTPUTS", 8, 22, 0xFF55FFF2, false);
@@ -480,14 +596,415 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         updateWidgets();
     }
 
-    public void handleResponse(S2C_DepotCliResponse response) {
+    public void handleProgramResponse(S2C_DepotProgramResponse response) {
         if (response.menuId() != menu.containerId) return;
-        if (!response.lines().isEmpty()) append(response.lines());
-        if (!response.suggestions().isEmpty()) {
-            suggestions = response.suggestions();
-            suggestionIndex = 0;
-            applySuggestion(suggestions.getFirst());
+        programSummaries = response.programs();
+        programRunStatus = response.runStatus();
+        programCurrentNode = response.currentNode();
+        programProblems.clear();
+        response.problems().forEach(problem -> programProblems.put(problem.nodeId(), problem.message()));
+        messageSuccess = response.success();
+        message = response.message();
+        if (!response.selected().isEmpty()) installProgram(DepotProgram.load(response.selected()));
+        else if (!programStarted && !programSummaries.isEmpty()) {
+            programStarted = true;
+            programIndex = 0;
+            requestPrograms(C2S_DepotProgramRequest.Action.LOAD, programSummaries.getFirst().id(), null);
         }
+        updateWidgets();
+    }
+
+    private void requestPrograms(C2S_DepotProgramRequest.Action action, UUID id, DepotProgram program) {
+        PacketDistributor.sendToServer(new C2S_DepotProgramRequest(menu.containerId, action,
+                id == null ? C2S_DepotProgramRequest.NONE : id, program == null ? new net.minecraft.nbt.CompoundTag() : program.save()));
+    }
+
+    private DepotProgram draftProgram() {
+        return new DepotProgram(programId, programName.getValue().trim(), programRevision,
+                parseVariables(), List.copyOf(programBody));
+    }
+
+    private void installProgram(DepotProgram program) {
+        loadingProgram = true;
+        programId = program.id();
+        programRevision = program.revision();
+        programName.setValue(program.name());
+        programVariables = program.variables();
+        programVariableInput.setValue(formatVariables(program.variables()));
+        programBody.clear();
+        programBody.addAll(program.body());
+        selectedProgramNode = null;
+        programArguments.setValue("");
+        programDirty = false;
+        loadingProgram = false;
+        for (int i = 0; i < programSummaries.size(); i++) if (programSummaries.get(i).id().equals(program.id())) programIndex = i;
+    }
+
+    private void newProgram() {
+        installProgram(DepotProgram.empty("New Program"));
+        programDirty = true;
+        programProblems.clear();
+        message = "Drag a block from the palette into the workspace.";
+        messageSuccess = true;
+    }
+
+    private void cycleProgram(int direction) {
+        if (programSummaries.isEmpty()) return;
+        programIndex = Math.floorMod(programIndex + direction, programSummaries.size());
+        requestPrograms(C2S_DepotProgramRequest.Action.LOAD, programSummaries.get(programIndex).id(), null);
+    }
+
+    private void saveProgram() { requestPrograms(C2S_DepotProgramRequest.Action.SAVE, programId, draftProgram()); }
+    private void testProgram() { requestPrograms(C2S_DepotProgramRequest.Action.VALIDATE, programId, draftProgram()); }
+    private void runProgram() { requestPrograms(C2S_DepotProgramRequest.Action.RUN, programId, null); }
+    private void stopProgram() { requestPrograms(C2S_DepotProgramRequest.Action.CANCEL, programId, null); }
+    private void deleteProgram() { requestPrograms(C2S_DepotProgramRequest.Action.DELETE, programId, null); newProgram(); }
+
+    private void markProgramDirty() {
+        if (!loadingProgram) programDirty = true;
+        programProblems.clear();
+    }
+
+    private List<DepotProgram.Variable> parseVariables() {
+        String raw = programVariableInput.getValue().trim();
+        if (raw.isEmpty()) return List.of();
+        List<DepotProgram.Variable> result = new ArrayList<>();
+        for (String declaration : raw.split(";")) {
+            String[] assignment = declaration.trim().split("=", 2);
+            String[] named = assignment[0].trim().split(":", 2);
+            if (named.length != 2) continue;
+            DepotProgram.ValueType type;
+            try { type = DepotProgram.ValueType.valueOf(named[1].trim().toUpperCase(Locale.ROOT)); }
+            catch (IllegalArgumentException ignored) { continue; }
+            String value = assignment.length == 2 ? assignment[1].trim() : "";
+            DepotProgram.Value initial;
+            try {
+                initial = switch (type) {
+                    case NUMBER -> DepotProgram.Value.number(value.isEmpty() ? 0 : Long.parseLong(value));
+                    case BOOLEAN -> DepotProgram.Value.bool(Boolean.parseBoolean(value));
+                    default -> DepotProgram.Value.text(type, value);
+                };
+            } catch (NumberFormatException ignored) { initial = DepotProgram.Value.number(0); }
+            result.add(new DepotProgram.Variable(named[0].trim(), type, initial));
+        }
+        programVariables = List.copyOf(result);
+        return programVariables;
+    }
+
+    private static String formatVariables(List<DepotProgram.Variable> variables) {
+        return variables.stream().map(variable -> variable.name() + ":" + variable.type().name().toLowerCase(Locale.ROOT)
+                + "=" + switch (variable.type()) {
+                    case NUMBER -> Long.toString(variable.initial().number());
+                    case BOOLEAN -> Boolean.toString(variable.initial().bool());
+                    default -> variable.initial().text();
+                }).collect(java.util.stream.Collectors.joining("; "));
+    }
+
+    private List<DepotProgramBlocks.Definition> paletteDefinitions() {
+        return DepotProgramBlocks.all();
+    }
+
+    private DepotProgram.Node defaultNode(DepotProgramBlocks.Definition definition) {
+        Map<String, DepotProgram.Node> inputs = new LinkedHashMap<>();
+        for (DepotProgramBlocks.Input input : definition.inputs()) inputs.put(input.name(), defaultLiteral(input.type()));
+        Map<String, List<DepotProgram.Node>> stacks = new LinkedHashMap<>();
+        definition.stacks().forEach(stack -> stacks.put(stack, List.of()));
+        Map<String, String> fields = new LinkedHashMap<>();
+        switch (definition.opcode()) {
+            case "number" -> fields.put("number", "1");
+            case "boolean" -> fields.put("bool", "true");
+            case "text" -> fields.put("text", "text");
+            case "item" -> fields.put("text", "minecraft:iron_ingot");
+            case "machine" -> fields.put("text", "minecraft:furnace");
+        }
+        if (definition.opcode().startsWith("variable_")) {
+            DepotProgram.ValueType wanted = definition.output();
+            DepotProgram.Variable variable = programVariables.stream().filter(candidate -> candidate.type() == wanted)
+                    .findFirst().orElse(null);
+            fields.put("variable", variable == null ? "variable" : variable.name().toLowerCase(Locale.ROOT));
+        }
+        if (definition.opcode().equals("set_variable") || definition.opcode().equals("change_variable")) {
+            DepotProgram.Variable variable = programVariables.isEmpty() ? null : programVariables.getFirst();
+            fields.put("variable", variable == null ? "variable" : variable.name().toLowerCase(Locale.ROOT));
+            if (definition.opcode().equals("set_variable") && variable != null)
+                inputs.put("value", defaultLiteral(variable.type()));
+        }
+        if (definition.opcode().equals("define_pattern")) {
+            fields.put("output", "minecraft:iron_ingot"); fields.put("amount", "1");
+            fields.put("machine", "minecraft:furnace"); fields.put("inputs", "minecraft:iron_ore=1");
+            fields.put("outputs", "minecraft:iron_ingot=1");
+        }
+        return new DepotProgram.Node(UUID.randomUUID(), definition.opcode(), fields, inputs, stacks);
+    }
+
+    private static DepotProgram.Node defaultLiteral(DepotProgram.ValueType type) {
+        return DepotProgram.Node.literal(switch (type) {
+            case NUMBER -> DepotProgram.Value.number(1);
+            case BOOLEAN -> DepotProgram.Value.bool(true);
+            case ITEM -> DepotProgram.Value.text(type, "minecraft:iron_ingot");
+            case BLOCK -> DepotProgram.Value.text(type, "minecraft:furnace");
+            case TEXT -> DepotProgram.Value.text(type, "minecraft:crafting_table");
+        });
+    }
+
+    private void applyProgramInputs() {
+        DepotProgram.Node selected = findNode(programBody, selectedProgramNode);
+        if (selected == null) return;
+        DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(selected.opcode());
+        if (definition == null) return;
+        Map<String, String> values = new LinkedHashMap<>();
+        for (String pair : programArguments.getValue().split(",")) {
+            String[] split = pair.trim().split("=", 2);
+            if (split.length == 2) values.put(split[0].trim(), split[1].trim());
+        }
+        Map<String, DepotProgram.Node> inputs = new LinkedHashMap<>(selected.inputs());
+        for (DepotProgramBlocks.Input input : definition.inputs()) {
+            String value = values.get(input.name());
+            if (value != null) inputs.put(input.name(), literal(input.type(), value));
+        }
+        Map<String, String> fields = new LinkedHashMap<>(selected.fields());
+        values.forEach((key, value) -> { if (definition.inputs().stream().noneMatch(input -> input.name().equals(key))) fields.put(key, value); });
+        replaceNode(programBody, selected.id(), new DepotProgram.Node(selected.id(), selected.opcode(), fields, inputs, selected.stacks()));
+        parseVariables();
+        markProgramDirty();
+    }
+
+    private static DepotProgram.Node literal(DepotProgram.ValueType type, String value) {
+        try {
+            return DepotProgram.Node.literal(switch (type) {
+                case NUMBER -> DepotProgram.Value.number(Long.parseLong(value));
+                case BOOLEAN -> DepotProgram.Value.bool(Boolean.parseBoolean(value));
+                default -> DepotProgram.Value.text(type, value);
+            });
+        } catch (NumberFormatException ignored) { return defaultLiteral(type); }
+    }
+
+    private static String arguments(DepotProgram.Node node) {
+        List<String> values = new ArrayList<>();
+        node.inputs().forEach((key, input) -> values.add(key + "=" + literalText(input)));
+        node.fields().forEach((key, value) -> values.add(key + "=" + value));
+        return String.join(", ", values);
+    }
+
+    private static String literalText(DepotProgram.Node node) {
+        if (!node.opcode().equals("literal")) return node.opcode();
+        return switch (node.fields().getOrDefault("type", "TEXT")) {
+            case "NUMBER" -> node.fields().getOrDefault("number", "0");
+            case "BOOLEAN" -> node.fields().getOrDefault("bool", "false");
+            default -> node.fields().getOrDefault("text", "");
+        };
+    }
+
+    private void renderProgramEditor(GuiGraphics graphics, int mouseX, int mouseY) {
+        int paletteRight = leftPos + 120;
+        int inspectorLeft = leftPos + imageWidth - 153;
+        graphics.fill(paletteRight, topPos + 50, paletteRight + 1, topPos + imageHeight - 22, 0xFF245E5A);
+        graphics.fill(inspectorLeft, topPos + 50, inspectorLeft + 1, topPos + imageHeight - 22, 0xFF245E5A);
+        graphics.fill(inspectorLeft + 5, topPos + 139, leftPos + imageWidth - 7, topPos + imageHeight - 40, 0xFF111B1B);
+        graphics.fill(leftPos + imageWidth - 55, topPos + imageHeight - 34,
+                leftPos + imageWidth - 8, topPos + imageHeight - 22, 0xFF6A2630);
+        graphics.drawString(font, "TRASH", leftPos + imageWidth - 49, topPos + imageHeight - 31, 0xFFFFC1C7, false);
+
+        List<DepotProgramBlocks.Definition> palette = paletteDefinitions();
+        graphics.enableScissor(leftPos + 5, topPos + 55, paletteRight - 3, topPos + imageHeight - 23);
+        int paletteEnd = Math.min(palette.size(), paletteScroll + Math.max(1, (imageHeight - 80) / 24));
+        for (int i = paletteScroll; i < paletteEnd; i++) {
+            DepotProgramBlocks.Definition definition = palette.get(i);
+            int y = topPos + 58 + (i - paletteScroll) * 24;
+            drawProgramBlock(graphics, definition, leftPos + 7, y, 108, 20, false, false);
+            graphics.drawString(font, font.plainSubstrByWidth(definition.label(), 98), leftPos + 13, y + 6, 0xFFFFFFFF, false);
+            if (inside(mouseX, mouseY, leftPos + 7, y, 108, 20))
+                hoveredRecipe = List.of(Component.literal(definition.category().name()), Component.literal(definition.tooltip()));
+        }
+        graphics.disableScissor();
+
+        programHitboxes.clear();
+        graphics.enableScissor(paletteRight + 2, topPos + 53, inspectorLeft - 2, topPos + imageHeight - 23);
+        int x = (int) (paletteRight + 10 + workspacePanX);
+        int y = (int) (topPos + 61 + workspacePanY);
+        int workspaceWidth = inspectorLeft - x - 8;
+        int hatWidth = Math.max(80, Math.min(210, workspaceWidth));
+        int hatHeight = Math.max(18, (int) (22 * workspaceZoom));
+        graphics.fill(x + 12, y - 5, x + 55, y, 0xFFFFC94A);
+        graphics.fill(x, y, x + hatWidth, y + hatHeight, 0xFFFFB52E);
+        graphics.drawString(font, "when Run clicked", x + 8, y + Math.max(5, hatHeight / 2 - 4), 0xFF2A2100, false);
+        y += hatHeight;
+        for (DepotProgram.Node node : programBody) y = renderProgramNode(graphics, node, x, y, hatWidth, 0);
+        graphics.disableScissor();
+
+        DepotProgram.Node selected = findNode(programBody, selectedProgramNode);
+        if (selected != null) {
+            DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(selected.opcode());
+            graphics.drawString(font, definition == null ? selected.opcode() : definition.label(),
+                    inspectorLeft + 7, topPos + 143, 0xFFE8F4F3, false);
+            String error = programProblems.get(selected.id());
+            if (error != null) graphics.drawWordWrap(font, Component.literal(error), inspectorLeft + 7, topPos + 157, 136, 0xFFFF6B6B);
+        } else graphics.drawString(font, "Select a block", inspectorLeft + 7, topPos + 143, 0xFF8FA8A5, false);
+
+        if (draggedDefinition != null) drawProgramBlock(graphics, draggedDefinition, (int) dragMouseX - 45,
+                (int) dragMouseY - 10, 110, 20, false, false);
+        else if (draggedNode != null) {
+            DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(draggedNode.opcode());
+            if (definition != null) drawProgramBlock(graphics, definition, (int) dragMouseX - 45,
+                    (int) dragMouseY - 10, 110, 20, true, programProblems.containsKey(draggedNode.id()));
+        }
+    }
+
+    private int renderProgramNode(GuiGraphics graphics, DepotProgram.Node node, int x, int y, int width, int depth) {
+        DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(node.opcode());
+        if (definition == null) return y;
+        int height = Math.max(18, (int) (22 * workspaceZoom));
+        int nodeWidth = Math.max(90, width - depth * 8);
+        boolean selected = node.id().equals(selectedProgramNode) || node.id().equals(programCurrentNode);
+        boolean problem = programProblems.containsKey(node.id());
+        drawProgramBlock(graphics, definition, x, y, nodeWidth, height, selected, problem);
+        String label = blockLabel(node, definition);
+        graphics.drawString(font, font.plainSubstrByWidth(label, nodeWidth - 14), x + 7, y + Math.max(5, height / 2 - 4),
+                0xFFFFFFFF, false);
+        programHitboxes.put(node.id(), new ProgramRect(x, y, nodeWidth, height));
+        y += height;
+        if (!definition.stacks().isEmpty()) {
+            for (String stack : definition.stacks()) {
+                List<DepotProgram.Node> children = node.stacks().getOrDefault(stack, List.of());
+                graphics.fill(x, y, x + 9, y + Math.max(18, children.size() * height), definition.color());
+                graphics.drawString(font, stack, x + 12, y + 4, 0xFFB8C9C7, false);
+                y += 14;
+                for (DepotProgram.Node child : children) y = renderProgramNode(graphics, child, x + 11, y, nodeWidth - 11, depth + 1);
+                if (children.isEmpty()) y += height;
+            }
+            graphics.fill(x, y, x + nodeWidth, y + 7, definition.color());
+            y += 7;
+        }
+        return y;
+    }
+
+    private void drawProgramBlock(GuiGraphics graphics, DepotProgramBlocks.Definition definition,
+            int x, int y, int width, int height, boolean selected, boolean problem) {
+        int border = problem ? 0xFFFF5252 : selected ? 0xFFFFFFFF : 0xFF071010;
+        graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, border);
+        graphics.fill(x, y, x + width, y + height, definition.color());
+        if (definition.shape() == DepotProgramBlocks.Shape.COMMAND || definition.shape() == DepotProgramBlocks.Shape.CONTROL) {
+            graphics.fill(x + 12, y - 1, x + 28, y + 3, definition.color());
+            if (definition.shape() != DepotProgramBlocks.Shape.CAP)
+                graphics.fill(x + 12, y + height - 2, x + 28, y + height + 2, 0xFF080D0D);
+        } else if (definition.shape() == DepotProgramBlocks.Shape.REPORTER) {
+            graphics.fill(x - 3, y + 4, x, y + height - 4, definition.color());
+            graphics.fill(x + width, y + 4, x + width + 3, y + height - 4, definition.color());
+        } else if (definition.shape() == DepotProgramBlocks.Shape.BOOLEAN) {
+            graphics.fill(x - 4, y + height / 2 - 2, x, y + height / 2 + 2, definition.color());
+            graphics.fill(x + width, y + height / 2 - 2, x + width + 4, y + height / 2 + 2, definition.color());
+        }
+    }
+
+    private static String blockLabel(DepotProgram.Node node, DepotProgramBlocks.Definition definition) {
+        String label = definition.label();
+        for (DepotProgramBlocks.Input input : definition.inputs()) {
+            label = label.replace("[" + input.name() + "]", literalText(node.inputs().getOrDefault(input.name(), defaultLiteral(input.type()))));
+        }
+        if ((node.opcode().equals("set_variable") || node.opcode().equals("change_variable")))
+            label += " " + node.fields().getOrDefault("variable", "variable");
+        return label;
+    }
+
+    private DepotProgram.Node nodeAt(double mouseX, double mouseY) {
+        return programHitboxes.entrySet().stream().filter(entry -> entry.getValue().contains(mouseX, mouseY))
+                .min(java.util.Comparator.comparingInt(entry -> entry.getValue().width())).map(entry -> findNode(programBody, entry.getKey())).orElse(null);
+    }
+
+    private void dropNode(DepotProgram.Node node, double mouseX, double mouseY) {
+        DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(node.opcode());
+        if (definition == null) return;
+        if (definition.output() != null) {
+            DepotProgram.Node target = findNode(programBody, selectedProgramNode);
+            if (target != null && attachValue(target, node, definition.output())) {
+                message = "Value snapped into " + target.opcode() + "."; messageSuccess = true;
+            } else {
+                message = "Select a compatible command input before dropping a value block."; messageSuccess = false;
+            }
+            return;
+        }
+        DepotProgram.Node target = nodeAt(mouseX, mouseY);
+        if (target != null) {
+            DepotProgramBlocks.Definition targetDefinition = DepotProgramBlocks.get(target.opcode());
+            if (targetDefinition != null && !targetDefinition.stacks().isEmpty()
+                    && mouseX > programHitboxes.get(target.id()).x() + 10) {
+                String stack = targetDefinition.stacks().getFirst();
+                Map<String, List<DepotProgram.Node>> stacks = new LinkedHashMap<>(target.stacks());
+                List<DepotProgram.Node> nested = new ArrayList<>(stacks.getOrDefault(stack, List.of()));
+                nested.add(node); stacks.put(stack, nested);
+                replaceNode(programBody, target.id(), new DepotProgram.Node(target.id(), target.opcode(), target.fields(), target.inputs(), stacks));
+                selectedProgramNode = node.id();
+                return;
+            }
+        }
+        int insertion = programBody.size();
+        for (int i = 0; i < programBody.size(); i++) {
+            ProgramRect rect = programHitboxes.get(programBody.get(i).id());
+            if (rect != null && mouseY < rect.y() + rect.height() / 2.0) { insertion = i; break; }
+        }
+        programBody.add(insertion, node);
+        selectedProgramNode = node.id();
+        programArguments.setValue(arguments(node));
+    }
+
+    private boolean attachValue(DepotProgram.Node target, DepotProgram.Node value, DepotProgram.ValueType type) {
+        DepotProgramBlocks.Definition definition = DepotProgramBlocks.get(target.opcode());
+        if (definition == null) return false;
+        for (DepotProgramBlocks.Input input : definition.inputs()) {
+            if (input.type() != type) continue;
+            Map<String, DepotProgram.Node> inputs = new LinkedHashMap<>(target.inputs());
+            inputs.put(input.name(), value);
+            replaceNode(programBody, target.id(), new DepotProgram.Node(target.id(), target.opcode(), target.fields(), inputs, target.stacks()));
+            return true;
+        }
+        return false;
+    }
+
+    private static DepotProgram.Node findNode(List<DepotProgram.Node> nodes, UUID id) {
+        if (id == null) return null;
+        for (DepotProgram.Node node : nodes) {
+            if (node.id().equals(id)) return node;
+            for (List<DepotProgram.Node> stack : node.stacks().values()) {
+                DepotProgram.Node found = findNode(stack, id);
+                if (found != null) return found;
+            }
+        }
+        return null;
+    }
+
+    private static boolean replaceNode(List<DepotProgram.Node> nodes, UUID id, DepotProgram.Node replacement) {
+        for (int i = 0; i < nodes.size(); i++) {
+            DepotProgram.Node node = nodes.get(i);
+            if (node.id().equals(id)) { nodes.set(i, replacement); return true; }
+            Map<String, List<DepotProgram.Node>> stacks = new LinkedHashMap<>(node.stacks());
+            for (Map.Entry<String, List<DepotProgram.Node>> entry : node.stacks().entrySet()) {
+                List<DepotProgram.Node> nested = new ArrayList<>(entry.getValue());
+                if (replaceNode(nested, id, replacement)) {
+                    stacks.put(entry.getKey(), nested);
+                    nodes.set(i, new DepotProgram.Node(node.id(), node.opcode(), node.fields(), node.inputs(), stacks));
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static DepotProgram.Node removeNode(List<DepotProgram.Node> nodes, UUID id) {
+        for (int i = 0; i < nodes.size(); i++) {
+            DepotProgram.Node node = nodes.get(i);
+            if (node.id().equals(id)) { nodes.remove(i); return node; }
+            Map<String, List<DepotProgram.Node>> stacks = new LinkedHashMap<>(node.stacks());
+            for (Map.Entry<String, List<DepotProgram.Node>> entry : node.stacks().entrySet()) {
+                List<DepotProgram.Node> nested = new ArrayList<>(entry.getValue());
+                DepotProgram.Node removed = removeNode(nested, id);
+                if (removed != null) {
+                    stacks.put(entry.getKey(), nested);
+                    nodes.set(i, new DepotProgram.Node(node.id(), node.opcode(), node.fields(), node.inputs(), stacks));
+                    return removed;
+                }
+            }
+        }
+        return null;
     }
 
     private void requestCatalog(boolean force) {
@@ -672,118 +1189,4 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    private void submit() {
-        String command = terminalInput.getValue().trim();
-        if (command.isEmpty()) return;
-        if (history.isEmpty() || !history.getLast().equals(command)) {
-            history.add(command);
-            if (history.size() > MAX_HISTORY) history.removeFirst();
-        }
-        historyIndex = history.size();
-        terminalInput.setValue("");
-        suggestions = List.of();
-        if (command.equalsIgnoreCase("clear") || command.equalsIgnoreCase("cls")) {
-            output.clear();
-            terminalScroll = 0;
-            return;
-        }
-        append(List.of("> " + command));
-        if (command.equalsIgnoreCase("history")) {
-            List<String> lines = new ArrayList<>();
-            for (int i = 0; i < history.size(); i++) lines.add((i + 1) + "  " + history.get(i));
-            append(lines);
-            return;
-        }
-        String lower = command.toLowerCase(Locale.ROOT);
-        if (lower.equals("jei") || lower.startsWith("jei ")) {
-            handleJeiCommand(command);
-            return;
-        }
-        rememberProgrammedRecipe(command);
-        PacketDistributor.sendToServer(new C2S_DepotCliRequest(menu.containerId, command, false));
-    }
-
-    private static void rememberProgrammedRecipe(String command) {
-        List<String> tokens = DepotCliParser.parse(command);
-        if (tokens.size() < 4 || !tokens.getFirst().equalsIgnoreCase("recipe")
-                || !tokens.get(1).equalsIgnoreCase("add")) return;
-        ResourceLocation output = ResourceLocation.tryParse(tokens.get(3));
-        if (output != null) net.crystalnexus.client.DepotCliJeiTransferHandler.markProgrammed(output);
-    }
-
-    private void handleJeiCommand(String command) {
-        List<String> tokens = DepotCliParser.parse(command);
-        if (tokens.size() < 2) {
-            append(List.of("[INFO] Usage: jei [--machine <id>] <item> [<amount>]"));
-            return;
-        }
-        int machineIndex = tokens.indexOf("--machine");
-        String machine = null;
-        if (machineIndex >= 0 && machineIndex + 1 < tokens.size()) {
-            machine = tokens.get(machineIndex + 1);
-            List<String> filtered = new ArrayList<>(tokens);
-            filtered.remove(machineIndex + 1);
-            filtered.remove(machineIndex);
-            tokens = filtered;
-        }
-        java.util.OptionalInt parsedAmount = DepotCliParser.positiveQuantity(tokens.getLast(), 999999);
-        int itemEnd = parsedAmount.isPresent() ? tokens.size() - 1 : tokens.size();
-        if (itemEnd < 2) return;
-        String itemName = String.join(" ", tokens.subList(1, itemEnd));
-        ResourceLocation id = ResourceLocation.tryParse(itemName);
-        Item item = id == null ? Items.AIR : BuiltInRegistries.ITEM.get(id);
-        if (item != null && item != Items.AIR) CrystalnexusJeiRuntimePlugin.showRecipesFor(new ItemStack(item));
-        String craft = "craft " + (machine == null ? "" : "--machine " + machine + " ")
-                + itemName + " " + parsedAmount.orElse(1);
-        append(List.of("[OK] Showing JEI recipes for " + itemName + "."));
-        applySuggestion(craft);
-    }
-
-    private void autocomplete() {
-        if (!suggestions.isEmpty()) {
-            suggestionIndex = (suggestionIndex + 1) % suggestions.size();
-            applySuggestion(suggestions.get(suggestionIndex));
-        } else PacketDistributor.sendToServer(new C2S_DepotCliRequest(menu.containerId, terminalInput.getValue(), true));
-    }
-
-    private void applySuggestion(String suggestion) {
-        applyingSuggestion = true;
-        terminalInput.setValue(suggestion);
-        terminalInput.moveCursorToEnd(false);
-        applyingSuggestion = false;
-    }
-
-    private void moveHistory(int direction) {
-        if (history.isEmpty()) return;
-        historyIndex = Mth.clamp(historyIndex + direction, 0, history.size());
-        terminalInput.setValue(historyIndex == history.size() ? "" : history.get(historyIndex));
-        terminalInput.moveCursorToEnd(false);
-    }
-
-    private void append(List<String> lines) {
-        output.addAll(lines);
-        while (output.size() > MAX_OUTPUT) output.removeFirst();
-        terminalScroll = maxTerminalScroll();
-    }
-
-    private List<FormattedCharSequence> wrappedOutput() {
-        List<FormattedCharSequence> wrapped = new ArrayList<>();
-        for (String line : output) {
-            int color = terminalColor(line);
-            Component styled = Component.literal(line).withStyle(style -> style.withColor(color));
-            if (line.isEmpty()) wrapped.add(FormattedCharSequence.EMPTY);
-            else wrapped.addAll(font.split(styled, imageWidth - 22));
-        }
-        return wrapped;
-    }
-
-    private int visibleTerminalLines() { return Math.max(1, (imageHeight - 67) / (font.lineHeight + 1)); }
-    private int maxTerminalScroll() { return Math.max(0, wrappedOutput().size() - visibleTerminalLines()); }
-    private static int terminalColor(String line) {
-        if (line.startsWith("[OK]")) return 0xFF69FF91;
-        if (line.startsWith("[WARN]")) return 0xFFFFD166;
-        if (line.startsWith("[ERROR]")) return 0xFFFF6B6B;
-        if (line.startsWith(">")) return 0xFF55FFF2;
-        return 0xFFD7E3E2;
-    }
 }
