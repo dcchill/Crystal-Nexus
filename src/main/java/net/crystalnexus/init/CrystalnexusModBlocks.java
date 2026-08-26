@@ -15,6 +15,7 @@ import net.crystalnexus.block.ZeroPointBlock;
 import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.ArgonBlock;
 import net.crystalnexus.block.OxygenBlock;
+import net.crystalnexus.block.NitrogenBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.block.YellowHeavyIronBlockBlock;
@@ -336,6 +337,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> GASOLINE = REGISTRY.register("gasoline", GasolineBlock::new);
 	public static final DeferredBlock<Block> ARGON = REGISTRY.register("argon", ArgonBlock::new);
 	public static final DeferredBlock<Block> OXYGEN = REGISTRY.register("oxygen", OxygenBlock::new);
+	public static final DeferredBlock<Block> NITROGEN = REGISTRY.register("nitrogen", NitrogenBlock::new);
 	public static final DeferredBlock<Block> PISTON_GENERATOR = REGISTRY.register("piston_generator", PistonGeneratorBlock::new);
 	public static final DeferredBlock<Block> INVERT_PISTON_GENERATOR = REGISTRY.register("invert_piston_generator", InvertPistonGeneratorBlock::new);
 	public static final DeferredBlock<Block> RUBBER_BLOCK = REGISTRY.register("rubber_block", RubberBlockBlock::new);

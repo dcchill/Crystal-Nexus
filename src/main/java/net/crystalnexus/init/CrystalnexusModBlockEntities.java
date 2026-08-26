@@ -298,6 +298,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TESSERACT_OUTPUT.get(), (blockEntity, side) -> ((TesseractOutputBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CIRCUIT_PRESS.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CIRCUIT_PRESS.get(), (blockEntity, side) -> ((CircuitPressBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CIRCUIT_PRESS.get(), (blockEntity, side) ->
+			blockEntity.getBlockState().is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get())
+				? ((CircuitPressBlockEntity) blockEntity).getNitrogenTank() : null);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLU_TNT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FACTORY_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FACTORY_CONTROLLER.get(), (blockEntity, side) -> ((FactoryControllerBlockEntity) blockEntity).getEnergyStorage());

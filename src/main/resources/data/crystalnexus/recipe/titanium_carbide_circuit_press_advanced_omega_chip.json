@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": { "item": "crystalnexus:conductive_alloy" },
+  "item_input_1_count": 8,
+    "item_input_2": { "tag": "c:plates/gold" },
+  "item_input_2_count": 4,
+  "fluid_input_1": { "fluid": "crystalnexus:nitrogen", "amount": 250 },
+  "item_output": { "id": "crystalnexus:omega_chip", "count": 4 }
+}

@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 public final class DepotJeiRecipeCache {
     // Large modpacks can contain more than 20,000 JEI machine recipes. Retain the
@@ -20,6 +21,7 @@ public final class DepotJeiRecipeCache {
     public static final int MAX_SLOTS = 32;
     public static final int MAX_ALTERNATIVES = 256;
     public static final int MAX_COUNT = 1_000_000;
+    private static final AtomicLong NEXT_REVISION = new AtomicLong();
 
     public record StackRef(ResourceLocation itemId, int count) {}
     public record Slot(List<StackRef> alternatives) {
@@ -41,9 +43,11 @@ public final class DepotJeiRecipeCache {
         private final int generation;
         private final LinkedHashMap<ResourceLocation, Recipe> recipes = new LinkedHashMap<>();
         private final Map<ResourceLocation, List<Recipe>> byOutput = new LinkedHashMap<>();
+        private long revision;
 
         private State(int generation) {
             this.generation = generation;
+            revision = NEXT_REVISION.incrementAndGet();
         }
 
         private void put(Recipe recipe) {
@@ -53,6 +57,7 @@ public final class DepotJeiRecipeCache {
                 if (oldOutput != null) oldOutput.removeIf(value -> value.id().equals(old.id()));
             }
             byOutput.computeIfAbsent(recipe.primaryOutput().itemId(), ignored -> new ArrayList<>()).add(recipe);
+            revision = NEXT_REVISION.incrementAndGet();
         }
     }
     private static final Map<UUID, State> BY_PLAYER = new ConcurrentHashMap<>();
@@ -84,6 +89,11 @@ public final class DepotJeiRecipeCache {
     public static Set<ResourceLocation> outputIds(ServerPlayer player) {
         State state = BY_PLAYER.get(player.getUUID());
         return state == null ? Set.of() : Set.copyOf(state.byOutput.keySet());
+    }
+
+    public static long revision(ServerPlayer player) {
+        State state = BY_PLAYER.get(player.getUUID());
+        return state == null ? 0L : state.revision;
     }
 
     private static boolean valid(Recipe recipe) {

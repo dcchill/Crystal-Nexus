@@ -248,7 +248,8 @@ public final class DepotCliCommandRegistry {
         lines.add("JEI Machine Recipes: " + DepotJeiRecipeCache.recipes(context.player()).size());
         lines.add("Processing Patterns: " + context.depot().getProcessingPatterns().size());
         lines.add("Crafting Service: " + (processors > 0 ? "Available" : "Unavailable"));
-        lines.add("Active Crafting Jobs: " + (context.depot().getCraftingJob() == null ? 0 : 1));
+        lines.add("Active Crafting Jobs: " + context.depot().getCraftingJobs().size() + "/"
+                + DepotNetwork.craftingJobCapacity(context.player()));
         return new DepotCliCommandResult(lines);
     }
 
@@ -652,38 +653,34 @@ public final class DepotCliCommandRegistry {
     }
 
     private DepotCliCommandResult queue(DepotCliCommandContext context, List<String> args) {
-        DepotSavedData.CraftingJob job = context.depot().getCraftingJob();
         if (args.isEmpty()) {
-            if (job == null) return DepotCliCommandResult.info("No active crafting jobs.");
+            List<DepotSavedData.CraftingJob> jobs = context.depot().getCraftingJobs();
+            if (jobs.isEmpty()) return DepotCliCommandResult.info("No active crafting jobs.");
             int processors = DepotNetwork.craftingProcessorCount(context.player());
-            long ticks = DepotCraftingService.estimatedTicks(job.remainingWork(), processors);
-            ItemStack output = new ItemStack(BuiltInRegistries.ITEM.get(job.targetId()));
-            long complete = job.totalWork() - job.remainingWork();
-            long percent = job.totalWork() <= 0 ? 0 : Math.min(100, Math.round(complete * 100.0 / job.totalWork()));
             List<String> lines = new ArrayList<>();
-            lines.add("Job #" + job.id() + ": " + job.amount() + " " + output.getHoverName().getString());
-            lines.add("Progress: " + percent + "%");
-            DepotSavedData.CraftingStep step = job.currentStep();
-            if (step != null) {
-                ItemStack stepOutput = new ItemStack(BuiltInRegistries.ITEM.get(step.outputId()));
-                lines.add((step.processing() ? "Machine processing " : "Current step ")
-                        + (job.currentStepIndex() + 1) + "/" + job.steps().size() + ": "
-                        + step.outputAmount() + " " + stepOutput.getHoverName().getString()
-                        + " (" + job.currentStepPercent() + "%)");
+            lines.add("Active crafting jobs: " + jobs.size() + "/" + DepotNetwork.craftingJobCapacity(context.player()));
+            for (DepotSavedData.CraftingJob job : jobs) {
+                long ticks = DepotCraftingService.estimatedTicks(job.remainingWork(), processors);
+                ItemStack output = new ItemStack(BuiltInRegistries.ITEM.get(job.targetId()));
+                long complete = job.totalWork() - job.remainingWork();
+                long percent = job.totalWork() <= 0 ? 0 : Math.min(100, Math.round(complete * 100.0 / job.totalWork()));
+                DepotSavedData.CraftingStep step = job.currentStep();
+                String state = step != null && step.processing() ? "machine" : processors <= 0 ? "paused"
+                        : duration(ticks) + " remaining";
+                lines.add("Job #" + job.id() + ": " + job.amount() + " " + output.getHoverName().getString()
+                        + " | " + percent + "% | " + state);
             }
-            lines.add(step != null && step.processing() ? "Waiting for the connected machine output."
-                    : processors <= 0 ? "Paused: connect a Crafting Processor."
-                    : "Remaining: " + duration(ticks) + " with " + processors + " processor" + (processors == 1 ? "" : "s") + ".");
             return new DepotCliCommandResult(lines);
         }
         if (args.size() == 1 && args.getFirst().equalsIgnoreCase("clear")) {
             if (!context.hasPermission(DepotCliCommand.Permission.CANCEL)) {
                 return DepotCliCommandResult.error("You do not have permission to clear crafting jobs.");
             }
-            DepotSavedData.CraftingJob active = context.depot().getCraftingJob();
-            if (active == null) return DepotCliCommandResult.info("No active crafting jobs to clear.");
-            context.depot().cancelCraftingJob(active.id());
-            return DepotCliCommandResult.ok("Cleared crafting job #" + active.id() + ". Current materials were returned to storage.");
+            List<DepotSavedData.CraftingJob> active = context.depot().getCraftingJobs();
+            if (active.isEmpty()) return DepotCliCommandResult.info("No active crafting jobs to clear.");
+            active.forEach(job -> context.depot().cancelCraftingJob(job.id()));
+            return DepotCliCommandResult.ok("Cleared " + active.size() + " crafting job"
+                    + (active.size() == 1 ? "" : "s") + ". Current materials were returned to storage.");
         }
         if (args.size() == 2 && args.getFirst().equalsIgnoreCase("cancel")) {
             if (!context.hasPermission(DepotCliCommand.Permission.CANCEL)) return DepotCliCommandResult.error("You do not have permission to cancel crafting jobs.");

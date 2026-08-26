@@ -31,6 +31,7 @@ import java.util.function.Supplier;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
+import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 
 public class CircuitPressGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
 	public final Map<String, Object> menuState = new HashMap<>() {
@@ -283,5 +284,10 @@ public class CircuitPressGUIMenu extends AbstractContainerMenu implements Crysta
 	@Override
 	public Map<String, Object> getMenuState() {
 		return menuState;
+	}
+
+	public CircuitPressBlockEntity press() {
+		BlockEntity blockEntity = world.getBlockEntity(new BlockPos(x, y, z));
+		return blockEntity instanceof CircuitPressBlockEntity press ? press : null;
 	}
 }

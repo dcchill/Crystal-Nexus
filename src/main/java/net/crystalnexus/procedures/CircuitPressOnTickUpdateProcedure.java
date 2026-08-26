@@ -27,8 +27,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
+import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
+import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.block.CircuitPressBlock;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -44,11 +47,11 @@ public class CircuitPressOnTickUpdateProcedure {
 		outputAmount = 1;
 		BlockPos pressPos = BlockPos.containing(x, y, z);
 		boolean batchPress = world.getBlockState(pressPos).is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get());
+		boolean craftingThisTick = false;
 		int batchSize = batchPress ? 8 : 1;
 		outputAmount = batchSize;
 
-		// Blockstate animation
-		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
+		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -56,7 +59,7 @@ public class CircuitPressOnTickUpdateProcedure {
 				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
-		} else {
+		} else if (!batchPress) {
 			{
 				int _value = 2;
 				BlockPos _pos = BlockPos.containing(x, y, z);
@@ -113,7 +116,21 @@ public class CircuitPressOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 
-		// Resolve recipe result
+		FluidChemicalReactionRecipe advancedRecipe = null;
+		if (batchPress && world instanceof Level level) {
+			for (RecipeHolder<FluidChemicalReactionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE)) {
+				if (!holder.id().getPath().startsWith("titanium_carbide_circuit_press_advanced_")) continue;
+				FluidChemicalReactionRecipe recipe = holder.value();
+				if (recipe.itemInput(0).isPresent() && recipe.itemInput(0).get().test(itemFromBlockInventory(world, pressPos, 0))
+						&& recipe.fluidInput(0).isPresent() && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
+						&& recipe.fluidInput(0).get().matches(press.getNitrogenTank().getFluid())) {
+					advancedRecipe = recipe;
+					break;
+				}
+			}
+		}
+
+		// Resolve original circuit-press recipe result
 		ItemStack _cn_result = (new Object() {
 			public ItemStack getResult() {
 				if (world instanceof Level _lvl) {
@@ -131,9 +148,14 @@ public class CircuitPressOnTickUpdateProcedure {
 				return ItemStack.EMPTY;
 			}
 		}.getResult()).copy();
+		if (advancedRecipe != null) {
+			_cn_result = advancedRecipe.getResultItem(null);
+			outputAmount = 1;
+		}
 
 		// If no valid result, do nothing
 		if (Blocks.AIR.asItem() == _cn_result.getItem()) {
+			setBatchPressState(world, pressPos, batchPress, 1);
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
 		}
 
@@ -171,7 +193,11 @@ public class CircuitPressOnTickUpdateProcedure {
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
 			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
 			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
-			if (_cn_input.getCount() >= batchSize && _cn_material.getCount() >= batchSize
+			int requiredInput = advancedRecipe == null ? batchSize : advancedRecipe.itemInputCount(0);
+			boolean hasAdvancedFluid = advancedRecipe == null || world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
+				&& press.getNitrogenTank().getFluid().getAmount() >= advancedRecipe.fluidInput(0).get().amount();
+			if (_cn_input.getCount() >= requiredInput && (advancedRecipe != null || _cn_material.getCount() >= batchSize)
+					&& hasAdvancedFluid
 					&& MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048 * batchSize) <= getEnergyStored(world, pressPos, null)) {
 
 				// Only allow processing if output slot is compatible and has space
@@ -181,6 +207,8 @@ public class CircuitPressOnTickUpdateProcedure {
 
 						// Progress
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+							setBatchPressState(world, pressPos, batchPress, 2);
+							craftingThisTick = true;
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);
 								BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -220,10 +248,12 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 0;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(batchSize);
+							_stk.shrink(requiredInput);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							if (advancedRecipe != null && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press) {
+								press.getNitrogenTank().drain(advancedRecipe.fluidInput(0).get().amount(), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+							} else if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 2;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
 								_stk.shrink(batchSize);
@@ -252,8 +282,17 @@ public class CircuitPressOnTickUpdateProcedure {
 				}
 			}
 		}
+		if (!craftingThisTick)
+			setBatchPressState(world, pressPos, batchPress, 1);
 
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+	}
+
+	private static void setBatchPressState(LevelAccessor world, BlockPos pos, boolean batchPress, int value) {
+		if (!batchPress || world.isClientSide()) return;
+		BlockState state = world.getBlockState(pos);
+		if (state.getValue(CircuitPressBlock.BLOCKSTATE) != value)
+			world.setBlock(pos, state.setValue(CircuitPressBlock.BLOCKSTATE, value), 3);
 	}
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {

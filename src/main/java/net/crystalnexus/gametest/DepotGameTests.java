@@ -73,17 +73,28 @@ public final class DepotGameTests {
                 Map.of(persistedInput, 1L), persistedOutputs,
                 List.of(new DepotSavedData.CraftingStep(persistedOutput, 1, 1,
                         List.of(new DepotSavedData.SlotEntry(persistedInput, 1L)), persistedOutputs, true)));
+        ResourceLocation secondInput = ResourceLocation.parse("minecraft:gold_nugget");
+        ResourceLocation secondOutput = ResourceLocation.parse("minecraft:gold_ingot");
+        depot.deposit(secondInput, 9);
+        DepotSavedData.CraftingJob secondJob = depot.startCraftingJob(secondOutput, 1, 4, 9,
+                Map.of(secondInput, 9L), Map.of(secondOutput, 1L),
+                List.of(new DepotSavedData.CraftingStep(secondOutput, 1, 4,
+                        List.of(new DepotSavedData.SlotEntry(secondInput, 9L)), Map.of(secondOutput, 1L))));
         depot.updateProcessingTask(new DepotSavedData.ProcessingTask(ResourceLocation.parse("minecraft:overworld"),
                 BlockPos.ZERO, List.of(), persistedOutputs), Map.of(persistedInput, 1L), Map.of());
         DepotSavedData restored = DepotSavedData.load(
                 depot.save(new CompoundTag(), helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
-        helper.assertTrue(persistedJob != null && restored.getCraftingJob() != null
+        helper.assertTrue(persistedJob != null && secondJob != null && restored.getCraftingJobs().size() == 2
+                        && restored.getCraftingJob() != null
                         && restored.getCraftingJob().currentStep().processing()
                         && restored.getProcessingTask() != null
                         && persistedMachine.equals(restored.getPreferredMachine(persistedOutput))
                         && restored.getProcessingPattern(persistedOutput).outputs()
                         .getOrDefault(persistedByproduct, 0L) == 2,
-                "Processing patterns, byproducts, active machine steps, and tasks must survive save/load");
+                "Concurrent jobs, processing patterns, byproducts, active machine steps, and tasks must survive save/load");
+        restored.cancelCraftingJob(secondJob.id());
+        helper.assertTrue(restored.getCraftingJobs().size() == 1 && restored.getCount(secondInput) == 9,
+                "Cancelling one concurrent job must preserve the other job and return only its materials");
         restored.cancelCraftingJob(restored.getCraftingJob().id());
         helper.assertTrue(restored.getProcessingTask() == null,
                 "Cancelling a processing job must stop tracking its machine without undoing dispatched inputs");
@@ -146,9 +157,13 @@ public final class DepotGameTests {
         helper.assertTrue(playerDepot.getCount(logs) == 16 && playerDepot.getCount(planks) == 0,
                 "Crafting without a connected upgrade must not consume ingredients");
         BlockPos processorPos = new BlockPos(2, 2, 2);
+        BlockPos corePos = new BlockPos(2, 3, 1);
         helper.setBlock(processorPos, CrystalnexusModBlocks.CRAFTING_UPGRADE.get());
+        helper.setBlock(corePos, CrystalnexusModBlocks.CRAFTING_CORE.get());
         helper.assertTrue(net.crystalnexus.util.DepotNetwork.craftingProcessorCount(player) == 1,
-                "The player's depot network must count its connected Crafting Processors");
+                "Crafting Cores must add job lanes without incorrectly increasing crafting speed");
+        helper.assertTrue(net.crystalnexus.util.DepotNetwork.craftingJobCapacity(player) == 2,
+                "A connected Crafting Core must add one concurrent crafting process");
         DepotCraftingService.Preview plankPreview = DepotCraftingService.preview(player, playerDepot, Items.OAK_PLANKS, 64);
         helper.assertTrue(plankPreview.success() && plankPreview.startable()
                         && plankPreview.nodes().stream().anyMatch(node -> node.itemId().equals(logs)
@@ -193,6 +208,13 @@ public final class DepotGameTests {
         helper.assertTrue(playerDepot.getCount(planks) == 1
                         && playerDepot.getCraftingJob().workingItems().getOrDefault(planks, 0L) == 0,
                 "Each completed target item must immediately appear in depot storage");
+        DepotCliCommandRegistry.INSTANCE.execute(context, "craft minecraft:oak_button 1");
+        helper.assertTrue(playerDepot.getCraftingJobs().size() == 2,
+                "A Crafting Core must allow a second job to start while the first is active");
+        DepotSavedData.CraftingJob buttonJob = playerDepot.getCraftingJobs().get(1);
+        playerDepot.cancelCraftingJob(buttonJob.id());
+        helper.assertTrue(playerDepot.getCraftingJobs().size() == 1 && playerDepot.getCraftingJob().id() == plankJob.id(),
+                "Cancelling a concurrent job must leave the other crafting process active");
         for (int i = 0; i < 15; i++) playerDepot.advanceCraftingJob(1);
         helper.assertTrue(playerDepot.getCount(planks) == 4
                         && playerDepot.getCraftingJob().workingItems().getOrDefault(logs, 0L) == 15
@@ -377,8 +399,10 @@ public final class DepotGameTests {
         playerDepot.remove(ironIngot, Long.MAX_VALUE);
         DepotCraftingService.Result missingCraft = DepotCraftingService.craft(player, playerDepot, Items.PISTON, 1);
         helper.assertTrue(!missingCraft.success() && missingCraft.details().stream().skip(1)
-                        .noneMatch(line -> line.trim().startsWith("#")),
-                "Missing tag ingredients must list available concrete item alternatives");
+                        .noneMatch(line -> line.trim().startsWith("#"))
+                        && missingCraft.details().stream().noneMatch(line -> line.startsWith("Circular recipe path:")),
+                "Missing tag ingredients must list concrete alternatives without reporting abandoned cyclic routes: "
+                        + missingCraft.details());
 
         DepotMenu craftingMenu = new DepotMenu(2, player.getInventory(), true, true);
         helper.assertTrue(craftingMenu.slots.size() == DepotMenu.PAGE_SIZE + 36,

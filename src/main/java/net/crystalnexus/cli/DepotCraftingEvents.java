@@ -21,17 +21,18 @@ public final class DepotCraftingEvents {
     public static void onServerTick(ServerTickEvent.Post event) {
         for (var player : event.getServer().getPlayerList().getPlayers()) {
             DepotSavedData depot = DepotSavedData.get(player);
-            if (depot.getCraftingJob() == null) continue;
-            DepotSavedData.CraftingJob completed = DepotProcessingService.tick(player, depot);
-            if (completed == null) {
-                completed = depot.advanceCraftingJob(DepotNetwork.craftingProcessorCount(player));
+            int processors = DepotNetwork.craftingProcessorCount(player);
+            if (processors <= 0) continue;
+            for (DepotSavedData.CraftingJob job : depot.getCraftingJobs()) {
+                DepotSavedData.CraftingJob completed = DepotProcessingService.tick(player, depot, job.id());
+                if (completed == null) completed = depot.advanceCraftingJob(job.id(), processors);
+                if (completed == null) continue;
+                Item item = BuiltInRegistries.ITEM.get(completed.targetId());
+                String name = item == null || item == Items.AIR ? completed.targetId().toString()
+                        : new ItemStack(item).getHoverName().getString();
+                player.displayClientMessage(Component.literal(
+                        "Crafting job #" + completed.id() + " complete: " + completed.amount() + " " + name), false);
             }
-            if (completed == null) continue;
-            Item item = BuiltInRegistries.ITEM.get(completed.targetId());
-            String name = item == null || item == Items.AIR ? completed.targetId().toString()
-                    : new ItemStack(item).getHoverName().getString();
-            player.displayClientMessage(Component.literal(
-                    "Crafting job #" + completed.id() + " complete: " + completed.amount() + " " + name), false);
         }
     }
 }

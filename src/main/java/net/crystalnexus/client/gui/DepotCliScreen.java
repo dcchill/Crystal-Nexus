@@ -170,7 +170,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         terminalTab.active = crafting;
         previousPage.active = catalogPage > 0;
         nextPage.active = catalogPage + 1 < catalogPages;
-        startButton.active = preview != null && preview.startable() && !menu.hasJob();
+        startButton.active = preview != null && preview.startable();
         cancelButton.active = menu.hasJob();
         automaticButton.active = selectedNode() != null && selectedNode().selectedRoute() != null;
     }
@@ -327,7 +327,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(entry.itemId()));
             graphics.renderItem(stack, x, y);
             String name = font.plainSubstrByWidth(stack.getHoverName().getString(), 82);
-            graphics.drawString(font, name, x + 19, y + 1, entry.craftable() ? 0xFFDCF8F4 : 0xFFFF9A9A, false);
+            graphics.drawString(font, name, x + 19, y + 1,
+                    !craftableOnly || entry.craftable() ? 0xFFDCF8F4 : 0xFFFF9A9A, false);
             graphics.drawString(font, compact(entry.stored()), x + 19, y + 9, 0xFF8FA8A5, false);
             if (inside(mouseX, mouseY, x, y, 126, 17)) hoveredStack = stack;
         }
@@ -411,7 +412,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             graphics.fill(leftPos + 141, y, leftPos + imageWidth - 8, y + 15, 0xFF111B1B);
             graphics.fill(leftPos + 142, y + 1,
                     leftPos + 142 + (imageWidth - 151) * menu.getJobPercent() / 100, y + 14, 0xFF176158);
-            String current = menu.isProcessing() ? "Machine: " : "Crafting: ";
+            String current = "Job 1/" + menu.getJobCount() + " | " + (menu.isProcessing() ? "Machine: " : "Crafting: ");
             current += menu.getCurrentStepAmount() + "x " + menu.getCurrentStep().getHoverName().getString();
             graphics.drawString(font, font.plainSubstrByWidth(current, imageWidth - 250), leftPos + 145, y + 4,
                     0xFFE8F4F3, false);
@@ -618,6 +619,11 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     private List<Component> recipeTooltip(DepotCraftingService.RecipeChoice choice) {
         List<Component> lines = new ArrayList<>();
         lines.add(Component.literal(choice.category()).withStyle(ChatFormatting.GOLD));
+        if (choice.id().equals(DepotCraftingService.NO_RECIPE_ROUTE)) {
+            lines.add(Component.literal("Treat this item as a required external input.")
+                    .withStyle(ChatFormatting.AQUA));
+            return List.copyOf(lines);
+        }
         lines.add(Component.literal(choice.id().toString()).withStyle(ChatFormatting.DARK_GRAY));
         ItemStack output = choice.output();
         lines.add(Component.literal("Output: " + output.getCount() + "x " + output.getHoverName().getString())

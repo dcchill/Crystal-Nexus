@@ -41,8 +41,15 @@ public final class DepotNetwork {
         DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return 0;
         return count(level, controller.getBlockPos(),
-                pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock)
-                + craftingCoreCapacity(level, controller.getBlockPos());
+                pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock);
+    }
+
+    /** One base process plus one concurrent process for each valid connected core block. */
+    public static int craftingJobCapacity(ServerPlayer player) {
+        DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
+        if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)
+                || craftingProcessorCount(player) <= 0) return 0;
+        return 1 + craftingCoreCapacity(level, controller.getBlockPos());
     }
 
     /** Each core block in a valid cabled horizontal 1x1–2x2 core adds one crafting lane. */

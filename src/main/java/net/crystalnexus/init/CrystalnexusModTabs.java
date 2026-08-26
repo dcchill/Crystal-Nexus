@@ -325,6 +325,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.GASOLINE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.ARGON_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OXYGEN_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.NITROGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.TEMPORAL_ESSENCE_BUCKET.get());

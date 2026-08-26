@@ -448,6 +448,8 @@ public class CrystalnexusModItems {
 			() -> new BucketItem(CrystalnexusModFluids.ARGON.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> OXYGEN_BUCKET = REGISTRY.register("oxygen_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.OXYGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> NITROGEN_BUCKET = REGISTRY.register("nitrogen_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.NITROGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
 	public static final DeferredItem<Item> GAS_FUEL_CELL = REGISTRY.register("gas_fuel_cell", GasFuelCellItem::new);

@@ -29,6 +29,11 @@ public final class DepotProcessingService {
 
     public static DepotSavedData.CraftingJob tick(ServerPlayer player, DepotSavedData depot) {
         DepotSavedData.CraftingJob job = depot.getCraftingJob();
+        return job == null ? null : tick(player, depot, job.id());
+    }
+
+    public static DepotSavedData.CraftingJob tick(ServerPlayer player, DepotSavedData depot, int jobId) {
+        DepotSavedData.CraftingJob job = depot.getCraftingJob(jobId);
         DepotSavedData.CraftingStep step = job == null ? null : job.currentStep();
         if (step == null || !step.processing()) return null;
 
@@ -42,10 +47,10 @@ public final class DepotProcessingService {
             machines.sort(java.util.Comparator.comparing(endpoint -> !preferredMachine.equals(BuiltInRegistries.BLOCK.getKey(
                     endpoint.level().getBlockState(endpoint.pos()).getBlock()))));
         }
-        DepotSavedData.ProcessingTask task = depot.getProcessingTask();
+        DepotSavedData.ProcessingTask task = depot.getProcessingTask(jobId);
         DepotNetwork.MachineEndpoint machine;
         if (task == null) {
-            machine = selectMachine(player, depot, machines, step);
+            machine = selectMachine(player, depot, machines, step, jobId);
             if (machine == null) return null;
             task = new DepotSavedData.ProcessingTask(machine.level().dimension().location(), machine.pos(),
                     step.inputs(), step.outputs());
@@ -88,13 +93,14 @@ public final class DepotProcessingService {
                 else remainingOutputs.put(entry.getKey(), left);
             }
         }
-        return depot.updateProcessingTask(new DepotSavedData.ProcessingTask(task.dimension(), task.machinePos(),
+        return depot.updateProcessingTask(jobId, new DepotSavedData.ProcessingTask(task.dimension(), task.machinePos(),
                 remainingInputs, remainingOutputs), inserted, extracted);
     }
 
         private static DepotNetwork.MachineEndpoint selectMachine(ServerPlayer player, DepotSavedData depot,
-            List<DepotNetwork.MachineEndpoint> machines, DepotSavedData.CraftingStep step) {
+            List<DepotNetwork.MachineEndpoint> machines, DepotSavedData.CraftingStep step, int jobId) {
         List<DepotNetwork.MachineEndpoint> eligible = machines.stream()
+            .filter(endpoint -> !depot.isProcessingMachineInUse(jobId, endpoint.level().dimension().location(), endpoint.pos()))
             .filter(endpoint -> canInsertAll(endpoint, step.inputs()))
             .filter(endpoint -> clearOldOutputs(endpoint, step.outputs(), depot)).toList();
         if (eligible.isEmpty()) return null;

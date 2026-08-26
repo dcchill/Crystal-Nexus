@@ -109,8 +109,7 @@ public class ServerHandlers {
                                 changed ? "Preferred machine cleared." : "Machine selection is already automatic."));
                     }
                     case CANCEL -> {
-                        DepotSavedData.CraftingJob job = depot.getCraftingJob();
-                        boolean cancelled = job != null && job.id() == msg.jobId() && depot.cancelCraftingJob(job.id()) != null;
+                        boolean cancelled = depot.cancelCraftingJob(msg.jobId()) != null;
                         sendCrafting(player, S2C_DepotCraftingResponse.result(menu.containerId, cancelled,
                                 cancelled ? "Crafting job cancelled; current materials were returned."
                                         : "That crafting job is no longer active."));

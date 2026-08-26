@@ -117,8 +117,9 @@ public record S2C_DepotCraftingResponse(int menuId, Kind kind, boolean success, 
         if (node.selectedRoute() != null) buf.writeResourceLocation(node.selectedRoute());
         buf.writeBoolean(node.selectedMachine() != null);
         if (node.selectedMachine() != null) buf.writeResourceLocation(node.selectedMachine());
-        buf.writeVarInt(node.alternatives().size());
-        for (DepotCraftingService.RecipeChoice choice : node.alternatives()) writeChoice(buf, choice);
+        buf.writeVarInt(Math.min(DepotCraftingService.MAX_PREVIEW_CHOICES, node.alternatives().size()));
+        node.alternatives().stream().limit(DepotCraftingService.MAX_PREVIEW_CHOICES)
+                .forEach(choice -> writeChoice(buf, choice));
     }
 
     private static DepotCraftingService.PreviewNode readNode(RegistryFriendlyByteBuf buf) {
@@ -130,7 +131,7 @@ public record S2C_DepotCraftingResponse(int menuId, Kind kind, boolean success, 
         DepotCraftingService.PreviewSource source = buf.readEnum(DepotCraftingService.PreviewSource.class);
         ResourceLocation selected = buf.readBoolean() ? buf.readResourceLocation() : null;
         ResourceLocation machine = buf.readBoolean() ? buf.readResourceLocation() : null;
-        int count = Math.min(8, buf.readVarInt());
+        int count = Math.min(DepotCraftingService.MAX_PREVIEW_CHOICES, buf.readVarInt());
         List<DepotCraftingService.RecipeChoice> choices = new ArrayList<>(count);
         for (int i = 0; i < count; i++) choices.add(readChoice(buf));
         return new DepotCraftingService.PreviewNode(id, parent, item, required, stored, source, selected, machine, List.copyOf(choices));

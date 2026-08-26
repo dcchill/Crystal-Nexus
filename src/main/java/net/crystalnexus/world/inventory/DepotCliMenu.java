@@ -21,7 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class DepotCliMenu extends AbstractContainerMenu {
-    private static final int DATA_COUNT = 12;
+    private static final int DATA_COUNT = 14;
     private final BlockPos blockPos;
     private final ContainerData data;
     private long lastCommandTick = Long.MIN_VALUE;
@@ -74,6 +74,8 @@ public class DepotCliMenu extends AbstractContainerMenu {
                             (job.totalWork() - job.remainingWork()) * 100 / job.totalWork());
                     case 10 -> job == null ? 0 : job.currentStepPercent();
                     case 11 -> step != null && step.processing() ? 1 : 0;
+                    case 12 -> DepotSavedData.get(player).getCraftingJobs().size();
+                    case 13 -> DepotNetwork.craftingJobCapacity(player);
                     default -> 0;
                 };
             }
@@ -123,6 +125,8 @@ public class DepotCliMenu extends AbstractContainerMenu {
     public int getJobPercent() { return data.get(9); }
     public int getStepPercent() { return data.get(10); }
     public boolean isProcessing() { return data.get(11) != 0; }
+    public int getJobCount() { return data.get(12); }
+    public int getJobCapacity() { return data.get(13); }
 
     public boolean allowCommand(ServerPlayer player) {
         long now = player.serverLevel().getGameTime();

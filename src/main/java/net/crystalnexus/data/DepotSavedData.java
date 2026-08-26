@@ -27,6 +27,7 @@ import net.crystalnexus.integration.DepotStorageBridge;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -47,8 +48,8 @@ public class DepotSavedData extends SavedData {
     private final Map<ResourceLocation, ResourceLocation> preferredMachines = new ConcurrentHashMap<>();
     private final Map<ResourceLocation, ProcessingPattern> processingPatterns = new ConcurrentHashMap<>();
     private boolean machineLoadBalancing;
-    private CraftingJob craftingJob;
-    private ProcessingTask processingTask;
+    private final Map<Integer, CraftingJob> craftingJobs = new LinkedHashMap<>();
+    private final Map<Integer, ProcessingTask> processingTasks = new ConcurrentHashMap<>();
     private int nextCraftingJobId = 1;
 
     // ===== Stored items =====
@@ -193,32 +194,17 @@ public class DepotSavedData extends SavedData {
         }
 
         data.nextCraftingJobId = Math.max(1, tag.getInt("nextCraftingJobId"));
-        if (tag.contains("craftingJob")) {
-            CompoundTag job = tag.getCompound("craftingJob");
-            ResourceLocation targetId = ResourceLocation.tryParse(job.getString("target"));
-            int id = job.getInt("id");
-            int amount = job.getInt("amount");
-            long totalWork = job.getLong("totalWork");
-            long remainingWork = job.getLong("remainingWork");
-            if (targetId != null && id > 0 && amount > 0 && totalWork > 0 && remainingWork > 0) {
-                Map<ResourceLocation, Long> reservedInputs = loadCounts(job.getCompound("reservedInputs"));
-                Map<ResourceLocation, Long> outputs = loadCounts(job.getCompound("outputs"));
-                List<CraftingStep> steps = loadSteps(job.getList("steps", Tag.TAG_COMPOUND));
-                Map<ResourceLocation, Long> workingItems = loadCounts(job.getCompound("workingItems"));
-                long reservation = job.contains("storageReservation") ? job.getLong("storageReservation")
-                        : Math.max(total(reservedInputs), total(outputs));
-                data.craftingJob = new CraftingJob(id, targetId, amount, totalWork, remainingWork,
-                        Math.max(0, reservation), reservedInputs, outputs, workingItems, steps);
-            }
-        }
-        if (data.craftingJob != null && tag.contains("processingTask")) {
-            CompoundTag task = tag.getCompound("processingTask");
-            ResourceLocation dimension = ResourceLocation.tryParse(task.getString("dimension"));
-            if (dimension != null && task.contains("machinePos")) {
-                data.processingTask = new ProcessingTask(dimension, BlockPos.of(task.getLong("machinePos")),
-                        loadSlotEntries(task.getCompound("remainingInputs")),
-                        loadCounts(task.getCompound("remainingOutputs")));
-            }
+        ListTag jobs = tag.getList("craftingJobs", Tag.TAG_COMPOUND);
+        for (int i = 0; i < jobs.size(); i++) data.loadJob(jobs.getCompound(i));
+        // Migrate worlds saved before concurrent crafting jobs were supported.
+        if (data.craftingJobs.isEmpty() && tag.contains("craftingJob")) data.loadJob(tag.getCompound("craftingJob"));
+
+        ListTag tasks = tag.getList("processingTasks", Tag.TAG_COMPOUND);
+        for (int i = 0; i < tasks.size(); i++) data.loadTask(tasks.getCompound(i));
+        if (data.processingTasks.isEmpty() && data.getCraftingJob() != null && tag.contains("processingTask")) {
+            CompoundTag legacy = tag.getCompound("processingTask").copy();
+            legacy.putInt("jobId", data.getCraftingJob().id());
+            data.loadTask(legacy);
         }
 
         return data;
@@ -258,28 +244,12 @@ public class DepotSavedData extends SavedData {
         tag.put("processingPatterns", patterns);
 
         tag.putInt("nextCraftingJobId", nextCraftingJobId);
-        if (craftingJob != null) {
-            CompoundTag job = new CompoundTag();
-            job.putInt("id", craftingJob.id());
-            job.putString("target", craftingJob.targetId().toString());
-            job.putInt("amount", craftingJob.amount());
-            job.putLong("totalWork", craftingJob.totalWork());
-            job.putLong("remainingWork", craftingJob.remainingWork());
-            job.putLong("storageReservation", craftingJob.storageReservation());
-            job.put("reservedInputs", saveCounts(craftingJob.reservedInputs()));
-            job.put("outputs", saveCounts(craftingJob.outputs()));
-            job.put("workingItems", saveCounts(craftingJob.workingItems()));
-            job.put("steps", saveSteps(craftingJob.steps()));
-            tag.put("craftingJob", job);
-        }
-        if (processingTask != null) {
-            CompoundTag task = new CompoundTag();
-            task.putString("dimension", processingTask.dimension().toString());
-            task.putLong("machinePos", processingTask.machinePos().asLong());
-            task.put("remainingInputs", saveSlotEntries(processingTask.remainingInputs()));
-            task.put("remainingOutputs", saveCounts(processingTask.remainingOutputs()));
-            tag.put("processingTask", task);
-        }
+        ListTag jobs = new ListTag();
+        craftingJobs.values().forEach(job -> jobs.add(saveJob(job)));
+        tag.put("craftingJobs", jobs);
+        ListTag tasks = new ListTag();
+        processingTasks.forEach((jobId, task) -> tasks.add(saveTask(jobId, task)));
+        tag.put("processingTasks", tasks);
 
         return tag;
     }
@@ -362,8 +332,8 @@ public class DepotSavedData extends SavedData {
                 sum += v;
             }
         }
-        if (craftingJob != null) {
-            long reserved = craftingJob.reservedSpace();
+        for (CraftingJob job : craftingJobs.values()) {
+            long reserved = job.reservedSpace();
             if (reserved > Long.MAX_VALUE - sum) return Long.MAX_VALUE;
             sum += reserved;
         }
@@ -383,8 +353,8 @@ public class DepotSavedData extends SavedData {
             if (count > Long.MAX_VALUE - used) return 0L;
             used += count;
         }
-        if (craftingJob != null) {
-            long reserved = craftingJob.reservedSpace();
+        for (CraftingJob job : craftingJobs.values()) {
+            long reserved = job.reservedSpace();
             if (reserved > Long.MAX_VALUE - used) return 0L;
             used += reserved;
         }
@@ -408,6 +378,10 @@ public class DepotSavedData extends SavedData {
         return preferredRecipes.get(itemId);
     }
 
+    public Map<ResourceLocation, ResourceLocation> preferredRecipesSnapshot() {
+        return Map.copyOf(preferredRecipes);
+    }
+
     public void setPreferredRecipe(ResourceLocation itemId, ResourceLocation recipeId) {
         preferredRecipes.put(itemId, recipeId);
         setDirty();
@@ -421,6 +395,10 @@ public class DepotSavedData extends SavedData {
 
     public @Nullable ResourceLocation getPreferredMachine(ResourceLocation itemId) {
         return preferredMachines.get(itemId);
+    }
+
+    public Map<ResourceLocation, ResourceLocation> preferredMachinesSnapshot() {
+        return Map.copyOf(preferredMachines);
     }
 
     public void setPreferredMachine(ResourceLocation itemId, ResourceLocation machineId) {
@@ -479,17 +457,35 @@ public class DepotSavedData extends SavedData {
     }
 
     public @Nullable ProcessingTask getProcessingTask() {
-        return processingTask;
+        CraftingJob job = getCraftingJob();
+        return job == null ? null : processingTasks.get(job.id());
+    }
+
+    public @Nullable ProcessingTask getProcessingTask(int jobId) {
+        return processingTasks.get(jobId);
+    }
+
+    public boolean isProcessingMachineInUse(int exceptJobId, ResourceLocation dimension, BlockPos pos) {
+        return processingTasks.entrySet().stream().anyMatch(entry -> entry.getKey() != exceptJobId
+                && entry.getValue().dimension().equals(dimension) && entry.getValue().machinePos().equals(pos));
     }
 
     public @Nullable CraftingJob getCraftingJob() {
-        return craftingJob;
+        return craftingJobs.values().stream().findFirst().orElse(null);
+    }
+
+    public @Nullable CraftingJob getCraftingJob(int id) {
+        return craftingJobs.get(id);
+    }
+
+    public List<CraftingJob> getCraftingJobs() {
+        return List.copyOf(craftingJobs.values());
     }
 
     public @Nullable CraftingJob startCraftingJob(ResourceLocation targetId, int amount, long totalWork,
             long storageReservation, Map<ResourceLocation, Long> reservedInputs,
             Map<ResourceLocation, Long> outputs, List<CraftingStep> steps) {
-        if (craftingJob != null || targetId == null || amount <= 0 || totalWork <= 0
+        if (targetId == null || amount <= 0 || totalWork <= 0
                 || storageReservation <= 0 || outputs.isEmpty() || steps.isEmpty()) return null;
         if (reservedInputs.entrySet().stream().anyMatch(entry -> entry.getValue() <= 0
                 || getCount(entry.getKey()) < entry.getValue())) return null;
@@ -498,20 +494,26 @@ public class DepotSavedData extends SavedData {
         reservedInputs.forEach(this::remove);
         int id = nextCraftingJobId++;
         if (nextCraftingJobId <= 0) nextCraftingJobId = 1;
-        craftingJob = new CraftingJob(id, targetId, amount, totalWork, totalWork, storageReservation,
+        CraftingJob job = new CraftingJob(id, targetId, amount, totalWork, totalWork, storageReservation,
                 reservedInputs, outputs, reservedInputs, steps);
-        processingTask = null;
+        craftingJobs.put(id, job);
         setDirty();
-        return craftingJob;
+        return job;
     }
 
     public @Nullable CraftingJob advanceCraftingJob(int processors) {
-        if (craftingJob == null || processors <= 0) return null;
-        if (craftingJob.steps().isEmpty()) return advanceLegacyCraftingJob(processors);
-        long completedBefore = craftingJob.totalWork() - craftingJob.remainingWork();
+        CraftingJob job = getCraftingJob();
+        return job == null ? null : advanceCraftingJob(job.id(), processors);
+    }
+
+    public @Nullable CraftingJob advanceCraftingJob(int jobId, int processors) {
+        CraftingJob job = craftingJobs.get(jobId);
+        if (job == null || processors <= 0) return null;
+        if (job.steps().isEmpty()) return advanceLegacyCraftingJob(job, processors);
+        long completedBefore = job.totalWork() - job.remainingWork();
         long advance = processors;
         long stepStart = 0;
-        for (CraftingStep step : craftingJob.steps()) {
+        for (CraftingStep step : job.steps()) {
             long stepEnd = saturatedAdd(stepStart, step.work());
             if (stepEnd > completedBefore && step.processing()) {
                 advance = Math.min(advance, Math.max(0, stepStart - completedBefore));
@@ -520,55 +522,54 @@ public class DepotSavedData extends SavedData {
             stepStart = stepEnd;
         }
         if (advance <= 0) return null;
-        long remaining = Math.max(0, craftingJob.remainingWork() - advance);
-        long completedAfter = craftingJob.totalWork() - remaining;
-        Map<ResourceLocation, Long> working = new ConcurrentHashMap<>(craftingJob.workingItems());
+        long remaining = Math.max(0, job.remainingWork() - advance);
+        long completedAfter = job.totalWork() - remaining;
+        Map<ResourceLocation, Long> working = new ConcurrentHashMap<>(job.workingItems());
         long remainingTargetInputs = 0;
-        for (CraftingStep step : craftingJob.steps()) {
+        for (CraftingStep step : job.steps()) {
             long stepTargetInput = 0;
             for (SlotEntry entry : step.inputs()) {
-                if (entry.itemId().equals(craftingJob.targetId())) stepTargetInput = saturatedAdd(stepTargetInput, entry.count());
+                if (entry.itemId().equals(job.targetId())) stepTargetInput = saturatedAdd(stepTargetInput, entry.count());
             }
             remainingTargetInputs = saturatedAdd(remainingTargetInputs, stepTargetInput);
         }
         long released = 0;
         long stepEnd = 0;
-        for (CraftingStep step : craftingJob.steps()) {
+        for (CraftingStep step : job.steps()) {
             stepEnd = saturatedAdd(stepEnd, step.work());
             long targetInput = 0;
             for (SlotEntry entry : step.inputs()) {
-                if (entry.itemId().equals(craftingJob.targetId())) targetInput = saturatedAdd(targetInput, entry.count());
+                if (entry.itemId().equals(job.targetId())) targetInput = saturatedAdd(targetInput, entry.count());
             }
             if (completedBefore >= stepEnd) {
                 remainingTargetInputs = Math.max(0, remainingTargetInputs - targetInput);
             } else if (completedAfter >= stepEnd) {
                 remainingTargetInputs = Math.max(0, remainingTargetInputs - targetInput);
                 if (!step.processing()) applyStep(working, step);
-                long targetCount = working.getOrDefault(craftingJob.targetId(), 0L);
-                released = saturatedAdd(released, releaseTarget(working, remainingTargetInputs, targetCount));
+                long targetCount = working.getOrDefault(job.targetId(), 0L);
+                released = saturatedAdd(released, releaseTarget(job, working, remainingTargetInputs, targetCount));
             }
         }
-        long reservation = Math.max(0, craftingJob.storageReservation() - released);
+        long reservation = Math.max(0, job.storageReservation() - released);
         if (remaining > 0) {
-            craftingJob = new CraftingJob(craftingJob.id(), craftingJob.targetId(), craftingJob.amount(),
-                    craftingJob.totalWork(), remaining, reservation, craftingJob.reservedInputs(),
-                    craftingJob.outputs(), working, craftingJob.steps());
+            craftingJobs.put(jobId, new CraftingJob(job.id(), job.targetId(), job.amount(),
+                    job.totalWork(), remaining, reservation, job.reservedInputs(),
+                    job.outputs(), working, job.steps()));
             setDirty();
             return null;
         }
-        CraftingJob completed = craftingJob;
-        craftingJob = null;
+        craftingJobs.remove(jobId);
+        processingTasks.remove(jobId);
         working.forEach(this::add);
         setDirty();
-        return new CraftingJob(completed.id(), completed.targetId(), completed.amount(), completed.totalWork(), 0,
-                reservation, completed.reservedInputs(), completed.outputs(), working, completed.steps());
+        return new CraftingJob(job.id(), job.targetId(), job.amount(), job.totalWork(), 0,
+                reservation, job.reservedInputs(), job.outputs(), working, job.steps());
     }
 
     public @Nullable CraftingJob cancelCraftingJob(int id) {
-        if (craftingJob == null || craftingJob.id() != id) return null;
-        CraftingJob cancelled = craftingJob;
-        craftingJob = null;
-        processingTask = null;
+        CraftingJob cancelled = craftingJobs.remove(id);
+        if (cancelled == null) return null;
+        processingTasks.remove(id);
         (cancelled.steps().isEmpty() ? cancelled.reservedInputs() : cancelled.workingItems()).forEach(this::add);
         setDirty();
         return cancelled;
@@ -576,9 +577,15 @@ public class DepotSavedData extends SavedData {
 
     public @Nullable CraftingJob updateProcessingTask(ProcessingTask task,
             Map<ResourceLocation, Long> inserted, Map<ResourceLocation, Long> extracted) {
-        if (craftingJob == null || task == null || craftingJob.currentStep() == null
-                || !craftingJob.currentStep().processing()) return null;
-        Map<ResourceLocation, Long> working = new ConcurrentHashMap<>(craftingJob.workingItems());
+        CraftingJob job = getCraftingJob();
+        return job == null ? null : updateProcessingTask(job.id(), task, inserted, extracted);
+    }
+
+    public @Nullable CraftingJob updateProcessingTask(int jobId, ProcessingTask task,
+            Map<ResourceLocation, Long> inserted, Map<ResourceLocation, Long> extracted) {
+        CraftingJob job = craftingJobs.get(jobId);
+        if (job == null || task == null || job.currentStep() == null || !job.currentStep().processing()) return null;
+        Map<ResourceLocation, Long> working = new ConcurrentHashMap<>(job.workingItems());
         for (Map.Entry<ResourceLocation, Long> entry : inserted.entrySet()) {
             long left = working.getOrDefault(entry.getKey(), 0L) - entry.getValue();
             if (left < 0) return null;
@@ -586,16 +593,16 @@ public class DepotSavedData extends SavedData {
             else working.put(entry.getKey(), left);
         }
         extracted.forEach((id, amount) -> working.merge(id, amount, DepotSavedData::saturatedAdd));
-        processingTask = task;
+        processingTasks.put(jobId, task);
         if (!task.remainingInputs().isEmpty() || !task.remainingOutputs().isEmpty()) {
-            craftingJob = new CraftingJob(craftingJob.id(), craftingJob.targetId(), craftingJob.amount(),
-                    craftingJob.totalWork(), craftingJob.remainingWork(), craftingJob.storageReservation(),
-                    craftingJob.reservedInputs(), craftingJob.outputs(), working, craftingJob.steps());
+            craftingJobs.put(jobId, new CraftingJob(job.id(), job.targetId(), job.amount(),
+                    job.totalWork(), job.remainingWork(), job.storageReservation(),
+                    job.reservedInputs(), job.outputs(), working, job.steps()));
             setDirty();
             return null;
         }
 
-        CraftingJob active = craftingJob;
+        CraftingJob active = job;
         int completedStep = active.currentStepIndex();
         long futureTargetInputs = 0;
         for (int i = completedStep + 1; i < active.steps().size(); i++) {
@@ -603,47 +610,48 @@ public class DepotSavedData extends SavedData {
                 if (entry.itemId().equals(active.targetId())) futureTargetInputs = saturatedAdd(futureTargetInputs, entry.count());
             }
         }
-        long released = releaseTarget(working, futureTargetInputs,
+        long released = releaseTarget(active, working, futureTargetInputs,
                 working.getOrDefault(active.targetId(), 0L));
         long reservation = Math.max(0, active.storageReservation() - released);
         long remaining = Math.max(0, active.remainingWork() - active.currentStep().work());
-        processingTask = null;
+        processingTasks.remove(jobId);
         if (remaining > 0) {
-            craftingJob = new CraftingJob(active.id(), active.targetId(), active.amount(), active.totalWork(),
-                    remaining, reservation, active.reservedInputs(), active.outputs(), working, active.steps());
+            craftingJobs.put(jobId, new CraftingJob(active.id(), active.targetId(), active.amount(), active.totalWork(),
+                    remaining, reservation, active.reservedInputs(), active.outputs(), working, active.steps()));
             setDirty();
             return null;
         }
-        craftingJob = null;
+        craftingJobs.remove(jobId);
         working.forEach(this::add);
         setDirty();
         return new CraftingJob(active.id(), active.targetId(), active.amount(), active.totalWork(), 0,
                 reservation, active.reservedInputs(), active.outputs(), working, active.steps());
     }
 
-    private long releaseTarget(Map<ResourceLocation, Long> working, long remainingTargetInputs, long targetCount) {
+    private long releaseTarget(CraftingJob job, Map<ResourceLocation, Long> working,
+            long remainingTargetInputs, long targetCount) {
         long available = Math.max(0, targetCount - remainingTargetInputs);
         if (available <= 0) return 0;
-        if (available == targetCount) working.remove(craftingJob.targetId());
-        else working.put(craftingJob.targetId(), targetCount - available);
-        add(craftingJob.targetId(), available);
+        if (available == targetCount) working.remove(job.targetId());
+        else working.put(job.targetId(), targetCount - available);
+        add(job.targetId(), available);
         return available;
     }
 
-    private @Nullable CraftingJob advanceLegacyCraftingJob(int processors) {
-        long remaining = Math.max(0, craftingJob.remainingWork() - processors);
+    private @Nullable CraftingJob advanceLegacyCraftingJob(CraftingJob job, int processors) {
+        long remaining = Math.max(0, job.remainingWork() - processors);
         if (remaining > 0) {
-            craftingJob = new CraftingJob(craftingJob.id(), craftingJob.targetId(), craftingJob.amount(),
-                    craftingJob.totalWork(), remaining, craftingJob.storageReservation(), craftingJob.reservedInputs(),
-                    craftingJob.outputs(), craftingJob.workingItems(), craftingJob.steps());
+            craftingJobs.put(job.id(), new CraftingJob(job.id(), job.targetId(), job.amount(),
+                    job.totalWork(), remaining, job.storageReservation(), job.reservedInputs(),
+                    job.outputs(), job.workingItems(), job.steps()));
             setDirty();
             return null;
         }
-        CraftingJob completed = craftingJob;
-        craftingJob = null;
-        completed.outputs().forEach(this::add);
+        craftingJobs.remove(job.id());
+        processingTasks.remove(job.id());
+        job.outputs().forEach(this::add);
         setDirty();
-        return completed;
+        return job;
     }
 
     private static void applyStep(Map<ResourceLocation, Long> working, CraftingStep step) {
@@ -653,6 +661,58 @@ public class DepotSavedData extends SavedData {
             else working.remove(entry.itemId());
         }
         step.outputs().forEach((id, amount) -> working.merge(id, amount, DepotSavedData::saturatedAdd));
+    }
+
+    private void loadJob(CompoundTag tag) {
+        ResourceLocation targetId = ResourceLocation.tryParse(tag.getString("target"));
+        int id = tag.getInt("id");
+        int amount = tag.getInt("amount");
+        long totalWork = tag.getLong("totalWork");
+        long remainingWork = tag.getLong("remainingWork");
+        if (targetId == null || id <= 0 || amount <= 0 || totalWork <= 0 || remainingWork <= 0) return;
+        Map<ResourceLocation, Long> reservedInputs = loadCounts(tag.getCompound("reservedInputs"));
+        Map<ResourceLocation, Long> outputs = loadCounts(tag.getCompound("outputs"));
+        List<CraftingStep> steps = loadSteps(tag.getList("steps", Tag.TAG_COMPOUND));
+        Map<ResourceLocation, Long> workingItems = loadCounts(tag.getCompound("workingItems"));
+        long reservation = tag.contains("storageReservation") ? tag.getLong("storageReservation")
+                : Math.max(total(reservedInputs), total(outputs));
+        craftingJobs.put(id, new CraftingJob(id, targetId, amount, totalWork, remainingWork,
+                Math.max(0, reservation), reservedInputs, outputs, workingItems, steps));
+        nextCraftingJobId = Math.max(nextCraftingJobId, id + 1);
+    }
+
+    private static CompoundTag saveJob(CraftingJob job) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("id", job.id());
+        tag.putString("target", job.targetId().toString());
+        tag.putInt("amount", job.amount());
+        tag.putLong("totalWork", job.totalWork());
+        tag.putLong("remainingWork", job.remainingWork());
+        tag.putLong("storageReservation", job.storageReservation());
+        tag.put("reservedInputs", saveCounts(job.reservedInputs()));
+        tag.put("outputs", saveCounts(job.outputs()));
+        tag.put("workingItems", saveCounts(job.workingItems()));
+        tag.put("steps", saveSteps(job.steps()));
+        return tag;
+    }
+
+    private void loadTask(CompoundTag tag) {
+        int jobId = tag.getInt("jobId");
+        ResourceLocation dimension = ResourceLocation.tryParse(tag.getString("dimension"));
+        if (!craftingJobs.containsKey(jobId) || dimension == null || !tag.contains("machinePos")) return;
+        processingTasks.put(jobId, new ProcessingTask(dimension, BlockPos.of(tag.getLong("machinePos")),
+                loadSlotEntries(tag.getCompound("remainingInputs")),
+                loadCounts(tag.getCompound("remainingOutputs"))));
+    }
+
+    private static CompoundTag saveTask(int jobId, ProcessingTask task) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("jobId", jobId);
+        tag.putString("dimension", task.dimension().toString());
+        tag.putLong("machinePos", task.machinePos().asLong());
+        tag.put("remainingInputs", saveSlotEntries(task.remainingInputs()));
+        tag.put("remainingOutputs", saveCounts(task.remainingOutputs()));
+        return tag;
     }
 
     private static Map<ResourceLocation, Long> loadCounts(CompoundTag tag) {
@@ -905,6 +965,10 @@ public class DepotSavedData extends SavedData {
 
     public List<Entry> entries() {
         return List.copyOf(filteredEntries(""));
+    }
+
+    public Map<ResourceLocation, Long> countSnapshot() {
+        return Map.copyOf(combinedCounts());
     }
 
     public List<Entry> localEntries() {

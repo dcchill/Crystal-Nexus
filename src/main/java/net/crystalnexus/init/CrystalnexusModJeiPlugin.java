@@ -39,6 +39,7 @@ import net.crystalnexus.jei_recipes.DustSeperationRecipeCategory;
 import net.crystalnexus.jei_recipes.DustSeperationRecipe;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipeCategory;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
+import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipeCategory;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipeCategory;
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
@@ -83,6 +84,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static final mezz.jei.api.recipe.RecipeType<MultiblockStructureRecipe> MultiblockStructure_Type = new mezz.jei.api.recipe.RecipeType<>(MultiblockStructureRecipeCategory.UID, MultiblockStructureRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<ReactorMultiblockGuideRecipe> ReactorMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactorMultiblockGuideRecipeCategory.UID, ReactorMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<CircuitPressingRecipe> CircuitPressing_Type = new mezz.jei.api.recipe.RecipeType<>(CircuitPressingRecipeCategory.UID, CircuitPressingRecipe.class);
+	public static mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> TitaniumCarbideCircuitPress_Type = new mezz.jei.api.recipe.RecipeType<>(TitaniumCarbideCircuitPressRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<InverterJeiRecipe> InverterJei_Type = new mezz.jei.api.recipe.RecipeType<>(InverterJeiRecipeCategory.UID, InverterJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ReactionJEIRecipe> ReactionJEI_Type = new mezz.jei.api.recipe.RecipeType<>(ReactionJEIRecipeCategory.UID, ReactionJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<EnergyExtractionRecipe> EnergyExtraction_Type = new mezz.jei.api.recipe.RecipeType<>(EnergyExtractionRecipeCategory.UID, EnergyExtractionRecipe.class);
@@ -115,6 +117,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MultiblockStructureRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CircuitPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new TitaniumCarbideCircuitPressRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new InverterJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactionJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new EnergyExtractionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -152,6 +155,10 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(MultiblockStructure_Type, multiblockStructures());
 		List<CircuitPressingRecipe> CircuitPressingRecipes = recipes(recipeManager, CircuitPressingRecipe.class);
 		registration.addRecipes(CircuitPressing_Type, CircuitPressingRecipes);
+		registration.addRecipes(TitaniumCarbideCircuitPress_Type, recipeManager.getRecipes().stream()
+			.filter(holder -> holder.id().getPath().startsWith("titanium_carbide_circuit_press_advanced_"))
+			.map(RecipeHolder::value).filter(FluidChemicalReactionRecipe.class::isInstance)
+			.map(FluidChemicalReactionRecipe.class::cast).toList());
 		List<InverterJeiRecipe> InverterJeiRecipes = recipes(recipeManager, InverterJeiRecipe.class);
 		registration.addRecipes(InverterJei_Type, InverterJeiRecipes);
 		List<ReactionJEIRecipe> ReactionJEIRecipes = recipes(recipeManager, ReactionJEIRecipe.class);
@@ -236,6 +243,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), TitaniumCarbideCircuitPress_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTER.get().asItem()), InverterJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), ReactionJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem()), EnergyExtraction_Type);

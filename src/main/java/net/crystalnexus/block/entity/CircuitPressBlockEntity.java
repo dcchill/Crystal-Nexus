@@ -5,6 +5,9 @@ import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.processing.MachineTier;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.crystalnexus.init.CrystalnexusModFluids;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -33,7 +36,14 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+	public static final int TANK_CAPACITY = 4000;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> stack.is(CrystalnexusModFluids.NITROGEN.get())) {
+		@Override protected void onContentsChanged() {
+			setChanged();
+			if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+		}
+	};
 
 	public CircuitPressBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CIRCUIT_PRESS.get(), position, state);
@@ -47,6 +57,8 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
+		if (compound.get("nitrogenTank") instanceof CompoundTag tank)
+			nitrogenTank.readFromNBT(lookupProvider, tank);
 	}
 
 	@Override
@@ -56,6 +68,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
+		compound.put("nitrogenTank", nitrogenTank.writeToNBT(lookupProvider, new CompoundTag()));
 	}
 
 	@Override
@@ -165,5 +178,9 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
+	}
+
+	public FluidTank getNitrogenTank() {
+		return nitrogenTank;
 	}
 }
