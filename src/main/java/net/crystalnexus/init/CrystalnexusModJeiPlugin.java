@@ -67,6 +67,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.IModPlugin;
@@ -279,5 +280,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
 		registration.addUniversalRecipeTransferHandler(new net.crystalnexus.client.DepotCliJeiTransferHandler());
 		net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin.registerCategoryTransferHandlers(registration);
+	}
+
+	@Override
+	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+		registration.addGhostIngredientHandler(net.crystalnexus.client.gui.DepotCliScreen.class,
+				new net.crystalnexus.client.DepotProgramJeiGhostHandler());
+		registration.addGhostIngredientHandler(net.crystalnexus.client.gui.DepotCableConnectionScreen.class,
+				new net.crystalnexus.client.DepotCableJeiGhostHandler());
 	}
 }

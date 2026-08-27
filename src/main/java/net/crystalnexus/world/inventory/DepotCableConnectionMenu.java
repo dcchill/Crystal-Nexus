@@ -23,6 +23,11 @@ import java.util.List;
 
 public final class DepotCableConnectionMenu extends AbstractContainerMenu {
     public static final int FILTER_SLOTS = DepotCableConnectionConfig.FILTER_SLOTS;
+    public static final int SLOT_X = 25;
+    public static final int FILTER_Y = 107;
+    public static final int INVENTORY_X = 26;
+    public static final int INVENTORY_Y = 154;
+    public static final int HOTBAR_Y = 212;
     private final Inventory playerInventory;
     private final BlockPos cablePos;
     private final DepotCableBlockEntity cable;
@@ -44,13 +49,13 @@ public final class DepotCableConnectionMenu extends AbstractContainerMenu {
         Direction initial = cable == null ? Direction.NORTH : cable.openingSide();
         sideOrdinal = initial.ordinal();
 
-        for (int i = 0; i < FILTER_SLOTS; i++) addSlot(new Slot(filters, i, 8 + i * 18, 80) {
+        for (int i = 0; i < FILTER_SLOTS; i++) addSlot(new Slot(filters, i, SLOT_X + i * 18, FILTER_Y) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
             @Override public boolean mayPickup(Player player) { return false; }
         });
         for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
-            addSlot(new Slot(inventory, col + row * 9 + 9, 8 + col * 18, 119 + row * 18));
-        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 177));
+            addSlot(new Slot(inventory, col + row * 9 + 9, INVENTORY_X + col * 18, INVENTORY_Y + row * 18));
+        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, INVENTORY_X + col * 18, HOTBAR_Y));
 
         addDataSlot(new DataSlot() {
             @Override public int get() { return sideOrdinal; }
@@ -112,6 +117,12 @@ public final class DepotCableConnectionMenu extends AbstractContainerMenu {
         broadcastChanges();
     }
 
+    public void setFilter(int slot, ItemStack stack) {
+        if (slot < 0 || slot >= FILTER_SLOTS) return;
+        filters.setItem(slot, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copyWithCount(1));
+        saveSide();
+    }
+
     @Override public boolean clickMenuButton(Player player, int id) {
         if (cable == null) return false;
         List<Direction> available = sides();
@@ -136,9 +147,7 @@ public final class DepotCableConnectionMenu extends AbstractContainerMenu {
 
     @Override public void clicked(int slotId, int button, ClickType clickType, Player player) {
         if (slotId >= 0 && slotId < FILTER_SLOTS) {
-            ItemStack selected = button == 1 ? ItemStack.EMPTY : getCarried();
-            filters.setItem(slotId, selected.isEmpty() ? ItemStack.EMPTY : selected.copyWithCount(1));
-            saveSide();
+            setFilter(slotId, button == 1 ? ItemStack.EMPTY : getCarried());
             return;
         }
         super.clicked(slotId, button, clickType, player);

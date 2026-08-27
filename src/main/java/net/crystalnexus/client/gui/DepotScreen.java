@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.parse("minecraft:textures/gui/container/generic_54.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/depot_gui_54.png");
     private static final int BAR_X = 178;
     private static final int BAR_Y = 18;
     private static final int BAR_HEIGHT = 108;

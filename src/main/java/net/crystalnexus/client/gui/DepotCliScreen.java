@@ -117,6 +117,13 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         imageWidth = Math.min(500, width - 16);
         imageHeight = Math.min(300, height - 16);
         super.init();
+        int editorFieldX = leftPos + 70;
+        int editorTypeWidth = Math.min(150, Math.max(90, (imageWidth - 86) / 2));
+        int editorValueX = editorFieldX + editorTypeWidth + 8;
+        int editorValueWidth = Math.max(48, leftPos + imageWidth - 8 - editorValueX);
+        int editorItemWidth = Math.max(40, editorValueWidth - 70);
+        int editorActionY = topPos + Math.min(170, imageHeight - 66);
+        int editorMachineY = editorActionY + 24;
         craftingTab = addRenderableWidget(Button.builder(Component.translatable("gui.crystalnexus.depot_cli.crafting"), button -> setTab(Tab.CRAFTING))
                 .bounds(leftPos + 8, topPos + 5, 72, 18).build());
         programsTab = addRenderableWidget(Button.builder(Component.literal("Programs"), button -> setTab(Tab.PROGRAMS))
@@ -167,44 +174,63 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 case TIMED_INTERVAL -> DepotProgram.TriggerType.ITEM_ADDED;
             };
             updateProgramWidgets();
-        }).bounds(leftPos + 105, topPos + 70, 150, 18).build());
+        }).bounds(editorFieldX, topPos + 70, editorTypeWidth, 18).build());
         conditionTypeButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
             DepotProgram.ConditionType[] values = DepotProgram.ConditionType.values();
             editingCondition = editingCondition == null ? values[0]
                     : editingCondition.ordinal() + 1 >= values.length ? null : values[editingCondition.ordinal() + 1];
             updateProgramWidgets();
-        }).bounds(leftPos + 105, topPos + 112, 150, 18).build());
+        }).bounds(editorFieldX, topPos + 112, editorTypeWidth, 18).build());
         actionTypeButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
             DepotProgram.ActionType[] values = DepotProgram.ActionType.values();
             editingAction = values[(editingAction.ordinal() + 1) % values.length];
             updateProgramWidgets();
-        }).bounds(leftPos + 105, topPos + 170, 150, 18).build());
-        triggerItemInput = new EditBox(font, leftPos + 270, topPos + 70, 80, 16, Component.literal("[item]"));
+        }).bounds(editorFieldX, editorActionY, editorTypeWidth, 18).build());
+        triggerItemInput = new EditBox(font, editorValueX, topPos + 70, editorValueWidth, 16, Component.literal("Item"));
+        triggerItemInput.setSuggestion("mod:item");
         triggerItemInput.setMaxLength(128);
-        triggerItemInput.setResponder(value -> onTriggerItemTextChanged());
+        triggerItemInput.setResponder(value -> {
+            updateSuggestion(triggerItemInput, "mod:item");
+            onTriggerItemTextChanged();
+        });
         addRenderableWidget(triggerItemInput);
-        conditionItemInput = new EditBox(font, leftPos + 270, topPos + 112, 80, 16, Component.literal("[item]"));
+        conditionItemInput = new EditBox(font, editorValueX, topPos + 112, editorItemWidth, 16, Component.literal("Item"));
+        conditionItemInput.setSuggestion("mod:item");
         conditionItemInput.setMaxLength(128);
-        conditionItemInput.setResponder(value -> onConditionItemTextChanged());
+        conditionItemInput.setResponder(value -> {
+            updateSuggestion(conditionItemInput, "mod:item");
+            onConditionItemTextChanged();
+        });
         addRenderableWidget(conditionItemInput);
-        actionItemInput = new EditBox(font, leftPos + 270, topPos + 170, 80, 16, Component.literal("[item]"));
+        actionItemInput = new EditBox(font, editorValueX, editorActionY, editorItemWidth, 16, Component.literal("Output item"));
+        actionItemInput.setSuggestion("output item");
         actionItemInput.setMaxLength(128);
-        actionItemInput.setResponder(value -> onActionItemTextChanged());
+        actionItemInput.setResponder(value -> {
+            updateSuggestion(actionItemInput, "output item");
+            onActionItemTextChanged();
+        });
         addRenderableWidget(actionItemInput);
-        intervalInput = numberInput(leftPos + 270, topPos + 70, 80, "Ticks");
+        intervalInput = numberInput(editorValueX, topPos + 70, editorValueWidth, "Ticks");
         intervalInput.setValue("100");
         intervalInput.visible = false;
         addRenderableWidget(intervalInput);
-        programNameInput = new EditBox(font, leftPos + 105, topPos + 39, 243, 18, Component.literal("Program name"));
+        programNameInput = new EditBox(font, editorFieldX, topPos + 39,
+                leftPos + imageWidth - 8 - editorFieldX, 18, Component.literal("Program name"));
+        programNameInput.setSuggestion("Program name");
         programNameInput.setMaxLength(64);
+        programNameInput.setResponder(value -> updateSuggestion(programNameInput, "Program name"));
         addRenderableWidget(programNameInput);
-        conditionAmountInput = numberInput(leftPos + 360, topPos + 112, 64, "Count");
-        actionAmountInput = numberInput(leftPos + 360, topPos + 170, 64, "Count");
+        conditionAmountInput = numberInput(editorValueX + editorItemWidth + 6, topPos + 112, 64, "Count");
+        actionAmountInput = numberInput(editorValueX + editorItemWidth + 6, editorActionY, 64, "Count");
         addRenderableWidget(conditionAmountInput);
         addRenderableWidget(actionAmountInput);
-        machineInput = new EditBox(font, leftPos + 430, topPos + 170, 80, 16, Component.literal("[machine]"));
+        machineInput = new EditBox(font, editorValueX, editorMachineY, editorValueWidth, 16, Component.literal("Machine"));
+        machineInput.setSuggestion("mod:machine");
         machineInput.setMaxLength(128);
-        machineInput.setResponder(value -> { machineItem = parseItem(value); });
+        machineInput.setResponder(value -> {
+            updateSuggestion(machineInput, "mod:machine");
+            machineItem = parseBlock(value);
+        });
         addRenderableWidget(machineInput);
         machineInput.visible = false;
         for (int row = 0; row < 6; row++) {
@@ -224,7 +250,12 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         EditBox input = new EditBox(font, x, y, width, 18, Component.literal(""));
         input.setSuggestion(placeholder);
         input.setFilter(value -> value.isEmpty() || value.chars().allMatch(Character::isDigit));
+        input.setResponder(value -> updateSuggestion(input, placeholder));
         return input;
+    }
+
+    private static void updateSuggestion(EditBox input, String suggestion) {
+        input.setSuggestion(input.getValue().isEmpty() ? suggestion : null);
     }
 
     private void setTab(Tab next) {
@@ -270,7 +301,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         machineInput.visible = programTabVisible && editing && editingAction == DepotProgram.ActionType.PROCESS;
         intervalInput.visible = programTabVisible && editing && editingTrigger == DepotProgram.TriggerType.TIMED_INTERVAL;
         for (int i = 0; i < programEditButtons.size(); i++) {
-            boolean rowVisible = programTabVisible && !editing && i < programs.size();
+            int visibleRows = Math.min(6, Math.max(1, (imageHeight - 91) / 34));
+            boolean rowVisible = programTabVisible && !editing && i < programs.size() && i < visibleRows;
             programEditButtons.get(i).visible = rowVisible;
             programDeleteButtons.get(i).visible = rowVisible;
             programToggleButtons.get(i).visible = rowVisible;
@@ -514,7 +546,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     }
 
     private void renderPrograms(GuiGraphics graphics) {
-        for (int i = 0; i < Math.min(6, programs.size()); i++) {
+        int visibleRows = Math.min(6, Math.max(1, (imageHeight - 91) / 34));
+        for (int i = 0; i < Math.min(visibleRows, programs.size()); i++) {
             DepotProgram program = programs.get(i);
             int y = topPos + 55 + i * 34;
             graphics.fill(leftPos + 8, y, leftPos + imageWidth - 8, y + 28, 0xFF111B1B);
@@ -527,14 +560,21 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     private void renderProgramEditor(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.fill(leftPos + 8, topPos + 31, leftPos + imageWidth - 8, topPos + imageHeight - 31, 0xFF111B1B);
-        renderProgramItem(graphics, triggerItem, leftPos + 298, topPos + 71, mouseX, mouseY);
-        if (editingCondition != null) renderProgramItem(graphics, conditionItem, leftPos + 298, topPos + 113, mouseX, mouseY);
-        renderProgramItem(graphics, actionItem, leftPos + 298, topPos + 171, mouseX, mouseY);
+        renderProgramItem(graphics, triggerItem, leftPos + 46, topPos + 71, mouseX, mouseY, false);
+        if (editingCondition != null)
+            renderProgramItem(graphics, conditionItem, leftPos + 46, topPos + 113, mouseX, mouseY, false);
+        int actionY = topPos + Math.min(170, imageHeight - 66);
+        renderProgramItem(graphics, actionItem, leftPos + 46, actionY + 1, mouseX, mouseY, false);
+        if (editingAction == DepotProgram.ActionType.PROCESS)
+            renderProgramItem(graphics, machineItem, leftPos + 46, actionY + 25, mouseX, mouseY, true);
     }
 
-    private void renderProgramItem(GuiGraphics graphics, ResourceLocation id, int x, int y, int mouseX, int mouseY) {
+    private void renderProgramItem(GuiGraphics graphics, ResourceLocation id, int x, int y,
+            int mouseX, int mouseY, boolean block) {
         if (id == null) return;
-        ItemStack stack = new ItemStack(BuiltInRegistries.ITEM.get(id));
+        ItemStack stack = block ? new ItemStack(BuiltInRegistries.BLOCK.get(id))
+                : new ItemStack(BuiltInRegistries.ITEM.get(id));
+        if (stack.isEmpty()) return;
         graphics.renderItem(stack, x, y);
         if (inside(mouseX, mouseY, x, y, 18, 18)) hoveredStack = stack;
     }
@@ -551,9 +591,14 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 graphics.drawString(font, "Name", 12, 44, 0xFFB8CDCA, false);
                 graphics.drawString(font, "WHEN", 12, 74, 0xFF55FFF2, false);
                 graphics.drawString(font, "IF", 12, 116, 0xFF55FFF2, false);
-                graphics.drawString(font, "DO", 12, 174, 0xFF55FFF2, false);
-                graphics.drawString(font, "Type item names or drag from JEI.", 12, 207,
-                        0xFF8FA8A5, false);
+                int actionY = Math.min(174, imageHeight - 62);
+                graphics.drawString(font, "DO", 12, actionY, 0xFF55FFF2, false);
+                if (editingAction == DepotProgram.ActionType.PROCESS)
+                    graphics.drawString(font, "MACHINE", 70, actionY + 24, 0xFF55FFF2, false);
+                if (imageHeight >= 270) graphics.drawString(font,
+                        "Use registry IDs, such as minecraft:iron_ingot.", 12, 226, 0xFF8FA8A5, false);
+                graphics.drawString(font, font.plainSubstrByWidth(message, imageWidth - 148), 140,
+                        imageHeight - 20, messageSuccess ? 0xFF69FF91 : 0xFFFF6B6B, false);
             }
             return;
         }
@@ -615,6 +660,8 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     private void editProgram(DepotProgram program) {
         programEditorOpen = true;
+        messageSuccess = true;
+        message = "Drag from JEI or enter registry IDs.";
         editingProgramId = program == null ? UUID.randomUUID() : program.id();
         editingProgramEnabled = program == null || program.enabled();
         programNameInput.setValue(program == null ? "New Program" : program.name());
@@ -653,10 +700,26 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     private void saveProgram() {
         if (!programEditorOpen) return;
-        if (editingTrigger == DepotProgram.TriggerType.ITEM_ADDED && triggerItem == null) return;
-        if (editingTrigger == DepotProgram.TriggerType.TIMED_INTERVAL && intervalInput == null) return;
-        if (editingAction == DepotProgram.ActionType.PROCESS && machineItem == null) return;
-        if (editingAction != DepotProgram.ActionType.PROCESS && actionItem == null) return;
+        if (programNameInput.getValue().isBlank()) {
+            programError("Enter a program name.");
+            return;
+        }
+        if (editingTrigger == DepotProgram.TriggerType.ITEM_ADDED && triggerItem == null) {
+            programError("Choose a valid trigger item.");
+            return;
+        }
+        if (editingCondition != null && conditionItem == null) {
+            programError("Choose a valid condition item.");
+            return;
+        }
+        if (actionItem == null) {
+            programError("Choose a valid output item.");
+            return;
+        }
+        if (editingAction == DepotProgram.ActionType.PROCESS && machineItem == null) {
+            programError("Choose a valid processing machine.");
+            return;
+        }
         List<DepotProgram.ProgramCondition> conditions = editingCondition == null ? List.of()
                 : List.of(new DepotProgram.ProgramCondition(editingCondition, conditionItem, number(conditionAmountInput, 1)));
         int interval = editingTrigger == DepotProgram.TriggerType.TIMED_INTERVAL
@@ -674,6 +737,13 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 trigger, conditions, List.of(action));
         PacketDistributor.sendToServer(new C2S_DepotProgramRequest(menu.containerId,
                 C2S_DepotProgramRequest.Action.UPSERT, program.id(), program));
+        messageSuccess = true;
+        message = "Saving program...";
+    }
+
+    private void programError(String error) {
+        messageSuccess = false;
+        message = error;
     }
 
     private void programRequest(C2S_DepotProgramRequest.Action action, int index) {
@@ -732,32 +802,17 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     private void onTriggerItemTextChanged() {
         if (triggerItemInput == null) return;
-        String text = triggerItemInput.getValue().trim();
-        if (text.isEmpty()) { triggerItem = null; return; }
-        ResourceLocation id = ResourceLocation.tryParse(text);
-        if (id == null) return;
-        Item item = BuiltInRegistries.ITEM.get(id);
-        if (item != null && item != Items.AIR) triggerItem = id;
+        triggerItem = parseItem(triggerItemInput.getValue());
     }
 
     private void onConditionItemTextChanged() {
         if (conditionItemInput == null) return;
-        String text = conditionItemInput.getValue().trim();
-        if (text.isEmpty()) { conditionItem = null; return; }
-        ResourceLocation id = ResourceLocation.tryParse(text);
-        if (id == null) return;
-        Item item = BuiltInRegistries.ITEM.get(id);
-        if (item != null && item != Items.AIR) conditionItem = id;
+        conditionItem = parseItem(conditionItemInput.getValue());
     }
 
     private void onActionItemTextChanged() {
         if (actionItemInput == null) return;
-        String text = actionItemInput.getValue().trim();
-        if (text.isEmpty()) { actionItem = null; return; }
-        ResourceLocation id = ResourceLocation.tryParse(text);
-        if (id == null) return;
-        Item item = BuiltInRegistries.ITEM.get(id);
-        if (item != null && item != Items.AIR) actionItem = id;
+        actionItem = parseItem(actionItemInput.getValue());
     }
 
     private ResourceLocation parseItem(String text) {
@@ -766,6 +821,36 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         if (id == null) return null;
         Item item = BuiltInRegistries.ITEM.get(id);
         return (item != null && item != Items.AIR) ? id : null;
+    }
+
+    private ResourceLocation parseBlock(String text) {
+        if (text == null || text.isBlank()) return null;
+        ResourceLocation id = ResourceLocation.tryParse(text.trim());
+        return id != null && BuiltInRegistries.BLOCK.get(id) != net.minecraft.world.level.block.Blocks.AIR ? id : null;
+    }
+
+    public List<EditBox> jeiProgramItemInputs() {
+        if (tab != Tab.PROGRAMS || !programEditorOpen) return List.of();
+        List<EditBox> inputs = new ArrayList<>();
+        if (triggerItemInput.visible) inputs.add(triggerItemInput);
+        if (conditionItemInput.visible) inputs.add(conditionItemInput);
+        if (actionItemInput.visible) inputs.add(actionItemInput);
+        return List.copyOf(inputs);
+    }
+
+    public EditBox jeiProgramMachineInput() {
+        return tab == Tab.PROGRAMS && programEditorOpen && machineInput.visible ? machineInput : null;
+    }
+
+    public void acceptJeiIngredient(EditBox input, ItemStack stack) {
+        if (input == null || stack.isEmpty()) return;
+        ResourceLocation id;
+        if (input == machineInput) {
+            if (!(stack.getItem() instanceof net.minecraft.world.item.BlockItem blockItem)) return;
+            id = BuiltInRegistries.BLOCK.getKey(blockItem.getBlock());
+        } else id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        input.setValue(id.toString());
+        input.setFocused(true);
     }
 
     private void requestCatalog(boolean force) {

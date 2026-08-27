@@ -4,7 +4,8 @@ import net.minecraft.util.StringRepresentable;
 
 public enum DepotCableMode implements StringRepresentable {
 	DEFAULT("default"),
-	IMPORT("import");
+	IMPORT("import"),
+	EXPORT("export");
 
 	private final String name;
 
@@ -20,7 +21,8 @@ public enum DepotCableMode implements StringRepresentable {
 	public DepotCableMode next() {
 		return switch (this) {
 			case DEFAULT -> IMPORT;
-			case IMPORT -> DEFAULT;
+			case IMPORT -> EXPORT;
+			case EXPORT -> DEFAULT;
 		};
 	}
 }

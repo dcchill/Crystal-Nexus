@@ -1,5 +1,6 @@
 package net.crystalnexus.cli;
 
+import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.BlockPos;
@@ -37,26 +38,26 @@ public final class DepotProcessingService {
         DepotSavedData.CraftingStep step = job == null ? null : job.currentStep();
         if (step == null || !step.processing()) return null;
 
-        List<DepotNetwork.MachineEndpoint> machines = new ArrayList<>(DepotNetwork.processingMachines(player));
+        List<DepotNetwork.DepotMachineEndpoint> machines = new ArrayList<>(DepotNetwork.machineEndpoints(player));
         if (!step.machineTypes().isEmpty()) {
             machines.removeIf(endpoint -> !step.machineTypes().contains(BuiltInRegistries.BLOCK.getKey(
-                    endpoint.level().getBlockState(endpoint.pos()).getBlock())));
+                    endpoint.level().getBlockState(endpoint.machinePos()).getBlock())));
         }
         ResourceLocation preferredMachine = depot.getPreferredMachine(step.outputId());
         if (preferredMachine != null) {
             machines.sort(java.util.Comparator.comparing(endpoint -> !preferredMachine.equals(BuiltInRegistries.BLOCK.getKey(
-                    endpoint.level().getBlockState(endpoint.pos()).getBlock()))));
+                    endpoint.level().getBlockState(endpoint.machinePos()).getBlock()))));
         }
         DepotSavedData.ProcessingTask task = depot.getProcessingTask(jobId);
-        DepotNetwork.MachineEndpoint machine;
+        DepotNetwork.DepotMachineEndpoint machine;
         if (task == null) {
             machine = selectMachine(player, depot, machines, step, jobId);
             if (machine == null) return null;
-            task = new DepotSavedData.ProcessingTask(machine.level().dimension().location(), machine.pos(),
+            task = new DepotSavedData.ProcessingTask(machine.level().dimension().location(), machine.machinePos(),
                     step.inputs(), step.outputs());
         } else {
             DepotSavedData.ProcessingTask active = task;
-            machine = machines.stream().filter(endpoint -> endpoint.pos().equals(active.machinePos())
+            machine = machines.stream().filter(endpoint -> endpoint.machinePos().equals(active.machinePos())
                     && endpoint.level().dimension().location().equals(active.dimension())).findFirst().orElse(null);
             if (machine == null) return null;
         }
@@ -66,7 +67,7 @@ public final class DepotProcessingService {
         // Insert each slot entry into a consecutive slot position so machines with
         // order-sensitive recipes (e.g. Matter Transmutation Table) receive items in
         // the correct positions: entry 0 -> slot 0, entry 1 -> slot 1, ...
-        List<IItemHandler> handlers = handlers(machine.level(), machine.pos());
+        List<IItemHandler> handlers = handlers(machine.level(), machine.machinePos());
         int totalSlots = handlers.stream().mapToInt(IItemHandler::getSlots).sum();
         int slot = 0;
         for (int index = 0; index < task.remainingInputs().size(); index++) {
@@ -97,10 +98,11 @@ public final class DepotProcessingService {
                 remainingInputs, remainingOutputs), inserted, extracted);
     }
 
-        private static DepotNetwork.MachineEndpoint selectMachine(ServerPlayer player, DepotSavedData depot,
-            List<DepotNetwork.MachineEndpoint> machines, DepotSavedData.CraftingStep step, int jobId) {
-        List<DepotNetwork.MachineEndpoint> eligible = machines.stream()
-            .filter(endpoint -> !depot.isProcessingMachineInUse(jobId, endpoint.level().dimension().location(), endpoint.pos()))
+    private static DepotNetwork.DepotMachineEndpoint selectMachine(ServerPlayer player, DepotSavedData depot,
+            List<DepotNetwork.DepotMachineEndpoint> machines, DepotSavedData.CraftingStep step, int jobId) {
+        List<DepotNetwork.DepotMachineEndpoint> eligible = machines.stream()
+            .filter(endpoint -> DepotCableBlock.isDefaultMode(endpoint.level().getBlockState(endpoint.cablePos())))
+            .filter(endpoint -> !depot.isProcessingMachineInUse(jobId, endpoint.level().dimension().location(), endpoint.machinePos()))
             .filter(endpoint -> canInsertAll(endpoint, step.inputs()))
             .filter(endpoint -> clearOldOutputs(endpoint, step.outputs(), depot)).toList();
         if (eligible.isEmpty()) return null;
@@ -108,24 +110,26 @@ public final class DepotProcessingService {
 
         ResourceLocation preferred = depot.getPreferredMachine(step.outputId());
         ResourceLocation type = preferred != null ? preferred : blockId(eligible.getFirst());
-        List<DepotNetwork.MachineEndpoint> matching = eligible.stream()
+        List<DepotNetwork.DepotMachineEndpoint> matching = eligible.stream()
             .filter(endpoint -> type.equals(blockId(endpoint))).toList();
         if (matching.size() < 2) return matching.isEmpty() ? eligible.getFirst() : matching.getFirst();
         int next = NEXT_MACHINE_INDEX.computeIfAbsent(player.getUUID(), ignored -> new ConcurrentHashMap<>())
             .merge(type, 1, (current, increment) -> current == Integer.MAX_VALUE ? 0 : current + 1);
         return matching.get(Math.floorMod(next - 1, matching.size()));
-        }
+    }
 
-        private static ResourceLocation blockId(DepotNetwork.MachineEndpoint endpoint) {
-        return BuiltInRegistries.BLOCK.getKey(endpoint.level().getBlockState(endpoint.pos()).getBlock());
-        }
+    private static ResourceLocation blockId(DepotNetwork.DepotMachineEndpoint endpoint) {
+        return BuiltInRegistries.BLOCK.getKey(endpoint.level().getBlockState(endpoint.machinePos()).getBlock());
+    }
 
-    private static boolean canInsertAll(DepotNetwork.MachineEndpoint endpoint,
+    private static boolean canInsertAll(DepotNetwork.DepotMachineEndpoint endpoint,
             List<DepotSavedData.SlotEntry> inputs) {
-        List<IItemHandler> handlers = handlers(endpoint.level(), endpoint.pos());
+        List<IItemHandler> handlers = handlers(endpoint.level(), endpoint.machinePos());
         int totalSlots = handlers.stream().mapToInt(IItemHandler::getSlots).sum();
         int slot = 0;
         for (DepotSavedData.SlotEntry entry : inputs) {
+            Item item = BuiltInRegistries.ITEM.get(entry.itemId());
+            if (item == null || !endpoint.config().accepts(new ItemStack(item))) return false;
             if (insertOrdered(handlers, slot, entry.itemId(), entry.count(), true) < entry.count()) return false;
             slot = Math.min(totalSlots - 1, slot + 1);
         }
@@ -184,7 +188,7 @@ public final class DepotProcessingService {
         return amount - remaining;
     }
 
-    private static boolean clearOldOutputs(DepotNetwork.MachineEndpoint endpoint,
+    private static boolean clearOldOutputs(DepotNetwork.DepotMachineEndpoint endpoint,
             Map<ResourceLocation, Long> outputs, DepotSavedData depot) {
         for (ResourceLocation output : outputs.keySet()) {
             long removed = extract(endpoint, output, depot.getFree());
@@ -194,15 +198,15 @@ public final class DepotProcessingService {
         return true;
     }
 
-    private static long extract(DepotNetwork.MachineEndpoint endpoint, ResourceLocation id, long amount) {
+    private static long extract(DepotNetwork.DepotMachineEndpoint endpoint, ResourceLocation id, long amount) {
         return extract(endpoint, id, amount, false);
     }
 
-    private static long extract(DepotNetwork.MachineEndpoint endpoint, ResourceLocation id, long amount,
+    private static long extract(DepotNetwork.DepotMachineEndpoint endpoint, ResourceLocation id, long amount,
             boolean simulate) {
         if (amount <= 0) return 0;
         long remaining = amount;
-        for (IItemHandler handler : handlers(endpoint.level(), endpoint.pos())) {
+        for (IItemHandler handler : handlers(endpoint.level(), endpoint.machinePos())) {
             for (int slot = 0; slot < handler.getSlots() && remaining > 0; slot++) {
                 ItemStack stack = handler.getStackInSlot(slot).copy();
                 if (stack.isEmpty() || !BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(id)) continue;

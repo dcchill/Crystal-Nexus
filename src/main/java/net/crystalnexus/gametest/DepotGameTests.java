@@ -120,6 +120,18 @@ public final class DepotGameTests {
                         + ", furnace=" + furnace.getItem(0).getCount()
                         + ", overflow=" + overflow.getItem(0).getCount()
                         + ", depot=" + depot.getCount(rawIron));
+        overflowConfig.setFilterMode(DepotCableConnectionConfig.FilterMode.BLOCK_LISTED);
+        cable.update(net.minecraft.core.Direction.UP, overflowConfig.priority(), overflowConfig.filterMode(),
+                overflowConfig.itemFilters());
+        helper.setBlock(cablePos, helper.getBlockState(cablePos).setValue(DepotCableBlock.MODE,
+                net.crystalnexus.block.DepotCableMode.EXPORT));
+        depot.deposit(rawIron, 2);
+        depot.deposit(cobblestone, 1);
+        ((DepotCableBlock) helper.getBlockState(cablePos).getBlock()).tick(helper.getBlockState(cablePos),
+                helper.getLevel(), helper.absolutePos(cablePos), net.minecraft.util.RandomSource.create());
+        helper.assertTrue(overflow.getItem(0).getCount() == 9 && depot.getCount(rawIron) == 0
+                        && depot.getCount(cobblestone) == 1,
+                "Export mode must push only face-whitelisted items, regardless of the allow/block toggle");
         helper.succeed();
     }
 
@@ -434,6 +446,28 @@ public final class DepotGameTests {
                 "Vanilla smelting must win over synced JEI machine recipes and target a furnace: success="
                         + defaultSmelting.success() + ", details=" + defaultSmelting.details() + ", step="
                         + (defaultSmelting.job() == null ? null : defaultSmelting.job().currentStep()));
+        DepotCableBlockEntity processingCable = helper.getBlockEntity(cablePos);
+        processingCable.refreshConnections();
+        DepotCableConnectionConfig processingFilter = processingCable.connection(net.minecraft.core.Direction.UP);
+        helper.assertTrue(processingFilter != null,
+                "The furnace cable face must expose a processing filter");
+        processingFilter.setFilterMode(DepotCableConnectionConfig.FilterMode.BLOCK_LISTED);
+        processingFilter.setFilter(0, new ItemStack(Items.RAW_IRON));
+        processingCable.update(net.minecraft.core.Direction.UP, 0, processingFilter.filterMode(),
+                processingFilter.itemFilters());
+        DepotProcessingService.tick(player, playerDepot);
+        helper.assertTrue(playerDepot.getProcessingTask() == null && furnace.getItem(0).isEmpty(),
+                "Crafting processing must honor the cable face block list before dispatching inputs");
+        processingFilter.setFilterMode(DepotCableConnectionConfig.FilterMode.ALLOW_LISTED);
+        processingFilter.setFilter(0, new ItemStack(Items.COBBLESTONE));
+        processingCable.update(net.minecraft.core.Direction.UP, 0, processingFilter.filterMode(),
+                processingFilter.itemFilters());
+        DepotProcessingService.tick(player, playerDepot);
+        helper.assertTrue(playerDepot.getProcessingTask() == null && furnace.getItem(0).isEmpty(),
+                "Crafting processing must honor the cable face allow list before dispatching inputs");
+        processingFilter.setFilter(0, new ItemStack(Items.RAW_IRON));
+        processingCable.update(net.minecraft.core.Direction.UP, 0, processingFilter.filterMode(),
+                processingFilter.itemFilters());
         runFurnaceJob(helper, player, playerDepot, machinePos, furnace);
         helper.assertTrue(playerDepot.getCraftingJob() == null && playerDepot.getCount(ironIngot) == 1,
                 "Vanilla smelting must insert into the furnace and extract its output");

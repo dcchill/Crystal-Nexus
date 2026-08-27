@@ -6,6 +6,7 @@ import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
 import net.crystalnexus.network.payload.C2S_DepotProgramRequest;
+import net.crystalnexus.network.payload.C2S_DepotCableFilter;
 import net.crystalnexus.network.payload.S2C_SendPage;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
@@ -34,6 +35,7 @@ public class ModNetworking {
 		r.playToServer(C2S_DepotJeiRecipes.TYPE, C2S_DepotJeiRecipes.STREAM_CODEC, ServerHandlers::onDepotJeiRecipes);
 		r.playToServer(C2S_DepotCraftingRequest.TYPE, C2S_DepotCraftingRequest.STREAM_CODEC, ServerHandlers::onDepotCraftingRequest);
 		r.playToServer(C2S_DepotProgramRequest.TYPE, C2S_DepotProgramRequest.STREAM_CODEC, ServerHandlers::onDepotProgramRequest);
+		r.playToServer(C2S_DepotCableFilter.TYPE, C2S_DepotCableFilter.STREAM_CODEC, ServerHandlers::onDepotCableFilter);
 
 		r.playToClient(S2C_SendPage.TYPE, S2C_SendPage.STREAM_CODEC, ClientHandlers::onSendPage);
 		r.playToClient(S2C_DepotCliResponse.TYPE, S2C_DepotCliResponse.STREAM_CODEC, ClientHandlers::onDepotCliResponse);

@@ -63,8 +63,7 @@ public final class DepotProgramRuntime {
     }
 
     public static synchronized int process(ServerPlayer player, DepotSavedData depot) {
-        RuntimeState state = STATES.get(depot);
-        if (state == null) return 0;
+        RuntimeState state = STATES.computeIfAbsent(depot, ignored -> new RuntimeState());
         int tickActions = 0;
         long currentTick = player.getServer().getTickCount();
 
@@ -112,7 +111,9 @@ public final class DepotProgramRuntime {
         Set<UUID> pending = new HashSet<>();
         state.events.forEach(event -> pending.add(event.transactionId()));
         state.transactions.keySet().retainAll(pending);
-        if (state.events.isEmpty() && tickActions == 0) STATES.remove(depot);
+        boolean hasTimedProgram = depot.getPrograms().stream().anyMatch(program -> program.enabled()
+                && program.trigger().type() == DepotProgram.TriggerType.TIMED_INTERVAL);
+        if (state.events.isEmpty() && tickActions == 0 && !hasTimedProgram) STATES.remove(depot);
         return tickActions;
     }
 
@@ -147,6 +148,13 @@ public final class DepotProgramRuntime {
             case CRAFT -> {
                 boolean duplicate = depot.getCraftingJobs().stream().anyMatch(job -> job.targetId().equals(action.itemId()));
                 if (!duplicate) DepotCraftingService.craft(player, depot, item, action.amount());
+            }
+            case PROCESS -> {
+                boolean duplicate = depot.getCraftingJobs().stream().anyMatch(job -> job.targetId().equals(action.itemId()));
+                if (!duplicate) {
+                    if (action.machineId() != null) depot.setPreferredMachine(action.itemId(), action.machineId());
+                    DepotCraftingService.process(player, depot, item, action.amount());
+                }
             }
         }
     }

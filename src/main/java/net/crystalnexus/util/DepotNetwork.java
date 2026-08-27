@@ -78,30 +78,67 @@ public final class DepotNetwork {
         for (DepotMachineEndpoint endpoint : machineEndpoints(player)) {
             if (remaining <= 0) break;
             if (!endpoint.level().hasChunkAt(endpoint.cablePos())
-                    || DepotCableBlock.isImportMode(endpoint.level().getBlockState(endpoint.cablePos()))
+                    || !DepotCableBlock.isDefaultMode(endpoint.level().getBlockState(endpoint.cablePos()))
                     || !endpoint.config().accepts(filterStack)) continue;
             IItemHandler handler = endpoint.level().getCapability(Capabilities.ItemHandler.BLOCK,
                     endpoint.machinePos(), endpoint.side().getOpposite());
             if (handler == null) handler = endpoint.level().getCapability(Capabilities.ItemHandler.BLOCK,
                     endpoint.machinePos(), null);
             if (handler == null) continue;
-            while (remaining > 0) {
-                int offered = Math.min(remaining, item.getDefaultMaxStackSize());
-                int insertable = offered - ItemHandlerHelper.insertItemStacked(handler,
-                        new ItemStack(item, offered), true).getCount();
-                if (insertable <= 0) break;
-                int extracted = (int) depot.remove(itemId, insertable);
-                if (extracted <= 0) break;
-                ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler,
-                        new ItemStack(item, extracted), false);
-                int inserted = extracted - remainder.getCount();
-                moved += inserted;
-                remaining -= inserted;
-                if (!remainder.isEmpty()) depot.addLocal(itemId, remainder.getCount());
-                if (inserted <= 0 || inserted < insertable) break;
-            }
+            int inserted = moveToHandler(depot, handler, itemId, item, remaining);
+            moved += inserted;
+            remaining -= inserted;
         }
         return new DepotTransferResult(moved);
+    }
+
+    /** Automatically exports only the exact items listed on this cable's connected faces. */
+    public static int exportListedFromCable(ServerLevel level, BlockPos cablePos, DepotSavedData depot, int limit) {
+        if (depot == null || limit <= 0
+                || !(level.getBlockEntity(cablePos) instanceof DepotCableBlockEntity cable)) return 0;
+        int remaining = limit;
+        List<Map.Entry<Direction, DepotCableConnectionConfig>> connections = cable.connections().entrySet().stream()
+                .sorted(Map.Entry.<Direction, DepotCableConnectionConfig>comparingByValue(
+                        Comparator.comparingInt(DepotCableConnectionConfig::priority).reversed()))
+                .toList();
+        for (Map.Entry<Direction, DepotCableConnectionConfig> connection : connections) {
+            if (remaining <= 0) break;
+            Direction side = connection.getKey();
+            BlockPos target = cablePos.relative(side);
+            IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, target, side.getOpposite());
+            if (handler == null) handler = level.getCapability(Capabilities.ItemHandler.BLOCK, target, null);
+            if (handler == null) continue;
+            for (ItemStack filter : connection.getValue().itemFilters()) {
+                if (remaining <= 0) break;
+                if (filter.isEmpty()) continue;
+                ResourceLocation itemId = net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(filter.getItem());
+                int moved = moveToHandler(depot, handler, itemId, filter.getItem(), remaining);
+                remaining -= moved;
+            }
+        }
+        return limit - remaining;
+    }
+
+    private static int moveToHandler(DepotSavedData depot, IItemHandler handler,
+            ResourceLocation itemId, Item item, int amount) {
+        int remaining = (int) Math.min(amount, depot.getCount(itemId));
+        int moved = 0;
+        while (remaining > 0) {
+            int offered = Math.min(remaining, item.getDefaultMaxStackSize());
+            int insertable = offered - ItemHandlerHelper.insertItemStacked(handler,
+                    new ItemStack(item, offered), true).getCount();
+            if (insertable <= 0) break;
+            int extracted = (int) depot.remove(itemId, insertable);
+            if (extracted <= 0) break;
+            ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler,
+                    new ItemStack(item, extracted), false);
+            int inserted = extracted - remainder.getCount();
+            moved += inserted;
+            remaining -= inserted;
+            if (!remainder.isEmpty()) depot.addLocal(itemId, remainder.getCount());
+            if (inserted <= 0 || inserted < insertable) break;
+        }
+        return moved;
     }
 
     private record CachedTopology(int version, List<MachineEndpoint> machines,

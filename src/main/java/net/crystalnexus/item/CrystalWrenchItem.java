@@ -147,7 +147,7 @@ public class CrystalWrenchItem extends Item {
             );
 
 
-            if (nextMode == DepotCableMode.IMPORT) {
+            if (nextMode == DepotCableMode.IMPORT || nextMode == DepotCableMode.EXPORT) {
                 level.scheduleTick(
                         pos,
                         state.getBlock(),
@@ -172,6 +172,13 @@ public class CrystalWrenchItem extends Item {
                             )
                             .withStyle(
                                     net.minecraft.ChatFormatting.GREEN
+                            );
+
+                    case EXPORT -> Component.literal(
+                                    "Depot Cable Mode: Export (Whitelist Only)"
+                            )
+                            .withStyle(
+                                    net.minecraft.ChatFormatting.AQUA
                             );
 
                     default -> Component.literal(

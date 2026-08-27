@@ -14,10 +14,12 @@ import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 import net.crystalnexus.network.payload.C2S_DepotProgramRequest;
+import net.crystalnexus.network.payload.C2S_DepotCableFilter;
 import net.crystalnexus.network.payload.S2C_DepotProgramsResponse;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.cli.DepotCraftingService;
 import net.crystalnexus.util.DepotNetwork;
+import net.crystalnexus.world.inventory.DepotCableConnectionMenu;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +33,17 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.List;
 
 public class ServerHandlers {
+
+    public static void onDepotCableFilter(C2S_DepotCableFilter msg, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (!(ctx.player() instanceof ServerPlayer player)
+                    || !(player.containerMenu instanceof DepotCableConnectionMenu menu)
+                    || menu.containerId != msg.menuId() || !menu.stillValid(player)
+                    || msg.slot() < 0 || msg.slot() >= DepotCableConnectionMenu.FILTER_SLOTS) return;
+            Item item = validItem(msg.itemId());
+            if (item != null) menu.setFilter(msg.slot(), new net.minecraft.world.item.ItemStack(item));
+        });
+    }
 
     public static void onDepotProgramRequest(C2S_DepotProgramRequest msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
@@ -62,7 +75,13 @@ public class ServerHandlers {
                 && program.trigger().interval() < 20) return false;
         return program.conditions().stream().allMatch(condition -> validItem(condition.itemId()) != null)
                 && program.actions().stream().allMatch(action -> validItem(action.itemId()) != null
-                && action.amount() > 0 && action.amount() <= DepotCliCommandRegistry.MAX_QUANTITY);
+                && action.amount() > 0 && action.amount() <= DepotCliCommandRegistry.MAX_QUANTITY
+                && (action.type() != net.crystalnexus.automation.DepotProgram.ActionType.PROCESS
+                        || validBlock(action.machineId())));
+    }
+
+    private static boolean validBlock(ResourceLocation id) {
+        return id != null && BuiltInRegistries.BLOCK.get(id) != net.minecraft.world.level.block.Blocks.AIR;
     }
 
     public static void onDepotCraftingRequest(C2S_DepotCraftingRequest msg, IPayloadContext ctx) {

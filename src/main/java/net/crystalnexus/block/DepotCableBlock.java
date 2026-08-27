@@ -142,7 +142,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
-        if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
+        if (level instanceof ServerLevel serverLevel && isAutomatedMode(state)) {
             serverLevel.scheduleTick(pos, this, 20);
         }
     }
@@ -152,7 +152,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
         if (level.getBlockEntity(pos) instanceof DepotCableBlockEntity cable) cable.refreshConnections();
         if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
-        if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
+        if (level instanceof ServerLevel serverLevel && isAutomatedMode(state)) {
             serverLevel.scheduleTick(pos, this, 20);
         }
     }
@@ -165,15 +165,33 @@ public class DepotCableBlock extends Block implements EntityBlock {
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!isImportMode(state)) return;
-
-        importFromNeighbors(level, pos);
+        if (isImportMode(state)) importFromNeighbors(level, pos);
+        else if (isExportMode(state)) exportListedToNeighbors(level, pos);
+        else return;
 
         level.scheduleTick(pos, this, 20);
     }
 
     public static boolean isImportMode(BlockState state) {
         return state.hasProperty(MODE) && state.getValue(MODE) == DepotCableMode.IMPORT;
+    }
+
+    public static boolean isExportMode(BlockState state) {
+        return state.hasProperty(MODE) && state.getValue(MODE) == DepotCableMode.EXPORT;
+    }
+
+    public static boolean isDefaultMode(BlockState state) {
+        return state.hasProperty(MODE) && state.getValue(MODE) == DepotCableMode.DEFAULT;
+    }
+
+    private static boolean isAutomatedMode(BlockState state) {
+        return isImportMode(state) || isExportMode(state);
+    }
+
+    private void exportListedToNeighbors(ServerLevel level, BlockPos pos) {
+        var owner = DepotNetwork.componentOwner(level, pos);
+        if (owner == null) return;
+        DepotNetwork.exportListedFromCable(level, pos, DepotSavedData.get(level, owner), 64);
     }
 
     private void importFromNeighbors(ServerLevel level, BlockPos pos) {
