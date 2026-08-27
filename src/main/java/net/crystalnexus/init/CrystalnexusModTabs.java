@@ -188,6 +188,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
+				tabData.accept(CrystalnexusModItems.MOORES_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
@@ -562,6 +563,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.DARK_BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
+				tabData.accept(CrystalnexusModItems.MOORES_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.CARBON_CHIP.get());

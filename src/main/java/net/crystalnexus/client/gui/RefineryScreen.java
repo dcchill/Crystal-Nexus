@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -46,7 +45,9 @@ public final class RefineryScreen extends AbstractContainerScreen<RefineryMenu> 
         RenderSystem.setShaderColor(1, 1, 1, 1); RenderSystem.enableBlend(); RenderSystem.defaultBlendFunc();
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
         RefineryBlockEntity refinery = menu.refinery();
-        if (refinery != null) for (int i = 0; i < TANK_X.length; i++) drawTank(graphics, refinery.getTank(i).getFluid(), TANK_X[i]);
+        if (refinery != null) for (int i = 0; i < TANK_X.length; i++)
+            FluidTankRenderer.draw(graphics, refinery.getTank(i).getFluid(), RefineryBlockEntity.TANK_CAPACITY,
+                leftPos + TANK_X[i], topPos + 26, 16, TANK_HEIGHT);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), leftPos - 33, topPos - 1, 0, 0, 48, 48, 48, 48);
@@ -55,19 +56,6 @@ public final class RefineryScreen extends AbstractContainerScreen<RefineryMenu> 
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), leftPos - 25, topPos + 5, 0,
             Mth.clamp((int) EnergyDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);
         RenderSystem.setShaderColor(1, 1, 1, 1); RenderSystem.disableBlend();
-    }
-    private void drawTank(GuiGraphics graphics, FluidStack fluid, int x) {
-        if (fluid.isEmpty()) return;
-        int height = Math.max(1, fluid.getAmount() * TANK_HEIGHT / RefineryBlockEntity.TANK_CAPACITY);
-        IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid.getFluid());
-        ResourceLocation still = extension.getStillTexture(fluid); if (still == null) return;
-        ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(still.getNamespace(), "textures/" + still.getPath() + ".png");
-        int tint = extension.getTintColor(fluid);
-        RenderSystem.setShaderColor(((tint >> 16) & 255) / 255f, ((tint >> 8) & 255) / 255f, (tint & 255) / 255f, 1);
-        int screenX = leftPos + x, bottom = topPos + 60;
-        graphics.enableScissor(screenX, bottom - height, screenX + 16, bottom);
-        for (int y = bottom - height; y < bottom; y += 16) graphics.blit(texture, screenX, y, 0, 0, 16, 16, 16, 16);
-        graphics.disableScissor(); RenderSystem.setShaderColor(1, 1, 1, 1);
     }
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawString(font, Component.literal("Refinery"), 65, -11, -12829636, false);

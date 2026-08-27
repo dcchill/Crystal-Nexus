@@ -1,5 +1,5 @@
 {
-  "type": "crystalnexus:fluid_chemical_reaction",
+  "type": "crystalnexus:titanium_carbide_circuit_press",
   "item_input_1": { "item": "crystalnexus:conductive_alloy" },
   "item_input_1_count": 8,
     "item_input_2": { "tag": "c:plates/gold" },

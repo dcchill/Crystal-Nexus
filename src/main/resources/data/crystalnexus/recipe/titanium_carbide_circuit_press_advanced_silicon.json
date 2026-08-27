@@ -1,0 +1,7 @@
+{
+  "type": "crystalnexus:titanium_carbide_circuit_press",
+  "item_input_1": { "tag": "c:silicon" },
+  "item_input_1_count": 8,
+  "fluid_input_1": { "fluid": "crystalnexus:nitrogen", "amount": 100 },
+  "item_output": { "id": "crystalnexus:silicon_wafer", "count": 8 }
+}

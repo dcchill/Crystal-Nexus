@@ -16,7 +16,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-public final class TitaniumCarbideCircuitPressRecipeCategory implements IRecipeCategory<FluidChemicalReactionRecipe> {
+import java.util.Arrays;
+
+public final class TitaniumCarbideCircuitPressRecipeCategory implements IRecipeCategory<TitaniumCarbideCircuitPressRecipe> {
     public static final ResourceLocation UID = ResourceLocation.parse("crystalnexus:titanium_carbide_circuit_press");
     private final IDrawable background;
     private final IDrawable icon;
@@ -27,16 +29,20 @@ public final class TitaniumCarbideCircuitPressRecipeCategory implements IRecipeC
             new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get()));
     }
 
-    @Override public mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> getRecipeType() { return CrystalnexusModJeiPlugin.TitaniumCarbideCircuitPress_Type; }
+    @Override public mezz.jei.api.recipe.RecipeType<TitaniumCarbideCircuitPressRecipe> getRecipeType() { return CrystalnexusModJeiPlugin.TitaniumCarbideCircuitPress_Type; }
     @Override public Component getTitle() { return Component.literal("Titanium Carbide Circuit Press"); }
     @Override public IDrawable getIcon() { return icon; }
     @Override public int getWidth() { return background.getWidth(); }
     @Override public int getHeight() { return background.getHeight(); }
-    @Override public void draw(FluidChemicalReactionRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) { background.draw(graphics); }
+    @Override public void draw(TitaniumCarbideCircuitPressRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) { background.draw(graphics); }
 
-    @Override public void setRecipe(IRecipeLayoutBuilder builder, FluidChemicalReactionRecipe recipe, IFocusGroup focuses) {
+    @Override public void setRecipe(IRecipeLayoutBuilder builder, TitaniumCarbideCircuitPressRecipe recipe, IFocusGroup focuses) {
         recipe.itemInput(0).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, 61, 17)
-            .addIngredients(input));
+            .addItemStacks(Arrays.stream(input.getItems())
+                .map(stack -> stack.copyWithCount(recipe.itemInputCount(0))).toList()));
+        recipe.itemInput(1).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, 97, 17)
+            .addItemStacks(Arrays.stream(input.getItems())
+                .map(stack -> stack.copyWithCount(recipe.itemInputCount(1))).toList()));
         recipe.fluidInput(0).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, 115, 16)
             .setFluidRenderer(input.amount(), false, 16, 34)
             .addIngredient(NeoForgeTypes.FLUID_STACK, input.stack()));

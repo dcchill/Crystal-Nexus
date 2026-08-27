@@ -8,10 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.PistonGenGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
-import net.crystalnexus.procedures.FluidDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
@@ -58,7 +58,9 @@ public class PistonGenGUIScreen extends AbstractContainerScreen<PistonGenGUIMenu
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 1, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarinvert.png"), this.leftPos + 71, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 5, this.topPos + 12, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/gas_fluidlevels.png"), this.leftPos + 105, this.topPos + 12, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/gas_fluidlevels.png"), leftPos + 105, topPos + 12, 0, 0, 64, 64, 64, 704);
+		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
+			leftPos + 121, topPos + 16, 32, 56);
 		RenderSystem.disableBlend();
 	}
 

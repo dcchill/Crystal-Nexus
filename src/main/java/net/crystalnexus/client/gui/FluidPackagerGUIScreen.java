@@ -11,10 +11,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.FluidPackagerGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
-import net.crystalnexus.procedures.FluidDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.procedures.CircuitPressOnTickUpdateProcedure;
 import net.crystalnexus.network.FluidPackagerGUIButtonMessage;
@@ -77,7 +77,9 @@ public class FluidPackagerGUIScreen extends AbstractContainerScreen<FluidPackage
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 80, this.topPos + 18, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), this.leftPos + 2, this.topPos + 10, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), leftPos + 2, topPos + 10, 0, 0, 64, 64, 64, 704);
+		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
+			leftPos + 18, topPos + 14, 32, 56);
 		RenderSystem.disableBlend();
 	}
 

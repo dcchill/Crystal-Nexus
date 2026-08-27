@@ -168,7 +168,10 @@ public final class MaterialProcessingCatalog {
 
     public static List<FluidChemicalReactionRecipe> generatedFluidRecipes(Level level) {
         List<FluidChemicalReactionRecipe> explicit = level.getRecipeManager()
-            .getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE).stream().map(holder -> holder.value()).toList();
+			.getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE).stream()
+			.filter(holder -> !holder.id().getPath().startsWith("cryogenic_flash_freezer_")
+				&& !holder.id().getPath().startsWith("titanium_carbide_circuit_press_advanced_"))
+			.map(holder -> holder.value()).toList();
         List<FluidChemicalReactionRecipe> generated = new ArrayList<>();
         for (Material material : get(level).materials().values()) {
             if (material.profile().disabledStages().contains("slurry")) continue;

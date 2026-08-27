@@ -1,15 +1,9 @@
 {
-  "type": "crystalnexus:circuit_pressing",
-  "ingredients": [
-    {
-      "item": "crystalnexus:carbon_chip"
-    },
-    {
-      "item": "minecraft:heart_of_the_sea"
-    }
-  ],
-  "output": {
-    "id": "crystalnexus:reactor_upgrade_permafrost",
-    "count": 1
-  }
+  "type": "crystalnexus:titanium_carbide_circuit_press",
+  "item_input_1": { "item": "omega_chip" },
+  "item_input_1_count": 1,
+    "item_input_2": { "item": "heart_of_the_sea" },
+  "item_input_2_count": 1,
+  "fluid_input_1": { "fluid": "crystalnexus:nitrogen", "amount": 1000 },
+  "item_output": { "id": "crystalnexus:reactor_upgrade_permafrost", "count": 1 }
 }

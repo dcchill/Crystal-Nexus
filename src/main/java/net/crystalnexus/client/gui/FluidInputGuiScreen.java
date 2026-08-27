@@ -8,9 +8,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.FluidInputGuiMenu;
-import net.crystalnexus.procedures.FluidDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -54,7 +54,9 @@ public class FluidInputGuiScreen extends AbstractContainerScreen<FluidInputGuiMe
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow.png"), this.leftPos + 105, this.topPos + 27, 0, 0, 18, 14, 18, 14);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), this.leftPos + -3, this.topPos + 8, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), leftPos - 3, topPos + 8, 0, 0, 64, 64, 64, 704);
+		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
+			leftPos + 13, topPos + 12, 32, 56);
 		RenderSystem.disableBlend();
 	}
 

@@ -1,15 +1,9 @@
 {
-  "type": "crystalnexus:circuit_pressing",
-  "ingredients": [
-    {
-      "item": "crystalnexus:omega_chip"
-    },
-    {
-      "item": "crystalnexus:dark_matter"
-    }
-  ],
-  "output": {
-    "id": "crystalnexus:depot_storage_upgrade",
-    "count": 1
-  }
+  "type": "crystalnexus:titanium_carbide_circuit_press",
+  "item_input_1": { "item": "crystalnexus:omega_chip" },
+  "item_input_1_count": 1,
+    "item_input_2": { "item": "crystalnexus:moores_wafer" },
+  "item_input_2_count": 4,
+  "fluid_input_1": { "fluid": "crystalnexus:nitrogen", "amount": 1000 },
+  "item_output": { "id": "crystalnexus:depot_storage_upgrade", "count": 1 }
 }

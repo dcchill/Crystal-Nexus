@@ -27,7 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
-import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
+import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipe;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
@@ -48,7 +48,7 @@ public class CircuitPressOnTickUpdateProcedure {
 		BlockPos pressPos = BlockPos.containing(x, y, z);
 		boolean batchPress = world.getBlockState(pressPos).is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get());
 		boolean craftingThisTick = false;
-		int batchSize = batchPress ? 8 : 1;
+		int batchSize = 1;
 		outputAmount = batchSize;
 
 		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
@@ -116,12 +116,12 @@ public class CircuitPressOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 
-		FluidChemicalReactionRecipe advancedRecipe = null;
+		TitaniumCarbideCircuitPressRecipe advancedRecipe = null;
 		if (batchPress && world instanceof Level level) {
-			for (RecipeHolder<FluidChemicalReactionRecipe> holder : level.getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE)) {
-				if (!holder.id().getPath().startsWith("titanium_carbide_circuit_press_advanced_")) continue;
-				FluidChemicalReactionRecipe recipe = holder.value();
+			for (RecipeHolder<TitaniumCarbideCircuitPressRecipe> holder : level.getRecipeManager().getAllRecipesFor(TitaniumCarbideCircuitPressRecipe.Type.INSTANCE)) {
+				TitaniumCarbideCircuitPressRecipe recipe = holder.value();
 				if (recipe.itemInput(0).isPresent() && recipe.itemInput(0).get().test(itemFromBlockInventory(world, pressPos, 0))
+						&& recipe.itemInput(1).map(input -> input.test(itemFromBlockInventory(world, pressPos, 2))).orElse(true)
 						&& recipe.fluidInput(0).isPresent() && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
 						&& recipe.fluidInput(0).get().matches(press.getNitrogenTank().getFluid())) {
 					advancedRecipe = recipe;
@@ -151,6 +151,9 @@ public class CircuitPressOnTickUpdateProcedure {
 		if (advancedRecipe != null) {
 			_cn_result = advancedRecipe.getResultItem(null);
 			outputAmount = 1;
+		} else if (batchPress) {
+			batchSize = 8;
+			outputAmount = batchSize;
 		}
 
 		// If no valid result, do nothing
@@ -160,12 +163,9 @@ public class CircuitPressOnTickUpdateProcedure {
 		}
 
 		// ---- OUTPUT LIMIT FIX (respects handler slot limit + item max stack size) ----
-		int MACHINE_MAX_OUTPUT = batchPress ? 8 : 4;
 		int out = (int) Math.floor(outputAmount * _cn_result.getCount());
 		if (out < 0)
 			out = 0;
-		if (out > MACHINE_MAX_OUTPUT)
-			out = MACHINE_MAX_OUTPUT;
 
 		// Slot 1 limits
 		int slotMax = 64; // fallback
@@ -182,7 +182,11 @@ public class CircuitPressOnTickUpdateProcedure {
 		int current = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
 		int spaceLeft = Math.max(0, realMax - current);
 
-		if (out > spaceLeft)
+		if (batchPress && advancedRecipe == null) {
+			batchSize = CircuitPressBatching.basicBatchSize(itemFromBlockInventory(world, pressPos, 0).getCount(),
+				itemFromBlockInventory(world, pressPos, 2).getCount(), spaceLeft, _cn_result.getCount());
+			out = batchSize * _cn_result.getCount();
+		} else if (out > spaceLeft)
 			out = spaceLeft;
 
 		// If there's no space, we should not be able to finish a craft
@@ -194,11 +198,13 @@ public class CircuitPressOnTickUpdateProcedure {
 			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
 			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
 			int requiredInput = advancedRecipe == null ? batchSize : advancedRecipe.itemInputCount(0);
+			int requiredMaterial = advancedRecipe == null ? batchSize
+				: advancedRecipe.itemInput(1).isPresent() ? advancedRecipe.itemInputCount(1) : 0;
 			boolean hasAdvancedFluid = advancedRecipe == null || world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
 				&& press.getNitrogenTank().getFluid().getAmount() >= advancedRecipe.fluidInput(0).get().amount();
-			if (_cn_input.getCount() >= requiredInput && (advancedRecipe != null || _cn_material.getCount() >= batchSize)
+			if (_cn_input.getCount() >= requiredInput && _cn_material.getCount() >= requiredMaterial
 					&& hasAdvancedFluid
-					&& MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048 * batchSize) <= getEnergyStored(world, pressPos, null)) {
+					&& MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048) <= getEnergyStored(world, pressPos, null)) {
 
 				// Only allow processing if output slot is compatible and has space
 				if (out > 0) {
@@ -253,10 +259,11 @@ public class CircuitPressOnTickUpdateProcedure {
 							}
 							if (advancedRecipe != null && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press) {
 								press.getNitrogenTank().drain(advancedRecipe.fluidInput(0).get().amount(), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
-							} else if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							}
+							if (requiredMaterial > 0 && world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 2;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-								_stk.shrink(batchSize);
+								_stk.shrink(requiredMaterial);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
 
@@ -275,7 +282,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null)
-									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048 * batchSize), false);
+									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048), false);
 							}
 						}
 					}

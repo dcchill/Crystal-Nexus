@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.BucketItem;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.client.renderer.item.ItemProperties;
 
@@ -421,6 +422,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> MULTIBLOCK_RESEARCH_STATION = block(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION);
 	public static final DeferredItem<Item> SILICON = REGISTRY.register("silicon", SiliconItem::new);
 	public static final DeferredItem<Item> SILICON_WAFER = REGISTRY.register("silicon_wafer", net.crystalnexus.item.SiliconWaferItem::new);
+	public static final DeferredItem<Item> MOORES_WAFER = REGISTRY.register("moores_wafer",
+			() -> new Item(new Item.Properties().component(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true)));
 	public static final DeferredItem<Item> ENERGIZED_SILICON = REGISTRY.register("energized_silicon", EnergizedSiliconItem::new);
 	public static final DeferredItem<Item> COFFEE = REGISTRY.register("coffee", CoffeeItem::new);
 	public static final DeferredItem<Item> ATOMIC_COFFEE = REGISTRY.register("atomic_coffee", AtomicCoffeeItem::new);

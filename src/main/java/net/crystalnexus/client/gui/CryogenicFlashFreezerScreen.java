@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class CryogenicFlashFreezerScreen extends AbstractContainerScreen<CryogenicFlashFreezerMenu> {
@@ -54,7 +53,8 @@ public final class CryogenicFlashFreezerScreen extends AbstractContainerScreen<C
 		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		CryogenicFlashFreezerBlockEntity freezer = menu.freezer();
 		if (freezer != null) {
-			for (int i = 0; i < TANK_X.length; i++) drawTank(graphics, freezer.getTank(i).getFluid(), TANK_X[i], TANK_Y);
+			for (int i = 0; i < TANK_X.length; i++) FluidTankRenderer.draw(graphics, freezer.getTank(i).getFluid(),
+				CryogenicFlashFreezerBlockEntity.TANK_CAPACITY, leftPos + TANK_X[i], topPos + TANK_Y, 16, TANK_HEIGHT);
 			double max = freezer.getPersistentData().getDouble("maxProgress");
 			double progress = freezer.getPersistentData().getDouble("progress");
 			int frame = max <= 0 ? 0 : Mth.clamp((int) Math.ceil(progress / max * 10), 0, 10);
@@ -67,24 +67,6 @@ public final class CryogenicFlashFreezerScreen extends AbstractContainerScreen<C
 			Mth.clamp((int) EnergyDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.disableBlend();
-	}
-
-	private void drawTank(GuiGraphics graphics, FluidStack fluid, int x, int y) {
-		if (fluid.isEmpty()) return;
-		int height = Math.max(1, fluid.getAmount() * TANK_HEIGHT / CryogenicFlashFreezerBlockEntity.TANK_CAPACITY);
-		IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid.getFluid());
-		ResourceLocation still = extension.getStillTexture(fluid);
-		if (still == null) return;
-		ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(still.getNamespace(), "textures/" + still.getPath() + ".png");
-		int tint = extension.getTintColor(fluid);
-		RenderSystem.setShaderColor(((tint >> 16) & 255) / 255f, ((tint >> 8) & 255) / 255f, (tint & 255) / 255f,
-			((tint >>> 24) & 255) == 0 ? 1 : ((tint >>> 24) & 255) / 255f);
-		int screenX = leftPos + x, bottom = topPos + y + TANK_HEIGHT;
-		graphics.enableScissor(screenX, bottom - height, screenX + 16, bottom);
-		for (int drawY = bottom - height; drawY < bottom; drawY += 16)
-			graphics.blit(texture, screenX, drawY, 0, 0, 16, 16, 16, 16);
-		graphics.disableScissor();
-		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
 
 	@Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {

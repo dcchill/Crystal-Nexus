@@ -8,9 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 
 import net.crystalnexus.world.inventory.CircuitPressGUIMenu;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
@@ -22,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.Arrays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.List;
 
@@ -86,25 +82,9 @@ public class CircuitPressGUIScreen extends AbstractContainerScreen<CircuitPressG
 		double progress = press == null ? 0 : press.getPersistentData().getDouble("progress");
 		int frame = maxProgress <= 0 ? 0 : Mth.clamp((int) Math.ceil(progress / maxProgress * 10), 0, 10);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarinvert.png"), this.leftPos + 71, this.topPos + 14, 0, frame * 32, 32, 32, 32, 352);
-		if (press != null) drawTank(guiGraphics, press.getNitrogenTank().getFluid(), 115, 16);
+		if (press != null) FluidTankRenderer.draw(guiGraphics, press.getNitrogenTank().getFluid(),
+			CircuitPressBlockEntity.TANK_CAPACITY, leftPos + 115, topPos + 16, 16, 34);
 		RenderSystem.disableBlend();
-	}
-
-	private void drawTank(GuiGraphics graphics, FluidStack fluid, int x, int y) {
-		if (fluid.isEmpty()) return;
-		int height = Math.max(1, fluid.getAmount() * 34 / CircuitPressBlockEntity.TANK_CAPACITY);
-		IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid.getFluid());
-		ResourceLocation still = extension.getStillTexture(fluid);
-		if (still == null) return;
-		TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(still);
-		int tint = extension.getTintColor(fluid);
-		RenderSystem.setShaderColor(((tint >> 16) & 255) / 255f, ((tint >> 8) & 255) / 255f, (tint & 255) / 255f, 1);
-		int screenX = leftPos + x, bottom = topPos + y + 34;
-		graphics.enableScissor(screenX, bottom - height, screenX + 16, bottom);
-		for (int drawY = bottom - height; drawY < bottom; drawY += 16)
-			graphics.blit(screenX, drawY, 0, 16, 16, sprite);
-		graphics.disableScissor();
-		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
 
 	@Override

@@ -10,7 +10,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
@@ -46,7 +45,13 @@ public final class SolarEngineScreen extends AbstractContainerScreen<SolarEngine
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
-		if (menu.controller() != null) drawFluid(graphics, menu.controller().getCoolantTank().getFluid());
+		if (menu.controller() != null) {
+			graphics.fill(leftPos + FLUID_X - 1, topPos + FLUID_Y - 1,
+				leftPos + FLUID_X + FLUID_WIDTH + 1, topPos + FLUID_Y + FLUID_HEIGHT + 1, 0xff161022);
+			FluidTankRenderer.draw(graphics, menu.controller().getCoolantTank().getFluid(),
+				SolarEngineControllerBlockEntity.TANK_CAPACITY,
+				leftPos + FLUID_X, topPos + FLUID_Y, FLUID_WIDTH, FLUID_HEIGHT);
+		}
 	}
 
 	@Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -57,24 +62,6 @@ public final class SolarEngineScreen extends AbstractContainerScreen<SolarEngine
 		graphics.drawString(font, Component.literal(controller.getOutputPerTick() + " FE/t"), 105, 7, 0xffdd66, false);
 		graphics.drawString(font, Component.literal("Heat " + controller.getHeat() * 100 / SolarEngineControllerBlockEntity.MAX_HEAT + "%"), 105, 19, 0xff7755, false);
 		graphics.drawString(font, Component.literal("Stress " + controller.getContainmentStress() * 100 / SolarEngineControllerBlockEntity.MAX_CONTAINMENT_STRESS + "%"), 105, 31, 0xff77dd, false);
-	}
-
-	private void drawFluid(GuiGraphics graphics, FluidStack fluid) {
-		graphics.fill(leftPos + FLUID_X - 1, topPos + FLUID_Y - 1,
-			leftPos + FLUID_X + FLUID_WIDTH + 1, topPos + FLUID_Y + FLUID_HEIGHT + 1, 0xff161022);
-		if (fluid.isEmpty()) return;
-		int height = Math.max(1, fluid.getAmount() * FLUID_HEIGHT / SolarEngineControllerBlockEntity.TANK_CAPACITY);
-		IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid.getFluid());
-		ResourceLocation still = extension.getStillTexture(fluid);
-		if (still == null) return;
-		ResourceLocation texture = ResourceLocation.fromNamespaceAndPath(still.getNamespace(), "textures/" + still.getPath() + ".png");
-		int tint = extension.getTintColor(fluid);
-		RenderSystem.setShaderColor(((tint >> 16) & 255) / 255F, ((tint >> 8) & 255) / 255F, (tint & 255) / 255F, 1);
-		int x = leftPos + FLUID_X, bottom = topPos + FLUID_Y + FLUID_HEIGHT;
-		graphics.enableScissor(x, bottom - height, x + FLUID_WIDTH, bottom);
-		for (int y = bottom - height; y < bottom; y += 16) graphics.blit(texture, x, y, 0, 0, 16, 16, 16, 16);
-		graphics.disableScissor();
-		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
 
 	@Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

@@ -142,7 +142,7 @@ public class FluidChemicalReactionRecipe implements CrystalNexusRecipe {
 
     public static final class Serializer implements RecipeSerializer<FluidChemicalReactionRecipe> {
         public static final Serializer INSTANCE = new Serializer();
-        private static final MapCodec<FluidChemicalReactionRecipe> CODEC = RecordCodecBuilder.<FluidChemicalReactionRecipe>mapCodec(instance -> instance.group(
+		static final MapCodec<FluidChemicalReactionRecipe> CODEC = RecordCodecBuilder.<FluidChemicalReactionRecipe>mapCodec(instance -> instance.group(
             FluidAmount.CODEC.optionalFieldOf("fluid_input_1").forGetter(recipe -> recipe.fluidInput1),
             FluidAmount.CODEC.optionalFieldOf("fluid_input_2").forGetter(recipe -> recipe.fluidInput2),
             Ingredient.CODEC.optionalFieldOf("item_input_1").forGetter(recipe -> recipe.itemInput1),

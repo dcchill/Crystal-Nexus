@@ -8,10 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.SteamChamberGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
-import net.crystalnexus.procedures.FluidDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -67,7 +67,9 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png"), this.leftPos + 4, this.topPos + 4, 0, 0, 16, 16, 16, 16);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarinvert.png"), this.leftPos + 72, this.topPos + 39, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/steam_fluidlevels.png"), this.leftPos + 106, this.topPos + 10, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/steam_fluidlevels.png"), leftPos + 106, topPos + 10, 0, 0, 64, 64, 64, 704);
+		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z).above(), 0,
+			leftPos + 122, topPos + 14, 32, 56);
 		RenderSystem.disableBlend();
 	}
 

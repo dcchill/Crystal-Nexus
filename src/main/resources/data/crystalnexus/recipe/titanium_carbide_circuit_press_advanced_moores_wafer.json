@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:titanium_carbide_circuit_press",
+  "item_input_1": { "item": "crystalnexus:dark_matter" },
+  "item_input_2": { "item": "crystalnexus:silicon_wafer" },
+  "item_input_2_count": 8,
+  "fluid_input_1": { "fluid": "crystalnexus:nitrogen", "amount": 1000 },
+  "item_output": { "id": "crystalnexus:moores_wafer", "count": 1 }
+}

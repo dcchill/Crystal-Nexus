@@ -11,12 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import net.crystalnexus.world.inventory.ReactorGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.procedures.HeatDisplayProcedure;
-import net.crystalnexus.procedures.FluidDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
@@ -75,7 +75,9 @@ public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> im
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/reactorupgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/waste_slot.png"), this.leftPos + 173, this.topPos + 34, 0, 0, 32, 32, 32, 32);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 105, this.topPos + 15, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), this.leftPos + 6, this.topPos + 16, 0, Mth.clamp((int) FluidDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), leftPos + 6, topPos + 16, 0, 0, 64, 64, 64, 704);
+		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
+			leftPos + 22, topPos + 20, 32, 56);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 71, this.topPos + 7, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarsmelt.png"), this.leftPos + 71, this.topPos + 54, 0, Mth.clamp((int) HeatDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(tooltipTexture, this.leftPos + 3, this.topPos + 64, 0, 0, 16, 16, 16, 16);
