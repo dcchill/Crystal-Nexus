@@ -3,6 +3,7 @@ package net.crystalnexus.jei;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.gui.IRecipeLayoutDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.recipe.IFocus;
@@ -271,6 +272,13 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
             int count = Math.max(1, stack.getCount());
             alternatives.putIfAbsent(id + "#" + count, new DepotJeiRecipeCache.StackRef(id, count));
+        });
+        slot.getIngredients(NeoForgeTypes.FLUID_STACK).filter(stack -> !stack.isEmpty()).forEach(stack -> {
+            if (alternatives.size() >= DepotJeiRecipeCache.MAX_ALTERNATIVES) return;
+            ResourceLocation id = BuiltInRegistries.FLUID.getKey(stack.getFluid());
+            ResourceLocation key = net.crystalnexus.data.DepotSavedData.fluidKey(id);
+            int amount = Math.max(1, stack.getAmount());
+            alternatives.putIfAbsent(key + "#" + amount, new DepotJeiRecipeCache.StackRef(key, amount));
         });
         return new DepotJeiRecipeCache.Slot(List.copyOf(alternatives.values()));
     }

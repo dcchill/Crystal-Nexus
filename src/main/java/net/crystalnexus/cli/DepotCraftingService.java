@@ -807,7 +807,9 @@ public final class DepotCraftingService {
 
     private static long total(Map<ResourceLocation, Long> counts) {
         long result = 0;
-        for (long count : counts.values()) {
+        for (Map.Entry<ResourceLocation, Long> entry : counts.entrySet()) {
+            if (DepotSavedData.isFluidKey(entry.getKey())) continue;
+            long count = entry.getValue();
             result = Planner.add(result, count);
             if (result < 0) return Long.MAX_VALUE;
         }
@@ -845,7 +847,7 @@ public final class DepotCraftingService {
             this.processingAvailable = !machines.isEmpty();
             machines.stream().map(endpoint -> BuiltInRegistries.BLOCK.getKey(endpoint.level()
                     .getBlockState(endpoint.pos()).getBlock())).forEach(connectedMachineTypes::add);
-            initial.putAll(depot.countSnapshot());
+            initial.putAll(depot.resourceSnapshot());
             PlanningRecipeIndex recipeIndex = planningRecipeIndex(player);
             recipes = recipeIndex.crafting();
             processingRecipes = recipeIndex.processing();
@@ -1486,12 +1488,19 @@ public final class DepotCraftingService {
 
         private boolean fits(Map<ResourceLocation, Long> finalCounts) {
             long used = 0;
+            long fluidUsed = 0;
             for (Map.Entry<ResourceLocation, Long> entry : finalCounts.entrySet()) {
                 long count = entry.getValue();
-                if (count < 0 || count > 0 && !depot.accepts(entry.getKey()) || Long.MAX_VALUE - used < count) return false;
-                used += count;
+                if (count < 0 || count > 0 && !depot.accepts(entry.getKey())) return false;
+                if (DepotSavedData.isFluidKey(entry.getKey())) {
+                    if (Long.MAX_VALUE - fluidUsed < count) return false;
+                    fluidUsed += count;
+                } else {
+                    if (Long.MAX_VALUE - used < count) return false;
+                    used += count;
+                }
             }
-            return used <= depot.getCapacity();
+            return used <= depot.getCapacity() && fluidUsed <= depot.getFluidCapacity();
         }
 
         private long initialCount(ResourceLocation id) {

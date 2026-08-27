@@ -10,9 +10,9 @@ import java.util.UUID;
 
 public record DepotProgram(UUID id, String name, boolean enabled, ProgramTrigger trigger,
         List<ProgramCondition> conditions, List<ProgramAction> actions) {
-    public enum TriggerType { ITEM_ADDED, INVENTORY_CHANGED, TIMED_INTERVAL }
-    public enum ConditionType { COUNT_AT_LEAST, COUNT_LESS, EXISTS, MISSING }
-    public enum ActionType { CRAFT, SEND_ITEM, PROCESS }
+    public enum TriggerType { ITEM_ADDED, FLUID_ADDED, INVENTORY_CHANGED, TIMED_INTERVAL }
+    public enum ConditionType { COUNT_AT_LEAST, COUNT_LESS, EXISTS, MISSING, FLUID_AT_LEAST, FLUID_LESS }
+    public enum ActionType { CRAFT, SEND_ITEM, SEND_FLUID, PROCESS }
 
     public record ProgramTrigger(TriggerType type, ResourceLocation itemId, int interval) {
         public ProgramTrigger { if (interval < 20) interval = 20; }
@@ -40,12 +40,14 @@ public record DepotProgram(UUID id, String name, boolean enabled, ProgramTrigger
     public String summary() {
         String when = switch (trigger.type()) {
             case ITEM_ADDED -> shortId(trigger.itemId()) + " Added";
+            case FLUID_ADDED -> shortId(trigger.itemId()) + " Fluid Added";
             case INVENTORY_CHANGED -> "Inventory Changed";
             case TIMED_INTERVAL -> "Every " + formatTicks(trigger.interval()) + " ticks";
         };
         String action = actions.isEmpty() ? "Do nothing" : switch (actions.getFirst().type()) {
             case CRAFT -> "Craft " + shortId(actions.getFirst().itemId()) + " x" + actions.getFirst().amount();
             case SEND_ITEM -> "Send " + shortId(actions.getFirst().itemId()) + " x" + actions.getFirst().amount();
+            case SEND_FLUID -> "Send " + shortId(actions.getFirst().itemId()) + " " + actions.getFirst().amount() + " mB";
             case PROCESS -> "Process " + shortId(actions.getFirst().itemId()) + " @ " + shortId(actions.getFirst().machineId()) + " x" + actions.getFirst().amount();
         };
         return when + " -> " + action;
@@ -96,7 +98,7 @@ public record DepotProgram(UUID id, String name, boolean enabled, ProgramTrigger
             TriggerType triggerType = TriggerType.valueOf(tag.getString("trigger"));
             ResourceLocation triggerItem = ResourceLocation.tryParse(tag.getString("triggerItem"));
             int interval = tag.contains("interval") ? tag.getInt("interval") : 0;
-            if (triggerType == TriggerType.ITEM_ADDED && triggerItem == null) return null;
+            if ((triggerType == TriggerType.ITEM_ADDED || triggerType == TriggerType.FLUID_ADDED) && triggerItem == null) return null;
             if (triggerType == TriggerType.TIMED_INTERVAL && interval < 20) return null;
             List<ProgramCondition> conditions = new java.util.ArrayList<>();
             ListTag savedConditions = tag.getList("conditions", Tag.TAG_COMPOUND);

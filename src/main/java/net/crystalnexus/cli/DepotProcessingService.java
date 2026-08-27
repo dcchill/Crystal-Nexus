@@ -13,6 +13,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,12 +75,14 @@ public final class DepotProcessingService {
         for (int index = 0; index < task.remainingInputs().size(); index++) {
             DepotSavedData.SlotEntry entry = task.remainingInputs().get(index);
             if (entry.count() <= 0) continue;
-            long accepted = insertOrdered(handlers, slot, entry.itemId(), entry.count());
+            boolean fluid = DepotSavedData.isFluidKey(entry.itemId());
+            long accepted = fluid ? insertFluid(machine, entry.itemId(), entry.count(), false)
+                    : insertOrdered(handlers, slot, entry.itemId(), entry.count());
             if (accepted <= 0) continue;
             inserted.merge(entry.itemId(), accepted, DepotSavedData::saturatedAdd);
             remainingInputs.set(index, new DepotSavedData.SlotEntry(entry.itemId(),
                     Math.max(0, entry.count() - accepted)));
-            slot = Math.min(totalSlots - 1, slot + 1);
+            if (!fluid) slot = Math.min(totalSlots - 1, slot + 1);
         }
         remainingInputs.removeIf(entry -> entry.count() <= 0);
 
@@ -128,12 +132,40 @@ public final class DepotProcessingService {
         int totalSlots = handlers.stream().mapToInt(IItemHandler::getSlots).sum();
         int slot = 0;
         for (DepotSavedData.SlotEntry entry : inputs) {
+            if (DepotSavedData.isFluidKey(entry.itemId())) {
+                if (insertFluid(endpoint, entry.itemId(), entry.count(), true) < entry.count()) return false;
+                continue;
+            }
             Item item = BuiltInRegistries.ITEM.get(entry.itemId());
             if (item == null || !endpoint.config().accepts(new ItemStack(item))) return false;
             if (insertOrdered(handlers, slot, entry.itemId(), entry.count(), true) < entry.count()) return false;
             slot = Math.min(totalSlots - 1, slot + 1);
         }
         return true;
+    }
+
+    private static long insertFluid(DepotNetwork.DepotMachineEndpoint endpoint,
+            ResourceLocation resourceKey, long amount, boolean simulate) {
+        ResourceLocation fluidId = DepotSavedData.fluidId(resourceKey);
+        var fluid = fluidId == null ? null : BuiltInRegistries.FLUID.get(fluidId);
+        if (fluid == null || amount <= 0) return 0;
+        int remaining = (int) Math.min(Integer.MAX_VALUE, amount);
+        Set<IFluidHandler> seen = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+        for (Direction side : Direction.values()) {
+            IFluidHandler handler = endpoint.level().getCapability(Capabilities.FluidHandler.BLOCK,
+                    endpoint.machinePos(), side);
+            if (handler == null || !seen.add(handler)) continue;
+            remaining -= handler.fill(new FluidStack(fluid, remaining), simulate
+                    ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+            if (remaining <= 0) break;
+        }
+        if (remaining > 0) {
+            IFluidHandler handler = endpoint.level().getCapability(Capabilities.FluidHandler.BLOCK,
+                    endpoint.machinePos(), null);
+            if (handler != null && seen.add(handler)) remaining -= handler.fill(new FluidStack(fluid, remaining),
+                    simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+        }
+        return amount - Math.max(0, remaining);
     }
 
     private static long insertOrdered(List<IItemHandler> handlers, int slotIndex,

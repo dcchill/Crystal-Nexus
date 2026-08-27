@@ -241,6 +241,8 @@ public final class DepotCliCommandRegistry {
         lines.add("Stored Items: " + format(context.depot().getUsed()));
         lines.add("Unique Types: " + format(context.depot().countEntries("")));
         lines.add("Capacity: " + format(context.depot().getFree()) + " free / " + format(context.depot().getCapacity()));
+        lines.add("Stored Fluids: " + format(context.depot().getFluidUsed()) + " / "
+                + format(context.depot().getFluidCapacity()) + " mB (" + context.depot().fluidSnapshot().size() + " types)");
         if (controller != null) lines.add("Power: " + format(controller.getEnergyStorage().getEnergyStored()) + " / " + format(controller.getEnergyStorage().getMaxEnergyStored()) + " FE (" + controller.getPowerDraw() + " FE/t)");
         int processors = DepotNetwork.craftingProcessorCount(context.player());
         lines.add("Crafting Processors: " + processors);

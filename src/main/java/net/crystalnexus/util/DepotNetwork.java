@@ -9,6 +9,7 @@ import net.crystalnexus.block.entity.DepotCableConnectionConfig;
 import net.crystalnexus.data.DepotSavedData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,6 +19,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -90,6 +94,94 @@ public final class DepotNetwork {
             remaining -= inserted;
         }
         return new DepotTransferResult(moved);
+    }
+
+    public static long routeFluidToMachine(ServerPlayer player, DepotSavedData depot,
+            ResourceLocation fluidId, long amount) {
+        if (fluidId == null || amount <= 0) return 0;
+        long remaining = Math.min(amount, depot.getFluidAmount(fluidId));
+        long moved = 0;
+        for (DepotMachineEndpoint endpoint : machineEndpoints(player)) {
+            if (remaining <= 0 || !DepotCableBlock.isDefaultMode(
+                    endpoint.level().getBlockState(endpoint.cablePos()))) continue;
+            IFluidHandler handler = fluidHandler(endpoint.level(), endpoint.machinePos(), endpoint.side().getOpposite());
+            if (handler == null) continue;
+            long inserted = moveFluidToHandler(depot, handler, fluidId, remaining);
+            moved += inserted;
+            remaining -= inserted;
+        }
+        return moved;
+    }
+
+    public static long importFluidsFromCable(ServerLevel level, BlockPos cablePos, DepotSavedData depot, long limit) {
+        long remaining = Math.min(limit, depot.getFluidFree());
+        for (Direction side : Direction.values()) {
+            if (remaining <= 0) break;
+            IFluidHandler handler = fluidHandler(level, cablePos.relative(side), side.getOpposite());
+            if (handler == null) continue;
+            FluidStack offered = handler.drain((int) Math.min(Integer.MAX_VALUE, remaining), IFluidHandler.FluidAction.SIMULATE);
+            if (offered.isEmpty()) continue;
+            ResourceLocation id = BuiltInRegistries.FLUID.getKey(offered.getFluid());
+            long accepted = depot.depositFluid(id, offered.getAmount());
+            if (accepted <= 0) continue;
+            FluidStack drained = handler.drain((int) accepted, IFluidHandler.FluidAction.EXECUTE);
+            int actual = drained.isEmpty() || !drained.is(offered.getFluid()) ? 0 : drained.getAmount();
+            if (actual < accepted) depot.removeFluid(id, accepted - actual);
+            remaining -= actual;
+        }
+        return limit - remaining;
+    }
+
+    public static long exportFluidsFromCable(ServerLevel level, BlockPos cablePos, DepotSavedData depot, long limit) {
+        long remaining = limit;
+        for (Direction side : Direction.values()) {
+            IFluidHandler handler = fluidHandler(level, cablePos.relative(side), side.getOpposite());
+            if (handler == null) continue;
+            for (Map.Entry<ResourceLocation, Long> stored : depot.fluidSnapshot().entrySet()) {
+                if (remaining <= 0) return limit;
+                long moved = moveFluidToHandler(depot, handler, stored.getKey(), Math.min(remaining, stored.getValue()));
+                remaining -= moved;
+            }
+        }
+        return limit - remaining;
+    }
+
+    public static int transferEnergyFromCable(ServerLevel level, BlockPos cablePos,
+            DepotControllerBlockEntity controller, boolean importing, int limit) {
+        int remaining = limit;
+        for (Direction side : Direction.values()) {
+            if (remaining <= 0) break;
+            IEnergyStorage endpoint = energyStorage(level, cablePos.relative(side), side.getOpposite());
+            if (endpoint == null) continue;
+            if (importing) {
+                int offered = endpoint.extractEnergy(remaining, true);
+                int accepted = controller.getEnergyStorage().receiveEnergy(offered, false);
+                int actual = endpoint.extractEnergy(accepted, false);
+                if (actual < accepted) controller.getEnergyStorage().extractEnergy(accepted - actual, false);
+                remaining -= actual;
+            } else {
+                int available = Math.max(0, controller.getEnergyStorage().getEnergyStored() - controller.getPowerDraw());
+                int offered = Math.min(remaining, available);
+                int accepted = endpoint.receiveEnergy(offered, true);
+                int extracted = controller.getEnergyStorage().extractEnergy(accepted, false);
+                int actual = endpoint.receiveEnergy(extracted, false);
+                if (actual < extracted) controller.getEnergyStorage().receiveEnergy(extracted - actual, false);
+                remaining -= actual;
+            }
+        }
+        return limit - remaining;
+    }
+
+    private static long moveFluidToHandler(DepotSavedData depot, IFluidHandler handler,
+            ResourceLocation fluidId, long amount) {
+        var fluid = BuiltInRegistries.FLUID.get(fluidId);
+        if (fluid == null || amount <= 0) return 0;
+        int offered = (int) Math.min(Integer.MAX_VALUE, Math.min(amount, depot.getFluidAmount(fluidId)));
+        int insertable = handler.fill(new FluidStack(fluid, offered), IFluidHandler.FluidAction.SIMULATE);
+        long extracted = depot.removeFluid(fluidId, insertable);
+        int inserted = handler.fill(new FluidStack(fluid, (int) extracted), IFluidHandler.FluidAction.EXECUTE);
+        if (inserted < extracted) depot.addFluid(fluidId, extracted - inserted);
+        return inserted;
     }
 
     /** Automatically exports only the exact items listed on this cable's connected faces. */
@@ -217,6 +309,19 @@ public final class DepotNetwork {
         return owner[0];
     }
 
+    /** Finds the controller for power input even when its buffer is currently empty. */
+    public static @Nullable UUID energyImportOwner(ServerLevel level, BlockPos componentPos) {
+        UUID[] owner = {null};
+        scan(level, componentPos, pos -> {
+            if (!(level.getBlockEntity(pos) instanceof DepotControllerBlockEntity controller)
+                    || controller.getOwner() == null) return false;
+            if (!DepotSavedData.get(level, controller.getOwner()).isController(level, pos)) return false;
+            owner[0] = controller.getOwner();
+            return true;
+        });
+        return owner[0];
+    }
+
     public static int poweredComponentCount(ServerLevel level, BlockPos controllerPos) {
         return collect(level, controllerPos, pos -> level.getBlockState(pos).is(DepotCableBlock.COMPONENTS)).size();
     }
@@ -321,7 +426,9 @@ public final class DepotNetwork {
         BlockState state = level.getBlockState(target);
         if (state.getBlock() instanceof DepotCableBlock || state.is(DepotCableBlock.COMPONENTS)) return false;
         return level.getCapability(Capabilities.ItemHandler.BLOCK, target, side.getOpposite()) != null
-                || level.getCapability(Capabilities.ItemHandler.BLOCK, target, null) != null;
+                || level.getCapability(Capabilities.ItemHandler.BLOCK, target, null) != null
+                || fluidHandler(level, target, side.getOpposite()) != null
+                || energyStorage(level, target, side.getOpposite()) != null;
     }
 
     public static boolean hasItemHandler(ServerLevel level, BlockPos pos) {
@@ -330,6 +437,24 @@ public final class DepotNetwork {
             if (level.getCapability(Capabilities.ItemHandler.BLOCK, pos, direction) != null) return true;
         }
         return false;
+    }
+
+    public static boolean hasTransferHandler(ServerLevel level, BlockPos pos) {
+        if (hasItemHandler(level, pos)) return true;
+        for (Direction side : Direction.values()) {
+            if (fluidHandler(level, pos, side) != null || energyStorage(level, pos, side) != null) return true;
+        }
+        return fluidHandler(level, pos, null) != null || energyStorage(level, pos, null) != null;
+    }
+
+    private static @Nullable IFluidHandler fluidHandler(ServerLevel level, BlockPos pos, @Nullable Direction side) {
+        IFluidHandler handler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, side);
+        return handler != null ? handler : level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
+    }
+
+    private static @Nullable IEnergyStorage energyStorage(ServerLevel level, BlockPos pos, @Nullable Direction side) {
+        IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
+        return storage != null ? storage : level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
     }
 
     private static boolean scan(ServerLevel level, BlockPos start, Predicate<BlockPos> target) {

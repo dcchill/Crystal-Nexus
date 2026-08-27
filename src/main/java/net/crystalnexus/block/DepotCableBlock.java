@@ -114,7 +114,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
         BlockState neighbor = level.getBlockState(neighborPos);
         return neighbor.is(this) || neighbor.is(COMPONENTS) || isAe2Controller(neighbor)
                 || level instanceof ServerLevel serverLevel
-                && DepotNetwork.hasItemHandler(serverLevel, neighborPos);
+                && DepotNetwork.hasTransferHandler(serverLevel, neighborPos);
     }
 
     public static boolean isAe2Controller(BlockState state) {
@@ -166,7 +166,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (isImportMode(state)) importFromNeighbors(level, pos);
-        else if (isExportMode(state)) exportListedToNeighbors(level, pos);
+        else if (isExportMode(state)) exportToNeighbors(level, pos);
         else return;
 
         level.scheduleTick(pos, this, 20);
@@ -194,12 +194,29 @@ public class DepotCableBlock extends Block implements EntityBlock {
         DepotNetwork.exportListedFromCable(level, pos, DepotSavedData.get(level, owner), 64);
     }
 
+    private void exportToNeighbors(ServerLevel level, BlockPos pos) {
+        var owner = DepotNetwork.componentOwner(level, pos);
+        if (owner == null) return;
+        DepotSavedData depot = DepotSavedData.get(level, owner);
+        exportListedToNeighbors(level, pos);
+        DepotNetwork.exportFluidsFromCable(level, pos, depot, 1_000);
+        var controller = DepotSavedData.getController(level, owner);
+        if (controller != null) DepotNetwork.transferEnergyFromCable(level, pos, controller, false, 20_4800);
+    }
+
     private void importFromNeighbors(ServerLevel level, BlockPos pos) {
+        var energyOwner = DepotNetwork.energyImportOwner(level, pos);
+        if (energyOwner != null) {
+            var controller = DepotSavedData.getController(level, energyOwner);
+            if (controller != null) DepotNetwork.transferEnergyFromCable(level, pos, controller, true, 20_480);
+        }
         var owner = DepotNetwork.componentOwner(level, pos);
         if (owner == null) return;
 
         DepotSavedData depot = DepotSavedData.get(level, owner);
         if (depot == null) return;
+
+        DepotNetwork.importFluidsFromCable(level, pos, depot, 1_000);
 
         int remaining = 64; // Maximum items imported per tick
 

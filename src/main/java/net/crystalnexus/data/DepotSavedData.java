@@ -41,6 +41,7 @@ public class DepotSavedData extends SavedData {
     public static final String ID = "crystalnexus_depot";
     public static final int MAX_UPGRADE_LEVEL = 62;
     private static final ResourceLocation UPLINK_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "depot_uplink");
+    private static final String FLUID_KEY_PREFIX = "depot_fluid/";
 
     // ===== Capacity / Upgrades =====
     private int upgradeLevel = 0;
@@ -57,6 +58,7 @@ public class DepotSavedData extends SavedData {
 
     // ===== Stored items =====
     private final Object2LongMap<ResourceLocation> counts = new Object2LongOpenHashMap<>();
+    private final Object2LongMap<ResourceLocation> fluidCounts = new Object2LongOpenHashMap<>();
     private transient @Nullable DepotStorageBridge storageBridge;
 
     public record Entry(ResourceLocation itemId, long count) {}
@@ -209,6 +211,11 @@ public class DepotSavedData extends SavedData {
             legacy.putInt("jobId", data.getCraftingJob().id());
             data.loadTask(legacy);
         }
+        CompoundTag fluids = tag.getCompound("fluids");
+        for (String key : fluids.getAllKeys()) {
+            ResourceLocation id = ResourceLocation.tryParse(key);
+            if (id != null && BuiltInRegistries.FLUID.containsKey(id)) data.fluidCounts.put(id, fluids.getLong(key));
+        }
 
         ListTag savedPrograms = tag.getList("programs", Tag.TAG_COMPOUND);
         for (int i = 0; i < savedPrograms.size(); i++) {
@@ -230,6 +237,9 @@ public class DepotSavedData extends SavedData {
         CompoundTag items = new CompoundTag();
         counts.object2LongEntrySet().forEach(e -> items.putLong(e.getKey().toString(), e.getLongValue()));
         tag.put("items", items);
+        CompoundTag fluids = new CompoundTag();
+        fluidCounts.object2LongEntrySet().forEach(e -> fluids.putLong(e.getKey().toString(), e.getLongValue()));
+        tag.put("fluids", fluids);
 
         CompoundTag preferences = new CompoundTag();
         preferredRecipes.forEach((itemId, recipeId) -> preferences.putString(itemId.toString(), recipeId.toString()));
@@ -389,6 +399,22 @@ public class DepotSavedData extends SavedData {
 
     public @Nullable ResourceLocation getPreferredRecipe(ResourceLocation itemId) {
         return preferredRecipes.get(itemId);
+    }
+
+    /** Fluid capacity is measured in mB: every item-capacity unit stores one bucket. */
+    public long getFluidCapacity() {
+        long capacity = getLocalCapacity();
+        return capacity > Long.MAX_VALUE / 1_000L ? Long.MAX_VALUE : capacity * 1_000L;
+    }
+
+    public long getFluidUsed() {
+        long used = 0;
+        for (long amount : fluidCounts.values()) used = saturatedAdd(used, Math.max(0, amount));
+        return used;
+    }
+
+    public long getFluidFree() {
+        return Math.max(0, getFluidCapacity() - getFluidUsed());
     }
 
     public Map<ResourceLocation, ResourceLocation> preferredRecipesSnapshot() {
@@ -864,6 +890,8 @@ public class DepotSavedData extends SavedData {
     // ===== Storage API (SAFE) =====
 
     public long getCount(ResourceLocation itemId) {
+        ResourceLocation fluidId = fluidId(itemId);
+        if (fluidId != null) return getFluidAmount(fluidId);
         long local = getLocalCount(itemId);
         if (!accepts(itemId)) return local;
         DepotStorageBridge bridge = activeStorageBridge();
@@ -889,6 +917,8 @@ public class DepotSavedData extends SavedData {
      * @return how many were accepted (0..amount)
      */
     public long deposit(ResourceLocation itemId, long amount) {
+        ResourceLocation fluidId = fluidId(itemId);
+        if (fluidId != null) return depositFluid(fluidId, amount);
         if (amount <= 0) return 0;
         if (!accepts(itemId)) return 0;
 
@@ -919,7 +949,7 @@ public class DepotSavedData extends SavedData {
     }
 
     public boolean accepts(ResourceLocation itemId) {
-        return itemId != null && !itemId.equals(UPLINK_ID);
+        return itemId != null && (isFluidKey(itemId) || !itemId.equals(UPLINK_ID));
     }
 
     /**
@@ -957,6 +987,11 @@ public class DepotSavedData extends SavedData {
      * UNSAFE: ignores capacity. Only use for admin/debug/migrations.
      */
     public void add(ResourceLocation itemId, long amount) {
+        ResourceLocation fluidId = fluidId(itemId);
+        if (fluidId != null) {
+            addFluid(fluidId, amount);
+            return;
+        }
         if (amount <= 0) return;
         if (itemId == null) return;
         DepotStorageBridge bridge = accepts(itemId) ? activeStorageBridge() : null;
@@ -977,6 +1012,8 @@ public class DepotSavedData extends SavedData {
     }
 
     public long remove(ResourceLocation itemId, long amount) {
+        ResourceLocation fluidId = fluidId(itemId);
+        if (fluidId != null) return removeFluid(fluidId, amount);
         if (amount <= 0) return 0;
         if (itemId == null) return 0;
 
@@ -1026,6 +1063,72 @@ public class DepotSavedData extends SavedData {
 
     public Map<ResourceLocation, Long> countSnapshot() {
         return Map.copyOf(combinedCounts());
+    }
+
+    /** Item ids plus encoded fluid ids for the crafting planner. */
+    public Map<ResourceLocation, Long> resourceSnapshot() {
+        Map<ResourceLocation, Long> resources = new ConcurrentHashMap<>(combinedCounts());
+        fluidCounts.object2LongEntrySet().forEach(entry -> {
+            if (entry.getLongValue() > 0) resources.put(fluidKey(entry.getKey()), entry.getLongValue());
+        });
+        return Map.copyOf(resources);
+    }
+
+    public long getFluidAmount(ResourceLocation fluidId) {
+        return fluidId == null ? 0 : fluidCounts.getLong(fluidId);
+    }
+
+    public long depositFluid(ResourceLocation fluidId, long amount) {
+        if (amount <= 0 || fluidId == null || !BuiltInRegistries.FLUID.containsKey(fluidId)) return 0;
+        long accepted = Math.min(amount, getFluidFree());
+        if (accepted <= 0) return 0;
+        fluidCounts.put(fluidId, saturatedAdd(fluidCounts.getLong(fluidId), accepted));
+        setDirty();
+        DepotProgramRuntime.fluidChanged(this, fluidId, accepted);
+        return accepted;
+    }
+
+    public void addFluid(ResourceLocation fluidId, long amount) {
+        if (amount <= 0 || fluidId == null || !BuiltInRegistries.FLUID.containsKey(fluidId)) return;
+        fluidCounts.put(fluidId, saturatedAdd(fluidCounts.getLong(fluidId), amount));
+        setDirty();
+        DepotProgramRuntime.fluidChanged(this, fluidId, amount);
+    }
+
+    public long removeFluid(ResourceLocation fluidId, long amount) {
+        if (amount <= 0 || fluidId == null) return 0;
+        long stored = fluidCounts.getLong(fluidId);
+        long removed = Math.min(stored, amount);
+        if (removed <= 0) return 0;
+        if (stored == removed) fluidCounts.removeLong(fluidId);
+        else fluidCounts.put(fluidId, stored - removed);
+        setDirty();
+        DepotProgramRuntime.fluidChanged(this, fluidId, -removed);
+        return removed;
+    }
+
+    public Map<ResourceLocation, Long> fluidSnapshot() {
+        Map<ResourceLocation, Long> result = new ConcurrentHashMap<>();
+        fluidCounts.object2LongEntrySet().forEach(entry -> {
+            if (entry.getLongValue() > 0) result.put(entry.getKey(), entry.getLongValue());
+        });
+        return Map.copyOf(result);
+    }
+
+    public static ResourceLocation fluidKey(ResourceLocation fluidId) {
+        return ResourceLocation.fromNamespaceAndPath("crystalnexus",
+                FLUID_KEY_PREFIX + fluidId.getNamespace() + "/" + fluidId.getPath());
+    }
+
+    public static boolean isFluidKey(ResourceLocation id) {
+        return id != null && id.getNamespace().equals("crystalnexus") && id.getPath().startsWith(FLUID_KEY_PREFIX);
+    }
+
+    public static @Nullable ResourceLocation fluidId(ResourceLocation key) {
+        if (!isFluidKey(key)) return null;
+        String value = key.getPath().substring(FLUID_KEY_PREFIX.length());
+        int separator = value.indexOf('/');
+        return separator <= 0 ? null : ResourceLocation.tryBuild(value.substring(0, separator), value.substring(separator + 1));
     }
 
     public List<Entry> localEntries() {

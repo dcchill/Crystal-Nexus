@@ -169,21 +169,25 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 .bounds(leftPos + 72, topPos + imageHeight - 25, 60, 18).build());
         triggerTypeButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
             editingTrigger = switch (editingTrigger) {
-                case ITEM_ADDED -> DepotProgram.TriggerType.INVENTORY_CHANGED;
+                case ITEM_ADDED -> DepotProgram.TriggerType.FLUID_ADDED;
+                case FLUID_ADDED -> DepotProgram.TriggerType.INVENTORY_CHANGED;
                 case INVENTORY_CHANGED -> DepotProgram.TriggerType.TIMED_INTERVAL;
                 case TIMED_INTERVAL -> DepotProgram.TriggerType.ITEM_ADDED;
             };
+            onTriggerItemTextChanged();
             updateProgramWidgets();
         }).bounds(editorFieldX, topPos + 70, editorTypeWidth, 18).build());
         conditionTypeButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
             DepotProgram.ConditionType[] values = DepotProgram.ConditionType.values();
             editingCondition = editingCondition == null ? values[0]
                     : editingCondition.ordinal() + 1 >= values.length ? null : values[editingCondition.ordinal() + 1];
+            onConditionItemTextChanged();
             updateProgramWidgets();
         }).bounds(editorFieldX, topPos + 112, editorTypeWidth, 18).build());
         actionTypeButton = addRenderableWidget(Button.builder(Component.empty(), button -> {
             DepotProgram.ActionType[] values = DepotProgram.ActionType.values();
             editingAction = values[(editingAction.ordinal() + 1) % values.length];
+            onActionItemTextChanged();
             updateProgramWidgets();
         }).bounds(editorFieldX, editorActionY, editorTypeWidth, 18).build());
         triggerItemInput = new EditBox(font, editorValueX, topPos + 70, editorValueWidth, 16, Component.literal("Item"));
@@ -290,12 +294,16 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         cancelProgramButton.visible = programTabVisible && editing;
         programNameInput.visible = programTabVisible && editing;
         conditionAmountInput.visible = programTabVisible && editing && editingCondition != null
-                && (editingCondition == DepotProgram.ConditionType.COUNT_AT_LEAST || editingCondition == DepotProgram.ConditionType.COUNT_LESS);
+                && (editingCondition == DepotProgram.ConditionType.COUNT_AT_LEAST
+                || editingCondition == DepotProgram.ConditionType.COUNT_LESS
+                || editingCondition == DepotProgram.ConditionType.FLUID_AT_LEAST
+                || editingCondition == DepotProgram.ConditionType.FLUID_LESS);
         actionAmountInput.visible = programTabVisible && editing;
         triggerTypeButton.visible = programTabVisible && editing;
         conditionTypeButton.visible = programTabVisible && editing;
         actionTypeButton.visible = programTabVisible && editing;
-        triggerItemInput.visible = programTabVisible && editing && editingTrigger == DepotProgram.TriggerType.ITEM_ADDED;
+        triggerItemInput.visible = programTabVisible && editing && (editingTrigger == DepotProgram.TriggerType.ITEM_ADDED
+                || editingTrigger == DepotProgram.TriggerType.FLUID_ADDED);
         conditionItemInput.visible = programTabVisible && editing && editingCondition != null;
         actionItemInput.visible = programTabVisible && editing;
         machineInput.visible = programTabVisible && editing && editingAction == DepotProgram.ActionType.PROCESS;
@@ -704,8 +712,9 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             programError("Enter a program name.");
             return;
         }
-        if (editingTrigger == DepotProgram.TriggerType.ITEM_ADDED && triggerItem == null) {
-            programError("Choose a valid trigger item.");
+        if ((editingTrigger == DepotProgram.TriggerType.ITEM_ADDED || editingTrigger == DepotProgram.TriggerType.FLUID_ADDED)
+                && triggerItem == null) {
+            programError("Choose a valid trigger resource.");
             return;
         }
         if (editingCondition != null && conditionItem == null) {
@@ -726,6 +735,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 ? (int) Math.max(20, number(intervalInput, 100)) : 0;
         DepotProgram.ProgramTrigger trigger = switch (editingTrigger) {
             case ITEM_ADDED -> new DepotProgram.ProgramTrigger(editingTrigger, triggerItem, 0);
+            case FLUID_ADDED -> new DepotProgram.ProgramTrigger(editingTrigger, triggerItem, 0);
             case INVENTORY_CHANGED -> new DepotProgram.ProgramTrigger(editingTrigger, null, 0);
             case TIMED_INTERVAL -> new DepotProgram.ProgramTrigger(editingTrigger, null, interval);
         };
@@ -756,6 +766,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         if (triggerTypeButton == null) return;
         triggerTypeButton.setMessage(Component.literal(switch (editingTrigger) {
             case ITEM_ADDED -> "Item Added";
+            case FLUID_ADDED -> "Fluid Added";
             case INVENTORY_CHANGED -> "Inventory Changed";
             case TIMED_INTERVAL -> "Timed Interval";
         }));
@@ -764,9 +775,12 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
             case COUNT_LESS -> "Item Count <";
             case EXISTS -> "Item Exists";
             case MISSING -> "Item Missing";
+            case FLUID_AT_LEAST -> "Fluid mB >=";
+            case FLUID_LESS -> "Fluid mB <";
         }));
         actionTypeButton.setMessage(Component.literal(switch (editingAction) {
             case SEND_ITEM -> "Send Item";
+            case SEND_FLUID -> "Send Fluid";
             case CRAFT -> "Craft";
             case PROCESS -> "Process";
         }));
@@ -802,17 +816,21 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
 
     private void onTriggerItemTextChanged() {
         if (triggerItemInput == null) return;
-        triggerItem = parseItem(triggerItemInput.getValue());
+        triggerItem = editingTrigger == DepotProgram.TriggerType.FLUID_ADDED
+                ? parseFluid(triggerItemInput.getValue()) : parseItem(triggerItemInput.getValue());
     }
 
     private void onConditionItemTextChanged() {
         if (conditionItemInput == null) return;
-        conditionItem = parseItem(conditionItemInput.getValue());
+        conditionItem = editingCondition == DepotProgram.ConditionType.FLUID_AT_LEAST
+                || editingCondition == DepotProgram.ConditionType.FLUID_LESS
+                ? parseFluid(conditionItemInput.getValue()) : parseItem(conditionItemInput.getValue());
     }
 
     private void onActionItemTextChanged() {
         if (actionItemInput == null) return;
-        actionItem = parseItem(actionItemInput.getValue());
+        actionItem = editingAction == DepotProgram.ActionType.SEND_FLUID
+                ? parseFluid(actionItemInput.getValue()) : parseItem(actionItemInput.getValue());
     }
 
     private ResourceLocation parseItem(String text) {
@@ -827,6 +845,13 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         if (text == null || text.isBlank()) return null;
         ResourceLocation id = ResourceLocation.tryParse(text.trim());
         return id != null && BuiltInRegistries.BLOCK.get(id) != net.minecraft.world.level.block.Blocks.AIR ? id : null;
+    }
+
+    private ResourceLocation parseFluid(String text) {
+        if (text == null || text.isBlank()) return null;
+        ResourceLocation id = ResourceLocation.tryParse(text.trim());
+        return id != null && BuiltInRegistries.FLUID.containsKey(id)
+                && BuiltInRegistries.FLUID.get(id) != net.minecraft.world.level.material.Fluids.EMPTY ? id : null;
     }
 
     public List<EditBox> jeiProgramItemInputs() {

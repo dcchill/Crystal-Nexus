@@ -8,7 +8,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -50,11 +49,21 @@ public final class DepotProgramRuntime {
         ExecutionContext current = CURRENT.get();
         UUID transactionId = current != null && current.depot() == depot ? current.transactionId() : UUID.randomUUID();
         UUID source = current != null && current.depot() == depot ? current.programId() : null;
-        ItemStack stack = new ItemStack(item, (int) Math.min(Integer.MAX_VALUE, Math.abs(delta)));
         RuntimeState state = STATES.computeIfAbsent(depot, ignored -> new RuntimeState());
         state.events.addLast(new DepotEvent(delta > 0 ? DepotEvent.Type.ITEM_ADDED : DepotEvent.Type.ITEM_REMOVED,
-                stack, transactionId, source));
-        state.events.addLast(new DepotEvent(DepotEvent.Type.INVENTORY_CHANGED, stack, transactionId, source));
+                itemId, transactionId, source));
+        state.events.addLast(new DepotEvent(DepotEvent.Type.INVENTORY_CHANGED, itemId, transactionId, source));
+    }
+
+    public static synchronized void fluidChanged(DepotSavedData depot, ResourceLocation fluidId, long delta) {
+        if (depot == null || fluidId == null || delta == 0) return;
+        ExecutionContext current = CURRENT.get();
+        UUID transactionId = current != null && current.depot() == depot ? current.transactionId() : UUID.randomUUID();
+        UUID source = current != null && current.depot() == depot ? current.programId() : null;
+        RuntimeState state = STATES.computeIfAbsent(depot, ignored -> new RuntimeState());
+        state.events.addLast(new DepotEvent(delta > 0 ? DepotEvent.Type.FLUID_ADDED : DepotEvent.Type.FLUID_REMOVED,
+                fluidId, transactionId, source));
+        state.events.addLast(new DepotEvent(DepotEvent.Type.INVENTORY_CHANGED, fluidId, transactionId, source));
     }
 
     @SubscribeEvent
@@ -120,7 +129,9 @@ public final class DepotProgramRuntime {
     private static boolean triggered(DepotProgram program, DepotEvent event) {
         return switch (program.trigger().type()) {
             case ITEM_ADDED -> event.type() == DepotEvent.Type.ITEM_ADDED
-                    && program.trigger().itemId().equals(BuiltInRegistries.ITEM.getKey(event.stack().getItem()));
+                    && program.trigger().itemId().equals(event.resourceId());
+            case FLUID_ADDED -> event.type() == DepotEvent.Type.FLUID_ADDED
+                    && program.trigger().itemId().equals(event.resourceId());
             case INVENTORY_CHANGED -> event.type() == DepotEvent.Type.INVENTORY_CHANGED;
             case TIMED_INTERVAL -> false; // handled separately in process()
         };
@@ -128,12 +139,17 @@ public final class DepotProgramRuntime {
 
     private static boolean conditionsPass(DepotProgram program, DepotSavedData depot) {
         for (DepotProgram.ProgramCondition condition : program.conditions()) {
-            long count = depot.getCount(condition.itemId());
+            long count = switch (condition.type()) {
+                case FLUID_AT_LEAST, FLUID_LESS -> depot.getFluidAmount(condition.itemId());
+                default -> depot.getCount(condition.itemId());
+            };
             boolean passed = switch (condition.type()) {
                 case COUNT_AT_LEAST -> count >= condition.amount();
                 case COUNT_LESS -> count < condition.amount();
                 case EXISTS -> count > 0;
                 case MISSING -> count == 0;
+                case FLUID_AT_LEAST -> count >= condition.amount();
+                case FLUID_LESS -> count < condition.amount();
             };
             if (!passed) return false;
         }
@@ -141,15 +157,18 @@ public final class DepotProgramRuntime {
     }
 
     private static void execute(ServerPlayer player, DepotSavedData depot, DepotProgram.ProgramAction action) {
-        Item item = BuiltInRegistries.ITEM.get(action.itemId());
-        if (item == null || item == Items.AIR) return;
         switch (action.type()) {
             case SEND_ITEM -> DepotNetwork.routeItemToMachine(player, depot, action.itemId(), action.amount());
+            case SEND_FLUID -> DepotNetwork.routeFluidToMachine(player, depot, action.itemId(), action.amount());
             case CRAFT -> {
+                Item item = BuiltInRegistries.ITEM.get(action.itemId());
+                if (item == null || item == Items.AIR) return;
                 boolean duplicate = depot.getCraftingJobs().stream().anyMatch(job -> job.targetId().equals(action.itemId()));
                 if (!duplicate) DepotCraftingService.craft(player, depot, item, action.amount());
             }
             case PROCESS -> {
+                Item item = BuiltInRegistries.ITEM.get(action.itemId());
+                if (item == null || item == Items.AIR) return;
                 boolean duplicate = depot.getCraftingJobs().stream().anyMatch(job -> job.targetId().equals(action.itemId()));
                 if (!duplicate) {
                     if (action.machineId() != null) depot.setPreferredMachine(action.itemId(), action.machineId());

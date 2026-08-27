@@ -71,13 +71,23 @@ public class ServerHandlers {
         var triggerType = program.trigger().type();
         if (triggerType == net.crystalnexus.automation.DepotProgram.TriggerType.ITEM_ADDED
                 && validItem(program.trigger().itemId()) == null) return false;
+        if (triggerType == net.crystalnexus.automation.DepotProgram.TriggerType.FLUID_ADDED
+                && !validFluid(program.trigger().itemId())) return false;
         if (triggerType == net.crystalnexus.automation.DepotProgram.TriggerType.TIMED_INTERVAL
                 && program.trigger().interval() < 20) return false;
-        return program.conditions().stream().allMatch(condition -> validItem(condition.itemId()) != null)
-                && program.actions().stream().allMatch(action -> validItem(action.itemId()) != null
+        return program.conditions().stream().allMatch(condition -> condition.type().name().startsWith("FLUID_")
+                        ? validFluid(condition.itemId()) : validItem(condition.itemId()) != null)
+                && program.actions().stream().allMatch(action -> action.type() == net.crystalnexus.automation.DepotProgram.ActionType.SEND_FLUID
+                        ? validFluid(action.itemId()) && action.amount() > 0 && action.amount() <= DepotCliCommandRegistry.MAX_QUANTITY
+                        : validItem(action.itemId()) != null
                 && action.amount() > 0 && action.amount() <= DepotCliCommandRegistry.MAX_QUANTITY
                 && (action.type() != net.crystalnexus.automation.DepotProgram.ActionType.PROCESS
                         || validBlock(action.machineId())));
+    }
+
+    private static boolean validFluid(ResourceLocation id) {
+        return id != null && BuiltInRegistries.FLUID.containsKey(id)
+                && BuiltInRegistries.FLUID.get(id) != net.minecraft.world.level.material.Fluids.EMPTY;
     }
 
     private static boolean validBlock(ResourceLocation id) {

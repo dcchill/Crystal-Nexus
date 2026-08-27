@@ -1,14 +1,10 @@
 package net.crystalnexus.automation;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public record DepotEvent(Type type, ItemStack stack, UUID transactionId, @Nullable UUID sourceProgramId) {
-    public enum Type { ITEM_ADDED, ITEM_REMOVED, INVENTORY_CHANGED }
-
-    public DepotEvent {
-        stack = stack.copy();
-    }
+public record DepotEvent(Type type, ResourceLocation resourceId, UUID transactionId, @Nullable UUID sourceProgramId) {
+    public enum Type { ITEM_ADDED, ITEM_REMOVED, FLUID_ADDED, FLUID_REMOVED, INVENTORY_CHANGED }
 }
