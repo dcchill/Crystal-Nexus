@@ -4,18 +4,29 @@ import net.crystalnexus.block.CraftingUpgradeBlock;
 import net.crystalnexus.block.CraftingCoreBlock;
 import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
+import net.crystalnexus.block.entity.DepotCableBlockEntity;
+import net.crystalnexus.block.entity.DepotCableConnectionConfig;
 import net.crystalnexus.data.DepotSavedData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.WeakHashMap;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -23,6 +34,8 @@ import org.jetbrains.annotations.Nullable;
 
 public final class DepotNetwork {
     private static final int MAX_CABLES = 4096;
+    private static final Map<ServerLevel, Integer> TOPOLOGY_VERSIONS = new WeakHashMap<>();
+    private static final Map<ServerLevel, Map<BlockPos, CachedTopology>> TOPOLOGIES = new WeakHashMap<>();
 
     private DepotNetwork() {
     }
@@ -42,6 +55,61 @@ public final class DepotNetwork {
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) return 0;
         return count(level, controller.getBlockPos(),
                 pos -> level.getBlockState(pos).getBlock() instanceof CraftingUpgradeBlock);
+    }
+
+    public record DepotMachineEndpoint(ServerLevel level, BlockPos cablePos, Direction side,
+            int priority, DepotCableConnectionConfig config) {
+        public DepotMachineEndpoint {
+            cablePos = cablePos.immutable();
+        }
+        public BlockPos machinePos() { return cablePos.relative(side); }
+    }
+
+    public record DepotTransferResult(int movedCount) {}
+
+    /** The single Depot -> machine routing operation used by CLI and programs. */
+    public static DepotTransferResult routeItemToMachine(ServerPlayer player, DepotSavedData depot,
+            ResourceLocation itemId, int amount) {
+        Item item = itemId == null ? null : net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId);
+        if (item == null || item == net.minecraft.world.item.Items.AIR || amount <= 0) return new DepotTransferResult(0);
+        int remaining = (int) Math.min(amount, depot.getCount(itemId));
+        int moved = 0;
+        ItemStack filterStack = new ItemStack(item);
+        for (DepotMachineEndpoint endpoint : machineEndpoints(player)) {
+            if (remaining <= 0) break;
+            if (!endpoint.level().hasChunkAt(endpoint.cablePos())
+                    || DepotCableBlock.isImportMode(endpoint.level().getBlockState(endpoint.cablePos()))
+                    || !endpoint.config().accepts(filterStack)) continue;
+            IItemHandler handler = endpoint.level().getCapability(Capabilities.ItemHandler.BLOCK,
+                    endpoint.machinePos(), endpoint.side().getOpposite());
+            if (handler == null) handler = endpoint.level().getCapability(Capabilities.ItemHandler.BLOCK,
+                    endpoint.machinePos(), null);
+            if (handler == null) continue;
+            while (remaining > 0) {
+                int offered = Math.min(remaining, item.getDefaultMaxStackSize());
+                int insertable = offered - ItemHandlerHelper.insertItemStacked(handler,
+                        new ItemStack(item, offered), true).getCount();
+                if (insertable <= 0) break;
+                int extracted = (int) depot.remove(itemId, insertable);
+                if (extracted <= 0) break;
+                ItemStack remainder = ItemHandlerHelper.insertItemStacked(handler,
+                        new ItemStack(item, extracted), false);
+                int inserted = extracted - remainder.getCount();
+                moved += inserted;
+                remaining -= inserted;
+                if (!remainder.isEmpty()) depot.addLocal(itemId, remainder.getCount());
+                if (inserted <= 0 || inserted < insertable) break;
+            }
+        }
+        return new DepotTransferResult(moved);
+    }
+
+    private record CachedTopology(int version, List<MachineEndpoint> machines,
+            List<DepotMachineEndpoint> endpoints) {}
+
+    public static synchronized void invalidate(ServerLevel level) {
+        TOPOLOGY_VERSIONS.merge(level, 1, (oldValue, one) -> oldValue == Integer.MAX_VALUE ? 0 : oldValue + 1);
+        TOPOLOGIES.remove(level);
     }
 
     /** One base process plus one concurrent process for each valid connected core block. */
@@ -145,11 +213,34 @@ public final class DepotNetwork {
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) {
             return List.of();
         }
+        return topology(level, controller.getBlockPos()).machines();
+    }
+
+    public static List<DepotMachineEndpoint> machineEndpoints(ServerPlayer player) {
+        DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
+        if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)) {
+            return List.of();
+        }
+        return topology(level, controller.getBlockPos()).endpoints();
+    }
+
+    public static List<DepotMachineEndpoint> machineEndpoints(ServerLevel level, BlockPos controllerPos) {
+        return topology(level, controllerPos).endpoints();
+    }
+
+    private static synchronized CachedTopology topology(ServerLevel level, BlockPos controllerPos) {
+        int version = TOPOLOGY_VERSIONS.getOrDefault(level, 0);
+        Map<BlockPos, CachedTopology> levelCache = TOPOLOGIES.computeIfAbsent(level, ignored -> new HashMap<>());
+        BlockPos key = controllerPos.immutable();
+        CachedTopology cached = levelCache.get(key);
+        if (cached != null && cached.version() == version) return cached;
+
         ArrayDeque<BlockPos> open = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
         Set<BlockPos> machines = new HashSet<>();
+        List<DepotMachineEndpoint> endpoints = new ArrayList<>();
         for (Direction direction : Direction.values()) {
-            BlockPos cable = controller.getBlockPos().relative(direction);
+            BlockPos cable = controllerPos.relative(direction);
             if (level.hasChunkAt(cable) && level.getBlockState(cable).getBlock() instanceof DepotCableBlock) {
                 open.add(cable);
                 visited.add(cable);
@@ -162,15 +253,38 @@ public final class DepotNetwork {
                 if (!level.hasChunkAt(next)) continue;
                 if (level.getBlockState(next).getBlock() instanceof DepotCableBlock) {
                     if (visited.add(next)) open.addLast(next);
-                } else if (!level.getBlockState(next).is(DepotCableBlock.COMPONENTS) && hasItemHandler(level, next)) {
+                } else if (isMachineConnection(level, cable, direction)) {
                     machines.add(next.immutable());
+                    if (level.getBlockEntity(cable) instanceof DepotCableBlockEntity cableEntity) {
+                        DepotCableConnectionConfig config = cableEntity.connection(direction);
+                        if (config == null) {
+                            cableEntity.refreshConnections();
+                            config = cableEntity.connection(direction);
+                        }
+                        if (config != null) endpoints.add(new DepotMachineEndpoint(level, cable, direction,
+                                config.priority(), config));
+                    }
                 }
             }
         }
         List<MachineEndpoint> result = new ArrayList<>(machines.size());
         machines.stream().sorted(Comparator.comparingLong(BlockPos::asLong))
                 .forEach(pos -> result.add(new MachineEndpoint(level, pos)));
-        return List.copyOf(result);
+        endpoints.sort(Comparator.comparingInt(DepotMachineEndpoint::priority).reversed()
+                .thenComparingLong(endpoint -> endpoint.cablePos().asLong())
+                .thenComparingInt(endpoint -> endpoint.side().ordinal()));
+        CachedTopology rebuilt = new CachedTopology(version, List.copyOf(result), List.copyOf(endpoints));
+        levelCache.put(key, rebuilt);
+        return rebuilt;
+    }
+
+    public static boolean isMachineConnection(ServerLevel level, BlockPos cablePos, Direction side) {
+        BlockPos target = cablePos.relative(side);
+        if (!level.hasChunkAt(target)) return false;
+        BlockState state = level.getBlockState(target);
+        if (state.getBlock() instanceof DepotCableBlock || state.is(DepotCableBlock.COMPONENTS)) return false;
+        return level.getCapability(Capabilities.ItemHandler.BLOCK, target, side.getOpposite()) != null
+                || level.getCapability(Capabilities.ItemHandler.BLOCK, target, null) != null;
     }
 
     public static boolean hasItemHandler(ServerLevel level, BlockPos pos) {
@@ -194,6 +308,10 @@ public final class DepotNetwork {
             Predicate<BlockPos> target) {
         ArrayDeque<BlockPos> open = new ArrayDeque<>();
         Set<BlockPos> visited = new HashSet<>();
+        if (level.hasChunkAt(start) && level.getBlockState(start).getBlock() instanceof DepotCableBlock) {
+            open.add(start.immutable());
+            visited.add(start.immutable());
+        }
         for (Direction direction : Direction.values()) {
             BlockPos cable = start.relative(direction);
             if (level.hasChunkAt(cable) && level.getBlockState(cable).getBlock() instanceof DepotCableBlock) {

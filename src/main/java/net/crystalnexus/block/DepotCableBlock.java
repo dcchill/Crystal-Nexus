@@ -1,6 +1,7 @@
 package net.crystalnexus.block;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.block.entity.DepotCableBlockEntity;
 import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.util.DepotNetwork;
 import net.minecraft.core.BlockPos;
@@ -8,28 +9,36 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 
-public class DepotCableBlock extends Block {
+import org.jetbrains.annotations.Nullable;
+
+public class DepotCableBlock extends Block implements EntityBlock {
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST = BooleanProperty.create("east");
     public static final BooleanProperty SOUTH = BooleanProperty.create("south");
@@ -59,6 +68,25 @@ public class DepotCableBlock extends Block {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(NORTH, EAST, SOUTH, WEST, UP, DOWN, MODE);
+    }
+
+    @Override public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new DepotCableBlockEntity(pos, state);
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+            BlockHitResult hit) {
+        if (!(level.getBlockEntity(pos) instanceof DepotCableBlockEntity cable)) return InteractionResult.PASS;
+        if (!level.isClientSide()) {
+            cable.refreshConnections();
+            if (cable.connections().isEmpty()) return InteractionResult.PASS;
+            cable.setOpeningSide(hit.getDirection());
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.openMenu(cable, buffer -> buffer.writeBlockPos(pos));
+            }
+        }
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
@@ -113,6 +141,7 @@ public class DepotCableBlock extends Block {
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
+        if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
         if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
             serverLevel.scheduleTick(pos, this, 20);
         }
@@ -121,9 +150,17 @@ public class DepotCableBlock extends Block {
     @Override
     public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+        if (level.getBlockEntity(pos) instanceof DepotCableBlockEntity cable) cable.refreshConnections();
+        if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
         if (level instanceof ServerLevel serverLevel && isImportMode(state)) {
             serverLevel.scheduleTick(pos, this, 20);
         }
+    }
+
+    @Override
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
+        if (level instanceof ServerLevel serverLevel && !state.is(newState.getBlock())) DepotNetwork.invalidate(serverLevel);
     }
 
     @Override

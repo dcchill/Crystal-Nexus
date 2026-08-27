@@ -61,6 +61,7 @@ import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
 import net.crystalnexus.world.inventory.EnergyExtractorGUIMenu;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.world.inventory.DepotCliMenu;
+import net.crystalnexus.world.inventory.DepotCableConnectionMenu;
 import net.crystalnexus.world.inventory.CraftingProcessorMenu;
 import net.crystalnexus.world.inventory.CrystalPurifierGUIMenu;
 import net.crystalnexus.world.inventory.CrusherGuiMenu;
@@ -142,6 +143,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityMatrixGUIMenu>> SINGULARITY_MATRIX_GUI = REGISTRY.register("singularity_matrix_gui", () -> IMenuTypeExtension.create(SingularityMatrixGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<DepotMenu>> DEPOT = REGISTRY.register("depot", () -> IMenuTypeExtension.create(DepotMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<DepotCliMenu>> DEPOT_CLI = REGISTRY.register("depot_cli", () -> IMenuTypeExtension.create(DepotCliMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<DepotCableConnectionMenu>> DEPOT_CABLE_CONNECTION = REGISTRY.register("depot_cable_connection", () -> IMenuTypeExtension.create(DepotCableConnectionMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CraftingProcessorMenu>> CRAFTING_PROCESSOR = REGISTRY.register("crafting_processor", () -> IMenuTypeExtension.create(CraftingProcessorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<WasteOutputGuiMenu>> WASTE_OUTPUT_GUI = REGISTRY.register("waste_output_gui", () -> IMenuTypeExtension.create(WasteOutputGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<NodeExtractorGUIMenu>> NODE_EXTRACTOR_GUI = REGISTRY.register("node_extractor_gui", () -> IMenuTypeExtension.create(NodeExtractorGUIMenu::new));

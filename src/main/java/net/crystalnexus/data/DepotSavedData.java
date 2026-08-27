@@ -22,6 +22,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
+import net.crystalnexus.automation.DepotProgram;
+import net.crystalnexus.automation.DepotProgramRuntime;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.integration.DepotStorageBridge;
 
@@ -50,6 +52,7 @@ public class DepotSavedData extends SavedData {
     private boolean machineLoadBalancing;
     private final Map<Integer, CraftingJob> craftingJobs = new LinkedHashMap<>();
     private final Map<Integer, ProcessingTask> processingTasks = new ConcurrentHashMap<>();
+    private final Map<UUID, DepotProgram> programs = new LinkedHashMap<>();
     private int nextCraftingJobId = 1;
 
     // ===== Stored items =====
@@ -207,6 +210,12 @@ public class DepotSavedData extends SavedData {
             data.loadTask(legacy);
         }
 
+        ListTag savedPrograms = tag.getList("programs", Tag.TAG_COMPOUND);
+        for (int i = 0; i < savedPrograms.size(); i++) {
+            DepotProgram program = DepotProgram.load(savedPrograms.getCompound(i));
+            if (program != null) data.programs.put(program.id(), program);
+        }
+
         return data;
     }
 
@@ -250,6 +259,10 @@ public class DepotSavedData extends SavedData {
         ListTag tasks = new ListTag();
         processingTasks.forEach((jobId, task) -> tasks.add(saveTask(jobId, task)));
         tag.put("processingTasks", tasks);
+
+        ListTag savedPrograms = new ListTag();
+        programs.values().forEach(program -> savedPrograms.add(program.save()));
+        tag.put("programs", savedPrograms);
 
         return tag;
     }
@@ -480,6 +493,28 @@ public class DepotSavedData extends SavedData {
 
     public List<CraftingJob> getCraftingJobs() {
         return List.copyOf(craftingJobs.values());
+    }
+
+    public List<DepotProgram> getPrograms() { return List.copyOf(programs.values()); }
+
+    public void putProgram(DepotProgram program) {
+        if (program == null) return;
+        programs.put(program.id(), program);
+        setDirty();
+    }
+
+    public boolean removeProgram(UUID id) {
+        if (id == null || programs.remove(id) == null) return false;
+        setDirty();
+        return true;
+    }
+
+    public boolean toggleProgram(UUID id) {
+        DepotProgram program = id == null ? null : programs.get(id);
+        if (program == null) return false;
+        programs.put(id, program.withEnabled(!program.enabled()));
+        setDirty();
+        return true;
     }
 
     public @Nullable CraftingJob startCraftingJob(ResourceLocation targetId, int amount, long totalWork,
@@ -861,10 +896,18 @@ public class DepotSavedData extends SavedData {
         DepotStorageBridge bridge = activeStorageBridge();
         if (bridge != null) inserted = Math.min(amount, Math.max(0L, bridge.insert(itemId, amount)));
         long remaining = amount - inserted;
-        return saturatedAdd(inserted, depositLocal(itemId, remaining));
+        long accepted = saturatedAdd(inserted, depositLocalRaw(itemId, remaining));
+        DepotProgramRuntime.itemChanged(this, itemId, accepted);
+        return accepted;
     }
 
     public long depositLocal(ResourceLocation itemId, long amount) {
+        long accepted = depositLocalRaw(itemId, amount);
+        DepotProgramRuntime.itemChanged(this, itemId, accepted);
+        return accepted;
+    }
+
+    private long depositLocalRaw(ResourceLocation itemId, long amount) {
         if (amount <= 0 || !accepts(itemId)) return 0;
         long free = getLocalFree();
         long toAdd = Math.min(free, amount);
@@ -918,11 +961,17 @@ public class DepotSavedData extends SavedData {
         if (itemId == null) return;
         DepotStorageBridge bridge = accepts(itemId) ? activeStorageBridge() : null;
         long inserted = bridge == null ? 0L : Math.min(amount, Math.max(0L, bridge.insert(itemId, amount)));
-        addLocal(itemId, amount - inserted);
+        addLocalRaw(itemId, amount - inserted);
+        DepotProgramRuntime.itemChanged(this, itemId, amount);
     }
 
     public void addLocal(ResourceLocation itemId, long amount) {
         if (amount <= 0 || itemId == null) return;
+        addLocalRaw(itemId, amount);
+        DepotProgramRuntime.itemChanged(this, itemId, amount);
+    }
+
+    private void addLocalRaw(ResourceLocation itemId, long amount) {
         counts.put(itemId, counts.getLong(itemId) + amount);
         setDirty();
     }
@@ -934,10 +983,18 @@ public class DepotSavedData extends SavedData {
         DepotStorageBridge bridge = activeStorageBridge();
         long extracted = bridge == null ? 0L : Math.min(amount, Math.max(0L, bridge.extract(itemId, amount)));
         long remaining = amount - extracted;
-        return saturatedAdd(extracted, removeLocal(itemId, remaining));
+        long removed = saturatedAdd(extracted, removeLocalRaw(itemId, remaining));
+        DepotProgramRuntime.itemChanged(this, itemId, -removed);
+        return removed;
     }
 
     public long removeLocal(ResourceLocation itemId, long amount) {
+        long removed = removeLocalRaw(itemId, amount);
+        DepotProgramRuntime.itemChanged(this, itemId, -removed);
+        return removed;
+    }
+
+    private long removeLocalRaw(ResourceLocation itemId, long amount) {
         if (amount <= 0 || itemId == null) return 0;
 
         long have = counts.getLong(itemId);

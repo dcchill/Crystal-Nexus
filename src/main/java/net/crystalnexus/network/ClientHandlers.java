@@ -9,10 +9,21 @@ import net.crystalnexus.client.preview.ZeroPointPreviewState;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
+import net.crystalnexus.network.payload.S2C_DepotProgramsResponse;
 import net.crystalnexus.network.payload.S2C_MaterialProfiles;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 
 public class ClientHandlers {
+
+    public static void onDepotProgramsResponse(final S2C_DepotProgramsResponse msg, final IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            try {
+                Class<?> hooks = Class.forName("net.crystalnexus.client.gui.DepotCliScreenHooks");
+                hooks.getMethod("handle", S2C_DepotProgramsResponse.class).invoke(null, msg);
+            } catch (Throwable ignored) {
+            }
+        });
+    }
 
     public static void onMaterialProfiles(final S2C_MaterialProfiles msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {

@@ -32,6 +32,7 @@ public final class DepotCliCommandRegistry {
         register(command("find", List.of("search"), "find <text|filters>", "Search stored items", DepotCliCommand.Permission.VIEW, true, this::find));
         register(command("list", List.of("ls"), "list [--sort name|amount|amount-desc] [--page N]", "List stored item types", DepotCliCommand.Permission.VIEW, true, this::list));
         register(command("take", List.of("retrieve", "withdraw"), "take <item> <amount>", "Move items to your inventory", DepotCliCommand.Permission.WITHDRAW, true, this::take));
+        register(command("send", List.of(), "send <item> <amount>", "Send stored items through configured cable endpoints", DepotCliCommand.Permission.CRAFT, true, this::send));
         register(command("deposit", List.of("put"), "deposit <item> <amount>|held|inventory", "Move items into the depot", DepotCliCommand.Permission.DEPOSIT, true, this::deposit));
         register(command("craft", List.of(), "craft <item> <amount>", "Craft using standard crafting recipes", DepotCliCommand.Permission.CRAFT, true, this::craft));
         register(command("smelt", List.of(), "smelt <item> <amount>", "Smelt stored items into depot storage", DepotCliCommand.Permission.CRAFT, true, this::smelt));
@@ -92,7 +93,7 @@ public final class DepotCliCommandRegistry {
         if (command == null || !context.connected()) return List.of();
         String current = trailingSpace ? "" : tokens.getLast().toLowerCase(Locale.ROOT);
         String base = trailingSpace ? raw : raw.substring(0, Math.max(0, raw.lastIndexOf(' ') + 1));
-        if (command.name().equals("take") || command.name().equals("find")) {
+        if (command.name().equals("take") || command.name().equals("send") || command.name().equals("find")) {
             List<String> filters = command.name().equals("find")
                     ? List.of("mod:", "tag:", "amount>", "amount<") : List.of();
             List<String> suggestions = new ArrayList<>(filters.stream().filter(value -> value.startsWith(current)).map(base::concat).toList());
@@ -319,6 +320,21 @@ public final class DepotCliCommandRegistry {
         if (retrieved == parsed.amount()) return DepotCliCommandResult.ok("Retrieved " + retrieved + " " + candidate.name() + ".");
         String reason = available < parsed.amount() ? "Insufficient stored items" : "Player inventory is full";
         return new DepotCliCommandResult(List.of("[WARN] Requested: " + parsed.amount(), "Retrieved: " + retrieved, "Reason: " + reason));
+    }
+
+    private DepotCliCommandResult send(DepotCliCommandContext context, List<String> args) {
+        ParsedItemAmount parsed = itemAmount(args);
+        if (parsed == null) return itemSyntax("send <item> <amount>");
+        DepotItemResolver.Result resolved = DepotItemResolver.stored(context.depot(), parsed.query());
+        if (!resolved.found()) return DepotItemResolver.unresolved(parsed.query(), resolved);
+        DepotSendItemService.Result result = DepotSendItemService.send(context.player(), context.depot(),
+                resolved.match().id(), parsed.amount());
+        if (result.status() == ProgramActionResult.WAITING) {
+            return DepotCliCommandResult.warn("No configured cable endpoint currently accepts "
+                    + resolved.match().name() + ". Items remain in Depot storage.");
+        }
+        return DepotCliCommandResult.ok("Sent " + result.sent() + " " + resolved.match().name()
+                + (result.sent() < parsed.amount() ? "; remaining items stayed in Depot storage." : "."));
     }
 
     private DepotCliCommandResult deposit(DepotCliCommandContext context, List<String> args) {

@@ -89,6 +89,7 @@ import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
 import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.block.entity.DepotCliBlockEntity;
+import net.crystalnexus.block.entity.DepotCableBlockEntity;
 import net.crystalnexus.block.entity.CraftingUpgradeBlockEntity;
 import net.crystalnexus.block.entity.CraftingCoreBlockEntity;
 import net.crystalnexus.block.entity.CrystalSmelterBlockEntity;
@@ -208,6 +209,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CONTROLLER = register("depot_controller", CrystalnexusModBlocks.DEPOT_CONTROLLER, DepotControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CLI = register("depot_cli", CrystalnexusModBlocks.DEPOT_CLI, DepotCliBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CABLE = register("depot_cable", CrystalnexusModBlocks.DEPOT_CABLE, DepotCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRAFTING_UPGRADE = register("crafting_upgrade", CrystalnexusModBlocks.CRAFTING_UPGRADE, CraftingUpgradeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRAFTING_CORE = register("crafting_core", CrystalnexusModBlocks.CRAFTING_CORE, CraftingCoreBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ENERGY_CABLE = register("energy_cable", CrystalnexusModBlocks.ENERGY_CABLE, EnergyCableBlockEntity::new);

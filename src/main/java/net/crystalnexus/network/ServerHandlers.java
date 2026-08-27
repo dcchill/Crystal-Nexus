@@ -13,6 +13,8 @@ import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
+import net.crystalnexus.network.payload.C2S_DepotProgramRequest;
+import net.crystalnexus.network.payload.S2C_DepotProgramsResponse;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
 import net.crystalnexus.cli.DepotCraftingService;
 import net.crystalnexus.util.DepotNetwork;
@@ -29,6 +31,39 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.List;
 
 public class ServerHandlers {
+
+    public static void onDepotProgramRequest(C2S_DepotProgramRequest msg, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
+            if (!(ctx.player() instanceof ServerPlayer player)
+                    || !(player.containerMenu instanceof DepotCliMenu menu)
+                    || menu.containerId != msg.menuId() || !menu.stillValid(player) || !menu.hasPermission(player)) return;
+            DepotSavedData depot = DepotSavedData.get(player);
+            switch (msg.action()) {
+                case LIST -> {}
+                case UPSERT -> {
+                    if (validProgram(msg.program()) && (depot.getPrograms().size() < 128
+                            || depot.getPrograms().stream().anyMatch(program -> program.id().equals(msg.program().id()))))
+                        depot.putProgram(msg.program());
+                }
+                case DELETE -> depot.removeProgram(msg.programId());
+                case TOGGLE -> depot.toggleProgram(msg.programId());
+            }
+            PacketDistributor.sendToPlayer(player, new S2C_DepotProgramsResponse(menu.containerId, depot.getPrograms()));
+        });
+    }
+
+    private static boolean validProgram(net.crystalnexus.automation.DepotProgram program) {
+        if (program == null || program.name().length() > 64 || program.actions().isEmpty()
+                || program.actions().size() > 8 || program.conditions().size() > 8) return false;
+        var triggerType = program.trigger().type();
+        if (triggerType == net.crystalnexus.automation.DepotProgram.TriggerType.ITEM_ADDED
+                && validItem(program.trigger().itemId()) == null) return false;
+        if (triggerType == net.crystalnexus.automation.DepotProgram.TriggerType.TIMED_INTERVAL
+                && program.trigger().interval() < 20) return false;
+        return program.conditions().stream().allMatch(condition -> validItem(condition.itemId()) != null)
+                && program.actions().stream().allMatch(action -> validItem(action.itemId()) != null
+                && action.amount() > 0 && action.amount() <= DepotCliCommandRegistry.MAX_QUANTITY);
+    }
 
     public static void onDepotCraftingRequest(C2S_DepotCraftingRequest msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {

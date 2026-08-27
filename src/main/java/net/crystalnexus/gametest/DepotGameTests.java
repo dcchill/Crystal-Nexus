@@ -9,12 +9,18 @@ import net.crystalnexus.block.DepotCableBlock;
 import net.crystalnexus.block.entity.CraftingUpgradeBlockEntity;
 import net.crystalnexus.block.entity.DepotCliBlockEntity;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
+import net.crystalnexus.block.entity.DepotCableBlockEntity;
+import net.crystalnexus.block.entity.DepotCableConnectionConfig;
 import net.crystalnexus.cli.DepotCliCommandContext;
 import net.crystalnexus.cli.DepotCliCommandRegistry;
 import net.crystalnexus.cli.DepotCraftingService;
 import net.crystalnexus.cli.DepotProcessingService;
 import net.crystalnexus.cli.DepotItemResolver;
 import net.crystalnexus.cli.DepotJeiRecipeCache;
+import net.crystalnexus.cli.DepotSendItemService;
+import net.crystalnexus.cli.ProgramActionResult;
+import net.crystalnexus.automation.DepotProgram;
+import net.crystalnexus.automation.DepotProgramRuntime;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.PurificationRecipe;
@@ -38,16 +44,170 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @GameTestHolder("crystalnexus")
 @PrefixGameTestTemplate(false)
 public final class DepotGameTests {
     private DepotGameTests() {
+    }
+
+    @GameTest(template = "zero_point")
+    public static void cableMachineRouting(GameTestHelper helper) {
+        ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
+                new GameProfile(java.util.UUID.randomUUID(), "depot-cable-test"), ClientInformation.createDefault());
+        BlockPos controllerPos = new BlockPos(1, 2, 1);
+        BlockPos cablePos = new BlockPos(2, 2, 1);
+        BlockPos furnacePos = new BlockPos(2, 1, 1);
+        BlockPos overflowPos = new BlockPos(2, 3, 1);
+        helper.setBlock(controllerPos, CrystalnexusModBlocks.DEPOT_CONTROLLER.get());
+        helper.setBlock(cablePos, CrystalnexusModBlocks.DEPOT_CABLE.get());
+        helper.setBlock(furnacePos, Blocks.FURNACE);
+        helper.setBlock(overflowPos, Blocks.CHEST);
+
+        DepotControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
+        controller.setOwner(player.getUUID());
+        controller.getEnergyStorage().receiveEnergy(1_000, false);
+        DepotSavedData depot = DepotSavedData.get(helper.getLevel(), player.getUUID());
+        depot.setController(helper.getLevel(), helper.absolutePos(controllerPos));
+
+        DepotCableBlockEntity cable = helper.getBlockEntity(cablePos);
+        cable.refreshConnections();
+        DepotCableConnectionConfig furnaceConfig = cable.connection(net.minecraft.core.Direction.DOWN);
+        DepotCableConnectionConfig overflowConfig = cable.connection(net.minecraft.core.Direction.UP);
+        helper.assertTrue(furnaceConfig != null && overflowConfig != null,
+                "Each cable face touching an inventory must own a separate configuration");
+        furnaceConfig.setFilterMode(DepotCableConnectionConfig.FilterMode.ALLOW_LISTED);
+        furnaceConfig.setPriority(10);
+        furnaceConfig.setFilter(0, new ItemStack(Items.RAW_IRON));
+        overflowConfig.setFilterMode(DepotCableConnectionConfig.FilterMode.ALLOW_LISTED);
+        overflowConfig.setPriority(-10);
+        overflowConfig.setFilter(0, new ItemStack(Items.RAW_IRON));
+        cable.update(net.minecraft.core.Direction.DOWN, furnaceConfig.priority(), furnaceConfig.filterMode(), furnaceConfig.itemFilters());
+        cable.update(net.minecraft.core.Direction.UP, overflowConfig.priority(), overflowConfig.filterMode(), overflowConfig.itemFilters());
+
+        CompoundTag cableTag = cable.saveWithFullMetadata(helper.getLevel().registryAccess());
+        DepotCableBlockEntity restored = new DepotCableBlockEntity(helper.absolutePos(cablePos), helper.getBlockState(cablePos));
+        restored.loadWithComponents(cableTag, helper.getLevel().registryAccess());
+        helper.assertTrue(restored.connection(net.minecraft.core.Direction.DOWN).priority() == 10
+                        && restored.connection(net.minecraft.core.Direction.DOWN).accepts(new ItemStack(Items.RAW_IRON))
+                        && !restored.connection(net.minecraft.core.Direction.DOWN).accepts(new ItemStack(Items.COBBLESTONE)),
+                "Cable face priority and exact-item filters must survive block-entity save/load");
+
+        ResourceLocation rawIron = ResourceLocation.parse("minecraft:raw_iron");
+        ResourceLocation cobblestone = ResourceLocation.parse("minecraft:cobblestone");
+        depot.deposit(cobblestone, 1);
+        DepotSendItemService.Result rejected = DepotSendItemService.send(player, depot, cobblestone, 1);
+        helper.assertTrue(rejected.status() == ProgramActionResult.WAITING && depot.getCount(cobblestone) == 1,
+                "A rejected Send Item action must wait without extracting or reinserting the item");
+        depot.remove(cobblestone, 1);
+
+        FurnaceBlockEntity furnace = helper.getBlockEntity(furnacePos);
+        ChestBlockEntity overflow = helper.getBlockEntity(overflowPos);
+        furnace.setItem(0, new ItemStack(Items.RAW_IRON, 63));
+        depot.deposit(rawIron, 8);
+        DepotSendItemService.Result routed = DepotSendItemService.send(player, depot, rawIron, 8);
+        helper.assertTrue(routed.sent() == 8 && furnace.getItem(0).getCount() == 64
+                        && overflow.getItem(0).is(Items.RAW_IRON) && overflow.getItem(0).getCount() == 7
+                        && depot.getCount(rawIron) == 0,
+                "Send Item routing mismatch: sent=" + routed.sent()
+                        + ", furnace=" + furnace.getItem(0).getCount()
+                        + ", overflow=" + overflow.getItem(0).getCount()
+                        + ", depot=" + depot.getCount(rawIron));
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void depotProgramming(GameTestHelper helper) {
+        ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
+                new GameProfile(UUID.randomUUID(), "depot-program-test"), ClientInformation.createDefault());
+        BlockPos controllerPos = new BlockPos(3, 2, 3);
+        BlockPos processorPos = new BlockPos(3, 2, 2);
+        BlockPos importCablePos = new BlockPos(4, 2, 3);
+        BlockPos sourcePos = new BlockPos(4, 1, 3);
+        BlockPos outputCablePos = new BlockPos(2, 2, 3);
+        BlockPos destinationPos = new BlockPos(2, 1, 3);
+        helper.setBlock(controllerPos, CrystalnexusModBlocks.DEPOT_CONTROLLER.get());
+        helper.setBlock(processorPos, CrystalnexusModBlocks.CRAFTING_UPGRADE.get());
+        helper.setBlock(importCablePos, CrystalnexusModBlocks.DEPOT_CABLE.get().defaultBlockState()
+                .setValue(DepotCableBlock.MODE, net.crystalnexus.block.DepotCableMode.IMPORT));
+        helper.setBlock(sourcePos, Blocks.CHEST);
+        helper.setBlock(outputCablePos, CrystalnexusModBlocks.DEPOT_CABLE.get());
+        helper.setBlock(destinationPos, Blocks.CHEST);
+
+        DepotControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
+        controller.setOwner(player.getUUID());
+        controller.getEnergyStorage().receiveEnergy(1_000, false);
+        DepotSavedData depot = DepotSavedData.get(helper.getLevel(), player.getUUID());
+        depot.setController(helper.getLevel(), helper.absolutePos(controllerPos));
+        ResourceLocation rawIron = ResourceLocation.parse("minecraft:raw_iron");
+
+        DepotCableBlockEntity outputCable = helper.getBlockEntity(outputCablePos);
+        outputCable.refreshConnections();
+        DepotCableConnectionConfig output = outputCable.connection(net.minecraft.core.Direction.DOWN);
+        output.setFilterMode(DepotCableConnectionConfig.FilterMode.ALLOW_LISTED);
+        output.setFilter(0, new ItemStack(Items.RAW_IRON));
+        outputCable.update(net.minecraft.core.Direction.DOWN, 10, output.filterMode(), output.itemFilters());
+
+        DepotProgram importProgram = new DepotProgram(UUID.randomUUID(), "Ore Processing", true,
+                new DepotProgram.ProgramTrigger(DepotProgram.TriggerType.ITEM_ADDED, rawIron),
+                List.of(new DepotProgram.ProgramCondition(DepotProgram.ConditionType.COUNT_AT_LEAST, rawIron, 1)),
+                List.of(new DepotProgram.ProgramAction(DepotProgram.ActionType.SEND_ITEM, rawIron, 64)));
+        depot.putProgram(importProgram);
+        DepotSavedData restored = DepotSavedData.load(depot.save(new CompoundTag(), helper.getLevel().registryAccess()),
+                helper.getLevel().registryAccess());
+        helper.assertTrue(restored.getPrograms().size() == 1
+                        && restored.getPrograms().getFirst().id().equals(importProgram.id())
+                        && restored.getPrograms().getFirst().conditions().size() == 1,
+                "Programs and their reusable WHEN/IF/DO model must survive world persistence");
+
+        ChestBlockEntity source = helper.getBlockEntity(sourcePos);
+        ChestBlockEntity destination = helper.getBlockEntity(destinationPos);
+        source.setItem(0, new ItemStack(Items.RAW_IRON, 8));
+        DepotCableBlock importCable = (DepotCableBlock) helper.getBlockState(importCablePos).getBlock();
+        importCable.tick(helper.getBlockState(importCablePos), helper.getLevel(), helper.absolutePos(importCablePos),
+                net.minecraft.util.RandomSource.create());
+        int importActions = DepotProgramRuntime.process(player, depot);
+        helper.assertTrue(importActions == 1 && source.getItem(0).isEmpty()
+                        && destination.getItem(0).is(Items.RAW_IRON) && destination.getItem(0).getCount() == 8
+                        && depot.getCount(rawIron) == 0,
+                "IMPORT program mismatch: actions=" + importActions
+                        + ", source=" + source.getItem(0).getCount()
+                        + ", destination=" + destination.getItem(0).getCount()
+                        + ", depot=" + depot.getCount(rawIron)
+                        + ", endpoints=" + net.crystalnexus.util.DepotNetwork.machineEndpoints(player).size());
+
+        depot.removeProgram(importProgram.id());
+        DepotProgram loopProgram = new DepotProgram(UUID.randomUUID(), "Bounded Loop", true,
+                new DepotProgram.ProgramTrigger(DepotProgram.TriggerType.INVENTORY_CHANGED, null), List.of(),
+                List.of(new DepotProgram.ProgramAction(DepotProgram.ActionType.SEND_ITEM, rawIron, 1)));
+        depot.putProgram(loopProgram);
+        depot.deposit(rawIron, 5);
+        int loopActions = DepotProgramRuntime.process(player, depot);
+        helper.assertTrue(loopActions == 1 && depot.getCount(rawIron) == 4
+                        && destination.getItem(0).getCount() == 9,
+                "A program must execute at most once in its immediate mutation transaction");
+
+        depot.removeProgram(loopProgram.id());
+        depot.remove(rawIron, Long.MAX_VALUE);
+        ResourceLocation nuggets = ResourceLocation.parse("minecraft:iron_nugget");
+        ResourceLocation ingot = ResourceLocation.parse("minecraft:iron_ingot");
+        DepotProgram craftProgram = new DepotProgram(UUID.randomUUID(), "Ingot Stock", true,
+                new DepotProgram.ProgramTrigger(DepotProgram.TriggerType.ITEM_ADDED, nuggets), List.of(),
+                List.of(new DepotProgram.ProgramAction(DepotProgram.ActionType.CRAFT, ingot, 1)));
+        depot.putProgram(craftProgram);
+        depot.deposit(nuggets, 9);
+        int craftActions = DepotProgramRuntime.process(player, depot);
+        int repeatedActions = DepotProgramRuntime.process(player, depot);
+        helper.assertTrue(craftActions == 1 && repeatedActions == 0 && depot.getCraftingJobs().size() == 1,
+                "Craft programs must queue through existing crafting once, without polling or duplicate jobs");
+        helper.succeed();
     }
 
     @GameTest(template = "zero_point")
@@ -341,8 +501,8 @@ public final class DepotGameTests {
         playerDepot.remove(ResourceLocation.parse("minecraft:cobblestone"), Long.MAX_VALUE);
         playerDepot.remove(ResourceLocation.parse("minecraft:redstone"), Long.MAX_VALUE);
 
-        ResourceLocation cobblestone = ResourceLocation.parse("minecraft:cobblestone");
         ResourceLocation redstone = ResourceLocation.parse("minecraft:redstone");
+        ResourceLocation cobblestone = ResourceLocation.parse("minecraft:cobblestone");
         ResourceLocation ironBlock = ResourceLocation.parse("minecraft:iron_block");
         ResourceLocation piston = ResourceLocation.parse("minecraft:piston");
         playerDepot.deposit(cobblestone, 4);

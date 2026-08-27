@@ -1,5 +1,30 @@
 # Depot CLI
 
+## Send items to cable-connected machines
+
+`send <item> <amount>` executes the V1 `Send Item` action. The action names only
+the item and amount; it never names a machine. Machine-connected Depot Cable
+faces are considered in descending priority, and each face's allow/block filter
+decides whether it is eligible. Items that cannot be inserted remain in Depot
+storage.
+
+Right-click a Depot Cable next to an item-handler machine to configure each
+connected face's exact-item filters, allow/block mode, and priority.
+
+## Programs
+
+The Depot CLI's **Programs** tab stores event-driven `WHEN -> IF -> DO`
+automation on the Depot network. V1 triggers are Item Added and Inventory
+Changed; conditions cover item count, existence, and absence; actions use the
+existing Craft service or the central cable Send Item route. Programs never
+name machines. Disable, edit, or delete programs from the list, and use the
+Crafting search page as the visual item palette when editing.
+
+Immediate mutation chains carry transaction and source-program IDs. A program
+runs at most once per transaction, transactions stop after 64 actions, and a
+Depot executes at most 100 automation actions per server tick. Machine output
+imported later starts a new legitimate transaction.
+
 The **Crafting** tab is the primary interface. Search the output catalog, select an amount, and inspect the expandable crafting tree before pressing Start. Blue nodes are already stored, green nodes use crafting-table recipes, yellow nodes use a selected connected machine, and red nodes are missing or need a route selection. Select a tree node to persist a recipe or compatible machine preference. Crafting-table routes remain automatic; machine routes are only used after you select them. The active-job bar shows live progress and can safely cancel the job, returning its current materials.
 
 The **Terminal** tab retains every command-line feature, including custom processing-pattern administration, storage commands, history, autocomplete, and JEI transfer.

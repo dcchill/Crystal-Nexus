@@ -5,9 +5,11 @@ import net.crystalnexus.network.payload.C2S_Withdraw;
 import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;
+import net.crystalnexus.network.payload.C2S_DepotProgramRequest;
 import net.crystalnexus.network.payload.S2C_SendPage;
 import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
+import net.crystalnexus.network.payload.S2C_DepotProgramsResponse;
 import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
 import net.crystalnexus.network.payload.S2C_OreScanResult;
 import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
@@ -31,10 +33,12 @@ public class ModNetworking {
 		r.playToServer(C2S_DepotCliRequest.TYPE, C2S_DepotCliRequest.STREAM_CODEC, ServerHandlers::onDepotCliRequest);
 		r.playToServer(C2S_DepotJeiRecipes.TYPE, C2S_DepotJeiRecipes.STREAM_CODEC, ServerHandlers::onDepotJeiRecipes);
 		r.playToServer(C2S_DepotCraftingRequest.TYPE, C2S_DepotCraftingRequest.STREAM_CODEC, ServerHandlers::onDepotCraftingRequest);
+		r.playToServer(C2S_DepotProgramRequest.TYPE, C2S_DepotProgramRequest.STREAM_CODEC, ServerHandlers::onDepotProgramRequest);
 
 		r.playToClient(S2C_SendPage.TYPE, S2C_SendPage.STREAM_CODEC, ClientHandlers::onSendPage);
 		r.playToClient(S2C_DepotCliResponse.TYPE, S2C_DepotCliResponse.STREAM_CODEC, ClientHandlers::onDepotCliResponse);
 		r.playToClient(S2C_DepotCraftingResponse.TYPE, S2C_DepotCraftingResponse.STREAM_CODEC, ClientHandlers::onDepotCraftingResponse);
+		r.playToClient(S2C_DepotProgramsResponse.TYPE, S2C_DepotProgramsResponse.STREAM_CODEC, ClientHandlers::onDepotProgramsResponse);
 
 		// Ore scanner results
 		r.playToClient(S2C_OreScanResult.TYPE, S2C_OreScanResult.STREAM_CODEC, ClientHandlers::onOreScanResult);
