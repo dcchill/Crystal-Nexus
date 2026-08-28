@@ -16,6 +16,7 @@ import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.ArgonBlock;
 import net.crystalnexus.block.OxygenBlock;
 import net.crystalnexus.block.NitrogenBlock;
+import net.crystalnexus.block.PlasmaBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.block.YellowHeavyIronBlockBlock;
@@ -241,7 +242,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CRYSTAL_GUIDE = REGISTRY.register("crystal_guide", CrystalGuideBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK = REGISTRY.register("raw_crystal_block", RawCrystalBlockBlock::new);
 	public static final DeferredBlock<Block> ITEM_COLLECTOR = REGISTRY.register("item_collector", ItemCollectorBlock::new);
-	public static final DeferredBlock<Block> EXTRACTINATOR = REGISTRY.register("extractinator", ExtractinatorBlock::new);
+	public static final DeferredBlock<Block> EXTRACTINATOR = REGISTRY.register("extractinator", () -> new ExtractinatorBlock());
+	public static final DeferredBlock<Block> TITANIUM_EXTRACTINATOR = REGISTRY.register("titanium_extractinator", () -> new ExtractinatorBlock(MachineTier.INVERTIUM_TITANIUM));
 	public static final DeferredBlock<Block> CHLOROPHYTE_BLOCK = REGISTRY.register("chlorophyte_block", ChlorophyteBlockBlock::new);
 	public static final DeferredBlock<Block> CRYSTAL_MACHINE_FRAME = REGISTRY.register("crystal_machine_frame", CrystalMachineFrameBlock::new);
 	public static final DeferredBlock<Block> MACHINE_FRAME = REGISTRY.register("machine_frame", MachineFrameBlock::new);
@@ -363,6 +365,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> STEAM_COLLECTOR = REGISTRY.register("steam_collector", SteamCollectorBlock::new);
 	public static final DeferredBlock<Block> STEAM_CHAMBER = REGISTRY.register("steam_chamber", SteamChamberBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT = REGISTRY.register("conveyer_belt", ConveyerBeltBlock::new);
+	public static final DeferredBlock<Block> TITANIUM_CONVEYER_BELT = REGISTRY.register("titanium_conveyer_belt", ConveyerBeltBlock::new);
+	public static final DeferredBlock<Block> METEORITE_CONVEYER_BELT = REGISTRY.register("meteorite_conveyer_belt", ConveyerBeltBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT_INPUT = REGISTRY.register("conveyer_belt_input", ConveyerBeltInputBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT_OUTPUT = REGISTRY.register("conveyer_belt_output", ConveyerBeltOutputBlock::new);
 	public static final DeferredBlock<Block> ITEM_ELEVATOR = REGISTRY.register("item_elevator", ItemElevatorBlock::new);
@@ -402,6 +406,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_CONTROLLER = REGISTRY.register("particle_accelerator_controller", ParticleAcceleratorControllerBlock::new);
 	public static final DeferredBlock<Block> ELECTROMAGNET = REGISTRY.register("electromagnet", ElectromagnetBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_CRYSTAL_BLOCK = REGISTRY.register("invertium_crystal_block", InvertiumCrystalBlockBlock::new);
+	public static final DeferredBlock<Block> PLASMA_BLOCK = REGISTRY.register("plasma_block", PlasmaBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_ORE = REGISTRY.register("invertium_ore", InvertiumOreBlock::new);
 	public static final DeferredBlock<Block> QUARRY = REGISTRY.register("quarry", QuarryBlock::new);
 	public static final DeferredBlock<Block> RAD_PLACEHOLDER = REGISTRY.register("rad_placeholder", RadPlaceholderBlock::new);
@@ -464,5 +469,9 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> MULTIBLOCK_FLUID_OUTPUT = REGISTRY.register("multiblock_fluid_output", MultiblockFluidOutputBlock::new);
 	public static final DeferredBlock<Block> TUNGSTEN_BLOCK = REGISTRY.register("tungsten_block",
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<Block> METEORITE_ALLOY_BLOCK = REGISTRY.register("meteorite_alloy_block",
+			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()
+					.lightLevel(state -> 4)));
+	public static final DeferredBlock<Block> TUNGSTEN_MACHINE_FRAME = REGISTRY.register("tungsten_machine_frame", MachineFrameBlock::new);
 	// End of user code block custom blocks
 }

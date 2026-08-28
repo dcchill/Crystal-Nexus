@@ -83,7 +83,10 @@ public final class PartsAssemblerScreen extends AbstractContainerScreen<PartsAss
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         if (dropdownOpen) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0.0F, 0.0F, 300.0F);
             for (int mode = 0; mode < 3; mode++) drawModeOption(graphics, SELECTOR_X, SELECTOR_Y + 19 + mode * 18, mode, false);
+            graphics.pose().popPose();
         }
         renderTooltip(graphics, mouseX, mouseY);
         if (inside(mouseX - leftPos, mouseY - topPos, SELECTOR_X, SELECTOR_Y, 38, 18)) {

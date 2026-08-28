@@ -1,0 +1,34 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"particle": "crystalnexus:block/electrical_cable",
+		"texture": "crystalnexus:block/electrical_cable",
+		"1": "crystalnexus:block/thicc"
+	},
+	"elements": [
+		{
+			"name": "down",
+			"from": [4, 0, 4],
+			"to": [12, 5, 12],
+			"faces": {
+				"north": {"uv": [13, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#1"},
+				"east": {"uv": [13, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#1"},
+				"south": {"uv": [13, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#1"},
+				"west": {"uv": [13, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#1"},
+				"down": {"uv": [9, 0, 12, 3], "texture": "#1"}
+			}
+		},
+		{
+			"name": "down_cable",
+			"from": [5, 0, 5],
+			"to": [11, 5, 11],
+			"faces": {
+				"north": {"uv": [12, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#texture"},
+				"east": {"uv": [12, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#texture"},
+				"south": {"uv": [12, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#texture"},
+				"west": {"uv": [12, 6.5, 14.5, 9.5], "rotation": 90, "texture": "#texture"},
+				"down": {"uv": [9, 0, 12, 3], "texture": "#texture"}
+			}
+		}
+	]
+}

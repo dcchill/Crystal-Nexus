@@ -42,10 +42,11 @@ import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 
 public class ConveyerBeltOutputBlock extends Block implements EntityBlock {
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	public static final net.minecraft.world.level.block.state.properties.IntegerProperty TIER = ConveyerBeltInputBlock.TIER;
 
 	public ConveyerBeltOutputBlock() {
 		super(BlockBehaviour.Properties.of().sound(SoundType.GRAVEL).strength(0.9f, 8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(TIER, ConveyerBeltTier.BASIC.index()));
 	}
 
 	@Override
@@ -121,7 +122,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING);
+		builder.add(FACING, TIER);
 	}
 
 @Override

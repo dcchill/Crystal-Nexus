@@ -6,6 +6,6 @@
   "results": [
     { "id": "minecraft:iron_nugget", "count": 1 },
     { "id": "minecraft:gold_nugget", "count": 1 },
-    { "id": "minecraft:echo_shard", "count": 1 }
+    { "id": "crystalnexus:wolframite", "count": 1 }
   ]
 }

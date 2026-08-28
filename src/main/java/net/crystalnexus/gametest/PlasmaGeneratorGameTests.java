@@ -25,7 +25,7 @@ import java.util.List;
 public final class PlasmaGeneratorGameTests {
     private PlasmaGeneratorGameTests() {}
 
-    @GameTest(template = "plasma_generator")
+    @GameTest(template = "plasma_gen_new")
     public static void consumesArgonAndGeneratesThroughReplaceablePorts(GameTestHelper helper) {
         BlockPos controllerPos = find(helper, CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get()).getFirst();
         List<BlockPos> casing = find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get());
@@ -61,6 +61,9 @@ public final class PlasmaGeneratorGameTests {
 
         helper.assertTrue(controller.isOperating() && controller.getStatus().equals("Generating"),
             "A formed generator with Argon and output capacity must report Generating");
+        helper.assertTrue(find(helper, CrystalnexusModBlocks.PLASMA_BLOCK.get()).size()
+                == PlasmaGeneratorControllerBlockEntity.PLASMA_SIZE,
+            "An operating generator must place its configured physical plasma trail in the tube");
         helper.assertTrue(controller.getArgonTank().getFluidAmount() == PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY
                 - PlasmaGeneratorControllerBlockEntity.ARGON_PER_TICK,
             "The internal Argon buffer must cap at 15 mB and consume one mB per generating tick");
@@ -76,13 +79,15 @@ public final class PlasmaGeneratorGameTests {
         helper.assertTrue(controller.validateStructureNow(),
             "Removing the optional energy output must leave the fluid-fed structure formed");
         controller.serverTick();
+        helper.assertTrue(find(helper, CrystalnexusModBlocks.PLASMA_BLOCK.get()).isEmpty(),
+            "The generator must remove its physical plasma block when it stops");
         helper.assertTrue(heatingCores.stream()
                 .noneMatch(pos -> helper.getBlockState(pos).getValue(HeatingCoreBlock.LIT)),
             "Heating cores must turn off when the Plasma Generator stops working");
         helper.succeed();
     }
 
-    @GameTest(template = "plasma_generator")
+    @GameTest(template = "plasma_gen_new")
     public static void runningStructureBreakCausesPlasmaArcRupture(GameTestHelper helper) {
         BlockPos controllerPos = find(helper, CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get()).getFirst();
         List<BlockPos> casing = find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get());
@@ -105,6 +110,8 @@ public final class PlasmaGeneratorGameTests {
         helper.assertTrue(!controller.validateStructureNow(), "A breached Plasma Generator must rupture");
         helper.assertTrue(controller.getArgonTank().isEmpty(), "The plasma arc rupture must vent all buffered Argon");
         helper.assertTrue(controller.getStatus().equals("Plasma Arc Failure"), "The controller must report its arc failure");
+        helper.assertTrue(find(helper, CrystalnexusModBlocks.PLASMA_BLOCK.get()).isEmpty(),
+            "A plasma arc rupture must remove the physical plasma block");
         helper.assertTrue(find(helper, CrystalnexusModBlocks.HEATING_CORE.get()).isEmpty(),
             "The plasma arc rupture must destroy every remaining heating core");
         helper.assertTrue(find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get()).size() == carbideBeforeBreach,

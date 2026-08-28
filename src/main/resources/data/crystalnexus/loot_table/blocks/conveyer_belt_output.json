@@ -11,8 +11,28 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "crystalnexus:conveyer_belt"
+          "type": "minecraft:alternatives",
+          "children": [
+            {
+              "type": "minecraft:item",
+              "name": "crystalnexus:meteorite_conveyer_belt",
+              "conditions": [{
+                "condition": "minecraft:block_state_property",
+                "block": "crystalnexus:conveyer_belt_output",
+                "properties": { "tier": "2" }
+              }]
+            },
+            {
+              "type": "minecraft:item",
+              "name": "crystalnexus:titanium_conveyer_belt",
+              "conditions": [{
+                "condition": "minecraft:block_state_property",
+                "block": "crystalnexus:conveyer_belt_output",
+                "properties": { "tier": "1" }
+              }]
+            },
+            { "type": "minecraft:item", "name": "crystalnexus:conveyer_belt" }
+          ]
         }
       ]
     }

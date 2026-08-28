@@ -45,6 +45,7 @@ public final class RefineryOnTickUpdateProcedure {
         if (progress < cookTime) { sync(level, pos, refinery); return; }
 
         refinery.getTank(0).drain(recipe.input().amount(), IFluidHandler.FluidAction.EXECUTE);
+        recipe.itemInput().ifPresent(ingredient -> refinery.getItem(0).shrink(1));
         ItemStack produced = output.copy();
         produced.setCount(refinery.getItem(1).getCount() + output.getCount());
         refinery.setItem(1, produced);
@@ -56,7 +57,8 @@ public final class RefineryOnTickUpdateProcedure {
     private static RefiningRecipe findRecipe(ServerLevel level, RefineryBlockEntity refinery, MachineTier machineTier) {
         FluidStack input = refinery.getTank(0).getFluid();
         for (var holder : level.getRecipeManager().getAllRecipesFor(RefiningRecipe.Type.INSTANCE))
-            if (holder.value().input().matches(input))
+            if (holder.value().input().matches(input)
+                    && holder.value().itemInput().map(ingredient -> ingredient.test(refinery.getItem(0))).orElse(true))
                 return machineTier.supports(holder.value().minimumMachineTier()) ? holder.value() : null;
         if (input.getAmount() < MaterialProcessingCatalog.SLURRY_AMOUNT) return null;
         return MaterialProcessingCatalog.slurryMaterial(input).flatMap(MaterialProcessingCatalog.get(level)::byId)

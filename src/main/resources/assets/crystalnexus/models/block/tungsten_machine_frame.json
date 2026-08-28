@@ -1,0 +1,4 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": { "all": "crystalnexus:block/tungsten_machine_frame" }
+}

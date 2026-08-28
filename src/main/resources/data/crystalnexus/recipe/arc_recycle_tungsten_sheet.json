@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [{ "item": "crystalnexus:tungsten_sheet" }],
+  "output": { "id": "crystalnexus:tungsten", "count": 1 }
+}

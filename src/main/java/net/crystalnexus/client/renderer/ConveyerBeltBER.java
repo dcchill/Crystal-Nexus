@@ -42,8 +42,6 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
     private void renderItems(ConveyerBeltBaseBlockEntity be, float partialTick, PoseStack poseStack,
                              MultiBufferSource buffer, int packedLight, int packedOverlay, LocalCurve curve) {
         ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        float incomingProgress = be.getIncomingTransferProgress(partialTick);
-        PreviousCurve previousCurve = incomingProgress >= 0.0F ? previousCurveFor(be) : null;
 
         for (int i = 0; i < ConveyerBeltBaseBlockEntity.SEGMENTS; i++) {
             ItemStack stack = be.getSegment(i);
@@ -51,18 +49,11 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
                 continue;
             }
 
-            float progress = be.getRenderProgress(partialTick);
+            float progress = be.canAdvanceForRender(i) ? be.getRenderProgress(i, partialTick) : 0.0F;
             float segPos = i + progress;
-            Vec3 point;
-            Vec3 tangent;
-            if (i == 0 && incomingProgress >= 0.0F && previousCurve != null) {
-                point = incomingPosition(previousCurve, curve, incomingProgress);
-                tangent = incomingTangent(previousCurve, curve, incomingProgress);
-            } else {
-                double t = Math.max(0.0D, Math.min(1.0D, segPos / (double) ConveyerBeltBaseBlockEntity.SEGMENTS));
-                point = curve.position(t);
-                tangent = curve.tangent(t);
-            }
+            double t = Math.max(0.0D, Math.min(1.0D, segPos / (double) ConveyerBeltBaseBlockEntity.SEGMENTS));
+            Vec3 point = curve.position(t);
+            Vec3 tangent = curve.tangent(t);
             float yaw = (float) Math.toDegrees(Math.atan2(tangent.x, tangent.z));
 
             poseStack.pushPose();
@@ -86,25 +77,6 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
         }
     }
 
-    private Vec3 incomingPosition(PreviousCurve previousCurve, LocalCurve currentCurve, float progress) {
-        Vec3 start = previousCurve.position(1.0D);
-        Vec3 end = currentCurve.position(1.0D / ConveyerBeltBaseBlockEntity.SEGMENTS);
-        Vec3 control = start.add(end).scale(0.5D);
-        double t = Math.max(0.0D, Math.min(1.0D, progress));
-        double inv = 1.0D - t;
-        return start.scale(inv * inv).add(control.scale(2.0D * inv * t)).add(end.scale(t * t));
-    }
-
-    private Vec3 incomingTangent(PreviousCurve previousCurve, LocalCurve currentCurve, float progress) {
-        Vec3 start = previousCurve.position(1.0D);
-        Vec3 end = currentCurve.position(1.0D / ConveyerBeltBaseBlockEntity.SEGMENTS);
-        Vec3 control = start.add(end).scale(0.5D);
-        double t = Math.max(0.0D, Math.min(1.0D, progress));
-        Vec3 tangent = control.subtract(start).scale(2.0D * (1.0D - t))
-                .add(end.subtract(control).scale(2.0D * t));
-        return tangent.lengthSqr() < 1.0E-6D ? currentCurve.tangent(0.0D) : tangent.normalize();
-    }
-
     private LocalCurve curveFor(ConveyerBeltBaseBlockEntity be, Direction facing) {
         Vec3 center = new Vec3(0.5D, 0.0D, 0.5D);
         BlockPos pos = be.getBlockPos();
@@ -112,35 +84,6 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
         Vec3 start = midpointOrEdge(be, pos, be.getSplinePrevPos(), center, facing.getOpposite());
         Vec3 end = midpointOrEdge(be, pos, be.getSplineNextPos(), center, facing);
         return new LocalCurve(start, center, end);
-    }
-
-    private PreviousCurve previousCurveFor(ConveyerBeltBaseBlockEntity be) {
-        if (be.getLevel() == null) {
-            return null;
-        }
-
-        BlockPos prevPos = be.getSplinePrevPos();
-        if (prevPos == null) {
-            prevPos = inferAdjacentBelt(be, be.getBlockState().getValue(BlockStateProperties.HORIZONTAL_FACING).getOpposite());
-        }
-        if (prevPos == null) {
-            return null;
-        }
-        if (!(be.getLevel().getBlockEntity(prevPos) instanceof ConveyerBeltBaseBlockEntity previousBelt)) {
-            return null;
-        }
-
-        BlockState previousState = previousBelt.getBlockState();
-        if (!previousState.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-            return null;
-        }
-        LocalCurve previousCurve = curveFor(previousBelt, previousState.getValue(BlockStateProperties.HORIZONTAL_FACING));
-        Vec3 offset = new Vec3(
-                previousBelt.getBlockPos().getX() - be.getBlockPos().getX(),
-                previousBelt.getBlockPos().getY() - be.getBlockPos().getY(),
-                previousBelt.getBlockPos().getZ() - be.getBlockPos().getZ()
-        );
-        return new PreviousCurve(previousCurve, offset);
     }
 
     private Vec3 midpointOrEdge(ConveyerBeltBaseBlockEntity be, BlockPos currentPos, BlockPos connectionPos, Vec3 center, Direction fallbackEdge) {
@@ -202,9 +145,4 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
         }
     }
 
-    private record PreviousCurve(LocalCurve curve, Vec3 offset) {
-        private Vec3 position(double t) {
-            return curve.position(t).add(offset);
-        }
-    }
 }

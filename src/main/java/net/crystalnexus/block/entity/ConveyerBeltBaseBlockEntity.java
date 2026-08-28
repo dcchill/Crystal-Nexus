@@ -17,7 +17,11 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
-import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.block.ConveyerBeltInputBlock;
+import net.crystalnexus.block.ConveyerBeltMovement;
+import net.crystalnexus.block.ConveyerBeltMode;
+import net.crystalnexus.block.ConveyerBeltOutputBlock;
+import net.crystalnexus.block.ConveyerBeltRenderClock;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
@@ -25,42 +29,48 @@ import java.util.stream.IntStream;
 public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements WorldlyContainer {
     private static final String PREV_POS_TAG = "SplinePrevPos";
     private static final String NEXT_POS_TAG = "SplineNextPos";
-    private static final String INCOMING_TIME_TAG = "IncomingTransferTime";
+    private static final String INCOMING_HEAD_TIME_TAG = "IncomingHeadTime";
     private static final String MANUAL_MODE_TAG = "ManualMode";
 
     public static final int SEGMENTS = 4;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
 	private static final int GAP_SEGMENTS = 1; // 1 = one empty slot between items (recommended)
-    // movement speed control
-    private int moveCooldown = 1;
-
-    // Lower = faster, Higher = slower (runs once every N ticks)
-    private static final int TICKS_PER_MOVE = 4;
     private long lastMoveGameTime = 0L;
-    private long incomingTransferGameTime = Long.MIN_VALUE;
+    private long incomingHeadGameTime = Long.MIN_VALUE;
+    private final ConveyerBeltRenderClock clientRenderClock = new ConveyerBeltRenderClock();
     private boolean manualMode;
     @Nullable
     private BlockPos splinePrevPos;
     @Nullable
     private BlockPos splineNextPos;
 
-public float getRenderProgress(float partialTick) {
+public float getRenderProgress(int segment, float partialTick) {
     if (level == null) return 0f;
-    float dt = (float)((level.getGameTime() - lastMoveGameTime) + partialTick);
-    float p = dt / (float) TICKS_PER_MOVE;
+    long startTime = level.isClientSide
+            ? clientRenderClock.startTime(segment, lastMoveGameTime, incomingHeadGameTime, level.getGameTime())
+            : ConveyerBeltMovement.renderStartTime(segment, lastMoveGameTime, incomingHeadGameTime);
+    float dt = (float)((level.getGameTime() - startTime) + partialTick);
+    float p = dt / (float) ticksPerMove();
     if (p < 0f) p = 0f;
     if (p > 1f) p = 1f;
     return p;
 }
 
-public float getIncomingTransferProgress(float partialTick) {
-    if (level == null || incomingTransferGameTime == Long.MIN_VALUE) return -1f;
-    float dt = (float)((level.getGameTime() - incomingTransferGameTime) + partialTick);
-    float p = dt / (float) TICKS_PER_MOVE;
-    if (p < 0f || p > 1f) return -1f;
-    return p;
-}
+public boolean canAdvanceForRender(int segment) {
+    if (level == null || segment < 0 || segment >= SEGMENTS || belt[segment].isEmpty()) return false;
 
+    int occupiedSegments = 0;
+    for (int i = 0; i < SEGMENTS; i++) {
+        if (!belt[i].isEmpty()) occupiedSegments |= 1 << i;
+    }
+
+    BlockState state = getBlockState();
+    if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
+
+    BlockEntity front = level.getBlockEntity(worldPosition.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
+    boolean tailCanAdvance = !(front instanceof ConveyerBeltBaseBlockEntity nextBelt) || nextBelt.belt[0].isEmpty();
+    return ConveyerBeltMovement.canAdvance(occupiedSegments, segment, tailCanAdvance);
+}
 
     protected ConveyerBeltBaseBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -103,11 +113,11 @@ public void serverTick() {
     if (level == null) return;
     if (level.isClientSide) return;
 
-    if (++moveCooldown < TICKS_PER_MOVE) return;
-    moveCooldown = 0;
+    long gameTime = level.getGameTime();
+    if (gameTime - lastMoveGameTime < ticksPerMove()) return;
 
-    // mark the moment this belt step starts (used for smooth rendering)
-    lastMoveGameTime = level.getGameTime();
+    // This timestamp drives both movement cadence and smooth client interpolation.
+    lastMoveGameTime = gameTime;
 
     BlockState state = getBlockState();
         if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return;
@@ -117,34 +127,35 @@ public void serverTick() {
 
         boolean changed = false;
 
-        // 1) move segment contents forward within THIS belt block
+        // 1) hand off an item that was already at the tail before this step.
+        // Doing this after the loop let segment 2 move to 3 and immediately cross
+        // into the next block, skipping the final quarter of the rendered path.
+        boolean movedToNextBelt = tryMoveToNextBelt(facing);
+        changed |= movedToNextBelt;
+
+        // 2) move segment contents forward within THIS belt block
         for (int i = SEGMENTS - 2; i >= 0; i--) {
             ItemStack cur = belt[i];
             if (cur.isEmpty()) continue;
+            if (i == 0 && incomingHeadGameTime != Long.MIN_VALUE
+                    && gameTime - incomingHeadGameTime < ticksPerMove()) continue;
 
             ItemStack next = belt[i + 1];
             if (next.isEmpty()) {
                 belt[i + 1] = cur;
                 belt[i] = ItemStack.EMPTY;
-                changed = true;
-            } else if (ItemStack.isSameItemSameComponents(next, cur) && next.getCount() < next.getMaxStackSize()) {
-                int space = next.getMaxStackSize() - next.getCount();
-                int move = Math.min(space, cur.getCount());
-                next.grow(move);
-                cur.shrink(move);
-                if (cur.isEmpty()) belt[i] = ItemStack.EMPTY;
+                if (i == 0) incomingHeadGameTime = Long.MIN_VALUE;
                 changed = true;
             }
         }
 
-        // 2) try to hand off tail into the next belt (belt chains)
-        boolean movedToNextBelt = tryMoveToNextBelt(facing);
-        changed |= movedToNextBelt;
+        // 3) every belt pulls from an inventory directly above into segment 0
+        changed |= tryPullFromAbove();
 
-        // 3) output belt pulls from inventory behind into segment 0
+        // 4) output belt pulls from inventory behind into segment 0
         if (isOutputBelt()) changed |= tryPullFromBehind(back, facing);
 
-        // 4) input belt pushes into inventory in front ONLY if there isn't a belt in front
+        // 5) input belt pushes into inventory in front ONLY if there isn't a belt in front
         boolean pushedToFront = false;
         if (isInputBelt()) {
             BlockPos frontPos = worldPosition.relative(facing);
@@ -162,11 +173,15 @@ public void serverTick() {
     }
 
     protected boolean isOutputBelt() {
-        return getBlockState().getBlock() == CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get();
+        return getBlockState().getBlock() instanceof ConveyerBeltOutputBlock;
     }
 
     protected boolean isInputBelt() {
-        return getBlockState().getBlock() == CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get();
+        return getBlockState().getBlock() instanceof ConveyerBeltInputBlock;
+    }
+
+    private int ticksPerMove() {
+        return ConveyerBeltMode.tierAt(getBlockState()).ticksPerMove();
     }
 private boolean hasGapAtHead() {
     // Require belt[0] empty and next few segments empty too
@@ -184,33 +199,17 @@ private boolean hasGapAtHead() {
     protected boolean tryInsertToHead(ItemStack moving) {
         if (moving.isEmpty()) return false;
 
-        ItemStack head = belt[0];
+        if (!belt[0].isEmpty()) return false;
 
-        if (head.isEmpty()) {
-            belt[0] = moving.copy();
-            moving.setCount(0);
-            markIncomingTransfer();
-            return true;
-        }
-
-        if (!ItemStack.isSameItemSameComponents(head, moving)) return false;
-
-        int space = head.getMaxStackSize() - head.getCount();
-        if (space <= 0) return false;
-
-        int move = Math.min(space, moving.getCount());
-        head.grow(move);
-        moving.shrink(move);
-        if (move > 0) {
-            markIncomingTransfer();
-        }
-        return move > 0;
+        belt[0] = moving.copy();
+        moving.setCount(0);
+        markIncomingHead();
+        return true;
     }
 
-    private void markIncomingTransfer() {
+    private void markIncomingHead() {
         if (level == null) return;
-        lastMoveGameTime = level.getGameTime();
-        incomingTransferGameTime = level.getGameTime();
+        incomingHeadGameTime = level.getGameTime();
     }
 
     // Try to move items from our tail into the next belt's head
@@ -242,7 +241,19 @@ private boolean hasGapAtHead() {
 
 private static final int PULL_MAX = 32;
 
+private boolean tryPullFromAbove() {
+    if (level == null) return false;
+
+    BlockPos inputPos = worldPosition.above();
+    if (level.getBlockEntity(inputPos) instanceof ConveyerBeltBaseBlockEntity) return false;
+    return tryPullFrom(inputPos, Direction.DOWN, Direction.UP);
+}
+
 private boolean tryPullFromBehind(Direction back, Direction facing) {
+    return tryPullFrom(worldPosition.relative(back), facing, back);
+}
+
+private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction fallbackSide) {
     if (level == null) return false;
 
     // Enforce spacing: only pull if head has a gap
@@ -257,12 +268,10 @@ private boolean tryPullFromBehind(Direction back, Direction facing) {
     int toPullMax = Math.min(PULL_MAX, headSpace);
     if (toPullMax <= 0) return false;
 
-    BlockPos inputPos = worldPosition.relative(back);
-
     // Try common sides + null (more compatible with different inventories)
-    IItemHandler input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, facing);
+    IItemHandler input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, primarySide);
     if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, null);
-    if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, back);
+    if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, fallbackSide);
     if (input == null) return false;
 
     for (int slot = 0; slot < input.getSlots(); slot++) {
@@ -405,7 +414,10 @@ private boolean tryPullFromBehind(Direction back, Direction facing) {
         if (cur.isEmpty()) return ItemStack.EMPTY;
 
         ItemStack split = cur.split(count);
-        if (cur.isEmpty()) belt[index] = ItemStack.EMPTY;
+        if (cur.isEmpty()) {
+            belt[index] = ItemStack.EMPTY;
+            if (index == 0) incomingHeadGameTime = Long.MIN_VALUE;
+        }
         if (!split.isEmpty()) sync();
         return split;
     }
@@ -414,17 +426,22 @@ private boolean tryPullFromBehind(Direction back, Direction facing) {
         if (index < 0 || index >= SEGMENTS) return ItemStack.EMPTY;
         ItemStack cur = belt[index];
         belt[index] = ItemStack.EMPTY;
+        if (index == 0) incomingHeadGameTime = Long.MIN_VALUE;
         return cur;
     }
 
     @Override public void setItem(int index, ItemStack stack) {
         if (index < 0 || index >= SEGMENTS) return;
         belt[index] = stack;
+        if (index == 0) {
+            incomingHeadGameTime = stack.isEmpty() || level == null ? Long.MIN_VALUE : level.getGameTime();
+        }
         sync();
     }
 
     @Override public void clearContent() {
         for (int i = 0; i < SEGMENTS; i++) belt[i] = ItemStack.EMPTY;
+        incomingHeadGameTime = Long.MIN_VALUE;
         sync();
     }
 
@@ -465,8 +482,8 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
 
     // ✅ ADD THIS LINE
     tag.putLong("LastMove", lastMoveGameTime);
-    if (incomingTransferGameTime != Long.MIN_VALUE) {
-        tag.putLong(INCOMING_TIME_TAG, incomingTransferGameTime);
+    if (incomingHeadGameTime != Long.MIN_VALUE) {
+        tag.putLong(INCOMING_HEAD_TIME_TAG, incomingHeadGameTime);
     }
     if (splinePrevPos != null) {
         tag.putLong(PREV_POS_TAG, splinePrevPos.asLong());
@@ -497,7 +514,7 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
            // ✅ ADD THIS LINE
     if (tag.contains("LastMove"))
         lastMoveGameTime = tag.getLong("LastMove");
-    incomingTransferGameTime = tag.contains(INCOMING_TIME_TAG) ? tag.getLong(INCOMING_TIME_TAG) : Long.MIN_VALUE;
+    incomingHeadGameTime = tag.contains(INCOMING_HEAD_TIME_TAG) ? tag.getLong(INCOMING_HEAD_TIME_TAG) : Long.MIN_VALUE;
     splinePrevPos = tag.contains(PREV_POS_TAG) ? BlockPos.of(tag.getLong(PREV_POS_TAG)) : null;
     splineNextPos = tag.contains(NEXT_POS_TAG) ? BlockPos.of(tag.getLong(NEXT_POS_TAG)) : null;
     manualMode = tag.getBoolean(MANUAL_MODE_TAG);

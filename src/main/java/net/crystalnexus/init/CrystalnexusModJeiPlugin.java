@@ -214,7 +214,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		var access = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 		return List.of(
 				multiblockStructure("zero_point", CrystalnexusModBlocks.ZERO_POINT.get().asItem().getDefaultInstance(), access),
-				multiblockStructure("gravitational_array", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("gravitational_array_new", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
@@ -235,6 +235,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem()), Purification_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_GUIDE.get().asItem()), BeamReactionRecipe_Type);
 		registration.addRecipeCatalyst(new ItemStack(Items.END_CRYSTAL), BeamReactionRecipe_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem()), OreCrushingJei_Type);

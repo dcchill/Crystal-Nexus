@@ -1,0 +1,15 @@
+{
+  "type": "crystalnexus:refining",
+  "fluid_input": {
+    "fluid": "crystalnexus:nitrogen",
+    "amount": 50
+  },
+  "item_input": {
+    "item": "crystalnexus:wolframite"
+  },
+  "item_output": {
+    "id": "crystalnexus:tungsten_dust",
+    "count": 1
+  },
+  "minimum_machine_tier": 3
+}

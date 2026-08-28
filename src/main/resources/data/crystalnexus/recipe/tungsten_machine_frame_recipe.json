@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "pmp", "ipi"],
+  "key": {
+    "i": { "item": "crystalnexus:tungsten" },
+    "p": { "tag": "c:plates/tungsten" },
+    "m": { "item": "crystalnexus:machine_frame" }
+  },
+  "result": { "id": "crystalnexus:tungsten_machine_frame" }
+}

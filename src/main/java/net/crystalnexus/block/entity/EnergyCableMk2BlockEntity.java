@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import org.jetbrains.annotations.Nullable;
@@ -25,12 +26,17 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyContainer {
 
-	private static int maxIoPerTick() {
-		return CrystalnexusConfig.MACHINES.ENERGY_CABLE_MK2.maxExtract();
+	private final int maxIoPerTick;
+	private final EnergyStorage energyStorage;
+
+	public EnergyCableMk2BlockEntity(BlockPos pos, BlockState state) {
+		this(CrystalnexusModBlockEntities.ENERGY_CABLE_MK_2.get(), pos, state, CrystalnexusConfig.MACHINES.ENERGY_CABLE_MK2);
 	}
 
-
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.ENERGY_CABLE_MK2.capacity(), CrystalnexusConfig.MACHINES.ENERGY_CABLE_MK2.maxReceive(), CrystalnexusConfig.MACHINES.ENERGY_CABLE_MK2.maxExtract(), 0) {
+	protected EnergyCableMk2BlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, CrystalnexusConfig.EnergyValues values) {
+		super(type, pos, state);
+		maxIoPerTick = values.maxExtract();
+		energyStorage = new EnergyStorage(values.capacity(), values.maxReceive(), values.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int ret = super.receiveEnergy(maxReceive, simulate);
@@ -52,10 +58,7 @@ public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyCon
 			}
 			return ret;
 		}
-	};
-
-	public EnergyCableMk2BlockEntity(BlockPos pos, BlockState state) {
-		super(CrystalnexusModBlockEntities.ENERGY_CABLE_MK_2.get(), pos, state);
+		};
 	}
 
 
@@ -145,7 +148,7 @@ public void serverTick() {
             if (src == null) src = ext.getCapability(Capabilities.EnergyStorage.BLOCK, nPos, null);
             if (src == null || !src.canExtract()) continue;
 
-            int want = Math.min(maxIoPerTick(), space);
+            int want = Math.min(maxIoPerTick, space);
             int pulledSim = src.extractEnergy(want, true);
             if (pulledSim <= 0) continue;
 
@@ -177,7 +180,7 @@ public void serverTick() {
         int move = diff / 2;
         if (move <= 0) continue;
 
-        move = Math.min(move, maxIoPerTick());
+        move = Math.min(move, maxIoPerTick);
 
         int otherSpace = other.getMaxEnergyStored() - otherStored;
         move = Math.min(move, otherSpace);
@@ -202,7 +205,7 @@ public void serverTick() {
             BlockEntity nBe = lvl.getBlockEntity(nPos);
             if (nBe instanceof EnergyCableMk2BlockEntity) continue;
 
-            int offer = Math.min(maxIoPerTick(), energyStorage.getEnergyStored());
+            int offer = Math.min(maxIoPerTick, energyStorage.getEnergyStored());
             if (offer <= 0) break;
 
             IEnergyStorage receiver = findReceiverBySim(ext, nPos, dir, offer);

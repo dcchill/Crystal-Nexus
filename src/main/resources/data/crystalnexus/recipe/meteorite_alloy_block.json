@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "bb ",
+    "bb ",
+    "h  "
+  ],
+  "key": {
+    "b": {
+      "item": "crystalnexus:meteorite_alloy"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:meteorite_alloy_block",
+    "count": 1
+  }
+}

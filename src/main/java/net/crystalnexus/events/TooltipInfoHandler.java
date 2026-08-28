@@ -120,6 +120,9 @@ public class TooltipInfoHandler {
 		addTooltip("energy_cable_mk_2",
 				"Advanced energy transfer cable.",
 				"Transfers energy with high throughput to machines.");
+		addTooltip("cryogenically_cooled_energy_cable",
+				"Cryogenically cooled high-capacity energy cable.",
+				"Transfers up to 2,048,000 FE/t.");
 
 		addTooltip("crystal_guide",
 				"End Crystal beam guide.",
@@ -256,7 +259,13 @@ public class TooltipInfoHandler {
 
 		addTooltip("conveyer_belt",
 				"Transports items horizontally.",
-				"Drop items on it to move them.");
+				"Basic tier: half the original conveyor speed.");
+		addTooltip("titanium_conveyer_belt",
+				"Transports items horizontally.",
+				"Titanium tier: twice the basic conveyor speed.");
+		addTooltip("meteorite_conveyer_belt",
+				"Transports items horizontally.",
+				"Meteorite tier: twice the titanium conveyor speed.");
 		addTooltip("conveyer_belt_input",
 				"Inserts items from adjacent containers.",
 				"Puts items onto conveyor system.");
@@ -544,6 +553,9 @@ public class TooltipInfoHandler {
 		addTooltip("extractinator",
 				"Resource extraction machine.",
 				"Sifts through loose sediment to find resources.");
+		addTooltip("titanium_extractinator",
+				"Titanium-tier resource extraction machine.",
+				"Consumes 4x energy for twice the secondary-drop chance.");
 		addTooltip("inverter",
 				"Invertium Inverter.",
 				"Inverts energy types.");

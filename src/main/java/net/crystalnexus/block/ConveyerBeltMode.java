@@ -30,13 +30,17 @@ public final class ConveyerBeltMode {
                 case OUTPUT -> NORMAL;
             };
         }
+
+        static Mode forStorage(boolean hasFrontStorage, boolean hasBackStorage) {
+            return hasFrontStorage ? INPUT : hasBackStorage ? OUTPUT : NORMAL;
+        }
     }
 
     private ConveyerBeltMode() {}
 
     public static void updateAutomatic(Level level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        if (state.getBlock() != CrystalnexusModBlocks.CONVEYER_BELT.get()
+        if (!(state.getBlock() instanceof ConveyerBeltBlock)
                 || !state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)
                 || SWITCHING.contains(pos)
                 || level.getBlockEntity(pos) instanceof ConveyerBeltBaseBlockEntity belt && belt.isManualMode()) {
@@ -60,7 +64,7 @@ public final class ConveyerBeltMode {
     }
 
     static Mode modeFor(boolean hasFrontStorage, boolean hasBackStorage) {
-        return hasFrontStorage ? Mode.INPUT : hasBackStorage ? Mode.OUTPUT : Mode.NORMAL;
+        return Mode.forStorage(hasFrontStorage, hasBackStorage);
     }
 
     private static boolean hasItemStorage(Level level, BlockPos pos, Direction side) {
@@ -71,14 +75,28 @@ public final class ConveyerBeltMode {
     }
 
     private static Mode modeAt(BlockState state) {
-        if (state.getBlock() == CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get()) return Mode.INPUT;
-        if (state.getBlock() == CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get()) return Mode.OUTPUT;
+        if (state.getBlock() instanceof ConveyerBeltInputBlock) return Mode.INPUT;
+        if (state.getBlock() instanceof ConveyerBeltOutputBlock) return Mode.OUTPUT;
         return Mode.NORMAL;
+    }
+
+    public static ConveyerBeltTier tierAt(BlockState state) {
+        return ConveyerBeltTierState.tierAt(state);
+    }
+
+    public static Block normalBlock(BlockState state) {
+        return normalBlock(tierAt(state));
+    }
+
+    private static Block normalBlock(ConveyerBeltTier tier) {
+        return ConveyerBeltTierState.normalBlock(tier);
     }
 
     private static void switchTo(Level level, BlockPos pos, Mode mode) {
         BlockState state = level.getBlockState(pos);
         if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) || modeAt(state) == mode) return;
+
+        ConveyerBeltTier tier = tierAt(state);
 
         CompoundTag data = null;
         if (level.getBlockEntity(pos) instanceof ConveyerBeltBaseBlockEntity belt) {
@@ -87,10 +105,11 @@ public final class ConveyerBeltMode {
         }
 
         BlockState replacement = (switch (mode) {
-            case NORMAL -> CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState();
+            case NORMAL -> normalBlock(tier).defaultBlockState();
             case INPUT -> CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().defaultBlockState();
             case OUTPUT -> CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().defaultBlockState();
         }).setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+        replacement = ConveyerBeltTierState.applyTier(replacement, tier);
         BlockPos key = pos.immutable();
         SWITCHING.add(key);
         try {

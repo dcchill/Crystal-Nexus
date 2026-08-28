@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "bcb", "ifi"],
+  "key": {
+    "i": { "tag": "c:plates/titanium" },
+    "p": { "tag": "c:ingots/titanium" },
+    "b": { "item": "crystalnexus:titanium_bearing" },
+    "c": { "item": "crystalnexus:extractinator" },
+    "f": { "item": "crystalnexus:titanium_machine_frame" }
+  },
+  "result": { "id": "crystalnexus:titanium_extractinator" }
+}

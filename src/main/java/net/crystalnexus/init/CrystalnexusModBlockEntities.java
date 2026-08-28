@@ -135,7 +135,8 @@ public class CrystalnexusModBlockEntities {
 		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_GUIDE = register("crystal_guide", CrystalnexusModBlocks.CRYSTAL_GUIDE, CrystalGuideBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_COLLECTOR = register("item_collector", CrystalnexusModBlocks.ITEM_COLLECTOR, ItemCollectorBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> EXTRACTINATOR = register("extractinator", CrystalnexusModBlocks.EXTRACTINATOR, ExtractinatorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> EXTRACTINATOR = registerMany("extractinator", ExtractinatorBlockEntity::new,
+		CrystalnexusModBlocks.EXTRACTINATOR, CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_ACCELERATOR = register("chlorophyte_accelerator", CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR, ChlorophyteAcceleratorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_COMPUTER = register("reactor_computer", CrystalnexusModBlocks.REACTOR_COMPUTER, ReactorComputerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_ENERGY_OUTPUT = register("reactor_energy_output", CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT, ReactorEnergyOutputBlockEntity::new);
@@ -194,7 +195,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PIPE_JUNCTION = register("pipe_junction", CrystalnexusModBlocks.PIPE_JUNCTION, PipeJunctionBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_COLLECTOR = register("steam_collector", CrystalnexusModBlocks.STEAM_COLLECTOR, SteamCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_CHAMBER = register("steam_chamber", CrystalnexusModBlocks.STEAM_CHAMBER, SteamChamberBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT = register("conveyer_belt", CrystalnexusModBlocks.CONVEYER_BELT, ConveyerBeltBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT = registerMany("conveyer_belt", ConveyerBeltBlockEntity::new,
+		CrystalnexusModBlocks.CONVEYER_BELT, CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT, CrystalnexusModBlocks.METEORITE_CONVEYER_BELT);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_INPUT = register("conveyer_belt_input", CrystalnexusModBlocks.CONVEYER_BELT_INPUT, ConveyerBeltInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_OUTPUT = register("conveyer_belt_output", CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT, ConveyerBeltOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_ELEVATOR = register("item_elevator", CrystalnexusModBlocks.ITEM_ELEVATOR, ItemElevatorBlockEntity::new);

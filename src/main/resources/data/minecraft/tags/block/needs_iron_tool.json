@@ -34,9 +34,11 @@
     "crystalnexus:tarrock_bricks",
     "crystalnexus:hyper_machine_frame",
     "crystalnexus:titanium_machine_frame",
+    "crystalnexus:titanium_extractinator",
     "crystalnexus:titanium_carbide_machine_frame",
     "crystalnexus:titanium_carbide_circuit_press",
     "crystalnexus:tungsten_block",
+    "crystalnexus:tungsten_machine_frame",
     "crystalnexus:solar_engine_controller",
     "crystalnexus:machine_energy_output"
   ]

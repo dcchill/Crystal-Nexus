@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.processing.MachineTier;
 
 import javax.annotation.Nullable;
 
@@ -147,7 +148,9 @@ public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity i
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.EXTRACTINATOR.capacity(), CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxReceive(), CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(
+		MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.EXTRACTINATOR.capacity(), 4096),
+		CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxReceive(), CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

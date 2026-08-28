@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "item": "crystalnexus:meteorite_ingot" },
+  "result": { "id": "crystalnexus:meteorite_sheet", "count": 1 },
+  "mode": "plate"
+}

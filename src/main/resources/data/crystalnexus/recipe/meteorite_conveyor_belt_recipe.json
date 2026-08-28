@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    " c "
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:titanium_electric_motor"
+    },
+    "b": {
+      "item": "crystalnexus:meteorite_sheet"
+    },
+    "c": {
+      "tag": "c:stones"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:meteorite_conveyer_belt",
+    "count": 8
+  }
+}

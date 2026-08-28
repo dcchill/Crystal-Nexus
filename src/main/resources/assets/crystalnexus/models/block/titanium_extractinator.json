@@ -1,0 +1,9 @@
+{
+  "parent": "crystalnexus:block/tiered_machine",
+  "textures": {
+    "front": "crystalnexus:block/titanium_extractinatorfront",
+    "side": "crystalnexus:block/pureside",
+    "top": "crystalnexus:block/extractinator",
+    "bottom": "crystalnexus:block/purebottom"
+  }
+}

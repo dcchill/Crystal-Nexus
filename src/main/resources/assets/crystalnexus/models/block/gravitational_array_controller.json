@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:block/cube",
   "textures": {
-    "down": "crystalnexus:block/titanium_plate_block",
-    "up": "crystalnexus:block/titanium_plate_block",
+    "down": "crystalnexus:block/tungsten_block",
+    "up": "crystalnexus:block/tungsten_block",
     "north": "crystalnexus:block/gravitational_array_controller",
-    "east": "crystalnexus:block/titanium_plate_block",
-    "south": "crystalnexus:block/titanium_plate_block",
-    "west": "crystalnexus:block/titanium_plate_block",
-    "particle": "crystalnexus:block/titanium_plate_block"
+    "east": "crystalnexus:block/tungsten_block",
+    "south": "crystalnexus:block/tungsten_block",
+    "west": "crystalnexus:block/tungsten_block",
+    "particle": "crystalnexus:block/tungsten_block"
   }
 }

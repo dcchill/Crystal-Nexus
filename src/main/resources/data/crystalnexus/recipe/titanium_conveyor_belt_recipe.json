@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["aba", " c "],
+  "key": {
+    "a": { "item": "crystalnexus:titanium_bearing" },
+    "b": { "tag": "c:rods/titanium" },
+    "c": { "tag": "c:stones" }
+  },
+  "result": { "id": "crystalnexus:titanium_conveyer_belt", "count": 8 }
+}

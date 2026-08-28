@@ -1,0 +1,4 @@
+{
+  "parent": "crystalnexus:block/conveyer_belt",
+  "textures": { "0": "crystalnexus:block/meteor_belt_anim" }
+}

@@ -53,7 +53,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
     private static final double FORMATION_Y_OFFSET = -10.0D;
     private static final int VALIDATION_INTERVAL = 20;
     private static final int OUTPUT_SLOT = 4;
-    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "gravitational_array");
+    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "gravitational_array_new");
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
     private final FluidTank temporalFluid = new FluidTank(TANK_CAPACITY,
         stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
@@ -152,7 +152,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE,
             worldPosition, facing, CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get(),
             GravitationalArrayControllerBlock.FACING,
-            Map.of(CrystalnexusModBlocks.TITANIUM_BLOCK.get(), Set.of(
+            Map.of(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(
                 CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get())),
             true, true);
         List<BlockPos> substitutions = match.map(StructureNbtValidator.Match::substitutionPositions).orElse(List.of());

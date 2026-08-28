@@ -45,7 +45,11 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     public static final int ARGON_PER_TICK = 1;
     public static final int GENERATION_PER_TICK = 512_000;
     private static final int VALIDATION_INTERVAL = 20;
-    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "plasma_generator");
+    public static final double PLASMA_SPEED = 0.75D;
+    public static final int PLASMA_SIZE = 16;
+    private static final double PLASMA_PATH_RADIUS = 8.0D;
+    private static final double PLASMA_TRAIL_SPACING = 0.16D;
+    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "plasma_gen_new");
 
     private final FluidTank argonTank = new FluidTank(TANK_CAPACITY,
         stack -> stack.is(CrystalnexusModFluids.ARGON.get())) {
@@ -57,6 +61,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private final List<BlockPos> heatingCores = new ArrayList<>();
     @Nullable private Vec3 formationCenter;
+    private final List<BlockPos> plasmaPositions = new ArrayList<>();
     private boolean formed;
     private boolean operating;
     private int outputPerTick;
@@ -162,11 +167,56 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     private void updateOperating(boolean nextOperating, int nextOutput, String nextStatus) {
         setHeatingCoresActive(heatingCores, nextOperating);
+        if (level instanceof ServerLevel serverLevel) updatePlasmaBlocks(serverLevel, nextOperating);
         if (operating == nextOperating && outputPerTick == nextOutput && status.equals(nextStatus)) return;
         operating = nextOperating;
         outputPerTick = nextOutput;
         status = nextStatus;
         sync();
+    }
+
+    private void updatePlasmaBlocks(ServerLevel level, boolean active) {
+        if (!active || formationCenter == null) {
+            clearPlasmaBlocks(level);
+            return;
+        }
+        double headAngle = level.getGameTime() * PLASMA_SPEED;
+        List<BlockPos> nextPositions = new ArrayList<>(PLASMA_SIZE);
+        for (int index = 0; index < PLASMA_SIZE; index++) {
+            double angle = headAngle - index * PLASMA_TRAIL_SPACING;
+            BlockPos next = BlockPos.containing(
+                formationCenter.x + Math.cos(angle) * PLASMA_PATH_RADIUS,
+                formationCenter.y,
+                formationCenter.z + Math.sin(angle) * PLASMA_PATH_RADIUS);
+            if (nextPositions.contains(next)) continue;
+            BlockState state = level.getBlockState(next);
+            if (plasmaPositions.contains(next) && state.is(CrystalnexusModBlocks.PLASMA_BLOCK.get())) {
+                nextPositions.add(next);
+            } else if (state.isAir()
+                    && level.setBlockAndUpdate(next, CrystalnexusModBlocks.PLASMA_BLOCK.get().defaultBlockState())) {
+                nextPositions.add(next);
+            }
+        }
+        for (BlockPos previous : plasmaPositions) {
+            if (!nextPositions.contains(previous)
+                    && level.getBlockState(previous).is(CrystalnexusModBlocks.PLASMA_BLOCK.get()))
+                level.removeBlock(previous, false);
+        }
+        if (!plasmaPositions.equals(nextPositions)) {
+            plasmaPositions.clear();
+            plasmaPositions.addAll(nextPositions);
+            setChanged();
+        }
+    }
+
+    private void clearPlasmaBlocks(ServerLevel level) {
+        if (plasmaPositions.isEmpty()) return;
+        for (BlockPos pos : plasmaPositions) {
+            if (level.getBlockState(pos).is(CrystalnexusModBlocks.PLASMA_BLOCK.get()))
+                level.removeBlock(pos, false);
+        }
+        plasmaPositions.clear();
+        setChanged();
     }
 
     private void setHeatingCoresActive(List<BlockPos> cores, boolean active) {
@@ -204,6 +254,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     private void shutDown() {
         setHeatingCoresActive(heatingCores, false);
         if (level != null) {
+            if (level instanceof ServerLevel serverLevel) clearPlasmaBlocks(serverLevel);
             for (BlockPos pos : fluidInputs) if (level.getBlockEntity(pos) instanceof MachineFluidInputBlockEntity input)
                 input.unbindController(worldPosition);
             for (BlockPos pos : energyOutputs) if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output)
@@ -233,6 +284,12 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         status = tag.contains("status", Tag.TAG_STRING) ? tag.getString("status") : "Incomplete Structure";
         formationCenter = tag.contains("formationX", Tag.TAG_DOUBLE)
             ? new Vec3(tag.getDouble("formationX"), tag.getDouble("formationY"), tag.getDouble("formationZ")) : null;
+        plasmaPositions.clear();
+        if (tag.contains("plasmaPositions", Tag.TAG_LONG_ARRAY)) {
+            for (long packedPos : tag.getLongArray("plasmaPositions")) plasmaPositions.add(BlockPos.of(packedPos));
+        } else if (tag.contains("plasmaX", Tag.TAG_INT)) {
+            plasmaPositions.add(new BlockPos(tag.getInt("plasmaX"), tag.getInt("plasmaY"), tag.getInt("plasmaZ")));
+        }
     }
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
@@ -248,6 +305,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
             tag.putDouble("formationY", formationCenter.y);
             tag.putDouble("formationZ", formationCenter.z);
         }
+        tag.putLongArray("plasmaPositions", plasmaPositions.stream().mapToLong(BlockPos::asLong).toArray());
     }
 
     private void sync() {

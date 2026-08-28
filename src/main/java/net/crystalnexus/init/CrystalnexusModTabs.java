@@ -60,6 +60,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
@@ -83,6 +84,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PLASMA_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.RAW_INVERTIUM.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_DUST.get());
@@ -142,12 +144,17 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BOREAS.get());
 				tabData.accept(CrystalnexusModItems.METEOR.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SCRAP.get());
+				tabData.accept(CrystalnexusModItems.WOLFRAMITE.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_ALLOY.get());
+				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.HOT_METEORITE_ALLOY.get());
+				tabData.accept(CrystalnexusModItems.METEORITE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_DUST.get());
 				tabData.accept(CrystalnexusModItems.HOT_TUNGSTEN.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN.get());
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModItems.TUNGSTEN_SHEET.get());
+				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModItems.BEAR.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get().asItem());
@@ -369,6 +376,8 @@ public class CrystalnexusModTabs {
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(CrystalnexusModBlocks.CONTAINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR.get().asItem());
@@ -376,6 +385,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.BASIC_ENERGY_CABLE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get().asItem());
+
 				tabData.accept(CrystalnexusModBlocks.TANK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
@@ -464,6 +474,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.QUARRY.get().asItem());
@@ -514,12 +525,17 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BOREAS.get());
 				tabData.accept(CrystalnexusModItems.METEOR.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SCRAP.get());
+				tabData.accept(CrystalnexusModItems.WOLFRAMITE.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_ALLOY.get());
+				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.HOT_METEORITE_ALLOY.get());
+				tabData.accept(CrystalnexusModItems.METEORITE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_DUST.get());
 				tabData.accept(CrystalnexusModItems.HOT_TUNGSTEN.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN.get());
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModItems.TUNGSTEN_SHEET.get());
+				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
@@ -541,6 +557,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.COPPER_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_SHEET.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_SHEET.get());
+				tabData.accept(CrystalnexusModItems.TUNGSTEN_SHEET.get());
 				tabData.accept(CrystalnexusModItems.GOLD_ROD.get());
 				tabData.accept(CrystalnexusModItems.IRON_ROD.get());
 				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());
@@ -582,6 +599,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get());

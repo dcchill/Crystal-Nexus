@@ -24,19 +24,19 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class GravitationalArrayGameTests {
     // GameTest's relative Y=0 is its structure block; template Y=0 begins one block above it.
-    private static final BlockPos CONTROLLER = new BlockPos(9, 3, 14);
-    private static final BlockPos TITANIUM = new BlockPos(11, 3, 10);
-    private static final BlockPos CENTER_BLOCK = new BlockPos(14, 16, 14);
+    private static final BlockPos CONTROLLER = new BlockPos(0, 3, 5);
+    private static final BlockPos TUNGSTEN = new BlockPos(2, 3, 1);
+    private static final BlockPos CENTER_BLOCK = new BlockPos(5, 6, 5);
 
     private GravitationalArrayGameTests() {
     }
 
-    @GameTest(template = "gravitational_array")
-    public static void validatesNbtWithEnergyInputAtTitaniumPosition(GameTestHelper helper) {
+    @GameTest(template = "gravitational_array_new")
+    public static void validatesNbtWithEnergyInputAtTungstenPosition(GameTestHelper helper) {
         verify(helper);
     }
 
-    @GameTest(template = "gravitational_array", rotationSteps = 1)
+    @GameTest(template = "gravitational_array_new", rotationSteps = 1)
     public static void validatesRotatedNbtFromControllerFacing(GameTestHelper helper) {
         verify(helper);
     }
@@ -67,14 +67,14 @@ public final class GravitationalArrayGameTests {
         // GameTest does not instantiate block entities saved inside its own template at tick zero.
         helper.setBlock(CONTROLLER, Blocks.AIR);
         helper.setBlock(CONTROLLER, controllerState);
-        helper.setBlock(TITANIUM, CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        helper.setBlock(TUNGSTEN, CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
         GravitationalArrayControllerBlockEntity controller = helper.getBlockEntity(CONTROLLER);
         controller.serverTick();
         helper.assertTrue(!controller.isFormed(),
             "The array must remain invalid until both an Energy Input and a Fluid Input are installed");
-        BlockPos fluidPos = findTitanium(helper);
+        BlockPos fluidPos = findTungsten(helper);
         helper.setBlock(fluidPos, CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
-        MachineEnergyInputBlockEntity energyInput = helper.getBlockEntity(TITANIUM);
+        MachineEnergyInputBlockEntity energyInput = helper.getBlockEntity(TUNGSTEN);
         MachineFluidInputBlockEntity fluidInput = helper.getBlockEntity(fluidPos);
         fluidInput.getFluidInput().fill(new FluidStack(CrystalnexusModFluids.TEMPORAL_ESSENCE.get(), 1_000),
             IFluidHandler.FluidAction.EXECUTE);
@@ -82,7 +82,7 @@ public final class GravitationalArrayGameTests {
             "The array must validate as soon as both port types are present");
         controller.serverTick();
         helper.assertTrue(controller.isFormed(),
-            "The Structure NBT must accept an Energy Input at any Titanium position");
+            "The Structure NBT must accept an Energy Input at any Tungsten position");
         helper.assertTrue(energyInput.isBoundTo(helper.absolutePos(CONTROLLER)),
             "A validated Energy Input must bind to its active controller");
         helper.assertTrue(fluidInput.isBoundTo(helper.absolutePos(CONTROLLER)),
@@ -110,11 +110,11 @@ public final class GravitationalArrayGameTests {
         helper.succeed();
     }
 
-    private static BlockPos findTitanium(GameTestHelper helper) {
-        for (int y = 1; y <= 30; y++) for (int x = 0; x < 29; x++) for (int z = 0; z < 29; z++) {
+    private static BlockPos findTungsten(GameTestHelper helper) {
+        for (int y = 1; y <= 11; y++) for (int x = 0; x < 11; x++) for (int z = 0; z < 11; z++) {
             BlockPos pos = new BlockPos(x, y, z);
-            if (!pos.equals(TITANIUM) && helper.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_BLOCK.get())) return pos;
+            if (!pos.equals(TUNGSTEN) && helper.getBlockState(pos).is(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get())) return pos;
         }
-        throw new IllegalStateException("Structure template has no second Titanium position");
+        throw new IllegalStateException("Structure template has no second Tungsten position");
     }
 }

@@ -582,7 +582,7 @@ public class CrystalWrenchItem extends Item {
                 || block instanceof ConveyerBeltInputBlock
                 || block instanceof ConveyerBeltOutputBlock;
         boolean preserveBeltContents = blockEntity instanceof ConveyerBeltBaseBlockEntity belt && !belt.isEmpty();
-        ItemStack blockItem = new ItemStack(isConveyor ? CrystalnexusModBlocks.CONVEYER_BELT.get() : block.asItem());
+        ItemStack blockItem = new ItemStack(isConveyor ? ConveyerBeltMode.normalBlock(state) : block.asItem());
 
         /*
          * Preserve BlockEntity data.

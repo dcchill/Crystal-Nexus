@@ -1,0 +1,8 @@
+{
+  "parent": "crystalnexus:block/conveyer_belt_input",
+  "textures": {
+    "all": "crystalnexus:block/meteor_belt_anim",
+    "particle": "crystalnexus:block/meteor_belt_anim",
+    "0": "crystalnexus:block/meteor_belt_anim"
+  }
+}

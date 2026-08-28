@@ -1,0 +1,45 @@
+{
+	"parent": "block/block",
+	"textures": {
+		"particle": "crystalnexus:block/electrical_cable",
+		"texture": "crystalnexus:block/electrical_cable",
+		"1": "crystalnexus:block/thicc"
+	},
+	"elements": [
+		{
+			"name": "core",
+			"from": [4, 4, 4],
+			"to": [12, 12, 12],
+			"faces": {
+				"north": {"uv": [9, 0, 12, 3], "texture": "#1"},
+				"east": {"uv": [9, 0, 12, 3], "texture": "#1"},
+				"south": {"uv": [9, 0, 12, 3], "texture": "#1"},
+				"west": {"uv": [9, 0, 12, 3], "texture": "#1"},
+				"up": {"uv": [9, 0, 12, 3], "texture": "#1"},
+				"down": {"uv": [9, 0, 12, 3], "texture": "#1"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"thirdperson_lefthand": {
+			"translation": [0, 3, 1],
+			"scale": [0.55, 0.55, 0.55]
+		},
+		"firstperson_righthand": {
+			"translation": [0, 4, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"firstperson_lefthand": {
+			"translation": [0, 4, 0],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"scale": [0.625, 0.625, 0.625]
+		}
+	}
+}

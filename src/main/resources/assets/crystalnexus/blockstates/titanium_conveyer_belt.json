@@ -1,0 +1,20 @@
+{
+  "multipart": [
+    { "when": { "facing": "north", "blockstate": "0|1", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt" } },
+    { "when": { "facing": "east", "blockstate": "0|1", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt", "y": 90 } },
+    { "when": { "facing": "south", "blockstate": "0|1", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt", "y": 180 } },
+    { "when": { "facing": "west", "blockstate": "0|1", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt", "y": 270 } },
+    { "when": { "facing": "north", "blockstate": "2", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_bottom" } },
+    { "when": { "facing": "east", "blockstate": "2", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_bottom", "y": 90 } },
+    { "when": { "facing": "south", "blockstate": "2", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_bottom", "y": 180 } },
+    { "when": { "facing": "west", "blockstate": "2", "curve": "straight" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_bottom", "y": 270 } },
+    { "when": { "facing": "north", "curve": "left" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_left" } },
+    { "when": { "facing": "east", "curve": "left" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_left", "y": 90 } },
+    { "when": { "facing": "south", "curve": "left" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_left", "y": 180 } },
+    { "when": { "facing": "west", "curve": "left" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_left", "y": 270 } },
+    { "when": { "facing": "north", "curve": "right" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_right" } },
+    { "when": { "facing": "east", "curve": "right" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_right", "y": 90 } },
+    { "when": { "facing": "south", "curve": "right" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_right", "y": 180 } },
+    { "when": { "facing": "west", "curve": "right" }, "apply": { "model": "crystalnexus:block/titanium_conveyer_belt_curve_right", "y": 270 } }
+  ]
+}

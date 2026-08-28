@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.util.MachineUpgradeHelper;
+import net.crystalnexus.processing.MachineTier;
 
 public class ExtractinatorOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
@@ -73,7 +74,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		slotnumbercheck = 1;
-		if (MachineUpgradeHelper.energyCost(upgrade, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+		if (energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 					if (!world.isClientSide()) {
@@ -102,7 +103,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 4096), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -128,7 +129,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 8)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
 							for (int index1 = 0; index1 < 6; index1++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.ANCIENT_CRYSTAL.get()) {
@@ -162,7 +163,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 4096), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -188,7 +189,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 3)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 3)) {
 							for (int index3 = 0; index3 < 6; index3++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.COAL) {
@@ -222,7 +223,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -248,7 +249,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 8)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
 							for (int index5 = 0; index5 < 6; index5++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
@@ -268,7 +269,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								}
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 125)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 125)) {
 							for (int index6 = 0; index6 < 6; index6++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.DIAMOND) {
@@ -302,7 +303,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -328,7 +329,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 300)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 300)) {
 							for (int index8 = 0; index8 < 6; index8++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.NETHERITE_SCRAP) {
@@ -362,7 +363,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -388,7 +389,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 8)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
 							for (int index10 = 0; index10 < 6; index10++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
@@ -408,13 +409,13 @@ public class ExtractinatorOnTickUpdateProcedure {
 								}
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 64)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 64)) {
 							for (int index11 = 0; index11 < 6; index11++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.ECHO_SHARD) {
+										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.WOLFRAMITE.get()) {
 									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
 										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.ECHO_SHARD).copy();
+											ItemStack _setstack = new ItemStack(CrystalnexusModItems.WOLFRAMITE.get()).copy();
 											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
 											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
 										}
@@ -442,7 +443,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrade, 1024), false);
+								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
 						}
 						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
@@ -468,7 +469,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								slotnumbercheck = 1 + slotnumbercheck;
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 4)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 4)) {
 							for (int index13 = 0; index13 < 6; index13++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.SILICON.get()) {
@@ -488,7 +489,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								}
 							}
 						}
-						if (1 == Mth.nextInt(RandomSource.create(), 1, 64)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 64)) {
 							for (int index14 = 0; index14 < 6; index14++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.CARBON_COMPOSITE.get()) {
@@ -513,6 +514,15 @@ public class ExtractinatorOnTickUpdateProcedure {
 			}
 		}
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+	}
+
+	static int energyCost(LevelAccessor world, BlockPos pos, ItemStack upgrade, int baseEnergy) {
+		return MachineTier.from(world.getBlockState(pos)).energyCost(MachineUpgradeHelper.energyCost(upgrade, baseEnergy));
+	}
+
+	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds) {
+		int successfulRolls = MachineTier.from(world.getBlockState(pos)) == MachineTier.INVERTIUM_TITANIUM ? 2 : 1;
+		return Mth.nextInt(RandomSource.create(), 1, baseOdds) <= successfulRolls;
 	}
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {

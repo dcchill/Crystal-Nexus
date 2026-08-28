@@ -90,6 +90,13 @@ class ProgressionRecipeAuditTest {
             "crystalnexus:crafting_factory");
         assertContains("titanium_crafting_factory_recipe.json", "c:plates/titanium",
             "crystalnexus:crystal_crafting_factory");
+		assertContains("titanium_extractinator_recipe.json", "c:plates/titanium",
+			"crystalnexus:extractinator", "crystalnexus:titanium_machine_frame");
+		assertContains("refining_wolframite.json", "crystalnexus:wolframite", "crystalnexus:nitrogen",
+			"crystalnexus:tungsten_dust", "minimum_machine_tier\":3");
+		assertContains("tungsten_arc_furnace.json", "crystalnexus:tungsten_dust",
+			"crystalnexus:hot_tungsten");
+		assertContains("extractinator_cobbled_deepslate.json", "crystalnexus:wolframite");
 
         assertContains("circuit_press_recipe.json", "crystalnexus:chlorophyte_machine_frame");
         assertContains("titanium_carbide_circuit_press_recipe.json",
@@ -113,6 +120,15 @@ class ProgressionRecipeAuditTest {
 		String overfuel = compact(RECIPES.resolve("fluid_chemical_reaction_overfuel.json"));
 		assertTrue(overfuel.contains("\"item_input_2_count\":3"));
 		assertFalse(overfuel.contains("\"coal_block\",\"count\""));
+	}
+
+	@Test
+	void titaniumExtractinatorKeepsItsTieredEnergyAndDropBonus() throws IOException {
+		String procedure = Files.readString(Path.of(
+			"src/main/java/net/crystalnexus/procedures/ExtractinatorOnTickUpdateProcedure.java"));
+		assertTrue(procedure.contains("MachineTier.from(world.getBlockState(pos)).energyCost"));
+		assertTrue(procedure.contains("MachineTier.INVERTIUM_TITANIUM ? 2 : 1"));
+		assertTrue(procedure.contains("CrystalnexusModItems.WOLFRAMITE"));
 	}
 
     private static void assertContains(String recipe, String... values) throws IOException {

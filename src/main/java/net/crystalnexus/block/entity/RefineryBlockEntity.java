@@ -32,11 +32,10 @@ import java.util.stream.IntStream;
 public final class RefineryBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int TANK_CAPACITY = 4000;
     private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
-    private final FluidTank[] tanks = { createTank(true), createTank(false) };
+    private final FluidTank[] tanks = { createTank(), createTank() };
 
-    private FluidTank createTank(boolean slurryOnly) {
-        return new FluidTank(TANK_CAPACITY, stack -> !slurryOnly
-                || net.crystalnexus.processing.MaterialProcessingCatalog.slurryMaterial(stack).isPresent()) {
+    private FluidTank createTank() {
+        return new FluidTank(TANK_CAPACITY) {
             @Override protected void onContentsChanged() {
                 setChanged();
                 if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
@@ -102,7 +101,7 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
         @Override public FluidStack getFluidInTank(int tank) { return tanks[tank].getFluid(); }
         @Override public int getTankCapacity(int tank) { return TANK_CAPACITY; }
         @Override public boolean isFluidValid(int tank, FluidStack stack) {
-            return tank == 0 && net.crystalnexus.processing.MaterialProcessingCatalog.slurryMaterial(stack).isPresent();
+            return tank == 0 && !stack.isEmpty();
         }
         @Override public int fill(FluidStack stack, FluidAction action) {
             return isFluidValid(0, stack) ? tanks[0].fill(stack, action) : 0;

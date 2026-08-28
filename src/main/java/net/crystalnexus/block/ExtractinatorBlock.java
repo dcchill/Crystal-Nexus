@@ -39,14 +39,21 @@ import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
 import net.crystalnexus.procedures.ExtractinatorOnTickUpdateProcedure;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.block.entity.ExtractinatorBlockEntity;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.TieredMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class ExtractinatorBlock extends Block implements EntityBlock {
+public class ExtractinatorBlock extends Block implements EntityBlock, TieredMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	private final MachineTier machineTier;
 
 	public ExtractinatorBlock() {
+		this(MachineTier.CRYSTAL);
+	}
+
+	public ExtractinatorBlock(MachineTier machineTier) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -56,7 +63,13 @@ public class ExtractinatorBlock extends Block implements EntityBlock {
 				return 0;
 			}
 		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
+		this.machineTier = machineTier;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+	}
+
+	@Override
+	public MachineTier machineTier() {
+		return machineTier;
 	}
 
 	@Override
