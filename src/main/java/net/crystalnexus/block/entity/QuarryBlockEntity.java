@@ -85,6 +85,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 	private int selectionWidth = 1;
 	private int selectionDepth = 1;
 	private List<QuarryChunkSelection.BlockOffset> hyperSliceOrder;
+	private int hyperBlocksPerTick = 1;
 	private int status = STATUS_IDLE;
 	private final Set<ChunkPos> ticketedChunks = new HashSet<>();
 
@@ -121,6 +122,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		var power = state.is(CrystalnexusModBlocks.HYPER_LASER_QUARRY.get())
 			? CrystalnexusConfig.MACHINES.HYPER_LASER_QUARRY
 			: CrystalnexusConfig.MACHINES.QUARRY;
+		this.hyperBlocksPerTick = power.hyperBlocksPerTick();
 		this.energyStorage = new EnergyStorage(power.capacity(), power.maxReceive(), power.maxExtract(), 0) {
 			@Override
 			public int receiveEnergy(int maxReceive, boolean simulate) {
@@ -211,16 +213,19 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 			sync();
 			return;
 		}
-		BlockPos beamTarget = slice.getLast().pos();
+
+		int blocksToMine = hyperBlocksPerTick > 0 ? Math.min(hyperBlocksPerTick, slice.size()) : slice.size();
+		List<SliceEntry> toMine = slice.subList(0, blocksToMine);
+		BlockPos beamTarget = toMine.getLast().pos();
 		setTargetPos(beamTarget);
 		markBeamActive();
-		int energyCost = Math.multiplyExact(slice.size(), FE_PER_BLOCK);
+		int energyCost = Math.multiplyExact(toMine.size(), FE_PER_BLOCK);
 		if (energyStorage.getEnergyStored() < energyCost) {
 			status = STATUS_NO_POWER;
 			sync();
 			return;
 		}
-		List<ItemStack> drops = slice.stream().flatMap(entry -> entry.drops().stream()).toList();
+		List<ItemStack> drops = toMine.stream().flatMap(entry -> entry.drops().stream()).toList();
 		if (!bufferCanAccept(drops)) {
 			status = STATUS_BUFFER_FULL;
 			sync();
@@ -228,12 +233,11 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		}
 
 		energyStorage.extractEnergy(energyCost, false);
-		for (SliceEntry entry : slice)
+		for (SliceEntry entry : toMine)
 			level.setBlock(entry.pos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 		for (ItemStack drop : drops) insertIntoHandler(hiddenBuffer, drop.copy());
 		status = STATUS_MINING;
 		cooldown = upgradedCooldown();
-		advanceHyperLayer(level);
 		sync();
 	}
 

@@ -183,7 +183,7 @@ public final class CrystalnexusConfig {
 			PISTON_GENERATOR = new EnergyValues(builder, "piston_generator", 40960, 2048, 1024);
 			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 512000, 32768, 32768);
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
-			HYPER_LASER_QUARRY = new EnergyValues(builder, "hyper_laser_quarry", 16384000, 1024000, 16384000);
+			HYPER_LASER_QUARRY = new EnergyValues(builder, "hyper_laser_quarry", 16384000, 1024000, 16384000, 16, 0);
 			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", EeMatterEconomy.creationCost(4), 512000, EeMatterEconomy.creationCost(4));
 			REACTION_ENERGY_INPUT = new EnergyValues(builder, "reaction_energy_input", 8192000, 4096000, 512000);
 			REACTOR_COMPUTER = new EnergyValues(builder, "reactor_computer", 4096000, 1024000, 1024000);
@@ -252,11 +252,18 @@ public final class CrystalnexusConfig {
 		private final int defaultCapacity;
 		private final int defaultMaxReceive;
 		private final int defaultMaxExtract;
+		private final ModConfigSpec.IntValue hyperBlocksPerTick;
+		private final int defaultHyperBlocksPerTick;
 
 		private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract) {
+			this(builder, path, defaultCapacity, defaultMaxReceive, defaultMaxExtract, 0, 0);
+		}
+
+		private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract, int defaultHyperBlocksPerTick, int dummy) {
 			this.defaultCapacity = defaultCapacity;
 			this.defaultMaxReceive = defaultMaxReceive;
 			this.defaultMaxExtract = defaultMaxExtract;
+			this.defaultHyperBlocksPerTick = defaultHyperBlocksPerTick;
 			builder.push(path);
 			capacity = builder.comment("Maximum FE this block or item can store.")
 					.defineInRange("capacity", defaultCapacity, 1, Integer.MAX_VALUE);
@@ -264,6 +271,12 @@ public final class CrystalnexusConfig {
 					.defineInRange("maxReceive", defaultMaxReceive, 0, Integer.MAX_VALUE);
 			maxExtract = builder.comment("Maximum FE this block or item can extract per operation.")
 					.defineInRange("maxExtract", defaultMaxExtract, 0, Integer.MAX_VALUE);
+			if (defaultHyperBlocksPerTick > 0) {
+				hyperBlocksPerTick = builder.comment("Blocks mined per tick by the Hyper Laser Quarry (0 = all blocks in slice).")
+						.defineInRange("hyperBlocksPerTick", defaultHyperBlocksPerTick, 1, Integer.MAX_VALUE);
+			} else {
+				hyperBlocksPerTick = null;
+			}
 			builder.pop();
 		}
 
@@ -277,6 +290,10 @@ public final class CrystalnexusConfig {
 
 		public int maxExtract() {
 			return getOrDefault(maxExtract, defaultMaxExtract);
+		}
+
+		public int hyperBlocksPerTick() {
+			return hyperBlocksPerTick != null ? getOrDefault(hyperBlocksPerTick, defaultHyperBlocksPerTick) : 0;
 		}
 	}
 
