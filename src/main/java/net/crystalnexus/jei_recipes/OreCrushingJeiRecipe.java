@@ -1,5 +1,6 @@
 package net.crystalnexus.jei_recipes;
 
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -30,7 +31,7 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, int minimumMachineTier) {
 		this.output = output;
 		this.recipeItems = recipeItems;
-		this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
+		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
 	}
 
 	public int minimumMachineTier() { return minimumMachineTier; }

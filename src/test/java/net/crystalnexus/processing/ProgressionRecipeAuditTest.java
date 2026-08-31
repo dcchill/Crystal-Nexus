@@ -77,6 +77,38 @@ class ProgressionRecipeAuditTest {
 
     @Test
     void tieredMachineRecipesFollowTheirMaterialProgression() throws IOException {
+        assertContains("crystal_machine_frame_recipe.json", "crystalnexus:machine_frame");
+        assertContains("chlorophyte_machine_frame_recipe.json", "crystalnexus:crystal_machine_frame");
+        assertContains("titanium_machine_frame_recipe.json", "crystalnexus:chlorophyte_machine_frame");
+        assertContains("invertium_machine_frame_recipe.json", "crystalnexus:chlorophyte_machine_frame");
+        assertContains("titanium_carbide_machine_frame_recipe.json", "crystalnexus:hyper_machine_frame");
+        assertContains("tungsten_machine_frame_recipe.json", "crystalnexus:titanium_carbide_machine_frame");
+        assertContains("hyper_machine_frame_recipe.json", "crystalnexus:invertium_machine_frame");
+
+        assertContains("crystal_crusher_recipe.json", "crystalnexus:crystal_machine_frame");
+        assertContains("chlorophyte_crusher_recipe.json", "crystalnexus:crystal_crusher",
+            "crystalnexus:chlorophyte_machine_frame");
+        assertContains("invertium_crusher_recipe.json", "crystalnexus:chlorophyte_crusher",
+            "crystalnexus:titanium_machine_frame");
+        assertContains("hyper_crusher_recipe.json", "crystalnexus:invertium_crusher",
+            "crystalnexus:hyper_machine_frame");
+
+        assertContains("dust_separator_recipe.json", "crystalnexus:crystal_machine_frame");
+        assertContains("chlorophyte_dust_separator_recipe.json", "crystalnexus:dust_separator",
+            "crystalnexus:chlorophyte_machine_frame");
+        assertContains("invertium_dust_separator_recipe.json", "crystalnexus:chlorophyte_dust_separator",
+            "crystalnexus:invertium_machine_frame");
+        assertContains("hyper_dust_separator_recipe.json", "crystalnexus:invertium_dust_separator",
+            "crystalnexus:hyper_machine_frame");
+
+        assertContains("refinery_recipe.json", "crystalnexus:crystal_machine_frame");
+        assertContains("chlorophyte_refinery_recipe.json", "crystalnexus:refinery",
+            "crystalnexus:chlorophyte_machine_frame");
+        assertContains("invertium_refinery_recipe.json", "crystalnexus:chlorophyte_refinery",
+            "crystalnexus:invertium_machine_frame");
+        assertContains("hyper_refinery_recipe.json", "crystalnexus:invertium_refinery",
+            "crystalnexus:hyper_machine_frame");
+
         assertContains("iron_smelter_recipe.json", "crystalnexus:machine_frame");
         assertContains("crystal_smelter_recipe.json", "crystalnexus:crystal_machine_frame",
             "crystalnexus:iron_smelter");
@@ -87,9 +119,9 @@ class ProgressionRecipeAuditTest {
 
         assertContains("crafting_factory_recipe.json", "crystalnexus:iron_machine_frame");
         assertContains("crystal_crafting_factory_recipe.json", "crystalnexus:ancient_crystal",
-            "crystalnexus:crafting_factory");
+            "crystalnexus:crafting_factory", "crystalnexus:crystal_machine_frame");
         assertContains("titanium_crafting_factory_recipe.json", "c:plates/titanium",
-            "crystalnexus:crystal_crafting_factory");
+            "crystalnexus:crystal_crafting_factory", "crystalnexus:titanium_machine_frame");
 		assertContains("titanium_extractinator_recipe.json", "c:plates/titanium",
 			"crystalnexus:extractinator", "crystalnexus:titanium_machine_frame");
 		assertContains("refining_wolframite.json", "crystalnexus:wolframite", "crystalnexus:nitrogen",
@@ -100,7 +132,7 @@ class ProgressionRecipeAuditTest {
 
         assertContains("circuit_press_recipe.json", "crystalnexus:chlorophyte_machine_frame");
         assertContains("titanium_carbide_circuit_press_recipe.json",
-            "crystalnexus:titanium_carbide_machine_frame");
+            "crystalnexus:titanium_carbide_machine_frame", "crystalnexus:circuit_press");
     }
 
 	@Test
@@ -129,6 +161,7 @@ class ProgressionRecipeAuditTest {
 		assertTrue(procedure.contains("MachineTier.from(world.getBlockState(pos)).energyCost"));
 		assertTrue(procedure.contains("MachineTier.INVERTIUM_TITANIUM ? 2 : 1"));
 		assertTrue(procedure.contains("CrystalnexusModItems.WOLFRAMITE"));
+		assertTrue(procedure.contains("rareDrop(world, BlockPos.containing(x, y, z), 64, 5)"));
 	}
 
     private static void assertContains(String recipe, String... values) throws IOException {

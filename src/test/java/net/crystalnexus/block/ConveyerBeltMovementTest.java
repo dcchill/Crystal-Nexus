@@ -36,4 +36,10 @@ class ConveyerBeltMovementTest {
         assertEquals(20L, ConveyerBeltMovement.renderStartTime(0, 10L, 20L));
         assertEquals(10L, ConveyerBeltMovement.renderStartTime(1, 10L, 20L));
     }
+
+    @Test
+    void itemWaitsWhenFrontInventoryCannotAcceptIt() {
+        assertFalse(ConveyerBeltMovement.shouldDropOffFront(false, true));
+        assertTrue(ConveyerBeltMovement.shouldDropOffFront(false, false));
+    }
 }

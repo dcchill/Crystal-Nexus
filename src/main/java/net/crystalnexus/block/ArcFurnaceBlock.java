@@ -24,7 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class ArcFurnaceBlock extends ChemicalReactionChamberBlock implements TieredMachineBlock {
-	@Override public MachineTier machineTier() { return MachineTier.INVERTIUM_TITANIUM; }
+	@Override public MachineTier machineTier() { return MachineTier.TUNGSTEN; }
 
 	@Override public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		ArcFurnaceOnTickUpdateProcedure.execute(level, pos);

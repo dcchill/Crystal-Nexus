@@ -67,8 +67,16 @@ public boolean canAdvanceForRender(int segment) {
     BlockState state = getBlockState();
     if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
 
-    BlockEntity front = level.getBlockEntity(worldPosition.relative(state.getValue(BlockStateProperties.HORIZONTAL_FACING)));
-    boolean tailCanAdvance = !(front instanceof ConveyerBeltBaseBlockEntity nextBelt) || nextBelt.belt[0].isEmpty();
+    Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
+    BlockEntity front = level.getBlockEntity(worldPosition.relative(facing));
+    boolean tailCanAdvance;
+    if (front instanceof ConveyerBeltBaseBlockEntity nextBelt) {
+        tailCanAdvance = nextBelt.belt[0].isEmpty();
+    } else {
+        IItemHandler frontInventory = isInputBelt() ? findFrontInventory(facing, facing.getOpposite()) : null;
+        tailCanAdvance = frontInventory == null
+                || ItemHandlerHelper.insertItem(frontInventory, belt[SEGMENTS - 1], true).getCount() < belt[SEGMENTS - 1].getCount();
+    }
     return ConveyerBeltMovement.canAdvance(occupiedSegments, segment, tailCanAdvance);
 }
 
@@ -156,17 +164,17 @@ public void serverTick() {
         if (isOutputBelt()) changed |= tryPullFromBehind(back, facing);
 
         // 5) input belt pushes into inventory in front ONLY if there isn't a belt in front
-        boolean pushedToFront = false;
+        IItemHandler frontInventory = null;
         if (isInputBelt()) {
             BlockPos frontPos = worldPosition.relative(facing);
             if (!(level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity)) {
-                pushedToFront = tryPushToFront(facing, back);
-                changed |= pushedToFront;
+                frontInventory = findFrontInventory(facing, back);
+                if (frontInventory != null) changed |= tryPushToFront(frontInventory);
             }
         }
 
-        if (!movedToNextBelt) {
-            changed |= tryDropOffFront(facing, pushedToFront);
+        if (ConveyerBeltMovement.shouldDropOffFront(movedToNextBelt, frontInventory != null)) {
+            changed |= tryDropOffFront(facing);
         }
 
         if (changed) sync();
@@ -321,11 +329,10 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 }
 
 
-    private boolean tryPushToFront(Direction facing, Direction back) {
-        if (level == null) return false;
-
+    @Nullable
+    private IItemHandler findFrontInventory(Direction facing, Direction back) {
         ItemStack tail = belt[SEGMENTS - 1];
-        if (tail.isEmpty()) return false;
+        if (level == null || tail.isEmpty()) return null;
 
         BlockPos outPos = worldPosition.relative(facing);
 
@@ -333,8 +340,11 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         IItemHandler out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, back);
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, null);
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, facing);
-        if (out == null) return false;
+        return out;
+    }
 
+    private boolean tryPushToFront(IItemHandler out) {
+        ItemStack tail = belt[SEGMENTS - 1];
         ItemStack remainder = ItemHandlerHelper.insertItem(out, tail, false);
         if (remainder.isEmpty()) {
             belt[SEGMENTS - 1] = ItemStack.EMPTY;
@@ -347,12 +357,11 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         return false; // no space -> backs up
     }
 
-    private boolean tryDropOffFront(Direction facing, boolean alreadyOutput) {
+    private boolean tryDropOffFront(Direction facing) {
         if (level == null) return false;
 
         BlockPos frontPos = worldPosition.relative(facing);
         if (level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity) return false;
-        if (alreadyOutput) return false;
 
         ItemStack tail = belt[SEGMENTS - 1];
         if (tail.isEmpty()) return false;

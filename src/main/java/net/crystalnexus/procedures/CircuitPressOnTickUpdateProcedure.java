@@ -32,6 +32,7 @@ import net.crystalnexus.block.entity.CircuitPressBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.block.CircuitPressBlock;
+import net.crystalnexus.processing.MachineTier;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -101,6 +102,7 @@ public class CircuitPressOnTickUpdateProcedure {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
+		cookTime = MachineTier.from(world.getBlockState(pressPos)).processingTime(cookTime);
 
 		// Sync maxProgress for GUI/progress bars
 		if (cookTime < 1)

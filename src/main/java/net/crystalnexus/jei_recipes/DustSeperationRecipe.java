@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -49,7 +50,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
         this.secondaryOutput = secondaryOutput.map(ItemStack::copy);
         this.taggedSecondaryOutput = taggedSecondaryOutput;
         this.secondaryChance = Math.max(0f, Math.min(1f, secondaryChance));
-        this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
+        this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
     }
 
     public int inputCount() { return inputCount; }

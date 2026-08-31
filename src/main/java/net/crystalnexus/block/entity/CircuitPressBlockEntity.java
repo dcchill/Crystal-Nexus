@@ -154,7 +154,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.capacity(), getBlockState().is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get()) ? 2048 : 2048), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxReceive(), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.capacity(), getBlockState().is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get()) ? 2048 * 8 : 2048), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxReceive(), CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);

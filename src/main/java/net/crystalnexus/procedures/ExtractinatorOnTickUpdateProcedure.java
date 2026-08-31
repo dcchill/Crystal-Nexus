@@ -409,7 +409,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 								}
 							}
 						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 64)) {
+						if (rareDrop(world, BlockPos.containing(x, y, z), 64, 5)) {
 							for (int index11 = 0; index11 < 6; index11++) {
 								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
 										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.WOLFRAMITE.get()) {
@@ -521,7 +521,11 @@ public class ExtractinatorOnTickUpdateProcedure {
 	}
 
 	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds) {
-		int successfulRolls = MachineTier.from(world.getBlockState(pos)) == MachineTier.INVERTIUM_TITANIUM ? 2 : 1;
+		return rareDrop(world, pos, baseOdds, 1);
+	}
+
+	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds, int abundance) {
+		int successfulRolls = (MachineTier.from(world.getBlockState(pos)) == MachineTier.INVERTIUM_TITANIUM ? 2 : 1) * abundance;
 		return Mth.nextInt(RandomSource.create(), 1, baseOdds) <= successfulRolls;
 	}
 

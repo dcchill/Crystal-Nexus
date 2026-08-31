@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -41,7 +42,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
         this.itemInput = itemInput;
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
-		this.minimumMachineTier = Math.max(1, Math.min(4, minimumMachineTier));
+		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
     }
 
     public FluidChemicalReactionRecipe.FluidAmount input() { return input; }

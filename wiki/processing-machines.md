@@ -17,7 +17,9 @@ Put an ingot in the input, choose the desired part with the selector, supply FE,
 
 ## Ore and Dust Processing
 
-Machine material tiers consume twice as much base energy per operation as the previous tier: Iron 0.5x, Crystal 1x, Chlorophyte 2x, Titanium/Invertium 4x, and Hyper/Carbon 8x. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, and 32,768 FE before FE-efficiency upgrades. Machines with missing intermediate variants still use the multiplier for their crafting material.
+Machine material tiers trade more energy for faster processing, doubling FE usage at every step: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Chlorophyte uses 2x FE at 0.75x time, Titanium/Invertium uses 4x FE at 0.5x time, Hyper/Carbon uses 8x FE at 0.35x time, Titanium Carbide uses 16x FE at 0.3x time, and Tungsten uses 32x FE at 0.25x time. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, 32,768, 65,536, and 131,072 FE before FE-efficiency upgrades. Machines with missing intermediate variants still use the multiplier for their crafting material.
+
+Core machine upgrades consume the prior machine and their matching frame. Frames upgrade Iron to Crystal to Chlorophyte; Titanium and Invertium are parallel upgrades from Chlorophyte, Hyper upgrades from Invertium, Titanium Carbide upgrades from Hyper, and Tungsten upgrades from Titanium Carbide.
 
 ### Crystal Ore Crusher
 
@@ -158,7 +160,11 @@ The Quantum Miner creates resources from a weighted resource table instead of mi
 
 ### Chlorophyte Circuit Press
 
-The Circuit Press creates circuits and chips. The Chlorophyte model costs 4,096 FE per item. The Titanium Carbide model costs 8,192 FE per item and processes eight items per batch, for 65,536 FE per completed batch before FE-efficiency upgrades.
+The Circuit Press creates circuits and chips. The Chlorophyte model costs 4,096 FE per item and takes 75 ticks. The Titanium Carbide model costs 32,768 FE per item, takes 30 ticks, and processes eight items per batch for 262,144 FE before FE-efficiency upgrades.
+
+### Arc Furnace
+
+The Arc Furnace is a Tungsten-tier machine. Its 4,096 FE base operation costs 131,072 FE and takes 25 ticks before upgrades.
 
 ### Computation Cluster
 

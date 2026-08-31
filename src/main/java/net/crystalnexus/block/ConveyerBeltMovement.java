@@ -16,4 +16,8 @@ public final class ConveyerBeltMovement {
     public static long renderStartTime(int segment, long beltMoveTime, long incomingHeadTime) {
         return segment == 0 && incomingHeadTime != Long.MIN_VALUE ? incomingHeadTime : beltMoveTime;
     }
+
+    public static boolean shouldDropOffFront(boolean movedToNextBelt, boolean hasFrontInventory) {
+        return !movedToNextBelt && !hasFrontInventory;
+    }
 }

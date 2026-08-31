@@ -6,6 +6,7 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.multiblock.StructureNbtValidator;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
+import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.world.inventory.ArcFurnaceMenu;
@@ -83,7 +84,7 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	@Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 2; }
 
 	private final EnergyStorage energyStorage = new EnergyStorage(
-		CrystalnexusConfig.MACHINES.ARC_FURNACE.capacity(), CrystalnexusConfig.MACHINES.ARC_FURNACE.maxReceive(),
+		MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.ARC_FURNACE.capacity(), 4096), CrystalnexusConfig.MACHINES.ARC_FURNACE.maxReceive(),
 		CrystalnexusConfig.MACHINES.ARC_FURNACE.maxExtract(), 0) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
 			int received = super.receiveEnergy(amount, simulate); if (!simulate) changed(); return received;
