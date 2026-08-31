@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -30,6 +31,9 @@ import net.crystalnexus.block.entity.EnergyCableBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class EnergyCableBlock extends Block implements EntityBlock {
+
+    @Override
+    protected boolean canBeReplaced(BlockState state, Fluid fluid) { return false; }
 
     public static final BooleanProperty NORTH = BooleanProperty.create("north");
     public static final BooleanProperty EAST  = BooleanProperty.create("east");

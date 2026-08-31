@@ -56,6 +56,7 @@ public class CrystalnexusMod {
 		// End of user code block mod constructor
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
+		modEventBus.addListener(ModChunkTickets::onRegisterTicketControllers);
 		CrystalnexusModSounds.REGISTRY.register(modEventBus);
 		CrystalnexusModBlocks.REGISTRY.register(modEventBus);
 		CrystalnexusModBlockEntities.REGISTRY.register(modEventBus);

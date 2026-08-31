@@ -23,4 +23,9 @@ final class GravitationalArrayCostScheduleTest {
         assertThrows(IllegalArgumentException.class,
             () -> GravitationalArrayCostSchedule.next(50_000_000L, 1200, 1200));
     }
+
+    @Test
+    void shortSolarSimulatorDurationExposesItsRequiredTransferRate() {
+        assertEquals(2_133_334, GravitationalArrayCostSchedule.maximumStep(6_400_000, 3));
+    }
 }

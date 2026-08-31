@@ -166,6 +166,17 @@ The gamerule `disableMeltdowns` disables reactor meltdowns.
 
 ## Late-Game Power
 
+### Solar Engine
+
+The Solar Engine generates FE from a contained star. Stars lose durability while the engine operates: the current containment-stress percentage is also the chance each tick to consume one durability. When durability runs out, the installed star becomes a Dead Star.
+
+- Yellow Dwarf Star: 1,024 durability
+- Orange Star: 2,048 durability
+- Blue Star: 4,096 durability
+- Pink Star: 8,192 durability
+
+Star durability cannot be enchanted or repaired by combining stars in a crafting grid or an anvil. Lower extraction and sufficient water cooling reduce containment stress and extend star lifetime.
+
 ### Zero Point
 
 Unlimited power.

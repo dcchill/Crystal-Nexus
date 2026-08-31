@@ -36,7 +36,7 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventHandler {
 	private static final List<String> ROTATING_MODELS = List.of(
-			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "terra", "caelus", "boreas", "meteor");
+			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "dead_star", "terra", "caelus", "boreas", "meteor");
 
 	@SubscribeEvent
 	public static void animateModels(ModelEvent.ModifyBakingResult event) {

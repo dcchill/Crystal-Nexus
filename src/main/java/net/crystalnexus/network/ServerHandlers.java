@@ -2,7 +2,7 @@ package net.crystalnexus.network;
 
 import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.network.payload.C2S_RequestPage;
-import net.crystalnexus.network.payload.C2S_Withdraw;
+import net.crystalnexus.network.C2S_Withdraw;
 import net.crystalnexus.network.payload.S2C_SendPage;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.world.inventory.DepotCliMenu;

@@ -10,7 +10,7 @@
     "s": { "item": "crystalnexus:silicon" },
     "e": { "item": "crystalnexus:computation_node" },
     "l": { "item": "crystalnexus:silicon_wafer" },
-    "h": { "item": "crystalnexus:hyper_machine_frame" },
+    "h": { "item": "crystalnexus:titanium_machine_frame" },
     "c": { "item": "crystalnexus:depot_cable" }
   },
   "result": { "id": "crystalnexus:depot_cli", "count": 1 }

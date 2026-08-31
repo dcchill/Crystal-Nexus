@@ -26,7 +26,10 @@ Machine frame tiers:
 - Crystal Machine Frame
 - Chlorophyte Machine Frame
 - Invertium Machine Frame
+- Titanium Machine Frame
 - Carbon Machine Frame
+- Titanium Carbide Machine Frame
+- Tungsten Machine Frame
 - Hyper Machine Frame
 
 Other structural components:

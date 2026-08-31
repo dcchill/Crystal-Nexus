@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["a", "b"],
+  "key": { "a": { "tag": "c:plates/tungsten" }, "b": { "tag": "c:rods/tungsten" } },
+  "result": { "id": "crystalnexus:tungsten_machine_bolt", "count": 4 }
+}

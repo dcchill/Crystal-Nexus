@@ -17,9 +17,11 @@ Put an ingot in the input, choose the desired part with the selector, supply FE,
 
 ## Ore and Dust Processing
 
-Machine material tiers trade more energy for faster processing, doubling FE usage at every step: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Chlorophyte uses 2x FE at 0.75x time, Titanium/Invertium uses 4x FE at 0.5x time, Hyper/Carbon uses 8x FE at 0.35x time, Titanium Carbide uses 16x FE at 0.3x time, and Tungsten uses 32x FE at 0.25x time. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, 32,768, 65,536, and 131,072 FE before FE-efficiency upgrades. Machines with missing intermediate variants still use the multiplier for their crafting material.
+Machine material tiers trade more energy for faster processing, doubling FE usage at every step: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Chlorophyte uses 2x FE at 0.75x time, Invertium uses 4x FE at 0.5x time, Titanium uses 8x FE at 0.4x time, Carbon uses 16x FE at 0.35x time, Titanium Carbide uses 32x FE at 0.3x time, Tungsten uses 64x FE at 0.25x time, and Hyper uses 128x FE at 0.2x time. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, 32,768, 65,536, 131,072, 262,144, and 524,288 FE before FE-efficiency upgrades. Machines with missing intermediate variants use the multiplier assigned to the physical variant.
 
-Core machine upgrades consume the prior machine and their matching frame. Frames upgrade Iron to Crystal to Chlorophyte; Titanium and Invertium are parallel upgrades from Chlorophyte, Hyper upgrades from Invertium, Titanium Carbide upgrades from Hyper, and Tungsten upgrades from Titanium Carbide.
+Machine frames follow one progression: Iron to Crystal to Chlorophyte to Invertium to Titanium to Carbon to Titanium Carbide to Tungsten to Hyper. Not every tier has a dedicated Crusher, Dust Separator, or Refinery; the legacy `invertium_*` processing machines fill the Titanium role, while Hyper remains the final physical variant and requires the Tungsten-gated Hyper frame.
+
+Custom material profiles and processing recipes use numeric minimum tiers: Crystal 1, Chlorophyte 2, Invertium 3, Titanium 4, Carbon 5, Titanium Carbide 6, Tungsten 7, and Hyper 8. Datapacks written for the former merged tiers must update levels 3 through 6 to preserve their intended gate.
 
 ### Crystal Ore Crusher
 

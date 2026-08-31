@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:titanium_electrolysis",
+  "fluid_input": { "fluid": "minecraft:water", "amount": 500 },
+  "fluid_output": { "fluid": "crystalnexus:oxygen", "amount": 150 }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/tungsten" },
+  "result": { "id": "crystalnexus:tungsten_machine_bolt", "count": 2 },
+  "mode": "bolt"
+}

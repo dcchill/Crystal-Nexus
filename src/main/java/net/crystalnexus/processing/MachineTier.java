@@ -7,10 +7,12 @@ public enum MachineTier {
     IRON(0, 1.25, 0.50, "Iron"),
     CRYSTAL(1, 1.00, 1.00, "Crystal"),
     CHLOROPHYTE(2, 0.75, 2.00, "Chlorophyte"),
-    INVERTIUM_TITANIUM(3, 0.50, 4.00, "Titanium"),
-    HYPER_CARBON(4, 0.35, 8.00, "Hyper/Carbon Fiber"),
-    TITANIUM_CARBIDE(5, 0.30, 16.00, "Titanium Carbide"),
-    TUNGSTEN(6, 0.25, 32.00, "Tungsten");
+    INVERTIUM(3, 0.50, 4.00, "Invertium"),
+    TITANIUM(4, 0.40, 8.00, "Titanium"),
+    CARBON(5, 0.35, 16.00, "Carbon"),
+    TITANIUM_CARBIDE(6, 0.30, 32.00, "Titanium Carbide"),
+    TUNGSTEN(7, 0.25, 64.00, "Tungsten"),
+    HYPER(8, 0.20, 128.00, "Hyper");
 
     private final int level;
     private final double processingTimeMultiplier;

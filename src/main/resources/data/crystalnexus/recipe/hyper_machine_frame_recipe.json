@@ -2,28 +2,28 @@
   "type": "crystalnexus:matter_transmutation",
   "ingredients": [
     {
-      "item": "crystalnexus:pure_blutonium"
+      "item": "crystalnexus:meteorite_alloy"
     },
     {
-      "item": "crystalnexus:machine_bolt"
-    },
-    {
-      "item": "crystalnexus:ee_matter"
-    },
-    {
-      "item": "crystalnexus:pure_blutonium"
-    },
-    {
-      "item": "crystalnexus:invertium_machine_frame"
-    },
-    {
-      "item": "crystalnexus:pure_blutonium"
+      "item": "crystalnexus:tungsten_machine_bolt"
     },
     {
       "item": "crystalnexus:ee_matter"
     },
     {
-      "item": "crystalnexus:machine_bolt"
+      "item": "crystalnexus:meteorite_alloy"
+    },
+    {
+      "item": "crystalnexus:tungsten_machine_frame"
+    },
+    {
+      "item": "crystalnexus:meteorite_alloy"
+    },
+    {
+      "item": "crystalnexus:ee_matter"
+    },
+    {
+      "item": "crystalnexus:tungsten_machine_bolt"
     }
   ],
   "integers": [

@@ -1,4 +1,4 @@
 {
   "replace": false,
-  "values": ["#c:bolts/iron"]
+  "values": ["#c:bolts/iron", "#c:bolts/copper", "#c:bolts/tungsten"]
 }

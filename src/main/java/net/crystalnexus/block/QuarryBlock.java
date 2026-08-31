@@ -114,6 +114,7 @@ public class QuarryBlock extends Block implements EntityBlock {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity be = world.getBlockEntity(pos);
 			if (be instanceof QuarryBlockEntity qbe) {
+				qbe.dropBufferedContents();
 				Containers.dropContents(world, pos, qbe);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}

@@ -50,7 +50,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
         this.secondaryOutput = secondaryOutput.map(ItemStack::copy);
         this.taggedSecondaryOutput = taggedSecondaryOutput;
         this.secondaryChance = Math.max(0f, Math.min(1f, secondaryChance));
-        this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
+        this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
     }
 
     public int inputCount() { return inputCount; }

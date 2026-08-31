@@ -118,6 +118,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues PISTON_GENERATOR;
 		public final EnergyValues QUANTUM_MINER;
 		public final EnergyValues QUARRY;
+		public final EnergyValues HYPER_LASER_QUARRY;
 		public final EnergyValues REACTION_CHAMBER_COMPUTER;
 		public final EnergyValues REACTION_ENERGY_INPUT;
 		public final EnergyValues REACTOR_COMPUTER;
@@ -182,6 +183,7 @@ public final class CrystalnexusConfig {
 			PISTON_GENERATOR = new EnergyValues(builder, "piston_generator", 40960, 2048, 1024);
 			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 512000, 32768, 32768);
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
+			HYPER_LASER_QUARRY = new EnergyValues(builder, "hyper_laser_quarry", 16384000, 1024000, 16384000);
 			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", EeMatterEconomy.creationCost(4), 512000, EeMatterEconomy.creationCost(4));
 			REACTION_ENERGY_INPUT = new EnergyValues(builder, "reaction_energy_input", 8192000, 4096000, 512000);
 			REACTOR_COMPUTER = new EnergyValues(builder, "reactor_computer", 4096000, 1024000, 1024000);

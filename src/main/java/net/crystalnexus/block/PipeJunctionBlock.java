@@ -5,6 +5,7 @@ import net.neoforged.api.distmarker.Dist;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -29,6 +30,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 public class PipeJunctionBlock extends Block implements EntityBlock {
+	@Override
+	protected boolean canBeReplaced(BlockState state, Fluid fluid) { return false; }
+
 	public PipeJunctionBlock() {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 11f));
 	}

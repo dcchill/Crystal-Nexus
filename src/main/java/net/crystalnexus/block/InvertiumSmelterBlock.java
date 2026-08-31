@@ -172,5 +172,5 @@ public class InvertiumSmelterBlock extends Block implements EntityBlock, TieredM
 			return 0;
 	}
 
-	@Override public MachineTier machineTier() { return MachineTier.INVERTIUM_TITANIUM; }
+	@Override public MachineTier machineTier() { return MachineTier.INVERTIUM; }
 }

@@ -525,7 +525,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 	}
 
 	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds, int abundance) {
-		int successfulRolls = (MachineTier.from(world.getBlockState(pos)) == MachineTier.INVERTIUM_TITANIUM ? 2 : 1) * abundance;
+		int successfulRolls = (MachineTier.from(world.getBlockState(pos)) == MachineTier.TITANIUM ? 2 : 1) * abundance;
 		return Mth.nextInt(RandomSource.create(), 1, baseOdds) <= successfulRolls;
 	}
 

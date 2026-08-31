@@ -44,9 +44,11 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
-    public static final int DURATION = 50;
+    public static final int DURATION = 3;
     private static final int ENERGY_PER_ITEM = 200_000;
     private static final int STAR_SLOT = 4;
+    private static final int REQUIRED_ENERGY_TRANSFER = GravitationalArrayCostSchedule.maximumStep(
+        (long) STAR_SLOT * 8 * ENERGY_PER_ITEM, DURATION);
     private static final int VALIDATION_INTERVAL = 20;
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "solar_sim");
     private static final List<TagKey<Item>> TERRA = tags("raw_materials/iron", "raw_materials/copper", "gems/coal", "raw_materials/tin", "raw_materials/silver");
@@ -56,9 +58,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 	private final EnergyStorage energyStorage = new EnergyStorage(
-		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(),
-		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(),
-		CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract()) {
+		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(), REQUIRED_ENERGY_TRANSFER),
+		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(), REQUIRED_ENERGY_TRANSFER),
+		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract(), REQUIRED_ENERGY_TRANSFER)) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
 			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
 		}

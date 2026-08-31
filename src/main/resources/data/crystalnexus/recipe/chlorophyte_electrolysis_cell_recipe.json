@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["hph", "cmc", "ses"],
+  "key": {
+    "h": { "item": "crystalnexus:heating_coil" },
+    "p": { "item": "crystalnexus:pipe_straight" },
+    "c": { "item": "crystalnexus:chlorophyte_ingot" },
+    "m": { "item": "crystalnexus:chlorophyte_machine_frame" },
+    "s": { "item": "crystalnexus:ceramic_plate" },
+    "e": { "item": "crystalnexus:electric_motor" }
+  },
+  "result": { "id": "crystalnexus:chlorophyte_electrolysis_cell", "count": 1 }
+}

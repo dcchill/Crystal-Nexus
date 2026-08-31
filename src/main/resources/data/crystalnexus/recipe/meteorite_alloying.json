@@ -2,7 +2,7 @@
   "type": "crystalnexus:arc_furnace",
   "ingredients": [
     { "item": "crystalnexus:meteorite_scrap" },
-    { "item": "crystalnexus:invertium_ingot" }
+    { "item": "crystalnexus:titanium_carbide_ingot" }
   ],
   "output": { "id": "crystalnexus:hot_meteorite_alloy", "count": 1 }
 }

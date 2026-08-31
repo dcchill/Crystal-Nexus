@@ -1,0 +1,4 @@
+{
+  "parent": "crystalnexus:custom/iron_bolt",
+  "textures": { "0": "crystalnexus:block/copper_bolt", "particle": "crystalnexus:item/placeholderingot" }
+}

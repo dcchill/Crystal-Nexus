@@ -79,11 +79,12 @@ class ProgressionRecipeAuditTest {
     void tieredMachineRecipesFollowTheirMaterialProgression() throws IOException {
         assertContains("crystal_machine_frame_recipe.json", "crystalnexus:machine_frame");
         assertContains("chlorophyte_machine_frame_recipe.json", "crystalnexus:crystal_machine_frame");
-        assertContains("titanium_machine_frame_recipe.json", "crystalnexus:chlorophyte_machine_frame");
         assertContains("invertium_machine_frame_recipe.json", "crystalnexus:chlorophyte_machine_frame");
-        assertContains("titanium_carbide_machine_frame_recipe.json", "crystalnexus:hyper_machine_frame");
+        assertContains("titanium_machine_frame_recipe.json", "crystalnexus:invertium_machine_frame");
+        assertContains("carbon_machine_frame_recipe.json", "crystalnexus:titanium_machine_frame");
+        assertContains("titanium_carbide_machine_frame_recipe.json", "crystalnexus:carbon_machine_frame");
         assertContains("tungsten_machine_frame_recipe.json", "crystalnexus:titanium_carbide_machine_frame");
-        assertContains("hyper_machine_frame_recipe.json", "crystalnexus:invertium_machine_frame");
+        assertContains("hyper_machine_frame_recipe.json", "crystalnexus:tungsten_machine_frame");
 
         assertContains("crystal_crusher_recipe.json", "crystalnexus:crystal_machine_frame");
         assertContains("chlorophyte_crusher_recipe.json", "crystalnexus:crystal_crusher",
@@ -97,7 +98,7 @@ class ProgressionRecipeAuditTest {
         assertContains("chlorophyte_dust_separator_recipe.json", "crystalnexus:dust_separator",
             "crystalnexus:chlorophyte_machine_frame");
         assertContains("invertium_dust_separator_recipe.json", "crystalnexus:chlorophyte_dust_separator",
-            "crystalnexus:invertium_machine_frame");
+            "crystalnexus:titanium_machine_frame");
         assertContains("hyper_dust_separator_recipe.json", "crystalnexus:invertium_dust_separator",
             "crystalnexus:hyper_machine_frame");
 
@@ -105,7 +106,7 @@ class ProgressionRecipeAuditTest {
         assertContains("chlorophyte_refinery_recipe.json", "crystalnexus:refinery",
             "crystalnexus:chlorophyte_machine_frame");
         assertContains("invertium_refinery_recipe.json", "crystalnexus:chlorophyte_refinery",
-            "crystalnexus:invertium_machine_frame");
+            "crystalnexus:titanium_machine_frame");
         assertContains("hyper_refinery_recipe.json", "crystalnexus:invertium_refinery",
             "crystalnexus:hyper_machine_frame");
 
@@ -135,6 +136,22 @@ class ProgressionRecipeAuditTest {
             "crystalnexus:titanium_carbide_machine_frame", "crystalnexus:circuit_press");
     }
 
+    @Test
+    void physicalMachinesUseTheirSeparatedLogicalTiers() throws IOException {
+        String blocks = Files.readString(Path.of(
+            "src/main/java/net/crystalnexus/init/CrystalnexusModBlocks.java"));
+        assertTrue(blocks.contains("INVERTIUM_CRUSHER = REGISTRY.register(\"invertium_crusher\", () -> new CrystalCrusherBlock(MachineTier.TITANIUM))"));
+        assertTrue(blocks.contains("INVERTIUM_DUST_SEPARATOR = REGISTRY.register(\"invertium_dust_separator\", () -> new DustSeparatorBlock(MachineTier.TITANIUM))"));
+        assertTrue(blocks.contains("INVERTIUM_REFINERY = REGISTRY.register(\"invertium_refinery\", () -> new RefineryBlock(MachineTier.TITANIUM))"));
+        assertTrue(blocks.contains("HYPER_CRUSHER = REGISTRY.register(\"hyper_crusher\", () -> new CrystalCrusherBlock(MachineTier.HYPER))"));
+        assertTrue(blocks.contains("HYPER_DUST_SEPARATOR = REGISTRY.register(\"hyper_dust_separator\", () -> new DustSeparatorBlock(MachineTier.HYPER))"));
+        assertTrue(blocks.contains("HYPER_REFINERY = REGISTRY.register(\"hyper_refinery\", () -> new RefineryBlock(MachineTier.HYPER))"));
+
+        String smelter = Files.readString(Path.of(
+            "src/main/java/net/crystalnexus/block/InvertiumSmelterBlock.java"));
+        assertTrue(smelter.contains("return MachineTier.INVERTIUM"));
+    }
+
 	@Test
 	void balanceFixesStayOnCentralizedCounts() throws IOException {
 		String oreProcessor = Files.readString(Path.of(
@@ -159,7 +176,7 @@ class ProgressionRecipeAuditTest {
 		String procedure = Files.readString(Path.of(
 			"src/main/java/net/crystalnexus/procedures/ExtractinatorOnTickUpdateProcedure.java"));
 		assertTrue(procedure.contains("MachineTier.from(world.getBlockState(pos)).energyCost"));
-		assertTrue(procedure.contains("MachineTier.INVERTIUM_TITANIUM ? 2 : 1"));
+		assertTrue(procedure.contains("MachineTier.TITANIUM ? 2 : 1"));
 		assertTrue(procedure.contains("CrystalnexusModItems.WOLFRAMITE"));
 		assertTrue(procedure.contains("rareDrop(world, BlockPos.containing(x, y, z), 64, 5)"));
 	}

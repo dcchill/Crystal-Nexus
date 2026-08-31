@@ -1,15 +1,8 @@
 package net.crystalnexus.item;
 
-import net.crystalnexus.block.DepotCableBlock;
-import net.crystalnexus.block.DepotCableMode;
-import net.crystalnexus.block.ConveyerBeltMode;
-import net.crystalnexus.block.ConveyerBeltBlock;
-import net.crystalnexus.block.ConveyerBeltInputBlock;
-import net.crystalnexus.block.ConveyerBeltOutputBlock;
-import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
+import net.crystalnexus.block.*;
+import net.crystalnexus.block.entity.*;
 import net.crystalnexus.init.CrystalnexusModBlocks;
-import net.crystalnexus.block.PipeStraightBlock;
-import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.util.WrenchLinePlacement;
 
 import net.minecraft.core.BlockPos;
@@ -43,7 +36,7 @@ import java.util.List;
 public class CrystalWrenchItem extends Item {
 
     public CrystalWrenchItem() {
-        super(new Item.Properties().stacksTo(1));
+        super(new Item.Properties().stacksTo(1).durability(200));
     }
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
@@ -668,8 +661,26 @@ public class CrystalWrenchItem extends Item {
         boolean isCable =
                 isCableBlock(state);
 
+        boolean isMachineFrame =
+                block instanceof MachineFrameBlock
+                || block instanceof CrystalMachineFrameBlock
+                || block instanceof ChlorophyteMachineFrameBlock
+                || block instanceof InvertiumMachineFrameBlock
+                || block instanceof CarbonMachineFrameBlock
+                || block instanceof HyperMachineFrameBlock;
+
+        boolean isBlueprint =
+                block instanceof BlueprintBaseBlock
+                || block instanceof BlueprintFrameBlock
+                || block instanceof BlueprintControllerBlock;
+
+        boolean isStorage = block instanceof TankBlock;
+
         return hasBlockEntity
-                || isCable;
+                || isCable
+                || isMachineFrame
+                || isBlueprint
+                || isStorage;
     }
 
     /**
@@ -798,7 +809,7 @@ public class CrystalWrenchItem extends Item {
 
         tooltip.add(
                 Component.literal(
-                        "§7Shift+Right-click: Dismantle machines, block entities, and cables"
+                        "§7Shift+Right-click: Dismantle machines, frames, blueprints, storage, and cables"
                 )
         );
 

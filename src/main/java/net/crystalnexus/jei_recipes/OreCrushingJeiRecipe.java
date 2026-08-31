@@ -31,7 +31,7 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, int minimumMachineTier) {
 		this.output = output;
 		this.recipeItems = recipeItems;
-		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
+		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
 	}
 
 	public int minimumMachineTier() { return minimumMachineTier; }

@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": ["ipi", "pmp", "ipi"],
   "key": {
-    "i": { "item": "crystalnexus:tungsten" },
+    "i": { "item": "crystalnexus:tungsten_machine_bolt" },
     "p": { "tag": "c:plates/tungsten" },
     "m": { "item": "crystalnexus:titanium_carbide_machine_frame" }
   },

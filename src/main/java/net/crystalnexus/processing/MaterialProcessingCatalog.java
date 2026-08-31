@@ -382,8 +382,8 @@ public final class MaterialProcessingCatalog {
             throw new IllegalArgumentException("Amounts and multipliers must be positive");
         int minimumTier = json.has("minimum_machine_tier") ? json.get("minimum_machine_tier").getAsInt()
             : MaterialProcessingNames.requiredMachineTier(path(primary.toString()));
-        if (minimumTier < 1 || minimumTier > 4)
-            throw new IllegalArgumentException("minimum_machine_tier must be between 1 and 4");
+        if (minimumTier < 1 || minimumTier > MachineTier.HYPER.level())
+            throw new IllegalArgumentException("minimum_machine_tier must be between 1 and " + MachineTier.HYPER.level());
         return new Profile(primary, reagentId, reagentTag, amount, crusher, advanced, secondary, disabled, minimumTier);
     }
 

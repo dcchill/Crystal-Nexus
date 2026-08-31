@@ -1,4 +1,4 @@
-package net.crystalnexus.network.payload;
+package net.crystalnexus.network;
 
 import net.crystalnexus.network.DepotNetIds;
 

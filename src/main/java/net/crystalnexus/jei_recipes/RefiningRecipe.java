@@ -42,7 +42,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
         this.itemInput = itemInput;
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
-		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.TUNGSTEN.level(), minimumMachineTier));
+		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
     }
 
     public FluidChemicalReactionRecipe.FluidAmount input() { return input; }

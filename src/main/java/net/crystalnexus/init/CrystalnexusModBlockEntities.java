@@ -171,6 +171,9 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = registerMany("refinery", RefineryBlockEntity::new,
 		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.CHLOROPHYTE_REFINERY,
 		CrystalnexusModBlocks.INVERTIUM_REFINERY, CrystalnexusModBlocks.HYPER_REFINERY);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TITANIUM_ELECTROLYSIS_CELL = registerMany(
+		"titanium_electrolysis_cell", net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity::new,
+		CrystalnexusModBlocks.CHLOROPHYTE_ELECTROLYSIS_CELL, CrystalnexusModBlocks.TITANIUM_ELECTROLYSIS_CELL);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TEMPORAL_EXPLOITER = register("temporal_exploiter", CrystalnexusModBlocks.TEMPORAL_EXPLOITER, TemporalExploiterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONTAINER = register("container", CrystalnexusModBlocks.CONTAINER, ContainerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUANTUM_MINER = register("quantum_miner", CrystalnexusModBlocks.QUANTUM_MINER, QuantumMinerBlockEntity::new);
@@ -227,7 +230,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTICLE_ACCELERATOR_CONTROLLER = register("particle_accelerator_controller", CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER,
 			ParticleAcceleratorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ELECTROMAGNET = register("electromagnet", CrystalnexusModBlocks.ELECTROMAGNET, ElectromagnetBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUARRY = register("quarry", CrystalnexusModBlocks.QUARRY, QuarryBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUARRY = registerMany("quarry", QuarryBlockEntity::new,
+		CrystalnexusModBlocks.QUARRY, CrystalnexusModBlocks.HYPER_LASER_QUARRY);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> RAD_PLACEHOLDER = register("rad_placeholder", CrystalnexusModBlocks.RAD_PLACEHOLDER, RadPlaceholderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_CHARGER = register("item_charger", CrystalnexusModBlocks.ITEM_CHARGER, ItemChargerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> AOE_CHARGER = register("aoe_charger", CrystalnexusModBlocks.AOE_CHARGER, AOEChargerBlockEntity::new);
@@ -341,6 +345,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getFluidHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity) blockEntity).getFluidHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TEMPORAL_EXPLOITER.get(), (blockEntity, side) ->
 			side != null && side == blockEntity.getBlockState().getValue(net.crystalnexus.block.TemporalExploiterBlock.FACING).getOpposite()
 				? ((TemporalExploiterBlockEntity) blockEntity).getFluidInput() : null);

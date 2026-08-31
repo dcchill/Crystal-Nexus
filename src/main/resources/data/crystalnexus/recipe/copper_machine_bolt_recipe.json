@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["a", "b"],
+  "key": { "a": { "tag": "c:plates/copper" }, "b": { "tag": "c:rods/copper" } },
+  "result": { "id": "crystalnexus:copper_machine_bolt", "count": 4 }
+}

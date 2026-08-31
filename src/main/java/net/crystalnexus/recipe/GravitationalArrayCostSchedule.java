@@ -13,4 +13,8 @@ public final class GravitationalArrayCostSchedule {
     public static long next(long total, int completedTicks, int duration) {
         return cumulative(total, completedTicks + 1, duration) - cumulative(total, completedTicks, duration);
     }
+
+    public static int maximumStep(long total, int duration) {
+        return Math.toIntExact(next(total, duration - 1, duration));
+    }
 }

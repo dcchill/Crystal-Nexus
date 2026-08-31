@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["h i", " i "],
+  "key": { "h": { "tag": "c:hammers" }, "i": { "item": "crystalnexus:tungsten" } },
+  "result": { "id": "crystalnexus:tungsten_rod", "count": 1 }
+}

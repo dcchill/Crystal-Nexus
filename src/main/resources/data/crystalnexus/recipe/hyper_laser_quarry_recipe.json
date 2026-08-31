@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["cbc", "bmb", "chc"],
+  "key": {
+    "c": { "tag": "c:plates/tungsten" },
+    "b": { "item": "crystalnexus:tungsten_machine_bolt" },
+    "m": { "item": "crystalnexus:quarry" },
+    "h": { "item": "crystalnexus:hyper_machine_frame" }
+  },
+  "result": { "id": "crystalnexus:hyper_laser_quarry", "count": 1 }
+}

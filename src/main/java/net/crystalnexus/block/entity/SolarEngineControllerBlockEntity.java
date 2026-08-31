@@ -4,6 +4,7 @@ import net.crystalnexus.block.SolarEngineControllerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.item.StarDurability;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
 import net.crystalnexus.multiblock.StructureNbtValidator;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
@@ -133,6 +134,7 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 			containmentFailure(serverLevel);
 			return;
 		}
+		if (damageStar(serverLevel)) return;
 
 		int requested = Math.max(1, (int) Math.round(profile.baseFePerTick() * extraction));
 		outputPerTick = distributeEnergy(requested);
@@ -192,6 +194,22 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 	}
 
 	@Override public IEnergyStorage multiblockEnergyOutput() { return energy; }
+
+	private boolean damageStar(ServerLevel level) {
+		ItemStack star = stacks.get(STAR_SLOT);
+		if (!StarDurability.consumedBy(containmentStress, level.random.nextInt(MAX_CONTAINMENT_STRESS))) return false;
+		int damage = star.getDamageValue() + 1;
+		if (damage < star.getMaxDamage()) {
+			star.setDamageValue(damage);
+			setChanged();
+			return false;
+		}
+		stacks.set(STAR_SLOT, new ItemStack(CrystalnexusModItems.DEAD_STAR.get()));
+		operating = false;
+		outputPerTick = 0;
+		sync();
+		return true;
+	}
 
 	private void containmentFailure(ServerLevel level) {
 		stacks.set(STAR_SLOT, ItemStack.EMPTY);

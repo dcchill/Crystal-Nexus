@@ -1,7 +1,7 @@
 package net.crystalnexus.network;
 
 import net.crystalnexus.network.payload.C2S_RequestPage;
-import net.crystalnexus.network.payload.C2S_Withdraw;
+import net.crystalnexus.network.C2S_Withdraw;
 import net.crystalnexus.network.payload.C2S_DepotCliRequest;
 import net.crystalnexus.network.payload.C2S_DepotJeiRecipes;
 import net.crystalnexus.network.payload.C2S_DepotCraftingRequest;

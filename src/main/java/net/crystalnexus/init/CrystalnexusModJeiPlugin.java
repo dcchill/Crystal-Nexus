@@ -48,6 +48,8 @@ import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipeCategory;
 import net.crystalnexus.jei_recipes.CryogenicFlashFreezerRecipeCategory;
 import net.crystalnexus.jei_recipes.RefiningRecipe;
 import net.crystalnexus.jei_recipes.RefiningRecipeCategory;
+import net.crystalnexus.jei_recipes.TitaniumElectrolysisRecipe;
+import net.crystalnexus.jei_recipes.TitaniumElectrolysisRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipeCategory;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipeCategory;
@@ -98,6 +100,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> FluidChemicalReaction_Type = new mezz.jei.api.recipe.RecipeType<>(FluidChemicalReactionRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<FluidChemicalReactionRecipe> CryogenicFlashFreezer_Type = new mezz.jei.api.recipe.RecipeType<>(CryogenicFlashFreezerRecipeCategory.UID, FluidChemicalReactionRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<RefiningRecipe> Refining_Type = new mezz.jei.api.recipe.RecipeType<>(RefiningRecipeCategory.UID, RefiningRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<TitaniumElectrolysisRecipe> TitaniumElectrolysis_Type = new mezz.jei.api.recipe.RecipeType<>(TitaniumElectrolysisRecipeCategory.UID, TitaniumElectrolysisRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticCompostingRecipe> BiomaticComposting_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticCompostingRecipeCategory.UID, BiomaticCompostingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BiomaticSimulationRecipe> BiomaticSimulation_Type = new mezz.jei.api.recipe.RecipeType<>(BiomaticSimulationRecipeCategory.UID, BiomaticSimulationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PistonGeneratorJEIRecipe> PistonGeneratorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(PistonGeneratorJEIRecipeCategory.UID, PistonGeneratorJEIRecipe.class);
@@ -130,6 +133,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new FluidChemicalReactionRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CryogenicFlashFreezerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new RefiningRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new TitaniumElectrolysisRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticCompostingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new BiomaticSimulationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -179,6 +183,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(FluidChemicalReaction_Type, generatedFluid);
 		List<RefiningRecipe> RefiningRecipes = recipes(recipeManager, RefiningRecipe.class);
 		registration.addRecipes(Refining_Type, RefiningRecipes);
+		registration.addRecipes(TitaniumElectrolysis_Type, recipes(recipeManager, TitaniumElectrolysisRecipe.class));
 		List<RefiningRecipe> generatedRefining = MaterialProcessingCatalog.generatedRefiningRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(Refining_Type, generatedRefining);
 		CrystalnexusJeiRuntimePlugin.seedMaterialRecipes(generatedCrushing, generatedFluid, generatedRefining, generatedSeparation);
@@ -270,6 +275,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_REFINERY.get().asItem()), Refining_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_ELECTROLYSIS_CELL.get().asItem()), TitaniumElectrolysis_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_ELECTROLYSIS_CELL.get().asItem()), TitaniumElectrolysis_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem()), BiomaticComposting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem()), PistonGeneratorJEI_Type);

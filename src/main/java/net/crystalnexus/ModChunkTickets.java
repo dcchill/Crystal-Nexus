@@ -12,9 +12,12 @@ public final class ModChunkTickets {
 			ResourceLocation.fromNamespaceAndPath("crystalnexus", "dark_matter_chunk_loader");
 
 	public static TicketController DARK_MATTER_LOADER;
+	public static TicketController HYPER_LASER_QUARRY;
 
 	public static void onRegisterTicketControllers(RegisterTicketControllersEvent event) {
 		DARK_MATTER_LOADER = new TicketController(DARK_MATTER_LOADER_ID);
 		event.register(DARK_MATTER_LOADER);
+		HYPER_LASER_QUARRY = new TicketController(ResourceLocation.fromNamespaceAndPath("crystalnexus", "hyper_laser_quarry"));
+		event.register(HYPER_LASER_QUARRY);
 	}
 }
