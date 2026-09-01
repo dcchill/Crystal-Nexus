@@ -65,7 +65,6 @@ import net.crystalnexus.client.gui.ChemicalReactionChamberGUIScreen;
 import net.crystalnexus.client.gui.FluidChemicalReactionChamberGUIScreen;
 import net.crystalnexus.client.gui.CryogenicFlashFreezerScreen;
 import net.crystalnexus.client.gui.RefineryScreen;
-import net.crystalnexus.client.gui.TitaniumElectrolysisCellScreen;
 import net.crystalnexus.client.gui.TemporalExploiterScreen;
 import net.crystalnexus.client.gui.BlueprintGUIScreen;
 import net.crystalnexus.client.gui.BlockPlacerGuiScreen;
@@ -111,7 +110,6 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.FLUID_CHEMICAL_REACTION_CHAMBER_GUI.get(), FluidChemicalReactionChamberGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRYOGENIC_FLASH_FREEZER.get(), CryogenicFlashFreezerScreen::new);
 		event.register(CrystalnexusModMenus.REFINERY_GUI.get(), RefineryScreen::new);
-		event.register(CrystalnexusModMenus.TITANIUM_ELECTROLYSIS_CELL.get(), TitaniumElectrolysisCellScreen::new);
 		event.register(CrystalnexusModMenus.TEMPORAL_EXPLOITER.get(), TemporalExploiterScreen::new);
 		event.register(CrystalnexusModMenus.CONTAINER_GUI.get(), ContainerGUIScreen::new);
 		event.register(CrystalnexusModMenus.QUANTUM_MINER_GUI.get(), QuantumMinerGUIScreen::new);

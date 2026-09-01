@@ -1,6 +1,0 @@
-{
-  "type": "crystalnexus:titanium_electrolysis",
-  "item_input": { "item": "crystalnexus:biomass" },
-  "item_input_count": 8,
-  "fluid_output": { "fluid": "crystalnexus:nitrogen", "amount": 250 }
-}

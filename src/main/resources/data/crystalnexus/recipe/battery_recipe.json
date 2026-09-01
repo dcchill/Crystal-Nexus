@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "bcb",
+    "dcd",
     "aba"
   ],
   "key": {
@@ -15,6 +15,9 @@
     },
     "c": {
       "item": "crystalnexus:machine_frame"
+    },
+    "d": {
+      "item": "crystalnexus:gold_plated_copper_sheet"
     }
   },
   "result": {

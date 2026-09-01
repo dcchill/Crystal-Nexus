@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": { "item": "crystalnexus:biomass" },
+  "item_input_1_count": 8,
+  "output": { "fluid": "crystalnexus:nitrogen", "amount": 250 }
+}

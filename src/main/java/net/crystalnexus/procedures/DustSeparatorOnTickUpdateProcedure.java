@@ -89,7 +89,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
                 && recipe.getIngredients().getFirst().test(input) && input.getCount() >= recipe.inputCount();
             if (itemMatches) {
                 if (!machineTier.supports(recipe.minimumMachineTier())) return null;
-                ItemStack output = recipe.getResultItem(level.registryAccess());
+                ItemStack output = tieredOutput(recipe.getResultItem(level.registryAccess()), machineTier);
                 if (!output.isEmpty()) return new Match(output, recipe.secondaryOutput(), recipe.secondaryChance(),
                     recipe.inputCount());
             }
@@ -99,10 +99,19 @@ public final class DustSeparatorOnTickUpdateProcedure {
         return catalog.dust(input)
             .filter(material -> !material.profile().disabledStages().contains("separation"))
             .filter(material -> machineTier.supports(material.profile().minimumMachineTier()))
-            .map(material -> material.nugget(BuiltInRegistries.ITEM.getKey(input.getItem()).getNamespace(),
-                MaterialProcessingCatalog.NUGGETS_PER_DUST))
+                .map(material -> material.nugget(BuiltInRegistries.ITEM.getKey(input.getItem()).getNamespace(),
+                MaterialProcessingCatalog.nuggetsPerDust(machineTier)))
             .filter(output -> !output.isEmpty())
             .map(output -> new Match(output, ItemStack.EMPTY, 0, 1)).orElse(null);
+    }
+
+    private static ItemStack tieredOutput(ItemStack output, MachineTier tier) {
+        if (!output.isEmpty() && BuiltInRegistries.ITEM.getKey(output.getItem()).getPath().endsWith("_nugget")) {
+            ItemStack adjusted = output.copy();
+            adjusted.setCount(MaterialProcessingCatalog.nuggetsPerDust(tier));
+            return adjusted;
+        }
+        return output;
     }
 
     static boolean fits(ItemStack current, ItemStack output) {

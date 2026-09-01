@@ -30,7 +30,6 @@ import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe;
 import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipe;
 import net.crystalnexus.jei_recipes.RefiningRecipe;
-import net.crystalnexus.jei_recipes.TitaniumElectrolysisRecipe;
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
 import net.crystalnexus.jei_recipes.BiomaticCompostingRecipe;
 import net.crystalnexus.jei_recipes.BeamReactionRecipeRecipe;
@@ -89,8 +88,6 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("titanium_carbide_circuit_press", () -> TitaniumCarbideCircuitPressRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("refining", () -> RefiningRecipe.Type.INSTANCE);
 			SERIALIZERS.register("refining", () -> RefiningRecipe.Serializer.INSTANCE);
-			RECIPE_TYPES.register("titanium_electrolysis", () -> TitaniumElectrolysisRecipe.Type.INSTANCE);
-			SERIALIZERS.register("titanium_electrolysis", () -> TitaniumElectrolysisRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("biomatic_composting", () -> BiomaticCompostingRecipe.Type.INSTANCE);
 			SERIALIZERS.register("biomatic_composting", () -> BiomaticCompostingRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("biomatic_simulation", () -> BiomaticSimulationRecipe.Type.INSTANCE);

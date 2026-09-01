@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "minecraft:water", "amount": 500 },
+  "output": { "fluid": "crystalnexus:oxygen", "amount": 150 }
+}

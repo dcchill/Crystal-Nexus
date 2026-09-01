@@ -9,6 +9,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.crystalnexus.item.DenseBatteryCellItem;
 import net.crystalnexus.item.CarbonBatteryCellItem;
 import net.crystalnexus.item.DarkBatteryCellItem;
+import net.crystalnexus.item.LaserSaberItem;
 
 @EventBusSubscriber(modid = "crystalnexus", bus = EventBusSubscriber.Bus.MOD)
 public class ModCapabilities {
@@ -36,6 +37,12 @@ public class ModCapabilities {
     Capabilities.EnergyStorage.ITEM,
     (stack, ctx) -> new BatteryEnergyStorage(stack, DarkBatteryCellItem.capacity(), DarkBatteryCellItem.maxReceive(), DarkBatteryCellItem.maxExtract()),
     CrystalnexusModItems.DARK_BATTERY_CELL.get()
+);
+
+      event.registerItem(
+    Capabilities.EnergyStorage.ITEM,
+    (stack, ctx) -> new BatteryEnergyStorage(stack, LaserSaberItem.CAPACITY, LaserSaberItem.MAX_TRANSFER),
+    CrystalnexusModItems.LASER_SABER.get()
 );
 
 

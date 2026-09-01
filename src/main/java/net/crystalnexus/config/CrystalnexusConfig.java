@@ -98,6 +98,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues ELECTROMAGNET;
 		public final EnergyValues ENERGY_CABLE;
 		public final EnergyValues ENERGY_CABLE_MK2;
+		public final EnergyValues HYPER_ENERGY_CABLE;
 		public final EnergyValues ENERGY_EXTRACTOR;
 		public final EnergyValues EXTRACTINATOR;
 		public final EnergyValues FACTORY_CONTROLLER;
@@ -142,7 +143,7 @@ public final class CrystalnexusConfig {
 			AOE_CHARGER = new EnergyValues(builder, "aoe_charger", 20480, 20480, 10240);
 			ARC_FURNACE = new EnergyValues(builder, "arc_furnace", 40960, 5120, 5120);
 			AOE_CHARGER_BEHAVIOR = new AoeChargerValues(builder);
-			BASIC_ENERGY_CABLE = new EnergyValues(builder, "basic_energy_cable", 10240, 1024, 1024);
+			BASIC_ENERGY_CABLE = new EnergyValues(builder, "basic_energy_cable", 10240, 2048, 2048);
 			BATTERY = new EnergyValues(builder, "battery", 4096000, 512000, 512000);
 			BIOMATIC_COMPOSTER = new EnergyValues(builder, "biomatic_composter", 10240, 2048, 8192);
 			BIOMATIC_CONSTRUCTOR = new EnergyValues(builder, "biomatic_constructor", 10240, 2048, 8192);
@@ -161,8 +162,9 @@ public final class CrystalnexusConfig {
 			DUST_SEPARATOR = new EnergyValues(builder, "dust_separator", 10240, 2048, 2048);
 			EE_BATTERY = new EnergyValues(builder, "ee_battery", 20480000, 1024000, 1024000);
 			ELECTROMAGNET = new EnergyValues(builder, "electromagnet", 512000, 20480, 10240);
-			ENERGY_CABLE = new EnergyValues(builder, "energy_cable", 102400, 51200, 51200);
-			ENERGY_CABLE_MK2 = new EnergyValues(builder, "energy_cable_mk2", 1024000, 512000, 512000);
+			ENERGY_CABLE = new EnergyValues(builder, "energy_cable", 102400, 16384, 16384);
+			ENERGY_CABLE_MK2 = new EnergyValues(builder, "energy_cable_mk2", 1024000, 131072, 131072);
+			HYPER_ENERGY_CABLE = new EnergyValues(builder, "hyper_energy_cable", 8388608, 1048576, 1048576);
 			ENERGY_EXTRACTOR = new EnergyValues(builder, "energy_extractor", EeMatterEconomy.EXTRACTION_FE_PER_ITEM * 2, 512000, 512000);
 			EXTRACTINATOR = new EnergyValues(builder, "extractinator", 10240, 2048, 2048);
 			FACTORY_CONTROLLER = new EnergyValues(builder, "factory_controller", 65536, 65536, 65536);

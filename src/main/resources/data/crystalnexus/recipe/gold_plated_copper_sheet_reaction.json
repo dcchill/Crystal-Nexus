@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:sulfuric_acid",
+    "amount": 15
+  },
+  "item_input_1": { "tag": "c:plates/copper" },
+  "item_input_2": { "tag": "c:ingots/gold" },
+  "item_output": { "id": "crystalnexus:gold_plated_copper_sheet", "count": 1 }
+}

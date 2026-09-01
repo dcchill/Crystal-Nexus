@@ -39,7 +39,6 @@ import net.crystalnexus.block.TarrockBlock;
 import net.crystalnexus.block.TankBlock;
 import net.crystalnexus.block.TemporalEssenceBlock;
 import net.crystalnexus.block.TemporalExploiterBlock;
-import net.crystalnexus.block.TitaniumElectrolysisCellBlock;
 import net.crystalnexus.block.SulfurOreBlock;
 import net.crystalnexus.block.SulfuricAcidBlock;
 import net.crystalnexus.block.AcidicSlurryBlock;
@@ -156,6 +155,7 @@ import net.crystalnexus.block.FactoryControllerBlock;
 import net.crystalnexus.block.ExtractinatorBlock;
 import net.crystalnexus.block.EnergyExtractorBlock;
 import net.crystalnexus.block.EnergyCableMk2Block;
+import net.crystalnexus.block.HyperEnergyCableBlock;
 import net.crystalnexus.block.EnergyCableBlock;
 import net.crystalnexus.block.ElectromagnetBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
@@ -301,10 +301,6 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CHLOROPHYTE_REFINERY = REGISTRY.register("chlorophyte_refinery", () -> new RefineryBlock(MachineTier.CHLOROPHYTE));
 	public static final DeferredBlock<Block> INVERTIUM_REFINERY = REGISTRY.register("invertium_refinery", () -> new RefineryBlock(MachineTier.TITANIUM));
 	public static final DeferredBlock<Block> HYPER_REFINERY = REGISTRY.register("hyper_refinery", () -> new RefineryBlock(MachineTier.HYPER));
-	public static final DeferredBlock<Block> CHLOROPHYTE_ELECTROLYSIS_CELL = REGISTRY.register("chlorophyte_electrolysis_cell",
-		() -> new TitaniumElectrolysisCellBlock(MachineTier.CHLOROPHYTE));
-	public static final DeferredBlock<Block> TITANIUM_ELECTROLYSIS_CELL = REGISTRY.register("titanium_electrolysis_cell",
-		() -> new TitaniumElectrolysisCellBlock());
 	public static final DeferredBlock<Block> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", TemporalExploiterBlock::new);
 	public static final DeferredBlock<Block> CONTAINER = REGISTRY.register("container", ContainerBlock::new);
 	public static final DeferredBlock<Block> TITANIUM_BLOCK = REGISTRY.register("titanium_block", TitaniumBlockBlock::new);
@@ -399,6 +395,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_WASTE_OUTPUT = REGISTRY.register("reactor_waste_output", ReactorWasteOutputBlock::new);
 	public static final DeferredBlock<Block> ENERGY_CABLE_MK_2 = REGISTRY.register("energy_cable_mk_2", EnergyCableMk2Block::new);
 	public static final DeferredBlock<Block> BASIC_ENERGY_CABLE = REGISTRY.register("basic_energy_cable", BasicEnergyCableBlock::new);
+	public static final DeferredBlock<Block> HYPER_ENERGY_CABLE = REGISTRY.register("hyper_energy_cable", HyperEnergyCableBlock::new);
 	public static final DeferredBlock<Block> OIL_NODE = REGISTRY.register("oil_node", OilNodeBlock::new);
 	public static final DeferredBlock<Block> LAVA_NODE = REGISTRY.register("lava_node", LavaNodeBlock::new);
 	public static final DeferredBlock<Block> NODE_EXTRACTOR = REGISTRY.register("node_extractor", NodeExtractorBlock::new);

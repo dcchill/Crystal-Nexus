@@ -8,6 +8,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -81,6 +82,7 @@ import net.crystalnexus.item.LimePaintballItem;
 import net.crystalnexus.item.LightGrayPaintballItem;
 import net.crystalnexus.item.LightBluePaintballItem;
 import net.crystalnexus.item.LaserDiodeItem;
+import net.crystalnexus.item.LaserSaberItem;
 import net.crystalnexus.item.JetPackItem;
 import net.crystalnexus.item.IronSingularityItem;
 import net.crystalnexus.item.IronMachineBoltItem;
@@ -313,6 +315,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> UNSTABLE_EE_MATTER = REGISTRY.register("unstable_ee_matter", UnstableEEMatterItem::new);
 	public static final DeferredItem<Item> ULTIMA_SMELTER = block(CrystalnexusModBlocks.ULTIMA_SMELTER);
 	public static final DeferredItem<Item> COMPOUND_SWORD = REGISTRY.register("compound_sword", CompoundSwordItem::new);
+	public static final DeferredItem<Item> LASER_SABER = REGISTRY.register("laser_saber", LaserSaberItem::new);
 	public static final DeferredItem<Item> ENERGY_EXTRACTOR = block(CrystalnexusModBlocks.ENERGY_EXTRACTOR);
 	public static final DeferredItem<Item> MATTER_TRANSMUTATION_TABLE = block(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE);
 	public static final DeferredItem<Item> EE_MATTER_BLOCK = block(CrystalnexusModBlocks.EE_MATTER_BLOCK);
@@ -347,14 +350,13 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CHLOROPHYTE_REFINERY = block(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY);
 	public static final DeferredItem<Item> INVERTIUM_REFINERY = block(CrystalnexusModBlocks.INVERTIUM_REFINERY);
 	public static final DeferredItem<Item> HYPER_REFINERY = block(CrystalnexusModBlocks.HYPER_REFINERY);
-	public static final DeferredItem<Item> CHLOROPHYTE_ELECTROLYSIS_CELL = block(CrystalnexusModBlocks.CHLOROPHYTE_ELECTROLYSIS_CELL);
-	public static final DeferredItem<Item> TITANIUM_ELECTROLYSIS_CELL = block(CrystalnexusModBlocks.TITANIUM_ELECTROLYSIS_CELL);
 	public static final DeferredItem<Item> TEMPORAL_EXPLOITER = block(CrystalnexusModBlocks.TEMPORAL_EXPLOITER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
 	public static final DeferredItem<Item> SULFUR_DUST = REGISTRY.register("sulfur_dust", PolyacrylonitrileDustItem::new);
 	public static final DeferredItem<Item> GOLD_SHEET = REGISTRY.register("gold_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> IRON_SHEET = REGISTRY.register("iron_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COPPER_SHEET = REGISTRY.register("copper_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> GOLD_PLATED_COPPER_SHEET = REGISTRY.register("gold_plated_copper_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> GOLD_ROD = REGISTRY.register("gold_rod", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> IRON_ROD = REGISTRY.register("iron_rod", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COPPER_ROD = REGISTRY.register("copper_rod", () -> new Item(new Item.Properties()));
@@ -539,6 +541,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DEPOT_STORAGE_UPGRADE = REGISTRY.register("depot_storage_upgrade", DepotStorageUpgradeItem::new);
 	public static final DeferredItem<Item> ENERGY_CABLE_MK_2 = block(CrystalnexusModBlocks.ENERGY_CABLE_MK_2);
 	public static final DeferredItem<Item> BASIC_ENERGY_CABLE = block(CrystalnexusModBlocks.BASIC_ENERGY_CABLE);
+	public static final DeferredItem<Item> HYPER_ENERGY_CABLE = block(CrystalnexusModBlocks.HYPER_ENERGY_CABLE);
 	public static final DeferredItem<Item> ZERO_POINT_CORE = REGISTRY.register("zero_point_core", ZeroPointCoreItem::new);
 	public static final DeferredItem<Item> OIL_NODE = block(CrystalnexusModBlocks.OIL_NODE);
 	public static final DeferredItem<Item> LAVA_NODE = block(CrystalnexusModBlocks.LAVA_NODE);
@@ -646,7 +649,15 @@ public class CrystalnexusModItems {
 			event.enqueueWork(() -> {
 				ItemProperties.register(FLORATHANE_WAND.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
 				ItemProperties.register(FLAMETHROWER.get(), ResourceLocation.parse("minecraft:blocking"), ItemProperties.getProperty(new ItemStack(Items.SHIELD), ResourceLocation.parse("minecraft:blocking")));
+				ItemProperties.register(LASER_SABER.get(), ResourceLocation.fromNamespaceAndPath("crystalnexus", "off"),
+						(stack, level, entity, seed) -> LaserSaberItem.isPowered(stack) ? 0.0F : 1.0F);
 			});
+		}
+
+		@SubscribeEvent
+		public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+			event.register((stack, tintIndex) -> tintIndex == 0
+					? LaserSaberItem.bladeColor(stack) : 0xFFFFFFFF, LASER_SABER.get());
 		}
 	}
 }

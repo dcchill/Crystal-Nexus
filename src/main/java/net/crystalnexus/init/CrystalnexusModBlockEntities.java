@@ -81,6 +81,7 @@ import net.crystalnexus.block.entity.FactoryControllerBlockEntity;
 import net.crystalnexus.block.entity.ExtractinatorBlockEntity;
 import net.crystalnexus.block.entity.EnergyExtractorBlockEntity;
 import net.crystalnexus.block.entity.EnergyCableMk2BlockEntity;
+import net.crystalnexus.block.entity.HyperEnergyCableBlockEntity;
 import net.crystalnexus.block.entity.EnergyCableBlockEntity;
 import net.crystalnexus.block.entity.ElectromagnetBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
@@ -171,9 +172,6 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = registerMany("refinery", RefineryBlockEntity::new,
 		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.CHLOROPHYTE_REFINERY,
 		CrystalnexusModBlocks.INVERTIUM_REFINERY, CrystalnexusModBlocks.HYPER_REFINERY);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TITANIUM_ELECTROLYSIS_CELL = registerMany(
-		"titanium_electrolysis_cell", net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity::new,
-		CrystalnexusModBlocks.CHLOROPHYTE_ELECTROLYSIS_CELL, CrystalnexusModBlocks.TITANIUM_ELECTROLYSIS_CELL);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TEMPORAL_EXPLOITER = register("temporal_exploiter", CrystalnexusModBlocks.TEMPORAL_EXPLOITER, TemporalExploiterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONTAINER = register("container", CrystalnexusModBlocks.CONTAINER, ContainerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUANTUM_MINER = register("quantum_miner", CrystalnexusModBlocks.QUANTUM_MINER, QuantumMinerBlockEntity::new);
@@ -221,6 +219,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_WASTE_OUTPUT = register("reactor_waste_output", CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT, ReactorWasteOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ENERGY_CABLE_MK_2 = register("energy_cable_mk_2", CrystalnexusModBlocks.ENERGY_CABLE_MK_2, EnergyCableMk2BlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BASIC_ENERGY_CABLE = register("basic_energy_cable", CrystalnexusModBlocks.BASIC_ENERGY_CABLE, BasicEnergyCableBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HYPER_ENERGY_CABLE = register("hyper_energy_cable", CrystalnexusModBlocks.HYPER_ENERGY_CABLE, HyperEnergyCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> NODE_EXTRACTOR = register("node_extractor", CrystalnexusModBlocks.NODE_EXTRACTOR, NodeExtractorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
@@ -345,9 +344,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getFluidHandler());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity) blockEntity).getEnergyStorage());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TITANIUM_ELECTROLYSIS_CELL.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.TitaniumElectrolysisCellBlockEntity) blockEntity).getFluidHandler());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TEMPORAL_EXPLOITER.get(), (blockEntity, side) ->
 			side != null && side == blockEntity.getBlockState().getValue(net.crystalnexus.block.TemporalExploiterBlock.FACING).getOpposite()
 				? ((TemporalExploiterBlockEntity) blockEntity).getFluidInput() : null);
@@ -416,6 +412,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> ((EnergyCableMk2BlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> ((BasicEnergyCableBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, HYPER_ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HYPER_ENERGY_CABLE.get(), (blockEntity, side) -> ((HyperEnergyCableBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getFluidTank());

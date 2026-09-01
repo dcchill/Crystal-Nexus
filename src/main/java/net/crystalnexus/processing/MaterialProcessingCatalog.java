@@ -47,7 +47,12 @@ import java.util.concurrent.Executor;
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public final class MaterialProcessingCatalog {
     public static final int SLURRY_AMOUNT = 1000;
-    public static final int NUGGETS_PER_DUST = 11;
+    public static final int NUGGETS_PER_DUST = 9;
+
+    public static int nuggetsPerDust(MachineTier tier) {
+        return tier.level() <= MachineTier.INVERTIUM.level() ? 9 + Math.min(1, Math.max(0, tier.level() - MachineTier.INVERTIUM.level()))
+            : tier.level() <= MachineTier.TITANIUM_CARBIDE.level() ? 11 : 12;
+    }
     private static final Gson GSON = new Gson();
     private static volatile Map<String, Profile> profiles = Map.of();
     private static volatile Snapshot snapshot = new Snapshot(Map.of());
@@ -214,7 +219,7 @@ public final class MaterialProcessingCatalog {
         List<DustSeperationRecipe> generated = new ArrayList<>();
         for (Material material : get(level).materials().values()) {
             if (material.profile().disabledStages().contains("separation")) continue;
-            ItemStack nugget = material.nugget("crystalnexus", NUGGETS_PER_DUST);
+            ItemStack nugget = material.nugget("crystalnexus", nuggetsPerDust(MachineTier.CRYSTAL));
             if (nugget.isEmpty()) continue;
             Ingredient dust = Ingredient.of(material.dust());
             boolean overridden = explicit.stream().anyMatch(recipe -> !recipe.getIngredients().isEmpty()

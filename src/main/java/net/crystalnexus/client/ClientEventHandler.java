@@ -26,15 +26,28 @@ import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.QuadTransformers;
+import org.jetbrains.annotations.Nullable;
 
 import net.crystalnexus.client.render.ConveyerBeltBER;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.item.LaserSaberItem;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientEventHandler {
+	private static final ModelResourceLocation LASER_SABER = ModelResourceLocation.inventory(
+			ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "laser_saber"));
+	private static final ModelResourceLocation LASER_SABER_GLOW = ModelResourceLocation.standalone(
+			ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "item/laser_saber_glow"));
 	private static final List<String> ROTATING_MODELS = List.of(
 			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "dead_star", "terra", "caelus", "boreas", "meteor");
 
@@ -44,6 +57,57 @@ public class ClientEventHandler {
 			ModelResourceLocation location = new ModelResourceLocation(
 					ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, name), "inventory");
 			event.getModels().computeIfPresent(location, (ignored, model) -> new RotatingItemModel(model));
+		}
+		BakedModel glow = event.getModels().get(LASER_SABER_GLOW);
+		if (glow != null) {
+			event.getModels().computeIfPresent(LASER_SABER,
+					(ignored, model) -> new LaserSaberModel(model, new FullbrightModel(glow)));
+		}
+	}
+
+	@SubscribeEvent
+	public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
+		event.register(LASER_SABER_GLOW);
+	}
+
+	private static final class LaserSaberModel extends BakedModelWrapper<BakedModel> {
+		private final BakedModel glow;
+
+		private LaserSaberModel(BakedModel originalModel, BakedModel glow) {
+			super(originalModel);
+			this.glow = glow;
+		}
+
+		@Override
+		public List<BakedModel> getRenderPasses(ItemStack stack, boolean fabulous) {
+			return LaserSaberItem.isPowered(stack) ? List.of(this, glow) : List.of(this);
+		}
+
+		@Override
+		public BakedModel applyTransform(ItemDisplayContext context, PoseStack poseStack, boolean leftHand) {
+			originalModel.applyTransform(context, poseStack, leftHand);
+			return this;
+		}
+	}
+
+	private static final class FullbrightModel extends BakedModelWrapper<BakedModel> {
+		private FullbrightModel(BakedModel originalModel) {
+			super(originalModel);
+		}
+
+		@Override
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource random) {
+			return originalModel.getQuads(state, side, random).stream().map(quad -> {
+				BakedQuad copy = new BakedQuad(quad.getVertices().clone(), quad.getTintIndex(),
+						quad.getDirection(), quad.getSprite(), false, false);
+				QuadTransformers.settingMaxEmissivity().processInPlace(copy);
+				return copy;
+			}).toList();
+		}
+
+		@Override
+		public List<RenderType> getRenderTypes(ItemStack stack, boolean fabulous) {
+			return List.of(Sheets.translucentItemSheet());
 		}
 	}
 

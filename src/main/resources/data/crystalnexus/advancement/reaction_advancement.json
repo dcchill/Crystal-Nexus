@@ -16,7 +16,13 @@
   },
   "criteria": {
     "reaction_advancement_0": {
-      "trigger": "minecraft:impossible"
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [{
+          "condition": "minecraft:block_state_property",
+          "block": "crystalnexus:reaction_chamber_computer"
+        }]
+      }
     }
   },
   "parent": "crystalnexus:inverted_advancement"
