@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "cbc",
+    "cbc",
+    "cbc"
+  ],
+  "key": {
+    "c": { "tag": "c:plates/titanium" },
+    "b": { "item": "minecraft:blue_ice" }
+  },
+  "result": {
+    "id": "crystalnexus:cooling_coil",
+    "count": 1
+  }
+}

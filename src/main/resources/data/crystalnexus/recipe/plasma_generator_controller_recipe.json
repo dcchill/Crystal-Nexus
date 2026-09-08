@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aea"
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:titanium_carbide_sheet" },
+    "b": { "item": "crystalnexus:computation_node" },
+    "c": { "item": "crystalnexus:titanium_carbide_glass" },
+    "d": { "item": "crystalnexus:titanium_carbide_machine_frame" },
+    "e": { "item": "crystalnexus:heating_core" }
+  },
+  "result": {
+    "id": "crystalnexus:plasma_generator_controller",
+    "count": 1
+  }
+}

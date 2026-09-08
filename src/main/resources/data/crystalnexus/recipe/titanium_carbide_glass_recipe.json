@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:titanium_carbide_sheet" },
+    "b": { "item": "crystalnexus:machine_bolt" },
+    "c": { "item": "minecraft:glass" }
+  },
+  "result": {
+    "id": "crystalnexus:titanium_carbide_glass",
+    "count": 4
+  }
+}

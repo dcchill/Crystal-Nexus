@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "php",
+    "ibi",
+    "pfp"
+  ],
+  "key": {
+    "p": { "item": "crystalnexus:titanium_carbide_sheet" },
+    "h": { "item": "crystalnexus:titanium_heating_coil" },
+    "b": { "item": "minecraft:blast_furnace" },
+    "f": { "item": "crystalnexus:titanium_carbide_machine_frame" },
+    "i": { "item": "crystalnexus:titanium_carbide_ingot" }
+  },
+  "result": {
+    "id": "crystalnexus:arc_furnace",
+    "count": 1
+  }
+}

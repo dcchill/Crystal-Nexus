@@ -39,8 +39,6 @@ import java.util.List;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public class LaserSaberItem extends SwordItem {
-    public static final int CAPACITY = 100_000;
-    public static final int MAX_TRANSFER = 5_000;
     public static final int FE_PER_TICK = 20;
     private static final String POWERED = "LaserSaberPowered";
     private static final TagKey<Item> BATTERIES = ItemTags.create(
@@ -111,7 +109,7 @@ public class LaserSaberItem extends SwordItem {
     }
 
     private static boolean consumeEnergy(Player player, ItemStack saber, int amount, boolean simulate) {
-        int available = extract(saber, amount, true);
+        int available = 0;
         for (ItemStack battery : player.getInventory().items) {
             if (battery != saber && battery.is(BATTERIES)) {
                 available += extract(battery, amount - available, true);
@@ -124,7 +122,7 @@ public class LaserSaberItem extends SwordItem {
         }
         if (available < amount || simulate) return available >= amount;
 
-        int remaining = amount - extract(saber, amount, false);
+        int remaining = amount;
         for (ItemStack battery : player.getInventory().items) {
             if (remaining <= 0) break;
             if (battery != saber && battery.is(BATTERIES)) remaining -= extract(battery, remaining, false);
@@ -141,15 +139,6 @@ public class LaserSaberItem extends SwordItem {
         return energy == null ? 0 : energy.extractEnergy(amount, simulate);
     }
 
-    @Override public boolean isBarVisible(ItemStack stack) { return true; }
-
-    @Override
-    public int getBarWidth(ItemStack stack) {
-        return Math.round(13.0F * BatteryData.getEnergy(stack) / CAPACITY);
-    }
-
-    @Override public int getBarColor(ItemStack stack) { return bladeColor(stack); }
-
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
@@ -159,8 +148,6 @@ public class LaserSaberItem extends SwordItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.literal(isPowered(stack) ? "On" : "Off")
                 .withStyle(isPowered(stack) ? ChatFormatting.GREEN : ChatFormatting.GRAY));
-        tooltip.add(Component.literal("Energy: " + String.format("%,d / %,d FE",
-                BatteryData.getEnergy(stack), CAPACITY)).withStyle(ChatFormatting.AQUA));
     }
 
     @SubscribeEvent

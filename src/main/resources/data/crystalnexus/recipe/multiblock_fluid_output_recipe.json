@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " a ",
+    "bcb",
+    " a "
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:machineblock" },
+    "b": { "item": "crystalnexus:pipe_straight" },
+    "c": { "item": "crystalnexus:tank" }
+  },
+  "result": {
+    "id": "crystalnexus:multiblock_fluid_output",
+    "count": 1
+  }
+}

@@ -11,7 +11,7 @@
     "b": { "item": "crystalnexus:depot_cable" },
     "c": { "item": "minecraft:crafting_table" },
     "d": { "item": "crystalnexus:omega_chip" },
-    "e": { "item": "crystalnexus:hyper_machine_frame" }
+    "e": { "item": "crystalnexus:titanium_machine_frame" }
   },
   "result": {
     "id": "crystalnexus:crafting_upgrade",

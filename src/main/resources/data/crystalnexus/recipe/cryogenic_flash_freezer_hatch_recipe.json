@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "iki",
+    "iti",
+    "cic"
+  ],
+  "key": {
+    "i": { "item": "crystalnexus:insulated_titanium_casing" },
+    "c": { "item": "crystalnexus:ceramic_plate" },
+    "k": { "item": "crystalnexus:container" },
+    "t": { "item": "crystalnexus:titanium_machine_frame" }
+  },
+  "result": {
+    "id": "crystalnexus:cryogenic_flash_freezer_hatch",
+    "count": 1
+  }
+}

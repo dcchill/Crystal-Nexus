@@ -18,7 +18,7 @@
       "count": 1
     }
   ],
-  "temporal_fluid": 100000,
+  "temporal_fluid": 10000,
   "energy": 250000,
   "duration": 200,
   "output": {

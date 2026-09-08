@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aba",
+    "aea",
     "cdc",
     "aea"
   ],
   "key": {
     "a": {
       "item": "crystalnexus:synthetic_rubber"
-    },
-    "b": {
-      "item": "crystalnexus:singularity_matrix"
     },
     "c": {
       "item": "crystalnexus:dark_matter"
