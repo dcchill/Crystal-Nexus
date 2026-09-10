@@ -1,6 +1,7 @@
 package net.crystalnexus.events;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.processing.TieredMachineBlock;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
@@ -8,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.BlockItem;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -134,13 +136,13 @@ public class TooltipInfoHandler {
 				"Crushes raw ores into dusts.",
 				"Multiplies ore yield for better efficiency.");
 		addTooltip("chlorophyte_crusher",
-				"Chlorophyte-tier ore crusher.",
+				"Tier 3 ore crusher.",
 				"Processes recipes available to its machine tier.");
 		addTooltip("invertium_crusher",
-				"Invertium-tier ore crusher.",
+				"Tier 5 ore crusher.",
 				"Processes advanced crushing recipes faster.");
 		addTooltip("hyper_crusher",
-				"Hyper-tier ore crusher.",
+				"Tier 9 ore crusher.",
 				"Processes the highest-tier crushing recipes.");
 		addTooltip("ore_processor",
 				"Advanced ore processing plant.",
@@ -154,7 +156,7 @@ public class TooltipInfoHandler {
 				"Specialized Chlorophyte furnace.",
 				"Smelts dusts and raw materials into ingots.");
 		addTooltip("iron_smelter",
-				"Specialized iron-tier furnace.",
+				"Specialized Tier 1 furnace.",
 				"Smelts dusts and raw materials into ingots.");
 		addTooltip("invertium_smelter",
 				"Specialized Invertium furnace.",
@@ -181,13 +183,13 @@ public class TooltipInfoHandler {
 				"Refines processing fluids into useful materials.",
 				"Basic refinery tier.");
 		addTooltip("chlorophyte_refinery",
-				"Chlorophyte-tier material refinery.",
+				"Tier 3 material refinery.",
 				"Handles recipes available to its machine tier.");
 		addTooltip("invertium_refinery",
-				"Invertium-tier material refinery.",
+				"Tier 5 material refinery.",
 				"Handles advanced refining recipes.");
 		addTooltip("hyper_refinery",
-				"Hyper-tier material refinery.",
+				"Tier 9 material refinery.",
 				"Handles the highest-tier refining recipes.");
 
 		addTooltip("reaction_chamber_computer",
@@ -210,13 +212,13 @@ public class TooltipInfoHandler {
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
 		addTooltip("chlorophyte_dust_separator",
-				"Chlorophyte-tier dust separator.",
+				"Tier 3 dust separator.",
 				"Processes recipes available to its machine tier.");
 		addTooltip("invertium_dust_separator",
-				"Invertium-tier dust separator.",
+				"Tier 5 dust separator.",
 				"Processes advanced separation recipes faster.");
 		addTooltip("hyper_dust_separator",
-				"Hyper-tier dust separator.",
+				"Tier 9 dust separator.",
 				"Processes the highest-tier separation recipes.");
 		addTooltip("matter_transmutation_table",
 				"Endgame resource conversion block.",
@@ -554,7 +556,7 @@ public class TooltipInfoHandler {
 				"Resource extraction machine.",
 				"Sifts through loose sediment to find resources.");
 		addTooltip("titanium_extractinator",
-				"Titanium-tier resource extraction machine.",
+				"Tier 5 resource extraction machine.",
 				"Consumes 4x energy for twice the secondary-drop chance.");
 		addTooltip("inverter",
 				"Invertium Inverter.",
@@ -616,6 +618,10 @@ public class TooltipInfoHandler {
 	@SubscribeEvent
 	public static void onItemTooltip(ItemTooltipEvent event) {
 		ItemStack stack = event.getItemStack();
+		if (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine) {
+			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
+					machine.machineTier().tierLabel());
+		}
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 		if (!itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
 			return;
