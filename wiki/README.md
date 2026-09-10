@@ -1,5 +1,5 @@
 # Crystal Nexus Wiki
-
+-may be pruned-
 This folder is a player-facing reference for the major machines, items, resources, and systems in Crystal Nexus.
 
 The mod has a lot of blocks, items, recipes, and systems. This wiki focuses on the things players will use the most: energy generation, processing machines, logistics, automation, fluids, resources, equipment, and multiblocks.
