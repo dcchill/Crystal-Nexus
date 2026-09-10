@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/invertedframe",
-    "particle": "crystalnexus:block/invertedframe"
-  },
-  "render_type": "solid"
-}

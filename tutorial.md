@@ -11,7 +11,7 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ### Steam Boiler / Steam Collector / Steam Engine
 - Function: Basic power generation loop. Collect water/heat to produce steam, and use the Steam Engine (and High Pressure Steam Engine upgrade) to convert it into usable energy.
 
-### Piston Generator & Invertium Piston Generator
+### Piston Generator & Inverted Piston Generator
 - Function: Generates energy using kinetic movement. Place fuel/required inputs to start the generation.
 
 ### Reactor (Multiblock)
@@ -30,9 +30,9 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ### These machines require energy and process raw ores or other items into refined materials.
 
 ### Crystal Ore Crusher / Ore Processing Plant
-- Function: Crushes raw ores (like ancient crystal, blutonium, chlorophyte, etc.) into dusts, multiplying the yield. 
+- Function: Crushes raw ores into dusts, multiplying the yield.
 
-### Chlorophyte Smelter / Iron Smelter / Invertium Smelter / Crystal Smelter / Ultima Smelter
+### Iron Smelter / Crystal Smelter / Titanium Smelter / Ultima Smelter
 - Function: Specialized furnaces that melt down dusts or raw clustered materials into ingots or purified forms. Ultima Smelter acts as a multi-purpose high-tier furnace.
 
 ### Singularity Compressor
@@ -59,8 +59,8 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ## 3. RESOURCE GATHERING & LOGISTICS
 ### Automating item collection, movement, and extraction.
 
-### Quarry / Quantum Miner / Node Miner
-- Function: Automatically mines resources. The Quantum miner pulls resources from beyond standard dimensions (energy intensive), while Node Miner is placed on specific deposits (Iron/Gold/Lava Nodes).
+### Laser Quarry / Node Miner
+- Function: Automatically mines resources. The Laser Quarry mines its chunk, while the Node Miner is placed on specific deposits.
 
 ### Node Extractor
 - Function: Specifically targets infinite ore ‘Nodes’ (like Copper Node, Iron Node) found in the world to slowly extract the respective resource at the cost of power.
@@ -77,8 +77,8 @@ This guide covers the major functional blocks in the Crystal Nexus mod, detailin
 ### Fluid Packager
 - Function: Cans fluids from internal tanks into cells or buckets for manual transport or crafting.
 
-### Depot Uploader / Downloader
-- Function: Remote wireless item transfer. Links to Depots to pull/push items over long distances instantly.
+### Depot Downloader
+- Function: Pulls items from linked depots over long distances.
 
 ### Tesseract
 - Function: Endgame wireless energy transfer. Can transfer Energy across any distance.
@@ -124,7 +124,7 @@ Crude Oil / Gas Generation: Placed via world generation. Use pumps or extractors
 
 ## 7. EQUIPMENT & ITEMS
 ### Tools & Combat
-- Function: Upgraded equipment sets such as the Compound Paxel, Mining Laser, Titanium/Invertium weapons, and special utility items like the Paintball Gun or Flamethrower.
+- Function: Upgraded equipment sets such as the Compound Paxel, Mining Laser, Titanium weapons, and special utility items like the Paintball Gun or Flamethrower.
 
 ### Armor & Mobility
 - Function: Defensive capabilities and flight. 

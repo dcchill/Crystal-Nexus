@@ -1,7 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:battery",
-    "crystalnexus:ee_battery"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:battery",
+                   "crystalnexus:ee_battery"
+               ]
 }

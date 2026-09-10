@@ -1,7 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:tarrock",
-    "crystalnexus:tarrock_soil"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:tarrock",
+                   "crystalnexus:tarrock_soil"
+               ]
 }

@@ -14,13 +14,13 @@
       "item": "crystalnexus:machineblock"
     },
     "c": {
-      "item": "crystalnexus:chlorophyte_smelter"
+      "item": "crystalnexus:crystal_smelter"
     },
     "d": {
       "item": "crystalnexus:compound_e"
     },
     "e": {
-      "item": "crystalnexus:invertium_smelter"
+      "item": "crystalnexus:titanium_smelter"
     }
   },
   "result": {

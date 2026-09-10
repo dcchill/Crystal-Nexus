@@ -1,8 +1,8 @@
 {
-  "replace": false,
-  "values": [
-    "minecraft:coal",
-    "minecraft:charcoal",
-    "crystalnexus:coal_singularity"
-  ]
+    "replace":  false,
+    "values":  [
+                   "minecraft:coal",
+                   "minecraft:charcoal",
+                   "crystalnexus:coal_singularity"
+               ]
 }

@@ -70,15 +70,15 @@ How to use it:
 2. Add the required fuel/input from its GUI.
 3. Route FE into cables, batteries, or nearby machines.
 
-### Invertium Piston Generator
+### Inverted Piston Generator
 
-The Invertium Piston Generator is the higher-tier counterpart to the Piston Generator.
+The Inverted Piston Generator is the higher-tier counterpart to the Piston Generator.
 
-Use it after unlocking Invertium materials.
+Use it after unlocking Titanium materials.
 
 How to use it:
 
-1. Replace or supplement early Piston Generators once you have Invertium.
+1. Replace or supplement early Piston Generators once you have Titanium.
 2. Feed it the required generator input.
 3. Buffer the output in batteries before sending it to larger machine lines.
 

@@ -7,11 +7,11 @@
     "pfp"
   ],
   "key": {
-    "p": { "item": "crystalnexus:titanium_carbide_sheet" },
+    "p": { "item": "crystalnexus:titanium_sheet" },
     "h": { "item": "crystalnexus:titanium_heating_coil" },
     "b": { "item": "minecraft:blast_furnace" },
-    "f": { "item": "crystalnexus:titanium_carbide_machine_frame" },
-    "i": { "item": "crystalnexus:titanium_carbide_ingot" }
+    "f": { "item": "crystalnexus:titanium_machine_frame" },
+    "i": { "item": "crystalnexus:titanium_ingot" }
   },
   "result": {
     "id": "crystalnexus:arc_furnace",

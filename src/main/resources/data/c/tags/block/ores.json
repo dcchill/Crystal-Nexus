@@ -1,7 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:ilmenite_ore",
-    "crystalnexus:deepslate_ilmenite_ore"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:ilmenite_ore",
+                   "crystalnexus:deepslate_ilmenite_ore"
+               ]
 }

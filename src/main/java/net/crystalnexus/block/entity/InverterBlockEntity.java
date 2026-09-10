@@ -96,7 +96,7 @@ public class InverterBlockEntity extends RandomizableContainerBlockEntity implem
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Invertium Inverter");
+		return Component.literal("Energy Inverter");
 	}
 
 	@Override

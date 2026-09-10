@@ -2,6 +2,6 @@
   "parent": "crystalnexus:custom/d_remote",
   "textures": {
     "0": "crystalnexus:block/d_remote_texture",
-    "particle": "crystalnexus:item/invertium_crystal"
+    "particle": "crystalnexus:item/titanium_ingot"
   }
 }

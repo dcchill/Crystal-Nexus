@@ -101,7 +101,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Invertium Piston Generator");
+		return Component.literal("Inverted Piston Generator");
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:machineblock",
-    "crystalnexus:machine_energy_input"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:machineblock",
+                   "crystalnexus:machine_energy_input"
+               ]
 }

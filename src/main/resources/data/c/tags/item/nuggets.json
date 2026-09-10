@@ -1,9 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:invertium_nugget",
-    "crystalnexus:crystal_alloy_nugget",
-    "crystalnexus:chlorophyte_nugget",
-    "crystalnexus:blutonium_nugget"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:crystal_alloy_nugget",
+                   "crystalnexus:blutonium_nugget"
+               ]
 }

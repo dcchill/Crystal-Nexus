@@ -50,7 +50,7 @@ public final class MaterialProcessingCatalog {
     public static final int NUGGETS_PER_DUST = 9;
 
     public static int nuggetsPerDust(MachineTier tier) {
-        return tier.level() <= MachineTier.INVERTIUM.level() ? 9 + Math.min(1, Math.max(0, tier.level() - MachineTier.INVERTIUM.level()))
+        return tier.level() <= MachineTier.TITANIUM.level() ? 9 + Math.max(0, tier.level() - MachineTier.CRYSTAL.level())
             : tier.level() <= MachineTier.TITANIUM_CARBIDE.level() ? 11 : 12;
     }
     private static final Gson GSON = new Gson();

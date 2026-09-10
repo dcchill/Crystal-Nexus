@@ -114,7 +114,7 @@ public class InverterBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Invertium Inverter");
+					return Component.literal("Energy Inverter");
 				}
 
 				@Override

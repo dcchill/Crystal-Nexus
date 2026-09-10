@@ -69,7 +69,7 @@ public class QuarryGUIScreen extends AbstractContainerScreen<QuarryGUIMenu> impl
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.quarry_gui.label_quantum_miner"), 75, -10, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.quarry_gui.label_title"), 75, -10, -12829636, false);
 	}
 
 	@Override

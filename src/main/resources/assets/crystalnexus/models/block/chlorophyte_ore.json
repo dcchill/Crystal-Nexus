@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/chlorophyte_deepslate_ore",
-    "particle": "crystalnexus:block/chlorophyte_deepslate_ore"
-  },
-  "render_type": "solid"
-}

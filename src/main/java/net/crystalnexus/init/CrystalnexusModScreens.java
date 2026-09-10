@@ -25,7 +25,6 @@ import net.crystalnexus.client.gui.ControlRodGuiScreen;
 import net.crystalnexus.client.gui.ReactionGUIScreen;
 import net.crystalnexus.client.gui.QuarryGUIScreen;
 import net.crystalnexus.client.gui.HyperLaserQuarryScreen;
-import net.crystalnexus.client.gui.QuantumMinerGUIScreen;
 import net.crystalnexus.client.gui.PistonGenGUIScreen;
 import net.crystalnexus.client.gui.OreProGUIScreen;
 import net.crystalnexus.client.gui.OreGenGUIScreen;
@@ -112,7 +111,6 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.REFINERY_GUI.get(), RefineryScreen::new);
 		event.register(CrystalnexusModMenus.TEMPORAL_EXPLOITER.get(), TemporalExploiterScreen::new);
 		event.register(CrystalnexusModMenus.CONTAINER_GUI.get(), ContainerGUIScreen::new);
-		event.register(CrystalnexusModMenus.QUANTUM_MINER_GUI.get(), QuantumMinerGUIScreen::new);
 		event.register(CrystalnexusModMenus.TURBINE_GUI.get(), TurbineGUIScreen::new);
 		event.register(CrystalnexusModMenus.ORE_PRO_GUI.get(), OreProGUIScreen::new);
 		event.register(CrystalnexusModMenus.BIO_M_GUI.get(), BioMGuiScreen::new);

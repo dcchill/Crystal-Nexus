@@ -1,9 +1,9 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:battery_cell",
-    "crystalnexus:dense_battery_cell",
-    "crystalnexus:carbon_battery_cell",
-    "crystalnexus:dark_battery_cell"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:battery_cell",
+                   "crystalnexus:dense_battery_cell",
+                   "crystalnexus:carbon_battery_cell",
+                   "crystalnexus:dark_battery_cell"
+               ]
 }

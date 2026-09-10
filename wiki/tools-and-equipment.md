@@ -174,16 +174,6 @@ Controls:
 
 ## Armor and Tool Sets
 
-### Chlorophyte Tools
-
-Tools:
-
-- Chlorophyte Pickaxe
-- Chlorophyte Axe
-- Chlorophyte Greatsword
-- Chlorophyte Shovel
-- Chlorophyte Hoe
-
 ### Crystalized Tools
 
 Tools:
@@ -194,16 +184,6 @@ Tools:
 - Crystalized Shovel
 - Crystalized Hoe
 
-
-### Invertium Tools
-
-Tools:
-
-- Invertium Pickaxe
-- Invertium Axe
-- Invertium Sword
-- Invertium Shovel
-- Invertium Hoe
 
 ### Titanium Tools
 

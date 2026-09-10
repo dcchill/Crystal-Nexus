@@ -14,10 +14,10 @@
       "item": "crystalnexus:laser_diode"
     },
     "c": {
-      "item": "crystalnexus:invertium_ingot"
+      "item": "crystalnexus:titanium_ingot"
     },
     "d": {
-      "item": "crystalnexus:invertium_machine_frame"
+      "item": "crystalnexus:titanium_machine_frame"
     },
     "e": {
       "tag": "c:glass_blocks"

@@ -8,7 +8,7 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:invertium_crystal"
+      "item": "crystalnexus:titanium_block"
     },
     "b": {
       "item": "crystalnexus:reactor_block"
@@ -17,7 +17,7 @@
       "item": "crystalnexus:computation_node"
     },
     "d": {
-      "item": "crystalnexus:invertium_ingot"
+      "item": "crystalnexus:titanium_ingot"
     }
   },
   "result": {

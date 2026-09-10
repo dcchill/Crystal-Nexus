@@ -1,11 +1,10 @@
 {
-  "replace": false,
-  "values": [
-    "minecraft:amethyst_shard",
-    "minecraft:diamond",
-    "minecraft:emerald",
-    "minecraft:quartz",
-    "crystalnexus:ancient_crystal",
-    "crystalnexus:invertium_crystal"
-  ]
+    "replace":  false,
+    "values":  [
+                   "minecraft:amethyst_shard",
+                   "minecraft:diamond",
+                   "minecraft:emerald",
+                   "minecraft:quartz",
+                   "crystalnexus:ancient_crystal"
+               ]
 }

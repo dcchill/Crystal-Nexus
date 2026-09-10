@@ -1,13 +1,11 @@
 {
-  "replace": false,
-  "values": [
-    "minecraft:copper_ingot",
-    "minecraft:iron_ingot",
-    "minecraft:gold_ingot",
-    "minecraft:netherite_ingot",
-    "crystalnexus:chlorophyte_ingot",
-    "crystalnexus:blutonium_ingot",
-    "crystalnexus:invertium_ingot",
-    "crystalnexus:crystalized_alloy"
-  ]
+    "replace":  false,
+    "values":  [
+                   "minecraft:copper_ingot",
+                   "minecraft:iron_ingot",
+                   "minecraft:gold_ingot",
+                   "minecraft:netherite_ingot",
+                   "crystalnexus:blutonium_ingot",
+                   "crystalnexus:crystalized_alloy"
+               ]
 }

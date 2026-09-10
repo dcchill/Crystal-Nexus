@@ -24,8 +24,6 @@ Machine frame tiers:
 
 - Iron Machine Frame
 - Crystal Machine Frame
-- Chlorophyte Machine Frame
-- Invertium Machine Frame
 - Titanium Machine Frame
 - Carbon Machine Frame
 - Titanium Carbide Machine Frame
@@ -61,20 +59,6 @@ Electromechanical parts include:
 
 These parts are used in machine construction and are grouped together in the Materials & Parts creative tab. Check JEI for their current crafting recipes.
 
-## Chlorophyte
-
-Forms:
-
-- Chlorophyte Ore
-- Raw Chlorophyte
-- Chlorophyte Dust
-- Chlorophyte Nugget
-- Chlorophyte Ingot
-- Chlorophyte Block
-- Chlorophyte Machine Frame
-
-Chlorophyte unlocks growth acceleration, circuit pressing, tools, and machine tiers.
-
 ## Blutonium
 
 Forms:
@@ -94,23 +78,6 @@ Important notes:
 - The Hazmat enchantment negates the radioactive effect.
 - Pure Blutonium is 75% more efficient than normal Blutonium.
 - Blutonium Waste is associated with reactor waste output and waste recycling.
-
-## Invertium
-
-Forms:
-
-- Invertium Ore
-- Raw Invertium
-- Invertium Crystal
-- Invertium Crystal Block
-- Invertium Nugget
-- Invertium Ingot
-- Invertium Block
-- Invertium Machine Frame
-
-Progression hint: create Invertium by tossing a Blutonium Ingot into the End Portal.
-
-Invertium unlocks the Invertium Smelter, Invertium Piston Generator, Inverter, Invertium tools, and advanced crafting.
 
 ## Carbon and Titanium
 

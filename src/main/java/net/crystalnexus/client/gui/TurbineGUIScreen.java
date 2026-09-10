@@ -69,7 +69,7 @@ public class TurbineGUIScreen extends AbstractContainerScreen<TurbineGUIMenu> im
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.turbine_gui.label_quantum_miner"), 88, -9, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.turbine_gui.label_title"), 88, -9, -12829636, false);
 	}
 
 	@Override

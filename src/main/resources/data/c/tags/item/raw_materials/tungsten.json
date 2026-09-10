@@ -1,4 +1,6 @@
 {
-  "replace": false,
-  "values": ["crystalnexus:meteorite_scrap"]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:meteorite_scrap"
+               ]
 }

@@ -81,6 +81,8 @@ public final class ArcBlastFurnaceGameTests {
             .getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE).stream()
             .collect(Collectors.toMap(holder -> holder.id().getPath(), holder -> holder));
         Map<String, ExpectedRecipe> expected = Map.ofEntries(
+            Map.entry("arc_carbon_composite", recipe(CrystalnexusModItems.CARBON_COMPOSITE.get(), 9,
+                Items.NETHERITE_SCRAP, CrystalnexusModItems.RAW_CARBON.get())),
             Map.entry("arc_silicon", recipe(CrystalnexusModItems.SILICON.get(), 2,
                 Items.QUARTZ, CrystalnexusModItems.RAW_CARBON.get())),
             Map.entry("arc_conductive_alloy", recipe(CrystalnexusModItems.CONDUCTIVE_ALLOY.get(), 2,
@@ -89,12 +91,6 @@ public final class ArcBlastFurnaceGameTests {
                 CrystalnexusModItems.ANCIENT_CRYSTAL.get(), Items.IRON_INGOT)),
             Map.entry("arc_energized_silicon", recipe(CrystalnexusModItems.ENERGIZED_SILICON.get(), 1,
                 CrystalnexusModItems.SILICON.get(), CrystalnexusModItems.CONDUCTIVE_ALLOY.get())),
-            Map.entry("arc_carbon_composite", recipe(CrystalnexusModItems.CARBON_COMPOSITE.get(), 3,
-                Items.NETHERITE_SCRAP, CrystalnexusModItems.INVERTIUM_DUST.get())),
-            Map.entry("arc_chlorophyte_dust", recipe(CrystalnexusModItems.CHLOROPHYTE_INGOT.get(), 2,
-                CrystalnexusModItems.CHLOROPHYTE_DUST.get())),
-            Map.entry("arc_invertium_dust", recipe(CrystalnexusModItems.INVERTIUM_INGOT.get(), 2,
-                CrystalnexusModItems.INVERTIUM_DUST.get())),
             Map.entry("arc_recycle_iron_sheet", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_SHEET.get())),
             Map.entry("arc_recycle_iron_rod", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_ROD.get())),
             Map.entry("arc_recycle_titanium_sheet", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,

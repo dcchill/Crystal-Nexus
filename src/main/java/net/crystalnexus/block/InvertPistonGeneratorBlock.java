@@ -130,7 +130,7 @@ public class InvertPistonGeneratorBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Invertium Piston Generator");
+					return Component.literal("Inverted Piston Generator");
 				}
 
 				@Override

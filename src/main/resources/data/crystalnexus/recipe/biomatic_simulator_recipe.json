@@ -11,13 +11,13 @@
       "tag": "c:ingots/titanium"
     },
     "b": {
-      "item": "crystalnexus:invertium_crystal"
+      "item": "crystalnexus:titanium_block"
     },
     "c": {
       "item": "crystalnexus:florathane"
     },
     "d": {
-      "item": "crystalnexus:invertium_machine_frame"
+      "item": "crystalnexus:titanium_machine_frame"
     }
   },
   "result": {

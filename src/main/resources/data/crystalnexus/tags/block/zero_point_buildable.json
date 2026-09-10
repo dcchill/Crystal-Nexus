@@ -1,8 +1,8 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:carbon_machine_frame",
-    "crystalnexus:carbon_glass",
-    "crystalnexus:carbon_block"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:carbon_machine_frame",
+                   "crystalnexus:carbon_glass",
+                   "crystalnexus:carbon_block"
+               ]
 }

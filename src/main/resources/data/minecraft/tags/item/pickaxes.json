@@ -1,11 +1,9 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:mining_laser",
-    "crystalnexus:compound_pickaxe",
-    "crystalnexus:invertium_pickaxe",
-    "crystalnexus:titanium_pickaxe",
-    "crystalnexus:chlorophyte_pickaxe",
-    "crystalnexus:cystalized_pickaxe"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:mining_laser",
+                   "crystalnexus:compound_pickaxe",
+                   "crystalnexus:titanium_pickaxe",
+                   "crystalnexus:cystalized_pickaxe"
+               ]
 }

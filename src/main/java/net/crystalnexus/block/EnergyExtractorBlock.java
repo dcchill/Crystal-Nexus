@@ -128,7 +128,7 @@ public class EnergyExtractorBlock extends Block implements EntityBlock {
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal("Chlorophyte Energy Extractor");
+					return Component.literal("Titanium Energy Extractor");
 				}
 
 				@Override

@@ -17,11 +17,11 @@ Put an ingot in the input, choose the desired part with the selector, supply FE,
 
 ## Ore and Dust Processing
 
-Machine material tiers trade more energy for faster processing, doubling FE usage at every step: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Chlorophyte uses 2x FE at 0.75x time, Invertium uses 4x FE at 0.5x time, Titanium uses 8x FE at 0.4x time, Carbon uses 16x FE at 0.35x time, Titanium Carbide uses 32x FE at 0.3x time, Tungsten uses 64x FE at 0.25x time, and Hyper uses 128x FE at 0.2x time. For a 4,096 FE base operation, that is 2,048, 4,096, 8,192, 16,384, 32,768, 65,536, 131,072, 262,144, and 524,288 FE before FE-efficiency upgrades. Machines with missing intermediate variants use the multiplier assigned to the physical variant.
+Machine tiers trade more energy for faster processing: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Titanium uses 2x FE at 0.75x time, Carbon uses 4x FE at 0.5x time, Titanium Carbide uses 8x FE at 0.4x time, Tungsten uses 16x FE at 0.35x time, and Hyper uses 32x FE at 0.3x time.
 
-Machine frames follow one progression: Iron to Crystal to Chlorophyte to Invertium to Titanium to Carbon to Titanium Carbide to Tungsten to Hyper. Not every tier has a dedicated Crusher, Dust Separator, or Refinery; the legacy `invertium_*` processing machines fill the Titanium role, while Hyper remains the final physical variant and requires the Tungsten-gated Hyper frame.
+Machine frames follow one progression: Iron to Crystal to Titanium to Carbon to Titanium Carbide to Tungsten to Hyper. Hyper remains the final physical variant and requires the Tungsten-gated Hyper frame.
 
-Custom material profiles and processing recipes use numeric minimum tiers: Crystal 1, Chlorophyte 2, Invertium 3, Titanium 4, Carbon 5, Titanium Carbide 6, Tungsten 7, and Hyper 8. Datapacks written for the former merged tiers must update levels 3 through 6 to preserve their intended gate.
+Custom material profiles and processing recipes use numeric minimum tiers: Crystal 1, Titanium 2, Carbon 3, Titanium Carbide 4, Tungsten 5, and Hyper 6.
 
 ### Crystal Ore Crusher
 
@@ -60,19 +60,11 @@ The Iron Smelter is the lower-tier powered smelter.
 
 Use it as a first FE-powered furnace replacement.
 
-### Chlorophyte Smelter
+### Titanium Smelter
 
-The Chlorophyte Smelter is the Chlorophyte-tier smelting machine.
+The Titanium Smelter upgrades from the Crystal Smelter and forms the Titanium-tier smelting step.
 
-Use it in the Chlorophyte processing branch.
-
-### Invertium Smelter
-
-The Invertium Smelter is the Invertium-tier smelting machine and upgrades from the Chlorophyte Smelter.
-
-Build it once Invertium production is established.
-
-Smelter energy costs before FE-efficiency upgrades are 1,024 FE for Iron, 2,048 FE for Crystal, 4,096 FE for Chlorophyte, and 8,192 FE for Invertium.
+Smelter energy costs before FE-efficiency upgrades are 1,024 FE for Iron, 2,048 FE for Crystal, and 4,096 FE for Titanium.
 
 ### Ultima Smelter
 
@@ -147,26 +139,15 @@ How to use it:
 2. Put a storage block directly above it if you want drops exported automatically.
 3. Supply FE and it will start right away.
 
-### Quantum Miner
-
-The Quantum Miner creates resources from a weighted resource table instead of mining a real chunk.
-
-- Costs 40,960 FE per completed cycle by default.
-- Base cycle time is 20 ticks, 12 with an Acceleration Upgrade, and 6 with a Carbon Acceleration Upgrade.
-- Output is weighted toward common resources such as raw iron, raw copper, coal, redstone, and lapis.
-- Rare results such as diamonds and emeralds are possible, but much less common.
-- It does not output ancient debris, Blutonium, Invertium, or other progression-gated late-game materials.
-- It only spends FE when it can place the result into its output inventory.
-
 ## Circuit and Computation Processing
 
-### Chlorophyte Circuit Press
+### Titanium Circuit Press
 
-The Circuit Press creates circuits and chips. The Chlorophyte model costs 4,096 FE per item and takes 75 ticks. The Titanium Carbide model costs 32,768 FE per item, takes 30 ticks, and processes eight items per batch for 262,144 FE before FE-efficiency upgrades.
+The Circuit Press creates circuits and chips. The Titanium model costs 4,096 FE per item and takes 75 ticks. The Titanium Carbide model processes eight items per batch.
 
 ### Arc Furnace
 
-The Arc Furnace is a Tungsten-tier machine. Its 4,096 FE base operation costs 131,072 FE and takes 25 ticks before upgrades.
+The Arc Furnace is a Titanium-tier machine.
 
 ### Computation Cluster
 
@@ -205,7 +186,7 @@ Combines fluid and item inputs for fluid-based chemical processing. Use JEI to c
 
 ### Refinery Tiers
 
-The Crystal, Chlorophyte, Invertium, and Hyper Refineries provide progressively faster refinery processing as you advance through the machine tiers.
+The Crystal, Titanium, and Hyper Refineries provide progressively faster refinery processing as you advance through the machine tiers.
 
 
 ### Biomatic Composter

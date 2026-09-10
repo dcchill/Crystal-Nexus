@@ -1,11 +1,11 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:steam",
-    "crystalnexus:crude_oil",
-    "crystalnexus:overfuel",
-    "crystalnexus:gasoline",
-    "crystalnexus:temporal_essence",
-    "crystalnexus:rad_placeholder"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:steam",
+                   "crystalnexus:crude_oil",
+                   "crystalnexus:overfuel",
+                   "crystalnexus:gasoline",
+                   "crystalnexus:temporal_essence",
+                   "crystalnexus:rad_placeholder"
+               ]
 }

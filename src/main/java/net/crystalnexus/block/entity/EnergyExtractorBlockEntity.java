@@ -96,7 +96,7 @@ public class EnergyExtractorBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public Component getDisplayName() {
-		return Component.literal("Chlorophyte Energy Extractor");
+		return Component.literal("Titanium Energy Extractor");
 	}
 
 	@Override

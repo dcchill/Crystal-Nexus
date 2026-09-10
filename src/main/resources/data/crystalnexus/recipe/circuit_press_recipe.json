@@ -14,10 +14,10 @@
       "item": "minecraft:piston"
     },
     "c": {
-      "item": "crystalnexus:chlorophyte_ingot"
+      "item": "crystalnexus:titanium_ingot"
     },
     "d": {
-      "item": "crystalnexus:chlorophyte_machine_frame"
+      "item": "crystalnexus:titanium_machine_frame"
     }
   },
   "result": {

@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:raw_ilmenite"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:raw_ilmenite"
+               ]
 }

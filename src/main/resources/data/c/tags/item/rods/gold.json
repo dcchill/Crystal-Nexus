@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:gold_rod"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:gold_rod"
+               ]
 }

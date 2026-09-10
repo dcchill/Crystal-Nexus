@@ -23,7 +23,7 @@ public final class MaterialProcessingNames {
         if (normalized.contains("tungsten")) return MachineTier.TUNGSTEN.level();
         if (normalized.contains("hyper")) return MachineTier.HYPER.level();
         if (normalized.contains("carbon")) return MachineTier.CARBON.level();
-        if (normalized.contains("invert") || normalized.contains("platinum")) return 2;
+        if (normalized.contains("platinum")) return MachineTier.TITANIUM.level();
         return 1;
     }
 }

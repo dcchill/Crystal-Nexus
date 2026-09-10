@@ -14,7 +14,7 @@
       "item": "crystalnexus:turbine_blade"
     },
     "c": {
-      "item": "crystalnexus:invertium_ingot"
+      "item": "crystalnexus:titanium_ingot"
     },
     "d": {
       "item": "crystalnexus:piston_generator"
@@ -23,7 +23,7 @@
       "item": "crystalnexus:machine_bolt"
     },
     "f": {
-      "item": "crystalnexus:invertium_machine_frame"
+      "item": "crystalnexus:titanium_machine_frame"
     }
   },
   "result": {

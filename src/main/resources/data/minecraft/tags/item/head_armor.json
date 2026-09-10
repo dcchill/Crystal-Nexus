@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:carbon_helmet"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:carbon_helmet"
+               ]
 }

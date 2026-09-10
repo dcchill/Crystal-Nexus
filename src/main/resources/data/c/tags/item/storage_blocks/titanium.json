@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:titanium_block"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:titanium_block"
+               ]
 }

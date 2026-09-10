@@ -133,11 +133,8 @@ public class TooltipInfoHandler {
 		addTooltip("crystal_crusher",
 				"Crushes raw ores into dusts.",
 				"Multiplies ore yield for better efficiency.");
-		addTooltip("chlorophyte_crusher",
-				"Chlorophyte-tier ore crusher.",
-				"Processes recipes available to its machine tier.");
-		addTooltip("invertium_crusher",
-				"Invertium-tier ore crusher.",
+		addTooltip("titanium_crusher",
+				"Titanium-tier ore crusher.",
 				"Processes advanced crushing recipes faster.");
 		addTooltip("hyper_crusher",
 				"Hyper-tier ore crusher.",
@@ -150,14 +147,11 @@ public class TooltipInfoHandler {
 				"Select the output shape from its GUI.",
 				"Accepts machine upgrades in the side slot.");
 
-		addTooltip("chlorophyte_smelter",
-				"Specialized Chlorophyte furnace.",
-				"Smelts dusts and raw materials into ingots.");
 		addTooltip("iron_smelter",
 				"Specialized iron-tier furnace.",
 				"Smelts dusts and raw materials into ingots.");
-		addTooltip("invertium_smelter",
-				"Specialized Invertium furnace.",
+		addTooltip("titanium_smelter",
+				"Specialized Titanium furnace.",
 				"Smelts dusts and raw materials into ingots.");
 		addTooltip("crystal_smelter",
 				"Specialized crystal furnace.",
@@ -180,11 +174,8 @@ public class TooltipInfoHandler {
 		addTooltip("refinery",
 				"Refines processing fluids into useful materials.",
 				"Basic refinery tier.");
-		addTooltip("chlorophyte_refinery",
-				"Chlorophyte-tier material refinery.",
-				"Handles recipes available to its machine tier.");
-		addTooltip("invertium_refinery",
-				"Invertium-tier material refinery.",
+		addTooltip("titanium_refinery",
+				"Titanium-tier material refinery.",
 				"Handles advanced refining recipes.");
 		addTooltip("hyper_refinery",
 				"Hyper-tier material refinery.",
@@ -209,11 +200,8 @@ public class TooltipInfoHandler {
 		addTooltip("dust_separator",
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
-		addTooltip("chlorophyte_dust_separator",
-				"Chlorophyte-tier dust separator.",
-				"Processes recipes available to its machine tier.");
-		addTooltip("invertium_dust_separator",
-				"Invertium-tier dust separator.",
+		addTooltip("titanium_dust_separator",
+				"Titanium-tier dust separator.",
 				"Processes advanced separation recipes faster.");
 		addTooltip("hyper_dust_separator",
 				"Hyper-tier dust separator.",
@@ -228,9 +216,6 @@ public class TooltipInfoHandler {
 		addTooltip("quarry",
 				"Automated laser mining machine.",
 				"Automatically mines resources within a chunk.");
-		addTooltip("quantum_miner",
-				"Quantum resource extraction.",
-				"Produces weighted common resources at high FE cost.");
 		addTooltip("node_miner",
 				"Mines from Ore Nodes.",
 				"Slowly mines resources at the cost of power");
@@ -295,9 +280,6 @@ public class TooltipInfoHandler {
 				"Mass fluid storage.",
 				"Stores large quantities of fluids.");
 
-		addTooltip("depot_uploader",
-				"Wireless item upload station.",
-				"Sends items to your personal Depot.");
 		addTooltip("depot_downloader",
 				"Wireless item download station.",
 				"Retrieves items from your personal Depot.");
@@ -557,7 +539,7 @@ public class TooltipInfoHandler {
 				"Titanium-tier resource extraction machine.",
 				"Consumes 4x energy for twice the secondary-drop chance.");
 		addTooltip("inverter",
-				"Invertium Inverter.",
+				"Energy Inverter.",
 				"Inverts energy types.");
 		addTooltip("energy_extractor",
 				"Energy Extractor.",
@@ -587,8 +569,8 @@ public class TooltipInfoHandler {
 				"Teleportation Warp Pad.",
 				"Instant teleport between pads.");
 
-		addTooltip("chlorophyte_accelerator",
-				"Chlorophyte Accelerator.",
+		addTooltip("growth_accelerator",
+				"Growth Accelerator.",
 				"Speeds up crop growth using energy.");
 
 		addTooltip("conductive_alloy",

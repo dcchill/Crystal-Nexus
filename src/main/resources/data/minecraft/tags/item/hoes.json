@@ -1,9 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:chlorophyte_hoe",
-    "crystalnexus:cystalized_hoe",
-    "crystalnexus:titanium_hoe",
-    "crystalnexus:invertium_hoe"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:cystalized_hoe",
+                   "crystalnexus:titanium_hoe"
+               ]
 }

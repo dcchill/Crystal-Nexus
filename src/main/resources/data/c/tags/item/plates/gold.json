@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:gold_sheet"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:gold_sheet"
+               ]
 }

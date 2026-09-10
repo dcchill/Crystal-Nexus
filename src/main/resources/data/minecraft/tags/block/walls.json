@@ -1,8 +1,8 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:smooth_tarrock_wall",
-    "crystalnexus:tarrock_brick_wall",
-    "crystalnexus:tarrock_wall"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:smooth_tarrock_wall",
+                   "crystalnexus:tarrock_brick_wall",
+                   "crystalnexus:tarrock_wall"
+               ]
 }

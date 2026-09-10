@@ -34,7 +34,6 @@ import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
 import net.crystalnexus.world.inventory.ReactionGUIMenu;
 import net.crystalnexus.world.inventory.QuarryGUIMenu;
 import net.crystalnexus.world.inventory.HyperLaserQuarryMenu;
-import net.crystalnexus.world.inventory.QuantumMinerGUIMenu;
 import net.crystalnexus.world.inventory.PistonGenGUIMenu;
 import net.crystalnexus.world.inventory.OreProGUIMenu;
 import net.crystalnexus.world.inventory.OreGenGUIMenu;
@@ -121,7 +120,6 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<RefineryMenu>> REFINERY_GUI = REGISTRY.register("refinery_gui", () -> IMenuTypeExtension.create(RefineryMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TemporalExploiterMenu>> TEMPORAL_EXPLOITER = REGISTRY.register("temporal_exploiter", () -> IMenuTypeExtension.create(TemporalExploiterMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ContainerGUIMenu>> CONTAINER_GUI = REGISTRY.register("container_gui", () -> IMenuTypeExtension.create(ContainerGUIMenu::new));
-	public static final DeferredHolder<MenuType<?>, MenuType<QuantumMinerGUIMenu>> QUANTUM_MINER_GUI = REGISTRY.register("quantum_miner_gui", () -> IMenuTypeExtension.create(QuantumMinerGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TurbineGUIMenu>> TURBINE_GUI = REGISTRY.register("turbine_gui", () -> IMenuTypeExtension.create(TurbineGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<OreProGUIMenu>> ORE_PRO_GUI = REGISTRY.register("ore_pro_gui", () -> IMenuTypeExtension.create(OreProGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<BioMGuiMenu>> BIO_M_GUI = REGISTRY.register("bio_m_gui", () -> IMenuTypeExtension.create(BioMGuiMenu::new));

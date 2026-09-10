@@ -49,7 +49,7 @@ public class CircuitPressBlock extends Block implements EntityBlock, TieredMachi
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	private final MachineTier machineTier;
 
-	public CircuitPressBlock() { this(MachineTier.CHLOROPHYTE); }
+	public CircuitPressBlock() { this(MachineTier.TITANIUM); }
 
 	protected CircuitPressBlock(MachineTier machineTier) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {

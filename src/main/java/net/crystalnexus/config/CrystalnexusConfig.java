@@ -84,8 +84,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues BIOMATIC_SIMULATOR;
 		public final EnergyValues BLOCK_PLACER;
 		public final EnergyValues CHEMICAL_REACTION_CHAMBER;
-		public final EnergyValues CHLOROPHYTE_ACCELERATOR;
-		public final EnergyValues CHLOROPHYTE_SMELTER;
+		public final EnergyValues GROWTH_ACCELERATOR;
 		public final EnergyValues CIRCUIT_PRESS;
 		public final EnergyValues COMPUTATION_CLUSTER;
 		public final EnergyValues CRAFTING_FACTORY;
@@ -107,7 +106,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues FLUID_PACKAGER;
 		public final EnergyValues INVERT_PISTON_GENERATOR;
 		public final EnergyValues INVERTER;
-		public final EnergyValues INVERTIUM_SMELTER;
+		public final EnergyValues TITANIUM_SMELTER;
 		public final EnergyValues IRON_SMELTER;
 		public final EnergyValues ITEM_CHARGER;
 		public final EnergyValues MACHINE_ENERGY_INPUT;
@@ -117,7 +116,6 @@ public final class CrystalnexusConfig {
 		public final EnergyValues NODE_MINER;
 		public final EnergyValues ORE_PROCESSOR;
 		public final EnergyValues PISTON_GENERATOR;
-		public final EnergyValues QUANTUM_MINER;
 		public final EnergyValues QUARRY;
 		public final EnergyValues HYPER_LASER_QUARRY;
 		public final EnergyValues REACTION_CHAMBER_COMPUTER;
@@ -150,8 +148,7 @@ public final class CrystalnexusConfig {
 			BIOMATIC_SIMULATOR = new EnergyValues(builder, "biomatic_simulator", 10240, 2048, 8192);
 			BLOCK_PLACER = new EnergyValues(builder, "block_placer", 10240, 256, 256);
 			CHEMICAL_REACTION_CHAMBER = new EnergyValues(builder, "chemical_reaction_chamber", 10240, 1024, 10240);
-			CHLOROPHYTE_ACCELERATOR = new EnergyValues(builder, "chlorophyte_accelerator", 8192, 512, 256);
-			CHLOROPHYTE_SMELTER = new EnergyValues(builder, "chlorophyte_smelter", 10240, 2048, 2048);
+			GROWTH_ACCELERATOR = new EnergyValues(builder, "growth_accelerator", 8192, 512, 256);
 			CIRCUIT_PRESS = new EnergyValues(builder, "circuit_press", 10240, 2048, 2048);
 			COMPUTATION_CLUSTER = new EnergyValues(builder, "computation_cluster", 409600, 11264, 409600);
 			CRAFTING_FACTORY = new EnergyValues(builder, "crafting_factory", 40960, 2048, 1024);
@@ -173,7 +170,7 @@ public final class CrystalnexusConfig {
 			FLUID_PACKAGER = new EnergyValues(builder, "fluid_packager", 10240, 2048, 2048);
 			INVERT_PISTON_GENERATOR = new EnergyValues(builder, "invert_piston_generator", 81290, 4096, 2048);
 			INVERTER = new EnergyValues(builder, "inverter", 10240, 2048, 2048);
-			INVERTIUM_SMELTER = new EnergyValues(builder, "invertium_smelter", 10240, 2048, 2048);
+			TITANIUM_SMELTER = new EnergyValues(builder, "titanium_smelter", 10240, 2048, 2048);
 			IRON_SMELTER = new EnergyValues(builder, "iron_smelter", 10240, 2048, 2048);
 			ITEM_CHARGER = new EnergyValues(builder, "item_charger", 20480, 20480, 10240);
 			MACHINE_ENERGY_INPUT = new EnergyValues(builder, "machine_energy_input", 40960, 20480, 40960);
@@ -183,7 +180,6 @@ public final class CrystalnexusConfig {
 			NODE_MINER = new EnergyValues(builder, "node_miner", 25600, 16384, 8192);
 			ORE_PROCESSOR = new EnergyValues(builder, "ore_processor", 102400, 10240, 20480);
 			PISTON_GENERATOR = new EnergyValues(builder, "piston_generator", 40960, 2048, 1024);
-			QUANTUM_MINER = new EnergyValues(builder, "quantum_miner", 512000, 32768, 32768);
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
 			HYPER_LASER_QUARRY = new EnergyValues(builder, "hyper_laser_quarry", 16384000, 1024000, 16384000, 16, 0);
 			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", EeMatterEconomy.creationCost(4), 512000, EeMatterEconomy.creationCost(4));

@@ -1,4 +1,8 @@
 {
-  "replace": false,
-  "values": ["#c:bolts/iron", "#c:bolts/copper", "#c:bolts/tungsten"]
+    "replace":  false,
+    "values":  [
+                   "#c:bolts/iron",
+                   "#c:bolts/copper",
+                   "#c:bolts/tungsten"
+               ]
 }

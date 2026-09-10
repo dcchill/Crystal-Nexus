@@ -21,17 +21,12 @@ public final class WorldgenGameTests {
         var placedFeatures = registries.registryOrThrow(Registries.PLACED_FEATURE);
         var biomes = registries.registryOrThrow(Registries.BIOME);
 
-        for (String name : new String[]{"ancient_crystal_ore", "ancient_crystal_ore_stone", "blutonium_ore", "chlorophyte_ore",
+        for (String name : new String[]{"ancient_crystal_ore", "ancient_crystal_ore_stone", "blutonium_ore",
                 "deepslate_silicon_ore", "ilmenite_ore", "silicon_ore", "sulfur_ore"}) {
             PlacedFeature feature = placedFeatures.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", name));
             helper.assertTrue(feature != null && biomes.getOrThrow(Biomes.PLAINS).getGenerationSettings().hasFeature(feature),
                     name + " must be registered in overworld biome generation");
         }
-
-        PlacedFeature invertium = placedFeatures.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", "invertium_ore"));
-        helper.assertTrue(invertium != null
-                        && biomes.getOrThrow(Biomes.END_HIGHLANDS).getGenerationSettings().hasFeature(invertium),
-                "invertium_ore must be registered in End biome generation");
         helper.succeed();
     }
 

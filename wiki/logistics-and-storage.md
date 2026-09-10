@@ -75,11 +75,10 @@ Use it as portable or compact inventory storage.
 Depot-related items and blocks:
 
 - Dimensional Depot Uplink
-- Dimensional Depot Uploader
 - Depot Downloader
 - Depot Storage Upgrade
 
-The depot system works like cloud storage for items. The uploader and downloader imply input/output endpoints, while the uplink and storage upgrade manage access and capacity.
+The depot system works like cloud storage for items. The downloader provides an output endpoint, while the uplink and storage upgrade manage access and capacity.
 
 ## Automated Crafting
 

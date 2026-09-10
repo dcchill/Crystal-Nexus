@@ -1,4 +1,6 @@
 {
-  "replace": false,
-  "values": ["crystalnexus:tungsten_dust"]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:tungsten_dust"
+               ]
 }

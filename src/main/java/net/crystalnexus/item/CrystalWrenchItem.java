@@ -664,8 +664,6 @@ public class CrystalWrenchItem extends Item {
         boolean isMachineFrame =
                 block instanceof MachineFrameBlock
                 || block instanceof CrystalMachineFrameBlock
-                || block instanceof ChlorophyteMachineFrameBlock
-                || block instanceof InvertiumMachineFrameBlock
                 || block instanceof CarbonMachineFrameBlock
                 || block instanceof HyperMachineFrameBlock;
 

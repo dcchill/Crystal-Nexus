@@ -1,13 +1,11 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:chlorophyte_block",
-    "crystalnexus:invertium_block",
-    "crystalnexus:crystalized_alloy_block",
-    "crystalnexus:blutonium_block",
-    "crystalnexus:titanium_block",
-    "crystalnexus:raw_crystal_block",
-    "crystalnexus:tungsten_block",
-    "crystalnexus:meteorite_alloy_block"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:crystalized_alloy_block",
+                   "crystalnexus:blutonium_block",
+                   "crystalnexus:titanium_block",
+                   "crystalnexus:raw_crystal_block",
+                   "crystalnexus:tungsten_block",
+                   "crystalnexus:meteorite_alloy_block"
+               ]
 }

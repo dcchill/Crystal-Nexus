@@ -42,7 +42,6 @@ import net.crystalnexus.block.entity.ReactionEnergyInputBlockEntity;
 import net.crystalnexus.block.entity.ReactionChamberComputerBlockEntity;
 import net.crystalnexus.block.entity.RadPlaceholderBlockEntity;
 import net.crystalnexus.block.entity.QuarryBlockEntity;
-import net.crystalnexus.block.entity.QuantumMinerBlockEntity;
 import net.crystalnexus.block.entity.PistonGeneratorBlockEntity;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.PipeJunctionBlockEntity;
@@ -71,7 +70,7 @@ import net.crystalnexus.block.entity.ItemCollectorBlockEntity;
 import net.crystalnexus.block.entity.ItemChargerBlockEntity;
 import net.crystalnexus.block.entity.IronSmelterBlockEntity;
 import net.crystalnexus.block.entity.PartsAssemblerBlockEntity;
-import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
+import net.crystalnexus.block.entity.TitaniumSmelterBlockEntity;
 import net.crystalnexus.block.entity.InverterBlockEntity;
 import net.crystalnexus.block.entity.InvertPistonGeneratorBlockEntity;
 import net.crystalnexus.block.entity.FluidPackagerBlockEntity;
@@ -86,7 +85,6 @@ import net.crystalnexus.block.entity.EnergyCableBlockEntity;
 import net.crystalnexus.block.entity.ElectromagnetBlockEntity;
 import net.crystalnexus.block.entity.EEBatteryBlockEntity;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
-import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
 import net.crystalnexus.block.entity.DepotDownloaderBlockEntity;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.block.entity.DepotCliBlockEntity;
@@ -104,8 +102,7 @@ import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
 import net.crystalnexus.block.entity.ContainerBlockEntity;
 import net.crystalnexus.block.entity.ComputationClusterBlockEntity;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
-import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
-import net.crystalnexus.block.entity.ChlorophyteAcceleratorBlockEntity;
+import net.crystalnexus.block.entity.GrowthAcceleratorBlockEntity;
 import net.crystalnexus.block.entity.ChemicalReactionChamberBlockEntity;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.block.entity.CryogenicFlashFreezerBlockEntity;
@@ -129,16 +126,16 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.BLOCK_ENTITY_TYPE, CrystalnexusMod.MODID);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_PURIFIER = register("crystal_purifier", CrystalnexusModBlocks.CRYSTAL_PURIFIER, CrystalPurifierBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_CRUSHER = registerMany("crystal_crusher", CrystalCrusherBlockEntity::new,
-		CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER,
-		CrystalnexusModBlocks.INVERTIUM_CRUSHER, CrystalnexusModBlocks.HYPER_CRUSHER);
+		CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalnexusModBlocks.TITANIUM_CRUSHER,
+		CrystalnexusModBlocks.HYPER_CRUSHER);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = registerMany("dust_separator", DustSeparatorBlockEntity::new,
-		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR,
-		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
+		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.TITANIUM_DUST_SEPARATOR,
+		CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_GUIDE = register("crystal_guide", CrystalnexusModBlocks.CRYSTAL_GUIDE, CrystalGuideBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_COLLECTOR = register("item_collector", CrystalnexusModBlocks.ITEM_COLLECTOR, ItemCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> EXTRACTINATOR = registerMany("extractinator", ExtractinatorBlockEntity::new,
 		CrystalnexusModBlocks.EXTRACTINATOR, CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_ACCELERATOR = register("chlorophyte_accelerator", CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR, ChlorophyteAcceleratorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> GROWTH_ACCELERATOR = register("growth_accelerator", CrystalnexusModBlocks.GROWTH_ACCELERATOR, GrowthAcceleratorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_COMPUTER = register("reactor_computer", CrystalnexusModBlocks.REACTOR_COMPUTER, ReactorComputerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_ENERGY_OUTPUT = register("reactor_energy_output", CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT, ReactorEnergyOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_FLUID_INPUT = register("reactor_fluid_input", CrystalnexusModBlocks.REACTOR_FLUID_INPUT, ReactorFluidInputBlockEntity::new);
@@ -147,8 +144,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ARC_FURNACE = register("arc_furnace", CrystalnexusModBlocks.ARC_FURNACE, ArcFurnaceBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTS_ASSEMBLER = register("parts_assembler", CrystalnexusModBlocks.PARTS_ASSEMBLER, PartsAssemblerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_SMELTER = register("crystal_smelter", CrystalnexusModBlocks.CRYSTAL_SMELTER, CrystalSmelterBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> INVERTIUM_SMELTER = register("invertium_smelter", CrystalnexusModBlocks.INVERTIUM_SMELTER, InvertiumSmelterBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_SMELTER = register("chlorophyte_smelter", CrystalnexusModBlocks.CHLOROPHYTE_SMELTER, ChlorophyteSmelterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TITANIUM_SMELTER = register("titanium_smelter", CrystalnexusModBlocks.TITANIUM_SMELTER, TitaniumSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TESSERACT = register("tesseract", CrystalnexusModBlocks.TESSERACT, TesseractBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TESSERACT_OUTPUT = register("tesseract_output", CrystalnexusModBlocks.TESSERACT_OUTPUT, TesseractOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CIRCUIT_PRESS = registerMany("circuit_press", CircuitPressBlockEntity::new,
@@ -170,11 +166,10 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_CHEMICAL_REACTION_CHAMBER = register("fluid_chemical_reaction_chamber", CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER, FluidChemicalReactionChamberBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYOGENIC_FLASH_FREEZER = register("cryogenic_flash_freezer", CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH, CryogenicFlashFreezerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REFINERY = registerMany("refinery", RefineryBlockEntity::new,
-		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.CHLOROPHYTE_REFINERY,
-		CrystalnexusModBlocks.INVERTIUM_REFINERY, CrystalnexusModBlocks.HYPER_REFINERY);
+		CrystalnexusModBlocks.REFINERY, CrystalnexusModBlocks.TITANIUM_REFINERY,
+		CrystalnexusModBlocks.HYPER_REFINERY);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TEMPORAL_EXPLOITER = register("temporal_exploiter", CrystalnexusModBlocks.TEMPORAL_EXPLOITER, TemporalExploiterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONTAINER = register("container", CrystalnexusModBlocks.CONTAINER, ContainerBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> QUANTUM_MINER = register("quantum_miner", CrystalnexusModBlocks.QUANTUM_MINER, QuantumMinerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BATTERY = register("battery", CrystalnexusModBlocks.BATTERY, BatteryBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> EE_BATTERY = register("ee_battery", CrystalnexusModBlocks.EE_BATTERY, EEBatteryBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TURBINE = register("turbine", CrystalnexusModBlocks.TURBINE, TurbineBlockEntity::new);
@@ -208,7 +203,6 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_ENGINE = register("steam_engine", CrystalnexusModBlocks.STEAM_ENGINE, SteamEngineBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_ENGINE_UPGRADE = register("steam_engine_upgrade", CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE, SteamEngineUpgradeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SINGULARITY_MATRIX = register("singularity_matrix", CrystalnexusModBlocks.SINGULARITY_MATRIX, SingularityMatrixBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_UPLOADER = register("depot_uploader", CrystalnexusModBlocks.DEPOT_UPLOADER, DepotUploaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_DOWNLOADER = register("depot_downloader", CrystalnexusModBlocks.DEPOT_DOWNLOADER, DepotDownloaderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CONTROLLER = register("depot_controller", CrystalnexusModBlocks.DEPOT_CONTROLLER, DepotControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DEPOT_CLI = register("depot_cli", CrystalnexusModBlocks.DEPOT_CLI, DepotCliBlockEntity::new);
@@ -278,8 +272,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_COLLECTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, EXTRACTINATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, EXTRACTINATOR.get(), (blockEntity, side) -> ((ExtractinatorBlockEntity) blockEntity).getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CHLOROPHYTE_ACCELERATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CHLOROPHYTE_ACCELERATOR.get(), (blockEntity, side) -> ((ChlorophyteAcceleratorBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, GROWTH_ACCELERATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, GROWTH_ACCELERATOR.get(), (blockEntity, side) -> ((GrowthAcceleratorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> ((ReactorComputerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> ((ReactorComputerBlockEntity) blockEntity).getFluidTank());
@@ -295,10 +289,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PARTS_ASSEMBLER.get(), (blockEntity, side) -> ((PartsAssemblerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_SMELTER.get(), (blockEntity, side) -> ((CrystalSmelterBlockEntity) blockEntity).getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, INVERTIUM_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, INVERTIUM_SMELTER.get(), (blockEntity, side) -> ((InvertiumSmelterBlockEntity) blockEntity).getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CHLOROPHYTE_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CHLOROPHYTE_SMELTER.get(), (blockEntity, side) -> ((ChlorophyteSmelterBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TITANIUM_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TITANIUM_SMELTER.get(), (blockEntity, side) -> ((TitaniumSmelterBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TESSERACT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, TESSERACT.get(), (blockEntity, side) -> ((TesseractBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TESSERACT_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
@@ -348,8 +340,6 @@ public class CrystalnexusModBlockEntities {
 			side != null && side == blockEntity.getBlockState().getValue(net.crystalnexus.block.TemporalExploiterBlock.FACING).getOpposite()
 				? ((TemporalExploiterBlockEntity) blockEntity).getFluidInput() : null);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONTAINER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, QUANTUM_MINER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, QUANTUM_MINER.get(), (blockEntity, side) -> ((QuantumMinerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BATTERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BATTERY.get(), (blockEntity, side) -> ((BatteryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, EE_BATTERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
@@ -402,7 +392,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> ((SteamEngineUpgradeBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_ENGINE_UPGRADE.get(), (blockEntity, side) -> ((SteamEngineUpgradeBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SINGULARITY_MATRIX.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_UPLOADER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DEPOT_DOWNLOADER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPOT_CONTROLLER.get(), (blockEntity, side) -> ((DepotControllerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

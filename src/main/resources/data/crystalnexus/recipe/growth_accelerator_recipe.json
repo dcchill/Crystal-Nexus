@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "bcb",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:titanium_ingot"
+    },
+    "b": {
+      "item": "crystalnexus:florathane"
+    },
+    "c": {
+      "item": "crystalnexus:titanium_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:growth_accelerator",
+    "count": 1
+  }
+}

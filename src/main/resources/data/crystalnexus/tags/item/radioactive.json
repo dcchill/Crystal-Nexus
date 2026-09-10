@@ -1,12 +1,12 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:blutonium_dust",
-    "crystalnexus:blutonium_ingot",
-    "crystalnexus:pure_blutonium",
-    "crystalnexus:raw_blutonium",
-    "crystalnexus:blutonium_nugget",
-    "crystalnexus:blutonium_waste",
-    "crystalnexus:blutonium_ore"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:blutonium_dust",
+                   "crystalnexus:blutonium_ingot",
+                   "crystalnexus:pure_blutonium",
+                   "crystalnexus:raw_blutonium",
+                   "crystalnexus:blutonium_nugget",
+                   "crystalnexus:blutonium_waste",
+                   "crystalnexus:blutonium_ore"
+               ]
 }

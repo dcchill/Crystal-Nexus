@@ -1,6 +1,6 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:carbon_leggings"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:carbon_leggings"
+               ]
 }

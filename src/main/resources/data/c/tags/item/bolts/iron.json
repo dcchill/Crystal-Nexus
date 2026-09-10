@@ -1,4 +1,6 @@
 {
-  "replace": false,
-  "values": ["crystalnexus:iron_machine_bolt"]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:iron_machine_bolt"
+               ]
 }

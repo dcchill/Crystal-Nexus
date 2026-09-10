@@ -1,8 +1,8 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:reaction_energy_input",
-    "crystalnexus:reaction_chamber_block",
-    "crystalnexus:reaction_chamber_computer"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:reaction_energy_input",
+                   "crystalnexus:reaction_chamber_block",
+                   "crystalnexus:reaction_chamber_computer"
+               ]
 }

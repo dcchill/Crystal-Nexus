@@ -52,7 +52,7 @@ public abstract class HoverPackItem extends ArmorItem {
 				map.put(ArmorItem.Type.CHESTPLATE, 7);
 				map.put(ArmorItem.Type.HELMET, 2);
 				map.put(ArmorItem.Type.BODY, 7);
-			}), 9, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.EMPTY), () -> Ingredient.of(new ItemStack(CrystalnexusModItems.INVERTIUM_INGOT.get())), List.of(new ArmorMaterial.Layer(ResourceLocation.parse("crystalnexus:carbon_jetpack"))),
+			}), 9, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.EMPTY), () -> Ingredient.of(new ItemStack(CrystalnexusModItems.TITANIUM_INGOT.get())), List.of(new ArmorMaterial.Layer(ResourceLocation.parse("crystalnexus:carbon_jetpack"))),
 					1.5f, 0f);
 			registerHelper.register(ResourceLocation.parse("crystalnexus:hover_pack"), armorMaterial);
 			ARMOR_MATERIAL = BuiltInRegistries.ARMOR_MATERIAL.wrapAsHolder(armorMaterial);

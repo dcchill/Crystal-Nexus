@@ -1,7 +1,7 @@
 {
-  "replace": false,
-  "values": [
-    "crystalnexus:crystal_beam",
-    "crystalnexus:rad_sickness"
-  ]
+    "replace":  false,
+    "values":  [
+                   "crystalnexus:crystal_beam",
+                   "crystalnexus:rad_sickness"
+               ]
 }
