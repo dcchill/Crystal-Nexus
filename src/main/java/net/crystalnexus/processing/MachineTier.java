@@ -1,7 +1,5 @@
 package net.crystalnexus.processing;
 
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.state.BlockState;
 
 /** Shared progression and balance values for ore-processing machines. */
@@ -29,24 +27,6 @@ public enum MachineTier {
     }
 
     public int level() { return level; }
-    public int displayNumber() { return level + 1; }
-    public int displayColor() {
-        return switch (this) {
-            case IRON -> 0xD0D0D0;
-            case CRYSTAL -> 0x55FFFF;
-            case CHLOROPHYTE -> 0x55FF55;
-            case INVERTIUM -> 0xFF55FF;
-            case TITANIUM -> 0x80AAFF;
-            case CARBON -> 0x9999AA;
-            case TITANIUM_CARBIDE -> 0xAA88FF;
-            case TUNGSTEN -> 0xFFAA55;
-            case HYPER -> 0xFF5555;
-        };
-    }
-    public MutableComponent tierLabel() {
-        return Component.translatable("tooltip.crystalnexus.machine_tier", displayNumber())
-            .withStyle(style -> style.withColor(displayColor()));
-    }
     public double processingTimeMultiplier() { return processingTimeMultiplier; }
     public double energyMultiplier() { return energyMultiplier; }
     public String displayName() { return displayName; }
