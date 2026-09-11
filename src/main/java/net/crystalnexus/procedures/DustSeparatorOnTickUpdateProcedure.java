@@ -4,7 +4,7 @@ import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
 import net.crystalnexus.jei_recipes.DustSeperationRecipe;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.MachineUpgradeHelper;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,14 +29,14 @@ public final class DustSeparatorOnTickUpdateProcedure {
         if (level.isClientSide()) return energyText(separator);
 
         ItemStack upgrade = separator.getItem(2);
-        MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
+        MachineAge machineAge = MachineAge.from(level.getBlockState(pos));
         double baseCookTime = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
             : upgrade.is(net.crystalnexus.init.CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-        double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
-        int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
+        double cookTime = machineAge.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
+        int energyCost = machineAge.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
         separator.getPersistentData().putDouble("maxProgress", cookTime);
 
-        Match match = findMatch(level, separator, machineTier);
+        Match match = findMatch(level, separator, machineAge);
         if (match == null) {
             separator.getPersistentData().putDouble("progress", 0);
             separator.getPersistentData().remove("pendingSecondary");
@@ -80,7 +80,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
         return energyText(separator);
     }
 
-    private static Match findMatch(Level level, DustSeparatorBlockEntity separator, MachineTier machineTier) {
+    private static Match findMatch(Level level, DustSeparatorBlockEntity separator, MachineAge machineAge) {
         ItemStack input = separator.getItem(0);
         for (RecipeHolder<DustSeperationRecipe> holder : level.getRecipeManager()
                 .getAllRecipesFor(DustSeperationRecipe.Type.INSTANCE)) {
@@ -88,8 +88,8 @@ public final class DustSeparatorOnTickUpdateProcedure {
             boolean itemMatches = recipe.fluidInput().isEmpty() && !recipe.getIngredients().isEmpty()
                 && recipe.getIngredients().getFirst().test(input) && input.getCount() >= recipe.inputCount();
             if (itemMatches) {
-                if (!machineTier.supports(recipe.minimumMachineTier())) return null;
-                ItemStack output = tieredOutput(recipe.getResultItem(level.registryAccess()), machineTier);
+                if (!machineAge.supports(recipe.minimumAge())) return null;
+                ItemStack output = tieredOutput(recipe.getResultItem(level.registryAccess()), machineAge);
                 if (!output.isEmpty()) return new Match(output, recipe.secondaryOutput(), recipe.secondaryChance(),
                     recipe.inputCount());
             }
@@ -98,14 +98,14 @@ public final class DustSeparatorOnTickUpdateProcedure {
         MaterialProcessingCatalog.Snapshot catalog = MaterialProcessingCatalog.get(level);
         return catalog.dust(input)
             .filter(material -> !material.profile().disabledStages().contains("separation"))
-            .filter(material -> machineTier.supports(material.profile().minimumMachineTier()))
+            .filter(material -> machineAge.supports(material.profile().minimumAge()))
                 .map(material -> material.nugget(BuiltInRegistries.ITEM.getKey(input.getItem()).getNamespace(),
-                MaterialProcessingCatalog.nuggetsPerDust(machineTier)))
+                MaterialProcessingCatalog.nuggetsPerDust(machineAge)))
             .filter(output -> !output.isEmpty())
             .map(output -> new Match(output, ItemStack.EMPTY, 0, 1)).orElse(null);
     }
 
-    private static ItemStack tieredOutput(ItemStack output, MachineTier tier) {
+    private static ItemStack tieredOutput(ItemStack output, MachineAge tier) {
         if (!output.isEmpty() && BuiltInRegistries.ITEM.getKey(output.getItem()).getPath().endsWith("_nugget")) {
             ItemStack adjusted = output.copy();
             adjusted.setCount(MaterialProcessingCatalog.nuggetsPerDust(tier));

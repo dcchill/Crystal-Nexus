@@ -1,7 +1,7 @@
 package net.crystalnexus.util;
 
 import net.crystalnexus.init.CrystalnexusModItems;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public final class MachineUpgradeHelper {
 	}
 
 	public static int energyCost(BlockState state, ItemStack upgrade, int baseCost) {
-		return MachineTier.from(state).energyCost(energyCost(upgrade, baseCost));
+		return MachineAge.from(state).energyCost(energyCost(upgrade, baseCost));
 	}
 
 	public static double generatorEfficiency(ItemStack upgrade, double basicUpgrade, double carbonUpgrade) {

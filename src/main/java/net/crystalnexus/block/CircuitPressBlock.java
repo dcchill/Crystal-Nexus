@@ -39,19 +39,19 @@ import net.crystalnexus.world.inventory.CircuitPressGUIMenu;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.procedures.CircuitPressOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
-import net.crystalnexus.processing.MachineTier;
-import net.crystalnexus.processing.TieredMachineBlock;
+import net.crystalnexus.processing.MachineAge;
+import net.crystalnexus.processing.AgedMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class CircuitPressBlock extends Block implements EntityBlock, TieredMachineBlock {
+public class CircuitPressBlock extends Block implements EntityBlock, AgedMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-	private final MachineTier machineTier;
+	private final MachineAge machineAge;
 
-	public CircuitPressBlock() { this(MachineTier.TITANIUM); }
+	public CircuitPressBlock() { this(MachineAge.AGE_2); }
 
-	protected CircuitPressBlock(MachineTier machineTier) {
+	protected CircuitPressBlock(MachineAge machineAge) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -61,11 +61,11 @@ public class CircuitPressBlock extends Block implements EntityBlock, TieredMachi
 				return 0;
 			}
 		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
-		this.machineTier = machineTier;
+		this.machineAge = machineAge;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
-	@Override public MachineTier machineTier() { return machineTier; }
+	@Override public MachineAge machineAge() { return machineAge; }
 
 	@Override
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {

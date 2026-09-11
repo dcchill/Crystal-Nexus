@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["ipi","bcb","ifi"],"key":{"i":{"tag":"c:plates/tungsten"},"p":{"tag":"c:ingots/tungsten"},"b":{"item":"crystalnexus:tungsten_machine_bolt"},"c":{"item":"crystalnexus:titanium_crusher"},"f":{"item":"crystalnexus:tungsten_machine_frame"}},"result":{"id":"crystalnexus:tungsten_crusher"}}

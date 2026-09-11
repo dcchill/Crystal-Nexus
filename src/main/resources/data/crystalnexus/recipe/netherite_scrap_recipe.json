@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aa",
+    "aa"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:netherite_scrap_pellet"
+    }
+  },
+  "result": {
+    "id": "minecraft:netherite_scrap",
+    "count": 1
+  }
+}

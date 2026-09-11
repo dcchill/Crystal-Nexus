@@ -5,7 +5,7 @@ import java.util.Optional;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.DustSeperationRecipe;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.util.MachineUpgradeHelper;
@@ -58,7 +58,7 @@ public final class OreProcessorOnTickUpdateProcedure {
 		blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
 		blockEntity.getPersistentData().putDouble("maxProgress2", cookTime);
 
-		ItemStack crushingResult = CrushingRecipeSupport.findResult(level, inventory.getStackInSlot(1), MachineTier.CRYSTAL);
+		ItemStack crushingResult = CrushingRecipeSupport.findResult(level, inventory.getStackInSlot(1), MachineAge.AGE_1);
 		int crushingEnergy = crushingResult.is(CrystalnexusModItems.CARBON_COMPOSITE.get()) ? 4096 : ENERGY_PER_OPERATION;
 		processStage(level, pos, inventory, upgrade, 1, 2, "progress", cookTime, crushingResult, 1, crushingEnergy);
 
@@ -112,12 +112,12 @@ public final class OreProcessorOnTickUpdateProcedure {
 				continue;
 			}
 			ItemStack output = recipe.getResultItem(level.registryAccess());
-			return output.isEmpty() || !MachineTier.CRYSTAL.supports(recipe.minimumMachineTier())
+			return output.isEmpty() || !MachineAge.AGE_1.supports(recipe.minimumAge())
 					? SeparationMatch.NONE : new SeparationMatch(output, recipe.inputCount());
 		}
 		Optional<MaterialProcessingCatalog.Material> material = MaterialProcessingCatalog.get(level).dust(input)
 				.filter(value -> !value.profile().disabledStages().contains("separation"))
-				.filter(value -> MachineTier.CRYSTAL.supports(value.profile().minimumMachineTier()));
+				.filter(value -> MachineAge.AGE_1.supports(value.profile().minimumAge()));
 		if (material.isEmpty()) {
 			return SeparationMatch.NONE;
 		}

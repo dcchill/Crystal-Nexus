@@ -1,0 +1,8 @@
+{
+  "type":"minecraft:smelting",
+  "category":"misc",
+  "experience":1.0,
+  "cookingtime":200,
+  "ingredient":{"item":"crystalnexus:invertium_dust"},
+  "result":{"id":"crystalnexus:invertium_ingot"}
+}

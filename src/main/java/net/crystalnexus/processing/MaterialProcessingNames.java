@@ -18,12 +18,14 @@ public final class MaterialProcessingNames {
         return slash < 0 ? path : path.substring(slash + 1);
     }
 
-    public static int requiredMachineTier(String material) {
+    public static int requiredMachineAge(String material) {
         String normalized = normalizeMaterial(material);
-        if (normalized.contains("tungsten")) return MachineTier.TUNGSTEN.level();
-        if (normalized.contains("hyper")) return MachineTier.HYPER.level();
-        if (normalized.contains("carbon")) return MachineTier.CARBON.level();
-        if (normalized.contains("platinum")) return MachineTier.TITANIUM.level();
-        return 1;
+		if (normalized.contains("hyper") || normalized.contains("solar") || normalized.contains("zero_point"))
+			return MachineAge.AGE_4.number();
+		if (normalized.contains("tungsten") || normalized.contains("carbon") || normalized.contains("titanium_carbide"))
+			return MachineAge.AGE_3.number();
+		if (normalized.contains("invertium") || normalized.contains("titanium") || normalized.contains("platinum"))
+			return MachineAge.AGE_2.number();
+		return MachineAge.AGE_1.number();
     }
 }

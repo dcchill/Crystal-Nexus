@@ -24,6 +24,7 @@ import net.crystalnexus.fluid.CrudeOilFluid;
 import net.crystalnexus.fluid.SulfuricAcidFluid;
 import net.crystalnexus.fluid.AcidicSlurryFluid;
 import net.crystalnexus.fluid.ResinFluid;
+import net.crystalnexus.fluid.InversionSolutionFluid;
 import net.crystalnexus.fluid.MineralSlurryFluid;
 import net.crystalnexus.fluid.ArgonFluid;
 import net.crystalnexus.fluid.OxygenFluid;
@@ -40,6 +41,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_ACIDIC_SLURRY = REGISTRY.register("flowing_acidic_slurry", AcidicSlurryFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> RESIN = REGISTRY.register("resin", ResinFluid.Source::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_RESIN = REGISTRY.register("flowing_resin", ResinFluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> INVERSION_SOLUTION = REGISTRY.register("inversion_solution", InversionSolutionFluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_INVERSION_SOLUTION = REGISTRY.register("flowing_inversion_solution", InversionSolutionFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> GASOLINE = REGISTRY.register("gasoline", () -> new GasolineFluid.Source());
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_GASOLINE = REGISTRY.register("flowing_gasoline", () -> new GasolineFluid.Flowing());
 	public static final DeferredHolder<Fluid, FlowingFluid> STEAM = REGISTRY.register("steam", () -> new SteamFluid.Source());
@@ -70,6 +73,8 @@ public class CrystalnexusModFluids {
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_ACIDIC_SLURRY.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(RESIN.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_RESIN.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(INVERSION_SOLUTION.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_INVERSION_SOLUTION.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(GASOLINE.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_GASOLINE.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(STEAM.get(), RenderType.translucent());

@@ -134,11 +134,14 @@ public class TooltipInfoHandler {
 				"Crushes raw ores into dusts.",
 				"Multiplies ore yield for better efficiency.");
 		addTooltip("titanium_crusher",
-				"Titanium-tier ore crusher.",
+				"Age 2 ore crusher.",
 				"Processes advanced crushing recipes faster.");
+		addTooltip("tungsten_crusher",
+				"Age 3 ore crusher.",
+				"Processes Carbon Fiber, Titanium Carbide, and Tungsten recipes.");
 		addTooltip("hyper_crusher",
-				"Hyper-tier ore crusher.",
-				"Processes the highest-tier crushing recipes.");
+				"Age 4 ore crusher.",
+				"Processes Solar, Hyper, and Zero Point crushing recipes.");
 		addTooltip("ore_processor",
 				"Advanced ore processing plant.",
 				"Processes raw ores.");
@@ -148,16 +151,19 @@ public class TooltipInfoHandler {
 				"Accepts machine upgrades in the side slot.");
 
 		addTooltip("iron_smelter",
-				"Specialized iron-tier furnace.",
+				"Starter powered furnace.",
 				"Smelts dusts and raw materials into ingots.");
 		addTooltip("titanium_smelter",
 				"Specialized Titanium furnace.",
 				"Smelts dusts and raw materials into ingots.");
+		addTooltip("tungsten_smelter",
+				"Age 3 powered furnace.",
+				"Smelts dusts and raw materials faster.");
 		addTooltip("crystal_smelter",
 				"Specialized crystal furnace.",
 				"Smelts dusts and raw materials into ingots.");
 		addTooltip("ultima_smelter",
-				"Multi-purpose high-tier furnace.",
+				"Multi-purpose late-Age furnace.",
 				"Smelts multiple stacks of materials.");
 
 		addTooltip("singularity_compressor",
@@ -173,13 +179,16 @@ public class TooltipInfoHandler {
 				"Check JEI for valid tagged inputs and outputs.");
 		addTooltip("refinery",
 				"Refines processing fluids into useful materials.",
-				"Basic refinery tier.");
+				"Age 1 refinery.");
 		addTooltip("titanium_refinery",
-				"Titanium-tier material refinery.",
+				"Age 2 material refinery.",
 				"Handles advanced refining recipes.");
+		addTooltip("tungsten_refinery",
+				"Age 3 material refinery.",
+				"Handles Carbon Fiber, Titanium Carbide, and Tungsten recipes.");
 		addTooltip("hyper_refinery",
-				"Hyper-tier material refinery.",
-				"Handles the highest-tier refining recipes.");
+				"Age 4 material refinery.",
+				"Handles Solar, Hyper, and Zero Point recipes.");
 
 		addTooltip("reaction_chamber_computer",
 				"Controls the Reaction Chamber multiblock.",
@@ -201,11 +210,14 @@ public class TooltipInfoHandler {
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
 		addTooltip("titanium_dust_separator",
-				"Titanium-tier dust separator.",
+				"Age 2 dust separator.",
 				"Processes advanced separation recipes faster.");
+		addTooltip("tungsten_dust_separator",
+				"Age 3 dust separator.",
+				"Processes Carbon Fiber, Titanium Carbide, and Tungsten recipes.");
 		addTooltip("hyper_dust_separator",
-				"Hyper-tier dust separator.",
-				"Processes the highest-tier separation recipes.");
+				"Age 4 dust separator.",
+				"Processes Solar, Hyper, and Zero Point recipes.");
 		addTooltip("matter_transmutation_table",
 				"Endgame resource conversion block.",
 				"Converts EE-matter into resources,",
@@ -536,7 +548,7 @@ public class TooltipInfoHandler {
 				"Resource extraction machine.",
 				"Sifts through loose sediment to find resources.");
 		addTooltip("titanium_extractinator",
-				"Titanium-tier resource extraction machine.",
+				"Age 2 resource extraction machine.",
 				"Consumes 4x energy for twice the secondary-drop chance.");
 		addTooltip("inverter",
 				"Energy Inverter.",

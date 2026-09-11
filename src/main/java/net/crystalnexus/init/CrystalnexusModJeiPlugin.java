@@ -231,6 +231,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_SMELTER.get().asItem()), RecipeTypes.SMELTING);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TUNGSTEN_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem()), Purification_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.EXTRACTINATOR.get().asItem()), ExtractinatorJEI_Type);
@@ -239,10 +240,12 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(Items.END_CRYSTAL), BeamReactionRecipe_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CRUSHER.get().asItem()), OreCrushingJei_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TUNGSTEN_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem()), PartsAssembling_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TUNGSTEN_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
@@ -265,6 +268,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), CryogenicFlashFreezer_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_REFINERY.get().asItem()), Refining_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TUNGSTEN_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_REFINERY.get().asItem()), Refining_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem()), BiomaticComposting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.BIOMATIC_SIMULATOR.get().asItem()), BiomaticSimulation_Type);

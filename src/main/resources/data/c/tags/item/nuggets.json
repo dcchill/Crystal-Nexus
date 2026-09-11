@@ -2,6 +2,7 @@
     "replace":  false,
     "values":  [
                    "crystalnexus:crystal_alloy_nugget",
-                   "crystalnexus:blutonium_nugget"
+                   "crystalnexus:blutonium_nugget",
+                   "crystalnexus:invertium_nugget"
                ]
 }

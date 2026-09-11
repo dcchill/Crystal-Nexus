@@ -1,6 +1,6 @@
 package net.crystalnexus.jei_recipes;
 
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -22,19 +22,19 @@ import com.mojang.serialization.Codec;
 public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
-	private final int minimumMachineTier;
+	private final int minimumAge;
 
 	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
 		this(output, recipeItems, 1);
 	}
 
-	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, int minimumMachineTier) {
+	public OreCrushingJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems, int minimumAge) {
 		this.output = output;
 		this.recipeItems = recipeItems;
-		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
+		this.minimumAge = MachineAge.requireNumber(minimumAge);
 	}
 
-	public int minimumMachineTier() { return minimumMachineTier; }
+	public int minimumAge() { return minimumAge; }
 
 	@Override
 	public boolean matches(RecipeInput pContainer, Level pLevel) {
@@ -91,8 +91,8 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 					} else {
 						return DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
 					}
-				}, DataResult::success).forGetter(recipe -> recipe.recipeItems), Codec.INT.optionalFieldOf("minimum_machine_tier", 1)
-					.forGetter(recipe -> recipe.minimumMachineTier)).apply(builder, OreCrushingJeiRecipe::new));
+				}, DataResult::success).forGetter(recipe -> recipe.recipeItems), Codec.INT.optionalFieldOf("minimum_age", 1)
+					.forGetter(recipe -> recipe.minimumAge)).apply(builder, OreCrushingJeiRecipe::new));
 		public static final StreamCodec<RegistryFriendlyByteBuf, OreCrushingJeiRecipe> STREAM_CODEC = StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 
 		@Override
@@ -121,7 +121,7 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ing);
 			}
 			ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItem(null));
-			buf.writeVarInt(recipe.minimumMachineTier);
+			buf.writeVarInt(recipe.minimumAge);
 		}
 	}
 }

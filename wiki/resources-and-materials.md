@@ -20,11 +20,12 @@ Forms:
 
 ## Machine Structure Materials
 
-Machine frame tiers:
+Machine frames used across the four Ages:
 
 - Iron Machine Frame
 - Crystal Machine Frame
 - Titanium Machine Frame
+- Invertium Machine Frame
 - Carbon Machine Frame
 - Titanium Carbide Machine Frame
 - Tungsten Machine Frame
@@ -41,6 +42,12 @@ Other structural components:
 - Carbon Machine Bolt
 
 Frames and casings are the backbone of machine progression.
+
+## Invertium
+
+Invertium remains under its existing registry and display name as an Age 2 material. Its ore generates in the End, and Blutonium TNT can also form Invertium crystals there. Raw Invertium, dust, nuggets, ingots, blocks, the machine frame, and the complete tool set remain available.
+
+React Invertium with Sulfuric Acid in the Fluid Chemical Reaction Chamber to make Inversion Solution. The restored chemistry chain also includes Gold-Plated Copper Sheets and Netherite Scrap Pellets.
 
 ## Metal Forming and Machine Parts
 

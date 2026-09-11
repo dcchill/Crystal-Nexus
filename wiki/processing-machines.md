@@ -17,11 +17,11 @@ Put an ingot in the input, choose the desired part with the selector, supply FE,
 
 ## Ore and Dust Processing
 
-Machine tiers trade more energy for faster processing: Iron uses 0.5x FE at 1.25x time, Crystal uses 1x FE at 1x time, Titanium uses 2x FE at 0.75x time, Carbon uses 4x FE at 0.5x time, Titanium Carbide uses 8x FE at 0.4x time, Tungsten uses 16x FE at 0.35x time, and Hyper uses 32x FE at 0.3x time.
+Machine Ages trade more energy for faster processing: Starter Iron uses 0.5x FE at 1.25x time, Age 1 uses 1x FE at 1x time, Age 2 uses 2x FE at 0.75x time, Age 3 uses 4x FE at 0.5x time, and Age 4 uses 8x FE at 0.3x time.
 
-Machine frames follow one progression: Iron to Crystal to Titanium to Carbon to Titanium Carbide to Tungsten to Hyper. Hyper remains the final physical variant and requires the Tungsten-gated Hyper frame.
+The capability groups are Age 1 Crystal; Age 2 Invertium and Titanium; Age 3 Carbon Fiber, Titanium Carbide, and Tungsten; and Age 4 Solar, Hyper, and Zero Point. Iron machines are starter equipment. Ages are machine and recipe capability labels, not player research unlocks.
 
-Custom material profiles and processing recipes use numeric minimum tiers: Crystal 1, Titanium 2, Carbon 3, Titanium Carbide 4, Tungsten 5, and Hyper 6.
+Custom material profiles and processing recipes use `minimum_age`, with a value from 1 through 4. Older `minimum_machine_tier` datapack fields are not supported.
 
 ### Crystal Ore Crusher
 
@@ -34,7 +34,7 @@ The Crystal Ore Crusher converts raw ores into dusts.
 - Base processing time: 100 ticks, 75 with Acceleration Upgrade, 50 with Carbon Acceleration Upgrade.
 - Inventory: input, output, and upgrade slots.
 - Automation can insert raw ores and upgrades, and extract finished dust.
-- Crystal-tier energy capacity: 10,240 FE by default; upper-tier buffers expand when necessary to hold one operation's energy cost.
+- Age 1 energy capacity: 10,240 FE by default; later-Age buffers expand when necessary to hold one operation's energy cost.
 - Max receive/extract: 2,048 FE.
 
 ### Crystal Dust Separator
@@ -56,13 +56,13 @@ Use it for improved or specialized smelting once Crystal Machine Frames are avai
 
 ### Iron Smelter
 
-The Iron Smelter is the lower-tier powered smelter.
+The Iron Smelter is the starter powered smelter.
 
 Use it as a first FE-powered furnace replacement.
 
 ### Titanium Smelter
 
-The Titanium Smelter upgrades from the Crystal Smelter and forms the Titanium-tier smelting step.
+The Titanium Smelter upgrades from the Crystal Smelter and forms the Age 2 smelting step. The Tungsten Smelter is its Age 3 successor.
 
 Smelter energy costs before FE-efficiency upgrades are 1,024 FE for Iron, 2,048 FE for Crystal, and 4,096 FE for Titanium.
 
@@ -147,7 +147,7 @@ The Circuit Press creates circuits and chips. The Titanium model costs 4,096 FE 
 
 ### Arc Furnace
 
-The Arc Furnace is a Titanium-tier machine.
+The Arc Furnace is an Age 2 machine.
 
 ### Computation Cluster
 
@@ -184,9 +184,9 @@ Important machine used for chemical recipes and materials such as Conductive All
 
 Combines fluid and item inputs for fluid-based chemical processing. Use JEI to check the required inputs and outputs for each reaction.
 
-### Refinery Tiers
+### Refinery Ages
 
-The Crystal, Titanium, and Hyper Refineries provide progressively faster refinery processing as you advance through the machine tiers.
+The Crystal, Titanium, Tungsten, and Hyper Refineries provide progressively faster processing across Ages 1 through 4.
 
 
 ### Biomatic Composter

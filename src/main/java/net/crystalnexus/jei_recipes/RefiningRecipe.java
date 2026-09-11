@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -23,7 +23,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
     private final Optional<Ingredient> itemInput;
     private final Optional<ItemStack> output;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput;
-    private final int minimumMachineTier;
+    private final int minimumAge;
 
     public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<ItemStack> output,
                           Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput) {
@@ -31,23 +31,23 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
 	}
 
 	public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<ItemStack> output,
-						  Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput, int minimumMachineTier) {
-		this(input, Optional.empty(), output, taggedOutput, minimumMachineTier);
+						  Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput, int minimumAge) {
+		this(input, Optional.empty(), output, taggedOutput, minimumAge);
 	}
 
 	public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<Ingredient> itemInput,
 						  Optional<ItemStack> output, Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput,
-						  int minimumMachineTier) {
+						  int minimumAge) {
         this.input = input;
         this.itemInput = itemInput;
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
-		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
+		this.minimumAge = MachineAge.requireNumber(minimumAge);
     }
 
     public FluidChemicalReactionRecipe.FluidAmount input() { return input; }
     public Optional<Ingredient> itemInput() { return itemInput; }
-    public int minimumMachineTier() { return minimumMachineTier; }
+    public int minimumAge() { return minimumAge; }
     public ItemStack output() {
         return output.map(ItemStack::copy)
             .or(() -> taggedOutput.map(FluidChemicalReactionRecipe.TaggedItemOutput::stack))
@@ -78,7 +78,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
             Ingredient.CODEC_NONEMPTY.optionalFieldOf("item_input").forGetter(recipe -> recipe.itemInput),
             ItemStack.STRICT_CODEC.optionalFieldOf("item_output").forGetter(recipe -> recipe.output),
             FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("item_output_tag").forGetter(recipe -> recipe.taggedOutput),
-			Codec.INT.optionalFieldOf("minimum_machine_tier", 1).forGetter(recipe -> recipe.minimumMachineTier)
+			Codec.INT.optionalFieldOf("minimum_age", 1).forGetter(recipe -> recipe.minimumAge)
         ).apply(instance, RefiningRecipe::new)).flatXmap(recipe -> recipe.output.isEmpty() && recipe.taggedOutput.isEmpty()
             ? DataResult.error(() -> "Refining recipe requires item_output or item_output_tag")
             : DataResult.success(recipe), DataResult::success);
@@ -98,7 +98,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
                     buffer.writeResourceLocation(output.tag());
                     buffer.writeVarInt(output.count());
                 });
-				buffer.writeVarInt(recipe.minimumMachineTier);
+				buffer.writeVarInt(recipe.minimumAge);
             }, buffer -> {
                 var fluid = buffer.readResourceLocation();
                 int amount = buffer.readVarInt();

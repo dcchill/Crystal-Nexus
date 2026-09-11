@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:inversion_solution", "amount": 50 },
+  "item_input_2": { "item": "minecraft:redstone" },
+  "item_output": { "id": "minecraft:glowstone_dust", "count": 1 }
+}

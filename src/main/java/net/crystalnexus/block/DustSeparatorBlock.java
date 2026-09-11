@@ -39,20 +39,20 @@ import net.crystalnexus.world.inventory.SeparatorGuiMenu;
 import net.crystalnexus.procedures.DustSeparatorOnTickUpdateProcedure;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.block.entity.DustSeparatorBlockEntity;
-import net.crystalnexus.processing.MachineTier;
-import net.crystalnexus.processing.TieredMachineBlock;
+import net.crystalnexus.processing.MachineAge;
+import net.crystalnexus.processing.AgedMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class DustSeparatorBlock extends Block implements EntityBlock, TieredMachineBlock {
+public class DustSeparatorBlock extends Block implements EntityBlock, AgedMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
-	private final MachineTier machineTier;
+	private final MachineAge machineAge;
 
-	public DustSeparatorBlock() { this(MachineTier.CRYSTAL); }
+	public DustSeparatorBlock() { this(MachineAge.AGE_1); }
 
-	public DustSeparatorBlock(MachineTier machineTier) {
+	public DustSeparatorBlock(MachineAge machineAge) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -62,11 +62,11 @@ public class DustSeparatorBlock extends Block implements EntityBlock, TieredMach
 				return 0;
 			}
 		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
-		this.machineTier = machineTier;
+		this.machineAge = machineAge;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
-	@Override public MachineTier machineTier() { return machineTier; }
+	@Override public MachineAge machineAge() { return machineAge; }
 
 	@Override
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
@@ -123,7 +123,7 @@ public class DustSeparatorBlock extends Block implements EntityBlock, TieredMach
 			player.openMenu(new MenuProvider() {
 				@Override
 				public Component getDisplayName() {
-					return Component.literal(machineTier.displayName() + " Dust Separator");
+					return Component.literal(machineAge.displayName() + " Dust Separator");
 				}
 
 				@Override

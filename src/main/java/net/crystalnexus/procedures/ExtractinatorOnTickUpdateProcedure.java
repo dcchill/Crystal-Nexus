@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.util.MachineUpgradeHelper;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 
 public class ExtractinatorOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
@@ -517,7 +517,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 	}
 
 	static int energyCost(LevelAccessor world, BlockPos pos, ItemStack upgrade, int baseEnergy) {
-		return MachineTier.from(world.getBlockState(pos)).energyCost(MachineUpgradeHelper.energyCost(upgrade, baseEnergy));
+		return MachineAge.from(world.getBlockState(pos)).energyCost(MachineUpgradeHelper.energyCost(upgrade, baseEnergy));
 	}
 
 	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds) {
@@ -525,7 +525,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 	}
 
 	static boolean rareDrop(LevelAccessor world, BlockPos pos, int baseOdds, int abundance) {
-		int successfulRolls = (MachineTier.from(world.getBlockState(pos)) == MachineTier.TITANIUM ? 2 : 1) * abundance;
+		int successfulRolls = (MachineAge.from(world.getBlockState(pos)) == MachineAge.AGE_2 ? 2 : 1) * abundance;
 		return Mth.nextInt(RandomSource.create(), 1, baseOdds) <= successfulRolls;
 	}
 

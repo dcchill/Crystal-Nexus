@@ -39,12 +39,12 @@ import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.procedures.IronSmelterOnTickUpdateProcedure;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.block.entity.IronSmelterBlockEntity;
-import net.crystalnexus.processing.MachineTier;
-import net.crystalnexus.processing.TieredMachineBlock;
+import net.crystalnexus.processing.MachineAge;
+import net.crystalnexus.processing.AgedMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class IronSmelterBlock extends Block implements EntityBlock, TieredMachineBlock {
+public class IronSmelterBlock extends Block implements EntityBlock, AgedMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 
@@ -172,5 +172,5 @@ public class IronSmelterBlock extends Block implements EntityBlock, TieredMachin
 			return 0;
 	}
 
-	@Override public MachineTier machineTier() { return MachineTier.IRON; }
+	@Override public MachineAge machineAge() { return MachineAge.STARTER; }
 }

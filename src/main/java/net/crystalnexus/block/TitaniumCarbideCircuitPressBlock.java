@@ -1,7 +1,7 @@
 package net.crystalnexus.block;
 
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 
 public final class TitaniumCarbideCircuitPressBlock extends CircuitPressBlock {
-	public TitaniumCarbideCircuitPressBlock() { super(MachineTier.TITANIUM_CARBIDE); }
+	public TitaniumCarbideCircuitPressBlock() { super(MachineAge.AGE_3); }
 }

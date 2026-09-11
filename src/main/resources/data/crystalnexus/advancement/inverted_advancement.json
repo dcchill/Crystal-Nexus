@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "id": "crystalnexus:invertium_ingot"
+    },
+    "title": {
+      "translate": "advancements.inverted_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.inverted_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "inverted_advancement_0": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "crystalnexus:invertium_ingot"
+            ],
+            "count": {
+              "min": 1,
+              "max": 64
+            }
+          }
+        ]
+      }
+    }
+  },
+  "parent": "crystalnexus:radioactive_advancement"
+}

@@ -163,6 +163,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_BLOCK = block(CrystalnexusModBlocks.CRYSTALIZED_ALLOY_BLOCK);
 	public static final DeferredItem<Item> CRYSTAL_CRUSHER = block(CrystalnexusModBlocks.CRYSTAL_CRUSHER);
 	public static final DeferredItem<Item> TITANIUM_CRUSHER = block(CrystalnexusModBlocks.TITANIUM_CRUSHER);
+	public static final DeferredItem<Item> TUNGSTEN_CRUSHER = block(CrystalnexusModBlocks.TUNGSTEN_CRUSHER);
 	public static final DeferredItem<Item> HYPER_CRUSHER = block(CrystalnexusModBlocks.HYPER_CRUSHER);
 	public static final DeferredItem<Item> ACCELERATION_UPGRADE = REGISTRY.register("acceleration_upgrade", AccelerationUpgradeItem::new);
 	public static final DeferredItem<Item> FE_EFFICIENCY_UPGRADE = REGISTRY.register("fe_efficiency_upgrade", FEEfficiencyUpgradeItem::new);
@@ -170,11 +171,13 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL = REGISTRY.register("ancient_crystal", RawAncientCrystalItem::new);
 
 	public static final DeferredItem<Item> TITANIUM_HAMMER = REGISTRY.register("titanium_hammer", TitaniumHammerItem::new);
+	public static final DeferredItem<Item> INVERTIUM_HAMMER = REGISTRY.register("invertium_hammer", net.crystalnexus.item.InvertiumHammerItem::new);
 
 	public static final DeferredItem<Item> CRYSTALALLOY_HAMMER = REGISTRY.register("crystalalloy_hammer", CrystalAlloyHammerItem::new);
 	public static final DeferredItem<Item> CRYSTAL_WRENCH = REGISTRY.register("crystal_wrench", CrystalWrenchItem::new);
 	public static final DeferredItem<Item> DUST_SEPARATOR = block(CrystalnexusModBlocks.DUST_SEPARATOR);
 	public static final DeferredItem<Item> TITANIUM_DUST_SEPARATOR = block(CrystalnexusModBlocks.TITANIUM_DUST_SEPARATOR);
+	public static final DeferredItem<Item> TUNGSTEN_DUST_SEPARATOR = block(CrystalnexusModBlocks.TUNGSTEN_DUST_SEPARATOR);
 	public static final DeferredItem<Item> HYPER_DUST_SEPARATOR = block(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
 	public static final DeferredItem<Item> CRYSTAL_GUIDE = block(CrystalnexusModBlocks.CRYSTAL_GUIDE);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK);
@@ -195,6 +198,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> RAW_BLUTONIUM = REGISTRY.register("raw_blutonium", RawBlutoniumItem::new);
 	public static final DeferredItem<Item> BLUTONIUM_ORE = block(CrystalnexusModBlocks.BLUTONIUM_ORE);
 	public static final DeferredItem<Item> TITANIUM_MACHINE_FRAME = block(CrystalnexusModBlocks.TITANIUM_MACHINE_FRAME);
+	public static final DeferredItem<Item> INVERTIUM_MACHINE_FRAME = block(CrystalnexusModBlocks.INVERTIUM_MACHINE_FRAME);
+	public static final DeferredItem<Item> INVERTIUM_INGOT = REGISTRY.register("invertium_ingot", net.crystalnexus.item.InvertiumIngotItem::new);
+	public static final DeferredItem<Item> INVERTIUM_CRYSTAL = REGISTRY.register("invertium_crystal", net.crystalnexus.item.InvertiumCrystalItem::new);
+	public static final DeferredItem<Item> INVERTIUM_NUGGET = REGISTRY.register("invertium_nugget", net.crystalnexus.item.InvertiumNuggetItem::new);
+	public static final DeferredItem<Item> INVERTIUM_BLOCK = block(CrystalnexusModBlocks.INVERTIUM_BLOCK);
 	public static final DeferredItem<Item> REACTOR_BLOCK = block(CrystalnexusModBlocks.REACTOR_BLOCK);
 	public static final DeferredItem<Item> REACTOR_COMPUTER = block(CrystalnexusModBlocks.REACTOR_COMPUTER);
 	public static final DeferredItem<Item> REACTOR_ENERGY_OUTPUT = block(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT);
@@ -248,6 +256,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> PARTS_ASSEMBLER = block(CrystalnexusModBlocks.PARTS_ASSEMBLER);
 	public static final DeferredItem<Item> CRYSTAL_SMELTER = block(CrystalnexusModBlocks.CRYSTAL_SMELTER);
 	public static final DeferredItem<Item> TITANIUM_SMELTER = block(CrystalnexusModBlocks.TITANIUM_SMELTER);
+	public static final DeferredItem<Item> TUNGSTEN_SMELTER = block(CrystalnexusModBlocks.TUNGSTEN_SMELTER);
 	public static final DeferredItem<Item> CRYOGENIC_FLASH_FREEZER_HATCH = block(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH);
 	public static final DeferredItem<Item> TESSERACT = block(CrystalnexusModBlocks.TESSERACT);
 	public static final DeferredItem<Item> LINK_CARD = REGISTRY.register("link_card", LinkCardItem::new);
@@ -308,6 +317,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> FLUID_CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER);
 	public static final DeferredItem<Item> REFINERY = block(CrystalnexusModBlocks.REFINERY);
 	public static final DeferredItem<Item> TITANIUM_REFINERY = block(CrystalnexusModBlocks.TITANIUM_REFINERY);
+	public static final DeferredItem<Item> TUNGSTEN_REFINERY = block(CrystalnexusModBlocks.TUNGSTEN_REFINERY);
 	public static final DeferredItem<Item> HYPER_REFINERY = block(CrystalnexusModBlocks.HYPER_REFINERY);
 	public static final DeferredItem<Item> TEMPORAL_EXPLOITER = block(CrystalnexusModBlocks.TEMPORAL_EXPLOITER);
 	public static final DeferredItem<Item> NITRILE = REGISTRY.register("nitrile", NitrileItem::new);
@@ -315,6 +325,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> GOLD_SHEET = REGISTRY.register("gold_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> IRON_SHEET = REGISTRY.register("iron_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COPPER_SHEET = REGISTRY.register("copper_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> GOLD_PLATED_COPPER_SHEET = REGISTRY.register("gold_plated_copper_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> GOLD_ROD = REGISTRY.register("gold_rod", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> IRON_ROD = REGISTRY.register("iron_rod", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COPPER_ROD = REGISTRY.register("copper_rod", () -> new Item(new Item.Properties()));
@@ -348,6 +359,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TITANIUM_SWORD = REGISTRY.register("titanium_sword", TitaniumSwordItem::new);
 	public static final DeferredItem<Item> TITANIUM_SHOVEL = REGISTRY.register("titanium_shovel", TitaniumShovelItem::new);
 	public static final DeferredItem<Item> TITANIUM_HOE = REGISTRY.register("titanium_hoe", TitaniumHoeItem::new);
+	public static final DeferredItem<Item> INVERTIUM_PICKAXE = REGISTRY.register("invertium_pickaxe", net.crystalnexus.item.InvertiumPickaxeItem::new);
+	public static final DeferredItem<Item> INVERTIUM_AXE = REGISTRY.register("invertium_axe", net.crystalnexus.item.InvertiumAxeItem::new);
+	public static final DeferredItem<Item> INVERTIUM_SWORD = REGISTRY.register("invertium_sword", net.crystalnexus.item.InvertiumSwordItem::new);
+	public static final DeferredItem<Item> INVERTIUM_SHOVEL = REGISTRY.register("invertium_shovel", net.crystalnexus.item.InvertiumShovelItem::new);
+	public static final DeferredItem<Item> INVERTIUM_HOE = REGISTRY.register("invertium_hoe", net.crystalnexus.item.InvertiumHoeItem::new);
 	public static final DeferredItem<Item> TITANIUM_BLOCK = block(CrystalnexusModBlocks.TITANIUM_BLOCK);
 	public static final DeferredItem<Item> CONDUCTIVE_ALLOY = REGISTRY.register("conductive_alloy", ConductiveAlloyItem::new);
 	public static final DeferredItem<Item> FLAMETHROWER = REGISTRY.register("flamethrower", FlamethrowerItem::new);
@@ -408,6 +424,8 @@ public class CrystalnexusModItems {
 			() -> new BucketItem(CrystalnexusModFluids.ACIDIC_SLURRY.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> RESIN_BUCKET = REGISTRY.register("resin_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.RESIN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> INVERSION_SOLUTION_BUCKET = REGISTRY.register("inversion_solution_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.INVERSION_SOLUTION.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> GASOLINE_BUCKET = REGISTRY.register("gasoline_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.GASOLINE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> ARGON_BUCKET = REGISTRY.register("argon_bucket",
@@ -470,9 +488,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> STEAM_ENGINE = block(CrystalnexusModBlocks.STEAM_ENGINE);
 	public static final DeferredItem<Item> STEAM_ENGINE_UPGRADE = block(CrystalnexusModBlocks.STEAM_ENGINE_UPGRADE);
 	public static final DeferredItem<Item> ANCIENT_DEBRIS_NODE = block(CrystalnexusModBlocks.ANCIENT_DEBRIS_NODE);
+	public static final DeferredItem<Item> NETHERITE_SCRAP_PELLET = REGISTRY.register("netherite_scrap_pellet", net.crystalnexus.item.NetheriteScrapPelletItem::new);
 	public static final DeferredItem<Item> OMEGA_CHIP = REGISTRY.register("omega_chip", OmegaChipItem::new);
 	public static final DeferredItem<Item> SINGULARITY_MATRIX = block(CrystalnexusModBlocks.SINGULARITY_MATRIX);
 	public static final DeferredItem<Item> DEPOT_UPLINK = REGISTRY.register("depot_uplink", DepotUplinkItem::new);
+	public static final DeferredItem<Item> DEPOT_UPLOADER = block(CrystalnexusModBlocks.DEPOT_UPLOADER);
 	public static final DeferredItem<Item> DEPOT_DOWNLOADER = block(CrystalnexusModBlocks.DEPOT_DOWNLOADER);
 	public static final DeferredItem<Item> DEPOT_CONTROLLER = block(CrystalnexusModBlocks.DEPOT_CONTROLLER);
 	public static final DeferredItem<Item> DEPOT_CABLE = block(CrystalnexusModBlocks.DEPOT_CABLE);
@@ -509,6 +529,10 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> PARTICLE_ACCELERATOR_CONTROLLER = block(CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER);
 	public static final DeferredItem<Item> ELECTROMAGNET = block(CrystalnexusModBlocks.ELECTROMAGNET);
 	public static final DeferredItem<Item> PLASMA_BLOCK = block(CrystalnexusModBlocks.PLASMA_BLOCK);
+	public static final DeferredItem<Item> INVERTIUM_CRYSTAL_BLOCK = block(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK);
+	public static final DeferredItem<Item> RAW_INVERTIUM = REGISTRY.register("raw_invertium", net.crystalnexus.item.RawInvertiumItem::new);
+	public static final DeferredItem<Item> INVERTIUM_DUST = REGISTRY.register("invertium_dust", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> INVERTIUM_ORE = block(CrystalnexusModBlocks.INVERTIUM_ORE);
 	public static final DeferredItem<Item> DARK_MATTER = REGISTRY.register("dark_matter", DarkMatterItem::new);
 	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
 	public static final DeferredItem<Item> ORE_SCANNER = REGISTRY.register("ore_scanner", OreScannerItem::new);

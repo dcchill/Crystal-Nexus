@@ -10,6 +10,7 @@ import net.crystalnexus.block.entity.CraftingUpgradeBlockEntity;
 import net.crystalnexus.block.entity.DepotCliBlockEntity;
 import net.crystalnexus.block.entity.DepotControllerBlockEntity;
 import net.crystalnexus.block.entity.DepotCableBlockEntity;
+import net.crystalnexus.block.entity.DepotUploaderBlockEntity;
 import net.crystalnexus.block.entity.DepotCableConnectionConfig;
 import net.crystalnexus.cli.DepotCliCommandContext;
 import net.crystalnexus.cli.DepotCliCommandRegistry;
@@ -56,6 +57,42 @@ import java.util.UUID;
 @PrefixGameTestTemplate(false)
 public final class DepotGameTests {
     private DepotGameTests() {
+    }
+
+    @GameTest(template = "zero_point")
+    public static void depotUploaderInsertionRejectionPersistenceAndConnectivity(GameTestHelper helper) {
+        UUID owner = UUID.randomUUID();
+        BlockPos controllerPos = new BlockPos(1, 2, 1);
+        BlockPos uploaderPos = new BlockPos(2, 2, 1);
+        helper.setBlock(controllerPos, CrystalnexusModBlocks.DEPOT_CONTROLLER.get());
+        helper.setBlock(uploaderPos, CrystalnexusModBlocks.DEPOT_UPLOADER.get());
+
+        DepotControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
+        controller.setOwner(owner);
+        DepotSavedData depot = DepotSavedData.get(helper.getLevel(), owner);
+        depot.setController(helper.getLevel(), helper.absolutePos(controllerPos));
+        DepotUploaderBlockEntity uploader = helper.getBlockEntity(uploaderPos);
+        uploader.setOwner(owner);
+        uploader.setItem(0, new ItemStack(Items.IRON_INGOT, 10));
+
+        for (int i = 0; i < 5; i++) DepotUploaderBlockEntity.tick(helper.getLevel(),
+                helper.absolutePos(uploaderPos), helper.getBlockState(uploaderPos), uploader);
+        helper.assertTrue(uploader.getItem(0).getCount() == 10 && depot.getCount(ResourceLocation.parse("minecraft:iron_ingot")) == 0,
+                "An uploader must reject items while its owner's controller is unpowered");
+
+        CompoundTag saved = uploader.saveWithFullMetadata(helper.getLevel().registryAccess());
+        DepotUploaderBlockEntity restored = new DepotUploaderBlockEntity(helper.absolutePos(uploaderPos), helper.getBlockState(uploaderPos));
+        restored.loadWithComponents(saved, helper.getLevel().registryAccess());
+        helper.assertTrue(restored.getItem(0).getCount() == 10,
+                "Uploader inventory and owner linkage must survive save/load");
+
+        controller.getEnergyStorage().receiveEnergy(1_000, false);
+        for (int i = 0; i < 5; i++) DepotUploaderBlockEntity.tick(helper.getLevel(),
+                helper.absolutePos(uploaderPos), helper.getBlockState(uploaderPos), restored);
+        helper.assertTrue(restored.getItem(0).isEmpty()
+                        && depot.getCount(ResourceLocation.parse("minecraft:iron_ingot")) == 10,
+                "A powered controller must connect the uploader and accept inserted items");
+        helper.succeed();
     }
 
     @GameTest(template = "zero_point")

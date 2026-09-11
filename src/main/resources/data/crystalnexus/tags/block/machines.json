@@ -38,6 +38,11 @@
                    "crystalnexus:invert_piston_generator",
                    "crystalnexus:ore_processor",
                    "crystalnexus:arc_furnace",
-                   "crystalnexus:plasma_generator_controller"
+                   "crystalnexus:plasma_generator_controller",
+                   "crystalnexus:depot_uploader",
+                   "crystalnexus:tungsten_crusher",
+                   "crystalnexus:tungsten_dust_separator",
+                   "crystalnexus:tungsten_refinery",
+                   "crystalnexus:tungsten_smelter"
                ]
 }

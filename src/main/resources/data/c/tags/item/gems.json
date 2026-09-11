@@ -1,6 +1,7 @@
 {
     "replace":  false,
     "values":  [
-                   "crystalnexus:ancient_crystal"
+                   "crystalnexus:ancient_crystal",
+                   "crystalnexus:invertium_crystal"
                ]
 }

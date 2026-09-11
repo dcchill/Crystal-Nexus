@@ -13,7 +13,7 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModJeiPlugin;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.Minecraft;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -34,7 +34,7 @@ public final class RefiningRecipeCategory implements IRecipeCategory<RefiningRec
     @Override public void draw(RefiningRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
         background.draw(graphics);
         graphics.drawString(Minecraft.getInstance().font,
-            Component.literal("Minimum: " + MachineTier.forLevel(recipe.minimumMachineTier()).displayName()),
+            Component.literal("Minimum: " + MachineAge.forNumber(recipe.minimumAge()).displayName()),
             5, 5, 0xff404040, false);
     }
     @Override public void setRecipe(IRecipeLayoutBuilder builder, RefiningRecipe recipe, IFocusGroup focuses) {

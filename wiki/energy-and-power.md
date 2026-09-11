@@ -72,7 +72,7 @@ How to use it:
 
 ### Inverted Piston Generator
 
-The Inverted Piston Generator is the higher-tier counterpart to the Piston Generator.
+The Inverted Piston Generator is the Age 2 counterpart to the Piston Generator.
 
 Use it after unlocking Titanium materials.
 
@@ -99,7 +99,7 @@ How to use it:
 
 ### High Pressure Steam Engine
 
-This is the upgraded steam engine tier.
+This is the upgraded steam engine variant.
 
 - Requires at least 1,000 mB Steam to run.
 - Drains 1,000 mB Steam when a cycle completes.

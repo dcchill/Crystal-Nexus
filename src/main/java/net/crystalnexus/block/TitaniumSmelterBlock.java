@@ -39,16 +39,21 @@ import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.procedures.TitaniumSmelterOnTickUpdateProcedure;
 import net.crystalnexus.procedures.CrystalPurifierBlockAddedProcedure;
 import net.crystalnexus.block.entity.TitaniumSmelterBlockEntity;
-import net.crystalnexus.processing.MachineTier;
-import net.crystalnexus.processing.TieredMachineBlock;
+import net.crystalnexus.processing.MachineAge;
+import net.crystalnexus.processing.AgedMachineBlock;
 
 import io.netty.buffer.Unpooled;
 
-public class TitaniumSmelterBlock extends Block implements EntityBlock, TieredMachineBlock {
+public class TitaniumSmelterBlock extends Block implements EntityBlock, AgedMachineBlock {
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+	private final MachineAge machineAge;
 
 	public TitaniumSmelterBlock() {
+		this(MachineAge.AGE_2);
+	}
+
+	public TitaniumSmelterBlock(MachineAge machineAge) {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 15f).lightLevel(s -> (new Object() {
 			public int getLightLevel() {
 				if (s.getValue(BLOCKSTATE) == 1)
@@ -58,6 +63,7 @@ public class TitaniumSmelterBlock extends Block implements EntityBlock, TieredMa
 				return 0;
 			}
 		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape().instrument(NoteBlockInstrument.COW_BELL));
+		this.machineAge = machineAge;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}
 
@@ -172,5 +178,5 @@ public class TitaniumSmelterBlock extends Block implements EntityBlock, TieredMa
 			return 0;
 	}
 
-	@Override public MachineTier machineTier() { return MachineTier.TITANIUM; }
+	@Override public MachineAge machineAge() { return machineAge; }
 }

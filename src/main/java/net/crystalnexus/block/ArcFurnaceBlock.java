@@ -3,8 +3,8 @@ package net.crystalnexus.block;
 import io.netty.buffer.Unpooled;
 import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
 import net.crystalnexus.procedures.ArcFurnaceOnTickUpdateProcedure;
-import net.crystalnexus.processing.MachineTier;
-import net.crystalnexus.processing.TieredMachineBlock;
+import net.crystalnexus.processing.MachineAge;
+import net.crystalnexus.processing.AgedMachineBlock;
 import net.crystalnexus.world.inventory.ArcFurnaceMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,8 +23,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public final class ArcFurnaceBlock extends ChemicalReactionChamberBlock implements TieredMachineBlock {
-	@Override public MachineTier machineTier() { return MachineTier.TITANIUM; }
+public final class ArcFurnaceBlock extends ChemicalReactionChamberBlock implements AgedMachineBlock {
+	@Override public MachineAge machineAge() { return MachineAge.AGE_2; }
 
 	@Override public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		ArcFurnaceOnTickUpdateProcedure.execute(level, pos);

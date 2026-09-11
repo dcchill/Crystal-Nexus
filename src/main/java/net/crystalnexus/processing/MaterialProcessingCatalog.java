@@ -49,9 +49,9 @@ public final class MaterialProcessingCatalog {
     public static final int SLURRY_AMOUNT = 1000;
     public static final int NUGGETS_PER_DUST = 9;
 
-    public static int nuggetsPerDust(MachineTier tier) {
-        return tier.level() <= MachineTier.TITANIUM.level() ? 9 + Math.max(0, tier.level() - MachineTier.CRYSTAL.level())
-            : tier.level() <= MachineTier.TITANIUM_CARBIDE.level() ? 11 : 12;
+    public static int nuggetsPerDust(MachineAge age) {
+        return age.number() <= MachineAge.AGE_2.number() ? 9 + Math.max(0, age.number() - MachineAge.AGE_1.number())
+            : age.number() <= MachineAge.AGE_3.number() ? 11 : 12;
     }
     private static final Gson GSON = new Gson();
     private static volatile Map<String, Profile> profiles = Map.of();
@@ -78,12 +78,12 @@ public final class MaterialProcessingCatalog {
     }
     public record Profile(ResourceLocation primaryMaterial, ResourceLocation reagent, boolean reagentTag,
                           int reagentAmount, int crusherMultiplier, int advancedMultiplier,
-                          Optional<Secondary> secondary, Set<String> disabledStages, int minimumMachineTier) {
+                          Optional<Secondary> secondary, Set<String> disabledStages, int minimumAge) {
         static Profile defaults(String material) {
             return new Profile(ResourceLocation.fromNamespaceAndPath("c", material),
                 ResourceLocation.fromNamespaceAndPath("crystalnexus", "sulfuric_acid"), false,
                 SLURRY_AMOUNT, 2, 3,
-                Optional.empty(), Set.of(), MaterialProcessingNames.requiredMachineTier(material));
+                Optional.empty(), Set.of(), MaterialProcessingNames.requiredMachineAge(material));
         }
     }
     public record Material(String name, ResourceLocation id, TagKey<Item> ores, TagKey<Item> raw,
@@ -208,7 +208,7 @@ public final class MaterialProcessingCatalog {
             generated.add(new RefiningRecipe(slurry, Optional.empty(),
                 Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
                     material.dust().location(), material.profile().advancedMultiplier())),
-                material.profile().minimumMachineTier()));
+                material.profile().minimumAge()));
         }
         return List.copyOf(generated);
     }
@@ -219,7 +219,7 @@ public final class MaterialProcessingCatalog {
         List<DustSeperationRecipe> generated = new ArrayList<>();
         for (Material material : get(level).materials().values()) {
             if (material.profile().disabledStages().contains("separation")) continue;
-            ItemStack nugget = material.nugget("crystalnexus", nuggetsPerDust(MachineTier.CRYSTAL));
+            ItemStack nugget = material.nugget("crystalnexus", nuggetsPerDust(MachineAge.AGE_1));
             if (nugget.isEmpty()) continue;
             Ingredient dust = Ingredient.of(material.dust());
             boolean overridden = explicit.stream().anyMatch(recipe -> !recipe.getIngredients().isEmpty()
@@ -229,7 +229,7 @@ public final class MaterialProcessingCatalog {
                 Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
                     material.nugget().location(), NUGGETS_PER_DUST)),
                 NonNullList.of(Ingredient.EMPTY, dust), 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f,
-                material.profile().minimumMachineTier()));
+                material.profile().minimumAge()));
         }
         return List.copyOf(generated);
     }
@@ -385,15 +385,14 @@ public final class MaterialProcessingCatalog {
                 : Set.of(GSON.fromJson(json.get("disabled_auto_stages"), String[].class)) : Set.of();
         if (amount <= 0 || crusher <= 0 || advanced <= 0)
             throw new IllegalArgumentException("Amounts and multipliers must be positive");
-        int minimumTier = json.has("minimum_machine_tier") ? json.get("minimum_machine_tier").getAsInt()
-            : MaterialProcessingNames.requiredMachineTier(path(primary.toString()));
-        if (minimumTier < 1 || minimumTier > MachineTier.HYPER.level())
-            throw new IllegalArgumentException("minimum_machine_tier must be between 1 and " + MachineTier.HYPER.level());
-        return new Profile(primary, reagentId, reagentTag, amount, crusher, advanced, secondary, disabled, minimumTier);
+        int minimumAge = json.has("minimum_age") ? json.get("minimum_age").getAsInt()
+            : MaterialProcessingNames.requiredMachineAge(path(primary.toString()));
+        return new Profile(primary, reagentId, reagentTag, amount, crusher, advanced, secondary, disabled,
+            MachineAge.requireNumber(minimumAge));
     }
 
-    public static int defaultRequiredTier(String material) {
-        return MaterialProcessingNames.requiredMachineTier(material);
+    public static int defaultRequiredAge(String material) {
+        return MaterialProcessingNames.requiredMachineAge(material);
     }
 
     private static String path(String id) {

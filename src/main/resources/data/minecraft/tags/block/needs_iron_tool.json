@@ -39,6 +39,14 @@
                    "crystalnexus:tungsten_block",
                    "crystalnexus:tungsten_machine_frame",
                    "crystalnexus:solar_engine_controller",
-                   "crystalnexus:machine_energy_output"
+                   "crystalnexus:machine_energy_output",
+                   "crystalnexus:invertium_machine_frame",
+                   "crystalnexus:invertium_crystal_block",
+                   "crystalnexus:invertium_block",
+                   "crystalnexus:depot_uploader",
+                   "crystalnexus:tungsten_crusher",
+                   "crystalnexus:tungsten_dust_separator",
+                   "crystalnexus:tungsten_refinery",
+                   "crystalnexus:tungsten_smelter"
                ]
 }

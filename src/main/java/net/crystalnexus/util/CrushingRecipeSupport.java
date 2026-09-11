@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 
 public final class CrushingRecipeSupport {
@@ -21,24 +21,24 @@ public final class CrushingRecipeSupport {
 	}
 
 	public static ItemStack findResult(Level level, ItemStack input) {
-		return findResult(level, input, MachineTier.CRYSTAL);
+		return findResult(level, input, MachineAge.AGE_1);
 	}
 
-	public static ItemStack findResult(Level level, ItemStack input, MachineTier machineTier) {
+	public static ItemStack findResult(Level level, ItemStack input, MachineAge machineAge) {
 		if (input.isEmpty())
 			return ItemStack.EMPTY;
 
 		for (RecipeHolder<OreCrushingJeiRecipe> holder : level.getRecipeManager().getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE)) {
 			OreCrushingJeiRecipe recipe = holder.value();
 			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
-				return machineTier.supports(recipe.minimumMachineTier())
+				return machineAge.supports(recipe.minimumAge())
 					? recipe.getResultItem(level.registryAccess()) : ItemStack.EMPTY;
 		}
 
 		var generated = MaterialProcessingCatalog.get(level).source(input);
 		if (generated.isPresent()) {
 			var material = generated.get();
-			return machineTier.supports(material.profile().minimumMachineTier())
+			return machineAge.supports(material.profile().minimumAge())
 				&& !material.profile().disabledStages().contains("crushing")
 				? MaterialProcessingCatalog.generatedCrushingResult(material, input) : ItemStack.EMPTY;
 		}
@@ -77,7 +77,7 @@ public final class CrushingRecipeSupport {
 				ItemStack output = sources.length == 0 ? ItemStack.EMPTY
 					: MaterialProcessingCatalog.generatedCrushingResult(material, sources[0]);
 				return output.isEmpty() ? null : new OreCrushingJeiRecipe(output,
-					NonNullList.of(Ingredient.EMPTY, material.sourceIngredient()), material.profile().minimumMachineTier());
+					NonNullList.of(Ingredient.EMPTY, material.sourceIngredient()), material.profile().minimumAge());
 			}).filter(java.util.Objects::nonNull).toList();
 	}
 

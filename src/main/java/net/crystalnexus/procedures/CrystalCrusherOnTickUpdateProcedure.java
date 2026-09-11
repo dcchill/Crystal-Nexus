@@ -2,7 +2,7 @@ package net.crystalnexus.procedures;
 
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.util.MachineUpgradeHelper;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -29,18 +29,18 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress")) ? 1 : 2);
 
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 2);
-		MachineTier machineTier = MachineTier.from(world.getBlockState(pos));
+		MachineAge machineAge = MachineAge.from(world.getBlockState(pos));
 		double baseCookTime = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
 				: upgrade.is(net.crystalnexus.init.CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-		double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
-		int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
+		double cookTime = machineAge.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
+		int energyCost = machineAge.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
 		setBlockNBTNumber(world, pos, "maxProgress", cookTime);
 
 		if (!(world instanceof Level level))
 			return energyText(world, pos);
 
 		ItemStack input = itemFromBlockInventory(world, pos, 0);
-		ItemStack result = CrushingRecipeSupport.findResult(level, input, machineTier);
+		ItemStack result = CrushingRecipeSupport.findResult(level, input, machineAge);
 		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
 		ItemStack currentOutput = itemFromBlockInventory(world, pos, 1);
 		boolean outputFits = outputCount > 0

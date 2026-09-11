@@ -165,6 +165,15 @@
                    "crystalnexus:insulated_titanium_casing",
                    "crystalnexus:cryogenic_flash_freezer_hatch",
                    "crystalnexus:multiblock_fluid_output",
-                   "crystalnexus:multiblock_item_input"
+                   "crystalnexus:multiblock_item_input",
+                   "crystalnexus:invertium_ore",
+                   "crystalnexus:invertium_machine_frame",
+                   "crystalnexus:invertium_crystal_block",
+                   "crystalnexus:invertium_block",
+                   "crystalnexus:depot_uploader",
+                   "crystalnexus:tungsten_crusher",
+                   "crystalnexus:tungsten_dust_separator",
+                   "crystalnexus:tungsten_refinery",
+                   "crystalnexus:tungsten_smelter"
                ]
 }

@@ -6,6 +6,7 @@
                    "crystalnexus:titanium_block",
                    "crystalnexus:raw_crystal_block",
                    "crystalnexus:tungsten_block",
-                   "crystalnexus:meteorite_alloy_block"
+                   "crystalnexus:meteorite_alloy_block",
+                   "crystalnexus:invertium_block"
                ]
 }

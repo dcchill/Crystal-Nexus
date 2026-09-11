@@ -32,7 +32,7 @@ public record S2C_MaterialProfiles(List<Entry> entries) implements CustomPacketP
             buf.writeVarInt(profile.reagentAmount());
             buf.writeVarInt(profile.crusherMultiplier());
             buf.writeVarInt(profile.advancedMultiplier());
-            buf.writeVarInt(profile.minimumMachineTier());
+            buf.writeVarInt(profile.minimumAge());
             buf.writeBoolean(profile.secondary().isPresent());
             if (profile.secondary().isPresent()) {
                 var secondary = profile.secondary().get();

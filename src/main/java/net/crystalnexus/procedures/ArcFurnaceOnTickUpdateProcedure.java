@@ -4,7 +4,7 @@ import net.crystalnexus.block.ChemicalReactionChamberBlock;
 import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +24,7 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 			return;
 		}
 		ItemStack upgrade = furnace.getItem(3);
-		MachineTier tier = MachineTier.from(level.getBlockState(pos));
+		MachineAge tier = MachineAge.from(level.getBlockState(pos));
 		double baseTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
 			: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
 		double cookTime = tier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseTime));

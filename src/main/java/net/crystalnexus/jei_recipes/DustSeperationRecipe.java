@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MachineAge;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,7 +29,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
     private final Optional<ItemStack> secondaryOutput;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedSecondaryOutput;
     private final float secondaryChance;
-    private final int minimumMachineTier;
+    private final int minimumAge;
 
     public DustSeperationRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
         this(Optional.of(output), Optional.empty(), recipeItems, 1, Optional.empty(), Optional.empty(), Optional.empty(), 0f, 1);
@@ -41,7 +41,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
                                 Optional<FluidChemicalReactionRecipe.FluidAmount> fluidInput,
                                 Optional<ItemStack> secondaryOutput,
                                 Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedSecondaryOutput,
-                                float secondaryChance, int minimumMachineTier) {
+                                float secondaryChance, int minimumAge) {
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
         this.recipeItems = recipeItems;
@@ -50,7 +50,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
         this.secondaryOutput = secondaryOutput.map(ItemStack::copy);
         this.taggedSecondaryOutput = taggedSecondaryOutput;
         this.secondaryChance = Math.max(0f, Math.min(1f, secondaryChance));
-        this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
+        this.minimumAge = MachineAge.requireNumber(minimumAge);
     }
 
     public int inputCount() { return inputCount; }
@@ -61,7 +61,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             .orElse(ItemStack.EMPTY);
     }
     public float secondaryChance() { return secondaryChance; }
-    public int minimumMachineTier() { return minimumMachineTier; }
+    public int minimumAge() { return minimumAge; }
 
     @Override public boolean matches(RecipeInput input, Level level) { return false; }
     @Override public NonNullList<Ingredient> getIngredients() { return recipeItems; }
@@ -92,7 +92,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             ItemStack.STRICT_CODEC.optionalFieldOf("secondary_output").forGetter(recipe -> recipe.secondaryOutput),
             FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("secondary_output_tag").forGetter(recipe -> recipe.taggedSecondaryOutput),
             Codec.FLOAT.optionalFieldOf("secondary_chance", 0f).forGetter(recipe -> recipe.secondaryChance),
-            Codec.INT.optionalFieldOf("minimum_machine_tier", 1).forGetter(recipe -> recipe.minimumMachineTier)
+            Codec.INT.optionalFieldOf("minimum_age", 1).forGetter(recipe -> recipe.minimumAge)
         ).apply(builder, DustSeperationRecipe::new)).flatXmap(Serializer::validate, DataResult::success);
         public static final StreamCodec<RegistryFriendlyByteBuf, DustSeperationRecipe> STREAM_CODEC =
             StreamCodec.of(Serializer::encode, Serializer::decode);
@@ -113,7 +113,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
             recipe.recipeItems.forEach(ingredient -> Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient));
             buf.writeVarInt(recipe.inputCount); writeFluid(buf, recipe.fluidInput);
             writeStack(buf, recipe.secondaryOutput); writeTag(buf, recipe.taggedSecondaryOutput);
-            buf.writeFloat(recipe.secondaryChance); buf.writeVarInt(recipe.minimumMachineTier);
+            buf.writeFloat(recipe.secondaryChance); buf.writeVarInt(recipe.minimumAge);
         }
         private static DustSeperationRecipe decode(RegistryFriendlyByteBuf buf) {
             Optional<ItemStack> output = readStack(buf);
