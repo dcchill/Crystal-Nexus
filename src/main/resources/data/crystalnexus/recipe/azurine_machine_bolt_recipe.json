@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["a", "b"],
+  "key": { "a": { "tag": "c:plates/azurine" }, "b": { "tag": "c:rods/azurine" } },
+  "result": { "id": "crystalnexus:azurine_machine_bolt", "count": 4 }
+}

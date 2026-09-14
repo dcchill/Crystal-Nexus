@@ -6,6 +6,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +24,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.WarpPadGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.WarpPadOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +37,12 @@ public class WarpPadBlockEntity extends RandomizableContainerBlockEntity impleme
 
 	public WarpPadBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.WARP_PAD.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, WarpPadBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		WarpPadOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

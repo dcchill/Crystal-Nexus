@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": ["ipi", "pmp", "ipi"],
   "key": {
-    "i": { "item": "crystalnexus:azurine_ingot" },
+    "i": { "item": "crystalnexus:azurine_machine_bolt" },
     "p": { "tag": "c:plates/azurine" },
     "m": { "item": "crystalnexus:machine_frame" }
   },

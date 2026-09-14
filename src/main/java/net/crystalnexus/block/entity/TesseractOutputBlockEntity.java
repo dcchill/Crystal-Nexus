@@ -6,6 +6,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.TesseractOutputOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -32,6 +34,12 @@ public class TesseractOutputBlockEntity extends RandomizableContainerBlockEntity
 
 	public TesseractOutputBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.TESSERACT_OUTPUT.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, TesseractOutputBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		TesseractOutputOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

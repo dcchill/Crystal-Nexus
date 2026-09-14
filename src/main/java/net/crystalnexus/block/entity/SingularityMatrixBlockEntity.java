@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +19,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.SingularityMatrixGUIMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.SingularityMatrixOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -30,6 +32,12 @@ public class SingularityMatrixBlockEntity extends RandomizableContainerBlockEnti
 
 	public SingularityMatrixBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.SINGULARITY_MATRIX.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, SingularityMatrixBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		SingularityMatrixOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.MachineCoreOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -33,6 +35,12 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 
 	public MachineEnergyInputBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.MACHINE_ENERGY_INPUT.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, MachineEnergyInputBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		MachineCoreOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

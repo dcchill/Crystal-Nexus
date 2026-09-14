@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.OxygenCollectorOnTickUpdateProcedure;
 import net.crystalnexus.world.inventory.NodeExtractorGUIMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,11 +16,13 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -30,6 +33,12 @@ public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity
 
 	public OxygenCollectorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.OXYGEN_COLLECTOR.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, OxygenCollectorBlockEntity blockEntity) {
+		if (!(level instanceof ServerLevel serverLevel))
+			return;
+		OxygenCollectorOnTickUpdateProcedure.execute(serverLevel, pos);
 	}
 
 	@Override public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {

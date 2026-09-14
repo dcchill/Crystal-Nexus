@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["h i", " i "],
+  "key": { "h": { "tag": "c:hammers" }, "i": { "item": "crystalnexus:ferrosteel_ingot" } },
+  "result": { "id": "crystalnexus:ferrosteel_rod", "count": 1 }
+}

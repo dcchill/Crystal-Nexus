@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["bib", "set", "crc"],
+  "key": {
+    "r": { "item": "crystalnexus:ee_matter" },
+    "c": { "tag": "c:plates/ferrosteel" },
+    "s": { "tag": "c:rods/ferrosteel" },
+    "e": { "item": "crystalnexus:ferrosteel_bearing" },
+    "t": { "item": "crystalnexus:stator" },
+    "i": { "tag": "c:plates/ferrosteel" },
+    "b": { "item": "crystalnexus:ferrosteel_machine_bolt" }
+  },
+  "result": { "id": "crystalnexus:ferrosteel_electric_motor", "count": 1 }
+}

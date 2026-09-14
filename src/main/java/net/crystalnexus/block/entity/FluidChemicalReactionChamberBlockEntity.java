@@ -3,6 +3,7 @@ package net.crystalnexus.block.entity;
 import io.netty.buffer.Unpooled;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.FluidChemicalReactionChamberOnTickUpdateProcedure;
 import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,11 +14,13 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -44,6 +47,12 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
 
     public FluidChemicalReactionChamberBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.FLUID_CHEMICAL_REACTION_CHAMBER.get(), pos, state);
+    }
+
+    public static void tick(Level level, BlockPos pos, BlockState state, FluidChemicalReactionChamberBlockEntity blockEntity) {
+        if (!(level instanceof ServerLevel serverLevel))
+            return;
+        FluidChemicalReactionChamberOnTickUpdateProcedure.execute(serverLevel, pos);
     }
 
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {

@@ -7,6 +7,7 @@ import net.crystalnexus.energy.GeneratorEnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.world.inventory.SteamEngineGUIMenu;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.SteamEngineOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -37,6 +39,12 @@ public class SteamEngineBlockEntity extends RandomizableContainerBlockEntity imp
 
 	public SteamEngineBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.STEAM_ENGINE.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, SteamEngineBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		SteamEngineOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

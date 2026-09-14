@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["a", "b"],
+  "key": { "a": { "tag": "c:plates/ferrosteel" }, "b": { "tag": "c:rods/ferrosteel" } },
+  "result": { "id": "crystalnexus:ferrosteel_machine_bolt", "count": 4 }
+}

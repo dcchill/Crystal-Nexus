@@ -7,6 +7,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +25,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.CrusherGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.CrystalCrusherOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -36,6 +38,12 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 
 	public CrystalCrusherBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYSTAL_CRUSHER.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, CrystalCrusherBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		CrystalCrusherOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

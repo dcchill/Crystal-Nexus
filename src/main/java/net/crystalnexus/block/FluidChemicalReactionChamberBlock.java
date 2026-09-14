@@ -2,14 +2,12 @@ package net.crystalnexus.block;
 
 import io.netty.buffer.Unpooled;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
-import net.crystalnexus.procedures.FluidChemicalReactionChamberOnTickUpdateProcedure;
+import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -18,14 +16,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class FluidChemicalReactionChamberBlock extends ChemicalReactionChamberBlock {
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        FluidChemicalReactionChamberOnTickUpdateProcedure.execute(level, pos);
-        level.scheduleTick(pos, this, 1);
+    @SuppressWarnings("unchecked")
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return level.isClientSide || type != CrystalnexusModBlockEntities.FLUID_CHEMICAL_REACTION_CHAMBER.get() ? null
+            : (BlockEntityTicker<T>) (BlockEntityTicker<FluidChemicalReactionChamberBlockEntity>) FluidChemicalReactionChamberBlockEntity::tick;
     }
 
     @Override

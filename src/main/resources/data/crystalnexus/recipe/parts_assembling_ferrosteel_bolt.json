@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/ferrosteel" },
+  "result": { "id": "crystalnexus:ferrosteel_machine_bolt", "count": 2 },
+  "mode": "bolt"
+}

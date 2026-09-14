@@ -6,6 +6,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 
 import net.crystalnexus.world.inventory.FactoryItemControllerGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.FactoryItemControllerOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
@@ -35,6 +37,12 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
 
     public FactoryItemControllerBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.FACTORY_ITEM_CONTROLLER.get(), pos, state);
+    }
+
+    public static void tick(Level level, BlockPos pos, BlockState state, FactoryItemControllerBlockEntity blockEntity) {
+        if (level.isClientSide())
+            return;
+        FactoryItemControllerOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
     }
 
     @Override

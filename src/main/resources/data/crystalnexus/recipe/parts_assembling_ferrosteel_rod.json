@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/ferrosteel" },
+  "result": { "id": "crystalnexus:ferrosteel_rod", "count": 1 },
+  "mode": "rod"
+}

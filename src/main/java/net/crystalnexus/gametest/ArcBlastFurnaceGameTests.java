@@ -11,6 +11,7 @@ import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.procedures.ArcFurnaceOnTickUpdateProcedure;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.Item;
@@ -35,18 +36,16 @@ public final class ArcBlastFurnaceGameTests {
     private ArcBlastFurnaceGameTests() {}
 
     private record ExpectedRecipe(List<Item> inputs, Item output, int count) {}
+    private record FurnaceBuild(List<BlockPos> casing, List<BlockPos> cores) {}
 
     @GameTest(template = "arc_blast_furnace")
     public static void validatesPortsAndActivatesHeatingCores(GameTestHelper helper) {
         BlockPos controllerPos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
-        List<BlockPos> casing = find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get());
-        List<BlockPos> cores = find(helper, CrystalnexusModBlocks.HEATING_CORE.get());
-        helper.assertTrue(casing.size() >= 3 && !cores.isEmpty(),
-            "The Arc Blast Furnace template needs three carbide casing positions and at least one Heating Core");
-
         BlockState controllerState = helper.getBlockState(controllerPos);
-        helper.setBlock(controllerPos, Blocks.AIR);
-        helper.setBlock(controllerPos, controllerState);
+        FurnaceBuild build = buildFurnace(helper, controllerPos, controllerState,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 1);
+        List<BlockPos> casing = build.casing();
+        List<BlockPos> cores = build.cores();
         ArcFurnaceBlockEntity controller = helper.getBlockEntity(controllerPos);
         helper.assertTrue(!controller.validateStructureNow(), "The structure must require a Machine Energy Input");
 
@@ -122,10 +121,9 @@ public final class ArcBlastFurnaceGameTests {
         }
 
         BlockPos controllerPos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
-        List<BlockPos> casing = find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get());
         BlockState controllerState = helper.getBlockState(controllerPos);
-        helper.setBlock(controllerPos, Blocks.AIR);
-        helper.setBlock(controllerPos, controllerState);
+        List<BlockPos> casing = buildFurnace(helper, controllerPos, controllerState,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 1).casing();
         helper.setBlock(casing.getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
         ArcFurnaceBlockEntity controller = helper.getBlockEntity(controllerPos);
         helper.assertTrue(controller.validateStructureNow(), "Arc Blast Furnace must form for recipe processing tests");
@@ -149,6 +147,42 @@ public final class ArcBlastFurnaceGameTests {
         helper.assertTrue(controller.getItem(0).is(Items.QUARTZ) && controller.getItem(1).is(CrystalnexusModItems.RAW_CARBON.get())
                 && controller.getItem(2).getCount() == 63 && controller.availableEnergy() == energyBefore,
             "A two-item output must not consume inputs or energy when only one output slot remains");
+        helper.succeed();
+    }
+
+    @GameTest(template = "arc_blast_furnace")
+    public static void supportsBothTiersAndSevenHeatingLayers(GameTestHelper helper) {
+        BlockPos controllerPos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
+        BlockState ferrosteelController = helper.getBlockState(controllerPos);
+        FurnaceBuild tooTall = buildFurnace(helper, controllerPos, ferrosteelController,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 8);
+        helper.setBlock(tooTall.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        ArcFurnaceBlockEntity controller = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(!controller.validateStructureNow(), "The furnace must reject an eighth Heating Core layer");
+
+        FurnaceBuild ferrosteel = buildFurnace(helper, controllerPos, ferrosteelController,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 7);
+        helper.setBlock(ferrosteel.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        controller = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(controller.validateStructureNow() && controller.heatingLayerCount() == 7,
+            "The Ferrosteel Arc Furnace must support seven Heating Core layers");
+
+        controller.setItem(0, new ItemStack(Items.QUARTZ));
+        controller.setItem(1, new ItemStack(CrystalnexusModItems.RAW_CARBON.get()));
+        refillEnergy(controller);
+        ArcFurnaceOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(controllerPos));
+        helper.assertTrue(controller.getPersistentData().getDouble("maxProgress") == 4,
+            "Seven Heating Core layers must make the Ferrosteel Arc Furnace seven times faster");
+
+        Direction facing = ferrosteelController.getValue(ArcFurnaceBlock.FACING);
+        BlockState azurineController = CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().defaultBlockState()
+            .setValue(ArcFurnaceBlock.FACING, facing);
+        FurnaceBuild azurine = buildFurnace(helper, controllerPos, azurineController,
+            CrystalnexusModBlocks.TITANIUM_BLOCK.get(), CrystalnexusModBlocks.AZURINE_HEATING_CORE.get(), 7);
+        helper.setBlock(azurine.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        controller = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(controller.validateStructureNow() && controller.heatingLayerCount() == 7,
+            "The Azurine Blast Furnace must support seven Azurine Heating Core layers");
         helper.succeed();
     }
 
@@ -204,6 +238,38 @@ public final class ArcBlastFurnaceGameTests {
     private static void refillEnergy(ArcFurnaceBlockEntity controller) {
         controller.getEnergyStorage().extractEnergy(Integer.MAX_VALUE, false);
         controller.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
+    }
+
+    private static FurnaceBuild buildFurnace(GameTestHelper helper, BlockPos controllerPos, BlockState controller,
+            Block casing, Block core, int heatingLayers) {
+        Direction inward = controller.getValue(ArcFurnaceBlock.FACING).getOpposite();
+        List<BlockPos> casingPositions = new ArrayList<>();
+        List<BlockPos> corePositions = new ArrayList<>();
+        for (int y = 0; y <= 9; y++) for (int depth = 0; depth < 3; depth++) for (int side = -1; side <= 1; side++)
+            helper.setBlock(structurePos(controllerPos, inward, side, depth, y), Blocks.AIR);
+        for (int depth = 0; depth < 3; depth++) for (int side = -1; side <= 1; side++) {
+            BlockPos pos = structurePos(controllerPos, inward, side, depth, 0);
+            if (depth == 0 && side == 0) continue;
+            helper.setBlock(pos, casing);
+            casingPositions.add(pos);
+        }
+        for (int y = 1; y <= heatingLayers; y++) for (int depth = 0; depth < 3; depth++) for (int side = -1; side <= 1; side++) {
+            if (depth == 1 && side == 0) continue;
+            BlockPos pos = structurePos(controllerPos, inward, side, depth, y);
+            helper.setBlock(pos, core);
+            corePositions.add(pos);
+        }
+        for (int depth = 0; depth < 3; depth++) for (int side = -1; side <= 1; side++) {
+            BlockPos pos = structurePos(controllerPos, inward, side, depth, heatingLayers + 1);
+            helper.setBlock(pos, casing);
+            casingPositions.add(pos);
+        }
+        helper.setBlock(controllerPos, controller);
+        return new FurnaceBuild(casingPositions, corePositions);
+    }
+
+    private static BlockPos structurePos(BlockPos controller, Direction inward, int side, int depth, int y) {
+        return controller.above(y).relative(inward, depth).relative(inward.getClockWise(), side);
     }
 
     private static List<BlockPos> find(GameTestHelper helper, Block block) {

@@ -27,7 +27,8 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 		MachineTier tier = MachineTier.from(level.getBlockState(pos));
 		double baseTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
 			: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-		double cookTime = tier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseTime));
+		double cookTime = Math.max(1, Math.ceil(tier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseTime))
+			/ furnace.heatingLayerCount()));
 		int energyCost = tier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
 		ArcFurnaceRecipe recipe = findRecipe(level, furnace);
 		ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.getResultItem(level.registryAccess());
@@ -44,10 +45,10 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 		double progress = furnace.getPersistentData().getDouble("progress") + 1;
 		furnace.getPersistentData().putDouble("progress", progress);
 		if (progress >= cookTime) {
+			if (!furnace.consumeEnergy(energyCost)) return;
 			consumeInputs(furnace, recipe);
 			output.setCount(output.getCount() + furnace.getItem(2).getCount());
 			furnace.setItem(2, output);
-			furnace.extractEnergy(energyCost, false);
 			furnace.getPersistentData().putDouble("progress", 0);
 		}
 		sync(level, pos, furnace);

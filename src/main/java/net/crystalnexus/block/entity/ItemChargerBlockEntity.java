@@ -6,6 +6,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +24,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.ItemChargerGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.ItemChargerOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +37,12 @@ public class ItemChargerBlockEntity extends RandomizableContainerBlockEntity imp
 
 	public ItemChargerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.ITEM_CHARGER.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, ItemChargerBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		ItemChargerOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

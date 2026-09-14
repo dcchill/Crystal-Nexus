@@ -244,9 +244,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.IRON_ROD.get());
 				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ROD.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ROD.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_ROD.get());
 				tabData.accept(CrystalnexusModItems.COPPER_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_MACHINE_BOLT.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_MACHINE_BOLT.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.STATOR.get());
 				tabData.accept(CrystalnexusModItems.HEATING_COIL.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_HEATING_COIL.get());
@@ -255,8 +258,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.COOLING_COIL.get().asItem());
 				tabData.accept(CrystalnexusModItems.IRON_BEARING.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_BEARING.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_BEARING.get());
 				tabData.accept(CrystalnexusModItems.ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ELECTRIC_MOTOR.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.BIOMASS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_COMPOSITE.get());
@@ -579,10 +584,13 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.COPPER_ROD.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ROD.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_ROD.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ROD.get());
 				tabData.accept(CrystalnexusModItems.IRON_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.COPPER_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_MACHINE_BOLT.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_MACHINE_BOLT.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_MACHINE_BOLT.get());
 				tabData.accept(CrystalnexusModItems.STATOR.get());
 				tabData.accept(CrystalnexusModItems.HEATING_COIL.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_HEATING_COIL.get());
@@ -591,8 +599,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.COOLING_COIL.get().asItem());
 				tabData.accept(CrystalnexusModItems.IRON_BEARING.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_BEARING.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_BEARING.get());
 				tabData.accept(CrystalnexusModItems.ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ELECTRIC_MOTOR.get());
+				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
 				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());

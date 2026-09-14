@@ -7,6 +7,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +25,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.SeparatorGuiMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.DustSeparatorOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -36,6 +38,12 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	public DustSeparatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.DUST_SEPARATOR.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, DustSeparatorBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		DustSeparatorOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,6 +19,7 @@ import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.SteamChamberGUIMenu;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.procedures.SteamChamberOnTickUpdateProcedure;
 
 import javax.annotation.Nullable;
 
@@ -30,6 +32,12 @@ public class SteamChamberBlockEntity extends RandomizableContainerBlockEntity im
 
 	public SteamChamberBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.STEAM_CHAMBER.get(), position, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, SteamChamberBlockEntity blockEntity) {
+		if (level.isClientSide())
+			return;
+		SteamChamberOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override

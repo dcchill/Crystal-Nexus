@@ -27,6 +27,7 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -62,6 +63,11 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 
 	public CryogenicFlashFreezerBlockEntity(BlockPos pos, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYOGENIC_FLASH_FREEZER.get(), pos, state);
+	}
+
+	public static void tick(Level level, BlockPos pos, BlockState state, CryogenicFlashFreezerBlockEntity blockEntity) {
+		if (!level.isClientSide())
+			blockEntity.serverTick();
 	}
 
 	private FluidTank tank() {

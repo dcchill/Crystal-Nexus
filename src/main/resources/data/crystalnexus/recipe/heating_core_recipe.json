@@ -2,16 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "rcr",
-    "ccc",
-    "rcr"
+    "rbr",
+    "bcb",
+    "rbr"
   ],
   "key": {
     "c": {
-      "item": "crystalnexus:azurine_heating_coil"
+      "item": "crystalnexus:azurine_heating_core"
     },
     "r": {
       "item": "crystalnexus:ferrosteel_sheet"
+    },
+    "b": {
+      "item": "crystalnexus:ferrosteel_machine_bolt"
     }
   },
   "result": {

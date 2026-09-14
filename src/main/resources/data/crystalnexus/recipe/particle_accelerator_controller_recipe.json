@@ -8,16 +8,16 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:machine_bolt"
+      "item": "crystalnexus:ferrosteel_machine_bolt"
     },
     "b": {
       "item": "crystalnexus:particle_accelerator_tube"
     },
     "c": {
-      "item": "crystalnexus:azurine_electric_motor"
+      "item": "crystalnexus:ferrosteel_electric_motor"
     },
     "d": {
-      "item": "crystalnexus:azurine_bearing"
+      "item": "crystalnexus:ferrosteel_bearing"
     }
   },
   "result": {

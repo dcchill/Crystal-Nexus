@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" p ", "prp", " p "],
+  "key": {
+    "p": { "tag": "c:plates/ferrosteel" },
+    "r": { "tag": "c:rods/ferrosteel" }
+  },
+  "result": { "id": "crystalnexus:ferrosteel_bearing", "count": 2 }
+}
