@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [{ "item": "crystalnexus:obsidrax_rod" }],
+  "output": { "id": "crystalnexus:obsidrax", "count": 1 }
+}

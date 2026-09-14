@@ -1,0 +1,4 @@
+{
+  "parent": "crystalnexus:block/azurine_blast_furnace",
+  "textures": { "north": "crystalnexus:block/azurine_blast_furnace_on" }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "item_input_1": {
+    "item": "crystalnexus:hot_obsidrax"
+  },
+  "item_output": {
+    "id": "crystalnexus:obsidrax",
+    "count": 1
+  }
+}

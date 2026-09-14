@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/obsidrax" },
+  "result": { "id": "crystalnexus:obsidrax_sheet", "count": 1 },
+  "mode": "plate"
+}

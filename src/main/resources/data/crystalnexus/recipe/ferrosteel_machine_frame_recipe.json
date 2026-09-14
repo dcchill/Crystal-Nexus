@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["ipi","pmp","ipi"],"key":{"i":{"item":"crystalnexus:ferrosteel_ingot"},"p":{"item":"crystalnexus:ferrosteel_sheet"},"m":{"item":"crystalnexus:machine_frame"}},"result":{"id":"crystalnexus:ferrosteel_machine_frame"}}

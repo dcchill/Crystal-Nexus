@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/obsidrax" },
+  "result": { "id": "crystalnexus:obsidrax_machine_bolt", "count": 2 },
+  "mode": "bolt"
+}

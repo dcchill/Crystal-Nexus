@@ -3,21 +3,18 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cde",
+    "ede",
     "afa"
   ],
   "key": {
     "a": {
-      "tag": "c:plates/titanium"
+      "tag": "c:plates/obsidrax"
     },
     "b": {
       "item": "crystalnexus:gravity_control_point"
     },
-    "c": {
-      "item": "crystalnexus:computation_node"
-    },
     "d": {
-      "item": "crystalnexus:titanium_machine_frame"
+      "item": "crystalnexus:obsidrax_machine_frame"
     },
     "e": {
       "item": "crystalnexus:silicon_wafer"

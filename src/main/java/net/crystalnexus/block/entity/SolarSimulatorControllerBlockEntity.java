@@ -53,8 +53,8 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "solar_sim");
     private static final List<TagKey<Item>> TERRA = tags("raw_materials/iron", "raw_materials/copper", "gems/coal", "raw_materials/tin", "raw_materials/silver");
     private static final List<TagKey<Item>> CAELUS = tags("raw_materials/gold", "raw_materials/lead", "dusts/redstone", "raw_materials/nickel");
-    private static final List<TagKey<Item>> BOREAS = tags("gems/diamond", "gems/quartz", "gems/certus_quartz", "raw_materials/titanium");
-    private static final List<TagKey<Item>> METEOR = tags("raw_materials/tungsten", "raw_materials/uranium", "raw_materials/platinum");
+    private static final List<TagKey<Item>> BOREAS = tags("gems/diamond", "gems/quartz", "gems/certus_quartz", "raw_materials/azurine");
+    private static final List<TagKey<Item>> METEOR = tags("raw_materials/obsidrax", "raw_materials/uranium", "raw_materials/platinum");
 
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 	private final EnergyStorage energyStorage = new EnergyStorage(
@@ -135,11 +135,12 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE, worldPosition,
             getBlockState().getValue(SolarSimulatorControllerBlock.FACING), CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get(),
             SolarSimulatorControllerBlock.FACING, Map.of(
-                CrystalnexusModBlocks.CARBON_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
-                CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
-                CrystalnexusModBlocks.EE_BATTERY.get(), Set.of(Blocks.AIR, CrystalnexusModBlocks.CARBON_BLOCK.get(), CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get(),
-                    CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())),
-            Set.of(), true, false);
+                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
+                CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())),
+            Set.of(CrystalnexusModBlocks.CARBON_GLASS.get(), CrystalnexusModBlocks.COOLING_COIL.get(),
+                CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get(), CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get(),
+                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get()),
+            true, false);
         List<BlockPos> previousEnergyInputs = List.copyOf(energyInputs);
         energyInputs.clear();
         outputs.clear();

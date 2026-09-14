@@ -55,7 +55,8 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 
 	private static ArcFurnaceRecipe findRecipe(net.minecraft.server.level.ServerLevel level, ArcFurnaceBlockEntity furnace) {
 		for (var holder : level.getRecipeManager().getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE))
-			if (matches(holder.value(), furnace.getItem(0), furnace.getItem(1))) return holder.value();
+			if (furnace.recipeTier() >= holder.value().minimumArcFurnaceTier()
+					&& matches(holder.value(), furnace.getItem(0), furnace.getItem(1))) return holder.value();
 		return null;
 	}
 

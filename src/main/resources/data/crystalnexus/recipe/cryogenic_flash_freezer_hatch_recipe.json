@@ -7,10 +7,10 @@
     "cic"
   ],
   "key": {
-    "i": { "item": "crystalnexus:insulated_titanium_casing" },
+    "i": { "item": "crystalnexus:insulated_azurine_casing" },
     "c": { "item": "crystalnexus:ceramic_plate" },
     "k": { "item": "crystalnexus:container" },
-    "t": { "item": "crystalnexus:titanium_machine_frame" }
+    "t": { "item": "crystalnexus:azurine_machine_frame" }
   },
   "result": {
     "id": "crystalnexus:cryogenic_flash_freezer_hatch",

@@ -49,7 +49,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     public static final int PLASMA_SIZE = 16;
     private static final double PLASMA_PATH_RADIUS = 8.0D;
     private static final double PLASMA_TRAIL_SPACING = 0.16D;
-    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "plasma_gen_new");
+    private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "plasma_gen");
 
     private final FluidTank argonTank = new FluidTank(TANK_CAPACITY,
         stack -> stack.is(CrystalnexusModFluids.ARGON.get())) {

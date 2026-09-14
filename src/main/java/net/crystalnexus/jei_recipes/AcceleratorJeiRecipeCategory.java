@@ -60,10 +60,12 @@ public class AcceleratorJeiRecipeCategory implements IRecipeCategory<Accelerator
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AcceleratorJeiRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 52, 43).addIngredients(recipe.getIngredients().get(0));
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 34).addItemStack(recipe.getResultItem(null));
-		builder.addSlot(RecipeIngredientRole.INPUT, 52, 25).addIngredients(recipe.getIngredients().get(1));
-		builder.addSlot(RecipeIngredientRole.INPUT, 34, 43).addIngredients(recipe.getIngredients().get(2));
-		builder.addSlot(RecipeIngredientRole.INPUT, 34, 25).addIngredients(recipe.getIngredients().get(3));
+		int[][] inputPositions = {{52, 43}, {52, 25}, {34, 43}, {34, 25}};
+		for (int i = 0; i < recipe.getIngredients().size() && i < inputPositions.length; i++)
+			builder.addSlot(RecipeIngredientRole.INPUT, inputPositions[i][0], inputPositions[i][1]).addIngredients(recipe.getIngredients().get(i));
+
+		int[][] outputPositions = {{115, 26}, {133, 26}, {115, 44}, {133, 44}};
+		for (int i = 0; i < recipe.getOutputs().size() && i < outputPositions.length; i++)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, outputPositions[i][0], outputPositions[i][1]).addItemStack(recipe.getOutputs().get(i));
 	}
 }

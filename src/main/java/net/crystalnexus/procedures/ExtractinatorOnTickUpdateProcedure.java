@@ -409,26 +409,6 @@ public class ExtractinatorOnTickUpdateProcedure {
 								}
 							}
 						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 64, 5)) {
-							for (int index11 = 0; index11 < 6; index11++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.WOLFRAMITE.get()) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(CrystalnexusModItems.WOLFRAMITE.get()).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
 					}
 					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModBlocks.TARROCK.get().asItem()) {
 						if (!world.isClientSide()) {

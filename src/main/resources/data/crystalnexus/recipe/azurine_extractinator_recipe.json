@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "bcb", "ifi"],
+  "key": {
+    "i": { "tag": "c:plates/azurine" },
+    "p": { "tag": "c:ingots/azurine" },
+    "b": { "item": "crystalnexus:azurine_bearing" },
+    "c": { "item": "crystalnexus:extractinator" },
+    "f": { "item": "crystalnexus:azurine_machine_frame" }
+  },
+  "result": { "id": "crystalnexus:azurine_extractinator" }
+}

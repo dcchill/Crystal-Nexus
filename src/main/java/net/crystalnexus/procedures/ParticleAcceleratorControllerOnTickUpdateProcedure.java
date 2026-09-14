@@ -42,6 +42,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 	// Input slots (unordered)
 	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
+	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
@@ -100,28 +101,28 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		}
 
 		// =====================================================
-		// Inventory (4 unordered inputs)
-		// Slots: 0,2,3,4  Output: 1
+		// Inventory (up to 4 unordered inputs)
+		// Slots: 0,2,3,4  Outputs: 1,5,6,7
 		// =====================================================
 		if (!(world instanceof ILevelExtension ext)) return;
 		IItemHandler inv = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
 		if (inv == null) return;
 
 		ArrayList<ItemStack> inputs = new ArrayList<>();
+		ArrayList<Integer> inputSlots = new ArrayList<>();
 		for (int s : INPUT_SLOTS) {
 			ItemStack st = inv.getStackInSlot(s);
-			if (st.isEmpty()) {
-				be.getPersistentData().putDouble("progress", 0);
-				sync(world, pos);
-				return;
+			if (!st.isEmpty()) {
+				inputs.add(st);
+				inputSlots.add(s);
 			}
-			inputs.add(st);
 		}
 
 		// =====================================================
-		// Recipe lookup (4 ingredients, order-independent)
+		// Recipe lookup (order-independent)
 		// =====================================================
-		ItemStack result = ItemStack.EMPTY;
+		List<ItemStack> results = List.of();
+		List<Integer> consumedSlots = List.of();
 
 		if (world instanceof Level lvl) {
 			List<AcceleratorJeiRecipe> recipes =
@@ -134,9 +135,10 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			recipeLoop:
 			for (AcceleratorJeiRecipe r : recipes) {
 				NonNullList<Ingredient> ing = r.getIngredients();
-				if (ing.size() != 4) continue;
+				if (ing.size() > inputs.size()) continue;
 
 				boolean[] used = new boolean[inputs.size()];
+				ArrayList<Integer> matchedSlots = new ArrayList<>();
 
 				for (Ingredient recipeIng : ing) {
 					boolean matched = false;
@@ -145,6 +147,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 						if (used[i]) continue;
 						if (recipeIng.test(inputs.get(i))) {
 							used[i] = true;
+							matchedSlots.add(inputSlots.get(i));
 							matched = true;
 							break;
 						}
@@ -153,12 +156,13 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 					if (!matched) continue recipeLoop;
 				}
 
-				result = r.getResultItem(null);
+				results = r.getOutputs();
+				consumedSlots = matchedSlots;
 				break;
 			}
 		}
 
-		if (result.isEmpty()) {
+		if (results.isEmpty()) {
 			be.getPersistentData().putDouble("progress", 0);
 			sync(world, pos);
 			return;
@@ -167,9 +171,18 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		// =====================================================
 		// Output slot check
 		// =====================================================
-		ItemStack out = inv.getStackInSlot(1);
-		if (!out.isEmpty() && out.getItem() != result.getItem()) return;
-		if (!out.isEmpty() && out.getCount() >= 64) return;
+		List<Integer> outputSlots = new ArrayList<>();
+		for (ItemStack result : results) {
+			int outputSlot = -1;
+			for (int slot : OUTPUT_SLOTS) {
+				ItemStack out = inv.getStackInSlot(slot);
+				if (!outputSlots.contains(slot) && (out.isEmpty() || (out.getItem() == result.getItem() && out.getCount() + result.getCount() <= 64))) {
+					outputSlot = slot; break;
+				}
+			}
+			if (outputSlot < 0) return;
+			outputSlots.add(outputSlot);
+		}
 
 		// =====================================================
 		// POWER: ALL MAGNETS MUST PAY
@@ -208,11 +221,15 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 		if (progress >= cookTime) {
 			if (inv instanceof IItemHandlerModifiable mod) {
-				ItemStack newOut = result.copy();
-				newOut.setCount(out.isEmpty() ? 1 : out.getCount() + 1);
-				mod.setStackInSlot(1, newOut);
+				for (int i = 0; i < results.size(); i++) {
+					ItemStack result = results.get(i);
+					ItemStack out = mod.getStackInSlot(outputSlots.get(i));
+					ItemStack newOut = result.copy();
+					newOut.setCount(out.isEmpty() ? result.getCount() : out.getCount() + result.getCount());
+					mod.setStackInSlot(outputSlots.get(i), newOut);
+				}
 
-				for (int s : INPUT_SLOTS) {
+				for (int s : consumedSlots) {
 					ItemStack st = mod.getStackInSlot(s).copy();
 					st.shrink(1);
 					mod.setStackInSlot(s, st);

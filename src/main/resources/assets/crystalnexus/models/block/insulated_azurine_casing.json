@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/insulated_azurine_casing",
+    "particle": "crystalnexus:block/insulated_azurine_casing"
+  },
+  "render_type": "solid"
+}

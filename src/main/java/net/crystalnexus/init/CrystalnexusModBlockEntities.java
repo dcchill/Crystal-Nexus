@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.crystalnexus.block.entity.ZeroPointBlockEntity;
 import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
+import net.crystalnexus.block.entity.OxygenCollectorBlockEntity;
 import net.crystalnexus.block.entity.WarpPadBlockEntity;
 import net.crystalnexus.block.entity.UltimaSmelterBlockEntity;
 import net.crystalnexus.block.entity.TurbineBlockEntity;
@@ -144,7 +145,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_FLUID_INPUT = register("reactor_fluid_input", CrystalnexusModBlocks.REACTOR_FLUID_INPUT, ReactorFluidInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_CONTROL_ROD = register("reactor_control_rod", CrystalnexusModBlocks.REACTOR_CONTROL_ROD, ReactorControlRodBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> IRON_SMELTER = register("iron_smelter", CrystalnexusModBlocks.IRON_SMELTER, IronSmelterBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ARC_FURNACE = register("arc_furnace", CrystalnexusModBlocks.ARC_FURNACE, ArcFurnaceBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ARC_FURNACE = registerMany("arc_furnace", ArcFurnaceBlockEntity::new,
+		CrystalnexusModBlocks.ARC_FURNACE, CrystalnexusModBlocks.AZURINE_BLAST_FURNACE);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTS_ASSEMBLER = register("parts_assembler", CrystalnexusModBlocks.PARTS_ASSEMBLER, PartsAssemblerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_SMELTER = register("crystal_smelter", CrystalnexusModBlocks.CRYSTAL_SMELTER, CrystalSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> INVERTIUM_SMELTER = register("invertium_smelter", CrystalnexusModBlocks.INVERTIUM_SMELTER, InvertiumSmelterBlockEntity::new);
@@ -221,6 +223,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BASIC_ENERGY_CABLE = register("basic_energy_cable", CrystalnexusModBlocks.BASIC_ENERGY_CABLE, BasicEnergyCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HYPER_ENERGY_CABLE = register("hyper_energy_cable", CrystalnexusModBlocks.HYPER_ENERGY_CABLE, HyperEnergyCableBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> NODE_EXTRACTOR = register("node_extractor", CrystalnexusModBlocks.NODE_EXTRACTOR, NodeExtractorBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> OXYGEN_COLLECTOR = register("oxygen_collector", CrystalnexusModBlocks.OXYGEN_COLLECTOR, OxygenCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMART_SPLITTER = register("smart_splitter", CrystalnexusModBlocks.SMART_SPLITTER, SmartSplitterBlockEntity::new);
@@ -417,6 +420,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getFluidTank());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, OXYGEN_COLLECTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, OXYGEN_COLLECTOR.get(), (blockEntity, side) -> ((OxygenCollectorBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, OXYGEN_COLLECTOR.get(), (blockEntity, side) -> ((OxygenCollectorBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, TANK.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, TANK.get(), (blockEntity, side) -> ((TankBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

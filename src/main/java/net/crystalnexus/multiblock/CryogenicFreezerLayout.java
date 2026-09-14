@@ -52,7 +52,7 @@ public record CryogenicFreezerLayout(boolean valid, String reason, int coolingCo
 			boolean shell = x == minX || x == maxX || y == minY || y == maxY || z == minZ || z == maxZ;
 			if (!shell) continue;
 			Block block = level.getBlockState(new BlockPos(x, y, z)).getBlock();
-			if (!isShellBlock(block)) return invalid("Incomplete insulated titanium shell");
+			if (!isShellBlock(block)) return invalid("Incomplete insulated azurine shell");
 			if (block == CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get()) hatches++;
 		}
 		if (hatches != 1) return invalid("Structure requires exactly one freezer hatch");

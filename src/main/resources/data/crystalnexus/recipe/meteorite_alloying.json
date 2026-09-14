@@ -2,7 +2,8 @@
   "type": "crystalnexus:arc_furnace",
   "ingredients": [
     { "item": "crystalnexus:meteorite_scrap" },
-    { "item": "crystalnexus:titanium_carbide_ingot" }
+    { "item": "crystalnexus:ferrosteel_ingot" }
   ],
-  "output": { "id": "crystalnexus:hot_meteorite_alloy", "count": 1 }
+  "output": { "id": "crystalnexus:hot_meteorite_alloy", "count": 1 },
+  "minimum_arc_furnace_tier": 2
 }

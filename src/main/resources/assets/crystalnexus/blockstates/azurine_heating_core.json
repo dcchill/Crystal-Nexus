@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "lit=false": { "model": "crystalnexus:block/azurine_heating_core" },
+    "lit=true": { "model": "crystalnexus:block/azurine_heating_core_on" }
+  }
+}

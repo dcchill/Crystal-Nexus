@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MachineTierTest {
     @Test
     void visibleNumbersPreserveInternalLevelsAndMaterialNames() {
-        String[] names = {"Iron", "Crystal", "Chlorophyte", "Invertium", "Titanium", "Carbon",
-            "Titanium Carbide", "Tungsten", "Hyper"};
+        String[] names = {"Iron", "Crystal", "Chlorophyte", "Invertium", "Azurine", "Carbon",
+            "Ferrosteel", "Obsidrax", "Hyper"};
         assertEquals(names.length, MachineTier.values().length);
         var colors = new HashSet<Integer>();
         for (int level = 0; level < names.length; level++) {

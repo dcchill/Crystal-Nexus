@@ -1,0 +1,31 @@
+{
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "crystalnexus:custom/azurine_plate",
+    "textures": {
+      "0": "crystalnexus:block/azurine_plate_model",
+      "particle": "crystalnexus:item/azurine_sheet"
+    }
+  },
+  "perspectives": {
+    "gui": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/azurine_sheet"
+      }
+    },
+    "fixed": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/azurine_sheet"
+      }
+    },
+    "ground": {
+      "parent": "item/generated",
+      "textures": {
+        "layer0": "crystalnexus:item/azurine_sheet"
+      }
+    }
+  }
+}

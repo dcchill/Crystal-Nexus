@@ -262,12 +262,12 @@ public class TooltipInfoHandler {
 		addTooltip("conveyer_belt",
 				"Transports items horizontally.",
 				"Basic tier: half the original conveyor speed.");
-		addTooltip("titanium_conveyer_belt",
+		addTooltip("azurine_conveyer_belt",
 				"Transports items horizontally.",
-				"Titanium tier: twice the basic conveyor speed.");
+				"Azurine tier: twice the basic conveyor speed.");
 		addTooltip("meteorite_conveyer_belt",
 				"Transports items horizontally.",
-				"Meteorite tier: twice the titanium conveyor speed.");
+				"Meteorite tier: twice the azurine conveyor speed.");
 		addTooltip("conveyer_belt_input",
 				"Inserts items from adjacent containers.",
 				"Puts items onto conveyor system.");
@@ -555,7 +555,7 @@ public class TooltipInfoHandler {
 		addTooltip("extractinator",
 				"Resource extraction machine.",
 				"Sifts through loose sediment to find resources.");
-		addTooltip("titanium_extractinator",
+		addTooltip("azurine_extractinator",
 				"Tier 5 resource extraction machine.",
 				"Consumes 4x energy for twice the secondary-drop chance.");
 		addTooltip("inverter",

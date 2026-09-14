@@ -11,13 +11,13 @@
       "item": "crystalnexus:carbon_fiber"
     },
     "b": {
-      "item": "crystalnexus:computation_node"
+      "item": "crystalnexus:silicon_wafer"
     },
     "c": {
-      "item": "crystalnexus:multiblock_item_output"
+      "item": "crystalnexus:dark_matter"
     },
     "d": {
-      "item": "crystalnexus:hyper_machine_frame"
+      "item": "crystalnexus:obsidrax_machine_frame"
     }
   },
   "result": {

@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:sulfuric_acid", "amount": 25 },
+  "item_input_1": { "item": "crystalnexus:azurine_dust" },
+  "item_input_2": { "item": "minecraft:iron_ingot" },
+  "item_output": { "id": "crystalnexus:azurine_ingot", "count": 1 },
+  "output": { "fluid": "crystalnexus:oxygen", "amount": 100 }
+}

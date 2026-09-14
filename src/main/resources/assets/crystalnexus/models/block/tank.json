@@ -2,11 +2,11 @@
   "parent": "block/cube",
   "textures": {
     "down": "crystalnexus:block/container_bottom",
-    "up": "crystalnexus:block/titanium_plate_block",
-    "north": "crystalnexus:block/titanium_tank",
-    "east": "crystalnexus:block/titanium_tank",
-    "south": "crystalnexus:block/titanium_tank",
-    "west": "crystalnexus:block/titanium_tank",
+    "up": "crystalnexus:block/azurine_plate_block",
+    "north": "crystalnexus:block/azurine_tank",
+    "east": "crystalnexus:block/azurine_tank",
+    "south": "crystalnexus:block/azurine_tank",
+    "west": "crystalnexus:block/azurine_tank",
     "particle": "crystalnexus:block/container_bottom"
   },
   "render_type": "translucent"

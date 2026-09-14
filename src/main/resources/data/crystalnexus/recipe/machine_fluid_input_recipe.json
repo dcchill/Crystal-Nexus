@@ -4,7 +4,7 @@
   "pattern": [" a ", "aba", " a "],
   "key": {
     "a": { "item": "crystalnexus:machineblock" },
-    "b": { "item": "crystalnexus:titanium_ingot" }
+    "b": { "item": "crystalnexus:azurine_ingot" }
   },
   "result": { "id": "crystalnexus:machine_fluid_input", "count": 1 }
 }

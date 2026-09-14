@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:obsidrax_block"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:obsidrax",
+    "count": 9
+  }
+}

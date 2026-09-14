@@ -11,13 +11,13 @@
       "item": "crystalnexus:sulfur_dust"
     },
     "b": {
-      "tag": "c:ingots/titanium"
+      "tag": "c:ingots/azurine"
     },
     "c": {
       "item": "crystalnexus:battery_part"
     },
     "d": {
-      "item": "crystalnexus:gold_plated_copper_sheet"
+      "tag": "c:plates/copper"
     }
   },
   "result": {

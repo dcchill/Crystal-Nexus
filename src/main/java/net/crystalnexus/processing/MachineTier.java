@@ -10,10 +10,10 @@ public enum MachineTier {
     CRYSTAL(1, 1.00, 1.00, "Crystal"),
     CHLOROPHYTE(2, 0.75, 2.00, "Chlorophyte"),
     INVERTIUM(3, 0.50, 4.00, "Invertium"),
-    TITANIUM(4, 0.40, 8.00, "Titanium"),
+    TITANIUM(4, 0.40, 8.00, "Azurine"),
     CARBON(5, 0.35, 16.00, "Carbon"),
-    TITANIUM_CARBIDE(6, 0.30, 32.00, "Titanium Carbide"),
-    TUNGSTEN(7, 0.25, 64.00, "Tungsten"),
+    TITANIUM_CARBIDE(6, 0.30, 32.00, "Ferrosteel"),
+    TUNGSTEN(7, 0.25, 64.00, "Obsidrax"),
     HYPER(8, 0.20, 128.00, "Hyper");
 
     private final int level;

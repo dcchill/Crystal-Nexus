@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["php", "ibi", "pfp"],
+  "key": {
+    "p": { "item": "crystalnexus:azurine_sheet" },
+    "h": { "item": "crystalnexus:azurine_heating_core" },
+    "b": { "item": "minecraft:blast_furnace" },
+    "f": { "item": "crystalnexus:azurine_machine_frame" },
+    "i": { "item": "crystalnexus:azurine_ingot" }
+  },
+  "result": { "id": "crystalnexus:azurine_blast_furnace", "count": 1 }
+}

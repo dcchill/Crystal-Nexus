@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "h i",
+    " i "
+  ],
+  "key": {
+    "h": {
+      "tag": "c:hammers"
+    },
+    "i": {
+      "item": "crystalnexus:azurine_ingot"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:azurine_rod",
+    "count": 1
+  }
+}

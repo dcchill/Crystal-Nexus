@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 
 public final class TitaniumCarbideCircuitPressRecipeCategory implements IRecipeCategory<TitaniumCarbideCircuitPressRecipe> {
-    public static final ResourceLocation UID = ResourceLocation.parse("crystalnexus:titanium_carbide_circuit_press");
+    public static final ResourceLocation UID = ResourceLocation.parse("crystalnexus:ferrosteel_circuit_press");
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -30,7 +30,7 @@ public final class TitaniumCarbideCircuitPressRecipeCategory implements IRecipeC
     }
 
     @Override public mezz.jei.api.recipe.RecipeType<TitaniumCarbideCircuitPressRecipe> getRecipeType() { return CrystalnexusModJeiPlugin.TitaniumCarbideCircuitPress_Type; }
-    @Override public Component getTitle() { return Component.literal("Titanium Carbide Circuit Press"); }
+    @Override public Component getTitle() { return Component.literal("Ferrosteel Circuit Press"); }
     @Override public IDrawable getIcon() { return icon; }
     @Override public int getWidth() { return background.getWidth(); }
     @Override public int getHeight() { return background.getHeight(); }

@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:obsidrax_dust" },
+    { "item": "crystalnexus:ferrosteel_ingot" }
+  ],
+  "output": { "id": "crystalnexus:hot_obsidrax", "count": 1 },
+  "minimum_arc_furnace_tier": 2
+}

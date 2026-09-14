@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/azurinemachineframe",
+    "up": "crystalnexus:block/azurinemachineframe",
+    "north": "crystalnexus:block/azurine_blast_furnace",
+    "east": "crystalnexus:block/azurinemachineframe",
+    "south": "crystalnexus:block/azurinemachineframe",
+    "west": "crystalnexus:block/azurinemachineframe",
+    "particle": "crystalnexus:block/azurinemachineframe"
+  },
+  "render_type": "solid"
+}

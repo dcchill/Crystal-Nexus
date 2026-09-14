@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/titaniummachineframe",
-    "particle": "crystalnexus:block/titaniummachineframe"
-  },
-  "render_type": "solid"
-}

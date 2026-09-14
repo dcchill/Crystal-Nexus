@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/azurinemachineframe",
+    "particle": "crystalnexus:block/azurinemachineframe"
+  },
+  "render_type": "solid"
+}

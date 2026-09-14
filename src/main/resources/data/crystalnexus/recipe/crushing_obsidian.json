@@ -1,0 +1,13 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [
+    {
+      "item": "minecraft:obsidian"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:obsidian_dust",
+    "count": 2
+  },
+  "minimum_machine_tier": 4
+}

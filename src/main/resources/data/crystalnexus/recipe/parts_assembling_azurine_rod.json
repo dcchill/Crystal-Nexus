@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:parts_assembling",
+  "ingredient": { "tag": "c:ingots/azurine" },
+  "result": { "id": "crystalnexus:azurine_rod", "count": 1 },
+  "mode": "rod"
+}

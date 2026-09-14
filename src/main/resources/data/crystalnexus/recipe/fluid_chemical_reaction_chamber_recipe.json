@@ -8,10 +8,10 @@
   ],
   "key": {
     "t": {
-      "item": "crystalnexus:heating_coil"
+      "item": "crystalnexus:invertium_ingot"
     },
     "p": {
-      "item": "crystalnexus:pipe_straight"
+      "item": "crystalnexus:invertium_machine_frame"
     },
     "c": {
       "item": "crystalnexus:chemical_reaction_chamber"

@@ -8,13 +8,13 @@
   ],
   "key": {
     "a": {
-      "item": "crystalnexus:tungsten"
+      "item": "crystalnexus:obsidrax"
     },
     "b": {
       "item": "crystalnexus:machine_energy_output"
     },
     "c": {
-      "item": "crystalnexus:tungsten_block"
+      "item": "crystalnexus:obsidrax_block"
     },
     "d": {
       "item": "crystalnexus:hyper_machine_frame"

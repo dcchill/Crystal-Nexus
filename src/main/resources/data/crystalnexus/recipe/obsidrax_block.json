@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "bb ",
+    "bb ",
+    "h  "
+  ],
+  "key": {
+    "b": {
+      "item": "crystalnexus:obsidrax"
+    },
+    "h": {
+      "tag": "c:hammers"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:obsidrax_block",
+    "count": 1
+  }
+}

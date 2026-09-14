@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  r",
+    "crc",
+    "r  "
+  ],
+  "key": {
+    "c": {
+      "item": "crystalnexus:conductive_alloy"
+    },
+    "r": {
+      "tag": "c:rods/azurine"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:azurine_heating_coil",
+    "count": 1
+  }
+}

@@ -175,7 +175,7 @@ public final class MaterialProcessingCatalog {
         List<FluidChemicalReactionRecipe> explicit = level.getRecipeManager()
 			.getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE).stream()
 			.filter(holder -> !holder.id().getPath().startsWith("cryogenic_flash_freezer_")
-				&& !holder.id().getPath().startsWith("titanium_carbide_circuit_press_advanced_"))
+				&& !holder.id().getPath().startsWith("ferrosteel_circuit_press_advanced_"))
 			.map(holder -> holder.value()).toList();
         List<FluidChemicalReactionRecipe> generated = new ArrayList<>();
         for (Material material : get(level).materials().values()) {

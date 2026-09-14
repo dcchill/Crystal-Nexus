@@ -8,10 +8,10 @@
   ],
   "key": {
     "a": {
-      "tag": "c:plates/titanium"
+      "tag": "c:plates/azurine"
     },
     "b": {
-      "tag": "c:rods/titanium"
+      "tag": "c:rods/azurine"
     },
     "c": {
       "item": "minecraft:chest"

@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/titanium_carbide_glass",
-    "particle": "crystalnexus:block/titanium_carbide_glass"
-  },
-  "render_type": "translucent"
-}

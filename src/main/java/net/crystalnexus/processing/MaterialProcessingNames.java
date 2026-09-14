@@ -20,7 +20,7 @@ public final class MaterialProcessingNames {
 
     public static int requiredMachineTier(String material) {
         String normalized = normalizeMaterial(material);
-        if (normalized.contains("tungsten")) return MachineTier.TUNGSTEN.level();
+        if (normalized.contains("obsidrax")) return MachineTier.TUNGSTEN.level();
         if (normalized.contains("hyper")) return MachineTier.HYPER.level();
         if (normalized.contains("carbon")) return MachineTier.CARBON.level();
         if (normalized.contains("invert") || normalized.contains("platinum")) return 2;

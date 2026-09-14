@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "pmp", "ipi"],
+  "key": {
+    "i": { "item": "crystalnexus:azurine_ingot" },
+    "p": { "tag": "c:plates/azurine" },
+    "m": { "item": "crystalnexus:machine_frame" }
+  },
+  "result": { "id": "crystalnexus:azurine_machine_frame" }
+}

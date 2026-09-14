@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "tct",
+    "tct",
+    "tct"
+  ],
+  "key": {
+    "t": {
+      "item": "crystalnexus:azurine_sheet"
+    },
+    "c": {
+      "item": "crystalnexus:ceramic_plate"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:insulated_azurine_casing",
+    "count": 4
+  }
+}

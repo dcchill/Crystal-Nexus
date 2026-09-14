@@ -11,13 +11,13 @@
       "item": "crystalnexus:carbon_fiber"
     },
     "b": {
-      "item": "crystalnexus:titanium_heating_coil"
+      "item": "crystalnexus:azurine_heating_coil"
     },
     "c": {
       "item": "crystalnexus:dark_matter"
     },
     "d": {
-      "tag": "c:plates/titanium"
+      "tag": "c:plates/azurine"
     }
   },
   "result": {

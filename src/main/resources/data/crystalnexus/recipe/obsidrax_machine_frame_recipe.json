@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["ipi", "pmp", "ipi"],
+  "key": {
+    "i": { "item": "crystalnexus:obsidrax_machine_bolt" },
+    "p": { "tag": "c:plates/obsidrax" },
+    "m": { "item": "crystalnexus:machine_frame" }
+  },
+  "result": { "id": "crystalnexus:obsidrax_machine_frame" }
+}

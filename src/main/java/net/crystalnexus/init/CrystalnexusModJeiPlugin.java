@@ -204,7 +204,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				String path = holder.id().getPath();
 				return freezer ? path.startsWith("cryogenic_flash_freezer_")
 					: !path.startsWith("cryogenic_flash_freezer_")
-						&& !path.startsWith("titanium_carbide_circuit_press_advanced_");
+						&& !path.startsWith("ferrosteel_circuit_press_advanced_");
 			})
 			.map(RecipeHolder::value).filter(FluidChemicalReactionRecipe.class::isInstance)
 			.map(FluidChemicalReactionRecipe.class::cast).toList();
@@ -263,6 +263,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ARC_FURNACE.get().asItem()), ArcFurnace_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem()), ArcFurnace_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem()), ChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem()), FluidChemicalReaction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), CryogenicFlashFreezer_Type);

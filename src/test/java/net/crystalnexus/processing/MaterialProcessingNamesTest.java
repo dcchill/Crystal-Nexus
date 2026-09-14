@@ -26,7 +26,8 @@ class MaterialProcessingNamesTest {
         assertEquals(2, MaterialProcessingNames.requiredMachineTier("platinum"));
         assertEquals(5, MaterialProcessingNames.requiredMachineTier("carbon"));
         assertEquals(8, MaterialProcessingNames.requiredMachineTier("hyper_alloy"));
-        assertEquals(7, MaterialProcessingNames.requiredMachineTier("tungsten"));
+        assertEquals(7, MaterialProcessingNames.requiredMachineTier("obsidrax"));
+        assertEquals(7, MaterialProcessingNames.requiredMachineTier("obsidrax"));
     }
 
     @Test
@@ -87,7 +88,9 @@ class MaterialProcessingNamesTest {
     @Test
     void levelsUseTheirPlayerFacingTechnologyNames() {
         assertEquals("Invertium", MachineTier.INVERTIUM.displayName());
-        assertEquals("Titanium", MachineTier.TITANIUM.displayName());
+        assertEquals("Azurine", MachineTier.TITANIUM.displayName());
+        assertEquals("Ferrosteel", MachineTier.TITANIUM_CARBIDE.displayName());
+        assertEquals("Obsidrax", MachineTier.TUNGSTEN.displayName());
         assertEquals("Carbon", MachineTier.CARBON.displayName());
         assertEquals("Hyper", MachineTier.HYPER.displayName());
         assertEquals(MachineTier.CRYSTAL, MachineTier.forLevel(1));

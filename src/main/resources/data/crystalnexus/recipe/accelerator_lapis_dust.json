@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    { "item": "crystalnexus:lapis_dust" }
+  ],
+  "output": { "id": "minecraft:blue_dye", "count": 2 },
+  "additional_outputs": [
+    { "id": "crystalnexus:azurine_dust", "count": 1 },
+    { "id": "crystalnexus:sulfur_dust", "count": 1 }
+  ]
+}

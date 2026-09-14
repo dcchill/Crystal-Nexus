@@ -1,0 +1,18 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:obsidian_dust"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:obsidrax_dust",
+    "count": 1
+  },
+  "additional_outputs": [
+    {
+      "id": "crystalnexus:silicon",
+      "count": 2
+    }
+  ]
+}

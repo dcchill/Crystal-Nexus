@@ -7,10 +7,10 @@
     "aea"
   ],
   "key": {
-    "a": { "item": "crystalnexus:titanium_carbide_sheet" },
+    "a": { "item": "crystalnexus:ferrosteel_sheet" },
     "b": { "item": "crystalnexus:computation_node" },
-    "c": { "item": "crystalnexus:titanium_carbide_glass" },
-    "d": { "item": "crystalnexus:titanium_carbide_machine_frame" },
+    "c": { "item": "crystalnexus:ferrosteel_glass" },
+    "d": { "item": "crystalnexus:ferrosteel_machine_frame" },
     "e": { "item": "crystalnexus:heating_core" }
   },
   "result": {

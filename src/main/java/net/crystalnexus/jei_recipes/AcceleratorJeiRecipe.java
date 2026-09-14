@@ -16,14 +16,32 @@ import net.minecraft.core.HolderLookup;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.DataResult;
+import java.util.List;
 
 public class AcceleratorJeiRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
+	private final List<ItemStack> additionalOutputs;
 	private final NonNullList<Ingredient> recipeItems;
 
 	public AcceleratorJeiRecipe(ItemStack output, NonNullList<Ingredient> recipeItems) {
+		this(output, List.of(), recipeItems);
+	}
+
+	public AcceleratorJeiRecipe(ItemStack output, List<ItemStack> additionalOutputs, NonNullList<Ingredient> recipeItems) {
 		this.output = output;
+		this.additionalOutputs = additionalOutputs;
 		this.recipeItems = recipeItems;
+	}
+
+	public List<ItemStack> getOutputs() {
+		return additionalOutputs.isEmpty() ? List.of(output.copy()) : concatOutputs();
+	}
+
+	private List<ItemStack> concatOutputs() {
+		List<ItemStack> outputs = new java.util.ArrayList<>();
+		outputs.add(output.copy());
+		additionalOutputs.forEach(stack -> outputs.add(stack.copy()));
+		return outputs;
 	}
 
 	@Override
@@ -74,7 +92,7 @@ public class AcceleratorJeiRecipe implements CrystalNexusRecipe {
 	public static class Serializer implements RecipeSerializer<AcceleratorJeiRecipe> {
 		public static final Serializer INSTANCE = new Serializer();
 		private static final MapCodec<AcceleratorJeiRecipe> CODEC = RecordCodecBuilder
-				.mapCodec(builder -> builder.group(ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
+				.mapCodec(builder -> builder.group(ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output), ItemStack.STRICT_CODEC.listOf().optionalFieldOf("additional_outputs", List.of()).forGetter(recipe -> recipe.additionalOutputs), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
 					Ingredient[] aingredient = ingredients.toArray(Ingredient[]::new); // Skip the empty check and create the array.
 					if (aingredient.length == 0) {
 						return DataResult.error(() -> "No ingredients found in custom recipe");
@@ -97,7 +115,10 @@ public class AcceleratorJeiRecipe implements CrystalNexusRecipe {
 		private static AcceleratorJeiRecipe fromNetwork(RegistryFriendlyByteBuf buf) {
 			NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readVarInt(), Ingredient.EMPTY);
 			inputs.replaceAll(ingredients -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
-			return new AcceleratorJeiRecipe(ItemStack.STREAM_CODEC.decode(buf), inputs);
+			ItemStack output = ItemStack.STREAM_CODEC.decode(buf);
+			List<ItemStack> additional = new java.util.ArrayList<>();
+			for (int i = buf.readVarInt(); i > 0; i--) additional.add(ItemStack.STREAM_CODEC.decode(buf));
+			return new AcceleratorJeiRecipe(output, additional, inputs);
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buf, AcceleratorJeiRecipe recipe) {
@@ -109,6 +130,8 @@ public class AcceleratorJeiRecipe implements CrystalNexusRecipe {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ing);
 			}
 			ItemStack.STREAM_CODEC.encode(buf, recipe.getResultItem(null));
+			buf.writeVarInt(recipe.additionalOutputs.size());
+			for (ItemStack output : recipe.additionalOutputs) ItemStack.STREAM_CODEC.encode(buf, output);
 		}
 	}
 }

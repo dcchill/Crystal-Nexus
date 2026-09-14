@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:azurine_ingot" },
+    { "item": "crystalnexus:carbon_composite" }
+  ],
+  "output": { "id": "crystalnexus:ferrosteel_ingot", "count": 1 }
+}

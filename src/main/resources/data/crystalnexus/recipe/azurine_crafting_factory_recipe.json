@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["aba","cde","aba"],"key":{"a":{"item":"crystalnexus:machine_bolt"},"b":{"tag":"c:plates/azurine"},"c":{"item":"crystalnexus:azurine_bearing"},"d":{"item":"crystalnexus:crystal_crafting_factory"},"e":{"item":"crystalnexus:azurine_machine_frame"}},"result":{"id":"crystalnexus:azurine_crafting_factory"}}

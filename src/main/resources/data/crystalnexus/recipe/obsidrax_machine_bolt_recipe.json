@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["a", "b"],
+  "key": { "a": { "tag": "c:plates/obsidrax" }, "b": { "tag": "c:rods/obsidrax" } },
+  "result": { "id": "crystalnexus:obsidrax_machine_bolt", "count": 4 }
+}

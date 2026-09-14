@@ -1,5 +1,5 @@
 {
-  "type": "crystalnexus:titanium_carbide_circuit_press",
+  "type": "crystalnexus:ferrosteel_circuit_press",
   "item_input_1": { "item": "omega_chip" },
   "item_input_1_count": 2,
     "item_input_2": { "item": "energy_singularity" },

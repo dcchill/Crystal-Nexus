@@ -1,0 +1,1 @@
+{ "parent": "minecraft:item/generated", "textures": { "layer0": "crystalnexus:item/azurine_heating_coil" } }

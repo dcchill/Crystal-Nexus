@@ -8,10 +8,10 @@
   ],
   "key": {
     "a": {
-      "tag": "c:rods/titanium"
+      "tag": "c:rods/azurine"
     },
     "b": {
-      "tag": "c:plates/titanium"
+      "tag": "c:plates/azurine"
     },
     "c": {
       "item": "crystalnexus:steam_engine"

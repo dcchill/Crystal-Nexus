@@ -1,6 +1,0 @@
-{
-  "type": "crystalnexus:parts_assembling",
-  "ingredient": { "tag": "c:ingots/tungsten" },
-  "result": { "id": "crystalnexus:tungsten_sheet", "count": 1 },
-  "mode": "plate"
-}

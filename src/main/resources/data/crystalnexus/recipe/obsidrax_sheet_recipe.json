@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": ["h", "t", "t"],
+  "key": {
+    "h": { "tag": "c:hammers" },
+    "t": { "item": "crystalnexus:obsidrax" }
+  },
+  "result": { "id": "crystalnexus:obsidrax_sheet", "count": 1 }
+}

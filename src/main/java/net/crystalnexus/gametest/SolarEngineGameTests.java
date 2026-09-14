@@ -28,18 +28,18 @@ public final class SolarEngineGameTests {
 	@GameTest(template = "solar_engine")
 	public static void validatesPortsCoolingExtractionAndFailure(GameTestHelper helper) {
 		BlockPos controllerPos = find(helper, CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get());
-		List<BlockPos> tungsten = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
-		helper.assertTrue(tungsten.size() >= 2, "Solar Engine template must contain replaceable Tungsten casing blocks");
+		List<BlockPos> obsidrax = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
+		helper.assertTrue(obsidrax.size() >= 2, "Solar Engine template must contain replaceable Tungsten casing blocks");
 
 		BlockState controllerState = helper.getBlockState(controllerPos);
 		helper.setBlock(controllerPos, Blocks.AIR);
 		helper.setBlock(controllerPos, controllerState);
-		helper.setBlock(tungsten.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
-		helper.setBlock(tungsten.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
+		helper.setBlock(obsidrax.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+		helper.setBlock(obsidrax.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
 
 		SolarEngineControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
-		MachineEnergyOutputBlockEntity output = helper.getBlockEntity(tungsten.get(0));
-		MachineFluidInputBlockEntity input = helper.getBlockEntity(tungsten.get(1));
+		MachineEnergyOutputBlockEntity output = helper.getBlockEntity(obsidrax.get(0));
+		MachineFluidInputBlockEntity input = helper.getBlockEntity(obsidrax.get(1));
 		input.getFluidInput().fill(new FluidStack(Fluids.WATER, 1_000), IFluidHandler.FluidAction.EXECUTE);
 		helper.assertTrue(controller.validateStructureNow(), "Solar Engine must form with one energy output and one water input replacing Tungsten");
 		helper.assertTrue(output.isBoundTo(helper.absolutePos(controllerPos)), "Energy output must bind to the formed controller");
@@ -64,13 +64,13 @@ public final class SolarEngineGameTests {
 	@GameTest(template = "solar_engine", timeoutTicks = 400)
 	public static void coolantLossDestroysCasingAndConsumesStar(GameTestHelper helper) {
 		BlockPos controllerPos = find(helper, CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get());
-		List<BlockPos> tungsten = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
-		int originalTungsten = tungsten.size();
+		List<BlockPos> obsidrax = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
+		int originalTungsten = obsidrax.size();
 		BlockState controllerState = helper.getBlockState(controllerPos);
 		helper.setBlock(controllerPos, Blocks.AIR);
 		helper.setBlock(controllerPos, controllerState);
-		helper.setBlock(tungsten.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
-		helper.setBlock(tungsten.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
+		helper.setBlock(obsidrax.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+		helper.setBlock(obsidrax.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
 		SolarEngineControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
 		helper.assertTrue(controller.validateStructureNow(), "Solar Engine must form before failure testing");
 		controller.setItem(0, new ItemStack(CrystalnexusModItems.PINK_STAR.get()));
@@ -85,15 +85,15 @@ public final class SolarEngineGameTests {
 	@GameTest(template = "solar_engine")
 	public static void runningStructureBreakCausesContainmentCollapse(GameTestHelper helper) {
 		BlockPos controllerPos = find(helper, CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get());
-		List<BlockPos> tungsten = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
-		helper.assertTrue(tungsten.size() >= 3, "Solar Engine template must expose casing for ports and a breach");
+		List<BlockPos> obsidrax = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get());
+		helper.assertTrue(obsidrax.size() >= 3, "Solar Engine template must expose casing for ports and a breach");
 		BlockState controllerState = helper.getBlockState(controllerPos);
 		helper.setBlock(controllerPos, Blocks.AIR);
 		helper.setBlock(controllerPos, controllerState);
-		helper.setBlock(tungsten.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
-		helper.setBlock(tungsten.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
+		helper.setBlock(obsidrax.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+		helper.setBlock(obsidrax.get(1), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
 		SolarEngineControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
-		MachineFluidInputBlockEntity input = helper.getBlockEntity(tungsten.get(1));
+		MachineFluidInputBlockEntity input = helper.getBlockEntity(obsidrax.get(1));
 		input.getFluidInput().fill(new FluidStack(Fluids.WATER, 1_000), IFluidHandler.FluidAction.EXECUTE);
 		helper.assertTrue(controller.validateStructureNow(), "Solar Engine must form before its casing is breached");
 		controller.setItem(0, new ItemStack(CrystalnexusModItems.YELLOW_DWARF_STAR.get()));
@@ -102,11 +102,11 @@ public final class SolarEngineGameTests {
 		helper.assertTrue(controller.isOperating(), "Solar Engine must be running when its casing is breached");
 
 		int casingBeforeBreach = findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get()).size();
-		helper.setBlock(tungsten.get(2), Blocks.AIR);
+		helper.setBlock(obsidrax.get(2), Blocks.AIR);
 		helper.assertTrue(!controller.validateStructureNow(), "A breached Solar Engine must collapse");
 		helper.assertTrue(controller.getItem(0).isEmpty(), "The stellar collapse must consume the artificial star");
 		helper.assertTrue(findAll(helper, CrystalnexusModBlocks.TUNGSTEN_BLOCK.get()).size() < casingBeforeBreach - 1,
-			"The stellar collapse must destroy additional tungsten casing");
+			"The stellar collapse must destroy additional obsidrax casing");
 		helper.succeed();
 	}
 

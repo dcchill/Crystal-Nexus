@@ -41,8 +41,8 @@ public class AutoCrafterOnTickProcedure {
         if (!(world instanceof ILevelExtension ext)) return;
         BlockPos pos = BlockPos.containing(x, y, z);
 		boolean crystalFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get());
-		boolean titaniumFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
-		int craftTime = titaniumFactory ? 10 : crystalFactory ? 25 : 50;
+		boolean azurineFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
+		int craftTime = azurineFactory ? 10 : crystalFactory ? 25 : 50;
 		int energyPerCraft = MachineTier.from(world.getBlockState(pos)).energyCost(512);
 		setMaxProgress(world, pos, craftTime);
 

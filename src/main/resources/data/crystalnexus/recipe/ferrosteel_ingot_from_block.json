@@ -1,0 +1,6 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [{ "item": "crystalnexus:ferrosteel_block" }],
+  "result": { "id": "crystalnexus:ferrosteel_ingot", "count": 9 }
+}

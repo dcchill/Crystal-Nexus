@@ -3,7 +3,10 @@
   "values": [
     "crystalnexus:blutonium_dust",
     "crystalnexus:chlorophyte_dust",
+    "crystalnexus:obsidian_dust",
+    "crystalnexus:lapis_dust",
+    "crystalnexus:azurine_dust",
     "crystalnexus:sulfur_dust",
-    "crystalnexus:tungsten_dust"
+    "crystalnexus:obsidrax_dust"
   ]
 }

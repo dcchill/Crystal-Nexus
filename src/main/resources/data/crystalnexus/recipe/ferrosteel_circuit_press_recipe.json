@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["aba","cde","aba"],"key":{"a":{"item":"crystalnexus:ferrosteel_sheet"},"b":{"item":"minecraft:piston"},"c":{"item":"crystalnexus:ferrosteel_ingot"},"d":{"item":"crystalnexus:circuit_press"},"e":{"item":"crystalnexus:ferrosteel_machine_frame"}},"result":{"id":"crystalnexus:ferrosteel_circuit_press"}}

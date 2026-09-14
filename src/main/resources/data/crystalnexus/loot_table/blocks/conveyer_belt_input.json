@@ -24,7 +24,7 @@
             },
             {
               "type": "minecraft:item",
-              "name": "crystalnexus:titanium_conveyer_belt",
+              "name": "crystalnexus:azurine_conveyer_belt",
               "conditions": [{
                 "condition": "minecraft:block_state_property",
                 "block": "crystalnexus:conveyer_belt_input",

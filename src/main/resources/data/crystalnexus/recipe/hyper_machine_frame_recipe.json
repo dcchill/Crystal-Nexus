@@ -5,7 +5,7 @@
       "item": "crystalnexus:meteorite_alloy"
     },
     {
-      "item": "crystalnexus:tungsten_machine_bolt"
+      "item": "crystalnexus:obsidrax_machine_bolt"
     },
     {
       "item": "crystalnexus:ee_matter"
@@ -14,7 +14,7 @@
       "item": "crystalnexus:meteorite_alloy"
     },
     {
-      "item": "crystalnexus:tungsten_machine_frame"
+      "item": "crystalnexus:machine_frame"
     },
     {
       "item": "crystalnexus:meteorite_alloy"
@@ -23,7 +23,7 @@
       "item": "crystalnexus:ee_matter"
     },
     {
-      "item": "crystalnexus:tungsten_machine_bolt"
+      "item": "crystalnexus:obsidrax_machine_bolt"
     }
   ],
   "integers": [

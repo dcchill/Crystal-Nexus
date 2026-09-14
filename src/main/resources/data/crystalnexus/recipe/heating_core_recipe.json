@@ -8,10 +8,10 @@
   ],
   "key": {
     "c": {
-      "item": "crystalnexus:titanium_heating_coil"
+      "item": "crystalnexus:azurine_heating_coil"
     },
     "r": {
-      "tag": "c:plates/titanium"
+      "item": "crystalnexus:ferrosteel_sheet"
     }
   },
   "result": {

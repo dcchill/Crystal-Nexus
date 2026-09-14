@@ -3,8 +3,8 @@
   "category": "misc",
   "pattern": ["cbc", "bmb", "chc"],
   "key": {
-    "c": { "tag": "c:plates/tungsten" },
-    "b": { "item": "crystalnexus:tungsten_machine_bolt" },
+    "c": { "tag": "c:plates/obsidrax" },
+    "b": { "item": "crystalnexus:obsidrax_machine_bolt" },
     "m": { "item": "crystalnexus:quarry" },
     "h": { "item": "crystalnexus:hyper_machine_frame" }
   },

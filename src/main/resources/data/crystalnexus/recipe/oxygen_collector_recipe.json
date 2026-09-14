@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["aba", "bcb", "ded"],
+  "key": {
+    "a": { "tag": "c:plates/gold" },
+    "b": { "item": "crystalnexus:iron_machine_bolt" },
+    "c": { "item": "crystalnexus:crystal_machine_frame" },
+    "d": { "item": "crystalnexus:synthetic_rubber" },
+    "e": { "item": "crystalnexus:tank" }
+  },
+  "result": { "id": "crystalnexus:oxygen_collector", "count": 1 }
+}

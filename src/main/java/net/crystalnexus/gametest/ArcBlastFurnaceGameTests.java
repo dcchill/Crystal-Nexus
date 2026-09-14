@@ -1,6 +1,7 @@
 package net.crystalnexus.gametest;
 
 import net.crystalnexus.block.HeatingCoreBlock;
+import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
 import net.crystalnexus.block.entity.MachineEnergyInputBlockEntity;
 import net.crystalnexus.block.entity.MultiblockItemInputBlockEntity;
@@ -97,9 +98,9 @@ public final class ArcBlastFurnaceGameTests {
                 CrystalnexusModItems.INVERTIUM_DUST.get())),
             Map.entry("arc_recycle_iron_sheet", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_SHEET.get())),
             Map.entry("arc_recycle_iron_rod", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_ROD.get())),
-            Map.entry("arc_recycle_titanium_sheet", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,
+            Map.entry("arc_recycle_azurine_sheet", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,
                 CrystalnexusModItems.TITANIUM_SHEET.get())),
-            Map.entry("arc_recycle_titanium_rod", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,
+            Map.entry("arc_recycle_azurine_rod", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,
                 CrystalnexusModItems.TITANIUM_ROD.get())),
             Map.entry("arc_recycle_copper_sheet", recipe(Items.COPPER_INGOT, 2,
                 CrystalnexusModItems.COPPER_SHEET.get())),
@@ -148,6 +149,21 @@ public final class ArcBlastFurnaceGameTests {
         helper.assertTrue(controller.getItem(0).is(Items.QUARTZ) && controller.getItem(1).is(CrystalnexusModItems.RAW_CARBON.get())
                 && controller.getItem(2).getCount() == 63 && controller.availableEnergy() == energyBefore,
             "A two-item output must not consume inputs or energy when only one output slot remains");
+        helper.succeed();
+    }
+
+    @GameTest(template = "arc_blast_furnace")
+    public static void gatesHighTierAlloysBehindFerrosteel(GameTestHelper helper) {
+        Map<String, RecipeHolder<ArcFurnaceRecipe>> recipes = helper.getLevel().getRecipeManager()
+            .getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE).stream()
+            .collect(Collectors.toMap(holder -> holder.id().getPath(), holder -> holder));
+        helper.assertTrue(recipes.get("meteorite_alloying").value().minimumArcFurnaceTier() == 2,
+            "Hot meteorite alloy must require the tier-2 Ferrosteel Arc Blast Furnace");
+        helper.assertTrue(recipes.get("obsidrax_arc_furnace").value().minimumArcFurnaceTier() == 2,
+            "Hot Obsidrax must require the tier-2 Ferrosteel Arc Blast Furnace");
+        helper.assertTrue(((ArcFurnaceBlock) CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get()).recipeTier() == 1
+                && ((ArcFurnaceBlock) CrystalnexusModBlocks.ARC_FURNACE.get()).recipeTier() == 2,
+            "Azurine and Ferrosteel Arc Blast Furnaces must be tiers 1 and 2 respectively");
         helper.succeed();
     }
 

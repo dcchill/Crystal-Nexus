@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [{ "item": "minecraft:lapis_lazuli" }],
+  "output": { "id": "crystalnexus:lapis_dust", "count": 2 }
+}

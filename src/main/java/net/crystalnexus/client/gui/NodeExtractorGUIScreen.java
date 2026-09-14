@@ -14,6 +14,7 @@ import net.crystalnexus.world.inventory.NodeExtractorGUIMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -75,7 +76,8 @@ public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtracto
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.node_extractor_gui.label_quantum_miner"), 72, -10, -12829636, false);
+		boolean oxygenCollector = world.getBlockState(BlockPos.containing(x, y, z)).is(CrystalnexusModBlocks.OXYGEN_COLLECTOR.get());
+		guiGraphics.drawString(this.font, Component.translatable(oxygenCollector ? "gui.crystalnexus.oxygen_collector.label" : "gui.crystalnexus.node_extractor_gui.label_quantum_miner"), 72, -10, -12829636, false);
 	}
 
 	@Override

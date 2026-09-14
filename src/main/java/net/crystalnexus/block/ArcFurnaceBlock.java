@@ -24,7 +24,20 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public final class ArcFurnaceBlock extends ChemicalReactionChamberBlock implements TieredMachineBlock {
-	@Override public MachineTier machineTier() { return MachineTier.TUNGSTEN; }
+	private final MachineTier machineTier;
+	private final int recipeTier;
+
+	public ArcFurnaceBlock() {
+		this(MachineTier.TUNGSTEN, 2);
+	}
+
+	public ArcFurnaceBlock(MachineTier machineTier, int recipeTier) {
+		this.machineTier = machineTier;
+		this.recipeTier = recipeTier;
+	}
+
+	@Override public MachineTier machineTier() { return machineTier; }
+	public int recipeTier() { return recipeTier; }
 
 	@Override public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 		ArcFurnaceOnTickUpdateProcedure.execute(level, pos);
@@ -33,7 +46,9 @@ public final class ArcFurnaceBlock extends ChemicalReactionChamberBlock implemen
 
 	@Override public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(new MenuProvider() {
-			@Override public Component getDisplayName() { return Component.translatable("block.crystalnexus.arc_furnace"); }
+			@Override public Component getDisplayName() {
+				return Component.translatable(recipeTier == 1 ? "block.crystalnexus.azurine_blast_furnace" : "block.crystalnexus.arc_furnace");
+			}
 			@Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player ignored) {
 				return new ArcFurnaceMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos));
 			}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " p ",
+    "prp",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/azurine"
+    },
+    "r": {
+      "tag": "c:rods/azurine"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:azurine_bearing",
+    "count": 2
+  }
+}

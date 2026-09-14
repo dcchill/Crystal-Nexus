@@ -17,11 +17,19 @@ import net.minecraft.world.level.Level;
 public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> ingredients;
+	private final int minimumArcFurnaceTier;
 
 	public ArcFurnaceRecipe(ItemStack output, NonNullList<Ingredient> ingredients) {
+		this(output, ingredients, 1);
+	}
+
+	public ArcFurnaceRecipe(ItemStack output, NonNullList<Ingredient> ingredients, int minimumArcFurnaceTier) {
 		this.output = output;
 		this.ingredients = ingredients;
+		this.minimumArcFurnaceTier = Math.max(1, Math.min(2, minimumArcFurnaceTier));
 	}
+
+	public int minimumArcFurnaceTier() { return minimumArcFurnaceTier; }
 
 	@Override public boolean matches(RecipeInput input, Level level) { return false; }
 	@Override public NonNullList<Ingredient> getIngredients() { return ingredients; }
@@ -43,7 +51,9 @@ public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 			Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(list -> list.size() >= 1 && list.size() <= 2
 				? DataResult.success(NonNullList.of(Ingredient.EMPTY, list.toArray(Ingredient[]::new)))
 				: DataResult.error(() -> "Arc furnace recipes require one or two ingredients"), DataResult::success)
-				.forGetter(recipe -> recipe.ingredients)
+				.forGetter(recipe -> recipe.ingredients),
+			com.mojang.serialization.Codec.INT.optionalFieldOf("minimum_arc_furnace_tier", 1)
+				.forGetter(recipe -> recipe.minimumArcFurnaceTier)
 		).apply(builder, ArcFurnaceRecipe::new));
 		private static final StreamCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> STREAM_CODEC = StreamCodec.of(
 			Serializer::toNetwork, Serializer::fromNetwork);
@@ -54,13 +64,14 @@ public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 		private static ArcFurnaceRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
 			NonNullList<Ingredient> ingredients = NonNullList.withSize(buffer.readVarInt(), Ingredient.EMPTY);
 			ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-			return new ArcFurnaceRecipe(ItemStack.STREAM_CODEC.decode(buffer), ingredients);
+			return new ArcFurnaceRecipe(ItemStack.STREAM_CODEC.decode(buffer), ingredients, buffer.readVarInt());
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buffer, ArcFurnaceRecipe recipe) {
 			buffer.writeVarInt(recipe.ingredients.size());
 			for (Ingredient ingredient : recipe.ingredients) Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
 			ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
+			buffer.writeVarInt(recipe.minimumArcFurnaceTier);
 		}
 	}
 }

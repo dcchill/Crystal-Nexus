@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
@@ -70,7 +71,9 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	@Override public CompoundTag getUpdateTag(HolderLookup.Provider provider) { return saveWithFullMetadata(provider); }
 	@Override public int getContainerSize() { return stacks.size(); }
 	@Override public boolean isEmpty() { return stacks.stream().allMatch(ItemStack::isEmpty); }
-	@Override public Component getDefaultName() { return Component.translatable("block.crystalnexus.arc_furnace"); }
+	@Override public Component getDefaultName() {
+		return Component.translatable(recipeTier() == 1 ? "block.crystalnexus.azurine_blast_furnace" : "block.crystalnexus.arc_furnace");
+	}
 	@Override public Component getDisplayName() { return getDefaultName(); }
 	@Override protected NonNullList<ItemStack> getItems() { return stacks; }
 	@Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
@@ -100,6 +103,17 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 
 	public EnergyStorage getEnergyStorage() { return energyStorage; }
 	public boolean isFormed() { return formed; }
+	public int recipeTier() {
+		return getBlockState().getBlock() instanceof ArcFurnaceBlock furnace ? furnace.recipeTier() : 2;
+	}
+
+	private Block heatingCoreBlock() {
+		return recipeTier() == 1 ? CrystalnexusModBlocks.AZURINE_HEATING_CORE.get() : CrystalnexusModBlocks.HEATING_CORE.get();
+	}
+
+	private Block casingBlock() {
+		return recipeTier() == 1 ? CrystalnexusModBlocks.TITANIUM_MACHINE_FRAME.get() : CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get();
+	}
 
 	public boolean validateStructureNow() {
 		if (!(level instanceof ServerLevel serverLevel)) return false;
@@ -131,7 +145,7 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 		if (level == null) return;
 		for (BlockPos corePos : heatingCores) {
 			BlockState state = level.getBlockState(corePos);
-			if (state.is(CrystalnexusModBlocks.HEATING_CORE.get()) && state.getValue(HeatingCoreBlock.LIT) != active)
+			if (state.is(heatingCoreBlock()) && state.getValue(HeatingCoreBlock.LIT) != active)
 				level.setBlock(corePos, state.setValue(HeatingCoreBlock.LIT, active), 3);
 		}
 	}
@@ -150,17 +164,29 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	private void validateStructure(ServerLevel level) {
 		Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE, worldPosition,
 			getBlockState().getValue(ArcFurnaceBlock.FACING), CrystalnexusModBlocks.ARC_FURNACE.get(), ArcFurnaceBlock.FACING,
-			Map.of(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), Set.of(
+			Map.of(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), Set.of(casingBlock(),
 				CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get(),
-				CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get())),
+				CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get()),
+				CrystalnexusModBlocks.ARC_FURNACE.get(), Set.of(getBlockState().getBlock()),
+				CrystalnexusModBlocks.HEATING_CORE.get(), Set.of(heatingCoreBlock())),
 			Set.of(CrystalnexusModBlocks.ARC_FURNACE.get(), CrystalnexusModBlocks.HEATING_CORE.get()), true, false);
+		boolean correctController = getBlockState().is(recipeTier() == 1
+			? CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get() : CrystalnexusModBlocks.ARC_FURNACE.get());
+		boolean correctComponents = match.map(found ->
+			found.positionsFor(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get()).stream().allMatch(componentPos -> {
+				Block block = level.getBlockState(componentPos).getBlock();
+				return block == casingBlock() || block == CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()
+					|| block == CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get()
+					|| block == CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get();
+			}) && found.positionsFor(CrystalnexusModBlocks.HEATING_CORE.get()).stream()
+				.allMatch(corePos -> level.getBlockState(corePos).is(heatingCoreBlock()))).orElse(false);
 		List<BlockPos> previousEnergyInputs = List.copyOf(energyInputs);
 		List<BlockPos> previousHeatingCores = List.copyOf(heatingCores);
 		energyInputs.clear();
 		itemInputs.clear();
 		itemOutputs.clear();
 		heatingCores.clear();
-		match.ifPresent(found -> {
+		if (correctController && correctComponents) match.ifPresent(found -> {
 			for (BlockPos pos : found.substitutionPositions()) {
 				BlockState state = level.getBlockState(pos);
 				if (state.is(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())) energyInputs.add(pos);
@@ -178,12 +204,12 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 			}
 			return true;
 		});
-		boolean nextFormed = match.isPresent() && !energyInputs.isEmpty()
+		boolean nextFormed = correctController && correctComponents && !energyInputs.isEmpty()
 			&& itemInputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockItemInputBlockEntity)
 			&& itemOutputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity);
 		if (!nextFormed) for (BlockPos pos : previousHeatingCores) {
 			BlockState state = level.getBlockState(pos);
-			if (state.is(CrystalnexusModBlocks.HEATING_CORE.get()) && state.getValue(HeatingCoreBlock.LIT))
+			if (state.is(heatingCoreBlock()) && state.getValue(HeatingCoreBlock.LIT))
 				level.setBlock(pos, state.setValue(HeatingCoreBlock.LIT, false), 3);
 		}
 		if (formed != nextFormed) {
