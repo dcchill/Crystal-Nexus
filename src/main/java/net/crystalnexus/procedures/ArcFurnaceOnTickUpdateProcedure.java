@@ -12,7 +12,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 
 public final class ArcFurnaceOnTickUpdateProcedure {
-	private static final int ENERGY_PER_OPERATION = 4096;
+	private static final int ENERGY_PER_OPERATION = 1024;
 	private ArcFurnaceOnTickUpdateProcedure() {}
 
 	public static void execute(net.minecraft.server.level.ServerLevel level, BlockPos pos) {

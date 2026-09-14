@@ -237,7 +237,9 @@ public final class ArcBlastFurnaceGameTests {
 
     private static void refillEnergy(ArcFurnaceBlockEntity controller) {
         controller.getEnergyStorage().extractEnergy(Integer.MAX_VALUE, false);
-        controller.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false);
+        while (controller.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false) > 0) {
+            // Fill past the configured per-transfer limit.
+        }
     }
 
     private static FurnaceBuild buildFurnace(GameTestHelper helper, BlockPos controllerPos, BlockState controller,
