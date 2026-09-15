@@ -28,6 +28,7 @@ import net.crystalnexus.fluid.InversionSolutionFluid;
 import net.crystalnexus.fluid.MineralSlurryFluid;
 import net.crystalnexus.fluid.ArgonFluid;
 import net.crystalnexus.fluid.OxygenFluid;
+import net.crystalnexus.fluid.AtmosphereFluid;
 import net.crystalnexus.fluid.NitrogenFluid;
 import net.crystalnexus.CrystalnexusMod;
 
@@ -59,6 +60,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_OXYGEN = REGISTRY.register("flowing_oxygen", OxygenFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> NITROGEN = REGISTRY.register("nitrogen", NitrogenFluid.Source::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_NITROGEN = REGISTRY.register("flowing_nitrogen", NitrogenFluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> ATMOSPHERE = REGISTRY.register("atmosphere", AtmosphereFluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_ATMOSPHERE = REGISTRY.register("flowing_atmosphere", AtmosphereFluid.Flowing::new);
 
 	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class FluidsClientSideHandler {
@@ -89,6 +92,8 @@ public class CrystalnexusModFluids {
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_OXYGEN.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(NITROGEN.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_NITROGEN.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(ATMOSPHERE.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_ATMOSPHERE.get(), RenderType.translucent());
 		}
 	}
 }

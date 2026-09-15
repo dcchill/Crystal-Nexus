@@ -4,5 +4,6 @@
     { "item": "crystalnexus:silicon" },
     { "item": "crystalnexus:conductive_alloy" }
   ],
-  "output": { "id": "crystalnexus:energized_silicon", "count": 1 }
+  "output": { "id": "crystalnexus:energized_silicon", "count": 1 },
+  "minimum_arc_furnace_tier": 2
 }

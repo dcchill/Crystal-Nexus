@@ -134,6 +134,28 @@ class ProgressionRecipeAuditTest {
     }
 
     @Test
+    void lateGameProcessingRecipesDeclareTheirTierGates() throws IOException {
+        for (String recipe : List.of("crushing_blutonium.json", "dust_sep_blutonium.json",
+            "nitrogen_from_atmosphere_refining.json"))
+            assertContains(recipe, "\"minimum_machine_tier\":4");
+
+        String blutoniumProfile = compact(Path.of(
+            "src/main/resources/data/crystalnexus/crystalnexus/material_processing/blutonium.json"));
+        assertTrue(blutoniumProfile.contains("\"primary_material\":\"c:blutonium\""));
+        assertTrue(blutoniumProfile.contains("\"minimum_machine_tier\":5"));
+
+        for (String recipe : List.of("arc_netherite_alloying.json", "arc_energized_silicon.json",
+            "arc_recycle_carbon_fiber_rod.json", "arc_recycle_obsidrax_rod.json",
+            "arc_recycle_obsidrax_sheet.json"))
+            assertContains(recipe, "\"minimum_arc_furnace_tier\":2");
+
+        assertFalse(compact(RECIPES.resolve("arc_carbon_composite.json"))
+            .contains("\"minimum_arc_furnace_tier\""));
+        assertFalse(compact(RECIPES.resolve("ferrosteel_alloying.json"))
+            .contains("\"minimum_arc_furnace_tier\""));
+    }
+
+    @Test
     void physicalMachinesUseTheirSeparatedLogicalTiers() throws IOException {
         String blocks = Files.readString(Path.of(
             "src/main/java/net/crystalnexus/init/CrystalnexusModBlocks.java"));
@@ -157,6 +179,11 @@ class ProgressionRecipeAuditTest {
 		assertTrue(oreProcessor.contains("MaterialProcessingCatalog.NUGGETS_PER_DUST"));
 		assertFalse(oreProcessor.contains("outputAmount = 4"));
 		assertFalse(oreProcessor.contains("outputAmount2 = 14"));
+
+		String materialCatalog = Files.readString(Path.of(
+			"src/main/java/net/crystalnexus/processing/MaterialProcessingCatalog.java"));
+		assertTrue(materialCatalog.contains("return material.dust(namespace, count);"));
+		assertTrue(materialCatalog.contains("SLURRY_AMOUNT, 2, 3,"));
 
 		String ultimaSmelter = Files.readString(Path.of(
 			"src/main/java/net/crystalnexus/procedures/UltimaSmelterOnTickUpdateProcedure.java"));

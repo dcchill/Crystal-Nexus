@@ -473,6 +473,8 @@ public class CrystalnexusModItems {
 			() -> new BucketItem(CrystalnexusModFluids.OXYGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> NITROGEN_BUCKET = REGISTRY.register("nitrogen_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.NITROGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> ATMOSPHERE_BUCKET = REGISTRY.register("atmosphere_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.ATMOSPHERE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
 	public static final DeferredItem<Item> GAS_FUEL_CELL = REGISTRY.register("gas_fuel_cell", GasFuelCellItem::new);
@@ -542,7 +544,6 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRAFTING_UPGRADE = block(CrystalnexusModBlocks.CRAFTING_UPGRADE);
 	public static final DeferredItem<Item> CRAFTING_CORE = block(CrystalnexusModBlocks.CRAFTING_CORE);
 	public static final DeferredItem<Item> HYPER_MACHINE_FRAME = block(CrystalnexusModBlocks.HYPER_MACHINE_FRAME);
-	public static final DeferredItem<Item> ENERGY_CABLE = block(CrystalnexusModBlocks.ENERGY_CABLE);
 	public static final DeferredItem<Item> BLUTONIUM_WASTE = REGISTRY.register("blutonium_waste", BlutoniumWasteItem::new);
 	public static final DeferredItem<Item> REACTOR_WASTE_OUTPUT = block(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT);
 	public static final DeferredItem<Item> DEPOT_STORAGE_UPGRADE = REGISTRY.register("depot_storage_upgrade", DepotStorageUpgradeItem::new);

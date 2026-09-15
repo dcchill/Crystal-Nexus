@@ -349,6 +349,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ARGON_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OXYGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.NITROGEN_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.ATMOSPHERE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.TEMPORAL_ESSENCE_BUCKET.get());
@@ -398,7 +399,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_ELEVATOR_DOWN.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BASIC_ENERGY_CABLE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_ENERGY_CABLE.get().asItem());
 

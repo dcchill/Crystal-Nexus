@@ -1,0 +1,1 @@
+{"type":"crystalnexus:refining","fluid_input":{"fluid":"crystalnexus:atmosphere","amount":1000},"fluid_output":{"fluid":"crystalnexus:nitrogen","amount":250},"minimum_machine_tier":4}

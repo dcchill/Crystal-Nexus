@@ -9,5 +9,5 @@
     "d": { "item": "crystalnexus:synthetic_rubber" },
     "e": { "item": "crystalnexus:tank" }
   },
-  "result": { "id": "crystalnexus:oxygen_collector", "count": 1 }
+  "result": { "id": "crystalnexus:atmosphere_collector", "count": 1 }
 }

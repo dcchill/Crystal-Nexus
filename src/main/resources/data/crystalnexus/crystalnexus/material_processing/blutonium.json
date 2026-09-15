@@ -1,0 +1,7 @@
+{
+  "primary_material": "c:blutonium",
+  "reagent": { "fluid": "crystalnexus:sulfuric_acid", "amount": 1000 },
+  "crusher_multiplier": 2,
+  "advanced_multiplier": 3,
+  "minimum_machine_tier": 5
+}

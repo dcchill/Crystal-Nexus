@@ -23,6 +23,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
     private final Optional<Ingredient> itemInput;
     private final Optional<ItemStack> output;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput;
+    private Optional<FluidChemicalReactionRecipe.FluidAmount> fluidOutput;
     private final int minimumMachineTier;
 
     public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<ItemStack> output,
@@ -38,10 +39,11 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
 	public RefiningRecipe(FluidChemicalReactionRecipe.FluidAmount input, Optional<Ingredient> itemInput,
 						  Optional<ItemStack> output, Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput,
 						  int minimumMachineTier) {
-        this.input = input;
+		this.input = input;
         this.itemInput = itemInput;
         this.output = output.map(ItemStack::copy);
         this.taggedOutput = taggedOutput;
+		this.fluidOutput = Optional.empty();
 		this.minimumMachineTier = Math.max(1, Math.min(MachineTier.HYPER.level(), minimumMachineTier));
     }
 
@@ -53,6 +55,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
             .or(() -> taggedOutput.map(FluidChemicalReactionRecipe.TaggedItemOutput::stack))
             .orElse(ItemStack.EMPTY);
     }
+    public Optional<FluidChemicalReactionRecipe.FluidAmount> fluidOutput() { return fluidOutput; }
 
     @Override public boolean matches(RecipeInput input, Level level) { return false; }
     @Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) { return output(); }
@@ -78,9 +81,14 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
             Ingredient.CODEC_NONEMPTY.optionalFieldOf("item_input").forGetter(recipe -> recipe.itemInput),
             ItemStack.STRICT_CODEC.optionalFieldOf("item_output").forGetter(recipe -> recipe.output),
             FluidChemicalReactionRecipe.TaggedItemOutput.CODEC.optionalFieldOf("item_output_tag").forGetter(recipe -> recipe.taggedOutput),
+			FluidChemicalReactionRecipe.FluidAmount.CODEC.optionalFieldOf("fluid_output").forGetter(recipe -> recipe.fluidOutput),
 			Codec.INT.optionalFieldOf("minimum_machine_tier", 1).forGetter(recipe -> recipe.minimumMachineTier)
-        ).apply(instance, RefiningRecipe::new)).flatXmap(recipe -> recipe.output.isEmpty() && recipe.taggedOutput.isEmpty()
-            ? DataResult.error(() -> "Refining recipe requires item_output or item_output_tag")
+		).apply(instance, (input, itemInput, output, taggedOutput, fluidOutput, tier) -> {
+			RefiningRecipe recipe = new RefiningRecipe(input, itemInput, output, taggedOutput, tier);
+			recipe.fluidOutput = fluidOutput;
+			return recipe;
+		})).flatXmap(recipe -> recipe.output.isEmpty() && recipe.taggedOutput.isEmpty() && recipe.fluidOutput.isEmpty()
+			? DataResult.error(() -> "Refining recipe requires an output")
             : DataResult.success(recipe), DataResult::success);
         public static final StreamCodec<RegistryFriendlyByteBuf, RefiningRecipe> STREAM_CODEC = StreamCodec.of(
             (buffer, recipe) -> {
@@ -98,6 +106,8 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
                     buffer.writeResourceLocation(output.tag());
                     buffer.writeVarInt(output.count());
                 });
+				buffer.writeBoolean(recipe.fluidOutput.isPresent());
+				recipe.fluidOutput.ifPresent(output -> { buffer.writeResourceLocation(output.fluid()); buffer.writeVarInt(output.amount()); });
 				buffer.writeVarInt(recipe.minimumMachineTier);
             }, buffer -> {
                 var fluid = buffer.readResourceLocation();
@@ -112,8 +122,12 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
                 Optional<FluidChemicalReactionRecipe.TaggedItemOutput> tagged = buffer.readBoolean()
                     ? Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(
                         buffer.readResourceLocation(), buffer.readVarInt())) : Optional.empty();
-                return new RefiningRecipe(new FluidChemicalReactionRecipe.FluidAmount(fluid, amount, material, tag),
+                Optional<FluidChemicalReactionRecipe.FluidAmount> fluidOutput = buffer.readBoolean()
+					? Optional.of(new FluidChemicalReactionRecipe.FluidAmount(buffer.readResourceLocation(), buffer.readVarInt())) : Optional.empty();
+                RefiningRecipe recipe = new RefiningRecipe(new FluidChemicalReactionRecipe.FluidAmount(fluid, amount, material, tag),
                     itemInput, output, tagged, buffer.readVarInt());
+				recipe.fluidOutput = fluidOutput;
+				return recipe;
             });
 
         @Override public MapCodec<RefiningRecipe> codec() { return CODEC; }

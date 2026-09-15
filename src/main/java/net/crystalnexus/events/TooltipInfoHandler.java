@@ -116,9 +116,6 @@ public class TooltipInfoHandler {
 		addTooltip("basic_energy_cable",
 				"Basic energy transfer cable.",
 				"Transfers energy to machines.");
-		addTooltip("energy_cable",
-				"Standard energy transfer cable.",
-				"Transfers energy with medium throughput to machines.");
 		addTooltip("energy_cable_mk_2",
 				"Advanced energy transfer cable.",
 				"Transfers energy with high throughput to machines.");
@@ -383,7 +380,7 @@ public class TooltipInfoHandler {
 				"Area-of-effect item charger.",
 				"Charges nearby inventory items in a radius.");
 		addTooltip("temporal_exploiter",
-				"Accelerates nearby block ticks using FE.",
+				"Accelerates nearby block ticks using Temporal Essence.",
 				"Configure its range and operation from the GUI.");
 
 		addTooltip("electromagnet",

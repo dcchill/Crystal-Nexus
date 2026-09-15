@@ -8,5 +8,6 @@
   "output": {
     "id": "crystalnexus:blutonium_nugget",
     "count": 12
-  }
+  },
+  "minimum_machine_tier": 4
 }

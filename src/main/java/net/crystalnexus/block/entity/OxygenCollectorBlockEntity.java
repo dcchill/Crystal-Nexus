@@ -58,7 +58,7 @@ public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity
 	@Override public CompoundTag getUpdateTag(HolderLookup.Provider lookup) { return saveWithFullMetadata(lookup); }
 	@Override public int getContainerSize() { return stacks.size(); }
 	@Override public boolean isEmpty() { return stacks.stream().allMatch(ItemStack::isEmpty); }
-	@Override public Component getDefaultName() { return Component.translatable("block.crystalnexus.oxygen_collector"); }
+	@Override public Component getDefaultName() { return Component.translatable("block.crystalnexus.atmosphere_collector"); }
 	@Override public Component getDisplayName() { return getDefaultName(); }
 	@Override public AbstractContainerMenu createMenu(int id, Inventory inventory) { return new NodeExtractorGUIMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition)); }
 	@Override protected NonNullList<ItemStack> getItems() { return stacks; }

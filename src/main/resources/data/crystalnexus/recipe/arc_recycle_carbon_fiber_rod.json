@@ -3,5 +3,6 @@
   "ingredients": [
     { "item": "crystalnexus:carbon_fiber_rod" }
   ],
-  "output": { "id": "crystalnexus:carbon_fiber", "count": 1 }
+  "output": { "id": "crystalnexus:carbon_fiber", "count": 1 },
+  "minimum_arc_furnace_tier": 2
 }

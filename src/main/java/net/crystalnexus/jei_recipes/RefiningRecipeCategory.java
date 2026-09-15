@@ -42,6 +42,8 @@ public final class RefiningRecipeCategory implements IRecipeCategory<RefiningRec
             .addIngredient(NeoForgeTypes.FLUID_STACK, recipe.input().stack());
         recipe.itemInput().ifPresent(ingredient ->
             builder.addSlot(RecipeIngredientRole.INPUT, 52, 64).addIngredients(ingredient));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 64).addItemStack(recipe.output());
+        if (!recipe.output().isEmpty()) builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 64).addItemStack(recipe.output());
+        recipe.fluidOutput().ifPresent(output -> builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 26)
+            .setFluidRenderer(output.amount(), false, 16, 34).addIngredient(NeoForgeTypes.FLUID_STACK, output.stack()));
     }
 }

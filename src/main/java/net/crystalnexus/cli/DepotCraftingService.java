@@ -100,7 +100,7 @@ public final class DepotCraftingService {
         if (processors <= 0) {
             return new Result(false, ItemStack.EMPTY, null, List.of(
                     "Crafting service unavailable.",
-                    "Connect a Crafting Processor to use this command."));
+                    "Connect a Crafting Processor."));
         }
         int capacity = DepotNetwork.craftingJobCapacity(player);
         if (depot.getCraftingJobs().size() >= capacity) {
@@ -358,18 +358,22 @@ public final class DepotCraftingService {
             Set<ResourceLocation> connectedMachines) {
         List<PotentialRecipe> recipes = new ArrayList<>(planningRecipeIndex(player).potentialCrafting());
         PlanningRecipeIndex index = planningRecipeIndex(player);
-        preferredRecipes.forEach((output, preferred) -> {
+        index.processing().forEach((output, candidates) -> {
+            ResourceLocation preferred = preferredRecipes.get(output);
             if (NO_RECIPE_ROUTE.equals(preferred)) return;
-            index.processing().getOrDefault(output, List.of()).stream()
-                    .filter(candidate -> candidate.id().equals(preferred))
+            candidates.stream()
+                    .filter(candidate -> preferred == null || candidate.id().equals(preferred))
                     .filter(candidate -> compatibleMachine(machineTypes(candidate), connectedMachines))
                     .map(candidate -> potentialRecipe(output, candidate.recipe().getIngredients()))
-                    .filter(java.util.Objects::nonNull).findFirst().ifPresent(recipes::add);
-            DepotJeiRecipeCache.recipesFor(player, output).stream()
-                    .filter(candidate -> candidate.id().equals(preferred))
-                    .filter(candidate -> compatibleMachine(candidate.machineTypes(), connectedMachines))
-                    .map(candidate -> potentialJeiRecipe(output, candidate.inputs()))
-                    .filter(java.util.Objects::nonNull).findFirst().ifPresent(recipes::add);
+                    .filter(java.util.Objects::nonNull).forEach(recipes::add);
+        });
+        DepotJeiRecipeCache.recipes(player).forEach(candidate -> {
+            ResourceLocation output = candidate.primaryOutput().itemId();
+            ResourceLocation preferred = preferredRecipes.get(output);
+            if (NO_RECIPE_ROUTE.equals(preferred) || preferred != null && !candidate.id().equals(preferred)
+                    || !compatibleMachine(candidate.machineTypes(), connectedMachines)) return;
+            PotentialRecipe recipe = potentialJeiRecipe(output, candidate.inputs());
+            if (recipe != null) recipes.add(recipe);
         });
         patterns.stream().filter(pattern -> programmedRoute(pattern.outputId())
                         .equals(preferredRecipes.get(pattern.outputId())))
@@ -552,17 +556,19 @@ public final class DepotCraftingService {
         List<RecipeChoice> alternatives = limitedChoices(player, depot, item);
         ResourceLocation selected = depot.getPreferredRecipe(itemId);
         RecipeChoice route = selected == null ? alternatives.stream()
-                .filter(choice -> !choice.processing() && !choice.id().equals(NO_RECIPE_ROUTE))
+                .filter(choice -> !choice.processing() && !choice.id().equals(NO_RECIPE_ROUTE)
+                        && !loopsIntoPath(choice, itemId, path))
                 .findFirst().orElse(null) : alternatives.stream().filter(choice -> choice.id().equals(selected))
                 .findFirst().orElse(null);
-        PreviewSource source = storedEnough ? PreviewSource.STORED : circular || NO_RECIPE_ROUTE.equals(selected)
-                ? PreviewSource.MISSING : route == null
+        boolean routeLoops = route != null && loopsIntoPath(route, itemId, path);
+        PreviewSource source = storedEnough ? PreviewSource.STORED
+                : circular || route == null || routeLoops || NO_RECIPE_ROUTE.equals(selected)
                 ? PreviewSource.MISSING
                 : route.processing() ? PreviewSource.MACHINE : PreviewSource.CRAFTING;
         int id = result.size();
         result.add(new PreviewNode(id, parentId, itemId, required, stored, source, selected,
                 depot.getPreferredMachine(itemId), alternatives));
-        if (storedEnough || route == null || circular || !path.add(itemId)) return;
+        if (storedEnough || route == null || circular || routeLoops || !path.add(itemId)) return;
         long crafts = (required + Math.max(1, route.output().getCount()) - 1) / Math.max(1, route.output().getCount());
         Map<ResourceLocation, Long> inputs = new java.util.LinkedHashMap<>();
         for (DepotJeiRecipeCache.Slot slot : route.inputs()) {
@@ -574,6 +580,11 @@ public final class DepotCraftingService {
         }
         inputs.forEach((inputId, amount) -> appendFailedPreviewNode(player, depot, inputId, amount, id, path, result));
         path.remove(itemId);
+    }
+
+    static boolean loopsIntoPath(RecipeChoice choice, ResourceLocation itemId, Set<ResourceLocation> path) {
+        return RecipeCycleGuard.loopsIntoPath(choice.inputs().stream().flatMap(slot -> slot.alternatives().stream())
+                .map(DepotJeiRecipeCache.StackRef::itemId), itemId, path);
     }
 
     private static long multiplyBounded(long left, long right) {
@@ -998,28 +1009,34 @@ public final class DepotCraftingService {
                         craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                     }
                 }
-                if (mode != PlanMode.VISUAL && processingAvailable) {
+                if (processingAvailable) {
                     for (AvailableRecipe candidate : machineCandidates.stream().filter(DepotCraftingService::vanillaProcessing).toList()) {
                         if (eagerMachine != null && candidate.id().equals(eagerMachine.id())) continue;
+                        if (mode == PlanMode.VISUAL && (preferred != null
+                                || !compatibleMachine(machineTypes(candidate)))) continue;
                         int beforeSteps = craftingSteps.size();
                         Optional<Map<ResourceLocation, Long>> result = tryProcessingRecipe(
                                 inventory, candidate, deficit, visiting, depth);
                         if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
                         craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                     }
-                    for (RecipeHolder<CraftingRecipe> holder : candidates) {
-                        int beforeSteps = craftingSteps.size();
-                        ItemStack output = holder.value().getResultItem(player.serverLevel().registryAccess());
-                        if (output.isEmpty() || output.getCount() <= 0) continue;
-                        long craftsLong = (deficit + output.getCount() - 1L) / output.getCount();
-                        if (craftsLong <= 0 || craftsLong > Integer.MAX_VALUE) continue;
-                        Optional<Map<ResourceLocation, Long>> result = craftRecipe(
-                                new HashMap<>(inventory), holder.value(), (int) craftsLong, visiting, depth);
-                        if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
-                        craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                    if (mode != PlanMode.VISUAL) {
+                        for (RecipeHolder<CraftingRecipe> holder : candidates) {
+                            int beforeSteps = craftingSteps.size();
+                            ItemStack output = holder.value().getResultItem(player.serverLevel().registryAccess());
+                            if (output.isEmpty() || output.getCount() <= 0) continue;
+                            long craftsLong = (deficit + output.getCount() - 1L) / output.getCount();
+                            if (craftsLong <= 0 || craftsLong > Integer.MAX_VALUE) continue;
+                            Optional<Map<ResourceLocation, Long>> result = craftRecipe(
+                                    new HashMap<>(inventory), holder.value(), (int) craftsLong, visiting, depth);
+                            if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
+                            craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
+                        }
                     }
                     for (DepotJeiRecipeCache.Recipe candidate : jeiCandidates) {
                         if (eagerJei != null && candidate.id().equals(eagerJei.id())) continue;
+                        if (mode == PlanMode.VISUAL && (preferred != null
+                                || !compatibleMachine(candidate.machineTypes()))) continue;
                         int beforeSteps = craftingSteps.size();
                         Optional<Map<ResourceLocation, Long>> result = tryJeiRecipe(
                                 inventory, candidate, deficit, visiting, depth);
@@ -1028,6 +1045,8 @@ public final class DepotCraftingService {
                     }
                     for (AvailableRecipe candidate : machineCandidates.stream().filter(candidate -> !vanillaProcessing(candidate)).toList()) {
                         if (eagerMachine != null && candidate.id().equals(eagerMachine.id())) continue;
+                        if (mode == PlanMode.VISUAL && (preferred != null
+                                || !compatibleMachine(machineTypes(candidate)))) continue;
                         int beforeSteps = craftingSteps.size();
                         Optional<Map<ResourceLocation, Long>> result = tryProcessingRecipe(
                                 inventory, candidate, deficit, visiting, depth);

@@ -31,8 +31,10 @@ public final class RefineryOnTickUpdateProcedure {
         int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
         RefiningRecipe recipe = findRecipe(level, refinery, machineTier);
         ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.output();
-        if (recipe == null || output.isEmpty() || refinery.getEnergyStorage().getEnergyStored() < energyCost
-                || !FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(refinery.getItem(1), output)) {
+        boolean fluidReady = recipe != null && recipe.fluidOutput().map(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.SIMULATE) == outputFluid.amount()).orElse(true);
+        if (recipe == null || (output.isEmpty() && recipe.fluidOutput().isEmpty()) || !fluidReady
+                || refinery.getEnergyStorage().getEnergyStored() < energyCost
+                || (!output.isEmpty() && !FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(refinery.getItem(1), output))) {
             setActive(level, pos, false);
             refinery.getPersistentData().putDouble("maxProgress", cookTime);
             sync(level, pos, refinery);
@@ -46,9 +48,12 @@ public final class RefineryOnTickUpdateProcedure {
 
         refinery.getTank(0).drain(recipe.input().amount(), IFluidHandler.FluidAction.EXECUTE);
         recipe.itemInput().ifPresent(ingredient -> refinery.getItem(0).shrink(1));
-        ItemStack produced = output.copy();
-        produced.setCount(refinery.getItem(1).getCount() + output.getCount());
-        refinery.setItem(1, produced);
+        if (!output.isEmpty()) {
+            ItemStack produced = output.copy();
+            produced.setCount(refinery.getItem(1).getCount() + output.getCount());
+            refinery.setItem(1, produced);
+        }
+        recipe.fluidOutput().ifPresent(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.EXECUTE));
         refinery.getEnergyStorage().extractEnergy(energyCost, false);
         refinery.getPersistentData().putDouble("progress", 0);
         sync(level, pos, refinery);

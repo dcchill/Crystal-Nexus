@@ -17,7 +17,7 @@ public class OxygenCollectorOnTickUpdateProcedure {
 	private static final int HORIZONTAL_RADIUS = 5;
 	private static final int VERTICAL_RADIUS = 5;
 	private static final int ENERGY_PER_BATCH = 256;
-	private static final int OXYGEN_PER_BATCH = 10;
+	private static final int ATMOSPHERE_PER_BATCH = 10;
 	private static final int BASE_TICKS_PER_BATCH = 40;
 
 	public static void execute(ServerLevel level, BlockPos collectorPos) {
@@ -25,7 +25,7 @@ public class OxygenCollectorOnTickUpdateProcedure {
 		List<BlockPos> leaves = findLeaves(level, collectorPos);
 		int ticksPerBatch = Math.max(1, BASE_TICKS_PER_BATCH / Math.max(1, leaves.size()));
 		boolean canCollect = !leaves.isEmpty() && collector.getEnergyStorage().getEnergyStored() >= ENERGY_PER_BATCH
-			&& collector.getFluidTank().fill(new FluidStack(CrystalnexusModFluids.OXYGEN.get(), OXYGEN_PER_BATCH), IFluidHandler.FluidAction.SIMULATE) == OXYGEN_PER_BATCH;
+			&& collector.getFluidTank().fill(new FluidStack(CrystalnexusModFluids.ATMOSPHERE.get(), ATMOSPHERE_PER_BATCH), IFluidHandler.FluidAction.SIMULATE) == ATMOSPHERE_PER_BATCH;
 		double progress = collector.getPersistentData().getDouble("progress");
 		collector.getPersistentData().putDouble("maxProgress", ticksPerBatch);
 		if (!canCollect) { if (progress != 0) collector.getPersistentData().putDouble("progress", 0); return; }
@@ -33,7 +33,7 @@ public class OxygenCollectorOnTickUpdateProcedure {
 		collector.getPersistentData().putDouble("progress", progress);
 		if (level.getGameTime() % 10 == 0) spawnLeafParticles(level, leaves, collectorPos, progress / ticksPerBatch);
 		if (progress >= ticksPerBatch) {
-			collector.getFluidTank().fill(new FluidStack(CrystalnexusModFluids.OXYGEN.get(), OXYGEN_PER_BATCH), IFluidHandler.FluidAction.EXECUTE);
+			collector.getFluidTank().fill(new FluidStack(CrystalnexusModFluids.ATMOSPHERE.get(), ATMOSPHERE_PER_BATCH), IFluidHandler.FluidAction.EXECUTE);
 			collector.getEnergyStorage().extractEnergy(ENERGY_PER_BATCH, false);
 			collector.getPersistentData().putDouble("progress", 0);
 		}

@@ -8,5 +8,6 @@
   "output": {
     "id": "crystalnexus:blutonium_dust",
     "count": 2
-  }
+  },
+  "minimum_machine_tier": 4
 }

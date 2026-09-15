@@ -1,0 +1,1 @@
+{"type":"crystalnexus:fluid_chemical_reaction","fluid_input_1":{"fluid":"crystalnexus:atmosphere","amount":1000},"output":{"fluid":"crystalnexus:oxygen","amount":250}}

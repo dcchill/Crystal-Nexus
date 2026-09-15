@@ -96,7 +96,6 @@ public final class CrystalnexusConfig {
 		public final EnergyValues DUST_SEPARATOR;
 		public final EnergyValues EE_BATTERY;
 		public final EnergyValues ELECTROMAGNET;
-		public final EnergyValues ENERGY_CABLE;
 		public final EnergyValues ENERGY_CABLE_MK2;
 		public final EnergyValues HYPER_ENERGY_CABLE;
 		public final EnergyValues ENERGY_EXTRACTOR;
@@ -162,7 +161,6 @@ public final class CrystalnexusConfig {
 			DUST_SEPARATOR = new EnergyValues(builder, "dust_separator", 10240, 2048, 2048);
 			EE_BATTERY = new EnergyValues(builder, "ee_battery", 20480000, 1024000, 1024000);
 			ELECTROMAGNET = new EnergyValues(builder, "electromagnet", 512000, 20480, 10240);
-			ENERGY_CABLE = new EnergyValues(builder, "energy_cable", 102400, 16384, 16384);
 			ENERGY_CABLE_MK2 = new EnergyValues(builder, "energy_cable_mk2", 1024000, 131072, 131072);
 			HYPER_ENERGY_CABLE = new EnergyValues(builder, "hyper_energy_cable", 8388608, 1048576, 1048576);
 			ENERGY_EXTRACTOR = new EnergyValues(builder, "energy_extractor", EeMatterEconomy.EXTRACTION_FE_PER_ITEM * 2, 512000, 512000);

@@ -34,7 +34,7 @@ public class OxygenCollectorBlock extends Block implements EntityBlock {
 	}
 	@Override public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
 		if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(new MenuProvider() {
-			@Override public Component getDisplayName() { return Component.translatable("block.crystalnexus.oxygen_collector"); }
+			@Override public Component getDisplayName() { return Component.translatable("block.crystalnexus.atmosphere_collector"); }
 			@Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player ignored) { return new NodeExtractorGUIMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(pos)); }
 		}, pos);
 		return InteractionResult.SUCCESS;

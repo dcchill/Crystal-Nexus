@@ -168,7 +168,7 @@ public final class MaterialProcessingCatalog {
     public static ItemStack generatedCrushingResult(Material material, ItemStack input) {
         String namespace = BuiltInRegistries.ITEM.getKey(input.getItem()).getNamespace();
         int count = material.profile().crusherMultiplier();
-        return material.hasCrushed() ? material.crushed(namespace, count) : material.dust(namespace, count);
+        return material.dust(namespace, count);
     }
 
     public static List<FluidChemicalReactionRecipe> generatedFluidRecipes(Level level) {

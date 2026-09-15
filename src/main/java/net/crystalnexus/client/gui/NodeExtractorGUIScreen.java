@@ -77,7 +77,7 @@ public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtracto
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		boolean oxygenCollector = world.getBlockState(BlockPos.containing(x, y, z)).is(CrystalnexusModBlocks.OXYGEN_COLLECTOR.get());
-		guiGraphics.drawString(this.font, Component.translatable(oxygenCollector ? "gui.crystalnexus.oxygen_collector.label" : "gui.crystalnexus.node_extractor_gui.label_quantum_miner"), 72, -10, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable(oxygenCollector ? "gui.crystalnexus.atmosphere_collector.label" : "gui.crystalnexus.node_extractor_gui.label_quantum_miner"), 72, -10, -12829636, false);
 	}
 
 	@Override

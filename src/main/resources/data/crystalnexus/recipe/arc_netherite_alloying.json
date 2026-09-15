@@ -4,5 +4,6 @@
     { "item": "minecraft:netherite_scrap" },
     { "tag": "c:ingots/gold" }
   ],
-  "output": { "id": "minecraft:netherite_ingot", "count": 1 }
+  "output": { "id": "minecraft:netherite_ingot", "count": 1 },
+  "minimum_arc_furnace_tier": 2
 }
