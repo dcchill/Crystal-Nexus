@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:block",
+  "random_sequence": "crystalnexus:blocks/copper_fluid_pipe",
+  "pools": [
+    {
+      "rolls": 1.0,
+      "conditions": [{ "condition": "minecraft:survives_explosion" }],
+      "entries": [{ "type": "minecraft:item", "name": "crystalnexus:copper_fluid_pipe" }]
+    }
+  ]
+}

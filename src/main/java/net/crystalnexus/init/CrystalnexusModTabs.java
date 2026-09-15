@@ -404,6 +404,7 @@ public class CrystalnexusModTabs {
 
 				tabData.accept(CrystalnexusModBlocks.TANK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.COPPER_FLUID_PIPE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BATTERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.EE_BATTERY.get().asItem());

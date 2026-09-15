@@ -366,6 +366,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> SMOOTH_TARROCK_WALL = REGISTRY.register("smooth_tarrock_wall", SmoothTarrockWallBlock::new);
 	public static final DeferredBlock<Block> TARROCK_BUTTON = REGISTRY.register("tarrock_button", TarrockButtonBlock::new);
 	public static final DeferredBlock<Block> PIPE_STRAIGHT = REGISTRY.register("pipe_straight", PipeStraightBlock::new);
+	public static final DeferredBlock<Block> COPPER_FLUID_PIPE = REGISTRY.register("copper_fluid_pipe", PipeStraightBlock::new);
 	public static final DeferredBlock<Block> PIPE_JUNCTION = REGISTRY.register("pipe_junction", PipeJunctionBlock::new);
 	public static final DeferredBlock<Block> STEAM = REGISTRY.register("steam", SteamBlock::new);
 	public static final DeferredBlock<Block> STEAM_COLLECTOR = REGISTRY.register("steam_collector", SteamCollectorBlock::new);

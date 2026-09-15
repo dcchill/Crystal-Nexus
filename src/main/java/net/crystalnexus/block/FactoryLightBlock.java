@@ -145,7 +145,7 @@ public class FactoryLightBlock extends Block {
 		double hitY = hit.getLocation().y;
 		double hitZ = hit.getLocation().z;
 		Direction direction = hit.getDirection();
-		FactoryLightOnBlockRightClickedProcedure.execute(world, x, y, z, blockstate);
+		FactoryLightOnBlockRightClickedProcedure.execute(world, x, y, z, blockstate, entity);
 		return InteractionResult.SUCCESS;
 	}
 }

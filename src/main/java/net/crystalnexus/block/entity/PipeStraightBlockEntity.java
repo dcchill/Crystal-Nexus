@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.PipeStraightBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -18,6 +19,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 public class PipeStraightBlockEntity extends BlockEntity {
     public static final int CAPACITY = 15_000; // mB
     public static final int MAX_TRANSFER = 5_000; // mB per tick
+    public static final int COPPER_MAX_TRANSFER = MAX_TRANSFER / 4; // mB per tick
     public static final int TRANSFER_DELAY_TICKS = 0;
 
     private int inputSides;
@@ -51,6 +53,11 @@ public class PipeStraightBlockEntity extends BlockEntity {
 
     public FluidTank getFluidTank() {
         return fluidTank;
+    }
+
+    private int maxTransfer() {
+        return getBlockState().is(CrystalnexusModBlocks.COPPER_FLUID_PIPE.get())
+            ? COPPER_MAX_TRANSFER : MAX_TRANSFER;
     }
 
     public boolean isInputSide(Direction direction) {
@@ -174,7 +181,7 @@ public class PipeStraightBlockEntity extends BlockEntity {
     }
 
     private int pullFrom(IFluidHandler source) {
-        FluidStack offered = source.drain(MAX_TRANSFER, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack offered = source.drain(maxTransfer(), IFluidHandler.FluidAction.SIMULATE);
         if (offered.isEmpty()) return 0;
         int accepted = fluidTank.fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return 0;
@@ -185,7 +192,7 @@ public class PipeStraightBlockEntity extends BlockEntity {
     }
 
     private int pushTo(IFluidHandler destination) {
-        FluidStack offered = fluidTank.drain(MAX_TRANSFER, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack offered = fluidTank.drain(maxTransfer(), IFluidHandler.FluidAction.SIMULATE);
         if (offered.isEmpty()) return 0;
         int accepted = destination.fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return 0;
@@ -203,7 +210,7 @@ public class PipeStraightBlockEntity extends BlockEntity {
         FluidTank source = mine > theirs ? fluidTank : other.fluidTank;
         FluidTank destination = mine > theirs ? other.fluidTank : fluidTank;
         FluidStack offered = source.drain(
-            Math.min(MAX_TRANSFER, Math.abs(mine - theirs) / 2), IFluidHandler.FluidAction.SIMULATE);
+            Math.min(Math.min(maxTransfer(), other.maxTransfer()), Math.abs(mine - theirs) / 2), IFluidHandler.FluidAction.SIMULATE);
         if (offered.isEmpty()) return false;
         int accepted = destination.fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return false;

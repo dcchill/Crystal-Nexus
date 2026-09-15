@@ -194,7 +194,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> WARP_PAD = register("warp_pad", CrystalnexusModBlocks.WARP_PAD, WarpPadBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PISTON_GENERATOR = register("piston_generator", CrystalnexusModBlocks.PISTON_GENERATOR, PistonGeneratorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> INVERT_PISTON_GENERATOR = register("invert_piston_generator", CrystalnexusModBlocks.INVERT_PISTON_GENERATOR, InvertPistonGeneratorBlockEntity::new);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PIPE_STRAIGHT = register("pipe_straight", CrystalnexusModBlocks.PIPE_STRAIGHT, PipeStraightBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PIPE_STRAIGHT = registerMany("pipe_straight", PipeStraightBlockEntity::new,
+		CrystalnexusModBlocks.PIPE_STRAIGHT, CrystalnexusModBlocks.COPPER_FLUID_PIPE);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PIPE_JUNCTION = register("pipe_junction", CrystalnexusModBlocks.PIPE_JUNCTION, PipeJunctionBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_COLLECTOR = register("steam_collector", CrystalnexusModBlocks.STEAM_COLLECTOR, SteamCollectorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_CHAMBER = register("steam_chamber", CrystalnexusModBlocks.STEAM_CHAMBER, SteamChamberBlockEntity::new);

@@ -141,7 +141,7 @@ public final class CrystalnexusConfig {
 		private Machines(ModConfigSpec.Builder builder) {
 			builder.push("machines");
 			AOE_CHARGER = new EnergyValues(builder, "aoe_charger", 20480, 20480, 10240);
-			ARC_FURNACE = new EnergyValues(builder, "arc_furnace", 40960, 5120, 5120);
+			ARC_FURNACE = new EnergyValues(builder, "arc_furnace", 81920, 10240, 5120);
 			AOE_CHARGER_BEHAVIOR = new AoeChargerValues(builder);
 			BASIC_ENERGY_CABLE = new EnergyValues(builder, "basic_energy_cable", 10240, 2048, 2048);
 			BATTERY = new EnergyValues(builder, "battery", 4096000, 512000, 512000);

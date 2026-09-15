@@ -290,6 +290,9 @@ public class TooltipInfoHandler {
 		addTooltip("pipe_straight",
 				"Straight fluid transport pipe.",
 				"Transfers fluids between machines.");
+		addTooltip("copper_fluid_pipe",
+				"Basic fluid transport pipe.",
+				"Transfers fluids at one quarter speed.");
 		addTooltip("fluid_packager",
 				"Packages fluids into cells.",
 				"Enables manual fluid transport.");

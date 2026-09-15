@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "b",
+    "s",
+    "b"
+  ],
+  "key": {
+    "b": { "item": "crystalnexus:copper_machine_bolt" },
+    "s": { "item": "crystalnexus:copper_sheet" }
+  },
+  "result": {
+    "id": "crystalnexus:copper_fluid_pipe",
+    "count": 8
+  }
+}

@@ -501,6 +501,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_LEGGINGS = REGISTRY.register("carbon_leggings", CarbonItem.Leggings::new);
 	public static final DeferredItem<Item> CARBON_BOOTS = REGISTRY.register("carbon_boots", CarbonItem.Boots::new);
 	public static final DeferredItem<Item> PIPE_STRAIGHT = block(CrystalnexusModBlocks.PIPE_STRAIGHT);
+	public static final DeferredItem<Item> COPPER_FLUID_PIPE = block(CrystalnexusModBlocks.COPPER_FLUID_PIPE);
 	public static final DeferredItem<Item> PIPE_JUNCTION = block(CrystalnexusModBlocks.PIPE_JUNCTION);
 	public static final DeferredItem<Item> STEAM_COLLECTOR = block(CrystalnexusModBlocks.STEAM_COLLECTOR);
 	public static final DeferredItem<Item> STEAM_CHAMBER = block(CrystalnexusModBlocks.STEAM_CHAMBER);
