@@ -1,0 +1,17 @@
+{
+  "parent": "crystalnexus:custom/prison_cube",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "crystalnexus:custom/prison_eye_wall"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 2
+      },
+      "model": "crystalnexus:custom/prison_tendril"
+    }
+  ]
+}

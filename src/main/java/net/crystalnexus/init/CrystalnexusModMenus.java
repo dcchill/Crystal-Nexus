@@ -66,6 +66,7 @@ import net.crystalnexus.world.inventory.DepotCableConnectionMenu;
 import net.crystalnexus.world.inventory.CraftingProcessorMenu;
 import net.crystalnexus.world.inventory.CrystalPurifierGUIMenu;
 import net.crystalnexus.world.inventory.CrusherGuiMenu;
+import net.crystalnexus.world.inventory.MasticatorMenu;
 import net.crystalnexus.world.inventory.CraftingFactoryGUIMenu;
 import net.crystalnexus.world.inventory.ContainerGUIMenu;
 import net.crystalnexus.world.inventory.ComputationClusterGUIMenu;
@@ -94,6 +95,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(Registries.MENU, CrystalnexusMod.MODID);
 	public static final DeferredHolder<MenuType<?>, MenuType<CrystalPurifierGUIMenu>> CRYSTAL_PURIFIER_GUI = REGISTRY.register("crystal_purifier_gui", () -> IMenuTypeExtension.create(CrystalPurifierGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CrusherGuiMenu>> CRUSHER_GUI = REGISTRY.register("crusher_gui", () -> IMenuTypeExtension.create(CrusherGuiMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<MasticatorMenu>> MASTICATOR = REGISTRY.register("gene_splicer", () -> IMenuTypeExtension.create(MasticatorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SeparatorGuiMenu>> SEPARATOR_GUI = REGISTRY.register("separator_gui", () -> IMenuTypeExtension.create(SeparatorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<OreGenGUIMenu>> ORE_GEN_GUI = REGISTRY.register("ore_gen_gui", () -> IMenuTypeExtension.create(OreGenGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemCollectorGUIMenu>> ITEM_COLLECTOR_GUI = REGISTRY.register("item_collector_gui", () -> IMenuTypeExtension.create(ItemCollectorGUIMenu::new));

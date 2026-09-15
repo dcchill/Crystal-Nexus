@@ -57,6 +57,7 @@ import net.crystalnexus.client.gui.DepotCableConnectionScreen;
 import net.crystalnexus.client.gui.CraftingProcessorScreen;
 import net.crystalnexus.client.gui.CrystalPurifierGUIScreen;
 import net.crystalnexus.client.gui.CrusherGuiScreen;
+import net.crystalnexus.client.gui.MasticatorScreen;
 import net.crystalnexus.client.gui.CraftingFactoryGUIScreen;
 import net.crystalnexus.client.gui.ContainerGUIScreen;
 import net.crystalnexus.client.gui.ComputationClusterGUIScreen;
@@ -85,6 +86,7 @@ public class CrystalnexusModScreens {
 	public static void clientLoad(RegisterMenuScreensEvent event) {
 		event.register(CrystalnexusModMenus.CRYSTAL_PURIFIER_GUI.get(), CrystalPurifierGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRUSHER_GUI.get(), CrusherGuiScreen::new);
+		event.register(CrystalnexusModMenus.MASTICATOR.get(), MasticatorScreen::new);
 		event.register(CrystalnexusModMenus.SEPARATOR_GUI.get(), SeparatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);
 		event.register(CrystalnexusModMenus.ITEM_COLLECTOR_GUI.get(), ItemCollectorGUIScreen::new);

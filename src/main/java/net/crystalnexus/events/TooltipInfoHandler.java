@@ -205,6 +205,14 @@ public class TooltipInfoHandler {
 		addTooltip("circuit_press",
 				"Stamps raw materials into circuits.",
 				"Creates printed circuits and chips.");
+		addTooltip("gene_splicer",
+				"Extracts biological materials from captured mobs.",
+				"Right-click to open. Put Biomass in the left slot",
+				"and a filled Prison Cube in the middle slot.",
+				"Processes automatically without FE power.",
+				"Consumes Biomass and the mob; keeps the empty cube.",
+				"32 Biomass + a captured Enderman yields 1 Spatial Gland.",
+				"Collect the result from the right slot. See JEI for recipes.");
 		addTooltip("dust_separator",
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
@@ -425,6 +433,14 @@ public class TooltipInfoHandler {
 				"Fuel source from composting.");
 
 		// EQUIPMENT
+
+		addTooltip("prison_cube",
+				"Captures and transports one mob at a time.",
+				"Right-click a mob with an empty cube to begin sealing.",
+				"Keep the cube in hand and stay nearby until it closes.",
+				"Shift + right-click a block with room to release the mob.",
+				"Insert a filled cube into a Gene Splicer to process its mob.",
+				"Cannot capture players.");
 
 		addTooltip("compound_pickaxe",
 				"Compound Paxel - all-in-one mining tool.",

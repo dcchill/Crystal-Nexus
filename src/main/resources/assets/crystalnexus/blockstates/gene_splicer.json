@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "blockstate=0,facing=north": { "model": "crystalnexus:block/gene_splicer" },
+    "blockstate=0,facing=east": { "model": "crystalnexus:block/gene_splicer", "y": 90 },
+    "blockstate=0,facing=south": { "model": "crystalnexus:block/gene_splicer", "y": 180 },
+    "blockstate=0,facing=west": { "model": "crystalnexus:block/gene_splicer", "y": 270 },
+    "blockstate=1,facing=north": { "model": "crystalnexus:block/gene_splicer" },
+    "blockstate=1,facing=east": { "model": "crystalnexus:block/gene_splicer", "y": 90 },
+    "blockstate=1,facing=south": { "model": "crystalnexus:block/gene_splicer", "y": 180 },
+    "blockstate=1,facing=west": { "model": "crystalnexus:block/gene_splicer", "y": 270 },
+    "blockstate=2,facing=north": { "model": "crystalnexus:block/gene_splicer_on" },
+    "blockstate=2,facing=east": { "model": "crystalnexus:block/gene_splicer_on", "y": 90 },
+    "blockstate=2,facing=south": { "model": "crystalnexus:block/gene_splicer_on", "y": 180 },
+    "blockstate=2,facing=west": { "model": "crystalnexus:block/gene_splicer_on", "y": 270 }
+  }
+}

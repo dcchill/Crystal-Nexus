@@ -24,6 +24,8 @@ public class CrystalnexusModTabs {
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLESH_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLESH_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem());
@@ -65,6 +67,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
@@ -308,6 +311,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
+				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());
+				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
@@ -475,6 +480,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem());
@@ -622,6 +628,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.SYNTHETIC_RUBBER.get());
 				tabData.accept(CrystalnexusModItems.NITRILE.get());
 				tabData.accept(CrystalnexusModItems.CONDUCTIVE_ALLOY.get());
+				tabData.accept(CrystalnexusModBlocks.FLESH_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLESH_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME.get().asItem());
@@ -650,6 +658,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CRYSTAL_WRENCH.get());
 				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
+				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());
+				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());

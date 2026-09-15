@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:gene_splicing",
+  "fuel": { "item": "crystalnexus:biomass" },
+  "prison_cube": { "item": "crystalnexus:prison_cube" },
+  "mob": "minecraft:enderman",
+  "fuel_count": 32,
+  "prison_cube_count": 1,
+  "result": { "id": "crystalnexus:spatial_gland", "count": 1 }
+}

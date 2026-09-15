@@ -1,0 +1,60 @@
+{
+  "multipart": [
+    {
+      "when": { "takeover_stage": "0" },
+      "apply": { "model": "crystalnexus:block/machine_frame" }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "up" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1" }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "down" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1", "x": 180 }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "north" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1", "x": 90 }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "south" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1", "x": 270 }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "east" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1", "x": 90, "y": 90 }
+    },
+    {
+      "when": { "takeover_stage": "1", "facing": "west" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_1", "x": 90, "y": 270 }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "up" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2" }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "down" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2", "x": 180 }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "north" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2", "x": 90 }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "south" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2", "x": 270 }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "east" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2", "x": 90, "y": 90 }
+    },
+    {
+      "when": { "takeover_stage": "2", "facing": "west" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame_takeover_2", "x": 90, "y": 270 }
+    },
+    {
+      "when": { "takeover_stage": "3" },
+      "apply": { "model": "crystalnexus:block/flesh_machine_frame" }
+    }
+  ]
+}

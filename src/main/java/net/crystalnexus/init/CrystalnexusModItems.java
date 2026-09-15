@@ -65,6 +65,7 @@ import net.crystalnexus.item.PolyacrylonitrileDustItem;
 import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
+import net.crystalnexus.item.PrisonCubeItem;
 import net.crystalnexus.item.OverfuelCellItem;
 import net.crystalnexus.item.OreScannerItem;
 import net.crystalnexus.item.OrbitalStrikeRemoteItem;
@@ -183,6 +184,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY = REGISTRY.register("crystalized_alloy", CystalizedAlloyItem::new);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_BLOCK = block(CrystalnexusModBlocks.CRYSTALIZED_ALLOY_BLOCK);
 	public static final DeferredItem<Item> CRYSTAL_CRUSHER = block(CrystalnexusModBlocks.CRYSTAL_CRUSHER);
+	public static final DeferredItem<Item> MASTICATOR = block(CrystalnexusModBlocks.MASTICATOR);
 	public static final DeferredItem<Item> CHLOROPHYTE_CRUSHER = block(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER);
 	public static final DeferredItem<Item> INVERTIUM_CRUSHER = block(CrystalnexusModBlocks.INVERTIUM_CRUSHER);
 	public static final DeferredItem<Item> HYPER_CRUSHER = block(CrystalnexusModBlocks.HYPER_CRUSHER);
@@ -221,6 +223,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CYSTALIZED_HOE = REGISTRY.register("cystalized_hoe", CystalizedHoeItem::new);
 	public static final DeferredItem<Item> CRYSTAL_MACHINE_FRAME = block(CrystalnexusModBlocks.CRYSTAL_MACHINE_FRAME);
 	public static final DeferredItem<Item> MACHINE_FRAME = block(CrystalnexusModBlocks.MACHINE_FRAME);
+	public static final DeferredItem<Item> FLESH_BLOCK = block(CrystalnexusModBlocks.FLESH_BLOCK);
+	public static final DeferredItem<Item> FLESH_MACHINE_FRAME = block(CrystalnexusModBlocks.FLESH_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_MACHINE_FRAME = block(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_ACCELERATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR);
 	public static final DeferredItem<Item> CHLOROPHYTE_NUGGET = REGISTRY.register("chlorophyte_nugget", ChlorophyteNuggetItem::new);
@@ -635,6 +639,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
 	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);
 	public static final DeferredItem<Item> GRAVITY_GUN = REGISTRY.register("gravity_gun", GravityGunItem::new);
+	public static final DeferredItem<Item> PRISON_CUBE = REGISTRY.register("prison_cube", PrisonCubeItem::new);
+	public static final DeferredItem<Item> SPATIAL_GLAND = REGISTRY.register("spatial_gland", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> BLACK_HOLE_TNT = block(CrystalnexusModBlocks.BLACK_HOLE_TNT);
 	public static final DeferredItem<Item> ORBITAL_STRIKE_REMOTE = REGISTRY.register("orbital_strike_remote", OrbitalStrikeRemoteItem::new);
 

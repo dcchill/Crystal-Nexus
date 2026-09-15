@@ -1,0 +1,30 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "machine": "crystalnexus:block/crystalmachineframe",
+    "flesh": "crystalnexus:block/flesh_machine_frame",
+    "particle": "crystalnexus:block/flesh_machine_frame"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0], "to": [16, 12, 16],
+      "faces": {
+        "north": { "uv": [0, 4, 16, 16], "texture": "#machine", "cullface": "north" },
+        "east": { "uv": [0, 4, 16, 16], "texture": "#machine", "cullface": "east" },
+        "south": { "uv": [0, 4, 16, 16], "texture": "#machine", "cullface": "south" },
+        "west": { "uv": [0, 4, 16, 16], "texture": "#machine", "cullface": "west" },
+        "down": { "uv": [0, 0, 16, 16], "texture": "#machine", "cullface": "down" }
+      }
+    },
+    {
+      "from": [0, 12, 0], "to": [16, 16, 16],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 4], "texture": "#flesh", "cullface": "north" },
+        "east": { "uv": [0, 0, 16, 4], "texture": "#flesh", "cullface": "east" },
+        "south": { "uv": [0, 0, 16, 4], "texture": "#flesh", "cullface": "south" },
+        "west": { "uv": [0, 0, 16, 4], "texture": "#flesh", "cullface": "west" },
+        "up": { "uv": [0, 0, 16, 16], "texture": "#flesh", "cullface": "up" }
+      }
+    }
+  ]
+}

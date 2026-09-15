@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "crystalnexus:block/flesh_machine_frame",
+    "particle": "crystalnexus:block/flesh_machine_frame"
+  },
+  "render_type": "solid"
+}

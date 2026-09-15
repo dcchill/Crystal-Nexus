@@ -97,6 +97,7 @@ import net.crystalnexus.block.entity.CrystalSmelterBlockEntity;
 import net.crystalnexus.block.entity.CrystalPurifierBlockEntity;
 import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
+import net.crystalnexus.block.entity.MasticatorBlockEntity;
 import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
@@ -131,6 +132,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_CRUSHER = registerMany("crystal_crusher", CrystalCrusherBlockEntity::new,
 		CrystalnexusModBlocks.CRYSTAL_CRUSHER, CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER,
 		CrystalnexusModBlocks.INVERTIUM_CRUSHER, CrystalnexusModBlocks.HYPER_CRUSHER);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MASTICATOR = register("gene_splicer", CrystalnexusModBlocks.MASTICATOR, MasticatorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = registerMany("dust_separator", DustSeparatorBlockEntity::new,
 		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR,
 		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
@@ -274,6 +276,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_PURIFIER.get(), (blockEntity, side) -> ((CrystalPurifierBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_CRUSHER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYSTAL_CRUSHER.get(), (blockEntity, side) -> ((CrystalCrusherBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MASTICATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DUST_SEPARATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DUST_SEPARATOR.get(), (blockEntity, side) -> ((DustSeparatorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_GUIDE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
