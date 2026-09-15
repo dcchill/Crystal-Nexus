@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "fff",
+    "fbf",
+    "fff"
+  ],
+  "key": {
+    "f": {
+      "item": "minecraft:rotten_flesh"
+    },
+    "b": {
+      "item": "crystalnexus:biomass"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:flesh_block",
+    "count": 1
+  }
+}

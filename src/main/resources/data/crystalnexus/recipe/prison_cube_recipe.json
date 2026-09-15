@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bfb",
+    "fef",
+    "bfb"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:bone"
+    },
+    "f": {
+      "item": "crystalnexus:flesh_block"
+    },
+    "e": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:prison_cube",
+    "count": 1
+  }
+}

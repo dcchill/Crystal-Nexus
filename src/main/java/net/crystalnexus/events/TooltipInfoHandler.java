@@ -207,11 +207,9 @@ public class TooltipInfoHandler {
 				"Creates printed circuits and chips.");
 		addTooltip("gene_splicer",
 				"Extracts biological materials from captured mobs.",
-				"Right-click to open. Put Biomass in the left slot",
+				"Put Biomass in the green slot",
 				"and a filled Prison Cube in the middle slot.",
-				"Processes automatically without FE power.",
 				"Consumes Biomass and the mob; keeps the empty cube.",
-				"32 Biomass + a captured Enderman yields 1 Spatial Gland.",
 				"Collect the result from the right slot. See JEI for recipes.");
 		addTooltip("dust_separator",
 				"Sifts through mixed dust.",

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bsb",
+    "cfc",
+    "bcb"
+  ],
+  "key": {
+    "b": {
+      "item": "crystalnexus:copper_machine_bolt"
+    },
+    "s": {
+      "item": "crystalnexus:azurine_electric_motor"
+    },
+    "c": {
+      "item": "crystalnexus:flesh_block"
+    },
+    "f": {
+      "item": "crystalnexus:flesh_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:gene_splicer",
+    "count": 1
+  }
+}

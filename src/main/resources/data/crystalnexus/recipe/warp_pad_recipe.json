@@ -5,10 +5,10 @@
       "item": "crystalnexus:omega_chip"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:spatial_gland"
     },
     {
-      "item": "crystalnexus:energized_silicon"
+      "item": "crystalnexus:carbon_fiber"
     },
     {
       "item": "crystalnexus:invertium_block"
@@ -20,13 +20,22 @@
       "item": "crystalnexus:invertium_block"
     },
     {
-      "item": "crystalnexus:energized_silicon"
+      "item": "crystalnexus:carbon_fiber"
     },
     {
-      "item": "crystalnexus:carbon_fiber"
+      "item": "crystalnexus:spatial_gland"
     }
   ],
-  "integers": [],
+  "integers": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
   "strings": [],
   "output": {
     "id": "crystalnexus:warp_pad",
