@@ -15,6 +15,19 @@ public class ModCapabilities {
 
     @SubscribeEvent
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.EnergyStorage.ITEM,
+            (stack, ctx) -> new BatteryEnergyStorage(stack, net.crystalnexus.item.ToolEnergy.CAPACITY,
+                net.crystalnexus.item.ToolEnergy.MAX_RECEIVE, Integer.MAX_VALUE),
+            CrystalnexusModItems.COMPOUND_PICKAXE.get(),
+            CrystalnexusModItems.COMPOUND_SWORD.get(),
+            CrystalnexusModItems.MINING_LASER.get(),
+            CrystalnexusModItems.ORE_SCANNER.get(),
+            CrystalnexusModItems.GEIGER_COUNTER.get(),
+            CrystalnexusModItems.GRAVITY_GUN.get(),
+            CrystalnexusModItems.BUILD_GUN.get(),
+            CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get(),
+            CrystalnexusModItems.LASER_SABER.get(),
+            CrystalnexusModItems.FLORATHANE_WAND.get());
         event.registerItem(
             Capabilities.EnergyStorage.ITEM,
             (stack, ctx) -> new BatteryEnergyStorage(stack, BatteryCellItem.capacity(), BatteryCellItem.maxReceive(), BatteryCellItem.maxExtract()),

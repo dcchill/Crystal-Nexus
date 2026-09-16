@@ -205,6 +205,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> HYPER_DUST_SEPARATOR = block(CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
 	public static final DeferredItem<Item> CRYSTAL_GUIDE = block(CrystalnexusModBlocks.CRYSTAL_GUIDE);
 	public static final DeferredItem<Item> RAW_CRYSTAL_BLOCK = block(CrystalnexusModBlocks.RAW_CRYSTAL_BLOCK);
+	public static final DeferredItem<Item> MAW = block(CrystalnexusModBlocks.MAW);
 	public static final DeferredItem<Item> ITEM_COLLECTOR = block(CrystalnexusModBlocks.ITEM_COLLECTOR);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_MAGNET = REGISTRY.register("crystalized_alloy_magnet", CrystalizedAlloyMagnetItem::new);
 	public static final DeferredItem<Item> EXTRACTINATOR = block(CrystalnexusModBlocks.EXTRACTINATOR);
@@ -641,6 +642,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> GRAVITY_GUN = REGISTRY.register("gravity_gun", GravityGunItem::new);
 	public static final DeferredItem<Item> PRISON_CUBE = REGISTRY.register("prison_cube", PrisonCubeItem::new);
 	public static final DeferredItem<Item> SPATIAL_GLAND = REGISTRY.register("spatial_gland", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> ORGAN = REGISTRY.register("organ", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> BLACK_HOLE_TNT = block(CrystalnexusModBlocks.BLACK_HOLE_TNT);
 	public static final DeferredItem<Item> ORBITAL_STRIKE_REMOTE = REGISTRY.register("orbital_strike_remote", OrbitalStrikeRemoteItem::new);
 

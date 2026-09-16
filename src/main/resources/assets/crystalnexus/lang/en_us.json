@@ -1,4 +1,5 @@
 {
+  "block.crystalnexus.maw": "Maw",
   "tooltip.crystalnexus.machine_tier": "Tier %s",
   "jei.crystalnexus.minimum_machine_tier": "Minimum: %s",
   "item_group.crystalnexus.crystal_nexus_tab": "Crystal Nexus: All Items",
@@ -14,6 +15,7 @@
   "block.crystalnexus.crystal_crusher": "Crystal Ore Crusher",
   "block.crystalnexus.gene_splicer": "Gene Splicer",
   "item.crystalnexus.spatial_gland": "Spatial Gland",
+  "item.crystalnexus.organ": "Organ",
   "item.crystalnexus.prison_cube.mob": "Stored mob: %s",
   "jei.crystalnexus.gene_splicing": "Gene Splicing",
   "jei.crystalnexus.cystal_crusher": "Converts Raw Ores into Dusts. FE Efficiency upgrades reduce the operation's FE cost.",

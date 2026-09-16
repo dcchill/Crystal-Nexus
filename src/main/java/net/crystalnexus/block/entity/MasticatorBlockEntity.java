@@ -30,7 +30,7 @@ import java.util.stream.IntStream;
 public class MasticatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private static final int PROCESSING_TICKS = (int) MachineTier.TITANIUM.processingTime(100);
 	private static final int MAX_OUTPUT = 16;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
 	private int progress;
 	private final ContainerData data = new ContainerData() {
 		@Override public int get(int index) {
@@ -64,12 +64,9 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 				.filter(candidate -> candidate.matches(biomass, input))
 				.findFirst().orElse(null);
 		ItemStack result = recipe == null ? ItemStack.EMPTY : recipe.getResultItem(level.registryAccess());
-		ItemStack output = blockEntity.getItem(2);
-		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
-		boolean outputFits = outputCount > 0
-				&& (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
-				&& output.getCount() + outputCount <= result.getMaxStackSize();
-		boolean running = biomass.is(CrystalnexusModItems.BIOMASS.get()) && !result.isEmpty() && outputFits;
+		ItemStack egg = recipe == null ? ItemStack.EMPTY : recipe.spawnEgg();
+		boolean running = recipe != null && (!egg.isEmpty() || !result.isEmpty())
+				&& outputFits(blockEntity.getItem(2), egg) && outputFits(blockEntity.getItem(3), result);
 
 		setRunning(level, pos, state, running);
 		if (!running) {
@@ -85,15 +82,22 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 		if (completes) {
 			biomass.shrink(recipe.fuelCount());
 			PrisonCubeItem.clearStoredEntity(input);
-			if (output.isEmpty()) {
-				ItemStack produced = result.copy();
-				produced.setCount(outputCount);
-				blockEntity.setItem(2, produced);
-			} else {
-				output.grow(outputCount);
-			}
+			blockEntity.addOutput(2, egg);
+			blockEntity.addOutput(3, result);
 		}
 		blockEntity.setChanged();
+	}
+
+	private static boolean outputFits(ItemStack output, ItemStack result) {
+		return result.isEmpty() || ((output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
+				&& output.getCount() + Math.min(MAX_OUTPUT, result.getCount()) <= result.getMaxStackSize());
+	}
+
+	private void addOutput(int slot, ItemStack result) {
+		if (result.isEmpty()) return;
+		int count = Math.min(MAX_OUTPUT, result.getCount());
+		if (getItem(slot).isEmpty()) setItem(slot, result.copyWithCount(count));
+		else getItem(slot).grow(count);
 	}
 
 	private static void setRunning(Level level, BlockPos pos, BlockState state, boolean running) {
@@ -160,6 +164,6 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 
 	@Override
 	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
-		return slot == 2;
+		return slot == 2 || slot == 3;
 	}
 }

@@ -82,6 +82,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_COLLECTOR.get().asItem());
+                tabData.accept(CrystalnexusModBlocks.MAW.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_CONSTRUCTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem());
@@ -313,6 +314,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
 				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());
 				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
+				tabData.accept(CrystalnexusModItems.ORGAN.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
@@ -511,6 +513,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.AOE_CHARGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_COLLECTOR.get().asItem());
+                tabData.accept(CrystalnexusModBlocks.MAW.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get().asItem());

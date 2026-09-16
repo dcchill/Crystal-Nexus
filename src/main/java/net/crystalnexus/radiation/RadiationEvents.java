@@ -61,6 +61,8 @@ public class RadiationEvents {
                 if (stack.getItem() != CrystalnexusModItems.GEIGER_COUNTER.get())
                     continue;
 
+                if (!net.crystalnexus.item.ToolEnergy.consume(player, stack, 1, false)) continue;
+
                 RadiationResult result =
                         calculateRadiation(level, player.blockPosition());
 

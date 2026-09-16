@@ -217,6 +217,11 @@ public final class BuildgunSchematicManager {
 			return;
 		}
 
+        int energyCost = (int) Math.min(Integer.MAX_VALUE, 100L * blocks.size());
+        if (!net.crystalnexus.item.ToolEnergy.consume(player, stack, energyCost, false)) {
+            player.displayClientMessage(Component.literal("Not enough FE (" + energyCost + ")").withStyle(ChatFormatting.RED), true);
+            return;
+        }
 		consumeItems(player, needed);
 		animateBuild(player, stack, blocks);
 		CustomData.update(DataComponents.CUSTOM_DATA, stack, data -> data.putBoolean(PLACEMENT_ACTIVE, false));

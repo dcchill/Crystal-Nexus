@@ -249,6 +249,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> HYPER_DUST_SEPARATOR = REGISTRY.register("hyper_dust_separator", () -> new DustSeparatorBlock(MachineTier.HYPER));
 	public static final DeferredBlock<Block> CRYSTAL_GUIDE = REGISTRY.register("crystal_guide", CrystalGuideBlock::new);
 	public static final DeferredBlock<Block> RAW_CRYSTAL_BLOCK = REGISTRY.register("raw_crystal_block", RawCrystalBlockBlock::new);
+	public static final DeferredBlock<Block> MAW = REGISTRY.register("maw", net.crystalnexus.block.MawBlock::new);
 	public static final DeferredBlock<Block> ITEM_COLLECTOR = REGISTRY.register("item_collector", ItemCollectorBlock::new);
 	public static final DeferredBlock<Block> EXTRACTINATOR = REGISTRY.register("extractinator", () -> new ExtractinatorBlock());
 	public static final DeferredBlock<Block> TITANIUM_EXTRACTINATOR = REGISTRY.register("azurine_extractinator", () -> new ExtractinatorBlock(MachineTier.TITANIUM));

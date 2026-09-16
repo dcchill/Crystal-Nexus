@@ -5,6 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.crystalnexus.item.PrisonCubeItem;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,6 +37,11 @@ public final class GeneSplicingRecipe implements CrystalNexusRecipe {
 		this.result = result.copy();
 		this.fuelCount = Math.max(1, fuelCount);
 		this.prisonCubeCount = Math.max(1, prisonCubeCount);
+	}
+
+	public ItemStack spawnEgg() {
+		SpawnEggItem egg = SpawnEggItem.byId(BuiltInRegistries.ENTITY_TYPE.get(mob));
+		return egg == null ? ItemStack.EMPTY : new ItemStack(egg);
 	}
 
 	public Ingredient fuel() { return fuel; }
@@ -72,7 +79,7 @@ public final class GeneSplicingRecipe implements CrystalNexusRecipe {
 				Ingredient.CODEC_NONEMPTY.fieldOf("fuel").forGetter(recipe -> recipe.fuel),
 				Ingredient.CODEC_NONEMPTY.fieldOf("prison_cube").forGetter(recipe -> recipe.prisonCube),
 				ResourceLocation.CODEC.fieldOf("mob").forGetter(recipe -> recipe.mob),
-				ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result),
+				ItemStack.STRICT_CODEC.optionalFieldOf("result", ItemStack.EMPTY).forGetter(recipe -> recipe.result),
 				Codec.INT.optionalFieldOf("fuel_count", 1).forGetter(recipe -> recipe.fuelCount),
 				Codec.INT.optionalFieldOf("prison_cube_count", 1).forGetter(recipe -> recipe.prisonCubeCount)
 			).apply(instance, GeneSplicingRecipe::new));
@@ -81,14 +88,14 @@ public final class GeneSplicingRecipe implements CrystalNexusRecipe {
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.fuel);
 					Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.prisonCube);
 					buffer.writeResourceLocation(recipe.mob);
-					ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+					ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, recipe.result);
 					buffer.writeVarInt(recipe.fuelCount);
 					buffer.writeVarInt(recipe.prisonCubeCount);
 				},
 				buffer -> new GeneSplicingRecipe(
 						Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
 						Ingredient.CONTENTS_STREAM_CODEC.decode(buffer),
-						buffer.readResourceLocation(), ItemStack.STREAM_CODEC.decode(buffer), buffer.readVarInt(), buffer.readVarInt()));
+						buffer.readResourceLocation(), ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer), buffer.readVarInt(), buffer.readVarInt()));
 
 		@Override public MapCodec<GeneSplicingRecipe> codec() { return CODEC; }
 		@Override public StreamCodec<RegistryFriendlyByteBuf, GeneSplicingRecipe> streamCodec() { return STREAM_CODEC; }

@@ -23,8 +23,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class OreScannerRightclickedProcedure {
@@ -40,7 +38,7 @@ public class OreScannerRightclickedProcedure {
 	// persistent filter key on the player
 	private static final String FILTER_TAG = "crystalnexus_ore_scanner_filter";
 
-	public static void execute(LevelAccessor world, Entity entity) {
+	public static void execute(LevelAccessor world, Entity entity, ItemStack scanner) {
 		if (entity == null) return;
 		if (!(world instanceof Level level)) return;
 		if (level.isClientSide) return;
@@ -53,7 +51,7 @@ public class OreScannerRightclickedProcedure {
 		}
 
 		// ✅ Normal use = costs FE
-		if (!consumeFeFromInventoryTwoPass(sp, FE_COST)) {
+		if (!net.crystalnexus.item.ToolEnergy.consume(sp, scanner, FE_COST, false)) {
 			sp.displayClientMessage(Component.literal("Not enough FE (" + FE_COST + ")"), true);
 			level.playSound(null, sp.blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.6f, 0.5f);
 			return;
@@ -116,44 +114,6 @@ public class OreScannerRightclickedProcedure {
 				sp
 		);
 		return level.clip(ctx);
-	}
-
-	// ---------------- ENERGY DRAIN (TWO-PASS) ----------------
-
-	// ✅ Pass 1: simulate total extractable FE
-	// ✅ Pass 2: actually drain if enough
-	private static boolean consumeFeFromInventoryTwoPass(ServerPlayer sp, int amount) {
-		int available = 0;
-
-		for (int slot = 0; slot < sp.getInventory().getContainerSize(); slot++) {
-			ItemStack stack = sp.getInventory().getItem(slot);
-			if (stack.isEmpty()) continue;
-
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null) continue;
-
-			int can = es.extractEnergy(amount - available, true);
-			if (can > 0) {
-				available += can;
-				if (available >= amount) break;
-			}
-		}
-
-		if (available < amount) return false; // not enough FE -> no drain, no scan
-
-		int remaining = amount;
-		for (int slot = 0; slot < sp.getInventory().getContainerSize() && remaining > 0; slot++) {
-			ItemStack stack = sp.getInventory().getItem(slot);
-			if (stack.isEmpty()) continue;
-
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null) continue;
-
-			int extracted = es.extractEnergy(remaining, false);
-			remaining -= extracted;
-		}
-
-		return remaining <= 0;
 	}
 
 	// ---------------- SCAN ----------------

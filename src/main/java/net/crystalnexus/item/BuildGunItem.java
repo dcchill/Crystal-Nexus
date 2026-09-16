@@ -14,6 +14,15 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 
 public class BuildGunItem extends Item {
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return true; }
+
+    @Override
+    public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+
+    @Override
+    public int getBarColor(ItemStack stack) { return 0x00FF00; }
 	public BuildGunItem() {
 		super(new Item.Properties().stacksTo(1));
 	}

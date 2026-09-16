@@ -89,6 +89,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.MASTICATOR.get(), MasticatorScreen::new);
 		event.register(CrystalnexusModMenus.SEPARATOR_GUI.get(), SeparatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);
+		event.register(CrystalnexusModMenus.MAW.get(), net.crystalnexus.client.gui.MawScreen::new);
 		event.register(CrystalnexusModMenus.ITEM_COLLECTOR_GUI.get(), ItemCollectorGUIScreen::new);
 		event.register(CrystalnexusModMenus.EXTRACTINATOR_GUI.get(), ExtractinatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.REACTOR_GUI.get(), ReactorGUIScreen::new);

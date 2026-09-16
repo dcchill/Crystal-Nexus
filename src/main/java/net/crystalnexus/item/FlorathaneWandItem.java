@@ -15,6 +15,10 @@ import net.crystalnexus.procedures.FlorathaneWandRightclickedProcedure;
 import net.crystalnexus.init.CrystalnexusModItems;
 
 public class FlorathaneWandItem extends ShieldItem {
+    @Override public boolean isBarVisible(ItemStack stack) { return true; }
+    @Override public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+    @Override public int getBarColor(ItemStack stack) { return 0x00FF00; }
+
 	public FlorathaneWandItem() {
 		super(new Item.Properties().durability(1024));
 	}

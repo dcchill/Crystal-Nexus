@@ -35,7 +35,7 @@ public class MasticatorMenu extends AbstractContainerMenu {
 		super(CrystalnexusModMenus.MASTICATOR.get(), id);
 		this.container = container;
 		this.data = data;
-		checkContainerSize(container, 3);
+		checkContainerSize(container, 4);
 		this.access = container instanceof BlockEntity blockEntity
 				? ContainerLevelAccess.create(inventory.player.level(), blockEntity.getBlockPos()) : ContainerLevelAccess.NULL;
 		container.startOpen(inventory.player);
@@ -44,7 +44,11 @@ public class MasticatorMenu extends AbstractContainerMenu {
 			@Override public boolean mayPlace(ItemStack stack) { return stack.is(CrystalnexusModItems.BIOMASS.get()); }
 		});
 		addSlot(new Slot(container, 1, 80, 35));
-		addSlot(new Slot(container, 2, 134, 35) {
+		addSlot(new Slot(container, 2, 134, 26) {
+			@Override public boolean mayPlace(ItemStack stack) { return false; }
+		});
+
+		addSlot(new Slot(container, 3, 134, 44) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		});
 
@@ -65,7 +69,7 @@ public class MasticatorMenu extends AbstractContainerMenu {
 
 	private static Container containerAt(Inventory inventory, FriendlyByteBuf data) {
 		BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.readBlockPos());
-		return blockEntity instanceof MasticatorBlockEntity masticator ? masticator : new SimpleContainer(3);
+		return blockEntity instanceof MasticatorBlockEntity masticator ? masticator : new SimpleContainer(4);
 	}
 
 	@Override
@@ -81,8 +85,8 @@ public class MasticatorMenu extends AbstractContainerMenu {
 		}
 		ItemStack stack = slot.getItem();
 		ItemStack copy = stack.copy();
-		if (index < 3) {
-			if (!moveItemStackTo(stack, 3, slots.size(), true)) return ItemStack.EMPTY;
+		if (index < 4) {
+			if (!moveItemStackTo(stack, 4, slots.size(), true)) return ItemStack.EMPTY;
 		} else {
 			int target = stack.is(CrystalnexusModItems.BIOMASS.get()) ? 0 : 1;
 			if (!moveItemStackTo(stack, target, target + 1, false)) return ItemStack.EMPTY;

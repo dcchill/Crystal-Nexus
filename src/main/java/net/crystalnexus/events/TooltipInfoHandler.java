@@ -25,6 +25,7 @@ public class TooltipInfoHandler {
 	private static final Map<String, String[]> TOOLTIP_DATA = new HashMap<>();
 
 	static {
+        addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 
 		// POWER & ENERGY GENERATION
 
@@ -33,16 +34,16 @@ public class TooltipInfoHandler {
 				"Connect machines to this to buffer your power grid.");
 		addTooltip("battery_cell",
 				"Portable energy storage cell.",
-				"Powers items in your inventory.");
+				"Automatically charges FE items in your inventory.");
 		addTooltip("carbon_battery_cell",
 				"Upgraded portable energy storage.",
-				"Powers items in your inventory.");
+				"Automatically charges FE items in your inventory.");
 		addTooltip("dense_battery_cell",
 				"High-density portable energy storage.",
-				"Powers items in your inventory.");
+				"Automatically charges FE items in your inventory.");
 		addTooltip("dark_battery_cell",
 				"Advanced portable energy storage.",
-				"Powers items in your inventory.");
+				"Automatically charges FE items in your inventory.");
 		addTooltip("ee_battery",
 				"EE-based energy storage block.",
 				"Connect machines to this to buffer your power grid.");
@@ -210,7 +211,7 @@ public class TooltipInfoHandler {
 				"Put Biomass in the green slot",
 				"and a filled Prison Cube in the middle slot.",
 				"Consumes Biomass and the mob; keeps the empty cube.",
-				"Collect the result from the right slot. See JEI for recipes.");
+				"Collect the spawn egg and drops from the right slots. See JEI for recipes.");
 		addTooltip("dust_separator",
 				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
@@ -448,7 +449,7 @@ public class TooltipInfoHandler {
 				"High damage weapon. Uses 500 FE per hit.");
 		addTooltip("mining_laser",
 				"High-tech mining laser.",
-				"Mines blocks remotely using battery energy.");
+				"Mines blocks remotely using stored FE.");
 		addTooltip("paint_gun",
 				"Paintball Gun.",
 				"Fires paint to color blocks.");
@@ -479,7 +480,7 @@ public class TooltipInfoHandler {
 				"Uses fuel for fast movement.");
 		addTooltip("hover_pack_chestplate",
 				"Hoverpack - stable flight control.",
-				"Uses battery power for hovering.");
+				"Uses stored FE for hovering.");
 
 		addTooltip("acceleration_upgrade",
 				"Machine Acceleration Upgrade.",

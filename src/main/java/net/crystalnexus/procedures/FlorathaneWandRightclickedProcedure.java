@@ -45,6 +45,7 @@ public class FlorathaneWandRightclickedProcedure {
 								entity.level().clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(11)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity)).getBlockPos().getY(),
 								entity.level().clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(11)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity)).getBlockPos().getZ())))
 						.getBlock() instanceof BonemealableBlock) {
+                    if (entity instanceof Player player && !net.crystalnexus.item.ToolEnergy.consume(player, itemstack, 100, entity.level().isClientSide())) return false;
 					if (world instanceof Level _level) {
 						BlockPos _bp = new BlockPos(
 								entity.level().clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(11)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity)).getBlockPos().getX(),
@@ -62,12 +63,7 @@ public class FlorathaneWandRightclickedProcedure {
 							_level.playLocalSound(x, y, z, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("item.bone_meal.use")), SoundSource.PLAYERS, (float) 0.6, 1, false);
 						}
 					}
-					if (!(entity instanceof Player _plr ? _plr.getAbilities().instabuild : false)) {
-						if (world instanceof ServerLevel _level) {
-							itemstack.hurtAndBreak(1, _level, null, _stkprov -> {
-							});
-						}
-					}
+
 				}
 				return true;
 			}

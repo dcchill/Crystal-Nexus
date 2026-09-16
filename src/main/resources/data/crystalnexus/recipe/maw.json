@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bob",
+    "fmf",
+    "bfb"
+  ],
+  "key": {
+    "b": { "item": "crystalnexus:copper_machine_bolt" },
+    "o": { "item": "crystalnexus:organ" },
+    "f": { "item": "crystalnexus:flesh_block" },
+    "m": { "item": "crystalnexus:flesh_machine_frame" }
+  },
+  "result": {
+    "id": "crystalnexus:maw",
+    "count": 1
+  }
+}

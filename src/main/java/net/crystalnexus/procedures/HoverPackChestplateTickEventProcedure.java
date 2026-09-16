@@ -1,7 +1,5 @@
 package net.crystalnexus.procedures;
 
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -241,59 +239,12 @@ serverLevel.sendParticles(ParticleTypes.CLOUD, rightXX, baseY, rightZZ, count, s
 		return Math.max(min, Math.min(max, v));
 	}
 
-	private static boolean canPayEnergy(Entity entity, int amount) {
-		if (!(entity instanceof Player player)) return false;
-
-		int remaining = amount;
-
-		for (ItemStack stack : player.getInventory().items) {
-			if (stack.isEmpty()) continue;
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null || !es.canExtract()) continue;
-
-			int extracted = es.extractEnergy(remaining, true); // simulate
-			remaining -= extracted;
-			if (remaining <= 0) return true;
-		}
-
-		for (ItemStack stack : player.getInventory().offhand) {
-			if (stack.isEmpty()) continue;
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null || !es.canExtract()) continue;
-
-			int extracted = es.extractEnergy(remaining, true); // simulate
-			remaining -= extracted;
-			if (remaining <= 0) return true;
-		}
-
-		return false;
-	}
-
-	private static void drainEnergy(Entity entity, int amount) {
-		if (!(entity instanceof Player player)) return;
-
-		int remaining = amount;
-
-		for (ItemStack stack : player.getInventory().items) {
-			if (stack.isEmpty()) continue;
-
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null || !es.canExtract()) continue;
-
-			int extracted = es.extractEnergy(remaining, false);
-			remaining -= extracted;
-			if (remaining <= 0) return;
-		}
-
-		for (ItemStack stack : player.getInventory().offhand) {
-			if (stack.isEmpty()) continue;
-
-			IEnergyStorage es = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if (es == null || !es.canExtract()) continue;
-
-			int extracted = es.extractEnergy(remaining, false);
-			remaining -= extracted;
-			if (remaining <= 0) return;
-		}
-	}
+    private static boolean canPayEnergy(Entity entity, int amount) {
+        return entity instanceof Player player && net.crystalnexus.item.ToolEnergy.consume(player,
+            player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST), amount, true);
+    }
+    private static void drainEnergy(Entity entity, int amount) {
+        if (entity instanceof Player player) net.crystalnexus.item.ToolEnergy.consume(player,
+            player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST), amount, false);
+    }
 }

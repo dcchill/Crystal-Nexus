@@ -82,6 +82,10 @@ public abstract class HoverPackItem extends ArmorItem {
 	}
 
 	public static class Chestplate extends HoverPackItem {
+    @Override public boolean isBarVisible(ItemStack stack) { return true; }
+    @Override public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+    @Override public int getBarColor(ItemStack stack) { return 0x00FF00; }
+
 		public Chestplate() {
 			super(ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(33)));
 		}

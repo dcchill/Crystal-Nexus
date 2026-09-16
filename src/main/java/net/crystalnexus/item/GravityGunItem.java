@@ -54,6 +54,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class GravityGunItem extends Item implements GeoItem {
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return true; }
+
+    @Override
+    public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+
+    @Override
+    public int getBarColor(ItemStack stack) { return 0x00FF00; }
 	private static final double PICKUP_RANGE = 8.0D;
 	private static final double DEFAULT_HOLD_DISTANCE = 4.0D;
 	private static final double MIN_HOLD_DISTANCE = 2.0D;
@@ -118,8 +127,10 @@ public class GravityGunItem extends Item implements GeoItem {
 			return InteractionResult.SUCCESS_NO_ITEM_USED;
 		}
 
+		if (!ToolEnergy.consume(player, stack, 100, true)) return InteractionResult.FAIL;
 		FallingBlockEntity fallingBlock = tryGrabBlockAt(serverPlayer, serverLevel, context.getClickedPos());
 		if (fallingBlock != null) {
+			ToolEnergy.consume(player, stack, 100, false);
 			grabEntity(serverPlayer, fallingBlock, stack);
 			setHoldingState(stack, true, fallingBlock.getUUID());
 			return InteractionResult.SUCCESS_NO_ITEM_USED;
@@ -143,8 +154,10 @@ public class GravityGunItem extends Item implements GeoItem {
 			return noSwingResult(stack);
 		}
 
+		if (!ToolEnergy.consume(player, stack, 100, true)) return InteractionResultHolder.fail(stack);
 		Entity targetEntity = findTargetEntity(serverPlayer);
 		if (targetEntity != null) {
+			ToolEnergy.consume(player, stack, 100, false);
 			grabEntity(serverPlayer, targetEntity, stack);
 			setHoldingState(stack, true, targetEntity.getUUID());
 			return noSwingResult(stack);
@@ -152,6 +165,7 @@ public class GravityGunItem extends Item implements GeoItem {
 
 		FallingBlockEntity fallingBlock = tryGrabTargetBlock(serverPlayer, serverLevel);
 		if (fallingBlock != null) {
+			ToolEnergy.consume(player, stack, 100, false);
 			grabEntity(serverPlayer, fallingBlock, stack);
 			setHoldingState(stack, true, fallingBlock.getUUID());
 			return noSwingResult(stack);
@@ -188,6 +202,11 @@ public class GravityGunItem extends Item implements GeoItem {
 			return;
 		}
 
+        if (!ToolEnergy.consume(player, stack, 4, false)) {
+            releaseHeldEntity(playerId, held);
+            setHoldingState(stack, false, null);
+            return;
+        }
 		moveHeldEntity(player, held, stack);
 		tickGrabAnimation(stack);
 	}
@@ -234,8 +253,9 @@ public class GravityGunItem extends Item implements GeoItem {
 			return false;
 		}
 
-		throwHeldEntity(player, held);
 		ItemStack stack = heldGravityGun(player);
+        if (!ToolEnergy.consume(player, stack, 100, false)) return false;
+		throwHeldEntity(player, held);
 		if (!stack.isEmpty()) {
 			setHoldingState(stack, false, null);
 		}

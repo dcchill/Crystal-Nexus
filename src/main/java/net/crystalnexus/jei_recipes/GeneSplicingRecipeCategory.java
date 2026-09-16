@@ -40,11 +40,16 @@ public final class GeneSplicingRecipeCategory implements IRecipeCategory<GeneSpl
 	@Override public void setRecipe(IRecipeLayoutBuilder builder, GeneSplicingRecipe recipe, IFocusGroup focuses) {
 		ItemStack fuel = recipe.fuel().getItems()[0].copy();
 		fuel.setCount(recipe.fuelCount());
-		builder.addSlot(RecipeIngredientRole.INPUT, 32, 34).addItemStack(fuel);
+		builder.addSlot(RecipeIngredientRole.INPUT, 26, 35).addItemStack(fuel);
 		ItemStack prisonCube = new ItemStack(CrystalnexusModItems.PRISON_CUBE.get());
 		prisonCube.setCount(recipe.prisonCubeCount());
 		PrisonCubeItem.setStoredEntityType(prisonCube, recipe.mob());
-		builder.addSlot(RecipeIngredientRole.INPUT, 72, 34).addItemStack(prisonCube);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 124, 34).addItemStack(recipe.getResultItem(null));
+		builder.addSlot(RecipeIngredientRole.INPUT, 80, 35).addItemStack(prisonCube);
+		var eggSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 26);
+		ItemStack egg = recipe.spawnEgg();
+		if (!egg.isEmpty()) eggSlot.addItemStack(egg);
+		var dropSlot = builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 44);
+		ItemStack drop = recipe.getResultItem(null);
+		if (!drop.isEmpty()) dropSlot.addItemStack(drop);
 	}
 }

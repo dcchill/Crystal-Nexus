@@ -178,6 +178,7 @@
     "crystalnexus:insulated_azurine_casing",
     "crystalnexus:cryogenic_flash_freezer_hatch",
     "crystalnexus:multiblock_fluid_output",
-    "crystalnexus:multiblock_item_input"
+    "crystalnexus:multiblock_item_input",
+    "crystalnexus:maw"
   ]
 }

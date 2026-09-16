@@ -20,6 +20,15 @@ import net.crystalnexus.item.renderer.GeigerCounterItemRenderer;
 import java.util.function.Consumer;
 
 public class GeigerCounterItem extends Item implements GeoItem {
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return true; }
+
+    @Override
+    public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+
+    @Override
+    public int getBarColor(ItemStack stack) { return 0x00FF00; }
 	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	public String animationprocedure = "empty";
 

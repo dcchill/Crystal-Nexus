@@ -34,6 +34,15 @@ import java.util.List;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public class CompoundPickaxeItem extends TieredItem {
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return true; }
+
+    @Override
+    public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+
+    @Override
+    public int getBarColor(ItemStack stack) { return 0x00FF00; }
 	private static final Tier TOOL_TIER = new Tier() {
 		@Override
 		public int getUses() {

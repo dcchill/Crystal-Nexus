@@ -26,11 +26,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.crystalnexus.config.CrystalnexusConfig;
 
 public class MiningLaserItem extends Item {
+
+    @Override
+    public boolean isBarVisible(ItemStack stack) { return true; }
+
+    @Override
+    public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+
+    @Override
+    public int getBarColor(ItemStack stack) { return 0x00FF00; }
 	public static final double DEFAULT_RANGE = 32.0D;
 	private static final int USE_DURATION_TICKS = 72000;
 
@@ -65,8 +72,8 @@ public class MiningLaserItem extends Item {
 			return InteractionResultHolder.consume(stack);
 		}
 
-		if (!player.getAbilities().instabuild && !canExtractFromBatteries(player, sustainFePerTick())) {
-			player.displayClientMessage(Component.literal("Out of battery power").withStyle(ChatFormatting.RED), true);
+		if (!player.getAbilities().instabuild && !ToolEnergy.consume(player, stack, sustainFePerTick(), true)) {
+			player.displayClientMessage(Component.literal("Out of power").withStyle(ChatFormatting.RED), true);
 			return InteractionResultHolder.fail(stack);
 		}
 
@@ -85,9 +92,9 @@ public class MiningLaserItem extends Item {
 		}
 
 		boolean creative = player.getAbilities().instabuild;
-		if (!creative && !extractFromBatteries(player, sustainFePerTick())) {
+		if (!creative && !ToolEnergy.consume(player, stack, sustainFePerTick(), false)) {
 			player.stopUsingItem();
-			player.displayClientMessage(Component.literal("Out of battery power").withStyle(ChatFormatting.RED), true);
+			player.displayClientMessage(Component.literal("Out of power").withStyle(ChatFormatting.RED), true);
 			return;
 		}
 
@@ -106,9 +113,9 @@ public class MiningLaserItem extends Item {
 			return;
 		}
 
-		if (!creative && !extractFromBatteries(player, mineFePerBlock())) {
+		if (!creative && !ToolEnergy.consume(player, stack, mineFePerBlock(), false)) {
 			player.stopUsingItem();
-			player.displayClientMessage(Component.literal("Out of battery power").withStyle(ChatFormatting.RED), true);
+			player.displayClientMessage(Component.literal("Out of power").withStyle(ChatFormatting.RED), true);
 			return;
 		}
 
@@ -178,44 +185,4 @@ public class MiningLaserItem extends Item {
 		}
 	}
 
-	private static boolean canExtractFromBatteries(Player player, int feNeeded) {
-		return countExtractableBatteryEnergy(player, feNeeded) >= feNeeded;
-	}
-
-	private static int countExtractableBatteryEnergy(Player player, int feNeeded) {
-		int available = 0;
-		for (ItemStack battery : player.getInventory().items) {
-			available += extractFromBattery(battery, feNeeded - available, true);
-			if (available >= feNeeded) {
-				return available;
-			}
-		}
-		available += extractFromBattery(player.getOffhandItem(), feNeeded - available, true);
-		return available;
-	}
-
-	private static boolean extractFromBatteries(Player player, int feNeeded) {
-		if (!canExtractFromBatteries(player, feNeeded)) {
-			return false;
-		}
-
-		int remaining = feNeeded;
-		for (ItemStack battery : player.getInventory().items) {
-			remaining -= extractFromBattery(battery, remaining, false);
-			if (remaining <= 0) {
-				return true;
-			}
-		}
-		remaining -= extractFromBattery(player.getOffhandItem(), remaining, false);
-		return remaining <= 0;
-	}
-
-	private static int extractFromBattery(ItemStack battery, int amount, boolean simulate) {
-		if (amount <= 0 || battery.isEmpty()) {
-			return 0;
-		}
-
-		IEnergyStorage energy = battery.getCapability(Capabilities.EnergyStorage.ITEM, null);
-		return energy == null ? 0 : energy.extractEnergy(amount, simulate);
-	}
 }

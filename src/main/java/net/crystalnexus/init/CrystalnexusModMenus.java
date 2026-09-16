@@ -98,6 +98,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<MasticatorMenu>> MASTICATOR = REGISTRY.register("gene_splicer", () -> IMenuTypeExtension.create(MasticatorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SeparatorGuiMenu>> SEPARATOR_GUI = REGISTRY.register("separator_gui", () -> IMenuTypeExtension.create(SeparatorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<OreGenGUIMenu>> ORE_GEN_GUI = REGISTRY.register("ore_gen_gui", () -> IMenuTypeExtension.create(OreGenGUIMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.MawMenu>> MAW = REGISTRY.register("maw", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.MawMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ItemCollectorGUIMenu>> ITEM_COLLECTOR_GUI = REGISTRY.register("item_collector_gui", () -> IMenuTypeExtension.create(ItemCollectorGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ExtractinatorGuiMenu>> EXTRACTINATOR_GUI = REGISTRY.register("extractinator_gui", () -> IMenuTypeExtension.create(ExtractinatorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ReactorGUIMenu>> REACTOR_GUI = REGISTRY.register("reactor_gui", () -> IMenuTypeExtension.create(ReactorGUIMenu::new));

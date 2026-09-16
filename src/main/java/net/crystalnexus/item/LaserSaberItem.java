@@ -30,8 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
 
@@ -39,10 +37,12 @@ import java.util.List;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public class LaserSaberItem extends SwordItem {
+    @Override public boolean isBarVisible(ItemStack stack) { return true; }
+    @Override public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
+    @Override public int getBarColor(ItemStack stack) { return 0x00FF00; }
+
     public static final int FE_PER_TICK = 20;
     private static final String POWERED = "LaserSaberPowered";
-    private static final TagKey<Item> BATTERIES = ItemTags.create(
-            ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "battery"));
     private static final ItemAttributeModifiers POWERED_ATTRIBUTES = ItemAttributeModifiers.builder()
             .add(Attributes.ATTACK_DAMAGE,
                     new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 9.0, AttributeModifier.Operation.ADD_VALUE),
@@ -109,34 +109,7 @@ public class LaserSaberItem extends SwordItem {
     }
 
     private static boolean consumeEnergy(Player player, ItemStack saber, int amount, boolean simulate) {
-        int available = 0;
-        for (ItemStack battery : player.getInventory().items) {
-            if (battery != saber && battery.is(BATTERIES)) {
-                available += extract(battery, amount - available, true);
-                if (available >= amount) break;
-            }
-        }
-        ItemStack offhand = player.getOffhandItem();
-        if (available < amount && offhand != saber && offhand.is(BATTERIES)) {
-            available += extract(offhand, amount - available, true);
-        }
-        if (available < amount || simulate) return available >= amount;
-
-        int remaining = amount;
-        for (ItemStack battery : player.getInventory().items) {
-            if (remaining <= 0) break;
-            if (battery != saber && battery.is(BATTERIES)) remaining -= extract(battery, remaining, false);
-        }
-        if (remaining > 0 && offhand != saber && offhand.is(BATTERIES)) {
-            remaining -= extract(offhand, remaining, false);
-        }
-        return remaining <= 0;
-    }
-
-    private static int extract(ItemStack stack, int amount, boolean simulate) {
-        if (amount <= 0 || stack.isEmpty()) return 0;
-        IEnergyStorage energy = stack.getCapability(Capabilities.EnergyStorage.ITEM, null);
-        return energy == null ? 0 : energy.extractEnergy(amount, simulate);
+        return ToolEnergy.consume(player, saber, amount, simulate);
     }
 
     @Override
