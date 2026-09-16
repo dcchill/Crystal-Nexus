@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:hemolyzer",
+  "input": { "item": "crystalnexus:organ" },
+  "blood": {
+    "fluid": "crystalnexus:blood",
+    "amount": 500
+  }
+}

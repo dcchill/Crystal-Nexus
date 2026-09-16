@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:hemolyzer",
+  "input": { "item": "minecraft:slime_ball" },
+  "blood": {
+    "fluid": "crystalnexus:resin",
+    "amount": 250
+  }
+}

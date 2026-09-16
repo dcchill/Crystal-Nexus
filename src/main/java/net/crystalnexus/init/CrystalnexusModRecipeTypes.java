@@ -20,6 +20,7 @@ import net.crystalnexus.jei_recipes.PurificationRecipe;
 import net.crystalnexus.jei_recipes.PistonGeneratorJEIRecipe;
 import net.crystalnexus.jei_recipes.OreCrushingJeiRecipe;
 import net.crystalnexus.jei_recipes.GeneSplicingRecipe;
+import net.crystalnexus.jei_recipes.HemolyzerRecipe;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
 import net.crystalnexus.jei_recipes.MatterTransmutationRecipe;
 import net.crystalnexus.jei_recipes.InverterJeiRecipe;
@@ -62,6 +63,8 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("ore_crushing_jei", () -> OreCrushingJeiRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("gene_splicing", () -> GeneSplicingRecipe.Type.INSTANCE);
 			SERIALIZERS.register("gene_splicing", () -> GeneSplicingRecipe.Serializer.INSTANCE);
+			RECIPE_TYPES.register("hemolyzer", () -> HemolyzerRecipe.Type.INSTANCE);
+			SERIALIZERS.register("hemolyzer", () -> HemolyzerRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("parts_assembling", () -> PartsAssemblingRecipe.Type.INSTANCE);
 			SERIALIZERS.register("parts_assembling", () -> PartsAssemblingRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("dust_seperation", () -> DustSeperationRecipe.Type.INSTANCE);

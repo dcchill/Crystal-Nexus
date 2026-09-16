@@ -38,8 +38,9 @@ public final class MachineEnergyOutputBlockEntity extends BlockEntity {
 	public void unbindController(BlockPos pos) { if (pos.equals(controller)) { controller = null; sync(); } }
 	public boolean isBoundTo(BlockPos pos) { return pos.equals(controller); }
 	@Nullable private IEnergyStorage target() {
-		if (level == null || controller == null
-			|| !(level.getBlockEntity(controller) instanceof MultiblockPortTarget target)) return null;
+		if (level == null || controller == null || !level.hasChunkAt(controller)
+			|| !(level.getBlockEntity(controller) instanceof MultiblockPortTarget target)
+			|| !target.acceptsMultiblockPort(worldPosition)) return null;
 		return target.multiblockEnergyOutput();
 	}
 

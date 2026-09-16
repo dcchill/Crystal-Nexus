@@ -23,15 +23,15 @@ public final class TankNetwork {
         Set<BlockPos> visited = new HashSet<>();
         for (BlockPos seed : seeds) {
             if (visited.contains(seed)) continue;
-            if (!(level.getBlockEntity(seed) instanceof TankBlockEntity)) continue;
+            if (!(level.getBlockEntity(seed) instanceof TankBlockEntity tank)) continue;
 
-            Set<BlockPos> comp = collectComponent(level, seed);
+            Set<BlockPos> comp = collectComponent(level, seed, tank);
             visited.addAll(comp);
             rebuildComponent(level, comp);
         }
     }
 
-    private static Set<BlockPos> collectComponent(Level level, BlockPos start) {
+    private static Set<BlockPos> collectComponent(Level level, BlockPos start, TankBlockEntity type) {
         ArrayDeque<BlockPos> q = new ArrayDeque<>();
         Set<BlockPos> out = new HashSet<>();
         q.add(start);
@@ -42,7 +42,7 @@ public final class TankNetwork {
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (out.contains(n)) continue;
-                if (level.getBlockEntity(n) instanceof TankBlockEntity) {
+                if (level.getBlockEntity(n) instanceof TankBlockEntity tank && tank.getType() == type.getType()) {
                     out.add(n);
                     q.add(n);
                 }

@@ -30,6 +30,7 @@ import net.crystalnexus.fluid.ArgonFluid;
 import net.crystalnexus.fluid.OxygenFluid;
 import net.crystalnexus.fluid.AtmosphereFluid;
 import net.crystalnexus.fluid.NitrogenFluid;
+import net.crystalnexus.fluid.BloodFluid;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluids {
@@ -62,6 +63,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_NITROGEN = REGISTRY.register("flowing_nitrogen", NitrogenFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> ATMOSPHERE = REGISTRY.register("atmosphere", AtmosphereFluid.Source::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_ATMOSPHERE = REGISTRY.register("flowing_atmosphere", AtmosphereFluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> BLOOD = REGISTRY.register("blood", BloodFluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_BLOOD = REGISTRY.register("flowing_blood", BloodFluid.Flowing::new);
 
 	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class FluidsClientSideHandler {

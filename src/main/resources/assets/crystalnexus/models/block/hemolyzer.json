@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/flesh_top",
+    "north": "crystalnexus:block/hemolyzer_front",
+    "east": "crystalnexus:block/flesh_side",
+    "south": "crystalnexus:block/flesh_side",
+    "west": "crystalnexus:block/flesh_side",
+    "particle": "crystalnexus:block/flesh_side"
+  },
+  "render_type": "solid"
+}

@@ -225,6 +225,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRYSTAL_MACHINE_FRAME = block(CrystalnexusModBlocks.CRYSTAL_MACHINE_FRAME);
 	public static final DeferredItem<Item> MACHINE_FRAME = block(CrystalnexusModBlocks.MACHINE_FRAME);
 	public static final DeferredItem<Item> FLESH_BLOCK = block(CrystalnexusModBlocks.FLESH_BLOCK);
+	public static final DeferredItem<Item> HEART = block(CrystalnexusModBlocks.HEART);
+	public static final DeferredItem<Item> HEMOLYZER = block(CrystalnexusModBlocks.HEMOLYZER);
+	public static final DeferredItem<Item> ENGINEERED_HEART = block(CrystalnexusModBlocks.ENGINEERED_HEART);
 	public static final DeferredItem<Item> FLESH_MACHINE_FRAME = block(CrystalnexusModBlocks.FLESH_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_MACHINE_FRAME = block(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_ACCELERATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR);
@@ -480,6 +483,8 @@ public class CrystalnexusModItems {
 			() -> new BucketItem(CrystalnexusModFluids.NITROGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> ATMOSPHERE_BUCKET = REGISTRY.register("atmosphere_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.ATMOSPHERE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> BLOOD_BUCKET = REGISTRY.register("blood_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.BLOOD.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
 	public static final DeferredItem<Item> GAS_FUEL_CELL = REGISTRY.register("gas_fuel_cell", GasFuelCellItem::new);
@@ -561,6 +566,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> NODE_EXTRACTOR = block(CrystalnexusModBlocks.NODE_EXTRACTOR);
 	public static final DeferredItem<Item> OXYGEN_COLLECTOR = block(CrystalnexusModBlocks.OXYGEN_COLLECTOR);
 	public static final DeferredItem<Item> TANK = block(CrystalnexusModBlocks.TANK);
+	public static final DeferredItem<Item> CRYSTAL_TANK = block(CrystalnexusModBlocks.CRYSTAL_TANK);
 	public static final DeferredItem<Item> FLUID_PACKAGER = block(CrystalnexusModBlocks.FLUID_PACKAGER);
 	public static final DeferredItem<Item> SULFUR_ORE = block(CrystalnexusModBlocks.SULFUR_ORE);
 	public static final DeferredItem<Item> BATTERY_CELL = REGISTRY.register("battery_cell", BatteryCellItem::new);

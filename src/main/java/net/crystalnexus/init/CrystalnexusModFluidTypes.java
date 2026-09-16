@@ -22,6 +22,7 @@ import net.crystalnexus.fluid.types.ArgonFluidType;
 import net.crystalnexus.fluid.types.OxygenFluidType;
 import net.crystalnexus.fluid.types.NitrogenFluidType;
 import net.crystalnexus.fluid.types.AtmosphereFluidType;
+import net.crystalnexus.fluid.types.BloodFluidType;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModFluidTypes {
@@ -40,4 +41,5 @@ public class CrystalnexusModFluidTypes {
 	public static final DeferredHolder<FluidType, FluidType> OXYGEN_TYPE = REGISTRY.register("oxygen", OxygenFluidType::new);
 	public static final DeferredHolder<FluidType, FluidType> NITROGEN_TYPE = REGISTRY.register("nitrogen", NitrogenFluidType::new);
 	public static final DeferredHolder<FluidType, FluidType> ATMOSPHERE_TYPE = REGISTRY.register("atmosphere", AtmosphereFluidType::new);
+	public static final DeferredHolder<FluidType, FluidType> BLOOD_TYPE = REGISTRY.register("blood", BloodFluidType::new);
 }

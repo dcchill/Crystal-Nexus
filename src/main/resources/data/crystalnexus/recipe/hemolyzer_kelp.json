@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:hemolyzer",
+  "input": { "item": "minecraft:dried_kelp" },
+  "blood": {
+    "fluid": "crystalnexus:crude_oil",
+    "amount": 15
+  }
+}

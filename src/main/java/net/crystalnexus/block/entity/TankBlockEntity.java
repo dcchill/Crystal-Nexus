@@ -23,7 +23,7 @@ import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
-    public static int perBlockCapacity() {
+    public static int azurinePerBlockCapacity() {
         return CrystalnexusConfig.MACHINES.tankPerBlockFluidCapacity();
     }
 
@@ -61,18 +61,24 @@ public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
         return itemHandler;
     }
 
-    private final FluidTank tank = new FluidTank(perBlockCapacity()) {
-        @Override
-        protected void onContentsChanged() {
-            setChanged();
-            if (level != null) {
-                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
-            }
-        }
-    };	
+    private final int perBlockCapacity;
+    private final FluidTank tank;
+
     public TankBlockEntity(BlockPos pos, BlockState state) {
-        super(CrystalnexusModBlockEntities.TANK.get(), pos, state);
+        this(CrystalnexusModBlockEntities.TANK.get(), pos, state, azurinePerBlockCapacity());
     }
+
+    protected TankBlockEntity(net.minecraft.world.level.block.entity.BlockEntityType<?> type, BlockPos pos, BlockState state, int perBlockCapacity) {
+        super(type, pos, state);
+        this.perBlockCapacity = perBlockCapacity;
+        this.tank = new FluidTank(perBlockCapacity) {
+            @Override protected void onContentsChanged() {
+                setChanged();
+                if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
+            }
+        };
+    }
+    public int perBlockCapacity() { return perBlockCapacity; }
 public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank() {
     return getNetworkTank();
 }
@@ -108,7 +114,7 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
         if (level == null) return this;
         BlockPos cpos = getControllerPos();
         BlockEntity be = level.getBlockEntity(cpos);
-        return (be instanceof TankBlockEntity t) ? t : this;
+        return be instanceof TankBlockEntity t && t.getType() == getType() ? t : this;
     }
 
     public FluidTank getNetworkTank() {

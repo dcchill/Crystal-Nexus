@@ -55,8 +55,9 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
     public boolean isBoundTo(BlockPos controller) { return controller.equals(machineController); }
 
     @Nullable private IFluidHandler target() {
-        if (level == null || machineController == null
-            || !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)) return null;
+        if (level == null || machineController == null || !level.hasChunkAt(machineController)
+            || !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)
+            || !target.acceptsMultiblockPort(worldPosition)) return null;
         return target.multiblockFluidInput();
     }
 

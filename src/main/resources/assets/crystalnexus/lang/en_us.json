@@ -18,6 +18,7 @@
   "item.crystalnexus.organ": "Organ",
   "item.crystalnexus.prison_cube.mob": "Stored mob: %s",
   "jei.crystalnexus.gene_splicing": "Gene Splicing",
+  "jei.crystalnexus.hemolyzer": "Hemolyzer",
   "jei.crystalnexus.cystal_crusher": "Converts Raw Ores into Dusts. FE Efficiency upgrades reduce the operation's FE cost.",
   "item.crystalnexus.acceleration_upgrade": "Acceleration Upgrade",
   "item.crystalnexus.fe_efficiency_upgrade": "FE Efficiency Upgrade",
@@ -59,6 +60,7 @@
   "block.crystalnexus.crystal_machine_frame": "Crystal Machine Frame",
   "block.crystalnexus.machine_frame": "Iron Machine Frame",
   "block.crystalnexus.flesh_block": "Engineered Flesh Block",
+  "block.crystalnexus.heart": "Heart Block",
   "block.crystalnexus.flesh_machine_frame": "Engineered Flesh Machine Frame",
   "item.crystalnexus.prison_cube": "Prison Cube",
   "block.crystalnexus.chlorophyte_machine_frame": "Chlorophyte Machine Frame",
@@ -584,7 +586,8 @@
   "gui.crystalnexus.node_extractor_gui.label_quantum_miner": "[Node Extractor]",
   "gui.crystalnexus.oxygen_collector.label": "[Oxygen Collector]",
   "gui.crystalnexus.atmosphere_collector.label": "[Atmosphere Collector]",
-  "block.crystalnexus.tank": "Fluid Tank",
+  "block.crystalnexus.tank": "Azurine Fluid Tank",
+  "block.crystalnexus.crystal_tank": "Crystal Fluid Tank",
   "block.crystalnexus.fluid_packager": "Fluid Packager",
   "gui.crystalnexus.fluid_packager_gui.label_proc_get_block_name_for_gui": "[Fluid Packager]",
   "gui.crystalnexus.fluid_packager_gui.button_dump": "Dump",
@@ -807,5 +810,11 @@
   "block.crystalnexus.cryogenic_flash_freezer_hatch": "Cryogenic Flash Freezer Hatch",
   "gui.crystalnexus.cryogenic_flash_freezer": "[Cryogenic Flash Freezer]",
   "block.crystalnexus.cooling_coil": "Cooling Coil",
-  "block.crystalnexus.multiblock_fluid_output": "Machine Fluid Output"
+  "block.crystalnexus.multiblock_fluid_output": "Machine Fluid Output",
+  "block.crystalnexus.hemolyzer": "Hemolyzer",
+  "block.crystalnexus.engineered_heart": "Heart Controller",
+  "fluid.crystalnexus.blood": "Blood",
+  "fluid_type.crystalnexus.blood": "Blood",
+  "block.crystalnexus.blood": "Blood",
+  "item.crystalnexus.blood_bucket": "Blood Bucket"
 }

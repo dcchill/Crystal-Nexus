@@ -27,6 +27,8 @@ import net.crystalnexus.jei_recipes.OreCrushingJeiRecipeCategory;
 import net.crystalnexus.jei_recipes.OreCrushingJeiRecipe;
 import net.crystalnexus.jei_recipes.GeneSplicingRecipeCategory;
 import net.crystalnexus.jei_recipes.GeneSplicingRecipe;
+import net.crystalnexus.jei_recipes.HemolyzerJeiRecipeCategory;
+import net.crystalnexus.jei_recipes.HemolyzerRecipe;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipeCategory;
 import net.crystalnexus.jei_recipes.MatterTransmutationRecipeCategory;
@@ -84,6 +86,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<BeamReactionRecipeRecipe> BeamReactionRecipe_Type = new mezz.jei.api.recipe.RecipeType<>(BeamReactionRecipeRecipeCategory.UID, BeamReactionRecipeRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<OreCrushingJeiRecipe> OreCrushingJei_Type = new mezz.jei.api.recipe.RecipeType<>(OreCrushingJeiRecipeCategory.UID, OreCrushingJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<GeneSplicingRecipe> GeneSplicing_Type = new mezz.jei.api.recipe.RecipeType<>(GeneSplicingRecipeCategory.UID, GeneSplicingRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<HemolyzerRecipe> Hemolyzer_Type = new mezz.jei.api.recipe.RecipeType<>(HemolyzerJeiRecipeCategory.UID, HemolyzerRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PartsAssembling_Type = new mezz.jei.api.recipe.RecipeType<>(PartsAssemblingRecipeCategory.UID, PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<MultiblockStructureRecipe> MultiblockStructure_Type = new mezz.jei.api.recipe.RecipeType<>(MultiblockStructureRecipeCategory.UID, MultiblockStructureRecipe.class);
@@ -119,6 +122,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new BeamReactionRecipeRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new OreCrushingJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new GeneSplicingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new HemolyzerJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MultiblockStructureRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -154,6 +158,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		List<OreCrushingJeiRecipe> generatedCrushing = CrushingRecipeSupport.generatedJeiRecipes(Minecraft.getInstance().level);
 		registration.addRecipes(OreCrushingJei_Type, generatedCrushing);
 		registration.addRecipes(GeneSplicing_Type, recipes(recipeManager, GeneSplicingRecipe.class));
+		registration.addRecipes(Hemolyzer_Type, recipeManager.getAllRecipesFor(HemolyzerRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 		registration.addRecipes(PartsAssembling_Type, recipes(recipeManager, PartsAssemblingRecipe.class));
 		List<DustSeperationRecipe> DustSeperationRecipes = recipes(recipeManager, DustSeperationRecipe.class);
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
@@ -218,6 +223,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	private static List<MultiblockStructureRecipe> multiblockStructures() {
 		var access = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 		return List.of(
+				multiblockStructure("engineered_heart", CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("zero_point", CrystalnexusModBlocks.ZERO_POINT.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("gravitational_array_new", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
@@ -248,6 +254,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem()), OreCrushingJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MASTICATOR.get().asItem()), GeneSplicing_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HEMOLYZER.get().asItem()), Hemolyzer_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem()), PartsAssembling_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);

@@ -11,7 +11,7 @@
       "tag": "c:plates/azurine"
     },
     "b": {
-      "tag": "c:glass_blocks"
+      "item": "crystalnexus:crystal_tank"
     }
   },
   "result": {

@@ -1,0 +1,13 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/crystalizedalloyblockanim",
+    "up": "crystalnexus:block/crystalizedalloyblockanim",
+    "north": "crystalnexus:block/crystal_tank",
+    "east": "crystalnexus:block/crystal_tank",
+    "south": "crystalnexus:block/crystal_tank",
+    "west": "crystalnexus:block/crystal_tank",
+    "particle": "crystalnexus:block/crystal_tank"
+  },
+  "render_type": "translucent"
+}

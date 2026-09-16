@@ -25,6 +25,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLESH_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLESH_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
@@ -68,6 +69,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_PURIFIER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
@@ -357,6 +360,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.OXYGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.NITROGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.ATMOSPHERE_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.BLOOD_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OVERFUEL_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.TEMPORAL_ESSENCE_BUCKET.get());
@@ -410,6 +414,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.HYPER_ENERGY_CABLE.get().asItem());
 
 				tabData.accept(CrystalnexusModBlocks.TANK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CRYSTAL_TANK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_STRAIGHT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.COPPER_FLUID_PIPE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PIPE_JUNCTION.get().asItem());
@@ -483,6 +488,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem());

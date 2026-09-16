@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "fbf",
+    "oto",
+    "fmf"
+  ],
+  "key": {
+    "b": { "item": "crystalnexus:copper_fluid_pipe" },
+    "o": { "item": "crystalnexus:organ" },
+    "f": { "item": "crystalnexus:flesh_block" },
+    "m": { "item": "crystalnexus:flesh_machine_frame" },
+    "t": { "item": "crystalnexus:crystal_tank" }
+  },
+  "result": {
+    "id": "crystalnexus:hemolyzer",
+    "count": 1
+  }
+}

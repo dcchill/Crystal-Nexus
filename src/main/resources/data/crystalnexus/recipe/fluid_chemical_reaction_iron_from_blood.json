@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:blood",
+    "amount": 500
+  },
+  "item_output": {
+    "id": "minecraft:iron_ingot",
+    "count": 4
+  }
+}

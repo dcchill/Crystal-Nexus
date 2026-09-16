@@ -23,12 +23,12 @@ import org.joml.Matrix4f;
 
 import java.util.*;
 
-public class TankBER implements BlockEntityRenderer<TankBlockEntity> {
+public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T> {
 
     public TankBER(BlockEntityRendererProvider.Context ctx) {}
 
     @Override
-    public void render(TankBlockEntity be, float partialTick, PoseStack poseStack,
+    public void render(T be, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
 
         Level level = be.getLevel();
@@ -48,7 +48,7 @@ public class TankBER implements BlockEntityRenderer<TankBlockEntity> {
         int index = members.indexOf(be.getBlockPos());
         if (index < 0) return;
 
-        int per = TankBlockEntity.perBlockCapacity();
+        int per = be.perBlockCapacity();
         int start = index * per;
         int blockAmount = Math.max(0, Math.min(per, totalAmount - start));
         if (blockAmount <= 0) return;
@@ -113,7 +113,7 @@ public class TankBER implements BlockEntityRenderer<TankBlockEntity> {
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (out.contains(n)) continue;
-                if (level.getBlockEntity(n) instanceof TankBlockEntity) {
+                if (level.getBlockEntity(n) instanceof TankBlockEntity tank && tank.getType() == level.getBlockEntity(start).getType()) {
                     out.add(n);
                     q.add(n);
                 }

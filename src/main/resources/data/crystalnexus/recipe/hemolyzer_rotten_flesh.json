@@ -1,0 +1,8 @@
+{
+  "type": "crystalnexus:hemolyzer",
+  "input": { "item": "minecraft:rotten_flesh" },
+  "blood": {
+    "fluid": "crystalnexus:blood",
+    "amount": 100
+  }
+}
