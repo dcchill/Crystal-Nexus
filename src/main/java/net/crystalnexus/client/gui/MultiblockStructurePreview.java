@@ -30,10 +30,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
-import net.crystalnexus.multiblock.EngineeredHeartStructure;
-import net.crystalnexus.client.renderer.HeartBlockRenderer;
 import net.crystalnexus.init.CrystalnexusModBlocks;
-import net.minecraft.core.Direction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -118,9 +115,7 @@ public class MultiblockStructurePreview {
 
             pose.pushPose();
             pose.translate(block.pos.getX(), block.pos.getY(), block.pos.getZ());
-            if ("engineered_heart".equals(structureId) && block.state.is(CrystalnexusModBlocks.HEART.get())) {
-                HeartBlockRenderer.renderModel(block.state, true, Direction.NORTH, 8, pose, bufferSource, FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-            } else Minecraft.getInstance().getBlockRenderer().renderSingleBlock(block.state, pose, bufferSource, FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(block.state, pose, bufferSource, FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
             pose.popPose();
         }
         if (hoveredBlock != null) {
@@ -354,12 +349,6 @@ public class MultiblockStructurePreview {
     }
 
     private static StructurePreviewData load(String structureId, HolderGetter<Block> blockLookup) {
-        if ("engineered_heart".equals(structureId)) {
-            List<PreviewBlock> blocks = EngineeredHeartStructure.CELLS.stream()
-                .filter(cell -> cell.part() != EngineeredHeartStructure.Part.AIR)
-                .map(cell -> new PreviewBlock(cell.offset(), cell.state())).toList();
-            return new StructurePreviewData(blocks, 5, 5, 5, -2, 2, 5, 0.5F, 0.5F, 0.5F, null);
-        }
         String path = "data/crystalnexus/structures/" + structureId + ".nbt";
         try (InputStream input = openPreviewStream(path, structureId)) {
             if (input == null) {

@@ -67,6 +67,7 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
         runtime = jeiRuntime;
+        refreshMaterialRecipes();
         needsSync = true;
         if (!listenerRegistered) {
             listenerRegistered = true;

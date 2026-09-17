@@ -42,7 +42,8 @@ public class AutoCrafterOnTickProcedure {
         BlockPos pos = BlockPos.containing(x, y, z);
 		boolean crystalFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get());
 		boolean azurineFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
-		int craftTime = azurineFactory ? 10 : crystalFactory ? 25 : 50;
+		boolean hyperFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.HYPER_CRAFTING_FACTORY.get());
+		int craftTime = hyperFactory ? 5 : azurineFactory ? 10 : crystalFactory ? 25 : 50;
 		int energyPerCraft = MachineTier.from(world.getBlockState(pos)).energyCost(512);
 		setMaxProgress(world, pos, craftTime);
 
@@ -104,7 +105,7 @@ public class AutoCrafterOnTickProcedure {
         // Check output slot has room BEFORE consuming ingredients
         // -----------------------------
         ItemStack output = inv.getStackInSlot(9);
-        int maxStack = Math.min(result.getMaxStackSize(), 127);
+		int maxStack = hyperFactory ? Math.min(result.getMaxStackSize(), 64) : Math.min(result.getMaxStackSize(), 127);
 
         if (!output.isEmpty()) {
             if (!stacksMatch(output, result)) {
@@ -124,28 +125,43 @@ public class AutoCrafterOnTickProcedure {
 			return;
 		}
 
-        // -----------------------------
-        // Consume ingredients
-        // -----------------------------
-        for (int i = 0; i < consumption.length; i++) {
-            inv.getStackInSlot(i).shrink(consumption[i]);
-        }
+		int craftCount = 1;
+		if (hyperFactory) {
+			int outputRoom = output.isEmpty() ? maxStack : maxStack - output.getCount();
+			craftCount = outputRoom / result.getCount();
+			for (int i = 0; i < consumption.length; i++) {
+				if (consumption[i] > 0) craftCount = Math.min(craftCount, inv.getStackInSlot(i).getCount() / consumption[i]);
+			}
+			if (energy != null) craftCount = Math.min(craftCount, energy.getEnergyStored() / energyPerCraft);
+			craftCount = Math.min(craftCount, 64);
+		}
+		if (craftCount <= 0) {
+			updateBlockState(world, pos, crafting);
+			return;
+		}
+
+		// -----------------------------
+		// Consume ingredients
+		// -----------------------------
+		for (int i = 0; i < consumption.length; i++) {
+			inv.getStackInSlot(i).shrink(consumption[i] * craftCount);
+		}
 
         // -----------------------------
         // Insert output
         // -----------------------------
         if (output.isEmpty()) {
             ItemStack toInsert = result.copy();
-            toInsert.setCount(Math.min(toInsert.getCount(), maxStack));
-            inv.setStackInSlot(9, toInsert);
-        } else {
-            output.grow(result.getCount());
+			toInsert.setCount(Math.min(toInsert.getCount() * craftCount, maxStack));
+			inv.setStackInSlot(9, toInsert);
+		} else {
+			output.grow(result.getCount() * craftCount);
         }
 
         // -----------------------------
         // Drain energy
         // -----------------------------
-        if (energy != null) energy.extractEnergy(energyPerCraft, false);
+		if (energy != null) energy.extractEnergy(energyPerCraft * craftCount, false);
 		setProgress(world, pos, 0);
 
         // -----------------------------

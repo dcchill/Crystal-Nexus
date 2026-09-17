@@ -65,7 +65,8 @@ public class OreCrushingJeiRecipeCategory implements IRecipeCategory<OreCrushing
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, OreCrushingJeiRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 52, 34).addIngredients(recipe.getIngredients().get(0));
+		if (!recipe.getIngredients().isEmpty())
+			builder.addSlot(RecipeIngredientRole.INPUT, 52, 34).addIngredients(recipe.getIngredients().getFirst());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 34).addItemStack(recipe.getResultItem(null));
 	}
 }

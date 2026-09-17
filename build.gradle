@@ -45,7 +45,7 @@ neoForge {
         }
         gameTestServer {
             type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', 'crystalnexus'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly'
         }
 
         configureEach {

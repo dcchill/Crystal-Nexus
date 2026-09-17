@@ -17,8 +17,6 @@ import net.crystalnexus.client.render.QuarryBlockEntityRenderer;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
 import net.crystalnexus.block.entity.TankBlockEntity;
 import net.crystalnexus.block.entity.CrystalTankBlockEntity;
-import net.crystalnexus.block.entity.HeartBlockEntity;
-import net.crystalnexus.client.renderer.HeartBlockRenderer;
 import net.crystalnexus.block.entity.PipeStraightBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.QuarryBlockEntity;
@@ -139,11 +137,6 @@ public class ClientEventHandler {
 
 @SubscribeEvent
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
-
-    event.registerBlockEntityRenderer(
-        (BlockEntityType<HeartBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.HEART.get(),
-        HeartBlockRenderer::new
-    );
 
     event.registerBlockEntityRenderer(
         (BlockEntityType<ConveyerBeltBaseBlockEntity>)

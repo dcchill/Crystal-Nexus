@@ -43,7 +43,9 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 	public static void tick(Level level, BlockPos pos, BlockState state, CrystalCrusherBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
 		CrystalCrusherOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		if (blockEntity.getPersistentData().contains(net.crystalnexus.assembly.AssemblyLineMachine.OWNER)) blockEntity.setChanged();
 	}
 
 	@Override
@@ -171,4 +173,12 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+    @Override public void onLoad() {
+        super.onLoad();
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+    }
+    @Override public void setRemoved() {
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+        super.setRemoved();
+    }
 }

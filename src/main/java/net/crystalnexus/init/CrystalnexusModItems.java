@@ -225,9 +225,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRYSTAL_MACHINE_FRAME = block(CrystalnexusModBlocks.CRYSTAL_MACHINE_FRAME);
 	public static final DeferredItem<Item> MACHINE_FRAME = block(CrystalnexusModBlocks.MACHINE_FRAME);
 	public static final DeferredItem<Item> FLESH_BLOCK = block(CrystalnexusModBlocks.FLESH_BLOCK);
-	public static final DeferredItem<Item> HEART = block(CrystalnexusModBlocks.HEART);
 	public static final DeferredItem<Item> HEMOLYZER = block(CrystalnexusModBlocks.HEMOLYZER);
-	public static final DeferredItem<Item> ENGINEERED_HEART = block(CrystalnexusModBlocks.ENGINEERED_HEART);
 	public static final DeferredItem<Item> FLESH_MACHINE_FRAME = block(CrystalnexusModBlocks.FLESH_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_MACHINE_FRAME = block(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_ACCELERATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR);
@@ -528,6 +526,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRAFTING_FACTORY);
 	public static final DeferredItem<Item> CRYSTAL_CRAFTING_FACTORY = block(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY);
 	public static final DeferredItem<Item> TITANIUM_CRAFTING_FACTORY = block(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY);
+	public static final DeferredItem<Item> HYPER_CRAFTING_FACTORY = block(CrystalnexusModBlocks.HYPER_CRAFTING_FACTORY);
 	public static final DeferredItem<Item> MACHINE_BOLT = REGISTRY.register("machine_bolt", MachineBoltItem::new);
 	public static final DeferredItem<Item> PURE_BLUTONIUM = REGISTRY.register("pure_blutonium", PureBlutoniumItem::new);
 	public static final DeferredItem<Item> IRON_MACHINE_BOLT = REGISTRY.register("iron_machine_bolt", IronMachineBoltItem::new);
@@ -658,6 +657,9 @@ public class CrystalnexusModItems {
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new DepotUplinkInventoryCapability(stack), DEPOT_UPLINK.get());
 	}
+
+	public static final DeferredItem<Item> ASSEMBLY_LINE_CASING = block(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING);
+	public static final DeferredItem<Item> ASSEMBLY_LINE_CONTROLLER = block(CrystalnexusModBlocks.ASSEMBLY_LINE_CONTROLLER);
 
 	private static DeferredItem<Item> block(DeferredHolder<Block, Block> block) {
 		return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));

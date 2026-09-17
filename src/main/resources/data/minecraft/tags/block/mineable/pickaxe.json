@@ -12,6 +12,7 @@
     "crystalnexus:crafting_factory",
     "crystalnexus:crystal_crafting_factory",
     "crystalnexus:azurine_crafting_factory",
+    "crystalnexus:hyper_crafting_factory",
     "crystalnexus:tesseract",
     "crystalnexus:azurine_block",
     "crystalnexus:depot_downloader",
@@ -179,6 +180,8 @@
     "crystalnexus:cryogenic_flash_freezer_hatch",
     "crystalnexus:multiblock_fluid_output",
     "crystalnexus:multiblock_item_input",
-    "crystalnexus:maw"
+    "crystalnexus:maw",
+    "crystalnexus:assembly_line_casing",
+    "crystalnexus:assembly_line_controller"
   ]
 }

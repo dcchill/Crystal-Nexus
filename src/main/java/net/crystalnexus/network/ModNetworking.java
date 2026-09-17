@@ -28,6 +28,11 @@ public class ModNetworking {
 	@SubscribeEvent
 	public static void register(final RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar r = event.registrar(DepotNetIds.NETWORK_VERSION);
+		r.playToServer(AssemblyLineRequest.TYPE, AssemblyLineRequest.STREAM_CODEC, AssemblyLineRequest::handle);
+		r.playToServer(AssemblyLineGraphEdit.TYPE, AssemblyLineGraphEdit.STREAM_CODEC, AssemblyLineGraphEdit::handle);
+		r.playToServer(AssemblyLineRecipeSelect.TYPE, AssemblyLineRecipeSelect.STREAM_CODEC, AssemblyLineRecipeSelect::handle);
+		r.playToServer(AssemblyLineItemConfigure.TYPE, AssemblyLineItemConfigure.STREAM_CODEC, AssemblyLineItemConfigure::handle);
+		r.playToServer(AssemblyLineJeiRecipeSelect.TYPE, AssemblyLineJeiRecipeSelect.STREAM_CODEC, AssemblyLineJeiRecipeSelect::handle);
 
 		r.playToServer(C2S_RequestPage.TYPE, C2S_RequestPage.STREAM_CODEC, ServerHandlers::onRequestPage);
 		r.playToServer(C2S_Withdraw.TYPE,     C2S_Withdraw.STREAM_CODEC,     ServerHandlers::onWithdraw);

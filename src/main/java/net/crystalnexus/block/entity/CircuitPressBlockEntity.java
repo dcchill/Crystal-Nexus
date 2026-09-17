@@ -54,7 +54,9 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	public static void tick(Level level, BlockPos pos, BlockState state, CircuitPressBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
 		CircuitPressOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		if (blockEntity.getPersistentData().contains(net.crystalnexus.assembly.AssemblyLineMachine.OWNER)) blockEntity.setChanged();
 	}
 
 	@Override
@@ -191,4 +193,12 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	public FluidTank getNitrogenTank() {
 		return nitrogenTank;
 	}
+    @Override public void onLoad() {
+        super.onLoad();
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+    }
+    @Override public void setRemoved() {
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+        super.setRemoved();
+    }
 }

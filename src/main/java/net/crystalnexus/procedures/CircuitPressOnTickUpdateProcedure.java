@@ -137,7 +137,7 @@ public class CircuitPressOnTickUpdateProcedure {
 			public ItemStack getResult() {
 				if (world instanceof Level _lvl) {
 					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-					List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).collect(Collectors.toList());
+					List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().filter(h -> net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(_lvl, pressPos) == null || h.id().equals(net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(_lvl, pressPos))).map(RecipeHolder::value).collect(Collectors.toList());
 					for (CircuitPressingRecipe recipe : recipes) {
 						NonNullList<Ingredient> ingredients = recipe.getIngredients();
 						if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
@@ -283,8 +283,12 @@ public class CircuitPressOnTickUpdateProcedure {
 							// Consume energy
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-								if (_entityStorage != null)
-									_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048), false);
+								if (_entityStorage != null) {
+                                    int cost = MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048);
+                                    if (world instanceof Level assignedLevel && net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(assignedLevel, pressPos) != null)
+                                        net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(_entityStorage, cost);
+                                    else _entityStorage.extractEnergy(cost, false);
+                                }
 							}
 						}
 					}

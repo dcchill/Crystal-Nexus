@@ -40,7 +40,12 @@ public class CrystalCrusherOnTickUpdateProcedure {
 			return energyText(world, pos);
 
 		ItemStack input = itemFromBlockInventory(world, pos, 0);
-		ItemStack result = CrushingRecipeSupport.findResult(level, input, machineTier);
+		ItemStack result;
+        var assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos);
+        if (assigned == null) result = CrushingRecipeSupport.findResult(level, input, machineTier);
+        else result = level.getRecipeManager().byKey(assigned)
+            .filter(h -> h.value() instanceof net.crystalnexus.jei_recipes.OreCrushingJeiRecipe r && machineTier.supports(r.minimumMachineTier()) && r.getIngredients().getFirst().test(input))
+            .map(h -> h.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
 		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
 		ItemStack currentOutput = itemFromBlockInventory(world, pos, 1);
 		boolean outputFits = outputCount > 0
@@ -67,8 +72,10 @@ public class CrystalCrusherOnTickUpdateProcedure {
 			setBlockNBTNumber(world, pos, "progress", 0);
 
 			IEnergyStorage energy = extension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-			if (energy != null)
-				energy.extractEnergy(energyCost, false);
+			if (energy != null) {
+                if (assigned != null) net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(energy, energyCost);
+                else energy.extractEnergy(energyCost, false);
+            }
 		}
 
 		return energyText(world, pos);

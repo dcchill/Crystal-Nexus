@@ -22,10 +22,11 @@ public class CrystalnexusModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrystalnexusMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_TAB = REGISTRY.register("crystal_nexus_tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get())).displayItems((parameters, tabData) -> {
+				tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLESH_BLOCK.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLESH_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLOCK_PLACER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
@@ -70,7 +71,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
@@ -489,7 +489,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem());
@@ -525,6 +524,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HYPER_CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PISTON_GENERATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERT_PISTON_GENERATOR.get().asItem());

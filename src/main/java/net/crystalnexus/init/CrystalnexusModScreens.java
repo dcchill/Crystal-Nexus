@@ -59,7 +59,6 @@ import net.crystalnexus.client.gui.CrystalPurifierGUIScreen;
 import net.crystalnexus.client.gui.CrusherGuiScreen;
 import net.crystalnexus.client.gui.MasticatorScreen;
 import net.crystalnexus.client.gui.HemolyzerScreen;
-import net.crystalnexus.client.gui.EngineeredHeartScreen;
 import net.crystalnexus.client.gui.CraftingFactoryGUIScreen;
 import net.crystalnexus.client.gui.ContainerGUIScreen;
 import net.crystalnexus.client.gui.ComputationClusterGUIScreen;
@@ -86,11 +85,11 @@ import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 public class CrystalnexusModScreens {
 	@SubscribeEvent
 	public static void clientLoad(RegisterMenuScreensEvent event) {
+		event.register(CrystalnexusModMenus.ASSEMBLY_LINE.get(), net.crystalnexus.client.gui.AssemblyLineScreen::new);
 		event.register(CrystalnexusModMenus.CRYSTAL_PURIFIER_GUI.get(), CrystalPurifierGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRUSHER_GUI.get(), CrusherGuiScreen::new);
 		event.register(CrystalnexusModMenus.MASTICATOR.get(), MasticatorScreen::new);
 		event.register(CrystalnexusModMenus.HEMOLYZER.get(), HemolyzerScreen::new);
-		event.register(CrystalnexusModMenus.ENGINEERED_HEART.get(), EngineeredHeartScreen::new);
 		event.register(CrystalnexusModMenus.SEPARATOR_GUI.get(), SeparatorGuiScreen::new);
 		event.register(CrystalnexusModMenus.ORE_GEN_GUI.get(), OreGenGUIScreen::new);
 		event.register(CrystalnexusModMenus.MAW.get(), net.crystalnexus.client.gui.MawScreen::new);

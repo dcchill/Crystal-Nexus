@@ -3,6 +3,7 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
@@ -16,6 +17,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
@@ -40,7 +42,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 	public static void tick(Level level, BlockPos pos, BlockState state, MachineEnergyInputBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
-		MachineCoreOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		blockEntity.pushBufferedEnergy();
 	}
 
 	@Override
@@ -51,6 +53,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 		String controllerKey = compound.contains("machineController", Tag.TAG_LONG) ? "machineController" : "gravitationalController";
 		machineController = compound.contains(controllerKey, Tag.TAG_LONG) ? BlockPos.of(compound.getLong(controllerKey)) : null;
+		if (compound.get("energyBuffer") instanceof IntTag stored) energyBuffer.deserializeNBT(lookupProvider, stored);
 	}
 
 	@Override
@@ -60,6 +63,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
 		}
 		if (machineController != null) compound.putLong("machineController", machineController.asLong());
+		compound.put("energyBuffer", energyBuffer.serializeNBT(lookupProvider));
 	}
 
 	@Override
@@ -130,24 +134,49 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		return true;
 	}
 
-	private final IEnergyStorage energyStorage = new IEnergyStorage() {
+	/**
+	 * Local ingress buffer. Cables can fill the hatch before or during a structure
+	 * rescan; energy is then pushed transactionally into the bound controller.
+	 */
+	private final EnergyStorage energyBuffer = new EnergyStorage(16_000_000, 1_000_000, 1_000_000) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
-			IEnergyStorage target = target(); return target == null ? 0 : target.receiveEnergy(amount, simulate);
+			int accepted = super.receiveEnergy(amount, simulate);
+			if (!simulate && accepted > 0) { setChanged(); sync(); }
+			return accepted;
 		}
-		@Override public int extractEnergy(int amount, boolean simulate) { return 0; }
-		@Override public int getEnergyStored() { IEnergyStorage target = target(); return target == null ? 0 : target.getEnergyStored(); }
-		@Override public int getMaxEnergyStored() { IEnergyStorage target = target(); return target == null ? 0 : target.getMaxEnergyStored(); }
-		@Override public boolean canExtract() { return false; }
-		@Override public boolean canReceive() { IEnergyStorage target = target(); return target != null && target.canReceive(); }
 	};
 
 	public IEnergyStorage getEnergyStorage() {
-		return energyStorage;
+		return energyBuffer;
+	}
+
+	private void pushBufferedEnergy() {
+		if (energyBuffer.getEnergyStored() <= 0) return;
+		if (level != null && machineController != null && level.hasChunkAt(machineController)
+			&& level.getBlockEntity(machineController) instanceof AssemblyLineControllerBlockEntity assembly) {
+			if (assembly.distributeEnergyFrom(energyBuffer) > 0) { setChanged(); sync(); }
+			return;
+		}
+		IEnergyStorage destination = target();
+		if (destination == null || !destination.canReceive()) return;
+		int offered = Math.min(1_000_000, energyBuffer.getEnergyStored());
+		int accepted = destination.receiveEnergy(offered, false);
+		if (accepted > 0) {
+			energyBuffer.extractEnergy(accepted, false);
+			setChanged(); sync();
+		}
+
+	}
+
+	private void sync() {
+		if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 	}
 
 	@Nullable private IEnergyStorage target() {
 		if (level == null || machineController == null
-			|| !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)) return null;
+			|| !level.hasChunkAt(machineController)
+			|| !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)
+			|| !target.acceptsMultiblockPort(worldPosition)) return null;
 		return target.multiblockEnergyInput();
 	}
 

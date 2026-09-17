@@ -72,12 +72,14 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, PartsAssemblerBlockEntity blockEntity) {
+        if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
         blockEntity.tickServer(level, pos, state);
     }
 
     private void tickServer(Level level, BlockPos pos, BlockState state) {
         ItemStack input = items.get(0);
         PartsAssemblingRecipe recipe = level.getRecipeManager().getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
+            .filter(holder -> net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos) == null || holder.id().equals(net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos)))
             .map(holder -> holder.value())
             .filter(candidate -> candidate.mode().ordinal() == selectedMode)
             .filter(candidate -> candidate.matches(new SingleRecipeInput(input), level))
@@ -179,4 +181,12 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2}; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
+    @Override public void onLoad() {
+        super.onLoad();
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+    }
+    @Override public void setRemoved() {
+        if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
+        super.setRemoved();
+    }
 }

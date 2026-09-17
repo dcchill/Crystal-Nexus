@@ -86,6 +86,12 @@ public final class DepotJeiRecipeCache {
         return state == null ? List.of() : List.copyOf(state.byOutput.getOrDefault(outputId, List.of()));
     }
 
+    public static List<Recipe> recipesFor(ServerPlayer player, ResourceLocation outputId, ResourceLocation machineId) {
+        return recipesFor(player, outputId).stream()
+            .filter(recipe -> recipe.machineTypes().contains(machineId))
+            .sorted(java.util.Comparator.comparing(recipe -> recipe.id().toString())).toList();
+    }
+
     public static Set<ResourceLocation> outputIds(ServerPlayer player) {
         State state = BY_PLAYER.get(player.getUUID());
         return state == null ? Set.of() : Set.copyOf(state.byOutput.keySet());

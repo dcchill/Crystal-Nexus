@@ -1,0 +1,1 @@
+{"type":"minecraft:crafting_shaped","category":"misc","pattern":["aba","cde","aba"],"key":{"a":{"item":"crystalnexus:machine_bolt"},"b":{"tag":"c:plates/obsidrax"},"c":{"item":"crystalnexus:carbon_fiber"},"d":{"item":"crystalnexus:azurine_crafting_factory"},"e":{"item":"crystalnexus:hyper_machine_frame"}},"result":{"id":"crystalnexus:hyper_crafting_factory","count":1}}

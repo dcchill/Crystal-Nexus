@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CBC",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "item": "crystalnexus:assembly_line_casing"
+    },
+    "B": {
+      "item": "crystalnexus:blank_chip"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:assembly_line_controller",
+    "count": 1
+  }
+}

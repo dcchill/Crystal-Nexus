@@ -7,5 +7,9 @@
   "item_output": {
     "id": "minecraft:iron_ingot",
     "count": 4
+  },
+  "output": {
+    "fluid": "crystalnexus:oxygen",
+    "amount": 250
   }
 }

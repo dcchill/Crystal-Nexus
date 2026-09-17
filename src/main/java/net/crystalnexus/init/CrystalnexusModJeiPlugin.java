@@ -223,7 +223,6 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	private static List<MultiblockStructureRecipe> multiblockStructures() {
 		var access = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 		return List.of(
-				multiblockStructure("engineered_heart", CrystalnexusModBlocks.ENGINEERED_HEART.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("zero_point", CrystalnexusModBlocks.ZERO_POINT.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("gravitational_array_new", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
@@ -299,9 +298,21 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+		registration.addGuiScreenHandler(net.crystalnexus.client.gui.AssemblyLineScreen.class, screen ->
+			new mezz.jei.api.gui.handlers.IGuiProperties() {
+				@Override public Class<? extends net.minecraft.client.gui.screens.Screen> screenClass() { return net.crystalnexus.client.gui.AssemblyLineScreen.class; }
+				@Override public int guiLeft() { return screen.getGuiLeft(); }
+				@Override public int guiTop() { return screen.getGuiTop(); }
+				@Override public int guiXSize() { return screen.editorWidth(); }
+				@Override public int guiYSize() { return screen.editorHeight(); }
+				@Override public int screenWidth() { return Minecraft.getInstance().getWindow().getGuiScaledWidth(); }
+				@Override public int screenHeight() { return Minecraft.getInstance().getWindow().getGuiScaledHeight(); }
+			});
 		registration.addGhostIngredientHandler(net.crystalnexus.client.gui.DepotCliScreen.class,
 				new net.crystalnexus.client.DepotProgramJeiGhostHandler());
 		registration.addGhostIngredientHandler(net.crystalnexus.client.gui.DepotCableConnectionScreen.class,
 				new net.crystalnexus.client.DepotCableJeiGhostHandler());
+		registration.addGhostIngredientHandler(net.crystalnexus.client.gui.AssemblyLineScreen.class,
+				new net.crystalnexus.client.AssemblyLineJeiGhostHandler());
 	}
 }
