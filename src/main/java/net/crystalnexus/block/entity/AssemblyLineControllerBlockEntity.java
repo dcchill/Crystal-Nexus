@@ -74,7 +74,14 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     private long clientSystemEnergy;
     private final Set<ResourceLocation> learnedRecipes = new LinkedHashSet<>();
     public AssemblyLineControllerBlockEntity(BlockPos pos, BlockState state) { super(CrystalnexusModBlockEntities.ASSEMBLY_LINE_CONTROLLER.get(), pos, state); }
-    @Override public void onLoad() { super.onLoad(); if (level != null && !level.isClientSide) { dirty = true; formed = false; AssemblyLineEvents.register(this); } }
+    @Override public void onLoad() {
+        super.onLoad();
+        if (level != null && !level.isClientSide) {
+            dirty = true; formed = false;
+            AssemblyLineEvents.register(this);
+            rescan(); // Immediately validate structure on world load
+        }
+    }
     @Override public void setRemoved() { AssemblyLineEvents.unregister(this); super.setRemoved(); }
     public boolean formed() { return formed && !dirty; }
     public String status() { return status; }
@@ -148,16 +155,15 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (machine == null) return new int[] {1};
         var handler = machine.itemHandler();
         if (handler != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC) {
+            // For generic modded machines, just use all non-empty slots that aren't input slots.
+            // Don't require canTakeItemThroughFace since modded machines may not implement it correctly.
             List<Integer> available = new ArrayList<>();
+            int[] inputs = machine.inputs();
             for (int i = 0; i < handler.getSlots(); i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                if (!(machine.inventory() instanceof WorldlyContainer sided)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.UP)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.DOWN)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.NORTH)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.SOUTH)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.WEST)
-                    || sided.canTakeItemThroughFace(i, stack, Direction.EAST)) available.add(i);
+                boolean isInput = false;
+                for (int inputSlot : inputs) if (inputSlot == i) isInput = true;
+                if (isInput) continue;
+                available.add(i);
             }
             int[] slots = available.stream().mapToInt(Integer::intValue).toArray();
             return slots.length == 0 ? new int[] {0} : slots;
@@ -210,9 +216,13 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
      */
     public int distributeEnergyFrom(net.neoforged.neoforge.energy.IEnergyStorage source) {
         if (!formed() || source == null || !source.canExtract() || source.getEnergyStored() <= 0) return 0;
-        List<AssemblyLineMachine> targets = new ArrayList<>(workers().stream()
-            .filter(worker -> worker.energy() != null && worker.energy().canReceive()
-                && worker.energy().getEnergyStored() < worker.energy().getMaxEnergyStored()).toList());
+        List<AssemblyLineMachine> allWorkers = workers();
+        // Use canReceive() instead of receiveEnergy(1, true) because some mods (Mekanism)
+        // have ForgeEnergyIntegration that returns 0 in simulate mode even when canReceive=true
+        List<AssemblyLineMachine> targets = new ArrayList<>(allWorkers.stream()
+            .filter(worker -> worker.energy() != null && worker.energy().canReceive()).toList());
+        CrystalnexusMod.LOGGER.debug("distributeEnergyFrom: workers={}, targets={}, sourceEnergy={}",
+            allWorkers.size(), targets.size(), source.getEnergyStored());
         int budget = Math.min(1_000_000, source.getEnergyStored());
         int moved = 0;
         while (budget > 0 && !targets.isEmpty()) {
@@ -220,14 +230,15 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             boolean progress = false;
             for (var iterator = targets.iterator(); iterator.hasNext() && budget > 0;) {
                 AssemblyLineMachine worker = iterator.next();
-                int accepted = worker.energy().receiveEnergy(Math.min(share, budget), true);
-                if (accepted <= 0) { iterator.remove(); continue; }
-                int extracted = source.extractEnergy(accepted, false);
-                if (extracted <= 0) return moved;
-                int received = worker.energy().receiveEnergy(extracted, false);
+                // Don't use simulate mode to check acceptance - Mekanism returns 0 in simulate
+                // even when canReceive() is true. Just attempt the transfer directly.
+                int extracted = source.extractEnergy(Math.min(share, budget), false);
+                if (extracted <= 0) break;
+                int received = worker.receiveEnergy(extracted, false);
                 if (received < extracted) source.receiveEnergy(extracted - received, false);
                 moved += received; budget -= received; progress |= received > 0;
-                if (worker.energy().getEnergyStored() >= worker.energy().getMaxEnergyStored()) iterator.remove();
+                // Only remove from distribution list if truly can't receive (not just temporarily full)
+                if (worker.energy() != null && !worker.energy().canReceive()) iterator.remove();
             }
             if (!progress) break;
         }
@@ -469,8 +480,8 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         }
         AssemblyLineMachine worker = machineAt(BlockPos.of(node.machine));
         if (worker == null || output < 0 || output >= node.outputSlots.length) return ItemStack.EMPTY;
-        int slot = node.outputSlots[output];
-        var handler = worker.itemHandler();
+        int slot = outputSlot(worker, node, output);
+        var handler = worker.itemHandlerForExtract();
         if (worker.kind() == AssemblyLineMachine.Kind.GENERIC && handler != null) {
             return handler.extractItem(slot, amount, false);
         }
@@ -479,6 +490,21 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         ItemStack moved = available.copyWithCount(Math.min(amount, available.getCount()));
         available.shrink(moved.getCount()); worker.inventory().setItem(slot, available);
         worker.entity().setChanged(); return moved;
+    }
+    public int outputSlot(AssemblyLineMachine worker, AssemblyGraph.Node node, int output) {
+        if (worker == null || node == null || output < 0 || output >= node.outputSlots.length) return -1;
+        IItemHandler handler = worker.itemHandlerForExtract();
+        if (handler == null) return -1;
+        String expected = node.outputItems != null && output < node.outputItems.length ? node.outputItems[output] : "";
+        if (expected != null && !expected.isEmpty()) {
+            for (int slot = 0; slot < handler.getSlots(); slot++) {
+                ItemStack stack = handler.getStackInSlot(slot);
+                if (!stack.isEmpty() && net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().equals(expected))
+                    return slot;
+            }
+        }
+        int configured = node.outputSlots[output];
+        return configured >= 0 && configured < handler.getSlots() ? configured : -1;
     }
     public void returnGraphItem(int nodeId, int output, ItemStack stack) {
         if (stack.isEmpty()) return;
@@ -637,7 +663,11 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         for (BlockPos p : BlockPos.betweenClosed(bounds.min(), bounds.max())) if (type.isInstance(level.getBlockEntity(p))) result.add(p.immutable());
         return result;
     }
-    private List<AssemblyLineMachine> workers() { return machines.stream().filter(level::hasChunkAt).map(p -> AssemblyLineMachine.at(level, p)).filter(Objects::nonNull).toList(); }
+    private List<AssemblyLineMachine> workers() {
+        return machines.stream().filter(level::hasChunkAt)
+            .map(p -> AssemblyLineMachine.at(level, p, sideProfiles.get(p.asLong())))
+            .filter(Objects::nonNull).toList();
+    }
     private void startNext() {
         // A failed request is retried only when inventory, structure or the user changes it.
         List<ItemStack> stock = new ArrayList<>(); for (int i = 0; i < 27; i++) stock.add(inventory.getStackInSlot(i));
@@ -681,6 +711,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             if (!task.inputs.stream().allMatch(input -> take(trial, input, 0, trial.getSlots()))) { problem = "Required reserved material unavailable"; continue; }
             for (AssemblyLineMachine worker : workers()) {
                 if (!worker.supports(recipe) || !worker.empty() || worker.entity().getPersistentData().contains(AssemblyLineMachine.OWNER)) continue;
+                if (worker.energy() == null) continue;
                 feedEnergy(worker);
                 if (worker.energy().getMaxEnergyStored() < worker.startingEnergy(recipe)) { problem = "Machine energy capacity too small for recipe"; continue; }
                 if (worker.energy().getEnergyStored() < worker.startingEnergy(recipe)) { problem = "Missing Energy"; continue; }
@@ -742,7 +773,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     private void feedEnergy(AssemblyLineMachine worker) {
         int offered = Math.min(energy.getEnergyStored(), 1_000_000);
-        int received = worker.energy().receiveEnergy(offered, false); energy.extractEnergy(received, false);
+        int received = worker.receiveEnergy(offered, false); energy.extractEnergy(received, false);
     }
     private void finish() {
         ItemStackHandler available = copy(reserved), destination = copy(inventory);

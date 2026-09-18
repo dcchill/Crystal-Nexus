@@ -66,16 +66,16 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     private static IEnergyStorage getEnergyStorage(Level level, BlockPos pos, SideProfile profile) {
         if (level == null) return null;
         if (profile != null) {
-            for (Direction side : profile.energyOrder()) {
+            for (Direction side : profile.receiveOrder()) {
                 IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-                if (storage != null && (storage.canReceive() || storage.canExtract())) return storage;
+                if (storage != null && storage.canReceive()) return storage;
             }
         }
         IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        if (storage != null) return storage;
+        if (storage != null && storage.canReceive()) return storage;
         for (Direction side : profile == null ? Direction.values() : profile.energyOrder()) {
             storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-            if (storage != null) return storage;
+            if (storage != null && storage.canReceive()) return storage;
         }
         return null;
     }
@@ -138,6 +138,9 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         return MachineUpgradeHelper.energyCost(entity.getBlockState(), upgrade, kind == Kind.CRUSHER ? 4096 : 2048);
     }
     public IItemHandler itemHandler() {
+        return itemHandlerForInsert();
+    }
+    public IItemHandler itemHandlerForInsert() {
         if (entity.getLevel() == null) return null;
         if (kind == Kind.GENERIC && !(entity instanceof Container)) {
             IItemHandler capability = entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), null);
@@ -155,6 +158,55 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             if (handler != null) return handler;
         }
         return null;
+    }
+    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
+        if (entity.getLevel() == null || stack.isEmpty()) return stack;
+        List<IItemHandler> handlers = new ArrayList<>();
+        IItemHandler unsided = entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), null);
+        if (unsided != null) handlers.add(unsided);
+        for (Direction side : profile == null ? Direction.values() : profile.itemOrder()) {
+            IItemHandler handler = entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), side);
+            if (handler != null && !handlers.contains(handler)) handlers.add(handler);
+        }
+        ItemStack remaining = stack;
+        for (IItemHandler handler : handlers) {
+            if (slot < 0 || slot >= handler.getSlots()) continue;
+            ItemStack next = handler.insertItem(slot, remaining, simulate);
+            if (next.getCount() < remaining.getCount()) return next;
+        }
+        return remaining;
+    }
+    public int receiveEnergy(int amount, boolean simulate) {
+        if (entity.getLevel() == null || amount <= 0) return 0;
+        List<IEnergyStorage> storages = new ArrayList<>();
+        IEnergyStorage unsided = entity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, entity.getBlockPos(), null);
+        if (unsided != null) storages.add(unsided);
+        for (Direction side : profile == null ? Direction.values() : profile.receiveOrder()) {
+            IEnergyStorage storage = entity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, entity.getBlockPos(), side);
+            if (storage != null && !storages.contains(storage)) storages.add(storage);
+        }
+        for (IEnergyStorage storage : storages) {
+            if (!storage.canReceive()) continue;
+            int accepted = storage.receiveEnergy(amount, simulate);
+            if (accepted > 0) return accepted;
+        }
+        // Fallback: for external machines that may not expose energy via capabilities,
+        // use the energy field directly if it was set during machine creation
+        if (energy != null && energy.canReceive()) {
+            return energy.receiveEnergy(amount, simulate);
+        }
+        return 0;
+    }
+    public IItemHandler itemHandlerForExtract() {
+        if (entity.getLevel() == null) return null;
+        if (kind == Kind.GENERIC && !(entity instanceof Container)) {
+            for (Direction side : profile == null ? Direction.values() : profile.extractOrder()) {
+                IItemHandler handler = entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), side);
+                if (handler != null) return handler;
+            }
+            return entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), null);
+        }
+        return itemHandler();
     }
     public IFluidHandler fluidHandler() {
         if (entity.getLevel() == null) return null;
@@ -187,6 +239,8 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             return result.toArray(Direction[]::new);
         }
         public Direction[] itemOrder() { return itemOrder; }
+        public Direction[] extractOrder() { return order(extractMask, insertMask); }
+        public Direction[] receiveOrder() { return order(receiveMask, extractEnergyMask); }
         public Direction[] fluidOrder() { return fluidOrder; }
         public Direction[] energyOrder() { return energyOrder; }
         public int insertMask() { return insertMask; } public int extractMask() { return extractMask; }

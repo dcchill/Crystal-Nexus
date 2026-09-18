@@ -94,7 +94,7 @@ public final class AssemblyGraphRuntime {
     }
 
     private static void routeInputs(AssemblyLineControllerBlockEntity controller, AssemblyGraph.Node node, AssemblyLineMachine worker) {
-        IItemHandler target = worker.itemHandler();
+        IItemHandler target = worker.itemHandlerForInsert();
         if (target == null) return;
         for (int socket = 0; socket < node.inputSockets; socket++) {
             int slot = node.inputSlots != null && socket < node.inputSlots.length ? node.inputSlots[socket] : socket;
@@ -105,7 +105,9 @@ public final class AssemblyGraphRuntime {
                 if (edge.to() != node.id || edge.input() != socket) continue;
                 ItemStack offered = controller.takeGraphItem(edge.from(), edge.output(), 1);
                 if (offered.isEmpty()) continue;
-                ItemStack leftover = target.insertItem(slot, offered, false);
+                ItemStack leftover = worker.kind() == AssemblyLineMachine.Kind.GENERIC
+                    ? worker.insertItem(slot, offered, false)
+                    : target.insertItem(slot, offered, false);
                 if (!leftover.isEmpty()) controller.returnGraphItem(edge.from(), edge.output(), leftover);
                 if (leftover.getCount() < offered.getCount()) return;
             }
@@ -114,10 +116,10 @@ public final class AssemblyGraphRuntime {
 
     private static void routeOutputs(AssemblyLineControllerBlockEntity controller, AssemblyGraph.Node node, AssemblyLineMachine worker) {
         if (node.outputSlots == null) return;
-        IItemHandler source = worker.itemHandler();
+        IItemHandler source = worker.itemHandlerForExtract();
         if (source == null) return;
         for (int outputId = 0; outputId < Math.min(node.outputSockets, node.outputSlots.length); outputId++) {
-            int slot = node.outputSlots[outputId];
+            int slot = controller.outputSlot(worker, node, outputId);
             if (slot < 0 || slot >= source.getSlots()) continue;
             ItemStack output = source.getStackInSlot(slot);
             if (output.isEmpty()) continue;

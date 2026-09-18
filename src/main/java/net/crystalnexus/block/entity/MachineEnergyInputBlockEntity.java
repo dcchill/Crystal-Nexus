@@ -154,7 +154,9 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		if (energyBuffer.getEnergyStored() <= 0) return;
 		if (level != null && machineController != null && level.hasChunkAt(machineController)
 			&& level.getBlockEntity(machineController) instanceof AssemblyLineControllerBlockEntity assembly) {
-			if (assembly.distributeEnergyFrom(energyBuffer) > 0) { setChanged(); sync(); }
+			int moved = assembly.distributeEnergyFrom(energyBuffer);
+			if (moved > 0) { setChanged(); sync(); }
+			// Always return after trying controller distribution - don't fall through to cable fallback
 			return;
 		}
 		IEnergyStorage destination = target();
