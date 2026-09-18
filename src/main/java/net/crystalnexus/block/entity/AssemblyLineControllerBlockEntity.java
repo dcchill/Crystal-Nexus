@@ -221,8 +221,6 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         // have ForgeEnergyIntegration that returns 0 in simulate mode even when canReceive=true
         List<AssemblyLineMachine> targets = new ArrayList<>(allWorkers.stream()
             .filter(worker -> worker.energy() != null && worker.energy().canReceive()).toList());
-        CrystalnexusMod.LOGGER.debug("distributeEnergyFrom: workers={}, targets={}, sourceEnergy={}",
-            allWorkers.size(), targets.size(), source.getEnergyStored());
         int budget = Math.min(1_000_000, source.getEnergyStored());
         int moved = 0;
         while (budget > 0 && !targets.isEmpty()) {
@@ -250,7 +248,6 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (nearby && (force || blocks.get(pos) != level.getBlockState(pos).getBlock())) invalidate();
     }
     public void invalidate() {
-        if (formed) CrystalnexusMod.LOGGER.debug("Assembly Line invalidated at {}", worldPosition);
         dirty = true; formed = false; planDirty = true; setStatus("Structure changed; validating");
     }
     public void rescan() {
@@ -261,7 +258,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (bounds != null) for (BlockPos p : BlockPos.betweenClosed(bounds.min(), bounds.max()))
             if (level.hasChunkAt(p)) blocks.put(p.immutable(), level.getBlockState(p).getBlock());
         setStatus(formed ? "Ready" : result.error());
-        if (formed) CrystalnexusMod.LOGGER.debug("Assembly Line formed at {}, bounds {}, {} machines", worldPosition, bounds, machines.size());
+        if (formed) { /* Assembly Line formed at {} */ }
         if (formed) discoverGraphMachines();
         if (formed) bindShellPorts();
         taskRecipes.clear();
@@ -672,7 +669,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         // A failed request is retried only when inventory, structure or the user changes it.
         List<ItemStack> stock = new ArrayList<>(); for (int i = 0; i < 27; i++) stock.add(inventory.getStackInSlot(i));
         ProductionPlan plan = ProductionPlan.build(level, queue.peek(), stock, workers());
-        CrystalnexusMod.LOGGER.debug("Assembly Line plan at {}: {} tasks, {}", worldPosition, plan.tasks.size(), plan.error);
+
         if (!plan.error.isEmpty()) { setStatus(plan.error); return; }
         ItemStackHandler test = copy(reserved);
         for (ItemStack input : plan.rawInputs) if (!put(test, input, 0, test.getSlots()).isEmpty()) { setStatus("Reserved storage full"); return; }
@@ -699,7 +696,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
                     if (!put(copy(reserved), output, 0, reserved.getSlots()).isEmpty()) { problem = "Intermediate storage full"; continue; }
                     put(reserved, output.copy(), 0, reserved.getSlots()); worker.inventory().setItem(1, ItemStack.EMPTY);
                     task.complete = true; worker.release(); worker.entity().setChanged(); setChanged();
-                    CrystalnexusMod.LOGGER.debug("Assembly Line task {} completed at {}", id, pos);
+
                 } else if (inputsMatch(worker, task)) {
                     feedEnergy(worker); running = true;
                     if (worker.energy().getEnergyStored() < worker.startingEnergy(recipe)) problem = "Missing Energy";
@@ -720,7 +717,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
                 int[] slots = worker.inputs();
                 for (int i = 0; i < slots.length; i++) { take(reserved, task.inputs.get(i), 0, reserved.getSlots()); worker.inventory().setItem(slots[i], task.inputs.get(i).copy()); }
                 worker.entity().setChanged(); setChanged(); running = true;
-                CrystalnexusMod.LOGGER.debug("Assembly Line task {} ({}) assigned to {}", id, task.recipe, worker.entity().getBlockPos());
+
                 break;
             }
         }
@@ -784,7 +781,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         for (int i = 0; i < reserved.getSlots(); i++) reserved.setStackInSlot(i, ItemStack.EMPTY);
         completedJobs.addFirst(active.requested.getHoverName().getString() + " x" + active.requested.getCount());
         while (completedJobs.size() > 16) completedJobs.removeLast();
-        CrystalnexusMod.LOGGER.debug("Assembly Line production completed at {}: {}", worldPosition, active.requested);
+
         active = null; taskRecipes.clear(); planDirty = true; setStatus("Production complete"); setChanged(); sync();
     }
     public static ItemStackHandler copy(ItemStackHandler from) {
@@ -808,7 +805,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             store.setStackInSlot(i, ItemStack.EMPTY);
         }
     }
-    private void setStatus(String value) { if (!status.equals(value)) { status = value; setChanged(); CrystalnexusMod.LOGGER.debug("Assembly Line {}: {}", worldPosition, value); } }
+    private void setStatus(String value) { if (!status.equals(value)) { status = value; setChanged(); } }
     private void sync() {
         clientSystemEnergy = systemEnergy();
         clientJobs = (active == null ? "No active job" : "Active: " + active.requested.getHoverName().getString() + " " + active.completed() + "/" + active.tasks.size())

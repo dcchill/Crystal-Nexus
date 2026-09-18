@@ -7,10 +7,10 @@
   ],
   "key": {
     "I": {
-      "item": "minecraft:iron_ingot"
+      "item": "crystalnexus:azurine_sheet"
     },
     "C": {
-      "item": "minecraft:copper_ingot"
+      "item": "crystalnexus:iron_machine_bolt"
     }
   },
   "result": {

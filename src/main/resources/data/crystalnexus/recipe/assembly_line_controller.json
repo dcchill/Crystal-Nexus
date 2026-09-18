@@ -1,16 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "CCC",
+    "ACA",
     "CBC",
-    "CCC"
+    "ACA"
   ],
   "key": {
     "C": {
-      "item": "crystalnexus:assembly_line_casing"
+      "item": "crystalnexus:azurine_sheet"
     },
     "B": {
-      "item": "crystalnexus:blank_chip"
+      "item": "crystalnexus:computation_node"
+    },
+    "A": {
+      "item": "crystalnexus:iron_machine_bolt"
     }
   },
   "result": {

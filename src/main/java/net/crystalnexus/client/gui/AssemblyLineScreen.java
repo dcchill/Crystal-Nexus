@@ -128,7 +128,6 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         graphics.drawString(font, shortName(title.getString(), 24), 282, 19, 0xfff2f5fa, false);
-        graphics.drawString(font, "System: " + menu.controller.systemEnergy() + " FE", 480, 19, 0xff70cfff, false);
         String state = menu.controller.formed() ? menu.controller.graph().enabled ? "RUNNING" : "PAUSED" : "INVALID STRUCTURE";
         int color = menu.controller.graph().enabled ? 0xff69dc8c : menu.controller.formed() ? 0xffffc857 : 0xffff6b6b;
         graphics.drawString(font, state, imageWidth - 105, 19, color, false);
@@ -246,6 +245,35 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
     private int scaledNodeHeight(AssemblyGraph.Node node) { return scaled(nodeHeight(node)); }
     private int scaled(int value) { return (int) Math.round(value * zoom); }
+    private AssemblyGraph.Node nodeAtMouse(double mouseX, double mouseY) {
+        double lx = mouseX - leftPos, ly = mouseY - topPos;
+        if (!insideCanvas(mouseX, mouseY)) return null;
+        for (AssemblyGraph.Node node : menu.controller.graph().nodes) {
+            int nx = nodeX(node), ny = nodeY(node);
+            if (lx >= nx && lx <= nx + scaled(NODE_W) && ly >= ny && ly <= ny + scaledNodeHeight(node)) return node;
+        }
+        return null;
+    }
+    @Override protected void renderTooltip(GuiGraphics graphics, int mouseX, int mouseY) {
+        AssemblyGraph.Node hovered = nodeAtMouse(mouseX, mouseY);
+        if (hovered != null && hovered.machine != 0) {
+            AssemblyLineMachine worker = menu.controller.machineAt(BlockPos.of(hovered.machine));
+            if (worker != null) {
+                ResourceLocation blockId = ResourceLocation.tryParse(hovered.block);
+                ItemStack machine = blockId == null ? ItemStack.EMPTY : new ItemStack(BuiltInRegistries.BLOCK.get(blockId));
+                List<Component> lines = new ArrayList<>();
+                lines.add(Component.literal("Machine: " + (machine.isEmpty() ? shortName(hovered.block, 30) : machine.getHoverName().getString())));
+                int progress = worker.progress();
+                if (progress > 0) lines.add(Component.literal("Progress: " + progress + "%"));
+                if (worker.energy() != null) lines.add(Component.literal("Energy: " + worker.energy().getEnergyStored() + " / " + worker.energy().getMaxEnergyStored() + " FE"));
+                if (!hovered.recipe.isEmpty()) lines.add(Component.literal("Recipe: " + shortName(hovered.recipe, 40)));
+                if (!hovered.status.isEmpty() && !hovered.status.equals("Ready")) lines.add(Component.literal("Status: " + hovered.status));
+                graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
+                return;
+            }
+        }
+        super.renderTooltip(graphics, mouseX, mouseY);
+    }
     private void drawRemoveButton(GuiGraphics graphics, int x, int y) {
         graphics.fill(x, y, x + 14, y + 16, 0xff71383d);
         graphics.drawCenteredString(font, "-", x + 7, y + 3, 0xffffc4c4);
