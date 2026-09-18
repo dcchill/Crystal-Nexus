@@ -19,29 +19,15 @@ public final class AssemblyLineJeiGhostHandler implements IGhostIngredientHandle
             ItemStack stack = optItem.get();
             return screen.ghostTargets(stack).stream().<Target<I>>map(target -> new Target<>() {
                 @Override public Rect2i getArea() { return target.area(); }
-                @Override public void accept(I value) { screen.acceptGhostItem(target.nodeId(), target.socket(), stack); }
+                @Override public void accept(I value) { screen.acceptGhostItem(target.nodeId(), target.socket(), target.output(), stack); }
             }).toList();
         }
-        // Try fluid - JEI doesn't directly expose fluids in the same way, but we can try to cast
-        // Use reflection to check if it's a fluid ingredient
-        try {
-            Object ingredientObj = ingredient;
-            java.lang.reflect.Method getType = ingredient.getClass().getMethod("getType");
-            Object type = getType.invoke(ingredientObj);
-            // Check if type class name contains "Fluid"
-            if (type.getClass().getSimpleName().contains("Fluid")) {
-                // Try to get fluid via reflection
-                java.lang.reflect.Method getFluid = ingredient.getClass().getMethod("getFluid");
-                Object fluidObj = getFluid.invoke(ingredientObj);
-                if (fluidObj instanceof FluidStack fluid && !fluid.isEmpty()) {
-                    return screen.ghostFluidTargets(fluid).stream().<Target<I>>map(target -> new Target<>() {
-                        @Override public Rect2i getArea() { return target.area(); }
-                        @Override public void accept(I value) { screen.acceptGhostFluid(target.nodeId(), target.socket(), fluid); }
-                    }).toList();
-                }
-            }
-        } catch (Exception e) {
-            // Not a fluid or reflection failed
+        I rawIngredient = ingredient.getIngredient();
+        if (rawIngredient instanceof FluidStack fluid && !fluid.isEmpty()) {
+            return screen.ghostFluidTargets(fluid).stream().<Target<I>>map(target -> new Target<>() {
+                @Override public Rect2i getArea() { return target.area(); }
+                @Override public void accept(I value) { screen.acceptGhostFluid(target.nodeId(), target.socket(), fluid); }
+            }).toList();
         }
         return List.of();
     }

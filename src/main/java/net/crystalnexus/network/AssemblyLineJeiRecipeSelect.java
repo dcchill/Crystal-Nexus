@@ -28,12 +28,15 @@ public record AssemblyLineJeiRecipeSelect(int menu, int node, String output, Str
         boolean cycle=p.output.isEmpty();
         ResourceLocation outputId=ResourceLocation.tryParse(p.output); var node=menu.controller.graph().node(p.node);
         if(node==null || node.machine==0) return;
-        if(outputId==null) {
+        ResourceLocation machineId=BuiltInRegistries.BLOCK.getKey(player.level().getBlockState(BlockPos.of(node.machine)).getBlock());
+        var matches = outputId == null
+            ? DepotJeiRecipeCache.recipesForMachine(player, machineId)
+            : matches(player, outputId, machineId);
+        if(outputId==null && !cycle) {
             if(node.outputItems!=null && node.outputItems.length>0) outputId=ResourceLocation.tryParse(node.outputItems[0]);
             if(outputId==null) return;
+            matches = matches(player, outputId, machineId);
         }
-        ResourceLocation machineId=BuiltInRegistries.BLOCK.getKey(player.level().getBlockState(BlockPos.of(node.machine)).getBlock());
-        var matches=matches(player,outputId,machineId);
         ResourceLocation inputId=ResourceLocation.tryParse(p.input);
         if(inputId!=null) matches=matches.stream().filter(recipe->recipe.inputs().stream()
             .anyMatch(slot->slot.alternatives().stream().anyMatch(stack->stack.itemId().equals(inputId)))).toList();

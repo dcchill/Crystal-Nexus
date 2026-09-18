@@ -25,7 +25,7 @@ public final class RefineryMenu extends AbstractContainerMenu {
     public RefineryMenu(int id, Inventory inventory, FriendlyByteBuf data) {
         super(CrystalnexusModMenus.REFINERY_GUI.get(), id);
         entity = inventory.player;
-        BlockPos pos = data.readBlockPos();
+        BlockPos pos = data != null && data.readableBytes() >= Long.BYTES ? data.readBlockPos() : BlockPos.ZERO;
         x = pos.getX(); y = pos.getY(); z = pos.getZ();
         access = ContainerLevelAccess.create(entity.level(), pos);
         refinery = entity.level().getBlockEntity(pos) instanceof RefineryBlockEntity be ? be : null;

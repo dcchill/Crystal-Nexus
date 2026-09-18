@@ -23,7 +23,7 @@ public final class CryogenicFlashFreezerMenu extends AbstractContainerMenu {
 	public CryogenicFlashFreezerMenu(int id, Inventory inventory, FriendlyByteBuf data) {
 		super(CrystalnexusModMenus.CRYOGENIC_FLASH_FREEZER.get(), id);
 		entity = inventory.player;
-		BlockPos pos = data.readBlockPos();
+		BlockPos pos = data != null && data.readableBytes() >= Long.BYTES ? data.readBlockPos() : BlockPos.ZERO;
 		x = pos.getX(); y = pos.getY(); z = pos.getZ();
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		freezer = entity.level().getBlockEntity(pos) instanceof CryogenicFlashFreezerBlockEntity be ? be : null;

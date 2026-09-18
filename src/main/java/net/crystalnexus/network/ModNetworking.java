@@ -33,6 +33,9 @@ public class ModNetworking {
 		r.playToServer(AssemblyLineRecipeSelect.TYPE, AssemblyLineRecipeSelect.STREAM_CODEC, AssemblyLineRecipeSelect::handle);
 		r.playToServer(AssemblyLineItemConfigure.TYPE, AssemblyLineItemConfigure.STREAM_CODEC, AssemblyLineItemConfigure::handle);
 		r.playToServer(AssemblyLineJeiRecipeSelect.TYPE, AssemblyLineJeiRecipeSelect.STREAM_CODEC, AssemblyLineJeiRecipeSelect::handle);
+		r.playToServer(AssemblyLineSlotsSet.TYPE, AssemblyLineSlotsSet.STREAM_CODEC, AssemblyLineSlotsSet::handle);
+		r.playToServer(AssemblyLineSlotConfigure.TYPE, AssemblyLineSlotConfigure.STREAM_CODEC, AssemblyLineSlotConfigure::handle);
+		r.playToServer(AssemblyLineFluidConfigure.TYPE, AssemblyLineFluidConfigure.STREAM_CODEC, AssemblyLineFluidConfigure::handle);
 
 		r.playToServer(C2S_RequestPage.TYPE, C2S_RequestPage.STREAM_CODEC, ServerHandlers::onRequestPage);
 		r.playToServer(C2S_Withdraw.TYPE,     C2S_Withdraw.STREAM_CODEC,     ServerHandlers::onWithdraw);

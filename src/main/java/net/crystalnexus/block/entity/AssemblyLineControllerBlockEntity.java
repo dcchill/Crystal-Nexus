@@ -5,6 +5,7 @@ import net.crystalnexus.assembly.*;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.world.inventory.AssemblyLineMenu;
 import net.minecraft.core.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -13,6 +14,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -58,6 +60,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     };
     private AssemblyLineStructure.Bounds bounds;
     private List<BlockPos> machines = List.of();
+    private final Map<Long, AssemblyLineMachine.SideProfile> sideProfiles = new HashMap<>();
     private final Map<BlockPos, Block> blocks = new HashMap<>();
     private final Map<Integer, RecipeHolder<?>> taskRecipes = new HashMap<>();
     private final ArrayDeque<ItemStack> queue = new ArrayDeque<>();
@@ -68,6 +71,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     private String status = "Build enclosure, then Rescan";
     private ItemStack configured = ItemStack.EMPTY;
     private String clientJobs = "", clientMachines = "";
+    private long clientSystemEnergy;
     private final Set<ResourceLocation> learnedRecipes = new LinkedHashSet<>();
     public AssemblyLineControllerBlockEntity(BlockPos pos, BlockState state) { super(CrystalnexusModBlockEntities.ASSEMBLY_LINE_CONTROLLER.get(), pos, state); }
     @Override public void onLoad() { super.onLoad(); if (level != null && !level.isClientSide) { dirty = true; formed = false; AssemblyLineEvents.register(this); } }
@@ -76,6 +80,14 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     public String status() { return status; }
     public String jobsText() { return clientJobs; }
     public String machinesText() { return clientMachines; }
+    public long systemEnergy() {
+        if (level == null || level.isClientSide) return clientSystemEnergy;
+        long total = energy.getEnergyStored();
+        for (AssemblyLineMachine worker : workers()) {
+            if (worker.energy() != null) total += worker.energy().getEnergyStored();
+        }
+        return total;
+    }
     public ItemStack configured() { return configured; }
     public AssemblyLineStructure.Bounds bounds() { return bounds; }
     public List<BlockPos> machinePositions() { return machines; }
@@ -93,8 +105,9 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
                 ItemStack[] choices = ingredient.getItems();
                 return choices.length == 0 ? "" : net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(choices[0].getItem()).toString();
             }).toArray(String[]::new);
+            node.inputFluids = new String[node.inputSockets];
             var machine = machineAt(BlockPos.of(node.machine));
-            int[] physicalInputs = machine == null ? new int[0] : machine.inputs();
+            int[] physicalInputs = machine == null ? new int[0] : discoverInputSlots(machine, node.inputSockets);
             node.inputSlots = Arrays.copyOf(physicalInputs, node.inputSockets);
             node.outputSlots = discoverOutputSlots(machineAt(BlockPos.of(node.machine)));
             node.outputSockets = node.outputSlots.length;
@@ -116,6 +129,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         node.inputSlots=new int[node.inputSockets];
         for(int i=0;i<node.inputSlots.length;i++) node.inputSlots[i]=i;
         node.inputItems=recipe.inputs().stream().map(slot->slot.alternatives().isEmpty()?"":slot.alternatives().getFirst().itemId().toString()).toArray(String[]::new);
+        node.inputFluids = new String[node.inputSockets];
         node.outputSockets=recipe.outputs().size();
         node.outputSlots=new int[node.outputSockets];
         for(int i=0;i<node.outputSlots.length;i++) node.outputSlots[i]=i;
@@ -132,13 +146,27 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     private int[] discoverOutputSlots(AssemblyLineMachine machine) {
         if (machine == null) return new int[] {1};
+        var handler = machine.itemHandler();
+        if (handler != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC) {
+            List<Integer> available = new ArrayList<>();
+            for (int i = 0; i < handler.getSlots(); i++) {
+                ItemStack stack = handler.getStackInSlot(i);
+                if (!(machine.inventory() instanceof WorldlyContainer sided)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.UP)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.DOWN)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.NORTH)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.SOUTH)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.WEST)
+                    || sided.canTakeItemThroughFace(i, stack, Direction.EAST)) available.add(i);
+            }
+            int[] slots = available.stream().mapToInt(Integer::intValue).toArray();
+            return slots.length == 0 ? new int[] {0} : slots;
+        }
         List<Integer> slots = new ArrayList<>();
         int[] inputs = machine.inputs();
         for (int slot = 0; slot < machine.inventory().getContainerSize(); slot++) {
             boolean input = false; for (int candidate : inputs) if (candidate == slot) input = true;
             if (input) continue;
-            if (machine.inventory() instanceof net.minecraft.world.WorldlyContainer worldly
-                && !worldly.canTakeItemThroughFace(slot, ItemStack.EMPTY, net.minecraft.core.Direction.UP)) continue;
             if (slot == 0 || slot == 2 || slot == 3 && machine.kind() != AssemblyLineMachine.Kind.CIRCUIT_PRESS) {
                 // Slot 0 is conventionally an input and slots 2/3 are commonly upgrades.
                 if (machine.kind() != AssemblyLineMachine.Kind.GENERIC) continue;
@@ -146,6 +174,20 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             slots.add(slot);
         }
         return slots.isEmpty() ? new int[] {1} : slots.stream().mapToInt(Integer::intValue).toArray();
+    }
+    private int[] discoverInputSlots(AssemblyLineMachine machine, int count) {
+        if (machine == null || count <= 0) return new int[0];
+        if (machine.kind() != AssemblyLineMachine.Kind.GENERIC) return machine.inputs();
+        var handler = machine.itemHandler();
+        if (handler == null) return new int[0];
+        List<Integer> slots = new ArrayList<>();
+        for (int slot = 0; slot < handler.getSlots() && slots.size() < count; slot++) {
+            ItemStack probe = new ItemStack(net.minecraft.world.item.Items.STONE);
+            if (handler.insertItem(slot, probe, true).getCount() < probe.getCount()) slots.add(slot);
+        }
+        for (int slot = 0; slot < handler.getSlots() && slots.size() < count; slot++)
+            if (!slots.contains(slot)) slots.add(slot);
+        return slots.stream().mapToInt(Integer::intValue).toArray();
     }
 
     @Override public boolean acceptsMultiblockPort(BlockPos pos) {
@@ -204,6 +246,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         var result = AssemblyLineStructure.scan(level, worldPosition);
         if (result.bounds() != null) bounds = result.bounds();
         formed = result.valid(); dirty = false; machines = result.machines(); blocks.clear();
+        for (BlockPos pos : machines) learnSideProfile(pos);
         if (bounds != null) for (BlockPos p : BlockPos.betweenClosed(bounds.min(), bounds.max()))
             if (level.hasChunkAt(p)) blocks.put(p.immutable(), level.getBlockState(p).getBlock());
         setStatus(formed ? "Ready" : result.error());
@@ -229,31 +272,63 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         Set<Long> present = new HashSet<>();
         for (BlockPos pos : machines) {
             present.add(pos.asLong());
-            if (graph.nodes.stream().noneMatch(n -> n.machine == pos.asLong())) {
+            AssemblyGraph.Node existing = graph.nodes.stream().filter(n -> n.machine == pos.asLong()).findFirst().orElse(null);
+            if (existing == null) {
                 var state = level.getBlockState(pos);
                 String id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(state.getBlock()).toString();
                 int index = graph.nodes.size();
                 graph.nodes.add(new AssemblyGraph.Node(graph.nextId(), pos.asLong(), id, 12 + (index % 4) * 92, 12 + (index / 4) * 52));
+            } else if (existing.outputSockets > 0) {
+                AssemblyLineMachine machine = machineAt(pos);
+                if (machine != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC
+                    && existing.outputSlots.length != existing.outputSockets) {
+                    existing.outputSlots = Arrays.copyOf(discoverOutputSlots(machine), existing.outputSockets);
+                }
             }
         }
         if (bounds != null) for (BlockPos pos : BlockPos.betweenClosed(bounds.min(), bounds.max())) {
             var be = level.getBlockEntity(pos);
-            if (!(be instanceof MultiblockItemInputBlockEntity) && !(be instanceof MultiblockItemOutputBlockEntity)) continue;
+            if (!(be instanceof MultiblockItemInputBlockEntity) && !(be instanceof MultiblockItemOutputBlockEntity)
+                && !(be instanceof MachineFluidInputBlockEntity) && !(be instanceof MultiblockFluidOutputBlockEntity)) continue;
             present.add(pos.asLong());
             if (graph.nodes.stream().anyMatch(n -> n.machine == pos.asLong())) continue;
             String id = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(level.getBlockState(pos).getBlock()).toString();
             int index = graph.nodes.size();
             AssemblyGraph.Node node = new AssemblyGraph.Node(graph.nextId(), pos.asLong(), id, 12 + (index % 4) * 210, 12 + (index / 4) * 120);
             if (be instanceof MultiblockItemInputBlockEntity) {
-                node.inputSockets = 0; node.inputSlots = new int[0]; node.inputItems = new String[0];
+                node.inputSockets = 0; node.inputSlots = new int[0]; node.inputItems = new String[0]; node.inputFluids = new String[0];
                 node.outputSockets = 4; node.outputSlots = new int[]{0,1,2,3}; node.outputItems = new String[]{"","","",""};
                 node.outputExport = new boolean[]{false,false,false,false}; node.status = "Supplies graph inputs";
+            } else if (be instanceof MultiblockFluidOutputBlockEntity) {
+                node.inputSockets = 4; node.inputSlots = new int[]{0,1,2,3}; node.inputItems = new String[]{"","","",""}; node.inputFluids = new String[]{"","","",""};
+                node.outputSockets = 0; node.outputSlots = new int[0]; node.outputItems = new String[0];
+                node.outputFluids = new String[0]; node.outputExport = new boolean[0];
+                node.status = "Receives graph fluids";
+            } else if (be instanceof MachineFluidInputBlockEntity) {
+                node.inputSockets = 0; node.inputSlots = new int[0]; node.inputItems = new String[0]; node.inputFluids = new String[0];
+                node.outputSockets = 4; node.outputSlots = new int[]{0,1,2,3}; node.outputItems = new String[]{"","","",""};
+                node.outputFluids = new String[]{"","","",""}; node.outputExport = new boolean[]{false,false,false,false};
+                node.status = "Supplies graph fluids";
             } else {
-                node.inputSockets = 4; node.inputSlots = new int[]{0,1,2,3}; node.inputItems = new String[]{"","","",""};
+                node.inputSockets = 4; node.inputSlots = new int[]{0,1,2,3}; node.inputItems = new String[]{"","","",""}; node.inputFluids = new String[]{"","","",""};
                 node.outputSockets = 0; node.outputSlots = new int[0]; node.outputItems = new String[0];
                 node.outputExport = new boolean[0]; node.status = "Receives graph outputs";
             }
             graph.nodes.add(node);
+        }
+        for (AssemblyGraph.Node node : graph.nodes) {
+            var port = level.getBlockEntity(BlockPos.of(node.machine));
+            if (port instanceof MachineFluidInputBlockEntity) {
+                node.inputSockets = 0; node.inputSlots = new int[0]; node.inputItems = new String[0]; node.inputFluids = new String[0];
+                node.outputSockets = 4; node.outputSlots = new int[]{0, 1, 2, 3}; node.outputItems = new String[]{"", "", "", ""};
+                node.outputFluids = new String[]{"", "", "", ""}; node.outputExport = new boolean[]{false, false, false, false};
+                node.status = "Supplies graph fluids";
+            } else if (port instanceof MultiblockFluidOutputBlockEntity) {
+                node.inputSockets = 4; node.inputSlots = new int[]{0, 1, 2, 3}; node.inputItems = new String[]{"", "", "", ""}; node.inputFluids = new String[]{"", "", "", ""};
+                node.outputSockets = 0; node.outputSlots = new int[0]; node.outputItems = new String[0];
+                node.outputFluids = new String[0]; node.outputExport = new boolean[0];
+                node.status = "Receives graph fluids";
+            }
         }
         graph.nodes.removeIf(n -> n.machine != 0 && !present.contains(n.machine));
         graph.edges.removeIf(e -> graph.node(e.from()) == null || graph.node(e.to()) == null);
@@ -273,7 +348,34 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             if (from.outputSockets > 0 && c >= from.outputSockets) return false;
             if (to.inputSockets > 0 && d >= to.inputSockets) return false;
             graph.edges.add(new AssemblyGraph.Edge(a, c, b, d));
-        } else if (action.equals("remove_edge")) graph.edges.removeIf(e -> e.from() == a && e.to() == b);
+        } else if (action.equals("remove_edge")) graph.edges.removeIf(e ->
+            b < 0 && c >= 0 ? e.from() == a && e.output() == c
+                : b < 0 ? e.from() == a : e.from() == a && e.to() == b);
+        else if (action.equals("remove_slot")) {
+            var node = graph.node(a);
+            if (node == null || c < 0) return false;
+            if (b == 0) {
+                if (c >= node.inputSockets) return false;
+                node.inputSockets--;
+                node.inputItems = remove(node.inputItems, c);
+                node.inputFluids = remove(node.inputFluids, c);
+                node.inputSlots = remove(node.inputSlots, c);
+                graph.edges.removeIf(e -> e.to() == a && e.input() == c);
+                List<AssemblyGraph.Edge> shifted = graph.edges.stream().map(e -> e.to() == a && e.input() > c
+                    ? new AssemblyGraph.Edge(e.from(), e.output(), e.to(), e.input() - 1) : e).toList();
+                graph.edges.clear(); graph.edges.addAll(shifted);
+            } else {
+                if (c >= node.outputSockets) return false;
+                node.outputSockets--;
+                node.outputItems = remove(node.outputItems, c);
+                node.outputSlots = remove(node.outputSlots, c);
+                node.outputExport = remove(node.outputExport, c);
+                graph.edges.removeIf(e -> e.from() == a && e.output() == c);
+                List<AssemblyGraph.Edge> shifted = graph.edges.stream().map(e -> e.from() == a && e.output() > c
+                    ? new AssemblyGraph.Edge(e.from(), e.output() - 1, e.to(), e.input()) : e).toList();
+                graph.edges.clear(); graph.edges.addAll(shifted);
+            }
+        }
         else if (action.equals("export")) { var n=graph.node(a); if(n==null || c<0 || c>=n.outputSockets) return false; if(n.outputExport.length!=n.outputSockets) n.outputExport=Arrays.copyOf(n.outputExport,n.outputSockets); n.outputExport[c]=b!=0; }
         else if (action.equals("move")) { var n = graph.node(a); if (n == null || !Float.isFinite(x) || !Float.isFinite(y)) return false; n.x=x; n.y=y; }
         else return false;
@@ -303,13 +405,57 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (!error.isEmpty()) { setStatus(error); graph.enabled = false; return; }
         for (AssemblyGraph.Node node : graph.nodes) {
             BlockPos machine = BlockPos.of(node.machine);
-            if (!machines.contains(machine)) { node.status = "Machine missing"; continue; }
+            if (isGraphPort(node)) continue;
+            if (machineAt(machine) == null) { node.status = "Machine missing"; continue; }
             node.status = node.recipe.isEmpty() ? "Select recipe" : "Ready";
         }
         if (!graph.nodes.isEmpty() && graph.nodes.stream().allMatch(n -> !n.recipe.isEmpty())) setStatus("Graph active");
     }
+    private static boolean isGraphPort(AssemblyGraph.Node node) {
+        return node.block.endsWith(":multiblock_item_input")
+            || node.block.endsWith(":multiblock_item_output")
+            || node.block.endsWith(":machine_fluid_input")
+            || node.block.endsWith(":multiblock_fluid_output");
+    }
     public AssemblyLineMachine machineAt(BlockPos pos) {
-        return level == null || !level.hasChunkAt(pos) ? null : AssemblyLineMachine.at(level, pos);
+        return level == null || !level.hasChunkAt(pos) ? null : AssemblyLineMachine.at(level, pos, sideProfiles.get(pos.asLong()));
+    }
+
+    private void learnSideProfile(BlockPos pos) {
+        if (level == null) return;
+        int insert = 0, extract = 0, fill = 0, drain = 0, receive = 0, energyExtract = 0;
+        for (Direction side : Direction.values()) {
+            var items = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.ItemHandler.BLOCK, pos, side);
+            if (items != null) {
+                boolean canInsert = false, canExtract = false;
+                ItemStack probe = new ItemStack(net.minecraft.world.item.Items.STONE);
+                for (int slot = 0; slot < items.getSlots(); slot++) {
+                    if (!items.insertItem(slot, probe, true).equals(probe)) canInsert = true;
+                    if (!items.getStackInSlot(slot).isEmpty()
+                        && !items.extractItem(slot, 1, true).isEmpty()) canExtract = true;
+                }
+                if (canInsert) insert |= 1 << side.ordinal();
+                if (canExtract) extract |= 1 << side.ordinal();
+            }
+            var fluids = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, pos, side);
+            if (fluids != null) {
+                boolean canDrain = false, canFill = false;
+                for (int tank = 0; tank < fluids.getTanks(); tank++) {
+                    FluidStack contents = fluids.getFluidInTank(tank);
+                    if (!contents.isEmpty() && !fluids.drain(contents.copyWithAmount(Math.min(1000, contents.getAmount())), IFluidHandler.FluidAction.SIMULATE).isEmpty()) canDrain = true;
+                    if (!contents.isEmpty() && fluids.fill(contents.copyWithAmount(Math.min(1000, contents.getAmount())), IFluidHandler.FluidAction.SIMULATE) > 0) canFill = true;
+                }
+                if (canFill) fill |= 1 << side.ordinal();
+                if (canDrain) drain |= 1 << side.ordinal();
+            }
+            var storage = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, pos, side);
+            if (storage != null) {
+                if (storage.canReceive()) receive |= 1 << side.ordinal();
+                if (storage.canExtract()) energyExtract |= 1 << side.ordinal();
+            }
+        }
+        sideProfiles.put(pos.asLong(), new AssemblyLineMachine.SideProfile(insert, extract, fill, drain, receive, energyExtract));
+        setChanged();
     }
     public ItemStack takeGraphItem(int nodeId, int output, int amount) {
         AssemblyGraph.Node node = graph.node(nodeId);
@@ -319,17 +465,17 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             if (output < 0 || output >= input.getContainerSize()) return ItemStack.EMPTY;
             ItemStack available = input.getItem(output);
             if (available.isEmpty()) return ItemStack.EMPTY;
-            if (output < node.outputItems.length && node.outputItems[output] != null && !node.outputItems[output].isEmpty()
-                && !net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(available.getItem()).toString().equals(node.outputItems[output])) return ItemStack.EMPTY;
             return input.removeItem(output, Math.min(amount, available.getCount()));
         }
         AssemblyLineMachine worker = machineAt(BlockPos.of(node.machine));
         if (worker == null || output < 0 || output >= node.outputSlots.length) return ItemStack.EMPTY;
-        if (node.outputItems == null || output < node.outputItems.length && (node.outputItems[output] == null || node.outputItems[output].isEmpty())) return ItemStack.EMPTY;
         int slot = node.outputSlots[output];
+        var handler = worker.itemHandler();
+        if (worker.kind() == AssemblyLineMachine.Kind.GENERIC && handler != null) {
+            return handler.extractItem(slot, amount, false);
+        }
         ItemStack available = worker.inventory().getItem(slot);
         if (available.isEmpty()) return ItemStack.EMPTY;
-        if (output < node.outputItems.length && !net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(available.getItem()).toString().equals(node.outputItems[output])) return ItemStack.EMPTY;
         ItemStack moved = available.copyWithCount(Math.min(amount, available.getCount()));
         available.shrink(moved.getCount()); worker.inventory().setItem(slot, available);
         worker.entity().setChanged(); return moved;
@@ -347,6 +493,12 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         AssemblyLineMachine worker = node == null ? null : machineAt(BlockPos.of(node.machine));
         if (worker != null && output >= 0 && output < node.outputSlots.length) {
             int slot = node.outputSlots[output];
+            var handler = worker.itemHandler();
+            if (worker.kind() == AssemblyLineMachine.Kind.GENERIC && handler != null) {
+                ItemStack leftover = handler.insertItem(slot, stack, false);
+                if (!leftover.isEmpty()) put(reserved, leftover, 0, reserved.getSlots());
+                return;
+            }
             ItemStack existing = worker.inventory().getItem(slot);
             if (existing.isEmpty() || ItemStack.isSameItemSameComponents(existing, stack)) {
                 worker.inventory().setItem(slot, existing.isEmpty() ? stack.copy() : existing.copyWithCount(existing.getCount() + stack.getCount()));
@@ -357,6 +509,20 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     public FluidStack takeGraphFluid(int nodeId, int output, int amount) {
         if (amount <= 0 || level == null) return FluidStack.EMPTY;
+        AssemblyGraph.Node source = graph.node(nodeId);
+        if (source != null && output >= 0 && source.block.endsWith(":machine_fluid_input")) {
+            var port = level.getBlockEntity(BlockPos.of(source.machine));
+            if (port instanceof MachineFluidInputBlockEntity input)
+                return input.getFluidInput().drain(amount, IFluidHandler.FluidAction.EXECUTE);
+        }
+        if (source != null && output >= 0 && !source.block.endsWith(":multiblock_fluid_output")
+            && !source.block.endsWith(":machine_fluid_input")) {
+            AssemblyLineMachine machine = machineAt(BlockPos.of(source.machine));
+            IFluidHandler handler = machine == null ? null : machine.fluidHandler();
+            if (handler != null && output < handler.getTanks())
+                return handler.drain(Math.min(amount, handler.getFluidInTank(output).getAmount()),
+                    IFluidHandler.FluidAction.EXECUTE);
+        }
         for (BlockPos pos : shellPorts(net.crystalnexus.block.entity.MultiblockFluidOutputBlockEntity.class)) {
             var handler = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, pos, null);
             if (handler == null) continue;
@@ -369,6 +535,18 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     public void returnGraphFluid(int nodeId, int output, FluidStack stack) {
         if (stack.isEmpty() || level == null) return;
+        AssemblyGraph.Node source = graph.node(nodeId);
+        if (source != null && source.block.endsWith(":machine_fluid_input")) {
+            var port = level.getBlockEntity(BlockPos.of(source.machine));
+            if (port instanceof MachineFluidInputBlockEntity input
+                && input.getFluidInput().fill(stack, IFluidHandler.FluidAction.EXECUTE) > 0) return;
+        }
+        if (source != null && !source.block.endsWith(":multiblock_fluid_output")
+            && !source.block.endsWith(":machine_fluid_input")) {
+            AssemblyLineMachine machine = machineAt(BlockPos.of(source.machine));
+            IFluidHandler handler = machine == null ? null : machine.fluidHandler();
+            if (handler != null && handler.fill(stack, IFluidHandler.FluidAction.EXECUTE) > 0) return;
+        }
         for (BlockPos pos : shellPorts(net.crystalnexus.block.entity.MachineFluidInputBlockEntity.class)) {
             var handler = level.getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, pos, null);
             if (handler != null && handler.fill(stack, net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE) > 0) return;
@@ -406,6 +584,52 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             node.outputItems = Arrays.copyOf(node.outputItems, node.outputSockets); node.outputItems[socket] = id.toString();
             node.status = "Input filter configured"; graph.syncRevision(); setChanged(); sync();
         }
+    }
+    public void setGraphSlots(int nodeId, List<String> inputs, List<String> outputs,
+                              List<String> inputFluids, List<String> outputFluids) {
+        AssemblyGraph.Node node = graph.node(nodeId);
+        if (node == null || inputFluids.size() > 32 || outputFluids.size() > 32
+            || inputs.size() > 32 || outputs.size() > 32) return;
+        node.recipe = "";
+        node.inputSockets = Math.max(inputs.size(), inputFluids.size());
+        node.inputItems = Arrays.copyOf(inputs.toArray(String[]::new), node.inputSockets);
+        node.inputFluids = Arrays.copyOf(inputFluids.toArray(String[]::new), node.inputSockets);
+        node.inputSlots = new int[node.inputSockets];
+        for (int i = 0; i < node.inputSlots.length; i++) node.inputSlots[i] = i;
+        node.outputSockets = Math.max(outputs.size(), outputFluids.size());
+        node.outputItems = Arrays.copyOf(outputs.toArray(String[]::new), node.outputSockets);
+        node.outputFluids = Arrays.copyOf(outputFluids.toArray(String[]::new), node.outputSockets);
+        node.outputSlots = Arrays.copyOf(discoverOutputSlots(machineAt(BlockPos.of(node.machine))), node.outputSockets);
+        if (node.outputSlots.length < node.outputSockets) node.outputSlots = Arrays.copyOf(node.outputSlots, node.outputSockets);
+        node.outputExport = new boolean[node.outputSockets];
+        Arrays.fill(node.outputExport, true);
+        graph.edges.removeIf(edge ->
+            (edge.to() == nodeId && edge.input() >= node.inputSockets)
+                || (edge.from() == nodeId && edge.output() >= node.outputSockets));
+        node.status = "Slots configured";
+        graph.syncRevision(); setChanged(); sync();
+    }
+    public void configureGraphSlot(int nodeId, int socket, boolean output, String itemId) {
+        AssemblyGraph.Node node = graph.node(nodeId);
+        ResourceLocation id = ResourceLocation.tryParse(itemId);
+        if (node == null || id == null || !BuiltInRegistries.ITEM.containsKey(id) || socket < 0) return;
+        String[] values = output ? node.outputItems : node.inputItems;
+        if (socket >= values.length) return;
+        values[socket] = id.toString();
+        node.recipe = "";
+        node.status = "Slot configured";
+        graph.syncRevision(); setChanged(); sync();
+    }
+    public void configureGraphFluid(int nodeId, int socket, boolean output, String fluidId) {
+        AssemblyGraph.Node node = graph.node(nodeId);
+        ResourceLocation id = ResourceLocation.tryParse(fluidId);
+        if (node == null || id == null || !BuiltInRegistries.FLUID.containsKey(id) || socket < 0) return;
+        String[] values = output ? node.outputFluids : node.inputFluids;
+        if (socket >= values.length) return;
+        values[socket] = id.toString();
+        node.recipe = "";
+        node.status = "Fluid slot configured";
+        graph.syncRevision(); setChanged(); sync();
     }
     private <T> List<BlockPos> shellPorts(Class<T> type) {
         if (bounds == null || level == null) return List.of();
@@ -482,6 +706,24 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         for (int i = 0; i < slots.length; i++) if (!ItemStack.matches(worker.inventory().getItem(slots[i]), task.inputs.get(i))) return false;
         return true;
     }
+    private static String[] remove(String[] values, int index) {
+        String[] result = new String[values.length - 1];
+        System.arraycopy(values, 0, result, 0, index);
+        System.arraycopy(values, index + 1, result, index, result.length - index);
+        return result;
+    }
+    private static int[] remove(int[] values, int index) {
+        int[] result = new int[values.length - 1];
+        System.arraycopy(values, 0, result, 0, index);
+        System.arraycopy(values, index + 1, result, index, result.length - index);
+        return result;
+    }
+    private static boolean[] remove(boolean[] values, int index) {
+        boolean[] result = new boolean[values.length - 1];
+        System.arraycopy(values, 0, result, 0, index);
+        System.arraycopy(values, index + 1, result, index, result.length - index);
+        return result;
+    }
     public boolean mayRun(BlockPos machine, int id) {
         if (!formed() || active == null || id < 0 || id >= active.tasks.size()) return false;
         var task = active.tasks.get(id); var worker = AssemblyLineMachine.at(level, machine);
@@ -537,6 +779,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     private void setStatus(String value) { if (!status.equals(value)) { status = value; setChanged(); CrystalnexusMod.LOGGER.debug("Assembly Line {}: {}", worldPosition, value); } }
     private void sync() {
+        clientSystemEnergy = systemEnergy();
         clientJobs = (active == null ? "No active job" : "Active: " + active.requested.getHoverName().getString() + " " + active.completed() + "/" + active.tasks.size())
             + "\nQueued: " + queue.size() + "\n" + String.join("\n", queue.stream().map(i -> i.getHoverName().getString() + " x" + i.getCount()).toList())
             + "\nCompleted:\n" + String.join("\n", completedJobs);
@@ -559,6 +802,13 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (!configured.isEmpty()) tag.put("configured", ProductionPlan.saveRequest(configured, registries));
         ListTag learned = new ListTag(); learnedRecipes.forEach(id -> learned.add(StringTag.valueOf(id.toString()))); tag.put("learnedRecipes", learned);
         tag.putString("jobsText", clientJobs); tag.putString("machinesText", clientMachines);
+        ListTag profiles = new ListTag();
+        sideProfiles.forEach((pos, profile) -> {
+            CompoundTag p = new CompoundTag(); p.putLong("pos", pos); p.putInt("insert", profile.insertMask());
+            p.putInt("extract", profile.extractMask()); p.putInt("fill", profile.fillMask()); p.putInt("drain", profile.drainMask());
+            p.putInt("receive", profile.receiveMask()); p.putInt("energyExtract", profile.extractEnergyMask()); profiles.add(p);
+        });
+        tag.put("sideProfiles", profiles);
     }
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries); inventory.deserializeNBT(registries, tag.getCompound("inventory")); reserved.deserializeNBT(registries, tag.getCompound("reserved"));
@@ -572,14 +822,20 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         configured = ProductionPlan.loadRequest(tag.getCompound("configured"), registries);
         learnedRecipes.clear(); for (Tag id : tag.getList("learnedRecipes", Tag.TAG_STRING)) { ResourceLocation parsed = ResourceLocation.tryParse(id.getAsString()); if (parsed != null) learnedRecipes.add(parsed); }
         clientJobs = tag.getString("jobsText"); clientMachines = tag.getString("machinesText"); formed = false; dirty = true;
+        sideProfiles.clear();
+        for (Tag raw : tag.getList("sideProfiles", Tag.TAG_COMPOUND)) {
+            CompoundTag p = (CompoundTag) raw;
+            sideProfiles.put(p.getLong("pos"), new AssemblyLineMachine.SideProfile(p.getInt("insert"), p.getInt("extract"),
+                p.getInt("fill"), p.getInt("drain"), p.getInt("receive"), p.getInt("energyExtract")));
+        }
     }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag(); tag.putString("status", status); tag.putString("jobsText", clientJobs); tag.putString("machinesText", clientMachines);
-        tag.putInt("energy", energy.getEnergyStored()); tag.putBoolean("formed", formed()); tag.put("assemblyGraph", graph.save(registries)); if (!configured.isEmpty()) tag.put("configured", ProductionPlan.saveRequest(configured, registries)); return tag;
+        tag.putInt("energy", energy.getEnergyStored()); tag.putLong("systemEnergy", systemEnergy()); tag.putBoolean("formed", formed()); tag.put("assemblyGraph", graph.save(registries)); if (!configured.isEmpty()) tag.put("configured", ProductionPlan.saveRequest(configured, registries)); return tag;
     }
     @Override public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries) {
         status = tag.getString("status"); clientJobs = tag.getString("jobsText"); clientMachines = tag.getString("machinesText");
-        energy.deserializeNBT(registries, IntTag.valueOf(tag.getInt("energy"))); formed = tag.getBoolean("formed"); dirty = false;
+        energy.deserializeNBT(registries, IntTag.valueOf(tag.getInt("energy"))); clientSystemEnergy = tag.getLong("systemEnergy"); formed = tag.getBoolean("formed"); dirty = false;
         if (tag.contains("assemblyGraph")) graph = AssemblyGraph.load(tag.getCompound("assemblyGraph"), registries);
         configured = ProductionPlan.loadRequest(tag.getCompound("configured"), registries);
     }

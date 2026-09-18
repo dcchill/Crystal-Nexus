@@ -62,6 +62,7 @@ public final class RefineryScreen extends AbstractContainerScreen<RefineryMenu> 
     }
     @Override protected void init() {
         super.init();
+        if (menu.refinery() == null) return;
         for (int i = 0; i < TANK_X.length; i++) {
             int tank = i;
             addRenderableWidget(Button.builder(Component.literal("X"), button -> PacketDistributor.sendToServer(

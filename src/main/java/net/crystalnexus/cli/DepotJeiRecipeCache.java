@@ -92,6 +92,15 @@ public final class DepotJeiRecipeCache {
             .sorted(java.util.Comparator.comparing(recipe -> recipe.id().toString())).toList();
     }
 
+    public static List<Recipe> recipesForMachine(ServerPlayer player, ResourceLocation machineId) {
+        if (machineId == null) return List.of();
+        State state = BY_PLAYER.get(player.getUUID());
+        if (state == null) return List.of();
+        return state.recipes.values().stream()
+            .filter(recipe -> recipe.machineTypes().contains(machineId))
+            .sorted(java.util.Comparator.comparing(recipe -> recipe.id().toString())).toList();
+    }
+
     public static Set<ResourceLocation> outputIds(ServerPlayer player) {
         State state = BY_PLAYER.get(player.getUUID());
         return state == null ? Set.of() : Set.copyOf(state.byOutput.keySet());

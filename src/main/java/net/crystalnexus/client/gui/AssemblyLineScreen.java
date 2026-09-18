@@ -4,8 +4,6 @@ import net.crystalnexus.assembly.AssemblyGraph;
 import net.crystalnexus.assembly.AssemblyLineMachine;
 import net.crystalnexus.network.AssemblyLineGraphEdit;
 import net.crystalnexus.network.AssemblyLineItemConfigure;
-import net.crystalnexus.network.AssemblyLineJeiRecipeSelect;
-import net.crystalnexus.network.AssemblyLineRecipeSelect;
 import net.crystalnexus.network.AssemblyLineRequest;
 import net.crystalnexus.world.inventory.AssemblyLineMenu;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -26,10 +23,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 /** Full-screen, server-owned assembly program editor. JEI drops configure recipes; they never create items. */
 public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu> {
-    private static final int NODE_W = 190, HEADER_H = 25, ROW_H = 18;
+    private static final int NODE_W = 190, HEADER_H = 25, ROW_H = 18, OUTPUT_ROW_H = 30, SOCKET_TOP_GAP = 28;
     /** Keep a permanent right-side strip for JEI's ingredient list and search field. */
     private static final int JEI_STRIP = 190;
     private int canvasLeft, canvasTop, canvasRight, canvasBottom;
@@ -40,7 +38,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     private int draggingNode = -1;
     private double dragOffsetX, dragOffsetY, lastMouseX, lastMouseY;
     private boolean panning;
-    private Button recipeButton;
+    private static final Map<AssemblyLineMenu, Integer> TRANSFER_SELECTIONS = new WeakHashMap<>();
 
     public AssemblyLineScreen(AssemblyLineMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
@@ -50,6 +48,45 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
 
     public int editorWidth() { return imageWidth; }
     public int editorHeight() { return imageHeight; }
+    public int selectedNode() { return selectedNode; }
+    private void rememberSelection(int nodeId) {
+        selectedNode = nodeId;
+        synchronized (TRANSFER_SELECTIONS) { TRANSFER_SELECTIONS.put(menu, nodeId); }
+    }
+    public static int rememberedSelection(AssemblyLineMenu menu) {
+        synchronized (TRANSFER_SELECTIONS) {
+            return TRANSFER_SELECTIONS.getOrDefault(menu, -1);
+        }
+    }
+    /** JEI can invoke its transfer button without a graph click having selected a node. */
+    public int transferTargetNode() {
+        int remembered = rememberedSelection(menu);
+        if (menu.controller.graph().node(remembered) != null) return remembered;
+        if (menu.controller.graph().node(selectedNode) != null) return selectedNode;
+        return menu.controller.graph().nodes.stream()
+            .filter(node -> node.machine != 0
+                && !node.block.endsWith(":multiblock_item_input")
+                && !node.block.endsWith(":multiblock_item_output")
+                && !node.block.endsWith(":machine_fluid_input")
+                && !node.block.endsWith(":multiblock_fluid_output"))
+            .map(node -> node.id)
+            .findFirst().orElse(-1);
+    }
+    private void addSlot(boolean output) {
+        AssemblyGraph.Node node = menu.controller.graph().node(selectedNode);
+        if (node == null) return;
+        List<String> inputs = new ArrayList<>(List.of(node.inputItems));
+        List<String> outputs = new ArrayList<>(List.of(node.outputItems));
+        if (output) {
+            if (outputs.size() >= 32) return;
+            outputs.add("");
+        } else {
+            if (inputs.size() >= 32) return;
+            inputs.add("");
+        }
+        PacketDistributor.sendToServer(new net.crystalnexus.network.AssemblyLineSlotsSet(
+            menu.containerId, node.id, inputs, outputs, List.of(), List.of()));
+    }
 
     @Override protected void init() {
         imageWidth = Math.max(320, width - JEI_STRIP);
@@ -69,9 +106,10 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         addRenderableWidget(Button.builder(Component.literal("Rescan"), button ->
             PacketDistributor.sendToServer(new AssemblyLineRequest(menu.containerId, "", 0, true, false)))
             .bounds(leftPos + 72, topPos + 14, 64, 20).build());
-        recipeButton = addRenderableWidget(Button.builder(Component.literal("Next recipe"), button -> selectNextRecipe())
-            .bounds(leftPos + 140, topPos + 14, 92, 20).build());
-        recipeButton.visible = false;
+        addRenderableWidget(Button.builder(Component.literal("In +"), button -> addSlot(false))
+            .bounds(leftPos + 140, topPos + 14, 48, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Out +"), button -> addSlot(true))
+            .bounds(leftPos + 192, topPos + 14, 52, 20).build());
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
@@ -89,8 +127,8 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, 244, 19, 0xfff2f5fa, false);
-        graphics.drawString(font, "Controller: " + menu.controller.energy.getEnergyStored() + " FE", 340, 19, 0xff70cfff, false);
+        graphics.drawString(font, shortName(title.getString(), 24), 282, 19, 0xfff2f5fa, false);
+        graphics.drawString(font, "System: " + menu.controller.systemEnergy() + " FE", 480, 19, 0xff70cfff, false);
         String state = menu.controller.formed() ? menu.controller.graph().enabled ? "RUNNING" : "PAUSED" : "INVALID STRUCTURE";
         int color = menu.controller.graph().enabled ? 0xff69dc8c : menu.controller.formed() ? 0xffffc857 : 0xffff6b6b;
         graphics.drawString(font, state, imageWidth - 105, 19, color, false);
@@ -105,7 +143,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         graphics.disableScissor();
         if (menu.controller.graph().nodes.isEmpty()) graphics.drawCenteredString(font,
             "No compatible machines detected inside the multiblock. Press Rescan after completing the enclosure.", imageWidth / 2, 82, 0xffaeb8c8);
-        graphics.drawString(font, "Drag headers • drag output sockets to inputs • click OUTPUT to route byproducts • drop JEI items on sockets", 12, imageHeight - 15, 0xff7f8a9b, false);
+        graphics.drawString(font, "Drag headers • connect sockets • use JEI + to fill slots • drop JEI items on individual slots", 12, imageHeight - 15, 0xff7f8a9b, false);
     }
 
     private void renderEdges(GuiGraphics graphics) {
@@ -134,7 +172,11 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
 
     private void renderNode(GuiGraphics graphics, AssemblyGraph.Node node, int mouseX, int mouseY) {
-        int x = nodeX(node), y = nodeY(node), h = nodeHeight(node);
+        int screenX = nodeX(node), screenY = nodeY(node), h = nodeHeight(node);
+        graphics.pose().pushPose();
+        graphics.pose().translate(screenX, screenY, 0);
+        graphics.pose().scale((float) zoom, (float) zoom, 1);
+        int x = 0, y = 0;
         graphics.fill(x, y, x + NODE_W, y + h, 0xff303743);
         graphics.fill(x, y, x + NODE_W, y + HEADER_H, node.id == selectedNode ? 0xff526784 : 0xff414b5b);
         ResourceLocation blockId = ResourceLocation.tryParse(node.block);
@@ -147,23 +189,32 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             graphics.drawString(font, worker.energy().getEnergyStored() + " / " + worker.energy().getMaxEnergyStored() + " FE", x + 8, y + h - 23, 0xff70cfff, false);
         graphics.drawString(font, shortName(node.status, 20), x + 8, y + h - 13, statusColor(node.status), false);
         for (int socket = 0; socket < node.inputSockets; socket++) {
-            int sy = socketY(node, socket, true);
+            int sy = logicalSocketY(node, socket, true);
             graphics.fill(x - 4, sy - 4, x + 5, sy + 5, 0xffffc857);
             ItemStack stack = inputStack(node, socket);
             if (!stack.isEmpty()) graphics.renderItem(stack, x + 8, sy - 8);
-            graphics.drawString(font, stack.isEmpty() ? "Input " + (socket + 1) : shortName(stack.getHoverName().getString(), 13), x + 27, sy - 4, 0xffd7dce5, false);
+            String fluid = node.inputFluids != null && socket < node.inputFluids.length ? node.inputFluids[socket] : "";
+            boolean fluidPort = node.block.endsWith(":machine_fluid_input");
+            String label = stack.isEmpty() && (fluid == null || fluid.isEmpty()) ? (fluidPort ? "Fluid In " : "Input ") + (socket + 1)
+                : stack.isEmpty() ? shortName(fluid, 13) : shortName(stack.getHoverName().getString(), 13);
+            graphics.drawString(font, label, x + 27, sy - 4, 0xffd7dce5, false);
+            drawRemoveButton(graphics, x + NODE_W - 21, sy - 8);
             if (inputOptions(node).size() > 1) {
                 graphics.fill(x + NODE_W - 23, sy - 8, x + NODE_W - 7, sy + 8, 0xff242a34);
                 graphics.drawString(font, "v", x + NODE_W - 18, sy - 4, 0xffd7dce5, false);
             }
         }
         for (int socket = 0; socket < node.outputSockets; socket++) {
-            int sy = socketY(node, socket, false);
+            int sy = logicalSocketY(node, socket, false);
             graphics.fill(x + NODE_W - 4, sy - 4, x + NODE_W + 5, sy + 5, 0xff4d94ff);
             ItemStack stack = outputStack(node, socket);
-            String label = stack.isEmpty() ? "Output " + (socket + 1) : shortName(stack.getHoverName().getString(), 12);
+            String fluid = node.outputFluids != null && socket < node.outputFluids.length ? node.outputFluids[socket] : "";
+            boolean fluidPort = node.block.endsWith(":multiblock_fluid_output");
+            String label = stack.isEmpty() && (fluid == null || fluid.isEmpty()) ? (fluidPort ? "Fluid Out " : "Output ") + (socket + 1)
+                : stack.isEmpty() ? shortName(fluid, 12) : shortName(stack.getHoverName().getString(), 12);
             int labelX = x + NODE_W - 72;
             graphics.drawString(font, label, labelX, sy - 4, 0xffd7dce5, false);
+            drawRemoveButton(graphics, x + NODE_W - 21, sy - 8);
             if (!stack.isEmpty()) graphics.renderItem(stack, labelX - 19, sy - 8);
             boolean export = node.outputExport != null && socket < node.outputExport.length && node.outputExport[socket];
             int ex = x + NODE_W - 41, ey = sy + 6;
@@ -171,6 +222,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             graphics.drawString(font, export ? "OUTPUT" : "HOLD", ex + 3, ey + 1, export ? 0xffffdc73 : 0xff8791a1, false);
         }
         if (node.recipe.isEmpty()) graphics.drawCenteredString(font, "Drop a JEI item or choose recipe", x + NODE_W/2, y + HEADER_H + 5, 0xff8994a5);
+        graphics.pose().popPose();
     }
 
     private int statusColor(String status) {
@@ -181,9 +233,23 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     private int nodeX(AssemblyGraph.Node node) { return (int) Math.round(8 + panX + node.x * zoom); }
     private int nodeY(AssemblyGraph.Node node) { return (int) Math.round(42 + panY + node.y * zoom); }
     private int inputX(AssemblyGraph.Node node) { return nodeX(node); }
-    private int outputX(AssemblyGraph.Node node) { return nodeX(node) + NODE_W; }
-    private int socketY(AssemblyGraph.Node node, int socket, boolean input) { return nodeY(node) + HEADER_H + 14 + socket * ROW_H; }
-    private int nodeHeight(AssemblyGraph.Node node) { return HEADER_H + Math.max(2, Math.max(node.inputSockets, node.outputSockets)) * ROW_H + 22; }
+    private int outputX(AssemblyGraph.Node node) { return nodeX(node) + scaled(NODE_W); }
+    private int logicalSocketY(AssemblyGraph.Node node, int socket, boolean input) {
+        return HEADER_H + SOCKET_TOP_GAP + socket * (input ? ROW_H : OUTPUT_ROW_H);
+    }
+    private int socketY(AssemblyGraph.Node node, int socket, boolean input) {
+        return nodeY(node) + scaled(logicalSocketY(node, socket, input));
+    }
+    private int nodeHeight(AssemblyGraph.Node node) {
+        int socketRows = Math.max(node.inputSockets * ROW_H, node.outputSockets * OUTPUT_ROW_H);
+        return HEADER_H + SOCKET_TOP_GAP + Math.max(2 * ROW_H, socketRows) + 22;
+    }
+    private int scaledNodeHeight(AssemblyGraph.Node node) { return scaled(nodeHeight(node)); }
+    private int scaled(int value) { return (int) Math.round(value * zoom); }
+    private void drawRemoveButton(GuiGraphics graphics, int x, int y) {
+        graphics.fill(x, y, x + 14, y + 16, 0xff71383d);
+        graphics.drawCenteredString(font, "-", x + 7, y + 3, 0xffffc4c4);
+    }
 
     @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
         // AbstractContainerScreen consumes otherwise-empty clicks inside its GUI.
@@ -196,26 +262,45 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         for (AssemblyGraph.Node node : reversedNodes()) {
             for (int socket=0;socket<node.outputSockets;socket++) {
                 int sx=outputX(node), sy=socketY(node,socket,false);
-                if (distance(lx,ly,sx,sy)<=9) { connectingNode=node.id; connectingSocket=socket; selectedNode=node.id; return true; }
+                if (button == 1 && distance(lx,ly,sx,sy)<=9) {
+                    PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId, "remove_edge", node.id, -1, socket, 0, 0, 0));
+                    return true;
+                }
+                if (distance(lx,ly,sx,sy)<=9) { connectingNode=node.id; connectingSocket=socket; rememberSelection(node.id); return true; }
                 if (lx>=sx-41 && lx<=sx-3 && ly>=sy+6 && ly<=sy+16) {
                     boolean enabled=!(node.outputExport!=null && socket<node.outputExport.length && node.outputExport[socket]);
                     PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId,"export",node.id,enabled?1:0,socket,0,0,0)); return true;
                 }
             }
             int nx=nodeX(node), ny=nodeY(node);
-            if (lx>=nx && lx<=nx+NODE_W && ly>=ny && ly<=ny+nodeHeight(node)) {
-                selectedNode=node.id; recipeButton.visible=true;
+            if (lx>=nx && lx<=nx+scaled(NODE_W) && ly>=ny && ly<=ny+scaledNodeHeight(node)) {
+                rememberSelection(node.id);
                 for(int socket=0;socket<node.inputSockets;socket++) {
                     int sy=socketY(node,socket,true);
-                    if(lx>=nx && lx<=nx+NODE_W && ly>=sy-9 && ly<=sy+9 && inputOptions(node).size()>1) {
+                    if (button == 0 && lx >= nx + scaled(NODE_W - 22) && lx <= nx + scaled(NODE_W - 5) && ly >= sy - scaled(9) && ly <= sy + scaled(9)) {
+                        PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId, "remove_slot", node.id, 0, socket, 0, 0, 0));
+                        return true;
+                    }
+                    if (button == 1 && distance(lx,ly,inputX(node),sy)<=9) {
+                        PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId, "remove_edge", node.id, -2, socket, 0, 0, 0));
+                        return true;
+                    }
+                    if(lx>=nx && lx<=nx+scaled(NODE_W) && ly>=sy-scaled(9) && ly<=sy+scaled(9) && inputOptions(node).size()>1) {
                         openInputNode=node.id; openInputSocket=socket; return true;
                     }
                 }
-                if (button==0 && ly<=ny+HEADER_H) { draggingNode=node.id; dragOffsetX=lx-nx; dragOffsetY=ly-ny; }
+                for (int socket = 0; socket < node.outputSockets; socket++) {
+                    int sy = socketY(node, socket, false);
+                    if (button == 0 && lx >= nx + scaled(NODE_W - 22) && lx <= nx + scaled(NODE_W - 5) && ly >= sy - scaled(9) && ly <= sy + scaled(9)) {
+                        PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId, "remove_slot", node.id, 1, socket, 0, 0, 0));
+                        return true;
+                    }
+                }
+                if (button==0 && ly<=ny+scaled(HEADER_H)) { draggingNode=node.id; dragOffsetX=lx-nx; dragOffsetY=ly-ny; }
                 return true;
             }
         }
-        selectedNode=-1; recipeButton.visible=false; panning=true; lastMouseX=mouseX; lastMouseY=mouseY; return true;
+        selectedNode=-1; panning=true; lastMouseX=mouseX; lastMouseY=mouseY; return true;
     }
 
     @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
@@ -252,22 +337,6 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         return true;
     }
 
-    private void selectNextRecipe() {
-        AssemblyGraph.Node node=menu.controller.graph().node(selectedNode);
-        if(node==null || minecraft.level==null) return;
-        if(node.recipe.startsWith("crystalnexus:jei/")) {
-            PacketDistributor.sendToServer(new AssemblyLineJeiRecipeSelect(menu.containerId,node.id,"",""));
-            return;
-        }
-        AssemblyLineMachine machine=menu.controller.machineAt(BlockPos.of(node.machine));
-        if(machine==null) return;
-        List<RecipeHolder<?>> recipes=minecraft.level.getRecipeManager().getRecipes().stream().filter(machine::supports).toList();
-        if(recipes.isEmpty()) return;
-        int current=-1; for(int i=0;i<recipes.size();i++) if(recipes.get(i).id().toString().equals(node.recipe)) current=i;
-        RecipeHolder<?> next=recipes.get(Math.floorMod(current+1,recipes.size()));
-        PacketDistributor.sendToServer(new AssemblyLineRecipeSelect(menu.containerId,node.id,next.id().toString()));
-    }
-
     public List<GhostTarget> ghostTargets(ItemStack stack) {
         return ghostTargets(stack, null);
     }
@@ -277,18 +346,14 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
     
     public List<GhostTarget> ghostFluidTargets(FluidStack fluid) {
-        List<GhostTarget> result=new ArrayList<>();
-        for(AssemblyGraph.Node node:menu.controller.graph().nodes) {
-            int x=leftPos+nodeX(node), y=topPos+nodeY(node);
-            if(x+NODE_W<canvasLeft || x>canvasRight || y>canvasBottom) continue;
-            ResourceLocation blockId=ResourceLocation.tryParse(node.block);
-            // Fluid inputs accept fluids
-            if(blockId!=null && blockId.getPath().equals("machine_fluid_input")) {
-                result.add(new GhostTarget(new Rect2i(x,y,NODE_W,nodeHeight(node)),node.id,-1));
-            } else {
-                // Machines accept fluids too for recipe input
-                result.add(new GhostTarget(new Rect2i(x,y,NODE_W,nodeHeight(node)),node.id,-1));
-            }
+        List<GhostTarget> result = new ArrayList<>();
+        for (AssemblyGraph.Node node : menu.controller.graph().nodes) {
+            int x = leftPos + nodeX(node), y = topPos + nodeY(node);
+            if (x + scaled(NODE_W) < canvasLeft || x > canvasRight || y > canvasBottom) continue;
+            for (int socket = 0; socket < node.inputSockets; socket++)
+                result.add(new GhostTarget(new Rect2i(x - 8, topPos + socketY(node, socket, true) - 9, 86, 18), node.id, socket, false));
+            for (int socket = 0; socket < node.outputSockets; socket++)
+                result.add(new GhostTarget(new Rect2i(x + scaled(NODE_W - 78), topPos + socketY(node, socket, false) - scaled(9), scaled(86), scaled(18)), node.id, socket, true));
         }
         return result;
     }
@@ -297,23 +362,17 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         List<GhostTarget> result=new ArrayList<>();
         for(AssemblyGraph.Node node:menu.controller.graph().nodes) {
             int x=leftPos+nodeX(node), y=topPos+nodeY(node);
-            if(x+NODE_W<canvasLeft || x>canvasRight || y>canvasBottom) continue;
+            if(x+scaled(NODE_W)<canvasLeft || x>canvasRight || y>canvasBottom) continue;
             ResourceLocation blockId=ResourceLocation.tryParse(node.block);
-            if(blockId!=null && blockId.getPath().equals("multiblock_item_input")) {
-                for(int socket=0;socket<node.outputSockets;socket++) result.add(new GhostTarget(
-                    new Rect2i(x+NODE_W-82,topPos+socketY(node,socket,false)-9,86,18),node.id,socket));
-            } else if(blockId!=null && blockId.getPath().equals("machine_fluid_input")) {
-                // Fluid input ports accept both items (for fluid container items) and direct fluids
-                result.add(new GhostTarget(new Rect2i(x,y,NODE_W,nodeHeight(node)),node.id,-1));
-            } else {
-                // All other nodes (machines) accept items and fluids as recipe ingredients
-                result.add(new GhostTarget(new Rect2i(x,y,NODE_W,nodeHeight(node)),node.id,-1));
-            }
+            for (int socket = 0; socket < node.inputSockets; socket++)
+                result.add(new GhostTarget(new Rect2i(x - 8, topPos + socketY(node, socket, true) - 9, 86, 18), node.id, socket, false));
+            for (int socket = 0; socket < node.outputSockets; socket++)
+                result.add(new GhostTarget(new Rect2i(x + scaled(NODE_W - 78), topPos + socketY(node, socket, false) - scaled(9), scaled(86), scaled(18)), node.id, socket, true));
         }
         return result;
     }
 
-    public void acceptGhostItem(int nodeId, int socket, ItemStack stack) {
+    public void acceptGhostItem(int nodeId, int socket, boolean output, ItemStack stack) {
         AssemblyGraph.Node node=menu.controller.graph().node(nodeId);
         if(node==null || stack.isEmpty() || minecraft.level==null) return;
         ResourceLocation blockId=ResourceLocation.tryParse(node.block);
@@ -322,17 +381,17 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
                 BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()));
             return;
         }
-        // For fluid inputs or fluid recipes, send the item (container) - the server will handle fluid recipes
-        PacketDistributor.sendToServer(new AssemblyLineJeiRecipeSelect(menu.containerId,nodeId,
-            BuiltInRegistries.ITEM.getKey(stack.getItem()).toString(),""));
+        PacketDistributor.sendToServer(new net.crystalnexus.network.AssemblyLineSlotConfigure(menu.containerId,
+            nodeId, socket, output, BuiltInRegistries.ITEM.getKey(stack.getItem()).toString()));
     }
 
     public void acceptGhostFluid(int nodeId, int socket, net.neoforged.neoforge.fluids.FluidStack fluid) {
         AssemblyGraph.Node node=menu.controller.graph().node(nodeId);
         if(node==null || fluid.isEmpty() || minecraft.level==null) return;
-        // For fluid ingredients, send the fluid as a resource location
         ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
-        PacketDistributor.sendToServer(new AssemblyLineJeiRecipeSelect(menu.containerId,nodeId, fluidId.toString(),""));
+        boolean output = node.block.endsWith(":machine_fluid_input");
+        PacketDistributor.sendToServer(new net.crystalnexus.network.AssemblyLineFluidConfigure(
+            menu.containerId, nodeId, socket, output, fluidId.toString()));
     }
 
     private ItemStack inputStack(AssemblyGraph.Node node,int socket){
@@ -345,16 +404,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     private ItemStack configuredInputStack(AssemblyGraph.Node node,int socket){ if(node.inputItems==null || socket>=node.inputItems.length) return ItemStack.EMPTY; ResourceLocation id=ResourceLocation.tryParse(node.inputItems[socket]); return id==null?ItemStack.EMPTY:new ItemStack(BuiltInRegistries.ITEM.get(id)); }
     private ItemStack outputStack(AssemblyGraph.Node node,int socket){ if(node.outputItems==null || socket>=node.outputItems.length || node.outputItems[socket]==null) return ItemStack.EMPTY; ResourceLocation id=ResourceLocation.tryParse(node.outputItems[socket]); return id==null?ItemStack.EMPTY:new ItemStack(BuiltInRegistries.ITEM.get(id)); }
     private List<ItemStack> inputOptions(AssemblyGraph.Node node){
-        if(minecraft.level==null || node.recipe==null || !node.recipe.startsWith("crystalnexus:jei/")) return List.of();
-        ItemStack output=outputStack(node,0); if(output.isEmpty()) return List.of();
-        Map<ResourceLocation,ItemStack> result=new LinkedHashMap<>();
-        minecraft.level.getRecipeManager().getRecipes().forEach(holder -> {
-            if(!ItemStack.isSameItemSameComponents(holder.value().getResultItem(minecraft.level.registryAccess()), output)) return;
-            if(holder.value().getIngredients().isEmpty()) return;
-            ItemStack[] choices=holder.value().getIngredients().getFirst().getItems();
-            if(choices.length>0&&!choices[0].isEmpty()) result.putIfAbsent(BuiltInRegistries.ITEM.getKey(choices[0].getItem()), choices[0]);
-        });
-        return List.copyOf(result.values());
+        return List.of();
     }
     private void renderInputDropdown(GuiGraphics graphics) {
         AssemblyGraph.Node node=menu.controller.graph().node(openInputNode);
@@ -377,19 +427,19 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         if(lx<x || lx>x+w || ly<y || ly>y+options.size()*h) return false;
         int index=(int)((ly-y)/h);
         if(index>=0 && index<options.size()) {
-            ItemStack input=options.get(index), output=outputStack(node,0);
-            PacketDistributor.sendToServer(new AssemblyLineJeiRecipeSelect(menu.containerId,node.id,
-                BuiltInRegistries.ITEM.getKey(output.getItem()).toString(), BuiltInRegistries.ITEM.getKey(input.getItem()).toString()));
+            ItemStack input=options.get(index);
+            PacketDistributor.sendToServer(new net.crystalnexus.network.AssemblyLineSlotConfigure(menu.containerId,
+                node.id, openInputSocket, false, BuiltInRegistries.ITEM.getKey(input.getItem()).toString()));
         }
         openInputNode = openInputSocket = -1;
         return true;
     }
-    private boolean overNode(double lx,double ly){ for(AssemblyGraph.Node node:menu.controller.graph().nodes){int nx=nodeX(node),ny=nodeY(node); if(lx>=nx&&lx<=nx+NODE_W&&ly>=ny&&ly<=ny+nodeHeight(node)) return true;} return false; }
+    private boolean overNode(double lx,double ly){ for(AssemblyGraph.Node node:menu.controller.graph().nodes){int nx=nodeX(node),ny=nodeY(node); if(lx>=nx&&lx<=nx+scaled(NODE_W)&&ly>=ny&&ly<=ny+scaledNodeHeight(node)) return true;} return false; }
     private List<AssemblyGraph.Node> reversedNodes(){ List<AssemblyGraph.Node> result=new ArrayList<>(menu.controller.graph().nodes); return result.reversed(); }
     private boolean insideCanvas(double x,double y){return x>=canvasLeft&&x<canvasRight&&y>=canvasTop&&y<canvasBottom;}
     private static double distance(double x1,double y1,double x2,double y2){return Math.hypot(x2-x1,y2-y1);}
     private static String shortName(String value,int max){return value.length()<=max?value:value.substring(0,Math.max(1,max-1))+"…";}
-    public record GhostTarget(Rect2i area,int nodeId,int socket){}
+    public record GhostTarget(Rect2i area,int nodeId,int socket,boolean output){}
 
     @Override public void render(GuiGraphics graphics,int mouseX,int mouseY,float partialTick){super.render(graphics,mouseX,mouseY,partialTick);renderTooltip(graphics,mouseX,mouseY);}
     @Override protected void renderSlot(GuiGraphics graphics, net.minecraft.world.inventory.Slot slot) { }

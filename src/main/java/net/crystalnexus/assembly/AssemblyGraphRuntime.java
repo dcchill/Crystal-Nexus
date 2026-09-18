@@ -15,7 +15,8 @@ public final class AssemblyGraphRuntime {
         if (!controller.graphEnabled()) return;
         for (AssemblyGraph.Node node : controller.graph().nodes) {
             if (node.machine == 0) continue;
-            if (node.block.endsWith(":multiblock_item_input") || node.block.endsWith(":multiblock_item_output")) continue;
+            if (node.block.endsWith(":multiblock_item_input") || node.block.endsWith(":multiblock_item_output")
+                || node.block.endsWith(":machine_fluid_input") || node.block.endsWith(":multiblock_fluid_output")) continue;
             BlockPos pos = BlockPos.of(node.machine);
             var worker = controller.machineAt(pos);
             if (worker == null) { node.status = "Machine missing"; continue; }
@@ -26,6 +27,25 @@ public final class AssemblyGraphRuntime {
             node.status = "Running";
         }
         routeSinks(controller);
+        routeFluidSinks(controller);
+    }
+
+    private static void routeFluidSinks(AssemblyLineControllerBlockEntity controller) {
+        for (AssemblyGraph.Node sink : controller.graph().nodes) {
+            if (!sink.block.endsWith(":multiblock_fluid_output")) continue;
+            var be = controller.getLevel().getBlockEntity(BlockPos.of(sink.machine));
+            if (!(be instanceof net.crystalnexus.block.entity.MultiblockFluidOutputBlockEntity port)) continue;
+            for (AssemblyGraph.Edge edge : controller.graph().edges) {
+                if (edge.to() != sink.id || edge.input() < 0 || edge.input() >= 4) continue;
+                FluidStack offered = controller.takeGraphFluid(edge.from(), edge.output(), 1000);
+                if (offered.isEmpty()) continue;
+                int accepted = port.getFluidOutput().fill(offered, net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+                if (accepted < offered.getAmount()) {
+                    offered.shrink(accepted);
+                    controller.returnGraphFluid(edge.from(), edge.output(), offered);
+                }
+            }
+        }
     }
 
     private static void routeSinks(AssemblyLineControllerBlockEntity controller) {
@@ -78,9 +98,8 @@ public final class AssemblyGraphRuntime {
         if (target == null) return;
         for (int socket = 0; socket < node.inputSockets; socket++) {
             int slot = node.inputSlots != null && socket < node.inputSlots.length ? node.inputSlots[socket] : socket;
+            if (worker.kind() == AssemblyLineMachine.Kind.GENERIC && socket < target.getSlots()) slot = socket;
             if (slot < 0 || slot >= target.getSlots()) continue;
-            ItemStack current = target.getStackInSlot(slot);
-            if (!current.isEmpty()) continue;
             for (int edgeIndex = 0; edgeIndex < controller.graph().edges.size(); edgeIndex++) {
                 AssemblyGraph.Edge edge = controller.graph().edges.get(edgeIndex);
                 if (edge.to() != node.id || edge.input() != socket) continue;
@@ -95,15 +114,18 @@ public final class AssemblyGraphRuntime {
 
     private static void routeOutputs(AssemblyLineControllerBlockEntity controller, AssemblyGraph.Node node, AssemblyLineMachine worker) {
         if (node.outputSlots == null) return;
-        for (int outputId = 0; outputId < node.outputSlots.length; outputId++) {
+        IItemHandler source = worker.itemHandler();
+        if (source == null) return;
+        for (int outputId = 0; outputId < Math.min(node.outputSockets, node.outputSlots.length); outputId++) {
             int slot = node.outputSlots[outputId];
-            ItemStack output = worker.inventory().getItem(slot);
+            if (slot < 0 || slot >= source.getSlots()) continue;
+            ItemStack output = source.getStackInSlot(slot);
             if (output.isEmpty()) continue;
             final int socket = outputId;
             boolean connected = controller.graph().edges.stream().anyMatch(e -> e.from() == node.id && e.output() == socket);
             boolean export = node.outputExport != null && outputId < node.outputExport.length && node.outputExport[outputId];
             if (!connected && export && controller.exportGraphItem(node.id, outputId, output.copy())) {
-                worker.inventory().setItem(slot, ItemStack.EMPTY);
+                source.extractItem(slot, output.getCount(), false);
             }
         }
     }

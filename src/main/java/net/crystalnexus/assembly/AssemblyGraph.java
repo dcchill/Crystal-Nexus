@@ -23,9 +23,10 @@ public final class AssemblyGraph {
         public float x, y;
         public String recipe = "";
         public String status = "Detected";
-        public int inputSockets;
+        public int inputSockets = 1;
         public int[] inputSlots = new int[0];
-        public String[] inputItems = new String[0];
+        public String[] inputItems = new String[] { "" };
+        public String[] inputFluids = new String[] { "" };
         public int outputSockets = 1;
         public int[] outputSlots = new int[] { 1 };
         public String[] outputItems = new String[] { "" };
@@ -48,9 +49,10 @@ public final class AssemblyGraph {
         if (edges.size() > MAX_EDGES) return "Too many graph connections";
         Set<Integer> ids = new HashSet<>(); Set<Long> machines = new HashSet<>();
         for (Node n : nodes) {
-            if (!ids.add(n.id) || n.id < 0 || n.block == null || n.block.length() > 256) return "Invalid graph node";
+            if (!ids.add(n.id) || n.id < 0 || n.block == null || n.block.length() > 256
+                ) return "Invalid graph node";
             if (n.recipe == null || n.status == null || n.inputSlots == null || n.inputItems == null || n.outputSlots == null
-                || n.outputItems == null || n.outputFluids == null || n.outputExport == null) return "Invalid graph metadata";
+                || n.inputFluids == null || n.outputItems == null || n.outputFluids == null || n.outputExport == null) return "Invalid graph metadata";
             if (n.machine != 0 && !machines.add(n.machine)) return "A machine is assigned more than once";
             if (!Float.isFinite(n.x) || !Float.isFinite(n.y) || Math.abs(n.x) > 100000 || Math.abs(n.y) > 100000) return "Invalid node position";
         }
@@ -75,12 +77,12 @@ public final class AssemblyGraph {
 
     public CompoundTag save(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag(); tag.putInt("revision", revision); tag.putBoolean("enabled", enabled);
-        ListTag ns = new ListTag(); for (Node n : nodes) { CompoundTag t = new CompoundTag(); t.putInt("id", n.id); t.putLong("machine", n.machine); t.putString("block", safe(n.block)); t.putFloat("x", n.x); t.putFloat("y", n.y); t.putString("recipe", safe(n.recipe)); t.putString("status", safe(n.status)); t.putInt("inputSockets", n.inputSockets); t.putIntArray("inputSlots", ints(n.inputSlots)); putStrings(t, "inputItems", n.inputItems); t.putInt("outputSockets", n.outputSockets); t.putIntArray("outputSlots", ints(n.outputSlots)); putStrings(t, "outputItems", n.outputItems); putStrings(t, "outputFluids", n.outputFluids); t.putByteArray("outputExport", booleans(n.outputExport)); ns.add(t); } tag.put("nodes", ns);
+        ListTag ns = new ListTag(); for (Node n : nodes) { CompoundTag t = new CompoundTag(); t.putInt("id", n.id); t.putLong("machine", n.machine); t.putString("block", safe(n.block)); t.putFloat("x", n.x); t.putFloat("y", n.y); t.putString("recipe", safe(n.recipe)); t.putString("status", safe(n.status)); t.putInt("inputSockets", n.inputSockets); t.putIntArray("inputSlots", ints(n.inputSlots)); putStrings(t, "inputItems", n.inputItems); putStrings(t, "inputFluids", n.inputFluids); t.putInt("outputSockets", n.outputSockets); t.putIntArray("outputSlots", ints(n.outputSlots)); putStrings(t, "outputItems", n.outputItems); putStrings(t, "outputFluids", n.outputFluids); t.putByteArray("outputExport", booleans(n.outputExport)); ns.add(t); } tag.put("nodes", ns);
         ListTag es = new ListTag(); for (Edge e : edges) { CompoundTag t = new CompoundTag(); t.putInt("from",e.from()); t.putInt("output",e.output()); t.putInt("to",e.to()); t.putInt("input",e.input()); es.add(t); } tag.put("edges", es); return tag;
     }
     public static AssemblyGraph load(CompoundTag tag, HolderLookup.Provider provider) {
         AssemblyGraph graph = new AssemblyGraph(); graph.revision = tag.getInt("revision"); graph.enabled = tag.getBoolean("enabled");
-        for (Tag raw : tag.getList("nodes", Tag.TAG_COMPOUND)) { CompoundTag t=(CompoundTag)raw; graph.nodes.add(new Node(t.getInt("id"),t.getLong("machine"),t.getString("block"),t.getFloat("x"),t.getFloat("y"))); Node n=graph.nodes.getLast(); n.recipe=t.getString("recipe"); n.status=t.getString("status"); n.inputSockets=t.getInt("inputSockets"); n.inputSlots=t.contains("inputSlots") ? t.getIntArray("inputSlots") : defaultInputs(n.inputSockets); n.inputItems=getStrings(t,"inputItems",n.inputSockets); n.outputSockets=t.contains("outputSockets") ? t.getInt("outputSockets") : 1; n.outputSlots=t.contains("outputSlots") ? t.getIntArray("outputSlots") : new int[]{1}; n.outputItems=getStrings(t,"outputItems",n.outputSockets); n.outputFluids=getStrings(t,"outputFluids",0); n.outputExport=getBooleans(t,"outputExport",n.outputSockets); }
+        for (Tag raw : tag.getList("nodes", Tag.TAG_COMPOUND)) { CompoundTag t=(CompoundTag)raw; graph.nodes.add(new Node(t.getInt("id"),t.getLong("machine"),t.getString("block"),t.getFloat("x"),t.getFloat("y"))); Node n=graph.nodes.getLast(); n.recipe=t.getString("recipe"); n.status=t.getString("status"); n.inputSockets=t.getInt("inputSockets"); n.inputSlots=t.contains("inputSlots") ? t.getIntArray("inputSlots") : defaultInputs(n.inputSockets); n.inputItems=getStrings(t,"inputItems",n.inputSockets); n.inputFluids=getStrings(t,"inputFluids",n.inputSockets); n.outputSockets=t.contains("outputSockets") ? t.getInt("outputSockets") : 1; n.outputSlots=t.contains("outputSlots") ? t.getIntArray("outputSlots") : new int[]{1}; n.outputItems=getStrings(t,"outputItems",n.outputSockets); n.outputFluids=getStrings(t,"outputFluids",0); n.outputExport=getBooleans(t,"outputExport",n.outputSockets); }
         for (Tag raw : tag.getList("edges", Tag.TAG_COMPOUND)) { CompoundTag t=(CompoundTag)raw; graph.edges.add(new Edge(t.getInt("from"),t.getInt("output"),t.getInt("to"),t.getInt("input"))); }
         if (!graph.validate().isEmpty()) throw new IllegalArgumentException("Invalid assembly graph: " + graph.validate()); return graph;
     }

@@ -21,8 +21,14 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
         @Override public int getTankCapacity(int tankIndex) { IFluidHandler target = target(); return target == null ? 0 : target.getTankCapacity(tankIndex); }
         @Override public boolean isFluidValid(int tankIndex, FluidStack stack) { IFluidHandler target = target(); return target != null && target.isFluidValid(tankIndex, stack); }
         @Override public int fill(FluidStack resource, FluidAction action) { IFluidHandler target = target(); return target == null ? 0 : target.fill(resource, action); }
-        @Override public FluidStack drain(FluidStack resource, FluidAction action) { return FluidStack.EMPTY; }
-        @Override public FluidStack drain(int maxDrain, FluidAction action) { return FluidStack.EMPTY; }
+        @Override public FluidStack drain(FluidStack resource, FluidAction action) {
+            IFluidHandler target = target();
+            return target == null ? FluidStack.EMPTY : target.drain(resource, action);
+        }
+        @Override public FluidStack drain(int maxDrain, FluidAction action) {
+            IFluidHandler target = target();
+            return target == null ? FluidStack.EMPTY : target.drain(maxDrain, action);
+        }
     };
     @Nullable private BlockPos machineController;
 

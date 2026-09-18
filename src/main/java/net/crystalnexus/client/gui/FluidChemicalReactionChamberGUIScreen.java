@@ -77,6 +77,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
 
     @Override protected void init() {
         super.init();
+        if (menu.chamber() == null) return;
         for (int i = 0; i < TANK_X.length; i++) {
             int tank = i;
             addRenderableWidget(Button.builder(Component.literal("X"), button ->

@@ -16,7 +16,7 @@ public record AssemblyLineGraphEdit(int menu, String action, int a, int b, int c
     public static void handle(AssemblyLineGraphEdit p, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player().containerMenu instanceof AssemblyLineMenu menu) || menu.containerId != p.menu || !menu.stillValid(context.player())) return;
-            if (!p.action.equals("toggle") && !p.action.equals("edge") && !p.action.equals("remove_edge") && !p.action.equals("move") && !p.action.equals("export")) return;
+            if (!p.action.equals("toggle") && !p.action.equals("edge") && !p.action.equals("remove_edge") && !p.action.equals("remove_slot") && !p.action.equals("move") && !p.action.equals("export")) return;
             menu.controller.editGraph(p.action, p.a, p.b, p.c, p.d, p.x, p.y);
         });
     }

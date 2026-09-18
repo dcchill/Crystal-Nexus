@@ -19,7 +19,8 @@ public final class GravitationalArrayMenu extends AbstractContainerMenu {
 	private final GravitationalArrayControllerBlockEntity controller;
 
 	public GravitationalArrayMenu(int id, Inventory inventory, FriendlyByteBuf data) {
-		this(id, inventory, controllerAt(inventory, data.readBlockPos()));
+		this(id, inventory, data != null && data.readableBytes() >= Long.BYTES
+			? controllerAt(inventory, data.readBlockPos()) : null);
 	}
 
 	public GravitationalArrayMenu(int id, Inventory inventory, GravitationalArrayControllerBlockEntity controller) {

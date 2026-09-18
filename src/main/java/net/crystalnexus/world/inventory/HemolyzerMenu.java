@@ -20,7 +20,9 @@ public final class HemolyzerMenu extends AbstractContainerMenu {
     private final Container container;
     private final ContainerLevelAccess access;
     private final ContainerData data;
-    public HemolyzerMenu(int id, Inventory inventory, FriendlyByteBuf data) { this(id, inventory, at(inventory, data)); }
+    public HemolyzerMenu(int id, Inventory inventory, FriendlyByteBuf data) {
+        this(id, inventory, data != null && data.readableBytes() >= Long.BYTES ? at(inventory, data) : new SimpleContainer(1));
+    }
     public HemolyzerMenu(int id, Inventory inventory, Container container) {
         super(CrystalnexusModMenus.HEMOLYZER.get(), id);
         this.container = container;

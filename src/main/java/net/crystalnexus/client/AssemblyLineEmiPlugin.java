@@ -23,7 +23,7 @@ public final class AssemblyLineEmiPlugin implements EmiPlugin {
                         // Try to get item stack from EMI stack
                         ItemStack itemStack = emiStack.getItemStack();
                         if (!itemStack.isEmpty()) {
-                            screen.acceptGhostItem(ghost.nodeId(), ghost.socket(), itemStack);
+                            screen.acceptGhostItem(ghost.nodeId(), ghost.socket(), ghost.output(), itemStack);
                             return;
                         }
                         // If no item, it might be a fluid - try to extract fluid

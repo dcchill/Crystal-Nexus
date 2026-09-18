@@ -24,7 +24,7 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
     public FluidChemicalReactionChamberGUIMenu(int id, Inventory inventory, FriendlyByteBuf data) {
         super(CrystalnexusModMenus.FLUID_CHEMICAL_REACTION_CHAMBER_GUI.get(), id);
         entity = inventory.player;
-        BlockPos pos = data.readBlockPos();
+        BlockPos pos = data != null && data.readableBytes() >= Long.BYTES ? data.readBlockPos() : BlockPos.ZERO;
         x = pos.getX(); y = pos.getY(); z = pos.getZ();
         access = ContainerLevelAccess.create(entity.level(), pos);
         chamber = entity.level().getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity be ? be : null;
