@@ -147,7 +147,9 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 			getBlockState().getValue(SolarEngineControllerBlock.FACING), CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get(),
 			SolarEngineControllerBlock.FACING, Map.of(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(
 				CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get())),
-			true, false);
+			true, false, Map.of(
+				CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get(), 2,
+				CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get(), 1));
 		List<BlockPos> substitutions = match.map(StructureNbtValidator.Match::substitutionPositions).orElse(List.of());
 		List<BlockPos> nextOutputs = substitutions.stream()
 			.filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get())).toList();

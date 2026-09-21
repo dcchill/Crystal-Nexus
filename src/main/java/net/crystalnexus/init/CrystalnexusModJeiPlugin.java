@@ -62,6 +62,16 @@ import net.crystalnexus.jei_recipes.AcceleratorJeiRecipeCategory;
 import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import net.crystalnexus.jei_recipes.GravitationalArrayRecipeCategory;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
+import net.crystalnexus.jei_recipes.SolarSimulatorJeiRecipe;
+import net.crystalnexus.jei_recipes.SolarSimulatorJeiRecipeCategory;
+import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.init.CrystalnexusModFluids;
+import net.minecraft.tags.TagKey;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
@@ -109,6 +119,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<PistonGeneratorJEIRecipe> PistonGeneratorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(PistonGeneratorJEIRecipeCategory.UID, PistonGeneratorJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<AcceleratorJeiRecipe> AcceleratorJei_Type = new mezz.jei.api.recipe.RecipeType<>(AcceleratorJeiRecipeCategory.UID, AcceleratorJeiRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<GravitationalArrayRecipe> GravitationalArray_Type = new mezz.jei.api.recipe.RecipeType<>(GravitationalArrayRecipeCategory.UID, GravitationalArrayRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<SolarSimulatorJeiRecipe> SolarSimulator_Type = new mezz.jei.api.recipe.RecipeType<>(SolarSimulatorJeiRecipeCategory.UID, SolarSimulatorJeiRecipe.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -143,6 +154,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new AcceleratorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new SolarSimulatorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
@@ -201,6 +213,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		List<AcceleratorJeiRecipe> AcceleratorJeiRecipes = recipes(recipeManager, AcceleratorJeiRecipe.class);
 		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
 		registration.addRecipes(GravitationalArray_Type, recipes(recipeManager, GravitationalArrayRecipe.class));
+		registration.addRecipes(SolarSimulator_Type, solarSimulatorRecipes());
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
@@ -220,6 +233,30 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 			.map(FluidChemicalReactionRecipe.class::cast).toList();
 	}
 
+	private static List<SolarSimulatorJeiRecipe> solarSimulatorRecipes() {
+		return List.of(
+			solarRecipe(CrystalnexusModItems.TERRA.get(), new String[] {"raw_materials/iron", "raw_materials/copper", "gems/coal", "raw_materials/tin", "raw_materials/silver"}),
+			solarRecipe(CrystalnexusModItems.CAELUS.get(), new String[] {"raw_materials/gold", "raw_materials/lead", "dusts/redstone", "raw_materials/nickel"}),
+			solarRecipe(CrystalnexusModItems.BOREAS.get(), new String[] {"gems/diamond", "gems/quartz", "gems/certus_quartz", "raw_materials/azurine"}),
+			solarRecipe(CrystalnexusModItems.METEOR.get(), new String[] {"raw_materials/obsidrax", "raw_materials/uranium", "raw_materials/platinum"}),
+			new SolarSimulatorJeiRecipe(new ItemStack(CrystalnexusModItems.NOX.get()), List.of(new ItemStack(CrystalnexusModItems.DARK_MATTER.get()), new ItemStack(Items.AMETHYST_SHARD), new ItemStack(Items.ECHO_SHARD)), java.util.Optional.empty()),
+			fluidSolarRecipe(CrystalnexusModItems.TERRA.get(), CrystalnexusModFluids.ATMOSPHERE.get(), 25),
+			fluidSolarRecipe(CrystalnexusModItems.CAELUS.get(), CrystalnexusModFluids.NITROGEN.get(), 50),
+			fluidSolarRecipe(CrystalnexusModItems.NOX.get(), CrystalnexusModFluids.ARGON.get(), 10));
+	}
+
+	private static SolarSimulatorJeiRecipe solarRecipe(Item planet, String[] materialTags) {
+		List<ItemStack> outputs = java.util.Arrays.stream(materialTags)
+			.flatMap(path -> java.util.Arrays.stream(Ingredient.of(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("c", path))).getItems()))
+			.map(ItemStack::copy).toList();
+		return new SolarSimulatorJeiRecipe(new ItemStack(planet), outputs, java.util.Optional.empty());
+	}
+
+	private static SolarSimulatorJeiRecipe fluidSolarRecipe(Item planet, net.minecraft.world.level.material.Fluid fluid, int amount) {
+		return new SolarSimulatorJeiRecipe(new ItemStack(planet), List.of(),
+			java.util.Optional.of(new FluidStack(fluid, amount)));
+	}
+
 	private static List<MultiblockStructureRecipe> multiblockStructures() {
 		var access = Objects.requireNonNull(Minecraft.getInstance().level).registryAccess();
 		return List.of(
@@ -228,11 +265,16 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
-				multiblockStructure("ultima_smelter", CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem().getDefaultInstance(), access));
+				multiblockStructure("ultima_smelter", CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("plasma_gen", CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("solar_engine", CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("arc_blast_furnace", CrystalnexusModBlocks.ARC_FURNACE.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("azurine_blast_furnace", CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("cryogenic_flash_freezer", CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem().getDefaultInstance(), access));
 	}
 
 	private static MultiblockStructureRecipe multiblockStructure(String id, ItemStack icon, net.minecraft.core.RegistryAccess access) {
-		MultiblockStructurePreview preview = new MultiblockStructurePreview(id);
+		MultiblockStructurePreview preview = new MultiblockStructurePreview(id, net.minecraft.world.level.block.Block.byItem(icon.getItem()));
 		return new MultiblockStructureRecipe(ResourceLocation.fromNamespaceAndPath("crystalnexus", id), icon.getHoverName(), preview.getRequiredBlocks(access), preview);
 	}
 
@@ -270,7 +312,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ZERO_POINT.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem()), SolarSimulator_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ARC_FURNACE.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);

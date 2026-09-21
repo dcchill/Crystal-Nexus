@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:acidic_slurry"
+    "crystalnexus:acidic_slurry",
+    "crystalnexus:flowing_acidic_slurry"
   ]
 }

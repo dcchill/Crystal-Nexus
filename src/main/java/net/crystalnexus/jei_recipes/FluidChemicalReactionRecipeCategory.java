@@ -16,6 +16,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Arrays;
+
 public class FluidChemicalReactionRecipeCategory implements IRecipeCategory<FluidChemicalReactionRecipe> {
     public static final ResourceLocation UID = ResourceLocation.parse("crystalnexus:fluid_chemical_reaction");
     private static final ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/fluid_chemical_reaction_chamber_jei.png");
@@ -41,11 +43,14 @@ public class FluidChemicalReactionRecipeCategory implements IRecipeCategory<Flui
 
     @Override public void setRecipe(IRecipeLayoutBuilder builder, FluidChemicalReactionRecipe recipe, IFocusGroup focuses) {
         for (int i = 0; i < 2; i++) {
+            int inputIndex = i;
             int x = i == 0 ? 28 : 52;
-            recipe.fluidInput(i).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, x, 26)
+            recipe.fluidInput(inputIndex).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, x, 26)
                 .setFluidRenderer(input.amount(), false, 16, 34)
                 .addIngredient(NeoForgeTypes.FLUID_STACK, input.stack()));
-            recipe.itemInput(i).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, x, 64).addIngredients(input));
+            recipe.itemInput(inputIndex).ifPresent(input -> builder.addSlot(RecipeIngredientRole.INPUT, x, 64)
+                .addItemStacks(Arrays.stream(input.getItems())
+                    .map(stack -> stack.copyWithCount(recipe.itemInputCount(inputIndex))).toList()));
         }
         recipe.fluidOutput().ifPresent(output -> builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 26)
             .setFluidRenderer(output.amount(), false, 16, 34)

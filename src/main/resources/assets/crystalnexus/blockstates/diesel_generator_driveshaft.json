@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "crystalnexus:block/diesel_generator_driveshaft" },
+    "facing=east": { "model": "crystalnexus:block/diesel_generator_driveshaft", "y": 90 },
+    "facing=south": { "model": "crystalnexus:block/diesel_generator_driveshaft", "y": 180 },
+    "facing=west": { "model": "crystalnexus:block/diesel_generator_driveshaft", "y": 270 }
+  }
+}

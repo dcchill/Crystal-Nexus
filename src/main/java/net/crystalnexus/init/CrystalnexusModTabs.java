@@ -22,8 +22,10 @@ public class CrystalnexusModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrystalnexusMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_TAB = REGISTRY.register("crystal_nexus_tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get())).displayItems((parameters, tabData) -> {
-				tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CONTROLLER.get().asItem());
+				 tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING.get().asItem());
+				 tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.DIESEL_GENERATOR_DRIVESHAFT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLESH_BLOCK.get().asItem());
@@ -133,8 +135,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TEMPORAL_EXPLOITER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get().asItem());
@@ -154,6 +154,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CAELUS.get());
 				tabData.accept(CrystalnexusModItems.BOREAS.get());
 				tabData.accept(CrystalnexusModItems.METEOR.get());
+				tabData.accept(CrystalnexusModItems.NOX.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SCRAP.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_ALLOY.get());
 				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
@@ -176,7 +177,6 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTION_ENERGY_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem());
@@ -559,7 +559,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.TERRA.get());
 				tabData.accept(CrystalnexusModItems.CAELUS.get());
 				tabData.accept(CrystalnexusModItems.BOREAS.get());
-				tabData.accept(CrystalnexusModItems.METEOR.get());
+			tabData.accept(CrystalnexusModItems.METEOR.get());
+			tabData.accept(CrystalnexusModItems.NOX.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SCRAP.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_ALLOY.get());
 				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
@@ -574,12 +575,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_SHEET.get());
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTION_CHAMBER_CORE.get().asItem());
-				tabData.accept(CrystalnexusModBlocks.REACTION_ENERGY_INPUT.get().asItem());
 			}).withTabsAfter(CRYSTAL_NEXUS_BUILDING_BLOCKS.getId()).withTabsBefore(CRYSTAL_NEXUS_LOGISTICS.getId()).build());
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_MATERIALS = REGISTRY.register("crystal_nexus_materials",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_materials")).icon(() -> new ItemStack(CrystalnexusModItems.ELECTRIC_MOTOR.get())).displayItems((parameters, tabData) -> {

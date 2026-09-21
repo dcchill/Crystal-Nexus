@@ -10,6 +10,7 @@ public class ReactorComputerOnTickUpdateProcedure {
 		BlockPos controllerPos = BlockPos.containing(x, y, z);
 		BlocksCheckerProcedure.executeFromController(world, controllerPos);
 		if (world.getBlockEntity(controllerPos) instanceof ReactorComputerBlockEntity computer) {
+			computer.pullFuelInputs();
 			ReactorSimulation.tick(world, controllerPos, computer);
 		}
 	}

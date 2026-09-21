@@ -2,6 +2,7 @@ package net.crystalnexus.client.gui;
 
 import net.crystalnexus.network.payload.C2S_RequestPage;
 import net.crystalnexus.network.payload.S2C_SendPage;
+import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -14,6 +15,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,9 +30,11 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     private static final int BAR_Y = 18;
     private static final int BAR_HEIGHT = 108;
     private static final int THUMB_HEIGHT = 15;
+    private static final float DEPOT_COUNT_SCALE = 0.65F;
 
     private EditBox searchBox;
-    private final Map<ResourceLocation, Long> depotCounts = new HashMap<>();
+    private final Map<Integer, ResourceLocation> depotEntryIds = new HashMap<>();
+    private final Map<Integer, Long> depotCounts = new HashMap<>();
     private int page;
     private int totalEntries;
     private int refreshTicks;
@@ -127,6 +131,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
+        renderFluidEntries(graphics);
         renderTooltip(graphics, mouseX, mouseY);
     }
 
@@ -155,30 +160,74 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
 
     @Override
     protected void renderSlotContents(GuiGraphics graphics, ItemStack stack, Slot slot, String countString) {
+        if (menu.isDepotSlot(slot) && DepotSavedData.isFluidKey(depotEntryIds.get(slot.getSlotIndex()))) {
+            return;
+        }
         if (menu.isDepotSlot(slot) && !stack.isEmpty()) {
-            countString = compact(depotCounts.getOrDefault(BuiltInRegistries.ITEM.getKey(stack.getItem()), 0L));
+            graphics.renderItem(stack, slot.x, slot.y, slot.x + slot.y * imageWidth);
+            renderDepotCount(graphics, compact(depotCounts.getOrDefault(slot.getSlotIndex(), 0L)), slot.x, slot.y);
+            return;
         }
         super.renderSlotContents(graphics, stack, slot, countString);
     }
 
     @Override
     protected List<Component> getTooltipFromContainerItem(ItemStack stack) {
+        if (hoveredSlot != null && menu.isDepotSlot(hoveredSlot)) {
+            int slot = hoveredSlot.getSlotIndex();
+            ResourceLocation fluidId = DepotSavedData.fluidId(depotEntryIds.get(slot));
+            if (fluidId != null) {
+                List<Component> tooltip = new ArrayList<>();
+                tooltip.add(new FluidStack(BuiltInRegistries.FLUID.get(fluidId), 1).getHoverName());
+                tooltip.add(Component.literal("Stored: " + String.format("%,d", depotCounts.getOrDefault(slot, 0L)) + " mB")
+                        .withStyle(ChatFormatting.GRAY));
+                return tooltip;
+            }
+        }
         List<Component> tooltip = new ArrayList<>(super.getTooltipFromContainerItem(stack));
         if (hoveredSlot != null && menu.isDepotSlot(hoveredSlot)) {
-            long count = depotCounts.getOrDefault(BuiltInRegistries.ITEM.getKey(stack.getItem()), 0L);
-            tooltip.add(Component.literal("Stored: " + String.format("%,d", count)).withStyle(ChatFormatting.GRAY));
+            int slot = hoveredSlot.getSlotIndex();
+            long count = depotCounts.getOrDefault(slot, 0L);
+            boolean fluid = DepotSavedData.isFluidKey(depotEntryIds.get(slot));
+            tooltip.add(Component.literal("Stored: " + String.format("%,d", count) + (fluid ? " mB" : ""))
+                    .withStyle(ChatFormatting.GRAY));
         }
         return tooltip;
     }
 
     public void setPage(S2C_SendPage packet) {
         depotCounts.clear();
-        packet.entries().forEach(entry -> depotCounts.put(entry.itemId(), entry.count()));
+        depotEntryIds.clear();
+        for (int i = 0; i < packet.entries().size(); i++) {
+            S2C_SendPage.Entry entry = packet.entries().get(i);
+            depotEntryIds.put(i, entry.itemId());
+            depotCounts.put(i, entry.count());
+        }
         totalEntries = packet.totalEntries();
         page = Math.min(page, maxPage());
         uiUpgradeLevel = packet.upgradeLevel();
         uiUsed = packet.used();
         uiCapacity = packet.capacity();
+    }
+
+    private void renderFluidEntries(GuiGraphics graphics) {
+        for (Slot slot : menu.slots) {
+            if (!menu.isDepotSlot(slot)) continue;
+            ResourceLocation fluidId = DepotSavedData.fluidId(depotEntryIds.get(slot.getSlotIndex()));
+            if (fluidId == null) continue;
+            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(fluidId), 1);
+            FluidTankRenderer.draw(graphics, fluid, 1, leftPos + slot.x, topPos + slot.y, 16, 16);
+            renderDepotCount(graphics, compact(depotCounts.getOrDefault(slot.getSlotIndex(), 0L)),
+                leftPos + slot.x, topPos + slot.y);
+        }
+    }
+
+    private void renderDepotCount(GuiGraphics graphics, String count, int x, int y) {
+        graphics.pose().pushPose();
+        graphics.pose().translate(x + 17 - font.width(count) * DEPOT_COUNT_SCALE, y + 17 - 8 * DEPOT_COUNT_SCALE, 200);
+        graphics.pose().scale(DEPOT_COUNT_SCALE, DEPOT_COUNT_SCALE, 1);
+        graphics.drawString(font, count, 0, 0, 0xFFFFFF, true);
+        graphics.pose().popPose();
     }
 
     private void requestPage() {
@@ -206,10 +255,17 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     }
 
     private static String compact(long value) {
-        if (value < 1_000) return Long.toString(value);
-        if (value < 1_000_000) return (value / 1_000) + "K";
-        if (value < 1_000_000_000) return (value / 1_000_000) + "M";
-        if (value < 1_000_000_000_000L) return (value / 1_000_000_000) + "B";
-        return (value / 1_000_000_000_000L) + "T";
+        if (value < 100) return Long.toString(value);
+        if (value < 1_000) return decimal(value, 1_000, "K");
+        if (value < 100_000) return (value / 1_000) + "K";
+        if (value < 100_000_000) return decimal(value, 1_000_000, "M");
+        if (value < 100_000_000_000L) return decimal(value, 1_000_000_000, "B");
+        if (value < 100_000_000_000_000L) return decimal(value, 1_000_000_000_000L, "T");
+        return decimal(value, 1_000_000_000_000_000L, "Q");
+    }
+
+    private static String decimal(long value, long scale, String suffix) {
+        long tenths = value / (scale / 10);
+        return tenths % 10 == 0 ? (tenths / 10) + suffix : (tenths / 10) + "." + (tenths % 10) + suffix;
     }
 }

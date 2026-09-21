@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.player.StackedContents;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 
@@ -1047,14 +1048,14 @@ public class DepotSavedData extends SavedData {
     }
 
     public List<Entry> page(String search, int page, int pageSize) {
-        List<Entry> all = filteredEntries(search);
+        List<Entry> all = filteredPageEntries(search);
         int start = Math.max(0, page);
         if (start >= all.size()) return List.of();
         return all.subList(start, Math.min(all.size(), start + pageSize));
     }
 
     public int countEntries(String search) {
-        return filteredEntries(search).size();
+        return filteredPageEntries(search).size();
     }
 
     public List<Entry> entries() {
@@ -1182,6 +1183,37 @@ public class DepotSavedData extends SavedData {
         all.sort(Comparator
                 .comparingLong(DepotSavedData.Entry::count).reversed()
                 .thenComparing(a -> a.itemId().toString()));
+        return all;
+    }
+
+    private List<Entry> filteredPageEntries(String search) {
+        List<Entry> all = new ArrayList<>(filteredEntries(search));
+        String raw = (search == null ? "" : search).trim().toLowerCase(Locale.ROOT);
+        String modFilter = null;
+        String textFilter = raw;
+        if (raw.contains("@")) {
+            StringBuilder rest = new StringBuilder();
+            for (String part : raw.split("\\s+")) {
+                if (part.startsWith("@") && part.length() > 1 && modFilter == null) modFilter = part.substring(1);
+                else if (!part.isBlank()) {
+                    if (rest.length() > 0) rest.append(' ');
+                    rest.append(part);
+                }
+            }
+            textFilter = rest.toString();
+        }
+        final String fluidModFilter = modFilter;
+        final String fluidTextFilter = textFilter;
+        fluidCounts.object2LongEntrySet().forEach(entry -> {
+            ResourceLocation id = entry.getKey();
+            long count = entry.getLongValue();
+            if (count <= 0 || fluidModFilter != null && !id.getNamespace().toLowerCase(Locale.ROOT).contains(fluidModFilter)) return;
+            String key = new FluidStack(BuiltInRegistries.FLUID.get(id), 1).getHoverName().getString().toLowerCase(Locale.ROOT)
+                    + " " + id.toString().toLowerCase(Locale.ROOT);
+            if (fluidTextFilter.isEmpty() || key.contains(fluidTextFilter)) all.add(new Entry(fluidKey(id), count));
+        });
+        all.sort(Comparator.comparingLong(DepotSavedData.Entry::count).reversed()
+                .thenComparing(entry -> entry.itemId().toString()));
         return all;
     }
 

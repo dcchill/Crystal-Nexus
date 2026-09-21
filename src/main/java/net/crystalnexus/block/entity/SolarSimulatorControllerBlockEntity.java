@@ -4,6 +4,7 @@ import net.crystalnexus.block.SolarSimulatorControllerBlock;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.multiblock.StructureNbtValidator;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
@@ -33,6 +34,9 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -51,10 +55,11 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         (long) STAR_SLOT * 8 * ENERGY_PER_ITEM, DURATION);
     private static final int VALIDATION_INTERVAL = 20;
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "solar_sim");
-    private static final List<TagKey<Item>> TERRA = tags("raw_materials/iron", "raw_materials/copper", "gems/coal", "raw_materials/tin", "raw_materials/silver");
+    private static final List<TagKey<Item>> TERRA = tags("raw_materials/iron", "raw_materials/copper", "raw_materials/coal", "raw_materials/tin", "raw_materials/silver");
     private static final List<TagKey<Item>> CAELUS = tags("raw_materials/gold", "raw_materials/lead", "dusts/redstone", "raw_materials/nickel");
     private static final List<TagKey<Item>> BOREAS = tags("gems/diamond", "gems/quartz", "gems/certus_quartz", "raw_materials/azurine");
     private static final List<TagKey<Item>> METEOR = tags("raw_materials/obsidrax", "raw_materials/uranium", "raw_materials/platinum");
+    private static final List<TagKey<Item>> NOX = tags("gems/amethyst");
 
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 	private final EnergyStorage energyStorage = new EnergyStorage(
@@ -70,6 +75,31 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 	};
     private final List<BlockPos> energyInputs = new ArrayList<>();
     private final List<BlockPos> outputs = new ArrayList<>();
+    private final List<BlockPos> fluidOutputs = new ArrayList<>();
+    private final FluidTank[] fluidOutputTanks = { createFluidOutputTank(), createFluidOutputTank(), createFluidOutputTank() };
+    private final IFluidHandler fluidOutput = new IFluidHandler() {
+        @Override public int getTanks() { return fluidOutputTanks.length; }
+        @Override public FluidStack getFluidInTank(int tank) { return fluidOutputTanks[tank].getFluid(); }
+        @Override public int getTankCapacity(int tank) { return fluidOutputTanks[tank].getCapacity(); }
+        @Override public boolean isFluidValid(int tank, FluidStack stack) { return fluidOutputTanks[tank].isFluidValid(stack); }
+        @Override public int fill(FluidStack resource, FluidAction action) {
+            for (FluidTank tank : fluidOutputTanks)
+                if (!tank.isEmpty() && FluidStack.isSameFluidSameComponents(tank.getFluid(), resource))
+                    return tank.fill(resource, action);
+            for (FluidTank tank : fluidOutputTanks)
+                if (tank.isEmpty()) return tank.fill(resource, action);
+            return 0;
+        }
+        @Override public FluidStack drain(FluidStack resource, FluidAction action) {
+            for (FluidTank tank : fluidOutputTanks)
+                if (FluidStack.isSameFluidSameComponents(tank.getFluid(), resource)) return tank.drain(resource, action);
+            return FluidStack.EMPTY;
+        }
+        @Override public FluidStack drain(int amount, FluidAction action) {
+            for (FluidTank tank : fluidOutputTanks) if (!tank.isEmpty()) return tank.drain(amount, action);
+            return FluidStack.EMPTY;
+        }
+    };
     private boolean formed;
     @Nullable private Vec3 formationCenter;
     private boolean renderActive;
@@ -80,6 +110,12 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
     public SolarSimulatorControllerBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.SOLAR_SIMULATOR_CONTROLLER.get(), pos, state);
+    }
+
+    private FluidTank createFluidOutputTank() {
+        return new FluidTank(4000) {
+            @Override protected void onContentsChanged() { sync(); }
+        };
     }
 
     public boolean isFormed() { return formed; }
@@ -112,8 +148,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
         // Older worlds may have saved the former false-complete value.
         progress = Math.min(progress, DURATION - 1);
-        List<ItemStack> results = progress == DURATION - 1 ? createResults(serverLevel, multiplier) : List.of();
-        if (progress == DURATION - 1 && (results.isEmpty() || !canFit(results))) { markRenderInactive(); return; }
+        List<ItemStack> results = progress == DURATION - 1 && fluidOutputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
+        List<FluidStack> fluidResults = progress == DURATION - 1 && !fluidOutputs.isEmpty() ? createFluidResults(multiplier) : List.of();
+        if (progress == DURATION - 1 && (results.isEmpty() && fluidResults.isEmpty() || !canFit(results, fluidResults))) { markRenderInactive(); return; }
 
         long totalEnergy = (long) planets * multiplier * ENERGY_PER_ITEM;
         long nextEnergy = GravitationalArrayCostSchedule.cumulative(totalEnergy, progress + 1, DURATION);
@@ -124,7 +161,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
         progress++;
         if (progress >= DURATION) {
-            insert(results);
+            insert(results, fluidResults);
             progress = 0;
             consumedEnergy = 0;
             sync();
@@ -135,24 +172,39 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE, worldPosition,
             getBlockState().getValue(SolarSimulatorControllerBlock.FACING), CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get(),
             SolarSimulatorControllerBlock.FACING, Map.of(
-                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
-                CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())),
+                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
+                CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())),
             Set.of(CrystalnexusModBlocks.CARBON_GLASS.get(), CrystalnexusModBlocks.COOLING_COIL.get(),
                 CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get(), CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get(),
                 CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get()),
-            true, false);
+            true, false, Map.of(
+                CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), 1,
+                CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), 2,
+                CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), 2));
         List<BlockPos> previousEnergyInputs = List.copyOf(energyInputs);
+        List<BlockPos> previousFluidOutputs = List.copyOf(fluidOutputs);
         energyInputs.clear();
         outputs.clear();
+        fluidOutputs.clear();
         match.ifPresent(found -> {
             energyInputs.addAll(found.substitutionPositions().stream()
                 .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())).toList());
             outputs.addAll(found.substitutionPositions().stream()
                 .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get())).toList());
+            fluidOutputs.addAll(found.substitutionPositions().stream()
+                .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get())).toList());
         });
         for (BlockPos old : previousEnergyInputs) {
             if (!energyInputs.contains(old) && level.getBlockEntity(old) instanceof MachineEnergyInputBlockEntity input)
                 input.unbindController(worldPosition);
+        }
+        for (BlockPos old : previousFluidOutputs) {
+            if (!fluidOutputs.contains(old) && level.getBlockEntity(old) instanceof MultiblockFluidOutputBlockEntity output)
+                output.unbindController(worldPosition);
+        }
+        for (BlockPos outputPos : fluidOutputs) {
+            if (level.getBlockEntity(outputPos) instanceof MultiblockFluidOutputBlockEntity output)
+                output.bindController(worldPosition);
         }
         energyInputs.removeIf(pos -> {
             if (level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input) {
@@ -161,8 +213,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             }
             return true;
         });
-        boolean next = match.isPresent() && !energyInputs.isEmpty() && !outputs.isEmpty()
-            && outputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity);
+        boolean next = match.isPresent() && !energyInputs.isEmpty()
+            && (!outputs.isEmpty() && outputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity)
+                || !fluidOutputs.isEmpty() && fluidOutputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockFluidOutputBlockEntity));
         Vec3 nextCenter = next ? match.orElseThrow().center() : null;
         if (formed != next || !Objects.equals(formationCenter, nextCenter)) {
             formed = next; formationCenter = nextCenter; sync();
@@ -172,6 +225,12 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private List<ItemStack> createResults(ServerLevel level, int multiplier) {
         List<ItemStack> results = new ArrayList<>();
         for (int slot = 0; slot < STAR_SLOT; slot++) {
+            if (stacks.get(slot).is(CrystalnexusModItems.NOX.get())) {
+                Item item = level.random.nextFloat() < 0.05F ? CrystalnexusModItems.DARK_MATTER.get()
+                    : level.random.nextBoolean() ? net.minecraft.world.item.Items.AMETHYST_SHARD : net.minecraft.world.item.Items.ECHO_SHARD;
+                results.add(new ItemStack(item, multiplier));
+                continue;
+            }
             List<TagKey<Item>> pool = planetPool(stacks.get(slot));
             List<Item> available = pool.stream().map(this::firstItem).flatMap(Optional::stream).toList();
             if (!available.isEmpty()) results.add(new ItemStack(available.get(level.random.nextInt(available.size())), multiplier));
@@ -179,11 +238,34 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         return results;
     }
 
+    private List<FluidStack> createFluidResults(int multiplier) {
+        List<FluidStack> results = new ArrayList<>();
+        for (int slot = 0; slot < STAR_SLOT; slot++) {
+            FluidStack result = fluidResult(stacks.get(slot), multiplier);
+            if (!result.isEmpty()) results.add(result);
+        }
+        return results;
+    }
+
+    private FluidStack fluidResult(ItemStack stack, int multiplier) {
+        if (stack.is(CrystalnexusModItems.CAELUS.get()))
+            return new FluidStack(CrystalnexusModFluids.NITROGEN.get(), 50 * multiplier);
+        if (stack.is(CrystalnexusModItems.NOX.get()))
+            return new FluidStack(CrystalnexusModFluids.ARGON.get(), 10 * multiplier);
+        if (stack.is(CrystalnexusModItems.TERRA.get()))
+            return new FluidStack(CrystalnexusModFluids.ATMOSPHERE.get(), 25 * multiplier);
+        return FluidStack.EMPTY;
+    }
+
     private Optional<Item> firstItem(TagKey<Item> tag) {
         return BuiltInRegistries.ITEM.getTag(tag).flatMap(items -> items.stream().findFirst()).map(holder -> holder.value());
     }
 
-    private boolean canFit(List<ItemStack> results) {
+    private boolean canFit(List<ItemStack> results, List<FluidStack> fluidResults) {
+        if (!fluidResults.isEmpty()) {
+            return mergeFluidResults(fluidResults).stream()
+                .allMatch(result -> fluidOutput.fill(result, IFluidHandler.FluidAction.SIMULATE) == result.getAmount());
+        }
         List<ItemStack> snapshot = new ArrayList<>();
         for (BlockPos pos : outputs) if (level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity output)
             for (int slot = 0; slot < output.getContainerSize(); slot++) snapshot.add(output.getItem(slot).copy());
@@ -191,7 +273,12 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         return true;
     }
 
-    private void insert(List<ItemStack> results) {
+    private void insert(List<ItemStack> results, List<FluidStack> fluidResults) {
+        if (!fluidResults.isEmpty()) {
+            for (FluidStack result : mergeFluidResults(fluidResults))
+                fluidOutput.fill(result, IFluidHandler.FluidAction.EXECUTE);
+            return;
+        }
         for (ItemStack result : results) {
             ItemStack remaining = result.copy();
             for (BlockPos pos : outputs) {
@@ -207,6 +294,18 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
                 output.setChanged();
             }
         }
+    }
+
+    private static List<FluidStack> mergeFluidResults(List<FluidStack> results) {
+        List<FluidStack> merged = new ArrayList<>();
+        for (FluidStack result : results) {
+            FluidStack existing = merged.stream()
+                .filter(candidate -> FluidStack.isSameFluidSameComponents(candidate, result))
+                .findFirst().orElse(null);
+            if (existing == null) merged.add(result.copy());
+            else existing.grow(result.getAmount());
+        }
+        return merged;
     }
 
     private static boolean insertInto(List<ItemStack> slots, ItemStack remaining) {
@@ -225,7 +324,8 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 		return energyStorage.extractEnergy(amount, simulate);
     }
 
-	@Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
+    @Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
+    @Override public IFluidHandler multiblockFluidOutput() { return fluidOutput; }
 
     public void onControllerRemoved() {
         if (level != null) for (BlockPos pos : energyInputs)
@@ -252,6 +352,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         if (stack.is(CrystalnexusModItems.TERRA.get())) return TERRA;
         if (stack.is(CrystalnexusModItems.CAELUS.get())) return CAELUS;
         if (stack.is(CrystalnexusModItems.BOREAS.get())) return BOREAS;
+		if (stack.is(CrystalnexusModItems.NOX.get())) return NOX;
         return List.of();
     }
     private static int starMultiplier(ItemStack stack) {
@@ -279,8 +380,10 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     @Override public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, stacks, registries);
+		ContainerHelper.loadAllItems(tag, stacks, registries);
 		if (tag.get("energy") instanceof IntTag energy) energyStorage.deserializeNBT(registries, energy);
+        for (int i = 0; i < fluidOutputTanks.length; i++)
+            if (tag.get("fluidOutput" + i) instanceof CompoundTag fluid) fluidOutputTanks[i].readFromNBT(registries, fluid);
         formed = tag.getBoolean("formed"); progress = tag.getInt("progress"); consumedEnergy = tag.getLong("consumedEnergy");
         renderActive = tag.getBoolean("renderActive");
         formationCenter = tag.contains("formationX")
@@ -290,6 +393,8 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         super.saveAdditional(tag, registries);
         if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, registries);
 		tag.put("energy", energyStorage.serializeNBT(registries));
+        for (int i = 0; i < fluidOutputTanks.length; i++)
+            tag.put("fluidOutput" + i, fluidOutputTanks[i].writeToNBT(registries, new CompoundTag()));
         tag.putBoolean("formed", formed); tag.putInt("progress", progress); tag.putLong("consumedEnergy", consumedEnergy);
         tag.putBoolean("renderActive", renderActive);
         if (formationCenter != null) {

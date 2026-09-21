@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:oxygen"
+    "crystalnexus:oxygen",
+    "crystalnexus:flowing_oxygen"
   ]
 }

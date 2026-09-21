@@ -49,12 +49,12 @@ public final class HyperLaserQuarryMenu extends AbstractContainerMenu {
 
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 3; column++) {
-				addSlot(new Slot(container, column + row * 3, 142 + column * 18, 25 + row * 18) {
+				addSlot(new Slot(container, column + row * 3, 226 + column * 18, 154 + row * 18) {
 					@Override public boolean mayPlace(ItemStack stack) { return false; }
 				});
 			}
 		}
-		addSlot(new Slot(container, 9, 215, 25) {
+		addSlot(new Slot(container, 9, 246, 113) {
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
@@ -62,10 +62,10 @@ public final class HyperLaserQuarryMenu extends AbstractContainerMenu {
 		});
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 9; column++) {
-				addSlot(new Slot(inventory, column + row * 9 + 9, 43 + column * 18, 108 + row * 18));
+				addSlot(new Slot(inventory, column + row * 9 + 9, 16 + column * 18, 154 + row * 18));
 			}
 		}
-		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 43 + column * 18, 166));
+		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 16 + column * 18, 212));
 		addDataSlots(this.data);
 	}
 

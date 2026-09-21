@@ -142,7 +142,7 @@ public final class ReactorSimulation {
 		return Math.max(0, temperature - ReactorBalance.AMBIENT_TEMPERATURE) * ReactorBalance.PASSIVE_HEAT_LOSS_PER_DEGREE;
 	}
 
-	private static boolean isFuel(ItemStack fuel) {
+	public static boolean isFuel(ItemStack fuel) {
 		return fuel.getItem() == CrystalnexusModItems.BLUTONIUM_INGOT.get()
 				|| fuel.getItem() == CrystalnexusModItems.PURE_BLUTONIUM.get()
 				|| fuel.getItem() == CrystalnexusModItems.COAL_SINGULARITY.get();

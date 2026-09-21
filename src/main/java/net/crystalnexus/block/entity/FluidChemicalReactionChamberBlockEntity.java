@@ -85,7 +85,7 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
             new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
     }
 
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return true; }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot != 2; }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 2; }

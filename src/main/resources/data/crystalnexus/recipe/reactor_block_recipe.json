@@ -11,11 +11,11 @@
       "item": "crystalnexus:ceramic_plate"
     },
     "b": {
-      "tag": "c:plates/iron"
+      "tag": "c:plates/ferrosteel"
     }
   },
   "result": {
     "id": "crystalnexus:reactor_block",
-    "count": 4
+    "count": 8
   }
 }

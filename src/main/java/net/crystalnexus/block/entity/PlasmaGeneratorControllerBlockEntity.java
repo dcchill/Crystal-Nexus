@@ -66,6 +66,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     private boolean operating;
     private int outputPerTick;
     private String status = "Incomplete Structure";
+    private String structureStatus = "Incomplete Structure";
     private int validationDelay;
 
     public PlasmaGeneratorControllerBlockEntity(BlockPos pos, BlockState state) {
@@ -96,7 +97,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
             if (serverLevel.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.pushEnergy();
         });
 
-        if (!formed) { updateOperating(false, 0, "Incomplete Structure"); return; }
+        if (!formed) { updateOperating(false, 0, structureStatus); return; }
         if (argonTank.getFluidAmount() < ARGON_PER_TICK) { updateOperating(false, 0, "Waiting for Argon"); return; }
 
         int availableOutput = availableOutputCapacity(GENERATION_PER_TICK);
@@ -108,12 +109,16 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     }
 
     private void validateStructure(ServerLevel level) {
-        Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE, worldPosition,
+        StructureNbtValidator.ValidationResult validation = StructureNbtValidator.validateDetailed(level, STRUCTURE, worldPosition,
             getBlockState().getValue(PlasmaGeneratorControllerBlock.FACING),
             CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get(), PlasmaGeneratorControllerBlock.FACING,
             Map.of(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), Set.of(
                 CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get())),
-            Set.of(CrystalnexusModBlocks.HEATING_CORE.get()), true, false);
+            Set.of(CrystalnexusModBlocks.HEATING_CORE.get()), true, false, Map.of(
+                CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get(), 1,
+                CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get(), 2), true);
+        Optional<StructureNbtValidator.Match> match = validation.match();
+        structureStatus = validation.message();
         List<BlockPos> substitutions = match.map(StructureNbtValidator.Match::substitutionPositions).orElse(List.of());
         List<BlockPos> previousHeatingCores = List.copyOf(heatingCores);
         List<BlockPos> nextInputs = substitutions.stream()

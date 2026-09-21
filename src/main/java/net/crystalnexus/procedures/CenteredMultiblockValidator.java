@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
+import net.crystalnexus.block.entity.MachineFluidInputBlockEntity;
+import net.crystalnexus.block.entity.MachineEnergyInputBlockEntity;
+import net.crystalnexus.block.entity.MachineEnergyOutputBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.reactor.ReactorLayout;
 import net.minecraft.core.BlockPos;
@@ -236,9 +239,9 @@ public final class CenteredMultiblockValidator {
 					return false;
 				}
 				controllerCount += block == controller ? 1 : 0;
-				energyOutputs += block == CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get() ? 1 : 0;
+				energyOutputs += block == CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get() ? 1 : 0;
 				wasteOutputs += block == CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get() ? 1 : 0;
-				fluidInputs += block == CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get() ? 1 : 0;
+				fluidInputs += block == CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get() ? 1 : 0;
 			} else if (!isAllowedInterior(block, core)) {
 				lastReason = "Interior block missing at " + describePos(world, pos)
 						+ " (expected " + description(core) + ")";
@@ -251,8 +254,8 @@ public final class CenteredMultiblockValidator {
 		}
 		if (core == CrystalnexusModBlocks.REACTOR_CORE.get()) {
 			if (energyOutputs <= 0 || wasteOutputs <= 0 || fluidInputs <= 0) {
-				lastReason = energyOutputs <= 0 ? "Missing reactor energy output block"
-						: wasteOutputs <= 0 ? "Missing reactor waste output block" : "Missing reactor fluid input block";
+				lastReason = energyOutputs <= 0 ? "Missing machine energy output block"
+						: wasteOutputs <= 0 ? "Missing reactor waste output block" : "Missing machine fluid input block";
 				return false;
 			}
 			ReactorLayout layout = ReactorLayout.analyze(world, bounds.min, bounds.max);
@@ -286,6 +289,19 @@ public final class CenteredMultiblockValidator {
 		if (blockEntity == null) {
 			return;
 		}
+		if (link != null) {
+			for (BlockPos portPos : BlockPos.betweenClosed(link.minBounds, link.maxBounds)) {
+				if (!CenteredMultiblockDimensions.isShellPosition(portPos, link.minBounds, link.maxBounds)) continue;
+				BlockEntity port = world.getBlockEntity(portPos);
+				if (blockEntity instanceof ReactorComputerBlockEntity) {
+					if (port instanceof MachineFluidInputBlockEntity input) input.bindController(pos);
+					if (port instanceof MachineEnergyOutputBlockEntity output) output.bindController(pos);
+				} else if (blockEntity instanceof net.crystalnexus.block.entity.ReactionChamberComputerBlockEntity
+						&& port instanceof MachineEnergyInputBlockEntity input) {
+					input.bindController(pos);
+				}
+			}
+		}
 		boolean valid = link != null;
 		int radius = valid ? link.radius : 0;
 		long min = valid ? link.minBounds.asLong() : 0;
@@ -309,6 +325,13 @@ public final class CenteredMultiblockValidator {
 	}
 
 	private static String lastReason = "";
+
+	/** Bindings are usable only on the shell of the controller's last validated structure. */
+	public static boolean acceptsPort(BlockEntity controller, BlockPos pos) {
+		CompoundTag data = controller.getPersistentData();
+		return data.getBoolean("canOpenInventory") && CenteredMultiblockDimensions.isShellPosition(pos,
+			BlockPos.of(data.getLong("multiblockMinBounds")), BlockPos.of(data.getLong("multiblockMaxBounds")));
+	}
 
 	private static String description(Block block) {
 		return block == null ? "block" : block.getName().getString();

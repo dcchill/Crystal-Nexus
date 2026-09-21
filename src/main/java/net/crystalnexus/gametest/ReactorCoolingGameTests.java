@@ -372,7 +372,7 @@ public final class ReactorCoolingGameTests {
 			}
 		}
 		BlockPos inputTarget = new BlockPos(fluidInputColumn + 2, INTERIOR_Y, fluidInputRow + 2);
-		helper.setBlock(inputTarget.north(), CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get());
+		helper.setBlock(inputTarget.north(), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
 		return ReactorLayout.analyze(helper.getLevel(), helper.absolutePos(minBounds), helper.absolutePos(maxBounds));
 	}
 

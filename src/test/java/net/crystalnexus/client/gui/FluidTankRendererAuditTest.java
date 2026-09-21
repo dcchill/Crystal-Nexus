@@ -15,7 +15,7 @@ class FluidTankRendererAuditTest {
 
 	@Test void everyFluidGaugeUsesTheSharedAnimatedRenderer() throws IOException {
 		for (String screen : List.of("CircuitPressGUIScreen", "CryogenicFlashFreezerScreen",
-				"FluidChemicalReactionChamberGUIScreen", "FluidInputGuiScreen", "FluidPackagerGUIScreen",
+				"FluidChemicalReactionChamberGUIScreen", "FluidPackagerGUIScreen",
 				"GravitationalArrayScreen", "NodeExtractorGUIScreen", "PistonGenGUIScreen",
 				"PlasmaGeneratorScreen", "ReactorGUIScreen", "RefineryScreen", "SolarEngineScreen",
 				"SteamChamberGUIScreen", "SteamEngineGUIScreen", "TemporalExploiterScreen"))

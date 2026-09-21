@@ -78,12 +78,6 @@ public class TooltipInfoHandler {
 		addTooltip("reactor_computer",
 				"Master control block for the Reactor.",
 				"Holds fuel and upgrades, and controls the reaction.");
-		addTooltip("reactor_fluid_input",
-				"Provides coolant to the Reactor.",
-				"Connect Coolant Channels to this wall port.");
-		addTooltip("reactor_energy_output",
-				"Extracts energy from the Reactor.",
-				"Integrate into the reactor wall for power output.");
 		addTooltip("reactor_waste_output",
 				"Outputs waste from the Reactor.",
 				"Collects Blutonium Waste produced by the reaction.");
@@ -199,9 +193,6 @@ public class TooltipInfoHandler {
 		addTooltip("reaction_chamber_core",
 				"Core of the Reaction Chamber.",
 				"Central component for EE Matter production.");
-		addTooltip("reaction_energy_input",
-				"Energy input for Reaction Chamber.",
-				"Supplies power to the Reaction Chamber.");
 
 		addTooltip("circuit_press",
 				"Stamps raw materials into circuits.",

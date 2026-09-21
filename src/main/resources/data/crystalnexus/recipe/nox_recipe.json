@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:gravitational_array",
+  "ingredients": [
+    { "ingredient": { "item": "crystalnexus:dark_matter" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:dark_matter" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:dark_matter" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:dark_matter" }, "count": 1 }
+  ],
+  "temporal_fluid": 20000,
+  "energy": 500000,
+  "duration": 400,
+  "output": { "id": "crystalnexus:nox", "count": 1 },
+  "visuals": { "red": 0.08, "green": 0.03, "blue": 0.12, "scale": 1.2 }
+}

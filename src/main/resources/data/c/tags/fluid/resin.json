@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:resin"
+    "crystalnexus:resin",
+    "crystalnexus:flowing_resin"
   ]
 }

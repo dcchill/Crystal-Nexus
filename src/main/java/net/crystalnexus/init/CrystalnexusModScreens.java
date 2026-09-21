@@ -46,7 +46,6 @@ import net.crystalnexus.client.gui.IronSmelterGuiScreen;
 import net.crystalnexus.client.gui.PartsAssemblerScreen;
 import net.crystalnexus.client.gui.InverterGuiScreen;
 import net.crystalnexus.client.gui.FluidPackagerGUIScreen;
-import net.crystalnexus.client.gui.FluidInputGuiScreen;
 import net.crystalnexus.client.gui.FactoryItemControllerGuiScreen;
 import net.crystalnexus.client.gui.FactoryControllerGuiScreen;
 import net.crystalnexus.client.gui.ExtractinatorGuiScreen;
@@ -79,6 +78,7 @@ import net.crystalnexus.client.gui.GravitationalArrayScreen;
 import net.crystalnexus.client.gui.SolarSimulatorScreen;
 import net.crystalnexus.client.gui.SolarEngineScreen;
 import net.crystalnexus.client.gui.PlasmaGeneratorScreen;
+import net.crystalnexus.client.gui.GasolineGeneratorScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -108,7 +108,6 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.REACTION_GUI.get(), ReactionGUIScreen::new);
 		event.register(CrystalnexusModMenus.ULTIMA_SMELTER_GUI.get(), UltimaSmelterGuiScreen::new);
 		event.register(CrystalnexusModMenus.ENERGY_EXTRACTOR_GUI.get(), EnergyExtractorGUIScreen::new);
-		event.register(CrystalnexusModMenus.FLUID_INPUT_GUI.get(), FluidInputGuiScreen::new);
 		event.register(CrystalnexusModMenus.MATTER_TRANSMUTATION_GUI.get(), MatterTransmutationGUIScreen::new);
 		event.register(CrystalnexusModMenus.BLOCK_PLACER_GUI.get(), BlockPlacerGuiScreen::new);
 		event.register(CrystalnexusModMenus.SINGULARITY_COMPRESSOR_GUI.get(), SingularityCompressorGUIScreen::new);
@@ -159,6 +158,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.SOLAR_SIMULATOR.get(), SolarSimulatorScreen::new);
 		event.register(CrystalnexusModMenus.SOLAR_ENGINE.get(), SolarEngineScreen::new);
 		event.register(CrystalnexusModMenus.PLASMA_GENERATOR.get(), PlasmaGeneratorScreen::new);
+		event.register(CrystalnexusModMenus.DIESEL_GENERATOR.get(), GasolineGeneratorScreen::new);
 	}
 
 	public interface ScreenAccessor {

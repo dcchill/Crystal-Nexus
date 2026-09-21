@@ -18,6 +18,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.Arrays;
 import java.util.List;
@@ -84,11 +86,12 @@ public class DepotMenu extends AbstractContainerMenu {
 
         for (int i = 0; i < Math.min(entries.size(), PAGE_SIZE); i++) {
             DepotSavedData.Entry entry = entries.get(i);
-            Item item = BuiltInRegistries.ITEM.get(entry.itemId());
+            ResourceLocation fluidId = DepotSavedData.fluidId(entry.itemId());
+            Item item = fluidId == null ? BuiltInRegistries.ITEM.get(entry.itemId()) : Items.BUCKET;
             if (item == null || item == Items.AIR) continue;
             depotItemIds[i] = entry.itemId();
-            depotView.setItem(i, new ItemStack(item,
-                    (int) Math.min(entry.count(), item.getDefaultInstance().getMaxStackSize())));
+            depotView.setItem(i, new ItemStack(item, fluidId == null
+                    ? (int) Math.min(entry.count(), item.getDefaultInstance().getMaxStackSize()) : 1));
         }
         broadcastChanges();
     }
@@ -96,6 +99,14 @@ public class DepotMenu extends AbstractContainerMenu {
     @Override
     public void clicked(int slotId, int button, ClickType clickType, Player player) {
         if (!isDepotSlotId(slotId)) {
+            if (player instanceof ServerPlayer serverPlayer && clickType == ClickType.PICKUP && button == 1
+                    && canAccessDepot(serverPlayer) && slotId >= 0 && slotId < slots.size()
+                    && emptyBucket(DepotSavedData.get(serverPlayer), slots.get(slotId).getItem())) {
+                slots.get(slotId).set(new ItemStack(Items.BUCKET));
+                slots.get(slotId).setChanged();
+                refreshDepot(DepotSavedData.get(serverPlayer));
+                return;
+            }
             super.clicked(slotId, button, clickType, player);
             return;
         }
@@ -106,6 +117,12 @@ public class DepotMenu extends AbstractContainerMenu {
         }
 
         DepotSavedData depot = DepotSavedData.get(serverPlayer);
+        if (clickType == ClickType.PICKUP && button == 1 && !getCarried().isEmpty()
+                && emptyBucket(depot, getCarried())) {
+            setCarried(new ItemStack(Items.BUCKET));
+            refreshDepot(depot);
+            return;
+        }
         if (clickType == ClickType.QUICK_MOVE) {
             withdrawStack(serverPlayer, depot, depotItemIds[slotId]);
         } else if (clickType == ClickType.PICKUP && (button == 0 || button == 1)) {
@@ -118,6 +135,12 @@ public class DepotMenu extends AbstractContainerMenu {
 
     private void pickupOrDeposit(DepotSavedData depot, ResourceLocation itemId, int button) {
         ItemStack carried = getCarried();
+        ResourceLocation fluidId = DepotSavedData.fluidId(itemId);
+        if (fluidId != null) {
+            if (carried.isEmpty()) pickupFluid(depot, fluidId);
+            return;
+        }
+        if (carried.isEmpty() && button == 1 && emptyStoredBucket(depot, itemId)) return;
         if (!carried.isEmpty()) {
             ResourceLocation carriedId = BuiltInRegistries.ITEM.getKey(carried.getItem());
             int amount = button == 1 ? 1 : carried.getCount();
@@ -132,6 +155,45 @@ public class DepotMenu extends AbstractContainerMenu {
         int amount = button == 1 ? (available + 1) / 2 : available;
         long removed = depot.remove(itemId, amount);
         if (removed > 0) setCarried(new ItemStack(item, (int) removed));
+    }
+
+    private void pickupFluid(DepotSavedData depot, ResourceLocation fluidId) {
+        Item bucket = bucketFor(fluidId);
+        ResourceLocation emptyBucketId = BuiltInRegistries.ITEM.getKey(Items.BUCKET);
+        if (bucket == null || depot.getFluidAmount(fluidId) < 1_000 || depot.remove(emptyBucketId, 1) != 1) return;
+        if (depot.removeFluid(fluidId, 1_000) != 1_000) {
+            depot.add(emptyBucketId, 1);
+            return;
+        }
+        setCarried(new ItemStack(bucket));
+    }
+
+    private static boolean emptyBucket(DepotSavedData depot, ItemStack stack) {
+        if (!(stack.getItem() instanceof BucketItem bucket)) return false;
+        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(bucket.content);
+        return fluidId != null && depot.getFluidFree() >= 1_000 && depot.depositFluid(fluidId, 1_000) == 1_000;
+    }
+
+    private static boolean emptyStoredBucket(DepotSavedData depot, ResourceLocation itemId) {
+        Item item = itemId == null ? null : BuiltInRegistries.ITEM.get(itemId);
+        if (!(item instanceof BucketItem bucket) || depot.getCount(itemId) <= 0 || depot.getFluidFree() < 1_000) return false;
+        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(bucket.content);
+        if (fluidId == null || depot.remove(itemId, 1) != 1) return false;
+        if (depot.depositFluid(fluidId, 1_000) != 1_000) {
+            depot.add(itemId, 1);
+            return false;
+        }
+        depot.add(BuiltInRegistries.ITEM.getKey(Items.BUCKET), 1);
+        return true;
+    }
+
+    private static Item bucketFor(ResourceLocation fluidId) {
+        Fluid fluid = BuiltInRegistries.FLUID.get(fluidId);
+        if (fluid == null) return null;
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof BucketItem bucket && bucket.content.isSame(fluid)) return item;
+        }
+        return null;
     }
 
     private void fillCarriedStack(DepotSavedData depot, ResourceLocation itemId) {

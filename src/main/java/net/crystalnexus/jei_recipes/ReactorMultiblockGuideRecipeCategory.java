@@ -4,7 +4,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.Minecraft;
 
+import net.crystalnexus.client.gui.MultiblockStructurePreview;
 import net.crystalnexus.init.CrystalnexusModJeiPlugin;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
@@ -19,12 +21,10 @@ import mezz.jei.api.constants.VanillaTypes;
 
 public class ReactorMultiblockGuideRecipeCategory implements IRecipeCategory<ReactorMultiblockGuideRecipe> {
 	public final static ResourceLocation UID = ResourceLocation.parse("crystalnexus:reactor_multiblock_guide");
-	public final static ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/reactorstructure_jei.png");
-	private final IDrawable background;
 	private final IDrawable icon;
+	private final MultiblockStructurePreview preview = new MultiblockStructurePreview("reactor_guide", CrystalnexusModBlocks.REACTOR_COMPUTER.get());
 
 	public ReactorMultiblockGuideRecipeCategory(IGuiHelper helper) {
-		this.background = helper.createDrawable(TEXTURE, 0, 0, 200, 135);
 		this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem()));
 	}
 
@@ -45,25 +45,26 @@ public class ReactorMultiblockGuideRecipeCategory implements IRecipeCategory<Rea
 
 	@Override
 	public int getWidth() {
-		return this.background.getWidth();
+		return 200;
 	}
 
 	@Override
 	public int getHeight() {
-		return this.background.getHeight();
+		return 135;
 	}
 
 	@Override
 	public void draw(ReactorMultiblockGuideRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-		this.background.draw(guiGraphics);
+		Minecraft minecraft = Minecraft.getInstance();
+		preview.render(guiGraphics, minecraft.font, minecraft.level.registryAccess(), 0, 0, (int) mouseX, (int) mouseY);
+		guiGraphics.drawString(minecraft.font, "5x5x5 example", 140, 9, 0x404040, false);
+		guiGraphics.drawString(minecraft.font, "Core + coolant", 140, 25, 0x404040, false);
+		guiGraphics.drawString(minecraft.font, "moderator + reflector", 140, 37, 0x404040, false);
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ReactorMultiblockGuideRecipe recipe, IFocusGroup focuses) {
-		builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(recipe.getIngredients().get(0));
-		builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(recipe.getIngredients().get(1));
-		builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(recipe.getIngredients().get(2));
-		builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(recipe.getIngredients().get(3));
-		builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(recipe.getIngredients().get(4));
+		for (var ingredient : recipe.getIngredients())
+			builder.addSlot(RecipeIngredientRole.INPUT, 1400, 1400).addIngredients(ingredient);
 	}
 }

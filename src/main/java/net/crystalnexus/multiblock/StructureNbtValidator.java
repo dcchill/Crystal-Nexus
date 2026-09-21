@@ -2,6 +2,7 @@ package net.crystalnexus.multiblock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -46,6 +47,8 @@ public final class StructureNbtValidator {
         public List<BlockPos> positionsFor(Block block) { return templatePositions.getOrDefault(block, List.of()); }
     }
 
+    public record ValidationResult(Optional<Match> match, String message) {}
+
     public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
                                            BlockPos controllerPos, Direction controllerFacing,
                                            Block controllerBlock, Property<Direction> facingProperty,
@@ -58,10 +61,49 @@ public final class StructureNbtValidator {
     public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
                                            BlockPos controllerPos, Direction controllerFacing,
                                            Block controllerBlock, Property<Direction> facingProperty,
+                                           Map<Block, Set<Block>> substitutions, boolean requireSubstitution,
+                                           boolean centerMustBeAir, Map<Block, Integer> maxSubstitutions) {
+        return validate(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, Set.of(), requireSubstitution, centerMustBeAir, maxSubstitutions);
+    }
+
+    public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
+                                           BlockPos controllerPos, Direction controllerFacing,
+                                           Block controllerBlock, Property<Direction> facingProperty,
                                            Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
                                            boolean requireSubstitution, boolean centerMustBeAir) {
+        return validate(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, stateAgnosticBlocks, requireSubstitution, centerMustBeAir, Map.of());
+    }
+
+    public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
+                                           BlockPos controllerPos, Direction controllerFacing,
+                                           Block controllerBlock, Property<Direction> facingProperty,
+                                           Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
+                                           boolean requireSubstitution, boolean centerMustBeAir,
+                                           Map<Block, Integer> maxSubstitutions) {
+        return validate(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, stateAgnosticBlocks, requireSubstitution, centerMustBeAir, maxSubstitutions, false);
+    }
+
+    public static Optional<Match> validate(ServerLevel level, ResourceLocation structureId,
+                                           BlockPos controllerPos, Direction controllerFacing,
+                                           Block controllerBlock, Property<Direction> facingProperty,
+                                           Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
+                                           boolean requireSubstitution, boolean centerMustBeAir,
+                                           Map<Block, Integer> maxSubstitutions, boolean ignoreBlockStates) {
+        return validateDetailed(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, stateAgnosticBlocks, requireSubstitution, centerMustBeAir, maxSubstitutions, ignoreBlockStates).match();
+    }
+
+    public static ValidationResult validateDetailed(ServerLevel level, ResourceLocation structureId,
+                                                    BlockPos controllerPos, Direction controllerFacing,
+                                                    Block controllerBlock, Property<Direction> facingProperty,
+                                                    Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
+                                                    boolean requireSubstitution, boolean centerMustBeAir,
+                                                    Map<Block, Integer> maxSubstitutions, boolean ignoreBlockStates) {
         Optional<StructureTemplate> loaded = level.getStructureManager().get(structureId);
-        if (loaded.isEmpty()) return Optional.empty();
+        if (loaded.isEmpty()) return failure("Template unavailable: " + structureId);
 
         StructureTemplate template = loaded.get();
         ParsedTemplate parsed;
@@ -74,38 +116,59 @@ public final class StructureNbtValidator {
         for (TemplateBlock entry : parsed.blocks) {
             BlockState state = entry.state;
             if (!state.is(controllerBlock)) continue;
-            if (anchor != null || !state.hasProperty(facingProperty)) return Optional.empty();
+            if (anchor != null || !state.hasProperty(facingProperty)) return failure("Template controller is invalid");
             anchor = entry.pos;
             templateFacing = state.getValue(facingProperty);
         }
-        if (anchor == null || templateFacing == null) return Optional.empty();
+        if (anchor == null || templateFacing == null) return failure("Template controller is missing");
 
         Rotation rotation = rotationBetween(templateFacing, controllerFacing);
-        if (rotation == null) return Optional.empty();
+        if (rotation == null) return failure("Controller facing is invalid");
         BlockPos transformedAnchor = StructureTemplate.transform(anchor, Mirror.NONE, rotation, BlockPos.ZERO);
         BlockPos origin = controllerPos.subtract(transformedAnchor);
 
         List<BlockPos> replacements = new ArrayList<>();
         Map<Block, List<BlockPos>> templatePositions = new HashMap<>();
+        Map<Block, Integer> replacementCounts = new HashMap<>();
+        int substitutionSlots = 0;
         for (TemplateBlock entry : parsed.rotated(rotation)) {
             BlockPos worldPos = origin.offset(entry.pos);
             templatePositions.computeIfAbsent(entry.state.getBlock(), ignored -> new ArrayList<>()).add(worldPos.immutable());
             BlockState actual = level.getBlockState(worldPos);
             Set<Block> replacementsForBlock = substitutions.get(entry.state.getBlock());
-            if (replacementsForBlock != null && replacementsForBlock.stream().anyMatch(actual::is)) {
-                replacements.add(worldPos.immutable());
-            } else if (!(stateAgnosticBlocks.contains(entry.state.getBlock()) && actual.is(entry.state.getBlock()))
+            if (replacementsForBlock != null) {
+                substitutionSlots++;
+                if (replacementsForBlock.stream().anyMatch(actual::is)) {
+                    int count = replacementCounts.merge(actual.getBlock(), 1, Integer::sum);
+                    if (count > maxSubstitutions.getOrDefault(actual.getBlock(), Integer.MAX_VALUE))
+                        return failure("Too many " + blockName(actual.getBlock()));
+                    replacements.add(worldPos.immutable());
+                } else if (!((ignoreBlockStates || stateAgnosticBlocks.contains(entry.state.getBlock())) && actual.is(entry.state.getBlock()))
+                    && !actual.equals(entry.state)) {
+                    return mismatch(entry.state.getBlock(), actual.getBlock(), worldPos);
+                }
+            } else if (!((ignoreBlockStates || stateAgnosticBlocks.contains(entry.state.getBlock())) && actual.is(entry.state.getBlock()))
                 && !actual.equals(entry.state)) {
-                return Optional.empty();
+                return mismatch(entry.state.getBlock(), actual.getBlock(), worldPos);
             }
         }
-        if (requireSubstitution && replacements.isEmpty()) return Optional.empty();
+        if (requireSubstitution && replacements.isEmpty()) return failure("No multiblock port installed");
+        if (substitutionSlots > 1 && replacements.size() == substitutionSlots)
+            return failure("Leave one port slot as its template block");
 
         Vec3 center = StructureTemplate.transform(parsed.center, Mirror.NONE, rotation, BlockPos.ZERO)
             .add(origin.getX(), origin.getY(), origin.getZ());
-        if (centerMustBeAir && !level.getBlockState(BlockPos.containing(center)).isAir()) return Optional.empty();
-        return Optional.of(new Match(origin, center, replacements, templatePositions));
+        if (centerMustBeAir && !level.getBlockState(BlockPos.containing(center)).isAir()) return failure("Structure center must be air");
+        return new ValidationResult(Optional.of(new Match(origin, center, replacements, templatePositions)), "Structure complete");
     }
+
+    private static ValidationResult failure(String message) { return new ValidationResult(Optional.empty(), message); }
+
+    private static ValidationResult mismatch(Block expected, Block actual, BlockPos pos) {
+        return failure("Expected " + blockName(expected) + " at " + pos.toShortString() + ", found " + blockName(actual));
+    }
+
+    private static String blockName(Block block) { return BuiltInRegistries.BLOCK.getKey(block).getPath(); }
 
     private static ParsedTemplate parse(StructureTemplate template, ServerLevel level) {
         CompoundTag nbt = template.save(new CompoundTag());

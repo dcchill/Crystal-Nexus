@@ -76,15 +76,12 @@ import net.crystalnexus.block.ReinforcedConcretePanelBlock;
 import net.crystalnexus.block.ReinforcedConcreteBlock;
 import net.crystalnexus.block.RedHeavyIronBlockBlock;
 import net.crystalnexus.block.ReactorWasteOutputBlock;
-import net.crystalnexus.block.ReactorFluidInputBlock;
 import net.crystalnexus.block.ReactorControlRodBlock;
-import net.crystalnexus.block.ReactorEnergyOutputBlock;
 import net.crystalnexus.block.ReactorInternalComponentBlock;
 import net.crystalnexus.block.ReactorCoreBlock;
 import net.crystalnexus.block.ReactorComputerBlock;
 import net.crystalnexus.block.ReactorBlockBlock;
 import net.crystalnexus.block.CarbonModeratorBlock;
-import net.crystalnexus.block.ReactionEnergyInputBlock;
 import net.crystalnexus.block.ReactionChamberCoreBlock;
 import net.crystalnexus.block.ReactionChamberComputerBlock;
 import net.crystalnexus.block.ReactionChamberBlockBlock;
@@ -270,8 +267,6 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> INVERTIUM_BLOCK = REGISTRY.register("invertium_block", InvertiumBlockBlock::new);
 	public static final DeferredBlock<Block> REACTOR_BLOCK = REGISTRY.register("reactor_block", ReactorBlockBlock::new);
 	public static final DeferredBlock<Block> REACTOR_COMPUTER = REGISTRY.register("reactor_computer", ReactorComputerBlock::new);
-	public static final DeferredBlock<Block> REACTOR_ENERGY_OUTPUT = REGISTRY.register("reactor_energy_output", ReactorEnergyOutputBlock::new);
-	public static final DeferredBlock<Block> REACTOR_FLUID_INPUT = REGISTRY.register("reactor_fluid_input", ReactorFluidInputBlock::new);
 	public static final DeferredBlock<Block> REACTOR_CORE = REGISTRY.register("reactor_core", ReactorCoreBlock::new);
 	public static final DeferredBlock<Block> REACTOR_CONTROL_ROD = REGISTRY.register("reactor_control_rod", ReactorControlRodBlock::new);
 	public static final DeferredBlock<Block> REACTOR_NEUTRON_REFLECTOR = REGISTRY.register("reactor_neutron_reflector", () -> new ReactorInternalComponentBlock(Component.literal("Neutron Reflector: Reflects neutrons back into the core to increase efficiency")));
@@ -297,7 +292,6 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTION_CHAMBER_BLOCK = REGISTRY.register("reaction_chamber_block", ReactionChamberBlockBlock::new);
 	public static final DeferredBlock<Block> REACTION_CHAMBER_CORE = REGISTRY.register("reaction_chamber_core", ReactionChamberCoreBlock::new);
 	public static final DeferredBlock<Block> REACTION_CHAMBER_COMPUTER = REGISTRY.register("reaction_chamber_computer", ReactionChamberComputerBlock::new);
-	public static final DeferredBlock<Block> REACTION_ENERGY_INPUT = REGISTRY.register("reaction_energy_input", ReactionEnergyInputBlock::new);
 	public static final DeferredBlock<Block> ULTIMA_SMELTER = REGISTRY.register("ultima_smelter", UltimaSmelterBlock::new);
 	public static final DeferredBlock<Block> ENERGY_EXTRACTOR = REGISTRY.register("energy_extractor", EnergyExtractorBlock::new);
 	public static final DeferredBlock<Block> MATTER_TRANSMUTATION_TABLE = REGISTRY.register("matter_transmutation_table", MatterTransmutationTableBlock::new);
@@ -501,5 +495,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> TUNGSTEN_MACHINE_FRAME = REGISTRY.register("obsidrax_machine_frame", MachineFrameBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CASING = REGISTRY.register("assembly_line_casing", net.crystalnexus.block.AssemblyLineCasingBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CONTROLLER = REGISTRY.register("assembly_line_controller", net.crystalnexus.block.AssemblyLineControllerBlock::new);
+	public static final DeferredBlock<Block> DIESEL_GENERATOR_DRIVESHAFT = REGISTRY.register("diesel_generator_driveshaft", net.crystalnexus.block.GasolineGeneratorDriveshaftBlock::new);
+	public static final DeferredBlock<Block> DIESEL_GENERATOR_CONTROLLER = REGISTRY.register("diesel_generator_controller", net.crystalnexus.block.GasolineGeneratorControllerBlock::new);
 	// End of user code block custom blocks
 }

@@ -147,7 +147,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
         if (level instanceof ServerLevel serverLevel && isAutomatedMode(state)) {
-            serverLevel.scheduleTick(pos, this, 20);
+            serverLevel.scheduleTick(pos, this, automationInterval(state));
         }
     }
 
@@ -157,7 +157,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
         if (level.getBlockEntity(pos) instanceof DepotCableBlockEntity cable) cable.refreshConnections();
         if (level instanceof ServerLevel serverLevel) DepotNetwork.invalidate(serverLevel);
         if (level instanceof ServerLevel serverLevel && isAutomatedMode(state)) {
-            serverLevel.scheduleTick(pos, this, 20);
+            serverLevel.scheduleTick(pos, this, automationInterval(state));
         }
     }
 
@@ -173,7 +173,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
         else if (isExportMode(state)) exportToNeighbors(level, pos);
         else return;
 
-        level.scheduleTick(pos, this, 20);
+        level.scheduleTick(pos, this, automationInterval(state));
     }
 
     public static boolean isImportMode(BlockState state) {
@@ -190,6 +190,10 @@ public class DepotCableBlock extends Block implements EntityBlock {
 
     private static boolean isAutomatedMode(BlockState state) {
         return isImportMode(state) || isExportMode(state);
+    }
+
+    private static int automationInterval(BlockState state) {
+        return isImportMode(state) ? 1 : 20;
     }
 
     private void exportListedToNeighbors(ServerLevel level, BlockPos pos) {

@@ -9,8 +9,8 @@ Main blocks:
 - Reactor Frame
 - Reactor Computer
 - Reactor Core
-- Reactor Energy Output
-- Reactor Fluid Input
+- Machine Energy Output
+- Machine Fluid Input
 - Reactor Waste Output
 - Reactor Control Rod
 - Carbon Moderator
@@ -32,7 +32,7 @@ Internal layout rules:
 
 - Every Reactor Core column needs a Control Rod directly above it; right-click the rod to set its insertion and throttle that column.
 - Carbon Moderators placed between two cores improve fuel efficiency and reduce heat. Neutron Reflectors beside a core increase its output.
-- Coolant Channels must connect to a Reactor Fluid Input. Heat Conductors extend cooling from the core to connected channels up to four blocks away.
+- Coolant Channels must connect to a Machine Fluid Input. Heat Conductors extend cooling from the core to connected channels up to four blocks away.
 
 Important notes:
 
@@ -49,7 +49,7 @@ Main blocks:
 - Reaction Chamber Frame
 - Reaction Chamber Core
 - Reaction Chamber Computer
-- Reaction Chamber Energy Input
+- Machine Energy Input
 
 The Reaction Chamber Computer is the controller for the Reaction Chamber, and is where the EE-Matter is created.
 

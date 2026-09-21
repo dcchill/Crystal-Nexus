@@ -88,13 +88,21 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
     }
 
     private static RecipeMatch findRecipe(ServerLevel level, FluidChemicalReactionChamberBlockEntity chamber) {
+        RecipeMatch best = null;
         for (var holder : level.getRecipeManager().getAllRecipesFor(FluidChemicalReactionRecipe.Type.INSTANCE)) {
             if (holder.id().getPath().startsWith("cryogenic_flash_freezer_")) continue;
 			if (holder.id().getPath().startsWith("ferrosteel_circuit_press_advanced_")) continue;
             RecipeMatch match = match(holder.value(), chamber);
-            if (match != null) return match;
+            if (match != null && (best == null || specificity(match.recipe()) > specificity(best.recipe()))) best = match;
         }
-        return generatedRecipe(level, chamber);
+        return best != null ? best : generatedRecipe(level, chamber);
+    }
+
+    private static int specificity(FluidChemicalReactionRecipe recipe) {
+        return (recipe.fluidInput(0).isPresent() ? 1 : 0)
+            + (recipe.fluidInput(1).isPresent() ? 1 : 0)
+            + (recipe.itemInput(0).isPresent() ? 1 : 0)
+            + (recipe.itemInput(1).isPresent() ? 1 : 0);
     }
 
     private static RecipeMatch generatedRecipe(ServerLevel level, FluidChemicalReactionChamberBlockEntity chamber) {

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:inversion_solution"
+    "crystalnexus:inversion_solution",
+    "crystalnexus:flowing_inversion_solution"
   ]
 }

@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "ccc",
-    "crc",
-    "ccc"
+    "csc",
+    "srs",
+    "csc"
   ],
   "key": {
     "c": {
@@ -12,6 +12,9 @@
     },
     "r": {
       "item": "crystalnexus:reactor_block"
+    },
+    "s": {
+      "item": "crystalnexus:carbon_fiber"
     }
   },
   "result": {

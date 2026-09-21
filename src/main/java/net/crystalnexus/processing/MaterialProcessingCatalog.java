@@ -82,7 +82,7 @@ public final class MaterialProcessingCatalog {
         static Profile defaults(String material) {
             return new Profile(ResourceLocation.fromNamespaceAndPath("c", material),
                 ResourceLocation.fromNamespaceAndPath("crystalnexus", "sulfuric_acid"), false,
-                SLURRY_AMOUNT, 2, 3,
+                100, 2, 3,
                 Optional.empty(), Set.of(), MaterialProcessingNames.requiredMachineTier(material));
         }
     }

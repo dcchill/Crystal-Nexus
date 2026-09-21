@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/diesel_generator_driveshaft_side",
+    "up": "crystalnexus:block/diesel_generator_driveshaft_side",
+    "north": "crystalnexus:block/diesel_generator_driveshaft_front_back",
+    "east": "crystalnexus:block/diesel_generator_driveshaft_side",
+    "south": "crystalnexus:block/diesel_generator_driveshaft_front_back",
+    "west": "crystalnexus:block/diesel_generator_driveshaft_side",
+    "particle": "crystalnexus:block/diesel_generator_driveshaft_side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "down": { "texture": "#down", "rotation": 90 },
+        "up": { "texture": "#up", "rotation": 90 },
+        "north": { "texture": "#north" },
+        "east": { "texture": "#east" },
+        "south": { "texture": "#south" },
+        "west": { "texture": "#west" }
+      }
+    }
+  ]
+}

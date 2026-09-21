@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:sulfuric_acid"
+    "crystalnexus:sulfuric_acid",
+    "crystalnexus:flowing_sulfuric_acid"
   ]
 }

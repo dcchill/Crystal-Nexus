@@ -13,6 +13,9 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Arrays;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 
@@ -57,11 +60,22 @@ public final class CrushingRecipeSupport {
 	}
 
 	public static List<OreCrushingJeiRecipe> jeiRecipes(Level level) {
-		return level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
+		Map<String, OreCrushingJeiRecipe> unique = new LinkedHashMap<>();
+		level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || isExternalCrushing(recipe))
 				.map(recipe -> toJeiRecipe(recipe, level))
 				.filter(recipe -> recipe != null)
-				.toList();
+				.forEach(recipe -> unique.putIfAbsent(signature(recipe), recipe));
+		return List.copyOf(unique.values());
+	}
+
+	private static String signature(OreCrushingJeiRecipe recipe) {
+		String inputs = recipe.getIngredients().stream()
+				.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
+				.map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()) + "#" + stack.getCount())
+				.sorted().toList().toString();
+		ItemStack output = recipe.getResultItem(null);
+		return inputs + "->" + BuiltInRegistries.ITEM.getKey(output.getItem()) + "#" + output.getCount();
 	}
 
 	public static List<OreCrushingJeiRecipe> generatedJeiRecipes(Level level) {

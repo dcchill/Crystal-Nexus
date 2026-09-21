@@ -4,8 +4,9 @@
     "crystalnexus:reactor_block",
     "crystalnexus:reactor_computer",
     "crystalnexus:reactor_waste_output",
-    "crystalnexus:reactor_fluid_input",
-    "crystalnexus:reactor_energy_output",
+    "crystalnexus:machine_fluid_input",
+    "crystalnexus:machine_energy_output",
+    "crystalnexus:multiblock_item_input",
     "crystalnexus:reactor_control_rod",
     "crystalnexus:carbon_glass"
   ]

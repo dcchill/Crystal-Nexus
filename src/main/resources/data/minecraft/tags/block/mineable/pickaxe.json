@@ -41,7 +41,6 @@
     "crystalnexus:brown_heavy_iron_block",
     "crystalnexus:medium_sulfur_crystal",
     "crystalnexus:tarrock_bricks",
-    "crystalnexus:reactor_energy_output",
     "crystalnexus:sulfur_cluster",
     "crystalnexus:purple_heavy_iron_block",
     "crystalnexus:reactor_computer",
@@ -79,7 +78,6 @@
     "crystalnexus:matter_transmutation_table",
     "crystalnexus:crystal_purifier",
     "crystalnexus:chlorophyte_block",
-    "crystalnexus:reaction_energy_input",
     "crystalnexus:smooth_tarrock_slab",
     "crystalnexus:budding_sulfur_crystal",
     "crystalnexus:lime_heavy_iron_block",
@@ -94,7 +92,6 @@
     "crystalnexus:reinforced_concrete_panel",
     "crystalnexus:black_heavy_iron_block",
     "crystalnexus:pink_heavy_iron_block",
-    "crystalnexus:reactor_fluid_input",
     "crystalnexus:fluid_packager",
     "crystalnexus:blue_heavy_iron_block",
     "crystalnexus:crystal_smelter",
@@ -182,6 +179,8 @@
     "crystalnexus:multiblock_item_input",
     "crystalnexus:maw",
     "crystalnexus:assembly_line_casing",
-    "crystalnexus:assembly_line_controller"
+    "crystalnexus:assembly_line_controller",
+    "crystalnexus:diesel_generator_driveshaft",
+    "crystalnexus:diesel_generator_controller"
   ]
 }

@@ -154,7 +154,9 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
             GravitationalArrayControllerBlock.FACING,
             Map.of(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(
                 CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get())),
-            true, true);
+            true, true, Map.of(
+                CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), 1,
+                CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get(), 1));
         List<BlockPos> substitutions = match.map(StructureNbtValidator.Match::substitutionPositions).orElse(List.of());
         List<BlockPos> nextEnergy = substitutions.stream()
             .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())).toList();

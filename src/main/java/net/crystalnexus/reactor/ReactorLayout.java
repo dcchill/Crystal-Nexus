@@ -208,9 +208,9 @@ public final class ReactorLayout {
 				|| block == CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get()
 				|| block == CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL.get()
 				|| block == CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get()
-				|| block == CrystalnexusModBlocks.REACTOR_ENERGY_OUTPUT.get()
+				|| block == CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get()
 				|| block == CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get()
-				|| block == CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get()
+				|| block == CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get()
 				|| block == CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get();
 	}
 
@@ -299,7 +299,7 @@ public final class ReactorLayout {
 		for (Direction direction : ALL) {
 			BlockPos next = pos.relative(direction);
 			if (isShellPosition(next, minBounds, maxBounds)) {
-				if (world.getBlockState(next).getBlock() == CrystalnexusModBlocks.REACTOR_FLUID_INPUT.get()) {
+				if (world.getBlockState(next).getBlock() == CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get()) {
 					return true;
 				}
 			}

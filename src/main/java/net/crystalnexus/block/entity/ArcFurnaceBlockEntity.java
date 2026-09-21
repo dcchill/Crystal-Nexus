@@ -39,6 +39,9 @@ import java.util.stream.IntStream;
 public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
 	private static final int VALIDATION_INTERVAL = 20;
 	private static final int MAX_HEATING_LAYERS = 7;
+	private static final int MAX_ENERGY_INPUTS = 1;
+	private static final int MAX_ITEM_INPUTS = 2;
+	private static final int MAX_ITEM_OUTPUTS = 1;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
 	private final List<BlockPos> energyInputs = new ArrayList<>();
 	private final List<BlockPos> itemInputs = new ArrayList<>();
@@ -238,6 +241,8 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 			else if (state.is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get())) itemInputs.add(pos);
 			else if (state.is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get())) itemOutputs.add(pos);
 			else return false;
+			if (energyInputs.size() > MAX_ENERGY_INPUTS || itemInputs.size() > MAX_ITEM_INPUTS
+				|| itemOutputs.size() > MAX_ITEM_OUTPUTS) return false;
 		}
 		return true;
 	}

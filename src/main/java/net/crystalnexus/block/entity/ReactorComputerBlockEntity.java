@@ -3,6 +3,9 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.reactor.ReactorLayout;
+import net.crystalnexus.reactor.ReactorSimulation;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
+import net.crystalnexus.procedures.CenteredMultiblockValidator;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
 
@@ -32,7 +35,7 @@ import javax.annotation.Nullable;
 
 import java.util.stream.IntStream;
 
-public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 	private ReactorLayout cachedLayout = ReactorLayout.invalid("Offline");
 	private int layoutCheckDelay = 0;
@@ -167,6 +170,30 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	public FluidTank getFluidTank() {
 		return fluidTank;
+	}
+
+	@Override public boolean acceptsMultiblockPort(BlockPos pos) { return CenteredMultiblockValidator.acceptsPort(this, pos); }
+	@Override public FluidTank multiblockFluidInput() { return fluidTank; }
+	@Override public GeneratorEnergyStorage multiblockEnergyOutput() { return energyStorage; }
+
+	public void pullFuelInputs() {
+		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
+		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
+		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
+		for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
+			if (!acceptsMultiblockPort(pos) || !(level.getBlockEntity(pos) instanceof MultiblockItemInputBlockEntity input)) continue;
+			for (int slot = 0; slot < input.getContainerSize(); slot++) {
+				ItemStack offered = input.getItem(slot);
+				ItemStack fuel = getItem(0);
+				if (!ReactorSimulation.isFuel(offered) || !fuel.isEmpty() && !ItemStack.isSameItemSameComponents(fuel, offered)) continue;
+				int amount = Math.min(offered.getCount(), Math.min(getMaxStackSize(), offered.getMaxStackSize()) - fuel.getCount());
+				if (amount <= 0) continue;
+				ItemStack moved = input.removeItem(slot, amount);
+				if (fuel.isEmpty()) setItem(0, moved); else fuel.grow(moved.getCount());
+				input.setChanged();
+				setChanged();
+			}
+		}
 	}
 
 	public ReactorLayout getCachedLayout() {

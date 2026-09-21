@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/insulated_azurine_casing_flat",
+    "up": "crystalnexus:block/insulated_azurine_casing_flat",
+    "north": "crystalnexus:block/diesel_generator_controller_front",
+    "east": "crystalnexus:block/insulated_azurine_casing_flat",
+    "south": "crystalnexus:block/insulated_azurine_casing_flat",
+    "west": "crystalnexus:block/insulated_azurine_casing_flat",
+    "particle": "crystalnexus:block/insulated_azurine_casing_flat"
+  }
+}

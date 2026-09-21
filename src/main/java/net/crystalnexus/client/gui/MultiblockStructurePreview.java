@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
@@ -49,11 +50,13 @@ public class MultiblockStructurePreview {
     private static final int PREVIEW_SIZE = 128;
     private static final int FULL_BRIGHT = 0xF000F0;
     private static final float DEFAULT_YAW = -45.0f;
+    private static final float CONTROLLER_VIEW_OFFSET = -35.0f;
     private static final float DEFAULT_PITCH = 25.0f;
     private static final float PREVIEW_ORIGIN_Y = 80.0f;
     private static final Map<String, StructurePreviewData> CACHE = new HashMap<>();
 
     private final String structureId;
+    private final Block controllerBlock;
     private float yaw = DEFAULT_YAW;
     private float pitch = DEFAULT_PITCH;
     private int visibleLayer = Integer.MAX_VALUE;
@@ -64,9 +67,15 @@ public class MultiblockStructurePreview {
     private double clickStartY;
     private boolean movedSinceClick;
     private PreviewBlock clickedBlock;
+    private boolean defaultViewInitialized;
 
     public MultiblockStructurePreview(String structureId) {
+        this(structureId, null);
+    }
+
+    public MultiblockStructurePreview(String structureId, Block controllerBlock) {
         this.structureId = structureId;
+        this.controllerBlock = controllerBlock;
     }
 
     public List<ItemStack> getRequiredBlocks(RegistryAccess registryAccess) {
@@ -213,7 +222,20 @@ public class MultiblockStructurePreview {
     }
 
     private StructurePreviewData getData(RegistryAccess registryAccess) {
-        return CACHE.computeIfAbsent(this.structureId, id -> load(id, registryAccess.lookupOrThrow(Registries.BLOCK)));
+        StructurePreviewData data = CACHE.computeIfAbsent(this.structureId, id -> load(id, registryAccess.lookupOrThrow(Registries.BLOCK)));
+        if (!defaultViewInitialized && controllerBlock != null) {
+            data.blocks.stream().filter(block -> block.state.is(controllerBlock)
+                    && block.state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)).findFirst()
+                .ifPresent(block -> yaw = CONTROLLER_VIEW_OFFSET + switch (block.state.getValue(BlockStateProperties.HORIZONTAL_FACING)) {
+                    case NORTH -> 180.0F;
+                    case SOUTH -> 0.0F;
+                    case WEST -> 90.0F;
+                    case EAST -> -90.0F;
+                    default -> DEFAULT_YAW;
+                });
+            defaultViewInitialized = true;
+        }
+        return data;
     }
 
     private HoveredBlock getHoveredBlock(StructurePreviewData data, int leftPos, int topPos, double mouseX, double mouseY) {
@@ -349,6 +371,12 @@ public class MultiblockStructurePreview {
     }
 
     private static StructurePreviewData load(String structureId, HolderGetter<Block> blockLookup) {
+		if ("reactor_guide".equals(structureId)) {
+			return reactorGuidePreview();
+		}
+		if ("cryogenic_flash_freezer".equals(structureId)) {
+			return cryogenicFreezerPreview();
+		}
         String path = "data/crystalnexus/structures/" + structureId + ".nbt";
         try (InputStream input = openPreviewStream(path, structureId)) {
             if (input == null) {
@@ -415,6 +443,43 @@ public class MultiblockStructurePreview {
             return StructurePreviewData.error("Load failed");
         }
     }
+
+	private static StructurePreviewData cryogenicFreezerPreview() {
+		List<PreviewBlock> blocks = new ArrayList<>();
+		BlockState casing = CrystalnexusModBlocks.INSULATED_TITANIUM_CASING.get().defaultBlockState();
+		for (int y = 0; y < 3; y++) for (int z = 0; z < 5; z++) for (int x = 0; x < 5; x++) {
+			if (x != 0 && x != 4 && y != 0 && y != 2 && z != 0 && z != 4) continue;
+			BlockState state = casing;
+			if (x == 2 && y == 1 && z == 0) state = CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().defaultBlockState();
+			blocks.add(new PreviewBlock(new BlockPos(x, y, z), state));
+		}
+		blocks.add(new PreviewBlock(new BlockPos(2, 1, 2), CrystalnexusModBlocks.COOLING_COIL.get().defaultBlockState()));
+		return new StructurePreviewData(blocks, 5, 3, 5, 0, 2, 3, 2.5f, 1.5f, 2.5f, null);
+	}
+
+	private static StructurePreviewData reactorGuidePreview() {
+		List<PreviewBlock> blocks = new ArrayList<>();
+		BlockState casing = CrystalnexusModBlocks.REACTOR_BLOCK.get().defaultBlockState();
+		for (int y = 0; y < 5; y++) for (int z = 0; z < 5; z++) for (int x = 0; x < 5; x++) {
+			if (x == 0 || x == 4 || y == 0 || y == 4 || z == 0 || z == 4)
+				blocks.add(new PreviewBlock(new BlockPos(x, y, z), casing));
+		}
+		blocks.removeIf(block -> block.pos.equals(new BlockPos(2, 2, 0)) || block.pos.equals(new BlockPos(1, 2, 0))
+			|| block.pos.equals(new BlockPos(3, 2, 0)) || block.pos.equals(new BlockPos(2, 4, 2)));
+		blocks.add(new PreviewBlock(new BlockPos(2, 2, 0), CrystalnexusModBlocks.REACTOR_COMPUTER.get().defaultBlockState()
+			.setValue(BlockStateProperties.HORIZONTAL_FACING, net.minecraft.core.Direction.NORTH)));
+		blocks.add(new PreviewBlock(new BlockPos(1, 2, 0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get().defaultBlockState()));
+		blocks.add(new PreviewBlock(new BlockPos(3, 2, 0), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get().defaultBlockState()));
+		blocks.add(new PreviewBlock(new BlockPos(2, 4, 2), CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().defaultBlockState()));
+		for (int y = 1; y < 4; y++) {
+			blocks.add(new PreviewBlock(new BlockPos(2, y, 2), CrystalnexusModBlocks.REACTOR_CORE.get().defaultBlockState()));
+			blocks.add(new PreviewBlock(new BlockPos(1, y, 2), CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL.get().defaultBlockState()));
+			blocks.add(new PreviewBlock(new BlockPos(3, y, 2), CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get().defaultBlockState()));
+			blocks.add(new PreviewBlock(new BlockPos(2, y, 1), CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR.get().defaultBlockState()));
+			blocks.add(new PreviewBlock(new BlockPos(2, y, 3), CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get().defaultBlockState()));
+		}
+		return new StructurePreviewData(blocks, 5, 5, 5, 0, 4, 5, 2.5f, 2.5f, 2.5f, null);
+	}
 
     private static InputStream openPreviewStream(String resourcePath, String structureId) throws IOException {
         InputStream resource = MultiblockStructurePreview.class.getClassLoader().getResourceAsStream(resourcePath);

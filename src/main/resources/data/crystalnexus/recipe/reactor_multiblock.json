@@ -2,13 +2,19 @@
   "type": "crystalnexus:reactor_multiblock_guide",
   "ingredients": [
     {
+      "item": "crystalnexus:multiblock_item_input"
+    },
+    {
+      "item": "crystalnexus:reactor_waste_output"
+    },
+    {
       "item": "crystalnexus:reactor_computer"
     },
     {
-      "item": "crystalnexus:reactor_energy_output"
+      "item": "crystalnexus:machine_energy_output"
     },
     {
-      "item": "crystalnexus:reactor_fluid_input"
+      "item": "crystalnexus:machine_fluid_input"
     },
     {
       "item": "crystalnexus:reactor_block"

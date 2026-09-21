@@ -120,9 +120,7 @@ public final class CrystalnexusConfig {
 		public final EnergyValues QUARRY;
 		public final EnergyValues HYPER_LASER_QUARRY;
 		public final EnergyValues REACTION_CHAMBER_COMPUTER;
-		public final EnergyValues REACTION_ENERGY_INPUT;
 		public final EnergyValues REACTOR_COMPUTER;
-		public final EnergyValues REACTOR_ENERGY_OUTPUT;
 		public final EnergyValues SINGULARITY_COMPRESSOR;
 		public final EnergyValues STEAM_ENGINE;
 		public final EnergyValues STEAM_ENGINE_UPGRADE;
@@ -185,9 +183,7 @@ public final class CrystalnexusConfig {
 			QUARRY = new EnergyValues(builder, "quarry", 409600, 20480, 10240);
 			HYPER_LASER_QUARRY = new EnergyValues(builder, "hyper_laser_quarry", 16384000, 1024000, 16384000, 16, 0);
 			REACTION_CHAMBER_COMPUTER = new EnergyValues(builder, "reaction_chamber_computer", EeMatterEconomy.creationCost(4), 512000, EeMatterEconomy.creationCost(4));
-			REACTION_ENERGY_INPUT = new EnergyValues(builder, "reaction_energy_input", 8192000, 4096000, 512000);
 			REACTOR_COMPUTER = new EnergyValues(builder, "reactor_computer", 4096000, 1024000, 1024000);
-			REACTOR_ENERGY_OUTPUT = new EnergyValues(builder, "reactor_energy_output", 10024000, 512000, 10024000);
 			SINGULARITY_COMPRESSOR = new EnergyValues(builder, "singularity_compressor", 1024000, 1024000, 1024000);
 			STEAM_ENGINE = new EnergyValues(builder, "steam_engine", 20480, 1024, 2048);
 			STEAM_ENGINE_UPGRADE = new EnergyValues(builder, "steam_engine_upgrade", 40960, 4096, 8192);

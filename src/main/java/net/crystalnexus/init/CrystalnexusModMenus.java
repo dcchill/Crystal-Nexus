@@ -31,6 +31,7 @@ import net.crystalnexus.world.inventory.ReactorGUIMenu;
 import net.crystalnexus.world.inventory.ControlRodGuiMenu;
 import net.crystalnexus.world.inventory.SolarEngineMenu;
 import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
+import net.crystalnexus.world.inventory.GasolineGeneratorMenu;
 import net.crystalnexus.world.inventory.ReactionGUIMenu;
 import net.crystalnexus.world.inventory.QuarryGUIMenu;
 import net.crystalnexus.world.inventory.HyperLaserQuarryMenu;
@@ -55,7 +56,6 @@ import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
 import net.crystalnexus.world.inventory.PartsAssemblerMenu;
 import net.crystalnexus.world.inventory.InverterGuiMenu;
 import net.crystalnexus.world.inventory.FluidPackagerGUIMenu;
-import net.crystalnexus.world.inventory.FluidInputGuiMenu;
 import net.crystalnexus.world.inventory.FactoryItemControllerGuiMenu;
 import net.crystalnexus.world.inventory.FactoryControllerGuiMenu;
 import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
@@ -117,7 +117,6 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ReactionGUIMenu>> REACTION_GUI = REGISTRY.register("reaction_gui", () -> IMenuTypeExtension.create(ReactionGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<UltimaSmelterGuiMenu>> ULTIMA_SMELTER_GUI = REGISTRY.register("ultima_smelter_gui", () -> IMenuTypeExtension.create(UltimaSmelterGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<EnergyExtractorGUIMenu>> ENERGY_EXTRACTOR_GUI = REGISTRY.register("energy_extractor_gui", () -> IMenuTypeExtension.create(EnergyExtractorGUIMenu::new));
-	public static final DeferredHolder<MenuType<?>, MenuType<FluidInputGuiMenu>> FLUID_INPUT_GUI = REGISTRY.register("fluid_input_gui", () -> IMenuTypeExtension.create(FluidInputGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<MatterTransmutationGUIMenu>> MATTER_TRANSMUTATION_GUI = REGISTRY.register("matter_transmutation_gui", () -> IMenuTypeExtension.create(MatterTransmutationGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<BlockPlacerGuiMenu>> BLOCK_PLACER_GUI = REGISTRY.register("block_placer_gui", () -> IMenuTypeExtension.create(BlockPlacerGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SingularityCompressorGUIMenu>> SINGULARITY_COMPRESSOR_GUI = REGISTRY.register("singularity_compressor_gui", () -> IMenuTypeExtension.create(SingularityCompressorGUIMenu::new));
@@ -168,6 +167,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<SolarSimulatorMenu>> SOLAR_SIMULATOR = REGISTRY.register("solar_simulator", () -> IMenuTypeExtension.create(SolarSimulatorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SolarEngineMenu>> SOLAR_ENGINE = REGISTRY.register("solar_engine", () -> IMenuTypeExtension.create(SolarEngineMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<PlasmaGeneratorMenu>> PLASMA_GENERATOR = REGISTRY.register("plasma_generator", () -> IMenuTypeExtension.create(PlasmaGeneratorMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<GasolineGeneratorMenu>> DIESEL_GENERATOR = REGISTRY.register("diesel_generator", () -> IMenuTypeExtension.create(GasolineGeneratorMenu::new));
 
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();

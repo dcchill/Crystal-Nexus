@@ -1,12 +1,10 @@
 package net.crystalnexus.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.crystalnexus.block.entity.PlasmaGeneratorControllerBlockEntity;
 import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
@@ -16,19 +14,16 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
 
     public PlasmaGeneratorScreen(PlasmaGeneratorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        imageWidth = 176;
+        imageWidth = 250;
         imageHeight = 112;
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff0b0714);
-        graphics.fill(leftPos + 2, topPos + 2, leftPos + imageWidth - 2, topPos + imageHeight - 2, 0xff211436);
-        graphics.fill(leftPos + 8, topPos + 27, leftPos + imageWidth - 8, topPos + imageHeight - 10, 0xff120b20);
+        ControllerGuiStyle.panel(graphics, leftPos, topPos, imageWidth, imageHeight);
         PlasmaGeneratorControllerBlockEntity controller = menu.controller();
         if (controller != null) {
             int x = leftPos + FLUID_X, y = topPos + FLUID_Y;
-            graphics.fill(x - 2, y - 2, x + FLUID_WIDTH + 2, y + FLUID_HEIGHT + 2, 0xff6b3f91);
-            graphics.fill(x, y, x + FLUID_WIDTH, y + FLUID_HEIGHT, 0xff08050d);
+            ControllerGuiStyle.inset(graphics, x - 1, y - 1, FLUID_WIDTH + 2, FLUID_HEIGHT + 2);
             FluidTankRenderer.draw(graphics, controller.getArgonTank().getFluid(),
                 PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY, x, y, FLUID_WIDTH, FLUID_HEIGHT);
         }
@@ -36,14 +31,14 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         PlasmaGeneratorControllerBlockEntity controller = menu.controller();
-        graphics.drawString(font, title, 9, 9, 0xffd8b7ff, false);
+        graphics.drawString(font, title, 9, 9, 0xff404040, false);
         if (controller == null) return;
-        int statusColor = controller.isOperating() ? 0xff8cffd5
-            : controller.isFormed() ? 0xffffc96b : 0xffff6b82;
+        int statusColor = controller.isOperating() ? 0xff216b35
+            : controller.isFormed() ? 0xff805500 : 0xffa02020;
         graphics.drawString(font, Component.literal("Status: " + controller.getStatus()), 56, 37, statusColor, false);
-        graphics.drawString(font, Component.literal("Output: " + controller.getOutputPerTick() + " FE/t"), 56, 55, 0xff80dfff, false);
+        graphics.drawString(font, Component.literal("Output: " + controller.getOutputPerTick() + " FE/t"), 56, 55, 0xff205b78, false);
         graphics.drawString(font, Component.literal("Argon: " + controller.getArgonTank().getFluidAmount()
-            + " / " + PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY + " mB"), 56, 73, 0xffd89cff, false);
+            + " / " + PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY + " mB"), 56, 73, 0xff713c8e, false);
     }
 
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

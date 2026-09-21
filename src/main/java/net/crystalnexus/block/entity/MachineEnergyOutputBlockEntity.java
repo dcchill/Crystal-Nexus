@@ -50,8 +50,9 @@ public final class MachineEnergyOutputBlockEntity extends BlockEntity {
 			IEnergyStorage target = level.getCapability(Capabilities.EnergyStorage.BLOCK,
 				worldPosition.relative(direction), direction.getOpposite());
 			if (target == null || !target.canReceive()) continue;
-			int moved = target.receiveEnergy(Math.min(MAX_TRANSFER, energy.getEnergyStored()), false);
-			if (moved > 0) energy.extractEnergy(moved, false);
+			int offered = energy.extractEnergy(MAX_TRANSFER, true);
+			int accepted = target.receiveEnergy(offered, true);
+			if (accepted > 0) target.receiveEnergy(energy.extractEnergy(accepted, false), false);
 			if (energy.getEnergyStored() == 0) break;
 		}
 	}

@@ -1,8 +1,0 @@
-{
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "crystalnexus:block/reactionchamberenergyin",
-    "particle": "crystalnexus:block/reactionchamberenergyin"
-  },
-  "render_type": "solid"
-}

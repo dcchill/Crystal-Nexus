@@ -2,6 +2,8 @@ package net.crystalnexus.block.entity;
 
 
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.multiblock.MultiblockPortTarget;
+import net.crystalnexus.procedures.CenteredMultiblockValidator;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +31,7 @@ import javax.annotation.Nullable;
 
 import java.util.stream.IntStream;
 
-public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
 
 	public ReactionChamberComputerBlockEntity(BlockPos position, BlockState state) {
@@ -161,4 +163,7 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+
+	@Override public boolean acceptsMultiblockPort(BlockPos pos) { return CenteredMultiblockValidator.acceptsPort(this, pos); }
+	@Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
 }

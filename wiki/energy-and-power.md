@@ -82,6 +82,10 @@ How to use it:
 2. Feed it the required generator input.
 3. Buffer the output in batteries before sending it to larger machine lines.
 
+### Gasoline Generator
+
+Build a 3x3 Insulated Azurine Casing tube from `diesel_generator.nbt`: controller at one center end, then extend its centerline to 3-16 Gasoline Generator Driveshafts and cap the opposite end with casing. The all-casing structure is valid; optionally replace up to four casing blocks with Machine Fluid Inputs and up to two with Machine Energy Outputs. Output and fuel use scale linearly per driveshaft; Overfuel generates four times the FE at the same fuel rate.
+
 ### Steam Engine
 
 The Steam Engine consumes Steam from its fluid tank and generates FE internally while its progress runs.
@@ -149,8 +153,8 @@ The reactor system uses a multiblock-like set of blocks:
 - Reactor Frame
 - Reactor Computer
 - Reactor Core
-- Reactor Energy Output
-- Reactor Fluid Input
+- Machine Energy Output
+- Machine Fluid Input
 - Reactor Waste Output
 - Reactor Control Rod
 - Carbon Moderator
