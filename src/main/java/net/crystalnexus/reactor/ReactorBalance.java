@@ -3,7 +3,7 @@ package net.crystalnexus.reactor;
 public final class ReactorBalance {
 	public static final int LAYOUT_RECHECK_TICKS = 20; // how often the game rechecks the reactor multiblock shape
 	public static final int COOLANT_PER_CHANNEL_MB_T = 25; // how much coolant each channel can pump per tick
-	public static final double HEAT_PER_MB_COOLANT = 20.0; // how much heat each bucket of coolant absorbs
+	public static final double HEAT_PER_MB_COOLANT = 15.0; // how much heat each bucket of coolant absorbs
 	public static final double AMBIENT_TEMPERATURE = 20.0; // default temp when reactor is off
 	public static final double TARGET_TEMPERATURE = 700.0; // the ideal temp to run the reactor at
 	public static final double PASSIVE_HEAT_LOSS_PER_DEGREE = 0.0005; // how fast heat bleeds out naturally
@@ -11,7 +11,7 @@ public final class ReactorBalance {
 	public static final double IDLE_COOLING_PER_DEGREE = 0.005; // how fast the reactor cools down when its not doing anything
 	public static final double MIN_OPERATING_FACTOR = 0.20; // lowest % power output when theres not enough coolant
 	public static final int BASE_FE_PER_ROD_T = 22500; // base energy per rod per tick, before anything else modifies it
-	public static final double BASE_HEAT_PER_ROD_T = 4.0; // base heat per rod per tick
+	public static final double BASE_HEAT_PER_ROD_T = 3.0; // base heat per rod per tick *------------------------*
 	public static final double DIRECT_FUEL_OUTPUT = 0.35; // energy multiplier for fuel thats not moderated
 	public static final double DIRECT_FUEL_HEAT = 0.5; // heat multiplier for unmoderated fuel
 	public static final double MODERATED_FUEL_OUTPUT = 0.45; // energy output when fuel is properly moderated
