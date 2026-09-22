@@ -1,6 +1,7 @@
 {
   "type": "crystalnexus:fluid_chemical_reaction",
-  "fluid_input_1": { "fluid": "minecraft:water", "amount": 25 },
+  "fluid_input_1": { "fluid": "minecraft:water", "amount": 250 },
   "item_input_2": { "item": "crystalnexus:sulfur_dust"},
-  "output": { "fluid": "crystalnexus:sulfuric_acid", "amount": 25 }
+    "item_input_2_count": 8,
+  "output": { "fluid": "crystalnexus:sulfuric_acid", "amount": 250 }
 }
