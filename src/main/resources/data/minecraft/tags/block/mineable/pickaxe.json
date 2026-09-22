@@ -181,6 +181,7 @@
     "crystalnexus:assembly_line_casing",
     "crystalnexus:assembly_line_controller",
     "crystalnexus:diesel_generator_driveshaft",
-    "crystalnexus:diesel_generator_controller"
+    "crystalnexus:diesel_generator_controller",
+    "crystalnexus:comet_forge_controller"
   ]
 }

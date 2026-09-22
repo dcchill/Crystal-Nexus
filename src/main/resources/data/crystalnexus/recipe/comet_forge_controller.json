@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:meteorite_alloy_block"
+    },
+    "b": {
+      "item": "crystalnexus:silicon_wafer"
+    },
+    "c": {
+      "item": "crystalnexus:dark_matter"
+    },
+    "d": {
+      "item": "crystalnexus:hyper_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:comet_forge_controller",
+    "count": 1
+  }
+}

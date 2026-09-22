@@ -1,5 +1,6 @@
 {
   "block.crystalnexus.assembly_line_casing": "Assembly Line Casing",
+  "block.crystalnexus.comet_forge_controller": "Comet Forge Controller",
   "block.crystalnexus.assembly_line_controller": "Assembly Line Controller",
   "block.crystalnexus.diesel_generator_driveshaft": "Gasoline Generator Driveshaft",
   "block.crystalnexus.diesel_generator_controller": "Gasoline Generator Controller",
@@ -825,5 +826,10 @@
   "fluid.crystalnexus.blood": "Blood",
   "fluid_type.crystalnexus.blood": "Blood",
   "block.crystalnexus.blood": "Blood",
-  "item.crystalnexus.blood_bucket": "Blood Bucket"
+  "item.crystalnexus.blood_bucket": "Blood Bucket",
+  "item.crystalnexus.resource_comet": "Resource Comet",
+  "item.crystalnexus.resource_comet.named": "%s Resource Comet",
+  "tooltip.crystalnexus.resource_comet": "Reusable Solar Simulator catalyst. Generates %s with a star; requires item output mode.",
+  "tooltip.crystalnexus.resource_comet.invalid": "Invalid or missing resource.",
+  "message.crystalnexus.comet_forge_incomplete": "Comet Forge requires its structure, an Energy Input and a Fluid Input replacing meteorite alloy casing."
 }

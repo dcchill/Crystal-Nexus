@@ -48,6 +48,7 @@ import net.crystalnexus.block.entity.PipeJunctionBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorTubeBlockEntity;
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
+import net.crystalnexus.block.entity.CometForgeControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
 import net.crystalnexus.block.entity.PlasmaGeneratorControllerBlockEntity;
@@ -249,6 +250,8 @@ public class CrystalnexusModBlockEntities {
 	// Start of user code block custom block entities
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> GRAVITATIONAL_ARRAY_CONTROLLER = register("gravitational_array_controller", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER,
 			GravitationalArrayControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> COMET_FORGE_CONTROLLER = register("comet_forge_controller", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER,
+			CometForgeControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SOLAR_SIMULATOR_CONTROLLER = register("solar_simulator_controller", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER,
 			SolarSimulatorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SOLAR_ENGINE_CONTROLLER = register("solar_engine_controller", CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER,
@@ -454,6 +457,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLUEPRINT_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BLACK_HOLE_TNT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, GRAVITATIONAL_ARRAY_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, COMET_FORGE_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SOLAR_SIMULATOR_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SOLAR_ENGINE_CONTROLLER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_ITEM_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

@@ -148,7 +148,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
         // Older worlds may have saved the former false-complete value.
         progress = Math.min(progress, DURATION - 1);
-        List<ItemStack> results = progress == DURATION - 1 && fluidOutputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
+        List<ItemStack> results = progress == DURATION - 1 && !outputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
         List<FluidStack> fluidResults = progress == DURATION - 1 && !fluidOutputs.isEmpty() ? createFluidResults(multiplier) : List.of();
         if (progress == DURATION - 1 && (results.isEmpty() && fluidResults.isEmpty() || !canFit(results, fluidResults))) { markRenderInactive(); return; }
 
@@ -231,6 +231,11 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
                 results.add(new ItemStack(item, multiplier));
                 continue;
             }
+            ItemStack cometMaterial = net.crystalnexus.item.ResourceCometItem.material(stacks.get(slot));
+            if (!cometMaterial.isEmpty()) {
+                results.add(cometMaterial.copyWithCount(multiplier));
+                continue;
+            }
             List<TagKey<Item>> pool = planetPool(stacks.get(slot));
             List<Item> available = pool.stream().map(this::firstItem).flatMap(Optional::stream).toList();
             if (!available.isEmpty()) results.add(new ItemStack(available.get(level.random.nextInt(available.size())), multiplier));
@@ -262,10 +267,8 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     private boolean canFit(List<ItemStack> results, List<FluidStack> fluidResults) {
-        if (!fluidResults.isEmpty()) {
-            return mergeFluidResults(fluidResults).stream()
-                .allMatch(result -> fluidOutput.fill(result, IFluidHandler.FluidAction.SIMULATE) == result.getAmount());
-        }
+        if (!fluidResults.isEmpty() && !mergeFluidResults(fluidResults).stream()
+            .allMatch(result -> fluidOutput.fill(result, IFluidHandler.FluidAction.SIMULATE) == result.getAmount())) return false;
         List<ItemStack> snapshot = new ArrayList<>();
         for (BlockPos pos : outputs) if (level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity output)
             for (int slot = 0; slot < output.getContainerSize(); slot++) snapshot.add(output.getItem(slot).copy());
@@ -274,11 +277,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     private void insert(List<ItemStack> results, List<FluidStack> fluidResults) {
-        if (!fluidResults.isEmpty()) {
+        if (!fluidResults.isEmpty())
             for (FluidStack result : mergeFluidResults(fluidResults))
                 fluidOutput.fill(result, IFluidHandler.FluidAction.EXECUTE);
-            return;
-        }
         for (ItemStack result : results) {
             ItemStack remaining = result.copy();
             for (BlockPos pos : outputs) {
@@ -346,7 +347,8 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         if (renderActive && ++inactiveRenderTicks >= 20) { renderActive = false; inactiveRenderTicks = 0; sync(); }
     }
 
-    private int planetCount() { return (int) IntStream.range(0, STAR_SLOT).filter(slot -> !planetPool(stacks.get(slot)).isEmpty()).count(); }
+    private int planetCount() { return (int) IntStream.range(0, STAR_SLOT).filter(slot -> !planetPool(stacks.get(slot)).isEmpty()
+        || !outputs.isEmpty() && !net.crystalnexus.item.ResourceCometItem.material(stacks.get(slot)).isEmpty()).count(); }
     private static List<TagKey<Item>> planetPool(ItemStack stack) {
         if (stack.is(CrystalnexusModItems.METEOR.get())) return METEOR;
         if (stack.is(CrystalnexusModItems.TERRA.get())) return TERRA;
@@ -372,7 +374,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     @Override public Component getDefaultName() { return Component.translatable("block.crystalnexus.solar_simulator_controller"); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == STAR_SLOT ? starMultiplier(stack) > 0 : !planetPool(stack).isEmpty(); }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == STAR_SLOT ? starMultiplier(stack) > 0 : !planetPool(stack).isEmpty() || !net.crystalnexus.item.ResourceCometItem.material(stack).isEmpty(); }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return true; }

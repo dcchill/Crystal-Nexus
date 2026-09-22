@@ -171,6 +171,22 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	@Override public boolean acceptsMultiblockPort(BlockPos pos) { return CenteredMultiblockValidator.acceptsPort(this, pos); }
 	@Override public FluidTank multiblockFluidInput() { return fluidTank; }
 	@Override public GeneratorEnergyStorage multiblockEnergyOutput() { return energyStorage; }
+	public int masterControlRodInsertion() {
+		if (level == null || cachedLayout.fuelRods().isEmpty()) return 0;
+		int total = 0, count = 0;
+		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods())
+			if (level.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control) {
+				total += control.getInsertion();
+				count++;
+			}
+		return count == 0 ? 0 : Math.round(total / (float) count);
+	}
+	public void setAllControlRodInsertion(int insertion) {
+		if (level == null) return;
+		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods())
+			if (level.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control)
+				control.setInsertion(insertion);
+	}
 	public void pushEnergyOutputs() {
 		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
 		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));

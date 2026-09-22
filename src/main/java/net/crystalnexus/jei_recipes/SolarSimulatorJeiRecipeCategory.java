@@ -40,10 +40,10 @@ public final class SolarSimulatorJeiRecipeCategory implements IRecipeCategory<So
     @Override public void draw(SolarSimulatorJeiRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics,
                                double mouseX, double mouseY) {
         background.draw(graphics);
-        graphics.drawString(Minecraft.getInstance().font, "Star catalyst • 3 s • 200,000 FE × star", 4, 80, 0xffe8dcff, false);
+        graphics.drawString(Minecraft.getInstance().font, "Star: " + (net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity.DURATION / 20.0) + " s / 200,000 FE x star", 4, 80, 0xffe8dcff, false);
         if (recipe.fluidOutput().isPresent())
             graphics.drawString(Minecraft.getInstance().font, "Fluid output requires a fluid port", 4, 4, 0xffe8dcff, false);
-        else graphics.drawString(Minecraft.getInstance().font, "One random material per planet", 4, 4, 0xffe8dcff, false);
+        else graphics.drawString(Minecraft.getInstance().font, net.crystalnexus.item.ResourceCometItem.material(recipe.planet()).isEmpty() ? "One random material per planet" : "Exact material; reusable comet", 4, 4, 0xffe8dcff, false);
     }
 
     @Override public void setRecipe(IRecipeLayoutBuilder builder, SolarSimulatorJeiRecipe recipe, IFocusGroup focuses) {

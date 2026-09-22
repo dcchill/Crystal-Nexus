@@ -40,6 +40,7 @@
     "crystalnexus:obsidrax_block",
     "crystalnexus:obsidrax_machine_frame",
     "crystalnexus:solar_engine_controller",
-    "crystalnexus:machine_energy_output"
+    "crystalnexus:machine_energy_output",
+    "crystalnexus:comet_forge_controller"
   ]
 }

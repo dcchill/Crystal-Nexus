@@ -24,11 +24,11 @@ public final class SolarSimulatorMenu extends AbstractContainerMenu {
         this.controller = controller;
         access = ContainerLevelAccess.create(inventory.player.level(), controller == null ? BlockPos.ZERO : controller.getBlockPos());
         Container container = controller == null ? new SimpleContainer(5) : controller;
-        addSlot(new Slot(container, 0, 53, 37));
-        addSlot(new Slot(container, 1, 107, 37));
-        addSlot(new Slot(container, 2, 80, 11));
-        addSlot(new Slot(container, 3, 80, 63));
-        addSlot(new Slot(container, 4, 80, 37));
+        addSlot(new Slot(container, 0, 53, 37) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(0, stack); } });
+        addSlot(new Slot(container, 1, 107, 37) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(1, stack); } });
+        addSlot(new Slot(container, 2, 80, 11) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(2, stack); } });
+        addSlot(new Slot(container, 3, 80, 63) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(3, stack); } });
+        addSlot(new Slot(container, 4, 80, 37) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(4, stack); } });
         for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 99 + row * 18));
         for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 157));
     }

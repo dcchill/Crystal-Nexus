@@ -50,10 +50,11 @@ public class ClientEventHandler {
 	private static final ModelResourceLocation LASER_SABER_GLOW = ModelResourceLocation.standalone(
 			ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, "item/laser_saber_glow"));
 	private static final List<String> ROTATING_MODELS = List.of(
-			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "dead_star", "terra", "caelus", "boreas", "meteor");
+			"yellow_dwarf_star", "orange_star", "blue_star", "pink_star", "dead_star", "terra", "caelus", "boreas", "meteor", "resource_comet");
 
 	@SubscribeEvent
 	public static void animateModels(ModelEvent.ModifyBakingResult event) {
+		ResourceCometColors.clear();
 		for (String name : ROTATING_MODELS) {
 			ModelResourceLocation location = new ModelResourceLocation(
 					ResourceLocation.fromNamespaceAndPath(CrystalnexusMod.MODID, name), "inventory");

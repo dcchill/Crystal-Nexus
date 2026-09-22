@@ -276,6 +276,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> METEORITE_ALLOY = REGISTRY.register("meteorite_alloy", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> HOT_METEORITE_ALLOY = REGISTRY.register("hot_meteorite_alloy", () -> new HotIngotItem());
 	public static final DeferredItem<Item> METEORITE_ALLOY_BLOCK = block(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK);
+	public static final DeferredItem<Item> RESOURCE_COMET = REGISTRY.register("resource_comet", net.crystalnexus.item.ResourceCometItem::new);
+	public static final DeferredItem<Item> COMET_FORGE_CONTROLLER = block(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER);
 	public static final DeferredItem<Item> METEORITE_SHEET = REGISTRY.register("meteorite_sheet", MeteoriteSheetItem::new);
 	public static final DeferredItem<Item> OBSIDIAN_DUST = REGISTRY.register("obsidian_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> LAPIS_DUST = REGISTRY.register("lapis_dust", () -> new Item(new Item.Properties()));
@@ -693,6 +695,7 @@ public class CrystalnexusModItems {
 
 		@SubscribeEvent
 		public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
+			event.register(net.crystalnexus.client.ResourceCometColors::tint, RESOURCE_COMET.get());
 			event.register((stack, tintIndex) -> tintIndex == 0
 					? LaserSaberItem.bladeColor(stack) : 0xFFFFFFFF, LASER_SABER.get());
 		}

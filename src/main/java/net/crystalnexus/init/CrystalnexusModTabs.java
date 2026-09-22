@@ -164,6 +164,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.METEORITE_SCRAP.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_ALLOY.get());
 				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.HOT_METEORITE_ALLOY.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.OBSIDIAN_DUST.get());

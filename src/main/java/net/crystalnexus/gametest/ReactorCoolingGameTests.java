@@ -412,6 +412,19 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
+	public static void masterRodControlSetsEveryColumn(GameTestHelper helper) {
+		ReactorLayout layout = layout(helper, 0, 1, "FCF");
+		helper.setBlock(new BlockPos(15, 1, 15), CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		ReactorComputerBlockEntity computer = helper.getBlockEntity(new BlockPos(15, 1, 15));
+		computer.updateLayoutCache(layout);
+		computer.setAllControlRodInsertion(65);
+		helper.assertTrue(layout.fuelRods().stream().allMatch(rod -> ((ReactorControlRodBlockEntity) helper.getLevel()
+				.getBlockEntity(rod.controlRodPos())).getInsertion() == 65),
+				"Master rod control must set every reactor control rod");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
 	public static void multiRodEfficiencyIsAnAverage(GameTestHelper helper) {
 		ReactorLayout layout = layout(helper, 0, 1, "FCF");
 

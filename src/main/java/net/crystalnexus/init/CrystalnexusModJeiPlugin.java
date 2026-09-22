@@ -1,5 +1,8 @@
 package net.crystalnexus.init;
 
+import net.crystalnexus.item.ResourceCometItem;
+import net.crystalnexus.jei_recipes.CometForgeJeiRecipe;
+import net.crystalnexus.jei_recipes.CometForgeJeiRecipeCategory;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.Items;
@@ -91,6 +94,24 @@ import java.util.List;
 
 @JeiPlugin
 public class CrystalnexusModJeiPlugin implements IModPlugin {
+    public static final mezz.jei.api.recipe.RecipeType<CometForgeJeiRecipe> CometForge_Type =
+        new mezz.jei.api.recipe.RecipeType<>(CometForgeJeiRecipeCategory.UID, CometForgeJeiRecipe.class);
+
+    @Override public void registerExtraIngredients(mezz.jei.api.registration.IExtraIngredientRegistration registration) {
+        registration.addExtraItemStacks(ResourceCometItem.materials().stream().map(ResourceCometItem::create).toList());
+    }
+    @Override public void registerItemSubtypes(mezz.jei.api.registration.ISubtypeRegistration registration) {
+        registration.registerSubtypeInterpreter(CrystalnexusModItems.RESOURCE_COMET.get(),
+            new mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter<ItemStack>() {
+                @Override public Object getSubtypeData(ItemStack stack, mezz.jei.api.ingredients.subtypes.UidContext context) {
+                    return stack.get(CrystalnexusModDataComponents.MATERIAL.get());
+                }
+                @Override public String getLegacyStringSubtypeInfo(ItemStack stack, mezz.jei.api.ingredients.subtypes.UidContext context) {
+                    return Objects.toString(getSubtypeData(stack, context), "");
+                }
+            });
+    }
+
 	public static mezz.jei.api.recipe.RecipeType<PurificationRecipe> Purification_Type = new mezz.jei.api.recipe.RecipeType<>(PurificationRecipeCategory.UID, PurificationRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<ExtractinatorJEIRecipe> ExtractinatorJEI_Type = new mezz.jei.api.recipe.RecipeType<>(ExtractinatorJEIRecipeCategory.UID, ExtractinatorJEIRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<BeamReactionRecipeRecipe> BeamReactionRecipe_Type = new mezz.jei.api.recipe.RecipeType<>(BeamReactionRecipeRecipeCategory.UID, BeamReactionRecipeRecipe.class);
@@ -154,6 +175,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new PistonGeneratorJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new AcceleratorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CometForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SolarSimulatorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
@@ -214,6 +236,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
 		registration.addRecipes(GravitationalArray_Type, recipes(recipeManager, GravitationalArrayRecipe.class));
 		registration.addRecipes(SolarSimulator_Type, solarSimulatorRecipes());
+        var materials = ResourceCometItem.materials();
+        registration.addRecipes(CometForge_Type, materials.stream().map(material ->
+            new CometForgeJeiRecipe(material.copyWithCount(material.getMaxStackSize()), ResourceCometItem.create(material))).toList());
+        registration.addRecipes(SolarSimulator_Type, materials.stream().map(material ->
+            new SolarSimulatorJeiRecipe(ResourceCometItem.create(material), List.of(material), java.util.Optional.empty())).toList());
+        registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()),
+            net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and a full normal stack of an unmodified item tagged crystalnexus:comet_material (raw materials and ingots by default) into the controller."));
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
@@ -264,6 +293,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				multiblockStructure("gravitational_array_new", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("comet_forge", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("ultima_smelter", CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("plasma_gen", CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
@@ -280,6 +310,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), CometForge_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem()), RecipeTypes.SMELTING);

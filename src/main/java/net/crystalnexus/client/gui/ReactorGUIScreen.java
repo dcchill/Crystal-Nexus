@@ -10,16 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> {
+	private static final int MASTER_SLIDER_X = 211, MASTER_SLIDER_Y = 31, MASTER_SLIDER_HEIGHT = 96;
     private static final ResourceLocation BACKGROUND = ResourceLocation.parse("crystalnexus:textures/screens/reactor_gui_54.png");
     private static final ResourceLocation NAME_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png");
     private static final ResourceLocation UPGRADE_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/reactorupgradeslot.png");
     private static final ResourceLocation WASTE_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/waste_slot.png");
     private Button previous;
     private Button next;
+	private boolean draggingMasterSlider;
+    private int selectedMasterInsertion;
 
     public ReactorGUIScreen(ReactorGUIMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title);
-        imageWidth = 206;
+        imageWidth = 226;
         imageHeight = 222;
     }
 
@@ -31,6 +34,7 @@ public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMe
         next = addRenderableWidget(Button.builder(Component.literal(">"), button -> changePage(menu.page() + 1))
             .bounds(leftPos + 150, topPos + 7, 18, 18).build());
         updateButtons();
+		selectedMasterInsertion = menu.masterInsertion();
     }
 
     private void changePage(int page) {
@@ -38,6 +42,7 @@ public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMe
         menu.setClientPage(page);
         minecraft.gameMode.handleInventoryButtonClick(menu.containerId, page);
         updateButtons();
+		if (!draggingMasterSlider) selectedMasterInsertion = menu.masterInsertion();
     }
 
     private void updateButtons() {
@@ -67,6 +72,13 @@ public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMe
             FluidTankRenderer.draw(graphics, controller.getFluidTank().getFluid(), 16000,
                 leftPos + 182, topPos + 81, 14, 48);
         }
+		int sliderX = leftPos + MASTER_SLIDER_X;
+		int sliderY = topPos + MASTER_SLIDER_Y;
+		graphics.fill(sliderX - 4, sliderY - 4, sliderX + 9, sliderY + MASTER_SLIDER_HEIGHT + 4, 0xff252a35);
+		graphics.fill(sliderX, sliderY, sliderX + 2, sliderY + MASTER_SLIDER_HEIGHT, 0xffaeb4c2);
+		int knobY = sliderY + selectedMasterInsertion * MASTER_SLIDER_HEIGHT / 100;
+		graphics.fill(sliderX - 5, knobY - 3, sliderX + 7, knobY + 4, 0xffdca8ff);
+		graphics.renderOutline(sliderX - 5, knobY - 3, 12, 7, 0xffffffff);
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -87,12 +99,49 @@ public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMe
         int first = menu.page() * 9 + 1;
         int last = Math.min(menu.rodCount(), first + 8);
         graphics.drawString(font, Component.literal("Fuel rods " + first + "-" + last + " / " + menu.rodCount()), 8, 127, 0xff404040, false);
+		graphics.drawString(font, Component.literal("All rods"), MASTER_SLIDER_X - 8, 132, 0xff404040, false);
+		graphics.drawString(font, Component.literal(selectedMasterInsertion + "%"), MASTER_SLIDER_X - 3, 142, 0xff404040, false);
     }
 
     @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }
+
+	@Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (button == 0 && masterSliderContains(mouseX, mouseY)) {
+			draggingMasterSlider = true;
+			updateMasterSlider(mouseY);
+			return true;
+		}
+		return super.mouseClicked(mouseX, mouseY, button);
+	}
+
+	@Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+		if (draggingMasterSlider && button == 0) {
+			updateMasterSlider(mouseY);
+			return true;
+		}
+		return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+	}
+
+	@Override public boolean mouseReleased(double mouseX, double mouseY, int button) {
+		draggingMasterSlider = false;
+		return super.mouseReleased(mouseX, mouseY, button);
+	}
+
+	private boolean masterSliderContains(double mouseX, double mouseY) {
+		return mouseX >= leftPos + MASTER_SLIDER_X - 8 && mouseX <= leftPos + MASTER_SLIDER_X + 10
+			&& mouseY >= topPos + MASTER_SLIDER_Y - 6 && mouseY <= topPos + MASTER_SLIDER_Y + MASTER_SLIDER_HEIGHT + 6;
+	}
+
+	private void updateMasterSlider(double mouseY) {
+		int insertion = Math.max(0, Math.min(100, (int) Math.round((mouseY - topPos - MASTER_SLIDER_Y) * 100 / MASTER_SLIDER_HEIGHT)));
+		if (insertion == selectedMasterInsertion || minecraft == null || minecraft.gameMode == null) return;
+		selectedMasterInsertion = insertion;
+		menu.setClientMasterInsertion(insertion);
+		minecraft.gameMode.handleInventoryButtonClick(menu.containerId, ReactorGUIMenu.MASTER_INSERTION_BUTTON + insertion);
+	}
 
     private static String compact(double value) {
         if (value >= 1_000_000) return String.format(java.util.Locale.ROOT, "%.1fM", value / 1_000_000);

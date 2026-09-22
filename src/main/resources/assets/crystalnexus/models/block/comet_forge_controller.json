@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/meteorite_alloy_block",
+    "up": "crystalnexus:block/meteorite_alloy_block",
+    "north": "crystalnexus:block/comet_forge_controller",
+    "east": "crystalnexus:block/meteorite_alloy_block",
+    "south": "crystalnexus:block/meteorite_alloy_block",
+    "west": "crystalnexus:block/meteorite_alloy_block",
+    "particle": "crystalnexus:block/meteorite_alloy_block"
+  }
+}

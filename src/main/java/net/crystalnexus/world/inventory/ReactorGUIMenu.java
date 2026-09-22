@@ -23,11 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ReactorGUIMenu extends AbstractContainerMenu {
+	public static final int MASTER_INSERTION_BUTTON = 10_000;
     private final Level level;
     private final ReactorComputerBlockEntity controller;
     private final ContainerLevelAccess access;
     private final List<BlockPos> rods;
     private int page;
+	private int masterInsertion;
 
     public ReactorGUIMenu(int id, Inventory inventory, FriendlyByteBuf data) {
         super(CrystalnexusModMenus.REACTOR_GUI.get(), id);
@@ -47,6 +49,10 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
             @Override public int get() { return page; }
             @Override public void set(int value) { page = value; }
         });
+		addDataSlot(new DataSlot() {
+			@Override public int get() { return controller == null ? masterInsertion : controller.masterControlRodInsertion(); }
+			@Override public void set(int value) { masterInsertion = net.minecraft.util.Mth.clamp(value, 0, 100); }
+		});
         Container safe = controller == null ? new SimpleContainer(3) : controller;
         addSlot(new Slot(safe, 1, 180, 8) {
             @Override public boolean mayPlace(ItemStack stack) {
@@ -82,6 +88,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
     public int page() { return page; }
     public int pageCount() { return Math.max(1, (rods.size() + 8) / 9); }
     public int rodCount() { return rods.size(); }
+	public int masterInsertion() { return masterInsertion; }
     public BlockPos rodPosition(int row) { int index = page * 9 + row; return index < rods.size() ? rods.get(index) : null; }
     private ReactorCoreBlockEntity coreAt(int row) {
         BlockPos pos = rodPosition(row);
@@ -89,6 +96,13 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
     }
 
     @Override public boolean clickMenuButton(Player player, int button) {
+		if (button >= MASTER_INSERTION_BUTTON && button <= MASTER_INSERTION_BUTTON + 100) {
+			if (!stillValid(player) || controller == null) return false;
+			masterInsertion = button - MASTER_INSERTION_BUTTON;
+			controller.setAllControlRodInsertion(masterInsertion);
+			broadcastChanges();
+			return true;
+		}
         if (!stillValid(player) || button < 0 || button >= pageCount()) return false;
         page = button;
         broadcastFullState();
@@ -96,6 +110,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
     }
 
     public void setClientPage(int page) { if (page >= 0 && page < pageCount()) this.page = page; }
+	public void setClientMasterInsertion(int insertion) { masterInsertion = net.minecraft.util.Mth.clamp(insertion, 0, 100); }
 
 	@Override public boolean stillValid(Player player) {
 		return controller != null && (level.isClientSide || controller.getPersistentData().getBoolean("canOpenInventory")

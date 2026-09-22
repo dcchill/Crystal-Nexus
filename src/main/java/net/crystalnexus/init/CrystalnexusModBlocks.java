@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.network.chat.Component;
 
 import net.crystalnexus.block.ZeroPointBlock;
+import net.crystalnexus.block.CometForgeControllerBlock;
 import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.ArgonBlock;
 import net.crystalnexus.block.BloodBlock;
@@ -492,6 +493,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> METEORITE_ALLOY_BLOCK = REGISTRY.register("meteorite_alloy_block",
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()
 					.lightLevel(state -> 4)));
+	public static final DeferredBlock<Block> COMET_FORGE_CONTROLLER = REGISTRY.register("comet_forge_controller", CometForgeControllerBlock::new);
 	public static final DeferredBlock<Block> TUNGSTEN_MACHINE_FRAME = REGISTRY.register("obsidrax_machine_frame", MachineFrameBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CASING = REGISTRY.register("assembly_line_casing", net.crystalnexus.block.AssemblyLineCasingBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CONTROLLER = REGISTRY.register("assembly_line_controller", net.crystalnexus.block.AssemblyLineControllerBlock::new);
