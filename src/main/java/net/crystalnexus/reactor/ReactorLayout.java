@@ -33,9 +33,10 @@ public final class ReactorLayout {
 	public final double fuelEfficiency;
 	public final int hash;
 	private final List<FuelColumn> fuelColumnData;
+	private final List<FuelRod> fuelRodData;
 
 	private ReactorLayout(boolean valid, String reason, int radius, int fuelRods, int fuelColumns, int coolantChannels, int activeCoolantChannels,
-			double outputMultiplier, double heatMultiplier, double fuelEfficiency, int hash, List<FuelColumn> fuelColumnData) {
+			double outputMultiplier, double heatMultiplier, double fuelEfficiency, int hash, List<FuelColumn> fuelColumnData, List<FuelRod> fuelRodData) {
 		this.valid = valid;
 		this.reason = reason;
 		this.radius = radius;
@@ -49,10 +50,11 @@ public final class ReactorLayout {
 		this.fuelEfficiency = fuelEfficiency;
 		this.hash = hash;
 		this.fuelColumnData = List.copyOf(fuelColumnData);
+		this.fuelRodData = List.copyOf(fuelRodData);
 	}
 
 	public static ReactorLayout invalid(String reason) {
-		return new ReactorLayout(false, reason, 0, 0, 0, 0, 0, 0, 0, 1, 0, List.of());
+		return new ReactorLayout(false, reason, 0, 0, 0, 0, 0, 0, 0, 1, 0, List.of(), List.of());
 	}
 
 	public static ReactorLayout analyze(LevelAccessor world, BlockPos center, int radius) {
@@ -69,6 +71,7 @@ public final class ReactorLayout {
 		double heat = 0;
 		double efficiency = 0;
 		Map<BlockPos, FuelColumn> fuelColumnData = new HashMap<>();
+		List<FuelRod> fuelRodData = new java.util.ArrayList<>();
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int y = minBounds.getY() + 1; y < maxBounds.getY(); y++) {
 				for (int z = minBounds.getZ() + 1; z < maxBounds.getZ(); z++) {
@@ -160,13 +163,20 @@ public final class ReactorLayout {
 			efficiency += Math.max(0.25, rodEfficiency);
 			BlockPos controlRodPos = new BlockPos(rod.getX(), maxBounds.getY(), rod.getZ());
 			fuelColumnData.merge(controlRodPos, new FuelColumn(controlRodPos, 1, rodOutput, rodHeat), FuelColumn::merge);
+			fuelRodData.add(new FuelRod(rod.immutable(), controlRodPos, rodOutput, rodHeat));
 		}
 		int legacyRadius = Math.max(maxBounds.getX() - minBounds.getX() + 1,
 				Math.max(maxBounds.getY() - minBounds.getY() + 1, maxBounds.getZ() - minBounds.getZ() + 1)) / 2;
 		return new ReactorLayout(true, "Stable", legacyRadius, fuel.size(), columns.size(), coolant.size(), activeCoolant.size(),
 				output / fuel.size(), heat / fuel.size(), Math.max(0.25, efficiency / fuel.size()), hash,
-				fuelColumnData.values().stream().toList());
+			fuelColumnData.values().stream().toList(), fuelRodData.stream()
+				.sorted(java.util.Comparator.comparingInt((FuelRod rod) -> rod.pos().getY())
+					.thenComparingInt(rod -> rod.pos().getZ()).thenComparingInt(rod -> rod.pos().getX())).toList());
 	}
+
+	public List<FuelRod> fuelRods() { return fuelRodData; }
+
+	public record FuelRod(BlockPos pos, BlockPos controlRodPos, double output, double heat) { }
 
 	public OperatingTotals operatingTotals(LevelAccessor world) {
 		double reactiveFuelRods = 0;

@@ -1,107 +1,102 @@
 package net.crystalnexus.client.gui;
 
-import java.util.List;
-
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.util.Mth;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.chat.Component;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.entity.BlockEntity;
-
+import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
 import net.crystalnexus.world.inventory.ReactorGUIMenu;
-import net.crystalnexus.procedures.ProgressDisplayProcedure;
-import net.crystalnexus.procedures.HeatDisplayProcedure;
-import net.crystalnexus.procedures.EnergyDisplayProcedure;
-import net.crystalnexus.init.CrystalnexusModScreens;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> {
+    private static final ResourceLocation BACKGROUND = ResourceLocation.parse("crystalnexus:textures/screens/reactor_gui_54.png");
+    private static final ResourceLocation NAME_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png");
+    private static final ResourceLocation UPGRADE_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/reactorupgradeslot.png");
+    private static final ResourceLocation WASTE_ADDON = ResourceLocation.parse("crystalnexus:textures/screens/waste_slot.png");
+    private Button previous;
+    private Button next;
 
-public class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
-	private final Level world;
-	private final int x, y, z;
-	private final Player entity;
-	private boolean menuStateUpdateActive = false;
+    public ReactorGUIScreen(ReactorGUIMenu menu, Inventory inventory, Component title) {
+        super(menu, inventory, title);
+        imageWidth = 206;
+        imageHeight = 222;
+    }
 
-	public ReactorGUIScreen(ReactorGUIMenu container, Inventory inventory, Component text) {
-		super(container, inventory, text);
-		this.world = container.world;
-		this.x = container.x;
-		this.y = container.y;
-		this.z = container.z;
-		this.entity = container.entity;
-		this.imageWidth = 176;
-		this.imageHeight = 166;
-	}
+    @Override protected void init() {
+        super.init();
+        topPos = Math.min(Math.max(15, topPos), Math.max(0, height - imageHeight));
+        previous = addRenderableWidget(Button.builder(Component.literal("<"), button -> changePage(menu.page() - 1))
+            .bounds(leftPos + 8, topPos + 7, 18, 18).build());
+        next = addRenderableWidget(Button.builder(Component.literal(">"), button -> changePage(menu.page() + 1))
+            .bounds(leftPos + 150, topPos + 7, 18, 18).build());
+        updateButtons();
+    }
 
-	@Override
-	public void updateMenuState(int elementType, String name, Object elementState) {
-		menuStateUpdateActive = true;
-		menuStateUpdateActive = false;
-	}
+    private void changePage(int page) {
+        if (page < 0 || page >= menu.pageCount()) return;
+        menu.setClientPage(page);
+        minecraft.gameMode.handleInventoryButtonClick(menu.containerId, page);
+        updateButtons();
+    }
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/reactor_gui.png");
-	private static final ResourceLocation tooltipTexture = ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png");
+    private void updateButtons() {
+        previous.active = menu.page() > 0;
+        next.active = menu.page() + 1 < menu.pageCount();
+    }
 
-	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		if (mouseX >= leftPos + 3 && mouseX < leftPos + 19 && mouseY >= topPos + 64 && mouseY < topPos + 80) {
-			BlockEntity blockEntity = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
-			if (blockEntity != null) {
-				CompoundTag data = blockEntity.getPersistentData();
-				guiGraphics.renderComponentTooltip(font, List.of(
-						Component.literal("Status: " + data.getString("reactorStatus")),
-						Component.literal("Temp: " + (int) data.getDouble("heat") + "C"),
-						Component.literal("FE/t: " + (int) data.getDouble("lastFEt"))), mouseX, mouseY);
-				return;
-			}
-		}
-		this.renderTooltip(guiGraphics, mouseX, mouseY);
-	}
+    @Override protected void containerTick() {
+        super.containerTick();
+        updateButtons();
+    }
 
-	@Override
-	protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/reactorupgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/waste_slot.png"), this.leftPos + 173, this.topPos + 34, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 105, this.topPos + 15, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), leftPos + 6, topPos + 16, 0, 0, 64, 64, 64, 704);
-		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
-			leftPos + 22, topPos + 20, 32, 56);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 71, this.topPos + 7, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarsmelt.png"), this.leftPos + 71, this.topPos + 54, 0, Mth.clamp((int) HeatDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(tooltipTexture, this.leftPos + 3, this.topPos + 64, 0, 0, 16, 16, 16, 16);
-		RenderSystem.disableBlend();
-	}
+    @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, 176, 222, 256, 256);
+        graphics.blit(NAME_ADDON, leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
+        graphics.blit(UPGRADE_ADDON, leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);
+        graphics.blit(WASTE_ADDON, leftPos + 173, topPos + 34, 0, 0, 32, 32, 32, 32);
+        for (int row = 0; row < 9; row++) {
+            if (menu.rodPosition(row) == null) continue;
+            for (int cell = 0; cell < 3; cell++) ControllerGuiStyle.inset(graphics,
+                leftPos + 7 + (row % 3) * 54 + cell * 18, topPos + 31 + (row / 3) * 18, 18, 18);
+        }
+        ReactorComputerBlockEntity controller = menu.controller();
+        if (controller != null) {
+            ControllerGuiStyle.panel(graphics, leftPos + 174, topPos + 74, 30, 62);
+            ControllerGuiStyle.inset(graphics, leftPos + 181, topPos + 80, 16, 50);
+            FluidTankRenderer.draw(graphics, controller.getFluidTank().getFluid(), 16000,
+                leftPos + 182, topPos + 81, 14, 48);
+        }
+    }
 
-	@Override
-	public boolean keyPressed(int key, int b, int c) {
-		if (key == 256) {
-			this.minecraft.player.closeContainer();
-			return true;
-		}
-		return super.keyPressed(key, b, c);
-	}
+    @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        Component name = Component.translatable("block.crystalnexus.reactor_computer");
+        graphics.drawString(font, name, 50 + (126 - font.width(name)) / 2, -10, 0xff404040, false);
+        Component page = Component.literal((menu.page() + 1) + " / " + menu.pageCount());
+        graphics.drawString(font, page, 88 - font.width(page) / 2, 12, 0xff404040, false);
+        ReactorComputerBlockEntity controller = menu.controller();
+        if (controller != null) {
+            var data = controller.getPersistentData();
+            graphics.drawString(font, Component.literal(font.plainSubstrByWidth("Status: " + data.getString("reactorStatus"), 160)),
+                8, 91, 0xff404040, false);
+            graphics.drawString(font, Component.literal("FE/t " + compact(data.getDouble("lastFEt"))), 8, 103, 0xff205b78, false);
+            graphics.drawString(font, Component.literal("Heat " + (int) data.getDouble("heat") + " C"), 88, 103, 0xffa04520, false);
+            graphics.drawString(font, Component.literal("Energy " + compact(controller.getEnergyStorage().getEnergyStored())), 8, 115, 0xff205b78, false);
+            graphics.drawString(font, Component.literal("Coolant " + compact(controller.getFluidTank().getFluidAmount()) + " mB"), 88, 115, 0xff205b78, false);
+        }
+        int first = menu.page() * 9 + 1;
+        int last = Math.min(menu.rodCount(), first + 8);
+        graphics.drawString(font, Component.literal("Fuel rods " + first + "-" + last + " / " + menu.rodCount()), 8, 127, 0xff404040, false);
+    }
 
-	@Override
-	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_reactor_controller"), 62, -10, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_fluid"), 26, 6, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.reactor_gui.label_stock_energy"), 105, 5, -12829636, false);
-	}
+    @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        renderTooltip(graphics, mouseX, mouseY);
+    }
 
-	@Override
-	public void init() {
-		super.init();
-	}
+    private static String compact(double value) {
+        if (value >= 1_000_000) return String.format(java.util.Locale.ROOT, "%.1fM", value / 1_000_000);
+        if (value >= 10_000) return Math.round(value / 1_000) + "k";
+        return Long.toString(Math.round(value));
+    }
 }

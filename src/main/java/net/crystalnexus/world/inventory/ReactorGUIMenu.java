@@ -1,276 +1,122 @@
 package net.crystalnexus.world.inventory;
 
-import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.capabilities.Capabilities;
-
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.core.BlockPos;
-
-import net.crystalnexus.network.ReactorGUISlotMessage;
+import net.crystalnexus.block.entity.ReactorComputerBlockEntity;
+import net.crystalnexus.block.entity.ReactorCoreBlockEntity;
+import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModMenus;
+import net.crystalnexus.item.ReactorFuelCellItem;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.DataSlot;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
-import java.util.function.Supplier;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ReactorGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
-	public final Map<String, Object> menuState = new HashMap<>() {
-		@Override
-		public Object put(String key, Object value) {
-			if (!this.containsKey(key) && this.size() >= 13)
-				return null;
-			return super.put(key, value);
-		}
-	};
-	public final Level world;
-	public final Player entity;
-	public int x, y, z;
-	private ContainerLevelAccess access = ContainerLevelAccess.NULL;
-	private IItemHandler internal;
-	private final Map<Integer, Slot> customSlots = new HashMap<>();
-	private boolean bound = false;
-	private Supplier<Boolean> boundItemMatcher = null;
-	private Entity boundEntity = null;
-	private BlockEntity boundBlockEntity = null;
+public final class ReactorGUIMenu extends AbstractContainerMenu {
+    private final Level level;
+    private final ReactorComputerBlockEntity controller;
+    private final ContainerLevelAccess access;
+    private final List<BlockPos> rods;
+    private int page;
 
-	public ReactorGUIMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-		super(CrystalnexusModMenus.REACTOR_GUI.get(), id);
-		this.entity = inv.player;
-		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(3);
-		BlockPos pos = null;
-		if (extraData != null) {
-			pos = extraData.readBlockPos();
-			this.x = pos.getX();
-			this.y = pos.getY();
-			this.z = pos.getZ();
-			access = ContainerLevelAccess.create(world, pos);
-		}
-		if (pos != null) {
-			if (extraData.readableBytes() == 1) { // bound to item
-				byte hand = extraData.readByte();
-				ItemStack itemstack = hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem();
-				this.boundItemMatcher = () -> itemstack == (hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem());
-				IItemHandler cap = itemstack.getCapability(Capabilities.ItemHandler.ITEM);
-				if (cap != null) {
-					this.internal = cap;
-					this.bound = true;
-				}
-			} else if (extraData.readableBytes() > 1) { // bound to entity
-				extraData.readByte(); // drop padding
-				boundEntity = world.getEntity(extraData.readVarInt());
-				if (boundEntity != null) {
-					IItemHandler cap = boundEntity.getCapability(Capabilities.ItemHandler.ENTITY);
-					if (cap != null) {
-						this.internal = cap;
-						this.bound = true;
-					}
-				}
-			} else { // might be bound to block
-				boundBlockEntity = this.world.getBlockEntity(pos);
-				if (boundBlockEntity instanceof BaseContainerBlockEntity baseContainerBlockEntity) {
-					this.internal = new InvWrapper(baseContainerBlockEntity);
-					this.bound = true;
-				}
-			}
-		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 42) {
-			private final int slot = 0;
-			private int x = ReactorGUIMenu.this.x;
-			private int y = ReactorGUIMenu.this.y;
+    public ReactorGUIMenu(int id, Inventory inventory, FriendlyByteBuf data) {
+        super(CrystalnexusModMenus.REACTOR_GUI.get(), id);
+        level = inventory.player.level();
+        BlockPos pos = data.readBlockPos();
+        controller = level.getBlockEntity(pos) instanceof ReactorComputerBlockEntity found ? found : null;
+        access = ContainerLevelAccess.create(level, pos);
+        int count = Math.min(3375, Math.max(0, data.readVarInt()));
+        rods = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) rods.add(data.readBlockPos());
+        if (!level.isClientSide && controller != null && !controller.getItem(0).isEmpty()) {
+            ItemStack legacyFuel = controller.removeItemNoUpdate(0);
+            controller.setChanged();
+            inventory.placeItemBackInInventory(legacyFuel);
+        }
+        addDataSlot(new DataSlot() {
+            @Override public int get() { return page; }
+            @Override public void set(int value) { page = value; }
+        });
+        Container safe = controller == null ? new SimpleContainer(3) : controller;
+        addSlot(new Slot(safe, 1, 180, 8) {
+            @Override public boolean mayPlace(ItemStack stack) {
+                return stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get())
+                    || stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());
+            }
+        });
+        addSlot(new Slot(safe, 2, 180, 42) {
+            @Override public boolean mayPlace(ItemStack stack) { return false; }
+        });
+        for (int row = 0; row < 9; row++) {
+            final int rodRow = row;
+            Container binding = new SimpleContainer(3) {
+                private ReactorCoreBlockEntity core() { return coreAt(rodRow); }
+                @Override public ItemStack getItem(int slot) { return core() == null ? ItemStack.EMPTY : core().getItem(slot); }
+                @Override public ItemStack removeItem(int slot, int amount) { return core() == null ? ItemStack.EMPTY : core().removeItem(slot, amount); }
+                @Override public ItemStack removeItemNoUpdate(int slot) { return core() == null ? ItemStack.EMPTY : core().removeItemNoUpdate(slot); }
+                @Override public void setItem(int slot, ItemStack stack) { if (core() != null) core().setItem(slot, stack); }
+                @Override public void setChanged() { if (core() != null) core().setChanged(); }
+            };
+            for (int cell = 0; cell < 3; cell++) addSlot(new Slot(binding, cell,
+                    8 + (row % 3) * 54 + cell * 18, 32 + (row / 3) * 18) {
+                @Override public boolean mayPlace(ItemStack stack) { return coreAt(rodRow) != null && stack.getItem() instanceof ReactorFuelCellItem; }
+                @Override public int getMaxStackSize() { return 1; }
+            });
+        }
+        for (int row = 0; row < 3; row++)
+            for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 140 + row * 18));
+        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 198));
+    }
 
-			@Override
-			public void onTake(Player entity, ItemStack stack) {
-				super.onTake(entity, stack);
-				slotChanged(0, 1, stack.getCount());
-			}
+    public ReactorComputerBlockEntity controller() { return controller; }
+    public int page() { return page; }
+    public int pageCount() { return Math.max(1, (rods.size() + 8) / 9); }
+    public int rodCount() { return rods.size(); }
+    public BlockPos rodPosition(int row) { int index = page * 9 + row; return index < rods.size() ? rods.get(index) : null; }
+    private ReactorCoreBlockEntity coreAt(int row) {
+        BlockPos pos = rodPosition(row);
+        return pos != null && level.getBlockEntity(pos) instanceof ReactorCoreBlockEntity core ? core : null;
+    }
 
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:reactor_fuel")));
-			}
-		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 180, 8) {
-			private final int slot = 1;
-			private int x = ReactorGUIMenu.this.x;
-			private int y = ReactorGUIMenu.this.y;
-		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 42) {
-			private final int slot = 2;
-			private int x = ReactorGUIMenu.this.x;
-			private int y = ReactorGUIMenu.this.y;
+    @Override public boolean clickMenuButton(Player player, int button) {
+        if (!stillValid(player) || button < 0 || button >= pageCount()) return false;
+        page = button;
+        broadcastFullState();
+        return true;
+    }
 
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return false;
-			}
-		}));
-		for (int si = 0; si < 3; ++si)
-			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
-		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
-	}
+    public void setClientPage(int page) { if (page >= 0 && page < pageCount()) this.page = page; }
 
-	@Override
-	public boolean stillValid(Player player) {
-		if (this.bound) {
-			if (this.boundItemMatcher != null)
-				return this.boundItemMatcher.get();
-			else if (this.boundBlockEntity != null)
-				return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-			else if (this.boundEntity != null)
-				return this.boundEntity.isAlive();
-		}
-		return true;
-	}
+	@Override public boolean stillValid(Player player) {
+		return controller != null && (level.isClientSide || controller.getPersistentData().getBoolean("canOpenInventory")
+			&& stillValid(access, player, CrystalnexusModBlocks.REACTOR_COMPUTER.get())
+			&& controller.getCachedLayout().fuelRods().stream().map(rod -> rod.pos()).toList().equals(rods));
+    }
 
-	@Override
-	public ItemStack quickMoveStack(Player playerIn, int index) {
-		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = (Slot) this.slots.get(index);
-		if (slot != null && slot.hasItem()) {
-			ItemStack itemstack1 = slot.getItem();
-			itemstack = itemstack1.copy();
-			if (index < 3) {
-				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
-					return ItemStack.EMPTY;
-				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
-				if (index < 3 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 3 + 27, this.slots.size(), true))
-						return ItemStack.EMPTY;
-				} else {
-					if (!this.moveItemStackTo(itemstack1, 3, 3 + 27, false))
-						return ItemStack.EMPTY;
-				}
-				return ItemStack.EMPTY;
-			}
-			if (itemstack1.isEmpty()) {
-				slot.setByPlayer(ItemStack.EMPTY);
-			} else {
-				slot.setChanged();
-			}
-			if (itemstack1.getCount() == itemstack.getCount()) {
-				return ItemStack.EMPTY;
-			}
-			slot.onTake(playerIn, itemstack1);
-		}
-		return itemstack;
-	}
-
-	@Override
-	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-		boolean flag = false;
-		int i = p_38905_;
-		if (p_38907_) {
-			i = p_38906_ - 1;
-		}
-		if (p_38904_.isStackable()) {
-			while (!p_38904_.isEmpty() && (p_38907_ ? i >= p_38905_ : i < p_38906_)) {
-				Slot slot = this.slots.get(i);
-				ItemStack itemstack = slot.getItem();
-				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameComponents(p_38904_, itemstack)) {
-					int j = itemstack.getCount() + p_38904_.getCount();
-					int k = slot.getMaxStackSize(itemstack);
-					if (j <= k) {
-						p_38904_.setCount(0);
-						itemstack.setCount(j);
-						slot.set(itemstack);
-						flag = true;
-					} else if (itemstack.getCount() < k) {
-						p_38904_.shrink(k - itemstack.getCount());
-						itemstack.setCount(k);
-						slot.set(itemstack);
-						flag = true;
-					}
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		if (!p_38904_.isEmpty()) {
-			if (p_38907_) {
-				i = p_38906_ - 1;
-			} else {
-				i = p_38905_;
-			}
-			while (p_38907_ ? i >= p_38905_ : i < p_38906_) {
-				Slot slot1 = this.slots.get(i);
-				ItemStack itemstack1 = slot1.getItem();
-				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-					int l = slot1.getMaxStackSize(p_38904_);
-					slot1.setByPlayer(p_38904_.split(Math.min(p_38904_.getCount(), l)));
-					slot1.setChanged();
-					flag = true;
-					break;
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		return flag;
-	}
-
-	@Override
-	public void removed(Player playerIn) {
-		super.removed(playerIn);
-		if (!bound && playerIn instanceof ServerPlayer serverPlayer) {
-			if (!serverPlayer.isAlive() || serverPlayer.hasDisconnected()) {
-				for (int j = 0; j < internal.getSlots(); ++j) {
-					playerIn.drop(internal.getStackInSlot(j), false);
-					if (internal instanceof IItemHandlerModifiable ihm)
-						ihm.setStackInSlot(j, ItemStack.EMPTY);
-				}
-			} else {
-				for (int i = 0; i < internal.getSlots(); ++i) {
-					playerIn.getInventory().placeItemBackInInventory(internal.getStackInSlot(i));
-					if (internal instanceof IItemHandlerModifiable ihm)
-						ihm.setStackInSlot(i, ItemStack.EMPTY);
-				}
-			}
-		}
-	}
-
-	private void slotChanged(int slotid, int ctype, int meta) {
-		if (this.world != null && this.world.isClientSide()) {
-			PacketDistributor.sendToServer(new ReactorGUISlotMessage(slotid, x, y, z, ctype, meta));
-			ReactorGUISlotMessage.handleSlotAction(entity, slotid, ctype, meta, x, y, z);
-		}
-	}
-
-	@Override
-	public Map<Integer, Slot> getSlots() {
-		return Collections.unmodifiableMap(customSlots);
-	}
-
-	@Override
-	public Map<String, Object> getMenuState() {
-		return menuState;
-	}
+    @Override public ItemStack quickMoveStack(Player player, int index) {
+        if (index < 0 || index >= slots.size() || !stillValid(player)) return ItemStack.EMPTY;
+        Slot slot = slots.get(index);
+        if (!slot.hasItem()) return ItemStack.EMPTY;
+        ItemStack stack = slot.getItem();
+        ItemStack original = stack.copy();
+        boolean moved;
+        if (index < 29) moved = moveItemStackTo(stack, 29, 65, true);
+        else if (stack.getItem() instanceof ReactorFuelCellItem) moved = moveItemStackTo(stack, 2, 29, false);
+        else if (stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get()) || stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()))
+            moved = moveItemStackTo(stack, 0, 1, false);
+        else moved = false;
+        if (!moved) return ItemStack.EMPTY;
+        if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
+        return original;
+    }
 }

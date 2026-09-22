@@ -34,7 +34,7 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 				_ent.openMenu(new MenuProvider() {
 					@Override
 					public Component getDisplayName() {
-						return Component.literal("ReactorGUI");
+						return Component.translatable("block.crystalnexus.reactor_computer");
 					}
 
 					@Override
@@ -44,9 +44,9 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 
 					@Override
 					public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-						return new ReactorGUIMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(_bpos));
+						return new ReactorGUIMenu(id, inventory, writeMenuData(world, _bpos, new FriendlyByteBuf(Unpooled.buffer())));
 					}
-				}, _bpos);
+				}, buffer -> writeMenuData(world, _bpos, buffer));
 			}
 			if (!(entity instanceof ServerPlayer _plr10 && _plr10.level() instanceof ServerLevel
 					&& _plr10.getAdvancements().getOrStartProgress(_plr10.server.getAdvancements().get(ResourceLocation.parse("crystalnexus:reactor_advancement"))).isDone())) {
@@ -68,6 +68,16 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 			}
 			player.displayClientMessage(Component.literal("Reactor disabled: " + reason), false);
 		}
+	}
+
+	private static FriendlyByteBuf writeMenuData(LevelAccessor world, BlockPos pos, FriendlyByteBuf buffer) {
+		buffer.writeBlockPos(pos);
+		if (world.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ReactorComputerBlockEntity computer) {
+			var rods = computer.getCachedLayout().fuelRods();
+			buffer.writeVarInt(rods.size());
+			for (var rod : rods) buffer.writeBlockPos(rod.pos());
+		} else buffer.writeVarInt(0);
+		return buffer;
 	}
 
 	private static boolean getBlockNBTLogic(LevelAccessor world, BlockPos pos, String tag) {

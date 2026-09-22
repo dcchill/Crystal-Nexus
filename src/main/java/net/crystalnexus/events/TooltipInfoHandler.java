@@ -82,18 +82,21 @@ public class TooltipInfoHandler {
 				"Outputs waste from the Reactor.",
 				"Collects Blutonium Waste produced by the reaction.");
 		addTooltip("reactor_control_rod",
-				"Regulates the core column directly below it.",
-				"Right-click to set insertion and throttle the reaction.");
+				"Regulates the fuel column directly below it.",
+				"Right-click to adjust insertion and throttle the reaction.");
 		addTooltip("reactor_carbon_moderator",
-				"Between cores, improves fuel efficiency and reduces heat.");
+				"Place between reactor cores to moderate the fuel.",
+				"Reduces heat and fuel efficiency while moderated.");
 		addTooltip("reactor_neutron_reflector",
-				"Next to a core, reflects neutrons to increase output.");
+				"Place next to a reactor core.",
+				"Reflects neutrons back into the core to increase output.");
 		addTooltip("reactor_coolant_channel",
 				"Carries coolant from a connected Fluid Input.",
-				"Removes reactor heat.");
+				"Removes heat from adjacent fuel or connected conductors.");
 		addTooltip("reactor_heat_conductor",
-				"Extends cooling from the core to coolant channels.",
-				"Works up to four blocks from the core.");
+				"Relays core heat to connected coolant channels.",
+				"Conductor chains can reach up to four blocks from a fuel rod.",
+				"The coolant network still requires a Fluid Input.");
 		addTooltip("reactor_upgrade",
 				"Reactor energy upgrade.",
 				"Boosts reactor energy production.");

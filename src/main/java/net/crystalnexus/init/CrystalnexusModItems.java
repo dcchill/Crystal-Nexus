@@ -232,6 +232,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CHLOROPHYTE_NUGGET = REGISTRY.register("chlorophyte_nugget", ChlorophyteNuggetItem::new);
 	public static final DeferredItem<Item> CRYSTAL_ALLOY_NUGGET = REGISTRY.register("crystal_alloy_nugget", CrystalAlloyNuggetItem::new);
 	public static final DeferredItem<Item> BLUTONIUM_INGOT = REGISTRY.register("blutonium_ingot", BlutoniumIngotItem::new);
+	public static final DeferredItem<Item> OVERTONIUM_INGOT = REGISTRY.register("overtonium_ingot", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> RAW_BLUTONIUM = REGISTRY.register("raw_blutonium", RawBlutoniumItem::new);
 	public static final DeferredItem<Item> BLUTONIUM_ORE = block(CrystalnexusModBlocks.BLUTONIUM_ORE);
 	public static final DeferredItem<Item> INVERTIUM_INGOT = REGISTRY.register("invertium_ingot", InvertiumIngotItem::new);
@@ -483,6 +484,16 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLOOD_BUCKET = REGISTRY.register("blood_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.BLOOD.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
+	public static final DeferredItem<Item> REACTOR_FUEL_CELL = REGISTRY.register("reactor_fuel_cell",
+			() -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> BLUTONIUM_FUEL_CELL = REGISTRY.register("blutonium_fuel_cell", //-------------------FUEL CELLS
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 1.5));
+	public static final DeferredItem<Item> PURE_BLUTONIUM_FUEL_CELL = REGISTRY.register("pure_blutonium_fuel_cell",
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 0.75));
+	public static final DeferredItem<Item> OVERTONIUM_FUEL_CELL = REGISTRY.register("overtonium_fuel_cell",
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 3.0, 5.0));
+	public static final DeferredItem<Item> SPENT_REACTOR_CELL = REGISTRY.register("spent_reactor_cell",
+			() -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
 	public static final DeferredItem<Item> GAS_FUEL_CELL = REGISTRY.register("gas_fuel_cell", GasFuelCellItem::new);
 	public static final DeferredItem<Item> PISTON_GENERATOR = block(CrystalnexusModBlocks.PISTON_GENERATOR);

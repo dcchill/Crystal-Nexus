@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "aba",
+    "cdc",
+    "aba"
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:azurine_bearing" },
+    "b": { "tag": "c:rods/azurine" },
+    "c": { "item": "crystalnexus:azurine_machine_bolt" },
+    "d": { "item": "crystalnexus:insulated_azurine_casing" }
+  },
+  "result": {
+    "id": "crystalnexus:diesel_generator_driveshaft",
+    "count": 1
+  }
+}

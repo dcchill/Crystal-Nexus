@@ -29,7 +29,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
+import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.procedures.ReactorComputerOnTickUpdateProcedure;
+import net.crystalnexus.init.CrystalnexusModItems;
 
 import javax.annotation.Nullable;
 
@@ -122,9 +124,8 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		if (index == 0)
-			return false;
-		return true;
+		return index == 1 && (stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get())
+				|| stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()));
 	}
 
 	@Override
@@ -153,13 +154,8 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 		return energyStorage;
 	}
 
-	private final FluidTank fluidTank = new FluidTank(16000, fs -> {
-		if (fs.getFluid() == Fluids.WATER)
-			return true;
-		if (fs.getFluid() == Fluids.FLOWING_WATER)
-			return true;
-		return false;
-	}) {
+	private final FluidTank fluidTank = new FluidTank(16000, fs -> fs.is(Fluids.WATER)
+			|| fs.is(Fluids.FLOWING_WATER) || fs.is(CrystalnexusModFluids.NITROGEN.get())) {
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
@@ -175,23 +171,59 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	@Override public boolean acceptsMultiblockPort(BlockPos pos) { return CenteredMultiblockValidator.acceptsPort(this, pos); }
 	@Override public FluidTank multiblockFluidInput() { return fluidTank; }
 	@Override public GeneratorEnergyStorage multiblockEnergyOutput() { return energyStorage; }
+	public void pushEnergyOutputs() {
+		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
+		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
+		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
+		for (BlockPos pos : BlockPos.betweenClosed(min, max))
+			if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output && acceptsMultiblockPort(pos)) output.pushEnergy();
+	}
 
 	public void pullFuelInputs() {
 		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
+		ReactorLayout layout = getCachedLayout();
+		if (!layout.valid) return;
 		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
 		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
 		for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
 			if (!acceptsMultiblockPort(pos) || !(level.getBlockEntity(pos) instanceof MultiblockItemInputBlockEntity input)) continue;
 			for (int slot = 0; slot < input.getContainerSize(); slot++) {
 				ItemStack offered = input.getItem(slot);
-				ItemStack fuel = getItem(0);
-				if (!ReactorSimulation.isFuel(offered) || !fuel.isEmpty() && !ItemStack.isSameItemSameComponents(fuel, offered)) continue;
-				int amount = Math.min(offered.getCount(), Math.min(getMaxStackSize(), offered.getMaxStackSize()) - fuel.getCount());
-				if (amount <= 0) continue;
-				ItemStack moved = input.removeItem(slot, amount);
-				if (fuel.isEmpty()) setItem(0, moved); else fuel.grow(moved.getCount());
-				input.setChanged();
-				setChanged();
+				if (!ReactorSimulation.isFuel(offered)) continue;
+				for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
+					if (!(level.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
+					for (int cell = 0; cell < 3; cell++) {
+						if (offered.isEmpty()) break;
+						if (core.getItem(cell).isEmpty()) core.setItem(cell, input.removeItem(slot, 1));
+					}
+					if (offered.isEmpty()) break;
+				}
+			}
+		}
+	}
+
+	public void pushSpentCells() {
+		if (level == null || !getPersistentData().getBoolean("canOpenInventory") || !cachedLayout.valid) return;
+		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
+		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
+		java.util.List<MultiblockItemOutputBlockEntity> outputs = new java.util.ArrayList<>();
+		for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
+			if (acceptsMultiblockPort(pos) && level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity output)
+				outputs.add(output);
+		}
+		if (outputs.isEmpty()) return;
+		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods()) {
+			if (!(level.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
+			for (int slot = 0; slot < 3; slot++) {
+				ItemStack spent = core.getItem(slot);
+				if (!spent.is(CrystalnexusModItems.SPENT_REACTOR_CELL.get())) continue;
+				for (MultiblockItemOutputBlockEntity output : outputs) {
+					if (output.insert(spent, true)) {
+						output.insert(spent, false);
+						core.setItem(slot, ItemStack.EMPTY);
+						break;
+					}
+				}
 			}
 		}
 	}

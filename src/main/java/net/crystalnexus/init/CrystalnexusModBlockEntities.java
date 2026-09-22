@@ -145,6 +145,7 @@ public class CrystalnexusModBlockEntities {
 		CrystalnexusModBlocks.EXTRACTINATOR, CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_ACCELERATOR = register("chlorophyte_accelerator", CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR, ChlorophyteAcceleratorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_COMPUTER = register("reactor_computer", CrystalnexusModBlocks.REACTOR_COMPUTER, ReactorComputerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_CORE = register("reactor_core", CrystalnexusModBlocks.REACTOR_CORE, net.crystalnexus.block.entity.ReactorCoreBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> REACTOR_CONTROL_ROD = register("reactor_control_rod", CrystalnexusModBlocks.REACTOR_CONTROL_ROD, ReactorControlRodBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> IRON_SMELTER = register("iron_smelter", CrystalnexusModBlocks.IRON_SMELTER, IronSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ARC_FURNACE = registerMany("arc_furnace", ArcFurnaceBlockEntity::new,
@@ -296,6 +297,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CHLOROPHYTE_ACCELERATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CHLOROPHYTE_ACCELERATOR.get(), (blockEntity, side) -> ((ChlorophyteAcceleratorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_CORE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> ((ReactorComputerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REACTOR_COMPUTER.get(), (blockEntity, side) -> ((ReactorComputerBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, IRON_SMELTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

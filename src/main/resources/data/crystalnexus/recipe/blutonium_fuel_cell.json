@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "crystalnexus:reactor_fuel_cell" },
+    { "item": "crystalnexus:blutonium_ingot" }
+  ],
+  "result": { "id": "crystalnexus:blutonium_fuel_cell", "count": 1 }
+}

@@ -125,6 +125,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_DUST.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.REACTOR_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.OVERTONIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.SPENT_REACTOR_CELL.get());
 				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM.get());
 				tabData.accept(CrystalnexusModBlocks.BLU_TNT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUTONIUM_BLOCK.get().asItem());
@@ -588,6 +594,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.INVERTIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.OVERTONIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.GOLD_SHEET.get());
 				tabData.accept(CrystalnexusModItems.IRON_SHEET.get());
 				tabData.accept(CrystalnexusModItems.COPPER_SHEET.get());

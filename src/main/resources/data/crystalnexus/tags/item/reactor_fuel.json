@@ -1,8 +1,8 @@
 {
   "replace": false,
   "values": [
-    "crystalnexus:blutonium_ingot",
-    "crystalnexus:pure_blutonium",
-    "crystalnexus:coal_singularity"
+    "crystalnexus:blutonium_fuel_cell",
+    "crystalnexus:pure_blutonium_fuel_cell",
+    "crystalnexus:overtonium_fuel_cell"
   ]
 }

@@ -52,6 +52,7 @@ The Ultima Smelter automatically combines nuggets into ingots, making it valuabl
 
 - Keep coolant/fluid supply stable unless using a Reactor Permafrost Upgrade Chip.
 - Add Reactor Waste Output before running long-term fuel loops.
+- Feed Blutonium Fuel Cells through a Multiblock Item Input and collect spent cells through a Multiblock Item Output.
 - Keep Geiger Counter and the Hazmat enchantment available around Blutonium.
 - Use the `disableMeltdowns` gamerule only if the pack/server wants reactors without meltdown risk.
 

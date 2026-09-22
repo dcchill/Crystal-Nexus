@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "tag": "c:plates/azurine" },
+    { "item": "crystalnexus:empty_fuel_cell" }
+  ],
+  "result": { "id": "crystalnexus:reactor_fuel_cell", "count": 1 }
+}

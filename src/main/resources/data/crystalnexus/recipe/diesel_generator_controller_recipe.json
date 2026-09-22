@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "cbc",
+    "ada",
+    "ccc"
+  ],
+  "key": {
+    "a": { "item": "crystalnexus:stator" },
+    "b": { "item": "crystalnexus:computation_node" },
+    "c": { "item": "crystalnexus:ceramic_plate" },
+    "d": { "item": "crystalnexus:azurine_machine_frame" }
+  },
+  "result": {
+    "id": "crystalnexus:diesel_generator_controller",
+    "count": 1
+  }
+}

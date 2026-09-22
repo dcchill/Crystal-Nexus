@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:overfuel", "amount": 50 },
+  "item_input_1": { "item": "crystalnexus:blutonium_ingot" },
+  "item_output": { "id": "crystalnexus:overtonium_ingot", "count": 1 }
+}

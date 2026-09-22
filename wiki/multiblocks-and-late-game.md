@@ -23,10 +23,10 @@ Related items:
 - Reactor Upgrade Chip
 - Reactor Permafrost Upgrade Chip
 - Blutonium Waste
-- Pure Blutonium
-- Coal Singularity
+- Blutonium Fuel Cell
+- Spent Reactor Cell
 
-The reactor GUI tracks stock energy and fluid. The Energy Output block exports power, Fluid Input supplies coolant to connected Coolant Channels, and Waste Output collects Blutonium Waste.
+The controller GUI pages through every Reactor Core and its three fuel cell slots, and tracks energy, coolant, and heat. The Energy Output block exports power, Fluid Input supplies coolant to connected Coolant Channels, and Waste Output collects Blutonium Waste. Multiblock Item Inputs load fuel cells into empty core slots; Multiblock Item Outputs collect spent cells when space is available.
 
 Internal layout rules:
 
@@ -39,8 +39,8 @@ Important notes:
 - Reactor Upgrade Chip increases energy produced by the reactor.
 - Reactor Permafrost Upgrade Chip removes the need for coolant.
 - The gamerule `disableMeltdowns` disables reactor meltdowns.
-- Coal Singularity is an infinite fuel source and works for reactors.
-- Pure Blutonium is 75% more efficient than normal Blutonium.
+- Three Blutonium Fuel Cells give a core full output; fewer cells proportionally reduce FE and heat.
+- Existing fuel left in the controller's former fuel slot is returned when its GUI is opened; it no longer powers the reactor.
 
 ## Reaction Chamber
 

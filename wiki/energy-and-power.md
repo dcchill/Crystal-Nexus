@@ -164,7 +164,9 @@ The reactor system uses a multiblock-like set of blocks:
 - Reactor Upgrade Chip
 - Reactor Permafrost Upgrade Chip
 
-The reactor GUI displays stock energy and fluid. Each Reactor Core column needs a Control Rod above it, which can be inserted to throttle that column. Carbon Moderators between cores improve fuel efficiency and reduce heat, while adjacent Neutron Reflectors increase output. Coolant Channels must connect to a Fluid Input; Heat Conductors can link core heat to those channels from up to four blocks away. The Permafrost Upgrade removes the need for coolant, while the Reactor Upgrade increases energy produced.
+Each Reactor Core holds three Blutonium Fuel Cells. Craft three cells from a Blutonium Ingot and three Iron Nuggets. The controller GUI pages through all cores and lets you insert or remove their cells; connected Multiblock Item Inputs also load empty slots. One loaded cell produces one third of a fully loaded core's FE and heat. Cells wear down as the reactor runs, and connected Multiblock Item Outputs collect spent cells. Fuel left in an old controller is returned when its GUI opens.
+
+The GUI also displays stored energy, coolant, temperature, and reactor status. Each Reactor Core column needs a Control Rod above it, which can be inserted to throttle that column. Carbon Moderators between cores improve fuel efficiency and reduce heat, while adjacent Neutron Reflectors increase output. Coolant Channels must connect to a Fluid Input; Heat Conductors can link core heat to those channels from up to four blocks away. The Permafrost Upgrade reduces coolant demand, while the Reactor Upgrade increases energy produced.
 
 The gamerule `disableMeltdowns` disables reactor meltdowns.
 

@@ -7,6 +7,7 @@
     "crystalnexus:machine_fluid_input",
     "crystalnexus:machine_energy_output",
     "crystalnexus:multiblock_item_input",
+    "crystalnexus:multiblock_item_output",
     "crystalnexus:reactor_control_rod",
     "crystalnexus:carbon_glass"
   ]

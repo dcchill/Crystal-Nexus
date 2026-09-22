@@ -12,6 +12,8 @@ public class ReactorComputerOnTickUpdateProcedure {
 		if (world.getBlockEntity(controllerPos) instanceof ReactorComputerBlockEntity computer) {
 			computer.pullFuelInputs();
 			ReactorSimulation.tick(world, controllerPos, computer);
+			computer.pushEnergyOutputs();
+			computer.pushSpentCells();
 		}
 	}
 }
