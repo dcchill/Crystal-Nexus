@@ -99,6 +99,7 @@ import net.crystalnexus.block.entity.CrystalGuideBlockEntity;
 import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 import net.crystalnexus.block.entity.MasticatorBlockEntity;
 import net.crystalnexus.block.entity.HemolyzerBlockEntity;
+import net.crystalnexus.block.entity.HemochanterBlockEntity;
 import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
@@ -136,6 +137,7 @@ public class CrystalnexusModBlockEntities {
 		CrystalnexusModBlocks.INVERTIUM_CRUSHER, CrystalnexusModBlocks.HYPER_CRUSHER);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MASTICATOR = register("gene_splicer", CrystalnexusModBlocks.MASTICATOR, MasticatorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HEMOLYZER = register("hemolyzer", CrystalnexusModBlocks.HEMOLYZER, HemolyzerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HEMOCHANTER = register("hemochanter", CrystalnexusModBlocks.HEMOCHANTER, HemochanterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = registerMany("dust_separator", DustSeparatorBlockEntity::new,
 		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR,
 		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
@@ -290,6 +292,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, HEMOLYZER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, HEMOLYZER.get(), (blockEntity, side) -> ((HemolyzerBlockEntity) blockEntity).getBloodTank());
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HEMOLYZER.get(), (blockEntity, side) -> ((HemolyzerBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> ((HemochanterBlockEntity) blockEntity).getBloodTank());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> ((HemochanterBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DUST_SEPARATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DUST_SEPARATOR.get(), (blockEntity, side) -> ((DustSeparatorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_GUIDE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
@@ -393,7 +398,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> ((InvertPistonGeneratorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, INVERT_PISTON_GENERATOR.get(), (blockEntity, side) -> ((InvertPistonGeneratorBlockEntity) blockEntity).getFluidTank());
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PIPE_STRAIGHT.get(), (blockEntity, side) -> ((PipeStraightBlockEntity) blockEntity).getFluidTank());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PIPE_STRAIGHT.get(), (blockEntity, side) -> ((PipeStraightBlockEntity) blockEntity).getFluidHandler(side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PIPE_JUNCTION.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PIPE_JUNCTION.get(), (blockEntity, side) -> ((PipeJunctionBlockEntity) blockEntity).getFluidTank());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_COLLECTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
@@ -420,11 +425,11 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, DEPOT_CONTROLLER.get(), (blockEntity, side) -> ((DepotControllerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REACTOR_WASTE_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> ((EnergyCableMk2BlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ENERGY_CABLE_MK_2.get(), (blockEntity, side) -> ((EnergyCableMk2BlockEntity) blockEntity).getEnergyStorage(side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> ((BasicEnergyCableBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BASIC_ENERGY_CABLE.get(), (blockEntity, side) -> ((BasicEnergyCableBlockEntity) blockEntity).getEnergyStorage(side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, HYPER_ENERGY_CABLE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HYPER_ENERGY_CABLE.get(), (blockEntity, side) -> ((HyperEnergyCableBlockEntity) blockEntity).getEnergyStorage());
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HYPER_ENERGY_CABLE.get(), (blockEntity, side) -> ((HyperEnergyCableBlockEntity) blockEntity).getEnergyStorage(side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NODE_EXTRACTOR.get(), (blockEntity, side) -> ((NodeExtractorBlockEntity) blockEntity).getFluidTank());

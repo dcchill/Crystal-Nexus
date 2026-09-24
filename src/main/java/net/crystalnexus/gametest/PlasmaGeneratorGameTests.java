@@ -119,6 +119,31 @@ public final class PlasmaGeneratorGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "plasma_gen_new")
+    public static void breakingControllerDestroysPlasmaAndHeatingCores(GameTestHelper helper) {
+        BlockPos controllerPos = find(helper, CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get()).getFirst();
+        List<BlockPos> casing = find(helper, CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get());
+        helper.setBlock(casing.get(0), CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get());
+        helper.setBlock(casing.get(1), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+        PlasmaGeneratorControllerBlockEntity controller = helper.getBlockEntity(controllerPos);
+        MachineFluidInputBlockEntity input = helper.getBlockEntity(casing.get(0));
+        input.getFluidInput().fill(new FluidStack(CrystalnexusModFluids.ARGON.get(), 100),
+            IFluidHandler.FluidAction.EXECUTE);
+        helper.assertTrue(controller.validateStructureNow(), "Plasma Generator must form before its controller breaks");
+        controller.serverTick();
+        helper.assertTrue(controller.isOperating()
+                && !find(helper, CrystalnexusModBlocks.PLASMA_BLOCK.get()).isEmpty(),
+            "Plasma Generator must be operating with physical plasma before teardown");
+
+        helper.setBlock(controllerPos, Blocks.AIR);
+
+        helper.assertTrue(find(helper, CrystalnexusModBlocks.PLASMA_BLOCK.get()).isEmpty(),
+            "Breaking the controller must destroy every generated plasma block");
+        helper.assertTrue(find(helper, CrystalnexusModBlocks.HEATING_CORE.get()).isEmpty(),
+            "Breaking the controller must also destroy every heating core");
+        helper.succeed();
+    }
+
     private static List<BlockPos> find(GameTestHelper helper, Block block) {
         List<BlockPos> found = new ArrayList<>();
         for (int y = 0; y < 32; y++) for (int x = 0; x < 32; x++) for (int z = 0; z < 32; z++) {

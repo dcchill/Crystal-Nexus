@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  a",
+    "bcb",
+    "ded"
+  ],
+  "key": {
+    "a": {
+      "item": "crystalnexus:energized_silicon"
+    },
+    "b": {
+      "item": "crystalnexus:ferrosteel_machine_bolt"
+    },
+    "c": {
+      "item": "crystalnexus:silicon_wafer"
+    },
+    "d": {
+      "tag": "c:plates/ferrosteel"
+    },
+    "e": {
+      "item": "crystalnexus:battery_cell"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:structure_tracker",
+    "count": 1
+  }
+}

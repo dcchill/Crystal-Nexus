@@ -38,6 +38,7 @@ import net.crystalnexus.init.CrystalnexusModEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModDataComponents;
+import net.crystalnexus.init.CrystalnexusModFeatures;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class CrystalnexusMod {
 		modEventBus.addListener(ModChunkTickets::onRegisterTicketControllers);
 		CrystalnexusModSounds.REGISTRY.register(modEventBus);
 		CrystalnexusModBlocks.REGISTRY.register(modEventBus);
+		CrystalnexusModFeatures.REGISTRY.register(modEventBus);
 		CrystalnexusModBlockEntities.REGISTRY.register(modEventBus);
 		CrystalnexusModDataComponents.REGISTRY.register(modEventBus);
 		CrystalnexusModItems.REGISTRY.register(modEventBus);

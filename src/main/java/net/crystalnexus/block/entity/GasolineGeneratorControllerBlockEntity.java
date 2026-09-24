@@ -39,7 +39,7 @@ import java.util.List;
 public final class GasolineGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget {
     public static final int MIN_SHAFTS = 3;
     public static final int MAX_SHAFTS = 16;
-    public static final int GASOLINE_FE_PER_TICK_PER_SHAFT = 512;
+    public static final int GASOLINE_FE_PER_TICK_PER_SHAFT = 2_048;
     public static final int FUEL_PER_SHAFT = 250;
     public static final int FUEL_CYCLE_TICKS = 350;
     public static final int FUEL_CAPACITY = 16_000;

@@ -22,7 +22,7 @@ public final class ParticleAcceleratorGameTests {
             .map(holder -> holder.id()).collect(Collectors.toSet());
         Set<ResourceLocation> expected = java.util.Arrays.stream(new String[] {
             "accelerator_coal_to_diamond", "accelerator_dark_matter", "accelerator_lapis_dust",
-            "accelerator_nether_star", "accelerator_obsidrax_dust", "accelerator_oil",
+            "accelerator_amethyst_dust", "accelerator_nether_star", "accelerator_obsidrax_dust", "accelerator_oil",
             "accelerator_rubber_alt", "accelerator_wind_charge"
         }).map(path -> ResourceLocation.fromNamespaceAndPath("crystalnexus", path)).collect(Collectors.toSet());
 

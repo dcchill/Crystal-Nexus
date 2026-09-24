@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "crystalnexus:resource_meteor",
+  "step": "surface_structures"
+}

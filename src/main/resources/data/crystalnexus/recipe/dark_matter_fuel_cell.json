@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    { "item": "crystalnexus:dark_matter" },
+    { "item": "crystalnexus:reactor_fuel_cell" },
+    { "item": "crystalnexus:reactor_fuel_cell" },
+    { "item": "crystalnexus:reactor_fuel_cell" },
+    { "item": "crystalnexus:reactor_fuel_cell" }
+  ],
+  "result": { "id": "crystalnexus:dark_matter_fuel_cell", "count": 4 }
+}

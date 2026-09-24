@@ -23,6 +23,7 @@ import net.crystalnexus.block.entity.QuarryBlockEntity;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
+import net.crystalnexus.block.entity.HemochanterBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.client.resources.model.BakedModel;
@@ -138,6 +139,11 @@ public class ClientEventHandler {
 
 @SubscribeEvent
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<HemochanterBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.HEMOCHANTER.get(),
+        net.crystalnexus.client.renderer.HemochanterRenderer::new
+    );
 
     event.registerBlockEntityRenderer(
         (BlockEntityType<ConveyerBeltBaseBlockEntity>)

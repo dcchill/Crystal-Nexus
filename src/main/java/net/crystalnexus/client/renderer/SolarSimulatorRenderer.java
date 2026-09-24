@@ -71,7 +71,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
 
     @Override public AABB getRenderBoundingBox(SolarSimulatorControllerBlockEntity controller) {
         Vec3 center = controller.getFormationCenter();
-        return center == null ? new AABB(controller.getBlockPos()) : new AABB(center, center).inflate(5.0D);
+        return center == null ? new AABB(controller.getBlockPos()) : new AABB(center, center).inflate(11.0D);
     }
 
     @Override
@@ -87,27 +87,27 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
 
         Vec3 cameraOffset = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()
             .subtract(center);
-        float voidRadius = 3.85F + (float) Math.sin(time * 0.04D) * 0.08F;
+        float voidRadius = 9.00F + (float) Math.sin(time * 0.04D) * 0.08F;
         VertexConsumer backdrop = buffers.getBuffer(VOID_RENDER_TYPE);
         drawVoidSphere(poseStack.last().pose(), backdrop, voidRadius, cameraOffset);
         drawBackgroundStars(poseStack.last().pose(), backdrop, voidRadius - 0.06F, cameraOffset);
 
         ItemStack star = controller.getItem(4);
         renderSunGlow(star, poseStack, buffers, (float) time);
-        renderBody(star, poseStack, buffers, (float) (time * 1.8D % 360.0D), 1.15F, controller);
+        renderBody(star, poseStack, buffers, (float) (time * 1.8D % 360.0D), 2.30F, controller);
 
         for (int slot = 0; slot < 4; slot++) {
             ItemStack planet = controller.getItem(slot);
             if (planet.isEmpty()) continue;
-            float radius = 1.35F + slot * 0.62F;
+            float radius = 3.25F + slot * 1.25F;
             double speed = 0.025D + slot * 0.004D;
             float angle = (float) (time * speed % Mth.TWO_PI) + slot * Mth.HALF_PI;
             float verticalAngle = (float) (time * speed * 0.73D % Mth.TWO_PI) + slot;
             poseStack.pushPose();
             poseStack.translate(Mth.cos(angle) * radius,
-                Mth.sin(verticalAngle) * 0.28F, Mth.sin(angle) * radius);
+                Mth.sin(verticalAngle) * 0.56F, Mth.sin(angle) * radius);
             renderBody(planet, poseStack, buffers,
-                (float) (-time * (1.2D + slot * 0.2D) % 360.0D), 0.58F, controller);
+                (float) (-time * (1.2D + slot * 0.2D) % 360.0D), 0.87F, controller);
             poseStack.popPose();
         }
         poseStack.popPose();
@@ -131,7 +131,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
             : star.is(CrystalnexusModItems.PINK_STAR.get()) ? 0xFF62D8
             : star.is(CrystalnexusModItems.ORANGE_STAR.get()) ? 0xFF8A32 : 0xFFE06A;
         float pulse = 1.0F + Mth.sin(time * 0.16F) * 0.08F;
-        float outer = 1.48F * pulse;
+        float outer = 2.96F * pulse;
 
         poseStack.pushPose();
         poseStack.mulPose(Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation());
@@ -201,7 +201,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
         for (float[] star : stars) {
             star[0] = (float) Math.asin(random.nextDouble() * 2.0D - 1.0D);
             star[1] = random.nextFloat() * Mth.TWO_PI;
-            star[2] = 0.007F + random.nextFloat() * 0.012F;
+            star[2] = 0.014F + random.nextFloat() * 0.024F;
             star[3] = 175 + random.nextInt(81);
         }
         return stars;

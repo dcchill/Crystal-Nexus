@@ -2,33 +2,45 @@ package net.crystalnexus.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Axis;
 
 import net.crystalnexus.block.entity.ParticleAcceleratorControllerBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class ParticleAcceleratorControllerRenderer
 		implements BlockEntityRenderer<ParticleAcceleratorControllerBlockEntity> {
+	private static final int[] INPUT_SLOTS = {0, 2, 3, 4};
+	private static final Map<Long, Motion> MOTION = new HashMap<>();
+	private final ItemRenderer itemRenderer;
 
-	public ParticleAcceleratorControllerRenderer(BlockEntityRendererProvider.Context ctx) {}
+	private record Motion(float phase, float time) {}
+
+	public ParticleAcceleratorControllerRenderer(BlockEntityRendererProvider.Context ctx) {
+		itemRenderer = ctx.getItemRenderer();
+	}
 
 	@Override
 	public int getViewDistance() {
@@ -75,39 +87,39 @@ public class ParticleAcceleratorControllerRenderer
 
 		if (points.size() < 2) return;
 
-		// =====================================================
-		// HEAT COLOR: orange -> blue based on progress/maxProgress
-		// progress goes 0 -> max (your setup)
-		// =====================================================
+
 		double prog = be.getPersistentData().getDouble("progress");
 		double max = be.getPersistentData().getDouble("maxProgress");
 		float heat = (max > 0) ? (float) (prog / max) : 0f;
 		heat = Mth.clamp(heat, 0f, 1f);
 
-		// Start (orange) -> End (blue)
-		// Orange: (1.00, 0.45, 0.05)
-		// Blue:   (0.20, 0.55, 1.00)
+
 		float beamR = Mth.lerp(heat, 1.00f, 0.20f);
 		float beamG = Mth.lerp(heat, 0.45f, 0.55f);
 		float beamB = Mth.lerp(heat, 0.05f, 1.00f);
 
-		// Pulse animation
+		List<ItemStack> ingredients = new ArrayList<>();
+		for (int slot : INPUT_SLOTS) {
+			ItemStack ingredient = be.getItem(slot);
+			if (!ingredient.isEmpty()) ingredients.add(ingredient);
+		}
+		if (ingredients.isEmpty()) return;
+
+		// Pulse aimation
 		float pulse = 0.85f + 0.35f * Mth.sin((level.getGameTime() + partialTick) * 0.6f);
 
-		// Speed
-		float loopSeconds = 0.35f;
-		float ticksPerLoop = loopSeconds * 20f;
-		float t = ((level.getGameTime() + partialTick) % ticksPerLoop) / ticksPerLoop;
-		float head = t * points.size();
+		float ticksPerLoop = Mth.lerp(heat, 12f, 1.5f);
+		float time = level.getGameTime() + partialTick;
+		long motionKey = be.getBlockPos().asLong();
+		Motion previous = MOTION.get(motionKey);
+		float phase = previous == null ? (time / ticksPerLoop) % 1f
+				: (previous.phase + Mth.clamp(time - previous.time, 0f, 1f) / ticksPerLoop) % 1f;
+		MOTION.put(motionKey, new Motion(phase, time));
+		float head = phase * points.size();
 
-		// Trail
-		int trailCount = 9;
-		float trailStep = 0.5f;
-		float baseScale = 0.20f;
-
-		BlockState coreState = Blocks.SEA_LANTERN.defaultBlockState();
-		BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-		int fullBright = 0xF000F0;
+		int trailCount = Mth.ceil(Mth.lerp(heat, 6f, Math.min(128f, points.size() * 2f)));
+		float trailStep = Mth.lerp(heat, 0.8f, 0.35f);
+		float baseScale = Mth.lerp(heat, 0.18f, 0.40f);
 
 		for (int i = 0; i < trailCount; i++) {
 			float idx = head - i * trailStep;
@@ -127,7 +139,8 @@ public class ParticleAcceleratorControllerRenderer
 			double py = Mth.lerp(frac, pa.y, pb.y);
 			double pz = Mth.lerp(frac, pa.z, pb.z);
 
-			float headFactor = 1f - (i / (float) trailCount);
+			float trailFade = 1f - (i / (float) trailCount);
+			float headFactor = Mth.lerp(heat, trailFade, 1f);
 			float segScale = baseScale * headFactor * (0.75f + 0.55f * pulse * headFactor);
 			if (segScale <= 0.02f) continue;
 
@@ -135,12 +148,14 @@ public class ParticleAcceleratorControllerRenderer
 			poseStack.translate(0.5, 0.5, 0.5);
 			poseStack.translate(px, py, pz);
 
-			// CORE
-			poseStack.pushPose();
-			poseStack.scale(segScale, segScale, segScale);
-			poseStack.translate(-0.5, -0.5, -0.5);
-			brd.renderSingleBlock(coreState, poseStack, bufferSource, fullBright, packedOverlay);
-			poseStack.popPose();
+			if (i < ingredients.size()) {
+				poseStack.pushPose();
+				poseStack.mulPose(Axis.YP.rotationDegrees((level.getGameTime() + partialTick) * (30f + heat * 330f)));
+				poseStack.scale(segScale * 1.6f, segScale * 1.6f, segScale * 1.6f);
+				itemRenderer.renderStatic(ingredients.get(i), ItemDisplayContext.FIXED, LightTexture.FULL_BRIGHT,
+						OverlayTexture.NO_OVERLAY, poseStack, bufferSource, level, (int) be.getBlockPos().asLong() + i);
+				poseStack.popPose();
+			}
 
 			// GLOW (colored)
 			poseStack.pushPose();
@@ -158,9 +173,7 @@ public class ParticleAcceleratorControllerRenderer
 		}
 	}
 
-	// =====================================================
-	// Linear path
-	// =====================================================
+
 	private static ArrayList<Vec3> buildLinearPoints(Direction facing, int len) {
 		ArrayList<Vec3> pts = new ArrayList<>();
 		for (int i = 1; i <= len; i++) {
@@ -173,9 +186,6 @@ public class ParticleAcceleratorControllerRenderer
 		return pts;
 	}
 
-	// =====================================================
-	// Ring path (your original, corner-safe)
-	// =====================================================
 	private static ArrayList<Vec3> buildRingPoints(
 			ParticleAcceleratorControllerBlockEntity be,
 			Direction facing,
@@ -233,7 +243,6 @@ public class ParticleAcceleratorControllerRenderer
 
 				BlockPos np = pos.relative(d);
 
-				// close back into controller
 				if (np.equals(origin) && i >= 3) {
 					next = d;
 					options = 1;
@@ -248,7 +257,6 @@ public class ParticleAcceleratorControllerRenderer
 
 			if (options != 1 || next == null) break;
 
-			// if closing into controller, stop after adding last segment
 			if (pos.relative(next).equals(origin)) break;
 
 			dir = next;
@@ -257,7 +265,6 @@ public class ParticleAcceleratorControllerRenderer
 
 		if (pts.size() < 4) return new ArrayList<>();
 
-		// sharp corner at controller
 		pts.add(new Vec3(0, 0, 0));
 		pts.add(pts.get(0));
 
@@ -270,9 +277,6 @@ public class ParticleAcceleratorControllerRenderer
 				|| st.getBlock() == CrystalnexusModBlocks.ELECTROMAGNET.get();
 	}
 
-	// =====================================================
-	// Transparent colored glow cube (no texture)
-	// =====================================================
 	private static void renderGlowCube(
 			PoseStack poseStack,
 			MultiBufferSource buffer,

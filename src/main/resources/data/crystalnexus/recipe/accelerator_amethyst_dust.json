@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [{ "item": "crystalnexus:amethyst_dust" }],
+  "output": { "id": "minecraft:quartz", "count": 2 },
+  "additional_outputs": [
+    { "id": "crystalnexus:silicon", "count": 1 },
+    { "id": "crystalnexus:crystal_alloy_nugget", "count": 1 }
+  ]
+}

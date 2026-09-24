@@ -40,7 +40,7 @@ public class PipeStraightBER implements BlockEntityRenderer<PipeStraightBlockEnt
             }
         }
 
-        FluidStack fluid = pipe.getFluidTank().getFluid();
+        FluidStack fluid = pipe.getDisplayFluid();
         if (fluid.isEmpty()) return;
 
         IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(fluid.getFluid());

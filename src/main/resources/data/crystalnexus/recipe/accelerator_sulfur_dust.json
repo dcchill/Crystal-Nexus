@@ -1,0 +1,22 @@
+{
+  "type": "crystalnexus:accelerator_jei",
+  "ingredients": [
+    {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    {
+      "item": "crystalnexus:sulfur_dust"
+    },
+    {
+      "item": "crystalnexus:sulfur_dust"
+    }
+  ],
+  "output": { "id": "crystalnexus:carbon_dust", "count": 1 },
+  "additional_outputs": [
+    { "id": "crystalnexus:sulfur_dust", "count": 1 },
+    { "id": "minecraft:gunpowder", "count": 1 }
+  ]
+}

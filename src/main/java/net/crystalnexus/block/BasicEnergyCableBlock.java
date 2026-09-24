@@ -142,8 +142,9 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         BlockPos otherPos = pos.relative(dir);
         BlockState otherState = level.getBlockState(otherPos);
 
-        // Connect to other cables
-        if (otherState.getBlock() == this) return true;
+        // All cable tiers share one network.
+        if (otherState.getBlock() instanceof BasicEnergyCableBlock
+            || otherState.getBlock() instanceof EnergyCableMk2Block) return true;
 
         // Connect to blocks with energy capability
         if (level instanceof Level l && l instanceof ILevelExtension ext) {

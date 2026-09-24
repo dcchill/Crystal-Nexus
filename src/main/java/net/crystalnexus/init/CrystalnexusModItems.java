@@ -161,6 +161,7 @@ import net.crystalnexus.item.CarbonChipItem;
 import net.crystalnexus.item.CarbonBatteryCellItem;
 import net.crystalnexus.item.CarbonAccelerationUpgradeItem;
 import net.crystalnexus.item.BuildGunItem;
+import net.crystalnexus.item.StructureTrackerItem;
 import net.crystalnexus.item.BlutoniumWasteItem;
 import net.crystalnexus.item.BlutoniumNuggetItem;
 import net.crystalnexus.item.BlutoniumIngotItem;
@@ -226,6 +227,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> MACHINE_FRAME = block(CrystalnexusModBlocks.MACHINE_FRAME);
 	public static final DeferredItem<Item> FLESH_BLOCK = block(CrystalnexusModBlocks.FLESH_BLOCK);
 	public static final DeferredItem<Item> HEMOLYZER = block(CrystalnexusModBlocks.HEMOLYZER);
+	public static final DeferredItem<Item> HEMOCHANTER = block(CrystalnexusModBlocks.HEMOCHANTER);
 	public static final DeferredItem<Item> FLESH_MACHINE_FRAME = block(CrystalnexusModBlocks.FLESH_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_MACHINE_FRAME = block(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_ACCELERATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR);
@@ -276,11 +278,13 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> METEORITE_ALLOY = REGISTRY.register("meteorite_alloy", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> HOT_METEORITE_ALLOY = REGISTRY.register("hot_meteorite_alloy", () -> new HotIngotItem());
 	public static final DeferredItem<Item> METEORITE_ALLOY_BLOCK = block(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK);
+	public static final DeferredItem<Item> METEORITE_SCRAP_BLOCK = block(CrystalnexusModBlocks.METEORITE_SCRAP_BLOCK);
 	public static final DeferredItem<Item> RESOURCE_COMET = REGISTRY.register("resource_comet", net.crystalnexus.item.ResourceCometItem::new);
 	public static final DeferredItem<Item> COMET_FORGE_CONTROLLER = block(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER);
 	public static final DeferredItem<Item> METEORITE_SHEET = REGISTRY.register("meteorite_sheet", MeteoriteSheetItem::new);
 	public static final DeferredItem<Item> OBSIDIAN_DUST = REGISTRY.register("obsidian_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> LAPIS_DUST = REGISTRY.register("lapis_dust", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> AMETHYST_DUST = REGISTRY.register("amethyst_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> AZURINE_DUST = REGISTRY.register("azurine_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TUNGSTEN_DUST = REGISTRY.register("obsidrax_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> HOT_TUNGSTEN = REGISTRY.register("hot_obsidrax", () -> new HotIngotItem());
@@ -494,6 +498,8 @@ public class CrystalnexusModItems {
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 0.75));
 	public static final DeferredItem<Item> OVERTONIUM_FUEL_CELL = REGISTRY.register("overtonium_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 3.0, 5.0));
+	public static final DeferredItem<Item> DARK_MATTER_FUEL_CELL = REGISTRY.register("dark_matter_fuel_cell",
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 0.05, 0.25));
 	public static final DeferredItem<Item> SPENT_REACTOR_CELL = REGISTRY.register("spent_reactor_cell",
 			() -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> OIL_FUEL_CELL = REGISTRY.register("oil_fuel_cell", OilFuelCellItem::new);
@@ -653,6 +659,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> LARGE_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.LARGE_SULFUR_CRYSTAL);
 	public static final DeferredItem<Item> SULFUR_CLUSTER = block(CrystalnexusModBlocks.SULFUR_CLUSTER);
 	public static final DeferredItem<Item> BUILD_GUN = REGISTRY.register("build_gun", BuildGunItem::new);
+	public static final DeferredItem<Item> STRUCTURE_TRACKER = REGISTRY.register("structure_tracker", StructureTrackerItem::new);
 	public static final DeferredItem<Item> BLUEPRINT_BASE = block(CrystalnexusModBlocks.BLUEPRINT_BASE);
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
 	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);

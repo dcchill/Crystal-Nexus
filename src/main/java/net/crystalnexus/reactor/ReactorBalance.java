@@ -31,6 +31,11 @@ public final class ReactorBalance {
 	public static final double CARBON_MODERATOR_HEAT_REDUCTION = 0.75; // heat reduction from carbon moderators
 	public static final int CARBON_MODERATOR_RANGE = 2; // how far carbon moderators affect things
 
+	/** Dark matter cells resonate with every other installed dark matter cell. */
+	public static int darkMatterResonanceMultiplier(int cellCount) {
+		return Math.max(1, cellCount);
+	}
+
 	private ReactorBalance() {
 	}
 }

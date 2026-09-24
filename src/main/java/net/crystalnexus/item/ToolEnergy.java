@@ -24,7 +24,8 @@ public final class ToolEnergy {
             || item instanceof MiningLaserItem || item instanceof OreScannerItem
             || item instanceof GeigerCounterItem || item instanceof GravityGunItem
             || item instanceof BuildGunItem || item instanceof HoverPackItem
-            || item instanceof LaserSaberItem || item instanceof FlorathaneWandItem;
+            || item instanceof LaserSaberItem || item instanceof FlorathaneWandItem
+            || item instanceof StructureTrackerItem;
     }
 
     public static int barWidth(ItemStack stack) {

@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [{ "item": "minecraft:amethyst_shard" }],
+  "output": { "id": "crystalnexus:amethyst_dust", "count": 2 }
+}

@@ -25,6 +25,7 @@ public class ModCapabilities {
             CrystalnexusModItems.GEIGER_COUNTER.get(),
             CrystalnexusModItems.GRAVITY_GUN.get(),
             CrystalnexusModItems.BUILD_GUN.get(),
+            CrystalnexusModItems.STRUCTURE_TRACKER.get(),
             CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get(),
             CrystalnexusModItems.LASER_SABER.get(),
             CrystalnexusModItems.FLORATHANE_WAND.get());

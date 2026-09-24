@@ -224,6 +224,15 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         setChanged();
     }
 
+    private void destroyPlasmaBlocks(ServerLevel level) {
+        for (BlockPos pos : List.copyOf(plasmaPositions)) {
+            if (level.getBlockState(pos).is(CrystalnexusModBlocks.PLASMA_BLOCK.get()))
+                level.destroyBlock(pos, false);
+        }
+        plasmaPositions.clear();
+        setChanged();
+    }
+
     private void setHeatingCoresActive(List<BlockPos> cores, boolean active) {
         if (level == null) return;
         for (BlockPos pos : cores) {
@@ -235,6 +244,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     private void plasmaArcFailure(ServerLevel level, List<BlockPos> cores) {
         Vec3 center = formationCenter == null ? Vec3.atCenterOf(worldPosition) : formationCenter;
+        destroyPlasmaBlocks(level);
         setHeatingCoresActive(cores, false);
         cores.stream().filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.HEATING_CORE.get()))
             .forEach(pos -> level.destroyBlock(pos, false));

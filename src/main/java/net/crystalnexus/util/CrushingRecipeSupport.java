@@ -31,19 +31,22 @@ public final class CrushingRecipeSupport {
 		if (input.isEmpty())
 			return ItemStack.EMPTY;
 
-		for (RecipeHolder<OreCrushingJeiRecipe> holder : level.getRecipeManager().getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE)) {
-			OreCrushingJeiRecipe recipe = holder.value();
-			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
-				return machineTier.supports(recipe.minimumMachineTier())
-					? recipe.getResultItem(level.registryAccess()) : ItemStack.EMPTY;
-		}
-
+		// Material profiles are Crystal Nexus's canonical raw-material recipes.
+		// Resolve them before recipes supplied by integrations so raw material always
+		// yields the configured dust amount (two by default).
 		var generated = MaterialProcessingCatalog.get(level).source(input);
 		if (generated.isPresent()) {
 			var material = generated.get();
 			return machineTier.supports(material.profile().minimumMachineTier())
 				&& !material.profile().disabledStages().contains("crushing")
 				? MaterialProcessingCatalog.generatedCrushingResult(material, input) : ItemStack.EMPTY;
+		}
+
+		for (RecipeHolder<OreCrushingJeiRecipe> holder : level.getRecipeManager().getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE)) {
+			OreCrushingJeiRecipe recipe = holder.value();
+			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
+				return machineTier.supports(recipe.minimumMachineTier())
+					? recipe.getResultItem(level.registryAccess()) : ItemStack.EMPTY;
 		}
 
 		SingleRecipeInput recipeInput = new SingleRecipeInput(input);
@@ -63,19 +66,26 @@ public final class CrushingRecipeSupport {
 		Map<String, OreCrushingJeiRecipe> unique = new LinkedHashMap<>();
 		level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || isExternalCrushing(recipe))
+				// Generated material recipes are registered separately. Do not also show
+				// an integration's alternative for the same raw material.
+				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || !isMaterialSource(level, recipe))
 				.map(recipe -> toJeiRecipe(recipe, level))
 				.filter(recipe -> recipe != null)
-				.forEach(recipe -> unique.putIfAbsent(signature(recipe), recipe));
+				.forEach(recipe -> unique.putIfAbsent(inputSignature(recipe), recipe));
 		return List.copyOf(unique.values());
 	}
 
-	private static String signature(OreCrushingJeiRecipe recipe) {
+	private static String inputSignature(OreCrushingJeiRecipe recipe) {
 		String inputs = recipe.getIngredients().stream()
 				.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
 				.map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()) + "#" + stack.getCount())
 				.sorted().toList().toString();
-		ItemStack output = recipe.getResultItem(null);
-		return inputs + "->" + BuiltInRegistries.ITEM.getKey(output.getItem()) + "#" + output.getCount();
+		return inputs;
+	}
+
+	private static boolean isMaterialSource(Level level, Recipe<?> recipe) {
+		return ingredients(recipe).stream().flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
+				.anyMatch(input -> MaterialProcessingCatalog.get(level).source(input).isPresent());
 	}
 
 	public static List<OreCrushingJeiRecipe> generatedJeiRecipes(Level level) {

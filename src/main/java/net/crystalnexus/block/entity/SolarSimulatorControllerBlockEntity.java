@@ -49,7 +49,7 @@ import java.util.stream.IntStream;
 
 public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
     public static final int DURATION = 3;
-    private static final int ENERGY_PER_ITEM = 200_000;
+    private static final int ENERGY_PER_ITEM = 600_000;
     private static final int STAR_SLOT = 4;
     private static final int REQUIRED_ENERGY_TRANSFER = GravitationalArrayCostSchedule.maximumStep(
         (long) STAR_SLOT * 8 * ENERGY_PER_ITEM, DURATION);

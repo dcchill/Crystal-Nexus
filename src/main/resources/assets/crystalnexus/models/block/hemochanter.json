@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/enchanting_table",
+  "textures": {
+    "top": "crystalnexus:block/flesh_top",
+    "side": "crystalnexus:block/hemochanter_side",
+    "bottom": "crystalnexus:block/purebottom",
+    "particle": "crystalnexus:block/hemochanter_side"
+  }
+}

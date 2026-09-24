@@ -182,6 +182,7 @@ import net.crystalnexus.block.CrystalGuideBlock;
 import net.crystalnexus.block.CrystalCrusherBlock;
 import net.crystalnexus.block.MasticatorBlock;
 import net.crystalnexus.block.HemolyzerBlock;
+import net.crystalnexus.block.HemochanterBlock;
 import net.crystalnexus.block.CrudeOilBlock;
 import net.crystalnexus.block.CraftingFactoryBlock;
 import net.crystalnexus.block.CryogenicFlashFreezerHatchBlock;
@@ -260,6 +261,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> FLESH_BLOCK = REGISTRY.register("flesh_block", FleshBlock::new);
 	public static final DeferredBlock<Block> FLESH_MACHINE_FRAME = REGISTRY.register("flesh_machine_frame", FleshMachineFrameBlock::new);
 	public static final DeferredBlock<Block> HEMOLYZER = REGISTRY.register("hemolyzer", HemolyzerBlock::new);
+	public static final DeferredBlock<Block> HEMOCHANTER = REGISTRY.register("hemochanter", HemochanterBlock::new);
 	public static final DeferredBlock<Block> CHLOROPHYTE_MACHINE_FRAME = REGISTRY.register("chlorophyte_machine_frame", ChlorophyteMachineFrameBlock::new);
 	public static final DeferredBlock<Block> CHLOROPHYTE_ACCELERATOR = REGISTRY.register("chlorophyte_accelerator", ChlorophyteAcceleratorBlock::new);
 	public static final DeferredBlock<Block> BLUTONIUM_ORE = REGISTRY.register("blutonium_ore", BlutoniumOreBlock::new);
@@ -493,6 +495,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> METEORITE_ALLOY_BLOCK = REGISTRY.register("meteorite_alloy_block",
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()
 					.lightLevel(state -> 4)));
+	public static final DeferredBlock<Block> METEORITE_SCRAP_BLOCK = REGISTRY.register("meteorite_scrap_block",
+			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> COMET_FORGE_CONTROLLER = REGISTRY.register("comet_forge_controller", CometForgeControllerBlock::new);
 	public static final DeferredBlock<Block> TUNGSTEN_MACHINE_FRAME = REGISTRY.register("obsidrax_machine_frame", MachineFrameBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CASING = REGISTRY.register("assembly_line_casing", net.crystalnexus.block.AssemblyLineCasingBlock::new);

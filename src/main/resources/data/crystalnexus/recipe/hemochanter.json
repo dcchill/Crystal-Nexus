@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["fof", "omo", "fff"],
+  "key": {
+    "f": { "item": "crystalnexus:flesh_block" },
+    "m": { "item": "crystalnexus:flesh_machine_frame" },
+    "o": { "item": "crystalnexus:organ" }
+  },
+  "result": { "id": "crystalnexus:hemochanter", "count": 1 }
+}

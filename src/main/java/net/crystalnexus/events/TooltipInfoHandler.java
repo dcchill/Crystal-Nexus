@@ -25,7 +25,8 @@ public class TooltipInfoHandler {
 	private static final Map<String, String[]> TOOLTIP_DATA = new HashMap<>();
 
 	static {
-        addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
+		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
+		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
 
 		// POWER & ENERGY GENERATION
 
@@ -421,6 +422,9 @@ public class TooltipInfoHandler {
 		addTooltip("overfuel_cell",
 				"Overfuel Cell.",
 				"High-energy fuel cell.");
+		addTooltip("dark_matter_fuel_cell",
+				"Weak alone; resonates with every Dark Matter Fuel Cell in the reactor.",
+				"Total FE output from these cells grows with the square of their count.");
 		addTooltip("biomass",
 				"Processed organic biomass.",
 				"Fuel source from composting.");
@@ -468,6 +472,11 @@ public class TooltipInfoHandler {
 				"Can pull materials from inventory, shulker boxes, and Container items you are carrying.",
 				"Creative mode ignores material requirements.",
 				"Placed storage blocks keep the block but do not restore stored item contents.");
+		addTooltip("structure_tracker",
+				"Locates a selected world structure or Resource Meteor.",
+				"Right Click scans for the selected structure using 5,000 FE.",
+				"The held compass uses 1 FE per tick after a successful scan.",
+				"Shift Right Click changes the selected structure.");
 
 		addTooltip("jet_pack_chestplate",
 				"Jetpack - continuous thrust flight.",

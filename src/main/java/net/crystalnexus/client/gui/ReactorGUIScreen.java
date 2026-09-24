@@ -95,10 +95,9 @@ public final class ReactorGUIScreen extends AbstractContainerScreen<ReactorGUIMe
             graphics.drawString(font, Component.literal("Heat " + (int) data.getDouble("heat") + " C"), 88, 103, 0xffa04520, false);
             graphics.drawString(font, Component.literal("Energy " + compact(controller.getEnergyStorage().getEnergyStored())), 8, 115, 0xff205b78, false);
             graphics.drawString(font, Component.literal("Coolant " + compact(controller.getFluidTank().getFluidAmount()) + " mB"), 88, 115, 0xff205b78, false);
+			graphics.drawString(font, Component.literal("Heat/t +" + compact(data.getDouble("heatGenerated"))
+					+ " -" + compact(data.getDouble("heatRemoved"))), 8, 127, 0xffa04520, false);
         }
-        int first = menu.page() * 9 + 1;
-        int last = Math.min(menu.rodCount(), first + 8);
-        graphics.drawString(font, Component.literal("Fuel rods " + first + "-" + last + " / " + menu.rodCount()), 8, 127, 0xff404040, false);
 		graphics.drawString(font, Component.literal("All rods"), MASTER_SLIDER_X - 8, 132, 0xff404040, false);
 		graphics.drawString(font, Component.literal(selectedMasterInsertion + "%"), MASTER_SLIDER_X - 3, 142, 0xff404040, false);
     }

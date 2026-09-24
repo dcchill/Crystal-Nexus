@@ -34,6 +34,14 @@ public final class ReactorSimulation {
 			return;
 		}
 		double temperature = Math.max(ReactorBalance.AMBIENT_TEMPERATURE, data.getDouble("heat"));
+		int darkMatterCells = 0;
+		for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
+			if (world.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core) {
+				for (int slot = 0; slot < 3; slot++) {
+					if (core.getItem(slot).is(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get())) darkMatterCells++;
+				}
+			}
+		}
 		double output = 0, heat = 0, activeRods = 0;
 		for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
 			if (!(world.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
@@ -41,7 +49,11 @@ public final class ReactorSimulation {
 					? control.getReactivity() : 1.0;
 			for (int slot = 0; slot < 3; slot++) {
 				if (!(core.getItem(slot).getItem() instanceof ReactorFuelCellItem cell)) continue;
-				output += rod.output() * insertion * cell.feMultiplier() / 3.0;
+				double feMultiplier = cell.feMultiplier();
+				if (core.getItem(slot).is(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get())) {
+					feMultiplier *= ReactorBalance.darkMatterResonanceMultiplier(darkMatterCells);
+				}
+				output += rod.output() * insertion * feMultiplier / 3.0;
 				heat += rod.heat() * insertion * cell.heatMultiplier() / 3.0;
 				activeRods += insertion / 3.0;
 			}

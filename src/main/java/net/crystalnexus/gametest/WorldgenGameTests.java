@@ -32,6 +32,9 @@ public final class WorldgenGameTests {
         helper.assertTrue(invertium != null
                         && biomes.getOrThrow(Biomes.END_HIGHLANDS).getGenerationSettings().hasFeature(invertium),
                 "invertium_ore must be registered in End biome generation");
+        PlacedFeature meteor = placedFeatures.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", "resource_meteor"));
+        helper.assertTrue(meteor != null && biomes.getOrThrow(Biomes.PLAINS).getGenerationSettings().hasFeature(meteor),
+                "resource_meteor must be registered in overworld biome generation");
         helper.succeed();
     }
 

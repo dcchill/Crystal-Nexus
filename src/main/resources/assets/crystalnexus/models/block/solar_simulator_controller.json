@@ -1,13 +1,13 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "crystalnexus:block/carbon_plate_block",
-    "up": "crystalnexus:block/carbon_plate_block",
+    "down": "crystalnexus:block/obsidrax_block",
+    "up": "crystalnexus:block/obsidrax_block",
     "north": "crystalnexus:block/solar_simulator_controller",
-    "east": "crystalnexus:block/carbon_plate_block",
-    "south": "crystalnexus:block/carbon_plate_block",
-    "west": "crystalnexus:block/carbon_plate_block",
-    "particle": "crystalnexus:block/carbon_plate_block"
+    "east": "crystalnexus:block/obsidrax_block",
+    "south": "crystalnexus:block/obsidrax_block",
+    "west": "crystalnexus:block/obsidrax_block",
+    "particle": "crystalnexus:block/obsidrax_block"
   },
   "render_type": "solid"
 }

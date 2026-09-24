@@ -40,7 +40,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         if (fluid.isEmpty() || totalAmount <= 0) return;
 
         // Bottom-up member ordering (client)
-        List<BlockPos> members = collectComponent(level, controller.getBlockPos());
+        List<BlockPos> members = collectComponent(level, controller.getBlockPos(), controller);
         members.sort(Comparator.<BlockPos>comparingInt(BlockPos::getY)
                 .thenComparingInt(BlockPos::getX)
                 .thenComparingInt(BlockPos::getZ));
@@ -102,7 +102,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         poseStack.popPose();
     }
 
-    private static List<BlockPos> collectComponent(Level level, BlockPos start) {
+    private static List<BlockPos> collectComponent(Level level, BlockPos start, TankBlockEntity type) {
         ArrayDeque<BlockPos> q = new ArrayDeque<>();
         HashSet<BlockPos> out = new HashSet<>();
         q.add(start);
@@ -113,7 +113,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
                 if (out.contains(n)) continue;
-                if (level.getBlockEntity(n) instanceof TankBlockEntity tank && tank.getType() == level.getBlockEntity(start).getType()) {
+                if (level.getBlockEntity(n) instanceof TankBlockEntity tank && tank.getType() == type.getType()) {
                     out.add(n);
                     q.add(n);
                 }

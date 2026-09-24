@@ -36,8 +36,8 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	// TOTAL FE drained per tick (split across all magnets)
 	private static final int TOTAL_FE_PER_TICK = 5120;
 
-	private static final double BASE_COOK_TIME = 3500;     // time at MIN_MAGNETS
-	private static final double MIN_COOK_TIME  = 100;     // hard floor
+	private static final double BASE_COOK_TIME = 875;      // time at MIN_MAGNETS
+	private static final double MIN_COOK_TIME  = 25;       // hard floor
 	private static final double MAGNET_EFFICIENCY = 0.25;   // 1.0 = strong effect, 0.5 = weaker
 
 	// Input slots (unordered)

@@ -3,12 +3,14 @@ package net.crystalnexus.procedures;
 import com.mojang.authlib.GameProfile;
 import net.crystalnexus.cli.DepotCraftingService;
 import net.crystalnexus.data.DepotSavedData;
+import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.util.CrushingRecipeSupport;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -24,6 +26,16 @@ public final class CrystalCrusherGameTests {
 	}
 
 	@GameTest(template = "zero_point")
+	public static void crushesLapisLazuliButNotLapisOre(GameTestHelper helper) {
+		ItemStack lapisDust = CrushingRecipeSupport.findResult(helper.getLevel(), new ItemStack(Items.LAPIS_LAZULI));
+		helper.assertTrue(lapisDust.is(CrystalnexusModItems.LAPIS_DUST.get()) && lapisDust.getCount() == 2,
+				"Lapis lazuli must crush into two Lapis Dust");
+		helper.assertTrue(CrushingRecipeSupport.findResult(helper.getLevel(), new ItemStack(Blocks.LAPIS_ORE)).isEmpty(),
+				"Lapis ore must not crush into Lapis Dust");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
 	public static void supportsModdedCrushingRecipes(GameTestHelper helper) {
 		if (!ModList.get().isLoaded("mekanism")) {
 			helper.succeed();
@@ -35,6 +47,17 @@ public final class CrystalCrusherGameTests {
 				.anyMatch(recipe -> recipe.getIngredients().getFirst().test(new ItemStack(Items.BONE))
 						&& recipe.getResultItem(helper.getLevel().registryAccess()).is(Items.BONE_MEAL)),
 				"Expected the Mekanism bone recipe in the Crystal Crusher JEI entries");
+		ItemStack rawCopper = new ItemStack(Items.RAW_COPPER);
+		ItemStack copperDust = CrushingRecipeSupport.findResult(helper.getLevel(), rawCopper);
+		helper.assertTrue(!copperDust.isEmpty() && copperDust.getCount() == 2,
+				"Crystal Nexus raw-material crushing must produce two dust");
+		helper.assertTrue(CrushingRecipeSupport.generatedJeiRecipes(helper.getLevel()).stream()
+				.anyMatch(recipe -> recipe.getIngredients().getFirst().test(rawCopper)
+						&& recipe.getResultItem(helper.getLevel().registryAccess()).getCount() == 2),
+				"Expected the Crystal Nexus two-dust copper recipe");
+		helper.assertTrue(CrushingRecipeSupport.jeiRecipes(helper.getLevel()).stream()
+				.noneMatch(recipe -> recipe.getIngredients().getFirst().test(rawCopper)),
+				"External copper crushing must not duplicate the Crystal Nexus material recipe");
 		helper.succeed();
 	}
 
