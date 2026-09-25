@@ -39,10 +39,11 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
     private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
     private int progress;
     private int operationLevel;
+    private int operationTicks = 40;
     private final EnchantingTableBlockEntity book;
     private final ContainerData data = new ContainerData() {
-        @Override public int get(int index) { return index == 0 ? progress : processingTicks(operationLevel); }
-        @Override public void set(int index, int value) { if (index == 0) progress = value; }
+        @Override public int get(int index) { return index == 0 ? progress : operationTicks; }
+        @Override public void set(int index, int value) { if (index == 0) progress = value; else operationTicks = value; }
         @Override public int getCount() { return 2; }
     };
     private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0) { @Override public int receiveEnergy(int amount, boolean simulate) { int received = super.receiveEnergy(amount, simulate); if (received > 0 && !simulate) sync(); return received; } };
@@ -59,11 +60,15 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
         if (level.isClientSide) { EnchantingTableBlockEntity.bookAnimationTick(level, pos, state, blockEntity.book); return; }
         ItemStack input = blockEntity.getItem(0);
         if (blockEntity.progress > 0 && blockEntity.operationLevel == 0) blockEntity.progress = 0;
-        if (blockEntity.progress == 0) blockEntity.operationLevel = randomUpgradeableLevel(level, input);
+        if (blockEntity.progress == 0) {
+            blockEntity.operationLevel = randomUpgradeableLevel(level, input);
+            blockEntity.operationTicks = processingTicks(blockEntity.operationLevel);
+        }
         int bloodCost = bloodCost(blockEntity.operationLevel), energyCost = energyCost(blockEntity.operationLevel);
         if (blockEntity.operationLevel == 0 || blockEntity.bloodTank.getFluidAmount() < bloodCost || (blockEntity.progress == 0 && blockEntity.energy.getEnergyStored() < energyCost)) {
             if (blockEntity.progress != 0) { blockEntity.progress = 0; blockEntity.setChanged(); }
             blockEntity.operationLevel = 0;
+            blockEntity.operationTicks = 40;
             return;
         }
         if (blockEntity.progress == 0) blockEntity.energy.extractEnergy(energyCost, false);
@@ -72,6 +77,7 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
             blockEntity.bloodTank.drain(bloodCost, IFluidHandler.FluidAction.EXECUTE);
             blockEntity.progress = 0;
             blockEntity.operationLevel = 0;
+            blockEntity.operationTicks = 40;
         }
         blockEntity.setChanged();
     }
@@ -82,7 +88,7 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
         enchantments.entrySet().forEach(entry -> { if (entry.getIntValue() < MAX_LEVEL) eligible.add(entry.getIntValue()); });
         return eligible.isEmpty() ? 0 : eligible.get(level.random.nextInt(eligible.size()));
     }
-    private static int bloodCost(int level) { return 250 * level; }
+    private static int bloodCost(int level) { return 500 * level; }
     private static int energyCost(int level) { return 500 * level * level; }
     private static int processingTicks(int level) { return Math.max(40, 40 * level); }
     private static void upgradeRandomEnchantment(Level level, ItemStack stack, int enchantmentLevel) {
@@ -98,7 +104,7 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
 
     @Override protected Component getDefaultName() { return Component.translatable("block.crystalnexus.hemochanter"); }
     @Override protected AbstractContainerMenu createMenu(int id, Inventory inventory) { return new HemochanterMenu(id, inventory, this); }
-    @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) { super.loadAdditional(tag, registries); stacks = NonNullList.withSize(1, ItemStack.EMPTY); ContainerHelper.loadAllItems(tag, stacks, registries); if (tag.get("blood") instanceof CompoundTag blood) bloodTank.readFromNBT(registries, blood); if (tag.get("energy") instanceof IntTag stored) energy.deserializeNBT(registries, stored); progress = tag.getInt("progress"); operationLevel = tag.getInt("operationLevel"); }
+    @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) { super.loadAdditional(tag, registries); stacks = NonNullList.withSize(1, ItemStack.EMPTY); ContainerHelper.loadAllItems(tag, stacks, registries); if (tag.get("blood") instanceof CompoundTag blood) bloodTank.readFromNBT(registries, blood); if (tag.get("energy") instanceof IntTag stored) energy.deserializeNBT(registries, stored); progress = tag.getInt("progress"); operationLevel = tag.getInt("operationLevel"); operationTicks = processingTicks(operationLevel); }
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) { super.saveAdditional(tag, registries); ContainerHelper.saveAllItems(tag, stacks, registries); tag.put("blood", bloodTank.writeToNBT(registries, new CompoundTag())); tag.put("energy", energy.serializeNBT(registries)); tag.putInt("progress", progress); tag.putInt("operationLevel", operationLevel); }
     private void sync() { setChanged(); if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2); }
     @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }

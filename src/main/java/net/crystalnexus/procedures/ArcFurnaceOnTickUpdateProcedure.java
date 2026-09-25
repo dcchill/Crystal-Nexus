@@ -64,21 +64,28 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 	static boolean matches(ArcFurnaceRecipe recipe, ItemStack first, ItemStack second) {
 		if (recipe.getIngredients().size() == 1) {
 			Ingredient ingredient = recipe.getIngredients().getFirst();
-			return ingredient.test(first) && second.isEmpty() || ingredient.test(second) && first.isEmpty();
+			int count = recipe.ingredientCount(0);
+			return ingredient.test(first) && first.getCount() >= count && second.isEmpty()
+				|| ingredient.test(second) && second.getCount() >= count && first.isEmpty();
 		}
 		if (first.isEmpty() || second.isEmpty() || recipe.getIngredients().size() != 2) return false;
 		Ingredient a = recipe.getIngredients().get(0), b = recipe.getIngredients().get(1);
-		return a.test(first) && b.test(second) || a.test(second) && b.test(first);
+		return a.test(first) && first.getCount() >= recipe.ingredientCount(0)
+			&& b.test(second) && second.getCount() >= recipe.ingredientCount(1)
+			|| a.test(second) && second.getCount() >= recipe.ingredientCount(0)
+			&& b.test(first) && first.getCount() >= recipe.ingredientCount(1);
 	}
 
 	private static void consumeInputs(ArcFurnaceBlockEntity furnace, ArcFurnaceRecipe recipe) {
 		if (recipe.getIngredients().size() == 1) {
 			int slot = recipe.getIngredients().getFirst().test(furnace.getItem(0)) ? 0 : 1;
-			furnace.removeItem(slot, 1);
+			furnace.removeItem(slot, recipe.ingredientCount(0));
 			return;
 		}
-		furnace.removeItem(0, 1);
-		furnace.removeItem(1, 1);
+		Ingredient first = recipe.getIngredients().get(0);
+		int firstSlot = first.test(furnace.getItem(0)) && furnace.getItem(0).getCount() >= recipe.ingredientCount(0) ? 0 : 1;
+		furnace.removeItem(firstSlot, recipe.ingredientCount(0));
+		furnace.removeItem(1 - firstSlot, recipe.ingredientCount(1));
 	}
 
 	private static boolean canStack(ItemStack current, ItemStack output) {

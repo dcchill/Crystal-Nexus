@@ -52,7 +52,7 @@ public final class GasolineGeneratorControllerBlockEntity extends BlockEntity im
         @Override protected void onContentsChanged() { sync(); }
     };
     private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(ENERGY_CAPACITY,
-        MachineEnergyOutputBlockEntity.MAX_TRANSFER, this::sync);
+        Integer.MAX_VALUE, this::sync);
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private boolean formed;

@@ -292,6 +292,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				multiblockStructure("zero_point", CrystalnexusModBlocks.ZERO_POINT.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("gravitational_array_new", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reaction", CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("mega_chem_reactor", CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("comet_forge", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
@@ -341,6 +342,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), ReactionJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem()), EnergyExtraction_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ZERO_POINT.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem()), MultiblockStructure_Type);

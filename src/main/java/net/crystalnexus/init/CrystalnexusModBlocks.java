@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.network.chat.Component;
 
 import net.crystalnexus.block.ZeroPointBlock;
+import net.crystalnexus.block.ChlorophyteSolarPanelBlock;
 import net.crystalnexus.block.CometForgeControllerBlock;
 import net.crystalnexus.block.ArcFurnaceBlock;
 import net.crystalnexus.block.ArgonBlock;
@@ -203,6 +204,7 @@ import net.crystalnexus.block.ChlorophyteBlockBlock;
 import net.crystalnexus.block.ChlorophyteAcceleratorBlock;
 import net.crystalnexus.block.ChemicalReactionChamberBlock;
 import net.crystalnexus.block.FluidChemicalReactionChamberBlock;
+import net.crystalnexus.block.MegaChemicalReactionChamberBlock;
 import net.crystalnexus.block.FleshBlock;
 import net.crystalnexus.block.FleshMachineFrameBlock;
 import net.crystalnexus.block.RefineryBlock;
@@ -297,6 +299,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTION_CHAMBER_COMPUTER = REGISTRY.register("reaction_chamber_computer", ReactionChamberComputerBlock::new);
 	public static final DeferredBlock<Block> ULTIMA_SMELTER = REGISTRY.register("ultima_smelter", UltimaSmelterBlock::new);
 	public static final DeferredBlock<Block> ENERGY_EXTRACTOR = REGISTRY.register("energy_extractor", EnergyExtractorBlock::new);
+	public static final DeferredBlock<Block> CHLOROPHYTE_SOLAR_PANEL = REGISTRY.register("chlorophyte_solar_panel", ChlorophyteSolarPanelBlock::new);
 	public static final DeferredBlock<Block> MATTER_TRANSMUTATION_TABLE = REGISTRY.register("matter_transmutation_table", MatterTransmutationTableBlock::new);
 	public static final DeferredBlock<Block> EE_MATTER_BLOCK = REGISTRY.register("ee_matter_block", EEMatterBlockBlock::new);
 	public static final DeferredBlock<Block> BLOCK_PLACER = REGISTRY.register("block_placer", BlockPlacerBlock::new);
@@ -308,6 +311,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CARBON_MACHINE_FRAME = REGISTRY.register("carbon_machine_frame", CarbonMachineFrameBlock::new);
 	public static final DeferredBlock<Block> CHEMICAL_REACTION_CHAMBER = REGISTRY.register("chemical_reaction_chamber", ChemicalReactionChamberBlock::new);
 	public static final DeferredBlock<Block> FLUID_CHEMICAL_REACTION_CHAMBER = REGISTRY.register("fluid_chemical_reaction_chamber", FluidChemicalReactionChamberBlock::new);
+	public static final DeferredBlock<Block> MEGA_CHEMICAL_REACTION_CHAMBER = REGISTRY.register("mega_chemical_reaction_chamber", MegaChemicalReactionChamberBlock::new);
 	public static final DeferredBlock<Block> REFINERY = REGISTRY.register("refinery", () -> new RefineryBlock());
 	public static final DeferredBlock<Block> CHLOROPHYTE_REFINERY = REGISTRY.register("chlorophyte_refinery", () -> new RefineryBlock(MachineTier.CHLOROPHYTE));
 	public static final DeferredBlock<Block> INVERTIUM_REFINERY = REGISTRY.register("invertium_refinery", () -> new RefineryBlock(MachineTier.TITANIUM));
@@ -436,6 +440,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> HEAVY_IRON_BLOCK = REGISTRY.register("heavy_iron_block", HeavyIronBlockBlock::new);
 	public static final DeferredBlock<Block> MACHINE_CASING = REGISTRY.register("machine_casing", MachineCasingBlock::new);
 	public static final DeferredBlock<Block> INSULATED_TITANIUM_CASING = REGISTRY.register("insulated_azurine_casing", MachineCasingBlock::new);
+	public static final DeferredBlock<Block> TEMPERED_AZURINE_CASING = REGISTRY.register("tempered_azurine_casing", MachineCasingBlock::new);
 	public static final DeferredBlock<Block> CAUTION_BLOCK = REGISTRY.register("caution_block", CautionBlockBlock::new);
 	public static final DeferredBlock<Block> CAUTION_BLOCK_ARROW = REGISTRY.register("caution_block_arrow", CautionBlockArrowBlock::new);
 	public static final DeferredBlock<Block> FACTORY_LIGHT = REGISTRY.register("factory_light", FactoryLightBlock::new);

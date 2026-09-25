@@ -153,6 +153,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     private int[] discoverOutputSlots(AssemblyLineMachine machine) {
         if (machine == null) return new int[] {1};
+        if (machine.kind() == AssemblyLineMachine.Kind.CHEMICAL_REACTION) return new int[] {machine.outputSlot()};
         var handler = machine.itemHandler();
         if (handler != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC) {
             // For generic modded machines, just use all non-empty slots that aren't input slots.
@@ -691,10 +692,11 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
                 AssemblyLineMachine worker = level.hasChunkAt(pos) ? AssemblyLineMachine.at(level, pos) : null;
                 if (worker == null || !owns(worker, id)) { problem = "Assigned machine missing at " + pos.toShortString() + "; job paused"; continue; }
                 boolean consumed = Arrays.stream(worker.inputs()).allMatch(slot -> worker.inventory().getItem(slot).isEmpty());
-                ItemStack output = worker.inventory().getItem(1);
+                int outputSlot = worker.outputSlot();
+                ItemStack output = worker.inventory().getItem(outputSlot);
                 if (consumed && ItemStack.matches(output, task.output)) {
                     if (!put(copy(reserved), output, 0, reserved.getSlots()).isEmpty()) { problem = "Intermediate storage full"; continue; }
-                    put(reserved, output.copy(), 0, reserved.getSlots()); worker.inventory().setItem(1, ItemStack.EMPTY);
+                    put(reserved, output.copy(), 0, reserved.getSlots()); worker.inventory().setItem(outputSlot, ItemStack.EMPTY);
                     task.complete = true; worker.release(); worker.entity().setChanged(); setChanged();
 
                 } else if (inputsMatch(worker, task)) {
@@ -729,7 +731,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         return tag.contains(AssemblyLineMachine.OWNER) && tag.getLong(AssemblyLineMachine.OWNER) == worldPosition.asLong() && tag.getInt(AssemblyLineMachine.TASK) == id;
     }
     private boolean inputsMatch(AssemblyLineMachine worker, ProductionPlan.Task task) {
-        if (!worker.inventory().getItem(1).isEmpty()) return false;
+        if (!worker.inventory().getItem(worker.outputSlot()).isEmpty()) return false;
         int[] slots = worker.inputs(); if (slots.length != task.inputs.size()) return false;
         for (int i = 0; i < slots.length; i++) if (!ItemStack.matches(worker.inventory().getItem(slots[i]), task.inputs.get(i))) return false;
         return true;

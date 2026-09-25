@@ -20,6 +20,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.crystalnexus.assembly.AssemblyLineMachine;
+import net.minecraft.resources.ResourceLocation;
 
 // NEW imports for 1.21 custom_data reading
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
@@ -36,6 +38,8 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		double cookTime = 0;
 
 		BlockPos pos = BlockPos.containing(x, y, z);
+
+		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return "";
 
 		// --- blockstate based on progress ---
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress"))) {
@@ -141,13 +145,11 @@ processRecipeTick(world, pos, cookTime, () -> {
 
 		if (s0.isEmpty() || s1.isEmpty() || s2.isEmpty()) return null;
 
-		List<ChemicalReactionRecipe> recipes = lvl.getRecipeManager()
-			.getAllRecipesFor(ChemicalReactionRecipe.Type.INSTANCE)
-			.stream()
-			.map(RecipeHolder::value)
-			.collect(Collectors.toList());
-
-		for (ChemicalReactionRecipe recipe : recipes) {
+		ResourceLocation assigned = AssemblyLineMachine.assignedRecipe(lvl, pos);
+		for (RecipeHolder<ChemicalReactionRecipe> holder : lvl.getRecipeManager()
+				.getAllRecipesFor(ChemicalReactionRecipe.Type.INSTANCE)) {
+			if (assigned != null && !assigned.equals(holder.id())) continue;
+			ChemicalReactionRecipe recipe = holder.value();
 			NonNullList<Ingredient> ing = recipe.getIngredients();
 			if (matches3Shapeless(ing, s0, s1, s2)) {
 				return new MatchingRecipe(recipe, recipe.getResultItem(null));

@@ -24,12 +24,18 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSimulatorControllerBlockEntity> {
     private static final int STACKS = 32;
     private static final int SLICES = 64;
     private static final int HALO_SEGMENTS = 32;
+    private static final int DYSON_FRAME_COLOR = 0xFF9DDFFF;
+    private static final int DYSON_FRAME_SIDE_COLOR = 0xFF6BBDEB;
     private static final float[][] BACKGROUND_STARS = createBackgroundStars();
+    private static final List<Vec3[]> DYSON_CELLS = createDysonCells();
     private static final RenderType VOID_RENDER_TYPE = RenderType.create(
         "crystalnexus_solar_simulator_void",
         DefaultVertexFormat.POSITION_COLOR,
@@ -60,6 +66,16 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
             .createCompositeState(false)
     );
+    private static final RenderType DYSON_RENDER_TYPE = RenderType.create(
+        "crystalnexus_solar_simulator_dyson", DefaultVertexFormat.POSITION_COLOR,
+        VertexFormat.Mode.TRIANGLES, 8192, false, false,
+        RenderType.CompositeState.builder()
+            .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+            .setCullState(RenderStateShard.NO_CULL)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .createCompositeState(false));
     
     private final ItemRenderer itemRenderer;
 
@@ -78,7 +94,8 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
     public void render(SolarSimulatorControllerBlockEntity controller, float partialTick, PoseStack poseStack,
                        MultiBufferSource buffers, int packedLight, int packedOverlay) {
         Vec3 center = controller.getFormationCenter();
-        if (!controller.isRenderActive() || center == null || controller.getLevel() == null) return;
+        if (!controller.isFormed() || center == null || controller.getLevel() == null
+            || !controller.isDysonMode() && !controller.isRenderActive()) return;
 
         double time = controller.getLevel().getGameTime() + partialTick;
         poseStack.pushPose();
@@ -87,14 +104,23 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
 
         Vec3 cameraOffset = Minecraft.getInstance().gameRenderer.getMainCamera().getPosition()
             .subtract(center);
-        float voidRadius = 9.00F + (float) Math.sin(time * 0.04D) * 0.08F;
-        VertexConsumer backdrop = buffers.getBuffer(VOID_RENDER_TYPE);
-        drawVoidSphere(poseStack.last().pose(), backdrop, voidRadius, cameraOffset);
-        drawBackgroundStars(poseStack.last().pose(), backdrop, voidRadius - 0.06F, cameraOffset);
+        if (!controller.isDysonMode()) {
+            float voidRadius = 9.00F + (float) Math.sin(time * 0.04D) * 0.08F;
+            VertexConsumer backdrop = buffers.getBuffer(VOID_RENDER_TYPE);
+            drawVoidSphere(poseStack.last().pose(), backdrop, voidRadius, cameraOffset);
+            drawBackgroundStars(poseStack.last().pose(), backdrop, voidRadius - 0.06F, cameraOffset);
+        }
 
         ItemStack star = controller.getItem(4);
         renderSunGlow(star, poseStack, buffers, (float) time);
         renderBody(star, poseStack, buffers, (float) (time * 1.8D % 360.0D), 2.30F, controller);
+
+        if (controller.isDysonMode()) {
+            if (!star.isEmpty() && controller.getDysonStructures() > 0)
+                drawDysonShell(poseStack.last().pose(), buffers.getBuffer(DYSON_RENDER_TYPE), controller);
+            poseStack.popPose();
+            return;
+        }
 
         for (int slot = 0; slot < 4; slot++) {
             ItemStack planet = controller.getItem(slot);
@@ -111,6 +137,93 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
             poseStack.popPose();
         }
         poseStack.popPose();
+    }
+
+    private static void drawDysonShell(Matrix4f matrix, VertexConsumer consumer, SolarSimulatorControllerBlockEntity controller) {
+        int built = Math.min(DYSON_CELLS.size(), (int) Math.ceil(DYSON_CELLS.size()
+            * Math.min(1.0, controller.getDysonStructures() / 512.0)));
+        int carbon = Math.min(built, (int) Math.ceil(DYSON_CELLS.size()
+            * controller.getDysonCarbonSheets() / (6.0 * 512.0)));
+        int solar = Math.min(built - carbon, (int) Math.ceil(DYSON_CELLS.size()
+            * controller.getDysonSolarSheets() / (6.0 * 512.0)));
+        for (int i = 0; i < built; i++) {
+            Vec3[] cell = DYSON_CELLS.get(i);
+            Vec3 center = Vec3.ZERO;
+            for (Vec3 point : cell) center = center.add(point);
+            center = center.scale(1.0 / cell.length).normalize().scale(5.5);
+            int panel = i < carbon ? 0x66313131 : i < carbon + solar ? 0x665BBEFF : 0;
+            for (int edge = 0; edge < cell.length; edge++) {
+                Vec3 start = cell[edge].scale(5.5);
+                Vec3 end = cell[(edge + 1) % cell.length].scale(5.5);
+                if (panel != 0) triangle(consumer, matrix, center, start, end, panel);
+                // A wide band facing into the cell, with an outward-facing side for visible depth.
+                Vec3 innerStart = start.lerp(center, 0.15).normalize().scale(5.57);
+                Vec3 innerEnd = end.lerp(center, 0.15).normalize().scale(5.57);
+                Vec3 outerStart = start.normalize().scale(5.57);
+                Vec3 outerEnd = end.normalize().scale(5.57);
+                triangle(consumer, matrix, outerStart, outerEnd, innerEnd, DYSON_FRAME_COLOR);
+                triangle(consumer, matrix, outerStart, innerEnd, innerStart, DYSON_FRAME_COLOR);
+                triangle(consumer, matrix, outerStart, start.normalize().scale(5.42), end.normalize().scale(5.42), DYSON_FRAME_SIDE_COLOR);
+                triangle(consumer, matrix, outerStart, end.normalize().scale(5.42), outerEnd, DYSON_FRAME_SIDE_COLOR);
+            }
+        }
+    }
+
+    private static void triangle(VertexConsumer consumer, Matrix4f matrix, Vec3 a, Vec3 b, Vec3 c, int argb) {
+        for (Vec3 point : new Vec3[] { a, b, c }) consumer.addVertex(matrix, (float) point.x, (float) point.y, (float) point.z)
+            .setColor(argb >> 16 & 255, argb >> 8 & 255, argb & 255, argb >>> 24);
+    }
+
+    /** Dual of a frequency-three icosahedron: hexagonal faces plus twelve pentagons. */
+    private static List<Vec3[]> createDysonCells() {
+        double t = (1.0 + Math.sqrt(5.0)) / 2.0;
+        Vec3[] vertices = {
+            new Vec3(-1,t,0), new Vec3(1,t,0), new Vec3(-1,-t,0), new Vec3(1,-t,0),
+            new Vec3(0,-1,t), new Vec3(0,1,t), new Vec3(0,-1,-t), new Vec3(0,1,-t),
+            new Vec3(t,0,-1), new Vec3(t,0,1), new Vec3(-t,0,-1), new Vec3(-t,0,1)
+        };
+        int[][] faces = {
+            {0,11,5},{0,5,1},{0,1,7},{0,7,10},{0,10,11},
+            {1,5,9},{5,11,4},{11,10,2},{10,7,6},{7,1,8},
+            {3,9,4},{3,4,2},{3,2,6},{3,6,8},{3,8,9},
+            {4,9,5},{2,4,11},{6,2,10},{8,6,7},{9,8,1}
+        };
+        List<Vec3> nodes = new ArrayList<>();
+        List<List<Vec3>> adjacent = new ArrayList<>();
+        for (int[] face : faces) {
+            int[][] indices = new int[4][4];
+            for (int a = 0; a <= 3; a++) for (int b = 0; b <= 3 - a; b++) {
+                Vec3 point = vertices[face[0]].scale((3 - a - b) / 3.0)
+                    .add(vertices[face[1]].scale(a / 3.0)).add(vertices[face[2]].scale(b / 3.0)).normalize();
+                int index = -1;
+                for (int i = 0; i < nodes.size(); i++) if (nodes.get(i).distanceToSqr(point) < 1.0e-8) { index = i; break; }
+                if (index < 0) { index = nodes.size(); nodes.add(point); adjacent.add(new ArrayList<>()); }
+                indices[a][b] = index;
+            }
+            for (int a = 0; a < 3; a++) for (int b = 0; b < 3 - a; b++) {
+                addDysonTriangle(indices[a][b], indices[a+1][b], indices[a][b+1], nodes, adjacent);
+                if (a + b < 2) addDysonTriangle(indices[a+1][b], indices[a+1][b+1], indices[a][b+1], nodes, adjacent);
+            }
+        }
+        List<Vec3[]> cells = new ArrayList<>();
+        for (int i = 0; i < nodes.size(); i++) {
+            Vec3 normal = nodes.get(i);
+            Vec3 tangent = normal.cross(new Vec3(0, 1, 0));
+            if (tangent.lengthSqr() < 0.01) tangent = normal.cross(new Vec3(1, 0, 0));
+            tangent = tangent.normalize();
+            Vec3 bitangent = normal.cross(tangent);
+            Vec3 x = tangent, y = bitangent;
+            adjacent.get(i).sort(Comparator.comparingDouble(p -> Math.atan2(p.dot(y), p.dot(x))));
+            cells.add(adjacent.get(i).toArray(Vec3[]::new));
+        }
+        return cells;
+    }
+
+    private static void addDysonTriangle(int a, int b, int c, List<Vec3> nodes, List<List<Vec3>> adjacent) {
+        Vec3 center = nodes.get(a).add(nodes.get(b)).add(nodes.get(c)).normalize();
+        adjacent.get(a).add(center);
+        adjacent.get(b).add(center);
+        adjacent.get(c).add(center);
     }
 
     private void renderBody(ItemStack stack, PoseStack poseStack, MultiBufferSource buffers, float rotation,

@@ -49,12 +49,14 @@ public final class MachineFluidInputBlockEntity extends BlockEntity {
     public void bindController(BlockPos controller) {
         if (controller.equals(machineController)) return;
         machineController = controller.immutable();
+        if (level != null) level.invalidateCapabilities(worldPosition);
         sync();
     }
 
     public void unbindController(BlockPos controller) {
         if (!controller.equals(machineController)) return;
         machineController = null;
+        if (level != null) level.invalidateCapabilities(worldPosition);
         sync();
     }
 

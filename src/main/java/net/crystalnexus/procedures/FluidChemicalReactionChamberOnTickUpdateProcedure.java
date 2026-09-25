@@ -36,7 +36,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         ItemStack upgrade = chamber.getItem(3);
         double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
             : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
-        double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
+        double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime) / chamber.getSpeedMultiplier();
         int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_REACTION);
         RecipeMatch match = findRecipe(level, chamber);
         if (match == null || chamber.getEnergyStorage().getEnergyStored() < energyCost) {
@@ -183,7 +183,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         if (stack.getCount() != 1) return;
         IFluidHandlerItem item = stack.getCapability(Capabilities.FluidHandler.ITEM);
         if (item == null) return;
-        FluidStack offered = item.drain(FluidChemicalReactionChamberBlockEntity.TANK_CAPACITY, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack offered = item.drain(chamber.getTankCapacity(), IFluidHandler.FluidAction.SIMULATE);
         int accepted = chamber.getTank(slot).fill(offered, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return;
         FluidStack drained = item.drain(accepted, IFluidHandler.FluidAction.EXECUTE);
@@ -196,7 +196,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         if (stack.getCount() != 1 || chamber.getTank(2).isEmpty()) return;
         IFluidHandlerItem item = stack.getCapability(Capabilities.FluidHandler.ITEM);
         if (item == null) return;
-        FluidStack available = chamber.getTank(2).drain(FluidChemicalReactionChamberBlockEntity.TANK_CAPACITY, IFluidHandler.FluidAction.SIMULATE);
+        FluidStack available = chamber.getTank(2).drain(chamber.getTankCapacity(), IFluidHandler.FluidAction.SIMULATE);
         int accepted = item.fill(available, IFluidHandler.FluidAction.SIMULATE);
         if (accepted <= 0) return;
         FluidStack drained = chamber.getTank(2).drain(accepted, IFluidHandler.FluidAction.EXECUTE);

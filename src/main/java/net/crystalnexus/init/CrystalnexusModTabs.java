@@ -92,6 +92,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_COMPOSTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BIOMATIC_CONSTRUCTOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SOLAR_PANEL.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR.get().asItem());
@@ -139,6 +140,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_WASTE.get());
 				tabData.accept(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TEMPORAL_EXPLOITER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_BLOCK.get().asItem());
@@ -180,6 +182,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.TUNGSTEN_SHEET.get());
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.TEMPERED_AZURINE_CASING.get().asItem());
 				tabData.accept(CrystalnexusModItems.BEAR.get());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get().asItem());
@@ -220,6 +223,9 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
+				tabData.accept(CrystalnexusModItems.SOLAR_SHEET.get());
+				tabData.accept(CrystalnexusModItems.CARBON_SOLAR_SHEET.get());
+				tabData.accept(CrystalnexusModItems.DYSON_STRUCTURE.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LASER_DIODE.get());
@@ -325,6 +331,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CARBON_LEGGINGS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_BOOTS.get());
 				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
+				tabData.accept(CrystalnexusModItems.MULTIBLOCK_PLANS.get());
 				tabData.accept(CrystalnexusModItems.STRUCTURE_TRACKER.get());
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
 				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());

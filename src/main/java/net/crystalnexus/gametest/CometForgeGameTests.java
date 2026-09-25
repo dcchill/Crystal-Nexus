@@ -157,6 +157,47 @@ public final class CometForgeGameTests {
         helper.succeed();
     }
     @GameTest(template = "solar_sim")
+    public static void simulatorDysonMode(GameTestHelper helper) {
+        var size = helper.getLevel().getStructureManager().get(ResourceLocation.parse("crystalnexus:solar_sim")).orElseThrow().getSize();
+        BlockPos controllerPos = null;
+        List<BlockPos> ports = new ArrayList<>();
+        for (int x = 0; x < size.getX(); x++) for (int y = 1; y <= size.getY(); y++) for (int z = 0; z < size.getZ(); z++) {
+            BlockPos pos = new BlockPos(x, y, z);
+            if (helper.getBlockState(pos).is(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get())) controllerPos = pos;
+            if (helper.getBlockState(pos).is(CrystalnexusModBlocks.TUNGSTEN_BLOCK.get())) ports.add(pos);
+        }
+        helper.assertTrue(controllerPos != null && !ports.isEmpty(), "Simulator has a controller and port location");
+        var state = helper.getBlockState(controllerPos);
+        helper.setBlock(controllerPos, Blocks.AIR);
+        helper.setBlock(controllerPos, state);
+        SolarSimulatorControllerBlockEntity simulator = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(simulator.setDysonMode(true), "Can select Dyson on an unformed structure");
+        helper.assertTrue(!simulator.validateStructureNow(), "Dyson mode requires an energy output");
+        helper.setBlock(ports.get(0), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+        helper.assertTrue(simulator.validateStructureNow(), "Dyson mode forms with just an energy output");
+        MachineEnergyOutputBlockEntity output = helper.getBlockEntity(ports.get(0));
+        helper.assertTrue(output.isBoundTo(simulator.getBlockPos()), "Energy port binds to simulator");
+        simulator.setItem(4, new ItemStack(CrystalnexusModItems.PINK_STAR.get()));
+        for (int i = 0; i < 16; i++) simulator.insertDyson(0, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get(), 64), 64, false);
+        for (int i = 0; i < 16; i++) simulator.insertDyson(1, new ItemStack(CrystalnexusModItems.CARBON_SOLAR_SHEET.get(), 64), 64, false);
+        helper.assertTrue(simulator.getDysonCount(0) == 1024 && simulator.getDysonCount(1) == 1024,
+            "Dyson reserves accept 1024 items per slot: " + simulator.getDysonCount(0) + ", " + simulator.getDysonCount(1));
+        helper.assertTrue(simulator.insertDyson(1, new ItemStack(CrystalnexusModItems.CARBON_SOLAR_SHEET.get()), 1, false) == 0,
+            "Reserves reject over-capacity inserts");
+        helper.assertTrue(!simulator.setDysonMode(false), "Cannot switch modes with occupied reserves");
+        helper.assertTrue(simulator.getDysonPotentialFePerTick() == 1024 * 16384 * 8, "Star multiplier applies to sheet energy");
+        simulator.serverTick();
+        helper.assertTrue(simulator.getDysonEnergyStored() == simulator.getDysonPotentialFePerTick(), "Produces FE without consuming sheets");
+        var saved = simulator.saveWithoutMetadata(helper.getLevel().registryAccess());
+        simulator.loadAdditional(saved, helper.getLevel().registryAccess());
+        helper.assertTrue(simulator.isDysonMode() && simulator.getDysonCount(0) == 1024
+            && simulator.getDysonCount(1) == 1024, "Dyson mode and reserves survive reload");
+        helper.setBlock(ports.get(0), Blocks.AIR);
+        helper.assertTrue(!simulator.validateStructureNow(), "Removing output invalidates the structure");
+        helper.succeed();
+    }
+
+    @GameTest(template = "solar_sim")
     public static void simulatorCometsAndStars(GameTestHelper helper) {
         var size = helper.getLevel().getStructureManager().get(ResourceLocation.parse("crystalnexus:solar_sim")).orElseThrow().getSize();
         BlockPos controllerPos = null;

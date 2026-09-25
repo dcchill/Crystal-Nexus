@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:arc_furnace",
+  "ingredients": [
+    { "item": "crystalnexus:azurine_block" }
+  ],
+  "ingredient_counts": [8],
+  "output": {
+    "id": "crystalnexus:tempered_azurine_casing",
+    "count": 8
+  },
+  "minimum_arc_furnace_tier": 1
+}

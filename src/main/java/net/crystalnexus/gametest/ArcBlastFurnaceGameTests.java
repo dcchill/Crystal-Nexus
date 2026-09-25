@@ -113,12 +113,15 @@ public final class ArcBlastFurnaceGameTests {
                 CrystalnexusModItems.CARBON_FIBER_ROD.get()))
         );
 
-        helper.assertTrue(loaded.size() == 19, "The Arc Blast Furnace must load its three original and sixteen new recipes");
+        helper.assertTrue(loaded.size() == 20, "The Arc Blast Furnace must load its three original, sixteen expanded, and tempered casing recipes");
         for (Map.Entry<String, ExpectedRecipe> entry : expected.entrySet()) {
             RecipeHolder<ArcFurnaceRecipe> holder = loaded.get(entry.getKey());
             helper.assertTrue(holder != null && matches(entry.getValue(), holder.value(), helper),
                 "Arc furnace recipe has incorrect inputs or output: " + entry.getKey());
         }
+        RecipeHolder<ArcFurnaceRecipe> temperedCasing = loaded.get("tempered_azurine_casing");
+        helper.assertTrue(temperedCasing != null && temperedCasing.value().ingredientCount(0) == 8,
+            "Tempered Azurine Casing must require eight Azurine Blocks");
 
         BlockPos controllerPos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
         BlockState controllerState = helper.getBlockState(controllerPos);
@@ -134,6 +137,8 @@ public final class ArcBlastFurnaceGameTests {
             new ItemStack(Items.QUARTZ), CrystalnexusModItems.SILICON.get(), 2);
         process(helper, controllerPos, controller, ItemStack.EMPTY,
             new ItemStack(CrystalnexusModItems.TITANIUM_SHEET.get()), CrystalnexusModItems.TITANIUM_INGOT.get(), 2);
+        process(helper, controllerPos, controller, new ItemStack(CrystalnexusModBlocks.TITANIUM_BLOCK.get(), 8), ItemStack.EMPTY,
+            CrystalnexusModBlocks.TEMPERED_AZURINE_CASING.get().asItem(), 8);
         process(helper, controllerPos, controller, new ItemStack(CrystalnexusModItems.TUNGSTEN_DUST.get()),
             ItemStack.EMPTY, CrystalnexusModItems.HOT_TUNGSTEN.get(), 1);
 

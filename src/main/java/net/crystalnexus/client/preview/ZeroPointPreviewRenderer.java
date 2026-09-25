@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.item.MultiblockPlansItem;
+import net.crystalnexus.multiblock.MultiblockPlanTemplates;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -17,6 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -48,18 +51,23 @@ public class ZeroPointPreviewRenderer {
         Level level = mc.level;
         if (level == null) return;
 
-        if (!ZeroPointPreviewState.isActive()) return;
+        ItemStack plan = mc.player == null ? ItemStack.EMPTY : mc.player.getMainHandItem();
+        if (!(plan.getItem() instanceof MultiblockPlansItem)) plan = mc.player == null ? ItemStack.EMPTY : mc.player.getOffhandItem();
+        boolean planActive = plan.getItem() instanceof MultiblockPlansItem && MultiblockPlansItem.previewTemplate(plan) != null && MultiblockPlansItem.previewController(plan) != null;
+        if (!ZeroPointPreviewState.isActive() && !planActive) return;
 
-        BlockPos controller = ZeroPointPreviewState.pos;
+        BlockPos controller = planActive ? MultiblockPlansItem.previewController(plan) : ZeroPointPreviewState.pos;
         if (!level.hasChunkAt(controller)) return;
 
-        // Clear preview if controller removed/broken
-        if (level.getBlockState(controller).getBlock() != CrystalnexusModBlocks.ZERO_POINT.get()) {
+        if (!planActive && level.getBlockState(controller).getBlock() != CrystalnexusModBlocks.ZERO_POINT.get()) {
             ZeroPointPreviewState.clear();
             return;
         }
 
-        List<GhostBlock> blocks = ZeroPointTemplates.getTemplate(ZeroPointPreviewState.templateId);
+        List<GhostBlock> blocks = planActive
+                ? MultiblockPlanTemplates.read(level, controller, MultiblockPlansItem.previewTemplate(plan)).stream()
+                    .map(block -> new GhostBlock(block.pos().getX() - controller.getX(), block.pos().getY() - controller.getY(), block.pos().getZ() - controller.getZ(), block.state())).toList()
+                : ZeroPointTemplates.getTemplate(ZeroPointPreviewState.templateId);
         if (blocks == null || blocks.isEmpty()) return;
 
         PoseStack poseStack = event.getPoseStack();
@@ -160,7 +168,7 @@ public class ZeroPointPreviewRenderer {
         buffer.endBatch();
 
         // Auto-hide when complete
-        if (allCorrect) {
+        if (allCorrect && !planActive) {
             ZeroPointPreviewState.clear();
             if (mc.player != null) {
                 mc.player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Multiblock complete!"));

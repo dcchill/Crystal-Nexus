@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " t ",
+    "pcp",
+    " t "
+  ],
+  "key": {
+    "t": { "item": "crystalnexus:invertium_ingot" },
+    "p": { "item": "crystalnexus:invertium_machine_frame" },
+    "c": { "item": "crystalnexus:fluid_chemical_reaction_chamber" }
+  },
+  "result": {
+    "id": "crystalnexus:mega_chemical_reaction_chamber",
+    "count": 1
+  }
+}

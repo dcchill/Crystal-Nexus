@@ -2,6 +2,7 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.SolarSimulatorControllerBlock;
 import net.crystalnexus.config.CrystalnexusConfig;
+import net.crystalnexus.energy.GeneratorEnergyStorage;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModFluids;
@@ -9,6 +10,7 @@ import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.multiblock.StructureNbtValidator;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.recipe.GravitationalArrayCostSchedule;
+import net.crystalnexus.recipe.DysonOutput;
 import net.crystalnexus.world.inventory.SolarSimulatorMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -34,6 +37,7 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -49,6 +53,7 @@ import java.util.stream.IntStream;
 
 public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
     public static final int DURATION = 3;
+    public static final int DYSON_SLOT_LIMIT = 1024;
     private static final int ENERGY_PER_ITEM = 600_000;
     private static final int STAR_SLOT = 4;
     private static final int REQUIRED_ENERGY_TRANSFER = GravitationalArrayCostSchedule.maximumStep(
@@ -62,11 +67,16 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private static final List<TagKey<Item>> NOX = tags("gems/amethyst");
 
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+    private final int[] dysonCounts = new int[STAR_SLOT];
+    private boolean dysonMode;
+    private final GeneratorEnergyStorage dysonEnergy = new GeneratorEnergyStorage(1_000_000_000, Integer.MAX_VALUE, this::sync);
+    private final List<BlockPos> energyOutputs = new ArrayList<>();
 	private final EnergyStorage energyStorage = new EnergyStorage(
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(), REQUIRED_ENERGY_TRANSFER),
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(), REQUIRED_ENERGY_TRANSFER),
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract(), REQUIRED_ENERGY_TRANSFER)) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
+            if (dysonMode) return 0;
 			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
 		}
 		@Override public int extractEnergy(int amount, boolean simulate) {
@@ -119,6 +129,69 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     public boolean isFormed() { return formed; }
+    public boolean isDysonMode() { return dysonMode; }
+    public int getDysonCount(int slot) { return slot >= 0 && slot < STAR_SLOT ? dysonCounts[slot] : 0; }
+    public int getDysonStructures() { return dysonTotal(CrystalnexusModItems.DYSON_STRUCTURE.get()); }
+    private DysonOutput.Result dysonOutput() {
+        return DysonOutput.calculate(getDysonStructures(), dysonTotal(CrystalnexusModItems.CARBON_SOLAR_SHEET.get()),
+            dysonTotal(CrystalnexusModItems.SOLAR_SHEET.get()), starMultiplier(stacks.get(STAR_SLOT)));
+    }
+    public int getDysonCarbonSheets() { return dysonOutput().carbonSheets(); }
+    public int getDysonSolarSheets() { return dysonOutput().solarSheets(); }
+    public int getDysonPotentialFePerTick() { return dysonOutput().fePerTick(); }
+    public int getDysonEnergyStored() { return dysonEnergy.getEnergyStored(); }
+    private int dysonTotal(Item item) {
+        int total = 0;
+        for (int slot = 0; slot < STAR_SLOT; slot++) if (stacks.get(slot).is(item)) total += dysonCounts[slot];
+        return total;
+    }
+    public boolean setDysonMode(boolean next) {
+        if (!(level instanceof ServerLevel serverLevel)) return false;
+        if (next == dysonMode) return true;
+        for (int slot = 0; slot < STAR_SLOT; slot++) if (!stacks.get(slot).isEmpty() || dysonCounts[slot] != 0) return false;
+        dysonMode = next;
+        progress = 0;
+        consumedEnergy = 0;
+        renderActive = false;
+        inactiveRenderTicks = 0;
+        validateStructure(serverLevel);
+        validationDelay = VALIDATION_INTERVAL;
+        sync();
+        return true;
+    }
+    public int insertDyson(int slot, ItemStack input, int amount, boolean simulate) {
+        if (!dysonMode || slot < 0 || slot >= STAR_SLOT || !canPlaceItem(slot, input)) return 0;
+        ItemStack existing = stacks.get(slot);
+        if (!existing.isEmpty() && !ItemStack.isSameItemSameComponents(existing, input)) return 0;
+        int moved = Math.min(Math.min(amount, input.getCount()), DYSON_SLOT_LIMIT - dysonCounts[slot]);
+        if (moved > 0 && !simulate) {
+            if (existing.isEmpty()) stacks.set(slot, input.copyWithCount(1));
+            dysonCounts[slot] += moved;
+            sync();
+        }
+        return moved;
+    }
+    public ItemStack extractDyson(int slot, int amount, boolean simulate) {
+        if (!dysonMode || slot < 0 || slot >= STAR_SLOT || amount <= 0 || dysonCounts[slot] <= 0) return ItemStack.EMPTY;
+        ItemStack icon = stacks.get(slot);
+        int moved = Math.min(Math.min(amount, icon.getMaxStackSize()), dysonCounts[slot]);
+        ItemStack result = icon.copyWithCount(moved);
+        if (!simulate) {
+            dysonCounts[slot] -= moved;
+            if (dysonCounts[slot] == 0) stacks.set(slot, ItemStack.EMPTY);
+            sync();
+        }
+        return result;
+    }
+    public void dropDysonContents() {
+        if (!dysonMode || level == null || level.isClientSide) return;
+        for (int slot = 0; slot < STAR_SLOT; slot++) {
+            while (dysonCounts[slot] > 0) {
+                ItemStack dropped = extractDyson(slot, dysonCounts[slot], false);
+                Containers.dropItemStack(level, worldPosition.getX(), worldPosition.getY(), worldPosition.getZ(), dropped);
+            }
+        }
+    }
     public int getProgress() { return progress; }
     public int getDuration() { return DURATION; }
     public boolean isRenderActive() { return formed && renderActive; }
@@ -136,6 +209,15 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         if (validationDelay-- <= 0) {
             validateStructure(serverLevel);
             validationDelay = VALIDATION_INTERVAL;
+        }
+        if (dysonMode) {
+            if (formed) {
+                for (BlockPos pos : energyOutputs) if (serverLevel.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output)
+                    output.pushEnergy();
+            }
+            int produced = formed ? dysonEnergy.generateEnergy(getDysonPotentialFePerTick(), false) : 0;
+            if (produced > 0) markRenderActive(); else markRenderInactive();
+            return;
         }
         int multiplier = starMultiplier(stacks.get(STAR_SLOT));
         int planets = planetCount();
@@ -172,23 +254,29 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         Optional<StructureNbtValidator.Match> match = StructureNbtValidator.validate(level, STRUCTURE, worldPosition,
             getBlockState().getValue(SolarSimulatorControllerBlock.FACING), CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get(),
             SolarSimulatorControllerBlock.FACING, Map.of(
-                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()),
-                CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())),
+                CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get()),
+                CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get(), Set.of(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get(), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get())),
             Set.of(CrystalnexusModBlocks.CARBON_GLASS.get(), CrystalnexusModBlocks.COOLING_COIL.get(),
                 CrystalnexusModBlocks.GRAVITY_CONTROL_POINT.get(), CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR.get(),
                 CrystalnexusModBlocks.TUNGSTEN_BLOCK.get(), CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get()),
             true, false, Map.of(
                 CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get(), 1,
+                CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get(), 2,
                 CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get(), 2,
-                CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), 2));
+                CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get(), 2,
+                CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get(), 2));
         List<BlockPos> previousEnergyInputs = List.copyOf(energyInputs);
+        List<BlockPos> previousEnergyOutputs = List.copyOf(energyOutputs);
         List<BlockPos> previousFluidOutputs = List.copyOf(fluidOutputs);
         energyInputs.clear();
+        energyOutputs.clear();
         outputs.clear();
         fluidOutputs.clear();
         match.ifPresent(found -> {
             energyInputs.addAll(found.substitutionPositions().stream()
                 .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get())).toList());
+            energyOutputs.addAll(found.substitutionPositions().stream()
+                .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get())).toList());
             outputs.addAll(found.substitutionPositions().stream()
                 .filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get())).toList());
             fluidOutputs.addAll(found.substitutionPositions().stream()
@@ -198,6 +286,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             if (!energyInputs.contains(old) && level.getBlockEntity(old) instanceof MachineEnergyInputBlockEntity input)
                 input.unbindController(worldPosition);
         }
+        for (BlockPos old : previousEnergyOutputs) if (!energyOutputs.contains(old) || !dysonMode)
+            if (level.getBlockEntity(old) instanceof MachineEnergyOutputBlockEntity output) output.unbindController(worldPosition);
+        if (!dysonMode) energyOutputs.clear();
         for (BlockPos old : previousFluidOutputs) {
             if (!fluidOutputs.contains(old) && level.getBlockEntity(old) instanceof MultiblockFluidOutputBlockEntity output)
                 output.unbindController(worldPosition);
@@ -207,13 +298,22 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
                 output.bindController(worldPosition);
         }
         energyInputs.removeIf(pos -> {
+            if (dysonMode) return true;
             if (level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input) {
                 input.bindController(worldPosition);
                 return false;
             }
             return true;
         });
-        boolean next = match.isPresent() && !energyInputs.isEmpty()
+        energyOutputs.removeIf(pos -> {
+            if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) {
+                if (dysonMode) output.bindController(worldPosition);
+                return false;
+            }
+            return true;
+        });
+        boolean next = dysonMode ? match.isPresent() && !energyOutputs.isEmpty()
+            : match.isPresent() && !energyInputs.isEmpty()
             && (!outputs.isEmpty() && outputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity)
                 || !fluidOutputs.isEmpty() && fluidOutputs.stream().allMatch(pos -> level.getBlockEntity(pos) instanceof MultiblockFluidOutputBlockEntity));
         Vec3 nextCenter = next ? match.orElseThrow().center() : null;
@@ -326,12 +426,17 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     @Override public EnergyStorage multiblockEnergyInput() { return energyStorage; }
+    @Override public IEnergyStorage multiblockEnergyOutput() { return dysonMode && formed ? dysonEnergy : null; }
+    @Override public boolean acceptsMultiblockPort(BlockPos pos) { return energyInputs.contains(pos) || energyOutputs.contains(pos) || fluidOutputs.contains(pos); }
     @Override public IFluidHandler multiblockFluidOutput() { return fluidOutput; }
 
     public void onControllerRemoved() {
         if (level != null) for (BlockPos pos : energyInputs)
             if (level.getBlockEntity(pos) instanceof MachineEnergyInputBlockEntity input) input.unbindController(worldPosition);
         energyInputs.clear();
+        if (level != null) for (BlockPos pos : energyOutputs)
+            if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.unbindController(worldPosition);
+        energyOutputs.clear();
         outputs.clear();
         formed = false;
         formationCenter = null;
@@ -374,16 +479,60 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     @Override public Component getDefaultName() { return Component.translatable("block.crystalnexus.solar_simulator_controller"); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == STAR_SLOT ? starMultiplier(stack) > 0 : !planetPool(stack).isEmpty() || !net.crystalnexus.item.ResourceCometItem.material(stack).isEmpty(); }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == STAR_SLOT) return starMultiplier(stack) > 0;
+        if (slot < 0 || slot >= STAR_SLOT) return false;
+        if (dysonMode) return stack.is(CrystalnexusModItems.DYSON_STRUCTURE.get())
+            || stack.is(CrystalnexusModItems.SOLAR_SHEET.get()) || stack.is(CrystalnexusModItems.CARBON_SOLAR_SHEET.get());
+        return !planetPool(stack).isEmpty() || !net.crystalnexus.item.ResourceCometItem.material(stack).isEmpty();
+    }
+    @Override public int getMaxStackSize() { return dysonMode ? DYSON_SLOT_LIMIT : super.getMaxStackSize(); }
+    @Override public ItemStack removeItem(int slot, int amount) {
+        return dysonMode && slot >= 0 && slot < STAR_SLOT ? extractDyson(slot, amount, false) : super.removeItem(slot, amount);
+    }
+    @Override public ItemStack removeItemNoUpdate(int slot) {
+        return dysonMode && slot >= 0 && slot < STAR_SLOT ? extractDyson(slot, DYSON_SLOT_LIMIT, false) : super.removeItemNoUpdate(slot);
+    }
+    @Override public void setItem(int slot, ItemStack stack) {
+        if (dysonMode && slot >= 0 && slot < STAR_SLOT) {
+            // Hopper/container merges write an icon with its added amount included; do not replace the reserve.
+            if (level != null && !level.isClientSide && !stack.isEmpty()) {
+                ItemStack icon = stacks.get(slot);
+                if (icon.isEmpty()) insertDyson(slot, stack, stack.getCount(), false);
+                else if (ItemStack.isSameItemSameComponents(icon, stack) && stack.getCount() > 1)
+                    insertDyson(slot, stack, stack.getCount() - 1, false);
+            }
+            return;
+        }
+        super.setItem(slot, stack);
+    }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
-    @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
-    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return true; }
+    // Normal hopper extraction calls removeItem; insertion calls setItem with an icon plus the inserted amount.
+    @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
+        return canPlaceItem(slot, stack) && (!dysonMode || slot == STAR_SLOT ||
+            dysonCounts[slot] < DYSON_SLOT_LIMIT && (stacks.get(slot).isEmpty() || ItemStack.isSameItemSameComponents(stacks.get(slot), stack)));
+    }
+    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+        return true;
+    }
     @Override public AbstractContainerMenu createMenu(int id, Inventory inventory) { return new SolarSimulatorMenu(id, inventory, this); }
     @Override public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, stacks, registries);
+        dysonMode = tag.getBoolean("dysonMode");
+        for (int slot = 0; slot < STAR_SLOT; slot++) {
+            int count = tag.getInt("dysonCount" + slot);
+            if (dysonMode && canPlaceItem(slot, stacks.get(slot)) && count > 0 && count <= DYSON_SLOT_LIMIT) {
+                dysonCounts[slot] = count;
+                stacks.set(slot, stacks.get(slot).copyWithCount(1));
+            } else if (dysonMode) {
+                dysonCounts[slot] = 0;
+                stacks.set(slot, ItemStack.EMPTY);
+            }
+        }
 		if (tag.get("energy") instanceof IntTag energy) energyStorage.deserializeNBT(registries, energy);
+        if (tag.get("dysonEnergy") instanceof IntTag energy) dysonEnergy.deserializeNBT(registries, energy);
         for (int i = 0; i < fluidOutputTanks.length; i++)
             if (tag.get("fluidOutput" + i) instanceof CompoundTag fluid) fluidOutputTanks[i].readFromNBT(registries, fluid);
         formed = tag.getBoolean("formed"); progress = tag.getInt("progress"); consumedEnergy = tag.getLong("consumedEnergy");
@@ -394,7 +543,10 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     @Override public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
         if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, registries);
+        tag.putBoolean("dysonMode", dysonMode);
+        for (int slot = 0; slot < STAR_SLOT; slot++) tag.putInt("dysonCount" + slot, dysonCounts[slot]);
 		tag.put("energy", energyStorage.serializeNBT(registries));
+        tag.put("dysonEnergy", dysonEnergy.serializeNBT(registries));
         for (int i = 0; i < fluidOutputTanks.length; i++)
             tag.put("fluidOutput" + i, fluidOutputTanks[i].writeToNBT(registries, new CompoundTag()));
         tag.putBoolean("formed", formed); tag.putInt("progress", progress); tag.putLong("consumedEnergy", consumedEnergy);

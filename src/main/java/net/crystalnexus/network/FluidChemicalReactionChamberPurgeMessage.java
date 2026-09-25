@@ -3,8 +3,6 @@ package net.crystalnexus.network;
 import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.block.entity.RefineryBlockEntity;
-import net.crystalnexus.world.inventory.FluidChemicalReactionChamberGUIMenu;
-import net.crystalnexus.world.inventory.RefineryMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,11 +28,7 @@ public record FluidChemicalReactionChamberPurgeMessage(int tank, BlockPos pos) i
     public static void handle(FluidChemicalReactionChamberPurgeMessage message, IPayloadContext context) {
         if (context.flow() != PacketFlow.SERVERBOUND) return;
         context.enqueueWork(() -> {
-            boolean correctMenu = context.player().containerMenu instanceof FluidChemicalReactionChamberGUIMenu chamberMenu
-                && chamberMenu.x == message.pos.getX() && chamberMenu.y == message.pos.getY() && chamberMenu.z == message.pos.getZ()
-                || context.player().containerMenu instanceof RefineryMenu refineryMenu
-                && refineryMenu.x == message.pos.getX() && refineryMenu.y == message.pos.getY() && refineryMenu.z == message.pos.getZ();
-            if (!correctMenu || message.tank < 0) return;
+            if (message.tank < 0 || context.player().blockPosition().distSqr(message.pos) > 64) return;
             var blockEntity = context.player().level().getBlockEntity(message.pos);
             if (blockEntity instanceof FluidChemicalReactionChamberBlockEntity chamber && message.tank < 3)
                 chamber.purge(message.tank);

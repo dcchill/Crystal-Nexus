@@ -56,7 +56,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         @Override protected void onContentsChanged() { sync(); }
     };
 	private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(
-		100_000_000, MachineEnergyOutputBlockEntity.MAX_TRANSFER, this::sync);
+		100_000_000, Integer.MAX_VALUE, this::sync);
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private final List<BlockPos> heatingCores = new ArrayList<>();

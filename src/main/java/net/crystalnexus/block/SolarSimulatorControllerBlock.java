@@ -42,10 +42,8 @@ public final class SolarSimulatorControllerBlock extends Block implements Entity
 
     @Override public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide) return InteractionResult.SUCCESS;
-        if (!(level.getBlockEntity(pos) instanceof SolarSimulatorControllerBlockEntity controller) || !controller.validateStructureNow()) {
-            player.displayClientMessage(Component.translatable("message.crystalnexus.solar_simulator_incomplete"), true);
-            return InteractionResult.FAIL;
-        }
+        if (!(level.getBlockEntity(pos) instanceof SolarSimulatorControllerBlockEntity controller)) return InteractionResult.FAIL;
+        controller.validateStructureNow();
         if (player instanceof ServerPlayer serverPlayer) serverPlayer.openMenu(controller, pos);
         return InteractionResult.CONSUME;
     }
@@ -57,6 +55,7 @@ public final class SolarSimulatorControllerBlock extends Block implements Entity
 
     @Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
         if (state.getBlock() != next.getBlock() && level.getBlockEntity(pos) instanceof SolarSimulatorControllerBlockEntity controller) {
+            controller.dropDysonContents();
             controller.onControllerRemoved();
             Containers.dropContents(level, pos, controller);
             level.updateNeighbourForOutputSignal(pos, this);

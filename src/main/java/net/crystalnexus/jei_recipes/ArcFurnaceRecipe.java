@@ -1,6 +1,7 @@
 package net.crystalnexus.jei_recipes;
 
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
@@ -14,22 +15,32 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 	private final ItemStack output;
 	private final NonNullList<Ingredient> ingredients;
+	private final List<Integer> ingredientCounts;
 	private final int minimumArcFurnaceTier;
 
 	public ArcFurnaceRecipe(ItemStack output, NonNullList<Ingredient> ingredients) {
-		this(output, ingredients, 1);
+		this(output, ingredients, List.of(), 1);
 	}
 
 	public ArcFurnaceRecipe(ItemStack output, NonNullList<Ingredient> ingredients, int minimumArcFurnaceTier) {
+		this(output, ingredients, List.of(), minimumArcFurnaceTier);
+	}
+
+	public ArcFurnaceRecipe(ItemStack output, NonNullList<Ingredient> ingredients, List<Integer> ingredientCounts, int minimumArcFurnaceTier) {
 		this.output = output;
 		this.ingredients = ingredients;
+		this.ingredientCounts = ingredientCounts.isEmpty() ? java.util.Collections.nCopies(ingredients.size(), 1) : List.copyOf(ingredientCounts);
 		this.minimumArcFurnaceTier = Math.max(1, Math.min(2, minimumArcFurnaceTier));
 	}
 
 	public int minimumArcFurnaceTier() { return minimumArcFurnaceTier; }
+	public int ingredientCount(int index) { return ingredientCounts.get(index); }
 
 	@Override public boolean matches(RecipeInput input, Level level) { return false; }
 	@Override public NonNullList<Ingredient> getIngredients() { return ingredients; }
@@ -46,15 +57,16 @@ public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 
 	public static final class Serializer implements RecipeSerializer<ArcFurnaceRecipe> {
 		public static final Serializer INSTANCE = new Serializer();
-		private static final MapCodec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
+		private static final MapCodec<ArcFurnaceRecipe> CODEC = RecordCodecBuilder.<ArcFurnaceRecipe>mapCodec(builder -> builder.group(
 			ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output),
 			Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(list -> list.size() >= 1 && list.size() <= 2
 				? DataResult.success(NonNullList.of(Ingredient.EMPTY, list.toArray(Ingredient[]::new)))
 				: DataResult.error(() -> "Arc furnace recipes require one or two ingredients"), DataResult::success)
 				.forGetter(recipe -> recipe.ingredients),
+			Codec.intRange(1, 64).listOf().optionalFieldOf("ingredient_counts", List.of()).forGetter(recipe -> recipe.ingredientCounts),
 			com.mojang.serialization.Codec.INT.optionalFieldOf("minimum_arc_furnace_tier", 1)
 				.forGetter(recipe -> recipe.minimumArcFurnaceTier)
-		).apply(builder, ArcFurnaceRecipe::new));
+		).apply(builder, ArcFurnaceRecipe::new)).flatXmap(Serializer::validate, DataResult::success);
 		private static final StreamCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> STREAM_CODEC = StreamCodec.of(
 			Serializer::toNetwork, Serializer::fromNetwork);
 
@@ -62,16 +74,29 @@ public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 		@Override public StreamCodec<RegistryFriendlyByteBuf, ArcFurnaceRecipe> streamCodec() { return STREAM_CODEC; }
 
 		private static ArcFurnaceRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
-			NonNullList<Ingredient> ingredients = NonNullList.withSize(buffer.readVarInt(), Ingredient.EMPTY);
-			ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
-			return new ArcFurnaceRecipe(ItemStack.STREAM_CODEC.decode(buffer), ingredients, buffer.readVarInt());
+			int size = buffer.readVarInt();
+			NonNullList<Ingredient> ingredients = NonNullList.withSize(size, Ingredient.EMPTY);
+			List<Integer> counts = new ArrayList<>(size);
+			for (int i = 0; i < size; i++) {
+				ingredients.set(i, Ingredient.CONTENTS_STREAM_CODEC.decode(buffer));
+				counts.add(buffer.readVarInt());
+			}
+			return new ArcFurnaceRecipe(ItemStack.STREAM_CODEC.decode(buffer), ingredients, counts, buffer.readVarInt());
 		}
 
 		private static void toNetwork(RegistryFriendlyByteBuf buffer, ArcFurnaceRecipe recipe) {
 			buffer.writeVarInt(recipe.ingredients.size());
-			for (Ingredient ingredient : recipe.ingredients) Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, ingredient);
+			for (int i = 0; i < recipe.ingredients.size(); i++) {
+				Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.ingredients.get(i));
+				buffer.writeVarInt(recipe.ingredientCount(i));
+			}
 			ItemStack.STREAM_CODEC.encode(buffer, recipe.output);
 			buffer.writeVarInt(recipe.minimumArcFurnaceTier);
+		}
+
+		private static DataResult<ArcFurnaceRecipe> validate(ArcFurnaceRecipe recipe) {
+			return recipe.ingredientCounts.size() == recipe.ingredients.size()
+				? DataResult.success(recipe) : DataResult.error(() -> "Arc furnace ingredient_counts must match ingredients");
 		}
 	}
 }

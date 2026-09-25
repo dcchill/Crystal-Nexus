@@ -161,6 +161,7 @@ import net.crystalnexus.item.CarbonChipItem;
 import net.crystalnexus.item.CarbonBatteryCellItem;
 import net.crystalnexus.item.CarbonAccelerationUpgradeItem;
 import net.crystalnexus.item.BuildGunItem;
+import net.crystalnexus.item.MultiblockPlansItem;
 import net.crystalnexus.item.StructureTrackerItem;
 import net.crystalnexus.item.BlutoniumWasteItem;
 import net.crystalnexus.item.BlutoniumNuggetItem;
@@ -331,6 +332,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> COMPOUND_SWORD = REGISTRY.register("compound_sword", CompoundSwordItem::new);
 	public static final DeferredItem<Item> LASER_SABER = REGISTRY.register("laser_saber", LaserSaberItem::new);
 	public static final DeferredItem<Item> ENERGY_EXTRACTOR = block(CrystalnexusModBlocks.ENERGY_EXTRACTOR);
+	public static final DeferredItem<Item> CHLOROPHYTE_SOLAR_PANEL = block(CrystalnexusModBlocks.CHLOROPHYTE_SOLAR_PANEL);
 	public static final DeferredItem<Item> MATTER_TRANSMUTATION_TABLE = block(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE);
 	public static final DeferredItem<Item> EE_MATTER_BLOCK = block(CrystalnexusModBlocks.EE_MATTER_BLOCK);
 	public static final DeferredItem<Item> BLOCK_PLACER = block(CrystalnexusModBlocks.BLOCK_PLACER);
@@ -360,6 +362,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CARBON_MACHINE_FRAME = block(CrystalnexusModBlocks.CARBON_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.CHEMICAL_REACTION_CHAMBER);
 	public static final DeferredItem<Item> FLUID_CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER);
+	public static final DeferredItem<Item> MEGA_CHEMICAL_REACTION_CHAMBER = block(CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER);
 	public static final DeferredItem<Item> REFINERY = block(CrystalnexusModBlocks.REFINERY);
 	public static final DeferredItem<Item> CHLOROPHYTE_REFINERY = block(CrystalnexusModBlocks.CHLOROPHYTE_REFINERY);
 	public static final DeferredItem<Item> INVERTIUM_REFINERY = block(CrystalnexusModBlocks.INVERTIUM_REFINERY);
@@ -457,6 +460,9 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> SILICON = REGISTRY.register("silicon", SiliconItem::new);
 	public static final DeferredItem<Item> SILICON_WAFER = REGISTRY.register("silicon_wafer", net.crystalnexus.item.SiliconWaferItem::new);
 	public static final DeferredItem<Item> ENERGIZED_SILICON = REGISTRY.register("energized_silicon", EnergizedSiliconItem::new);
+	public static final DeferredItem<Item> SOLAR_SHEET = REGISTRY.register("solar_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> CARBON_SOLAR_SHEET = REGISTRY.register("carbon_solar_sheet", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> DYSON_STRUCTURE = REGISTRY.register("dyson_structure", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> COFFEE = REGISTRY.register("coffee", CoffeeItem::new);
 	public static final DeferredItem<Item> ATOMIC_COFFEE = REGISTRY.register("atomic_coffee", AtomicCoffeeItem::new);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL_ORE_STONE = block(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE);
@@ -617,6 +623,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> HEAVY_IRON_BLOCK = block(CrystalnexusModBlocks.HEAVY_IRON_BLOCK);
 	public static final DeferredItem<Item> MACHINE_CASING = block(CrystalnexusModBlocks.MACHINE_CASING);
 	public static final DeferredItem<Item> INSULATED_TITANIUM_CASING = block(CrystalnexusModBlocks.INSULATED_TITANIUM_CASING);
+	public static final DeferredItem<Item> TEMPERED_AZURINE_CASING = block(CrystalnexusModBlocks.TEMPERED_AZURINE_CASING);
 	public static final DeferredItem<Item> CAUTION_BLOCK = block(CrystalnexusModBlocks.CAUTION_BLOCK);
 	public static final DeferredItem<Item> CAUTION_BLOCK_ARROW = block(CrystalnexusModBlocks.CAUTION_BLOCK_ARROW);
 	public static final DeferredItem<Item> FACTORY_LIGHT = block(CrystalnexusModBlocks.FACTORY_LIGHT);
@@ -659,6 +666,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> LARGE_SULFUR_CRYSTAL = block(CrystalnexusModBlocks.LARGE_SULFUR_CRYSTAL);
 	public static final DeferredItem<Item> SULFUR_CLUSTER = block(CrystalnexusModBlocks.SULFUR_CLUSTER);
 	public static final DeferredItem<Item> BUILD_GUN = REGISTRY.register("build_gun", BuildGunItem::new);
+	public static final DeferredItem<Item> MULTIBLOCK_PLANS = REGISTRY.register("multiblock_plans", MultiblockPlansItem::new);
 	public static final DeferredItem<Item> STRUCTURE_TRACKER = REGISTRY.register("structure_tracker", StructureTrackerItem::new);
 	public static final DeferredItem<Item> BLUEPRINT_BASE = block(CrystalnexusModBlocks.BLUEPRINT_BASE);
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);

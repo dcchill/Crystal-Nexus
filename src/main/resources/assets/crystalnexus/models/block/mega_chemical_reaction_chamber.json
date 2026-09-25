@@ -1,0 +1,12 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "crystalnexus:block/tempered_azurine_casing",
+    "up": "crystalnexus:block/tempered_azurine_casing",
+    "north": "crystalnexus:block/mega_chemical_reaction_chamber",
+    "east": "crystalnexus:block/tempered_azurine_casing",
+    "south": "crystalnexus:block/tempered_azurine_casing",
+    "west": "crystalnexus:block/tempered_azurine_casing",
+    "particle": "crystalnexus:block/tempered_azurine_casing"
+  }
+}

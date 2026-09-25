@@ -43,7 +43,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
                     FluidStack fluid = chamber.getTank(i).getFluid();
                     Component name = fluid.isEmpty() ? Component.literal("Empty") : fluid.getHoverName();
                     graphics.renderComponentTooltip(font,
-                        List.of(name, Component.literal(fluid.getAmount() + " / 4000 mB")), mouseX, mouseY);
+                        List.of(name, Component.literal(fluid.getAmount() + " / " + chamber.getTankCapacity() + " mB")), mouseX, mouseY);
                     return;
                 }
             }
@@ -58,7 +58,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
         graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
         FluidChemicalReactionChamberBlockEntity chamber = menu.chamber();
         if (chamber != null) for (int i = 0; i < TANK_X.length; i++)
-            FluidTankRenderer.draw(graphics, chamber.getTank(i).getFluid(), FluidChemicalReactionChamberBlockEntity.TANK_CAPACITY,
+            FluidTankRenderer.draw(graphics, chamber.getTank(i).getFluid(), chamber.getTankCapacity(),
                 leftPos + TANK_X[i], topPos + TANK_Y, 16, TANK_HEIGHT);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);

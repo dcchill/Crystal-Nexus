@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:block",
+  "pools": [{
+    "rolls": 1,
+    "entries": [{ "type": "minecraft:item", "name": "crystalnexus:tempered_azurine_casing" }],
+    "conditions": [{ "condition": "minecraft:survives_explosion" }]
+  }]
+}

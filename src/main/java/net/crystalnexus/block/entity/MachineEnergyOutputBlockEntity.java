@@ -16,7 +16,6 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import javax.annotation.Nullable;
 
 public final class MachineEnergyOutputBlockEntity extends BlockEntity {
-	public static final int MAX_TRANSFER = 10_000_000;
 	private final IEnergyStorage energy = new IEnergyStorage() {
 		@Override public int receiveEnergy(int amount, boolean simulate) { return 0; }
 		@Override public int extractEnergy(int amount, boolean simulate) {
@@ -50,7 +49,7 @@ public final class MachineEnergyOutputBlockEntity extends BlockEntity {
 			IEnergyStorage target = level.getCapability(Capabilities.EnergyStorage.BLOCK,
 				worldPosition.relative(direction), direction.getOpposite());
 			if (target == null || !target.canReceive()) continue;
-			int offered = energy.extractEnergy(MAX_TRANSFER, true);
+			int offered = energy.extractEnergy(Integer.MAX_VALUE, true);
 			int accepted = target.receiveEnergy(offered, true);
 			if (accepted > 0) target.receiveEnergy(energy.extractEnergy(accepted, false), false);
 			if (energy.getEnergyStored() == 0) break;

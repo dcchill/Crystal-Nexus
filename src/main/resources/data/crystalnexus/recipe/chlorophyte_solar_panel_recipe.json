@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["sss", "imi", "cic"],
+  "key": {
+    "s": { "item": "crystalnexus:solar_sheet" },
+    "c": { "item": "crystalnexus:chlorophyte_ingot" },
+    "m": { "item": "crystalnexus:chlorophyte_machine_frame" },
+    "i": { "item": "crystalnexus:iron_machine_bolt" }
+  },
+  "result": { "id": "crystalnexus:chlorophyte_solar_panel", "count": 1 }
+}

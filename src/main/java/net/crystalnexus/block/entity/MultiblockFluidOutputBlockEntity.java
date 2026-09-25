@@ -29,8 +29,8 @@ public final class MultiblockFluidOutputBlockEntity extends BlockEntity {
 	}
 
 	public IFluidHandler getFluidOutput() { return output; }
-	public void bindController(BlockPos pos) { if (!pos.equals(controller)) { controller = pos.immutable(); sync(); } }
-	public void unbindController(BlockPos pos) { if (pos.equals(controller)) { controller = null; sync(); } }
+	public void bindController(BlockPos pos) { if (!pos.equals(controller)) { controller = pos.immutable(); if (level != null) level.invalidateCapabilities(worldPosition); sync(); } }
+	public void unbindController(BlockPos pos) { if (pos.equals(controller)) { controller = null; if (level != null) level.invalidateCapabilities(worldPosition); sync(); } }
 	public boolean isBoundTo(BlockPos pos) { return pos.equals(controller); }
 
 	@Nullable private IFluidHandler target() {

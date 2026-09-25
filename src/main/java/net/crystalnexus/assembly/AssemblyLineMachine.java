@@ -29,7 +29,7 @@ import net.crystalnexus.block.entity.UltimaSmelterBlockEntity;
 
 /** Small adapters preserve each worker's normal processing, sounds and energy costs. */
 public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind kind, IEnergyStorage energy, SideProfile profile) {
-    public enum Kind { CRUSHER, CIRCUIT_PRESS, PARTS_ASSEMBLER, SMELTER, GENERIC }
+    public enum Kind { CRUSHER, CIRCUIT_PRESS, PARTS_ASSEMBLER, CHEMICAL_REACTION, SMELTER, GENERIC }
     public static final String OWNER = "assembly_owner", TASK = "assembly_task", RECIPE = "assembly_recipe";
     public static AssemblyLineMachine at(Level level, BlockPos pos) {
         return at(level, pos, null);
@@ -40,6 +40,8 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         if (be instanceof CircuitPressBlockEntity c)
             return new AssemblyLineMachine(c, c, Kind.CIRCUIT_PRESS, c.getEnergyStorage(), profile);
         if (be instanceof PartsAssemblerBlockEntity c) return new AssemblyLineMachine(c, c, Kind.PARTS_ASSEMBLER, c.getEnergyStorage(), profile);
+        if (be instanceof ChemicalReactionChamberBlockEntity c)
+            return new AssemblyLineMachine(c, c, Kind.CHEMICAL_REACTION, c.getEnergyStorage(), profile);
         // Detect Crystal Nexus smelter blocks
         if (be instanceof IronSmelterBlockEntity c || be instanceof CrystalSmelterBlockEntity c2
             || be instanceof ChlorophyteSmelterBlockEntity c3 || be instanceof InvertiumSmelterBlockEntity c4
@@ -112,9 +114,17 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         if (recipe.value() instanceof OreCrushingJeiRecipe) return Kind.CRUSHER;
         if (recipe.value() instanceof CircuitPressingRecipe) return Kind.CIRCUIT_PRESS;
         if (recipe.value() instanceof PartsAssemblingRecipe) return Kind.PARTS_ASSEMBLER;
+        if (recipe.value() instanceof ChemicalReactionRecipe) return Kind.CHEMICAL_REACTION;
         return null;
     }
-    public int[] inputs() { return kind == Kind.CIRCUIT_PRESS ? new int[]{0, 2} : new int[]{0}; }
+    public int[] inputs() {
+        return switch (kind) {
+            case CIRCUIT_PRESS -> new int[]{0, 2};
+            case CHEMICAL_REACTION -> new int[]{0, 1, 2};
+            default -> new int[]{0};
+        };
+    }
+    public int outputSlot() { return kind == Kind.CHEMICAL_REACTION ? 3 : 1; }
     public boolean supports(RecipeHolder<?> recipe) {
         return kind != Kind.GENERIC && kind(recipe) == kind && (!(recipe.value() instanceof OreCrushingJeiRecipe r)
             || MachineTier.from(entity.getBlockState()).supports(r.minimumMachineTier()));
@@ -127,12 +137,15 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             || p.containerMenu instanceof net.crystalnexus.world.inventory.CircuitPressGUIMenu m2 && m2.x == entity.getBlockPos().getX() && m2.y == entity.getBlockPos().getY() && m2.z == entity.getBlockPos().getZ()
             || p.containerMenu.slots.stream().anyMatch(s -> s.container == inventory))) return false;
         for (int i : inputs()) if (!inventory.getItem(i).isEmpty()) return false;
-        return inventory.getItem(1).isEmpty() && progress() == 0;
+        return inventory.getItem(outputSlot()).isEmpty() && progress() == 0;
     }
     public int progress() {
         return entity instanceof PartsAssemblerBlockEntity p ? p.getData().get(0) : (int) entity.getPersistentData().getDouble("progress");
     }
     public int startingEnergy(RecipeHolder<?> recipe) {
+        if (recipe.value() instanceof ChemicalReactionRecipe) {
+            return MachineUpgradeHelper.energyCost(inventory.getItem(4), 4096);
+        }
         ItemStack upgrade = inventory.getItem(kind == Kind.CIRCUIT_PRESS ? 3 : 2);
         if (recipe.value() instanceof PartsAssemblingRecipe p) return MachineUpgradeHelper.energyCost(upgrade, p.energyPerTick());
         return MachineUpgradeHelper.energyCost(entity.getBlockState(), upgrade, kind == Kind.CRUSHER ? 4096 : 2048);

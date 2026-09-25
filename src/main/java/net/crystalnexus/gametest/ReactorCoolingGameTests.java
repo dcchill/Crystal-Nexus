@@ -36,7 +36,7 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
-	public static void reactorEnergyOutputPushesStoredEnergy(GameTestHelper helper) {
+	public static void reactorEnergyOutputDoesNotFillAnUnboundInputPort(GameTestHelper helper) {
 		BlockPos computerPos = new BlockPos(10, 1, 10);
 		BlockPos outputPos = computerPos.east();
 		BlockPos receiverPos = outputPos.east();
@@ -55,8 +55,8 @@ public final class ReactorCoolingGameTests {
 
 		computer.pushEnergyOutputs();
 
-		helper.assertTrue(receiver.getEnergyStorage().getEnergyStored() == 1_000,
-				"A reactor energy output must push the computer's FE to adjacent receivers");
+		helper.assertTrue(receiver.getEnergyStorage().getEnergyStored() == 0 && computer.getEnergyStorage().getEnergyStored() == 1_000,
+				"An unbound energy input must not buffer FE from an adjacent output");
 		helper.succeed();
 	}
 

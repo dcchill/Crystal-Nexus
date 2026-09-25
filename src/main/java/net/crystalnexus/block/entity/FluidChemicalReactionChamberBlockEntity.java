@@ -22,6 +22,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -33,11 +34,12 @@ import java.util.stream.IntStream;
 
 public class FluidChemicalReactionChamberBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int TANK_CAPACITY = 4000;
+    private final int tankCapacity;
     private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
-    private final FluidTank[] tanks = { createTank(), createTank(), createTank() };
+    private final FluidTank[] tanks;
 
     private FluidTank createTank() {
-        return new FluidTank(TANK_CAPACITY) {
+        return new FluidTank(tankCapacity) {
             @Override protected void onContentsChanged() {
                 setChanged();
                 if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
@@ -46,7 +48,13 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
     }
 
     public FluidChemicalReactionChamberBlockEntity(BlockPos pos, BlockState state) {
-        super(CrystalnexusModBlockEntities.FLUID_CHEMICAL_REACTION_CHAMBER.get(), pos, state);
+        this(CrystalnexusModBlockEntities.FLUID_CHEMICAL_REACTION_CHAMBER.get(), pos, state, TANK_CAPACITY);
+    }
+
+    protected FluidChemicalReactionChamberBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int tankCapacity) {
+        super(type, pos, state);
+        this.tankCapacity = tankCapacity;
+        tanks = new FluidTank[] { createTank(), createTank(), createTank() };
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, FluidChemicalReactionChamberBlockEntity blockEntity) {
@@ -70,6 +78,9 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
         tag.put("energyStorage", energyStorage.serializeNBT(provider));
         for (int i = 0; i < tanks.length; i++) tag.put("tank" + i, tanks[i].writeToNBT(provider, new CompoundTag()));
     }
+
+    public int getTankCapacity() { return tankCapacity; }
+    public int getSpeedMultiplier() { return 1; }
 
     @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider provider) { return saveWithFullMetadata(provider); }
@@ -113,7 +124,7 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
     private final IFluidHandler fluidHandler = new IFluidHandler() {
         @Override public int getTanks() { return tanks.length; }
         @Override public FluidStack getFluidInTank(int tank) { return tanks[tank].getFluid(); }
-        @Override public int getTankCapacity(int tank) { return TANK_CAPACITY; }
+        @Override public int getTankCapacity(int tank) { return tankCapacity; }
         @Override public boolean isFluidValid(int tank, FluidStack stack) { return tank < 2 && tanks[tank].isFluidValid(stack); }
         @Override public int fill(FluidStack resource, FluidAction action) {
             for (int i = 0; i < 2; i++) {
