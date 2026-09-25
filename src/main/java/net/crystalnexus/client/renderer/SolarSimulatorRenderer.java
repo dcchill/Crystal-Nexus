@@ -68,7 +68,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
     );
     private static final RenderType DYSON_RENDER_TYPE = RenderType.create(
         "crystalnexus_solar_simulator_dyson", DefaultVertexFormat.POSITION_COLOR,
-        VertexFormat.Mode.TRIANGLES, 8192, false, false,
+        VertexFormat.Mode.TRIANGLES, 8192, false, true,
         RenderType.CompositeState.builder()
             .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
