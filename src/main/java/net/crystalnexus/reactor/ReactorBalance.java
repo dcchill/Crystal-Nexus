@@ -11,7 +11,7 @@ public final class ReactorBalance {
 	public static final double IDLE_COOLING_PER_DEGREE = 0.005; // how fast the reactor cools down when its not doing anything
 	public static final double MIN_OPERATING_FACTOR = 0.20; // lowest % power output when theres not enough coolant
 	public static final int BASE_FE_PER_ROD_T = 22500; // base energy per rod per tick, before anything else modifies it
-	public static final double BASE_HEAT_PER_ROD_T = 3.0; // base heat per rod per tick *------------------------*
+	public static final double BASE_HEAT_PER_ROD_T = 3.0; // base heat per rod per tick
 	public static final double DIRECT_FUEL_OUTPUT = 0.35; // energy multiplier for fuel thats not moderated
 	public static final double DIRECT_FUEL_HEAT = 0.5; // heat multiplier for unmoderated fuel
 	public static final double MODERATED_FUEL_OUTPUT = 0.45; // energy output when fuel is properly moderated

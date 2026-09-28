@@ -36,10 +36,8 @@ public class PistonGeneratorOnTickUpdateProcedure {
 
         GeneratorEnergyStorage energyStorage = generator.getEnergyStorage();
 
-        // --- Progress / GUI ---
         double progress = be.getPersistentData().getDouble("progress");
 
-        // --- Upgrade stacks ---
         ItemStack upgradeStack = getItemFromSlot(level, pos, 2);
 
         int ENERGY_PER_TICK;
@@ -47,37 +45,24 @@ public class PistonGeneratorOnTickUpdateProcedure {
 
         ENERGY_PER_TICK = (int) (256 * MachineUpgradeHelper.generatorEfficiency(upgradeStack, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgradeStack));
 
-        // Acceleration upgrade
-        if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-            COOK_TIME = 450;
-        } else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-            COOK_TIME = 500;
-        } else {
-            COOK_TIME = 350;
-        }
+        COOK_TIME = (int) Math.ceil(MachineUpgradeHelper.generatorCycleTime(upgradeStack, 350, 450, 500));
         be.getPersistentData().putDouble("maxProgress", COOK_TIME);
 
-        // --- Slots ---
         ItemStack fuelStack = getItemFromSlot(level, pos, 0);
 
-        // --- Fluid handler ---
         IFluidHandler fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
-		// --- Fill tank from fuel cells ---
 		if (!fuelStack.isEmpty() && fluidHandler != null) {
 		
 		    FluidStack fluidToInsert = FluidStack.EMPTY;
 		
-		    // Gasoline cell
 		    if (fuelStack.getItem() == CrystalnexusModItems.GAS_FUEL_CELL.get()) {
 		        fluidToInsert = new FluidStack(CrystalnexusModFluids.GASOLINE.get(), FUEL_CELL_AMOUNT);
 		    }
 		
-		    // Overfuel cell
 		    else if (fuelStack.getItem() == CrystalnexusModItems.OVERFUEL_CELL.get()) {
 		        fluidToInsert = new FluidStack(CrystalnexusModFluids.OVERFUEL.get(), FUEL_CELL_AMOUNT);
 		    }
 		
-		    // If we found a valid fuel type
 		    if (!fluidToInsert.isEmpty()) {
 		        int filledSim = fluidHandler.fill(fluidToInsert, IFluidHandler.FluidAction.SIMULATE);
 		
@@ -89,7 +74,6 @@ public class PistonGeneratorOnTickUpdateProcedure {
 		    }
 		}
 
-		// --- Check if enough fuel to run ---
 		boolean canRun = false;
 		boolean isOverfuel = false;
 		FluidStack tankFluid = FluidStack.EMPTY;
@@ -106,11 +90,9 @@ public class PistonGeneratorOnTickUpdateProcedure {
 		    }
 		}
 
-        // --- Update blockstate ---
         setBlockStateInteger(level, pos, "blockstate", canRun ? 2 : 1);
 
         if (canRun && energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
-            // Increment progress
             progress += 1;
             be.getPersistentData().putDouble("progress", progress);
 
@@ -123,7 +105,6 @@ public class PistonGeneratorOnTickUpdateProcedure {
 				
 				energyStorage.generateEnergy(energyOutput, false);
 
-            // Consume fuel on full cook cycle
             if (progress >= COOK_TIME) {
                 if (fluidHandler != null) {
                     fluidHandler.drain(FUEL_CELL_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
@@ -133,7 +114,6 @@ public class PistonGeneratorOnTickUpdateProcedure {
             }
         }
 
-        // --- Push energy to neighbors ---
         if (energyStorage.getEnergyStored() > 0) {
             for (Direction dir : Direction.values()) {
                 BlockPos neighborPos = pos.relative(dir);
@@ -143,7 +123,6 @@ public class PistonGeneratorOnTickUpdateProcedure {
                 int energyToSend = Math.min(energyStorage.getEnergyStored(), 2048); // push up to 1000 FE/tick
                 int accepted = neighbor.receiveEnergy(energyToSend, false);
                 if (accepted > 0) {
-                    // drain from own storage
                     if (energyStorage instanceof net.neoforged.neoforge.energy.EnergyStorage modifiable) {
                         modifiable.extractEnergy(accepted, false);
                     }
@@ -152,7 +131,6 @@ public class PistonGeneratorOnTickUpdateProcedure {
         }
     }
 
-    // ----- Helper functions -----
 
     private static ItemStack getItemFromSlot(Level level, BlockPos pos, int slot) {
         IItemHandler handler = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);

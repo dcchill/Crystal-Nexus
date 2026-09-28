@@ -56,13 +56,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 1;
-		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 75;
-		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 50;
-		} else {
-			cookTime = 100;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
@@ -74,7 +68,10 @@ public class ExtractinatorOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		slotnumbercheck = 1;
-		if (energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+		ItemStack input = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0);
+		int baseEnergy = input.is(ItemTags.create(ResourceLocation.parse("c:sands"))) || input.is(Blocks.GRAVEL.asItem()) ? 4096 : 1024;
+		int requiredEnergy = Math.min(energyCost(world, BlockPos.containing(x, y, z), upgrade, baseEnergy), net.crystalnexus.config.CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxExtract());
+		if (requiredEnergy <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			if (!((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.AIR.asItem())) {
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 					if (!world.isClientSide()) {

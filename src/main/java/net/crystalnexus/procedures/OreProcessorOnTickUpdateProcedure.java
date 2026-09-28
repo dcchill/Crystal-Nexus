@@ -48,8 +48,7 @@ public final class OreProcessorOnTickUpdateProcedure {
 		}
 
 		ItemStack upgrade = inventory.getStackInSlot(0);
-		double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 50
-				: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 25 : 75;
+		double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 75, 50, 25);
 		double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (blockEntity == null) {

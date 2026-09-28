@@ -57,11 +57,7 @@ public class InverterOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 1;
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 200;
-		} else {
-			cookTime = 300;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2), 300, 200, 300);
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();

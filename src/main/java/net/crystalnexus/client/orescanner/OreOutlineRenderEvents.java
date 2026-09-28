@@ -28,7 +28,6 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 @EventBusSubscriber(modid = "crystalnexus", value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public class OreOutlineRenderEvents {
 
-    // ✅ RenderType that renders THROUGH walls (no depth test) + no cull + no depth writes
     private static final RenderType ORE_XRAY_LINES = RenderType.create(
             "crystalnexus_ore_xray_lines",
             DefaultVertexFormat.POSITION_COLOR_NORMAL,
@@ -39,18 +38,16 @@ public class OreOutlineRenderEvents {
             RenderType.CompositeState.builder()
                     .setShaderState(RenderStateShard.RENDERTYPE_LINES_SHADER)
                     .setLineState(new RenderStateShard.LineStateShard(OptionalDouble.empty()))
-                    .setLayeringState(RenderStateShard.NO_LAYERING)          // ✅ important for "close weirdness"
+                    .setLayeringState(RenderStateShard.NO_LAYERING)
                     .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)       // ✅ through blocks
+                    .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
                     .setCullState(RenderStateShard.NO_CULL)
-                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)         // ✅ don't write depth
+                    .setWriteMaskState(RenderStateShard.COLOR_WRITE)
                     .createCompositeState(false)
     );
 
     @SubscribeEvent
 public static void onRenderLevel(RenderLevelStageEvent event) {
-    // Try a later stage if you still see depth issues:
-    // AFTER_WEATHER and AFTER_PARTICLES are often “most on top”.
     if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
     if (!OreOutlineClient.isActive()) return;
 
@@ -78,12 +75,11 @@ public static void onRenderLevel(RenderLevelStageEvent event) {
     var state = level.getBlockState(pos);
     if (state.isAir()) continue;
 
-    float r = 1.0f, g = 1.0f, b = 1.0f; // ✅ always white
+    float r = 1.0f, g = 1.0f, b = 1.0f;
     AABB box = new AABB(pos).inflate(0.01);
     drawLineBox(poseStack, vc, box, r, g, b, a);
 }
 
-    // ✅ Force through-walls at flush time (this is the reliable part)
     RenderSystem.disableDepthTest();
     RenderSystem.depthMask(false);
     RenderSystem.disableCull();
@@ -126,7 +122,6 @@ public static void onRenderLevel(RenderLevelStageEvent event) {
         var last = poseStack.last();
         var mat = last.pose();
 
-        // Direction vector for a stable normal input
         float dx = (float) (x1 - x0);
         float dy = (float) (y1 - y0);
         float dz = (float) (z1 - z0);

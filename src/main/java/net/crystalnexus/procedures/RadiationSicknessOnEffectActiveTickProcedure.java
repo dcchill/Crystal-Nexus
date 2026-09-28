@@ -49,7 +49,6 @@ public static void execute(LevelAccessor world, Entity entity) {
 
         if (!hasHazmat) {
 
-            // increment once per tick
             double time = entity.getPersistentData().getDouble(TIME_SICK_TAG) + 1;
             entity.getPersistentData().putDouble(TIME_SICK_TAG, time);
 

@@ -3,7 +3,6 @@ package net.crystalnexus.network;
 import net.minecraft.resources.ResourceLocation;
 
 public final class DepotNetIds {
-    // ✅ CHANGE THIS to your real mod id (must match mods.toml)
     public static final String MOD_ID = "crystalnexus";
 
     // Network version string used by the payload registrar (bump when breaking protocol)

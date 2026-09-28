@@ -4,6 +4,6 @@ import net.minecraft.world.item.Item;
 
 public class CarbonFEEfficiencyUpgradeItem extends Item {
 	public CarbonFEEfficiencyUpgradeItem() {
-		super(new Item.Properties());
+		super(new Item.Properties().stacksTo(16));
 	}
 }

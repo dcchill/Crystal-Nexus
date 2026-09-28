@@ -48,13 +48,7 @@ public class SteamEngineOnTickUpdateProcedure {
 		}
 		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
 		feEfficiency = MachineUpgradeHelper.generatorEfficiency(upgrade, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgrade);
-		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 325;
-		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 500;
-		} else {
-			cookTime = 250;
-		}
+		cookTime = MachineUpgradeHelper.generatorCycleTime(upgrade, 250, 325, 500);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);

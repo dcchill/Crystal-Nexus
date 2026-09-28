@@ -16,7 +16,6 @@ public class CopperSingularityRightclickedOnBlockProcedure {
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
 
-        // 🌱 Crops
         if (block instanceof CropBlock cropBlock) {
             int age = cropBlock.getAge(state);
             int maxAge = cropBlock.getMaxAge();
@@ -29,7 +28,6 @@ public class CopperSingularityRightclickedOnBlockProcedure {
             return;
         }
 
-        // 🪨 Weathering copper
         if (block instanceof WeatheringCopper) {
             Block next = reverse
                     ? WeatheringCopper.getPrevious(block).orElse(null) // de-oxidize
@@ -41,7 +39,6 @@ public class CopperSingularityRightclickedOnBlockProcedure {
             return;
         }
 
-        // 🔮 Generic integer properties (like bamboo age, kelp, etc.)
         for (var entry : state.getValues().entrySet()) {
             if (entry.getKey() instanceof IntegerProperty property) {
                 int value = (Integer) entry.getValue();
@@ -58,7 +55,6 @@ public class CopperSingularityRightclickedOnBlockProcedure {
             }
         }
 
-        // ✨ Play different sounds for forward/backward
         if (world instanceof ServerLevel level) {
             level.playSound(
                 null,

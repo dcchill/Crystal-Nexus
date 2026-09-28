@@ -25,7 +25,6 @@ public class RubberBlockBlock extends Block {
 
     @Override
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
-        // Prevent fall damage
         entity.causeFallDamage(fallDistance, 0.0F, level.damageSources().fall());
     }
 
@@ -44,7 +43,6 @@ public class RubberBlockBlock extends Block {
     }
     @Override
 	public PushReaction getPistonPushReaction(BlockState state) {
-    // Allow piston to move it normally
     return PushReaction.NORMAL;
 	}
 	@Override
@@ -54,9 +52,8 @@ public class RubberBlockBlock extends Block {
     if (isMoving) { // means piston pushed it
         var entities = level.getEntities(null, new net.minecraft.world.phys.AABB(pos).inflate(0.5));
         for (Entity entity : entities) {
-            // Push entities slightly upwards when the rubber block moves
             if (!entity.isPassenger() && !entity.isVehicle() && entity.isPushable()) {
-                entity.push(0, 0.5, 0); // tweak this value
+                entity.push(0, 0.5, 0);
             }
         }
     }

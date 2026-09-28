@@ -122,7 +122,7 @@ public class ChemicalReactionChamberBlockEntity extends RandomizableContainerBlo
 		if (index == 3)
 			return false;
 		if (index == 4)
-			return false;
+			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 

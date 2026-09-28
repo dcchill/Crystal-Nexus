@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -64,13 +66,7 @@ public class SteamChamberOnTickUpdateProcedure {
 				}
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 150;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 200;
-		} else {
-			cookTime = 100;
-		}
+		cookTime = MachineUpgradeHelper.generatorCycleTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3), 100, 150, 200);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);

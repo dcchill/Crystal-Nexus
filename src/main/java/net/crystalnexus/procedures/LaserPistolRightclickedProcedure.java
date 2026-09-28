@@ -42,7 +42,6 @@ public class LaserPistolRightclickedProcedure {
 				if ((entity instanceof Player _plrCldRem4 ? _plrCldRem4.getCooldowns().getCooldownPercent(itemstack.getItem(), 0f) * 100 : 0) == 0) {
 					if (entity instanceof LivingEntity _livEnt5 && _livEnt5.isBlocking()) {
 
-						// --- FE GATE + DRAIN (survival) ---
 						boolean creative = (entity instanceof Player _plr ? _plr.getAbilities().instabuild : false);
 						if (!creative) {
 							if (!(entity instanceof Player p))
@@ -53,12 +52,10 @@ public class LaserPistolRightclickedProcedure {
 								return;
 						}
 
-						// Spawn + consume only on server
 						Entity _shootFrom = entity;
 						Level projectileLevel = _shootFrom.level();
 						if (!projectileLevel.isClientSide()) {
 
-							// Actually drain FE now (only if not creative)
 							if (!creative && _shootFrom instanceof Player p) {
 								// If for some reason it fails now, abort
 								if (!extractFromInventoryBatteries(p, FE_PER_SHOT))
@@ -83,7 +80,6 @@ public class LaserPistolRightclickedProcedure {
 							}
 						}
 
-						// Sound (client + server safe)
 						if (world instanceof Level _level) {
 							if (!_level.isClientSide()) {
 								_level.playSound(null, BlockPos.containing(x, y, z),
@@ -123,9 +119,6 @@ public class LaserPistolRightclickedProcedure {
 					return true;
 			}
 		}
-
-		// (Optional) also check offhand slot as a "battery" if you want:
-		// ItemStack offhand = player.getOffhandItem(); ...
 
 		return false;
 	}

@@ -21,7 +21,6 @@ public class EpicSSDItemInInventoryTickProcedure {
 		if (!tag.contains("cook_mult") || !tag.contains("fe_efficiency")) {
 			RandomSource rand = RandomSource.create();
 
-			// === JACKPOT (hidden) ===
 			if (rand.nextFloat() < 0.02f) {
 				CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
 					t.putDouble("cook_mult", 0.05);     // 20x (fastest supported)

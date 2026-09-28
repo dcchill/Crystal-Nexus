@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 
 public class ChlorophyteAcceleratorOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
-        // Only run if the block has enough energy
         if (getEnergyStored(world, BlockPos.containing(x, y, z), null) >= 256) {
 
             int radius = 5; // how far around the block to boost growth
@@ -41,7 +40,6 @@ public class ChlorophyteAcceleratorOnTickUpdateProcedure {
 						 else if (block instanceof AmethystClusterBlock cluster && world instanceof ServerLevel serverWorld) {
     							world.scheduleTick(targetPos, block, 1 + world.getRandom().nextInt(3));
 						}
-                        // Nether Wart
                         else if (state.getBlock() instanceof NetherWartBlock) {
                             int age = state.getValue(NetherWartBlock.AGE);
                             if (age < 3 && world.getRandom().nextFloat() < 0.25f) {
@@ -51,7 +49,6 @@ public class ChlorophyteAcceleratorOnTickUpdateProcedure {
 						else if (state.getBlock() == Blocks.TORCHFLOWER_CROP) {
 							    continue;
 						}
-                        // Sugar Cane & Cactus
                         else if (state.hasProperty(SugarCaneBlock.AGE)) {
                             int age = state.getValue(SugarCaneBlock.AGE);
                             if (age < 15 && world.getRandom().nextFloat() < 0.25f) {
@@ -72,7 +69,6 @@ public class ChlorophyteAcceleratorOnTickUpdateProcedure {
 				if (_entityStorage != null)
 					_entityStorage.extractEnergy(256, false);
 			}
- // end energy check
     }
 
     public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {

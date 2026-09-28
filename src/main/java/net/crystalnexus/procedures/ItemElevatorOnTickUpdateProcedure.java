@@ -38,12 +38,10 @@ public class ItemElevatorOnTickUpdateProcedure {
 						&& ext.getCapability(Capabilities.ItemHandler.BLOCK, upPos, null) instanceof IItemHandlerModifiable upInv
 						&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
-					// Insert 1 into above
 					ItemStack newAbove = above.isEmpty() ? here.copy() : above.copy();
 					newAbove.setCount(aboveCount + 1);
 					upInv.setStackInSlot(0, newAbove);
 
-					// Remove 1 from here
 					ItemStack newHere = inv.getStackInSlot(0).copy();
 					newHere.shrink(1);
 					inv.setStackInSlot(0, newHere);
@@ -67,12 +65,10 @@ public class ItemElevatorOnTickUpdateProcedure {
 							&& ext.getCapability(Capabilities.ItemHandler.BLOCK, downPos, null) instanceof IItemHandlerModifiable downInv
 							&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
-						// Insert 1 into below
 						ItemStack newBelow = below.isEmpty() ? here2.copy() : below.copy();
 						newBelow.setCount(belowCount + 1);
 						downInv.setStackInSlot(0, newBelow);
 
-						// Remove 1 from here
 						ItemStack newHere = inv.getStackInSlot(0).copy();
 						newHere.shrink(1);
 						inv.setStackInSlot(0, newHere);

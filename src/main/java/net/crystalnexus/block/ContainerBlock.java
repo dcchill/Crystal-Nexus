@@ -157,10 +157,8 @@ public void onRemove(BlockState state, Level world, BlockPos pos, BlockState new
         if (blockEntity instanceof ContainerBlockEntity containerBE) {
             ItemStack stack = new ItemStack(this);
 
-            // Copy inventory to the ItemStack
             containerBE.saveToItem(stack, world.registryAccess());
 
-            // Drop the item
             Containers.dropItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
         }
         super.onRemove(state, world, pos, newState, isMoving);

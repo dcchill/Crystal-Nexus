@@ -119,14 +119,12 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        // Prevent upgrades from going into regular input slots
         if (index >= 14 && index <= 18) { // input slots
             return !stack.is(net.minecraft.tags.ItemTags.create(net.minecraft.resources.ResourceLocation.tryParse("crystalnexus:machine_upgrades")));
         }
         return true;
     }
 
-    /** --- WORLDLY CONTAINER METHODS --- **/
 
     @Override
     public int[] getSlotsForFace(Direction side) {
@@ -136,7 +134,6 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
         if (side == Direction.UP) return new int[]{14}; // top input
         if (side == Direction.DOWN) return new int[0]; // bottom does nothing
 
-        // relative sides
         if (side == facing) return new int[]{17}; // front
         if (side == facing.getOpposite()) return new int[]{15}; // back
         if (side == facing.getClockWise(Direction.Axis.Y)) return new int[]{16}; // right
@@ -152,12 +149,10 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
 
     @Override
     public boolean canTakeItemThroughFace(int index, ItemStack stack, Direction direction) {
-        // prevent taking link items
         if (index >= 9 && index <= 13) return false;
         return true;
     }
 
-    /** --- ENERGY STORAGE --- **/
     private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.FACTORY_ITEM_CONTROLLER.capacity(), CrystalnexusConfig.MACHINES.FACTORY_ITEM_CONTROLLER.maxReceive(), CrystalnexusConfig.MACHINES.FACTORY_ITEM_CONTROLLER.maxExtract(), 0) {
         @Override
         public int receiveEnergy(int maxReceive, boolean simulate) {

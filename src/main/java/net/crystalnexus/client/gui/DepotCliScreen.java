@@ -688,7 +688,6 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         actionItem = hasAction ? firstAction.itemId() : null;
         if (actionAmountInput != null) actionAmountInput.setValue(hasAction ? Integer.toString(firstAction.amount()) : "64");
         machineItem = hasAction ? firstAction.machineId() : null;
-        // Update text inputs
         if (triggerItemInput != null) triggerItemInput.setValue(triggerItem != null ? triggerItem.toString() : "");
         if (conditionItemInput != null) conditionItemInput.setValue(conditionItem != null ? conditionItem.toString() : "");
         if (actionItemInput != null) actionItemInput.setValue(actionItem != null ? actionItem.toString() : "");

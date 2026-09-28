@@ -17,10 +17,8 @@ public class CompoundSwordEnergyEvents {
         Player player = event.getEntity();
         if (player == null) return;
 
-        // server only
         if (player.level().isClientSide()) return;
 
-        // Only our sword
         ItemStack weapon = player.getMainHandItem();
         if (!weapon.is(CrystalnexusModItems.COMPOUND_SWORD.get())) return;
 
@@ -28,7 +26,6 @@ public class CompoundSwordEnergyEvents {
         if (!net.crystalnexus.item.ToolEnergy.consume(player, weapon, CrystalnexusConfig.ITEMS.COMPOUND_SWORD.energyCost(), false)) {
             event.setCanceled(true);
 
-            // optional: throttle spam
             if (player.tickCount % 10 == 0) {
                 player.displayClientMessage(
                         Component.literal("Out of power!").withStyle(ChatFormatting.RED),

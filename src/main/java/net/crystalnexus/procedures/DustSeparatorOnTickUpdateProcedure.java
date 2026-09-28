@@ -5,6 +5,7 @@ import net.crystalnexus.jei_recipes.DustSeperationRecipe;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -30,8 +31,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
 
         ItemStack upgrade = separator.getItem(2);
         MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
-        double baseCookTime = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
-            : upgrade.is(net.crystalnexus.init.CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
+        double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
         double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
         int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
         separator.getPersistentData().putDouble("maxProgress", cookTime);
@@ -44,7 +44,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
             sync(level, pos, separator);
             return energyText(separator);
         }
-        if (separator.getEnergyStorage().getEnergyStored() < energyCost) {
+        if (separator.getEnergyStorage().getEnergyStored() < Math.min(energyCost, CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract())) {
             setActive(level, pos, false);
             sync(level, pos, separator);
             return energyText(separator);

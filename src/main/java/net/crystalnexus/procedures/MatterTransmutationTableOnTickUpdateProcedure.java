@@ -31,29 +31,24 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
-		// tweakables
 		final int cookTime = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.ticksPerCraft();
 		final int energyCost = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.energyPerCraft();
 		final int inputSlots = 8;
 		final int outputSlot = 8;
 
-		// Keep maxProgress updated
 		setBlockNBT(world, pos, "maxProgress", cookTime);
 
 		// Find a matching recipe ONCE (and require correct counts)
 		MatterTransmutationRecipe recipe = findMatchingRecipe(world, pos, inputSlots);
 		if (recipe == null) {
-			// no valid recipe -> reset progress slowly/instantly as you prefer
 			setBlockNBT(world, pos, "progress", 0);
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// Must have energy
 		if (getEnergyStored(world, pos, null) < energyCost) {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// Output must be able to fit
 		ItemStack result = recipe.getResultItem(null);
 		if (result.isEmpty() || result.getItem() == Blocks.AIR.asItem()) {
 			setBlockNBT(world, pos, "progress", 0);
@@ -61,11 +56,9 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 		}
 
 		if (!canOutputAccept(world, pos, outputSlot, result)) {
-			// can't fit output -> don't advance
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// Tick progress
 		double progress = getBlockNBTNumber(world, pos, "progress");
 		if (progress < 0) progress = 0;
 
@@ -78,7 +71,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// Craft complete -> add output, consume inputs by JEI counts, drain energy, reset progress
 		addToOutput(world, pos, outputSlot, result);
 		consumeInputs(world, pos, recipe, inputSlots);
 		extractEnergy(world, pos, energyCost);
@@ -87,9 +79,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Recipe matching with counts                                  */
-	/* ------------------------------------------------------------ */
 
 	private static MatterTransmutationRecipe findMatchingRecipe(LevelAccessor world, BlockPos pos, int inputSlots) {
 		if (!(world instanceof Level lvl)) return null;
@@ -117,19 +106,14 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 			Ingredient ing = ings.get(i);
 			ItemStack inSlot = itemFromBlockInventory(world, pos, i);
 
-			// must match ingredient
 			if (!ing.test(inSlot.copy())) return false;
 
-			// must have enough count for this slot
 			int required = recipe.getInputCount(i);
 			if (inSlot.getCount() < required) return false;
 		}
 		return true;
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Output handling                                              */
-	/* ------------------------------------------------------------ */
 
 	private static boolean canOutputAccept(LevelAccessor world, BlockPos pos, int outSlot, ItemStack toAdd) {
 		ItemStack out = itemFromBlockInventory(world, pos, outSlot);
@@ -138,7 +122,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 			return toAdd.getCount() <= toAdd.getMaxStackSize();
 		}
 
-		// must be same item + same components (NBT)
 		if (!ItemStack.isSameItemSameComponents(out, toAdd)) return false;
 
 		return out.getCount() + toAdd.getCount() <= out.getMaxStackSize();
@@ -159,9 +142,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 		inv.setStackInSlot(outSlot, out);
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Input consumption using JEI counts                           */
-	/* ------------------------------------------------------------ */
 
 	private static void consumeInputs(LevelAccessor world, BlockPos pos, MatterTransmutationRecipe recipe, int inputSlots) {
 		if (!(world instanceof ILevelExtension ext)) return;
@@ -177,9 +157,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 		}
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Energy + NBT helpers                                         */
-	/* ------------------------------------------------------------ */
 
 	private static void extractEnergy(LevelAccessor world, BlockPos pos, int amount) {
 		if (world instanceof ILevelExtension ext) {
@@ -200,9 +177,6 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 			level.sendBlockUpdated(pos, bs, bs, 3);
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Your existing helpers (kept as-is)                           */
-	/* ------------------------------------------------------------ */
 
 	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
 		if (world instanceof ILevelExtension ext) {

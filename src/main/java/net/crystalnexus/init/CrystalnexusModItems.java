@@ -499,7 +499,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> EMPTY_FUEL_CELL = REGISTRY.register("empty_fuel_cell", EmptyFuelCellItem::new);
 	public static final DeferredItem<Item> REACTOR_FUEL_CELL = REGISTRY.register("reactor_fuel_cell",
 			() -> new Item(new Item.Properties()));
-	public static final DeferredItem<Item> BLUTONIUM_FUEL_CELL = REGISTRY.register("blutonium_fuel_cell", //-------------------FUEL CELLS
+	public static final DeferredItem<Item> BLUTONIUM_FUEL_CELL = REGISTRY.register("blutonium_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 1.5));
 	public static final DeferredItem<Item> PURE_BLUTONIUM_FUEL_CELL = REGISTRY.register("pure_blutonium_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 0.75));

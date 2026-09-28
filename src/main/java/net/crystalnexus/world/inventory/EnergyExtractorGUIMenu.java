@@ -110,7 +110,8 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem();
+				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem()
+						|| CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get() == stack.getItem();
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 133, 35) {
@@ -154,6 +155,9 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (itemstack1.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+					|| itemstack1.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())) {
+				if (!this.moveItemStackTo(itemstack1, 1, 2, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
 				if (index < 3 + 27) {
 					if (!this.moveItemStackTo(itemstack1, 3 + 27, this.slots.size(), true))

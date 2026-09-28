@@ -26,7 +26,7 @@ public class SmokeEmitterOnTickUpdateProcedure {
 						        x + 0.5 + offsetX,
 						        y + 1.05,
 						        z + 0.5 + offsetZ,
-						        0,          // IMPORTANT: set count to 0
+						        0,          // Zero count makes the offsets act as particle velocity.
 						        0.0,
 						        0.16,       // direct upward motion
 						        0.0,

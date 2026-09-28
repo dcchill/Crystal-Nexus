@@ -29,7 +29,6 @@ public class BatteryCellItem extends Item {
         super(new Item.Properties().stacksTo(1));
     }
 
-    // --- tooltip / bar stuff (no capability code needed here) ---
     @Override
     public boolean isBarVisible(ItemStack stack) {
         return true;

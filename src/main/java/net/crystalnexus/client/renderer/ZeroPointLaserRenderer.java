@@ -41,7 +41,7 @@ public class ZeroPointLaserRenderer {
         float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
 
         Vec3 look = player.getLookAngle();
-        Vec3 startW = getBeamStartWorld(player, partialTick, look); // ✅ better in first person
+        Vec3 startW = getBeamStartWorld(player, partialTick, look);
 
         double range = 32.0;
         Vec3 endW = startW.add(look.scale(range));
@@ -54,7 +54,6 @@ public class ZeroPointLaserRenderer {
         ));
         Vec3 hitW = hit.getLocation();
 
-        // Camera-relative positions
         Vec3 camW = event.getCamera().getPosition();
         Vec3 start = startW.subtract(camW);
         Vec3 end = hitW.subtract(camW);
@@ -67,12 +66,10 @@ public class ZeroPointLaserRenderer {
         if (forward.lengthSquared() < 1.0e-6f) return;
         forward.normalize();
 
-        // Vector from beam -> camera (camera space origin is 0,0,0)
         Vector3f toCam = new Vector3f((float) -start.x, (float) -start.y, (float) -start.z);
         if (toCam.lengthSquared() < 1.0e-6f) toCam.set(0, 1, 0);
         toCam.normalize();
 
-        // Camera-facing basis
         Vector3f side = new Vector3f(forward).cross(toCam);
         if (side.lengthSquared() < 1.0e-6f) side = new Vector3f(forward).cross(new Vector3f(0, 1, 0));
         side.normalize();
@@ -88,8 +85,6 @@ public class ZeroPointLaserRenderer {
         VertexConsumer vc = buffer.getBuffer(RenderType.lightning());
         Matrix4f mat = poseStack.last().pose();
 
-        // ===== Look settings =====
-        // Core + glow layers
         int r = 255, g = 0, b = 0;
 
         float coreW = 0.045f;
@@ -98,12 +93,10 @@ public class ZeroPointLaserRenderer {
         int coreA = 255;
         int glowA = 90;
 
-        // Muzzle segment in first-person (thicker near camera)
         boolean firstPerson = mc.options.getCameraType().isFirstPerson();
         float muzzleLen = firstPerson ? 1.25f : 0.0f; // blocks
         float muzzleExtra = firstPerson ? 0.06f : 0.0f;
 
-        // Compute muzzle end (short segment)
         Vector3f muzzleEnd = new Vector3f(e);
         if (muzzleLen > 0.0f) {
             Vector3f dir = new Vector3f(e).sub(s);
@@ -115,13 +108,11 @@ public class ZeroPointLaserRenderer {
             }
         }
 
-        // Draw muzzle (glow + core, fatter)
         if (muzzleLen > 0.0f) {
             drawBeamTube(vc, mat, s, muzzleEnd, side, up, glowW + muzzleExtra, r, g, b, glowA);
             drawBeamTube(vc, mat, s, muzzleEnd, side, up, coreW + muzzleExtra * 0.6f, r, g, b, coreA);
         }
 
-        // Draw main beam (glow + core)
         drawBeamTube(vc, mat, s, e, side, up, glowW, r, g, b, glowA);
         drawBeamTube(vc, mat, s, e, side, up, coreW, r, g, b, coreA);
 
@@ -137,13 +128,11 @@ private static Vec3 getBeamStartWorld(LocalPlayer player, float partialTick, Vec
     Minecraft mc = Minecraft.getInstance();
     Vec3 eye = player.getEyePosition(partialTick);
 
-    // Right vector from look
     Vec3 up = new Vec3(0, 1, 0);
     Vec3 right = look.cross(up);
     if (right.lengthSqr() < 1.0e-6) right = new Vec3(1, 0, 0);
     right = right.normalize();
 
-    // Which side should the beam come from?
     // Main hand: based on main arm. Offhand: opposite.
     double mainHandSide = (player.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT) ? 1.0 : -1.0;
     boolean usingOffhand = player.getUsedItemHand() == net.minecraft.world.InteractionHand.OFF_HAND;
@@ -174,7 +163,6 @@ private static Vec3 getBeamStartWorld(LocalPlayer player, float partialTick, Vec
         Vector3f sideW = new Vector3f(side).mul(halfWidth);
         Vector3f upW = new Vector3f(up).mul(halfWidth);
 
-        // Ribbon 1 (side)
         quad(vc, mat,
                 new Vector3f(s).add(sideW),
                 new Vector3f(s).sub(sideW),
@@ -182,7 +170,6 @@ private static Vec3 getBeamStartWorld(LocalPlayer player, float partialTick, Vec
                 new Vector3f(e).add(sideW),
                 r, g, b, a);
 
-        // Ribbon 2 (up)
         quad(vc, mat,
                 new Vector3f(s).add(upW),
                 new Vector3f(s).sub(upW),

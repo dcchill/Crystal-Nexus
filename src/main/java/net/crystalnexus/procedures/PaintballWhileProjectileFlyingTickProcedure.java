@@ -20,11 +20,9 @@ public class PaintballWhileProjectileFlyingTickProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z, Entity projectile) {
         if (projectile == null) return;
 
-        // Read the stored dye string from the projectile
         String dye = projectile.getPersistentData().getString("dye");
         String color;
 
-        // Map dye name to RGB
         switch (dye) {
             case "crystalnexus:black_paintball": color = "0.0,0.0,0.0"; break;
             case "crystalnexus:white_paintball": color = "1.0,1.0,1.0"; break;
@@ -44,7 +42,6 @@ public class PaintballWhileProjectileFlyingTickProcedure {
             default: color = "1.0,1.0,1.0"; // fallback to white
         }
 
-        // Spawn the particle on the server
 		if (world instanceof ServerLevel _level)
 			_level.getServer().getCommands().performPrefixedCommand(new CommandSourceStack(CommandSource.NULL, new Vec3(x, y, z), Vec2.ZERO, _level, 4, "", Component.literal(""), _level.getServer(), null).withSuppressedOutput(),
 					("particle dust{color:[" + color + "],scale:1} ~ ~ ~ 0 0 0 0 1"));

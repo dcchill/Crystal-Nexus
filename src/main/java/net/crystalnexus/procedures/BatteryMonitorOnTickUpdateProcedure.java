@@ -63,7 +63,6 @@ public class BatteryMonitorOnTickUpdateProcedure {
 					return count;
 				}
 			};
-			// Find which side of the monitor the first battery is on
 			BlockPos startPos = BlockPos.containing(x, y, z);
 			BlockPos foundBattery = null;
 			for (net.minecraft.core.Direction dir : net.minecraft.core.Direction.values()) {

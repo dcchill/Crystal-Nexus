@@ -92,7 +92,6 @@ public VoxelShape getShape(BlockState state, net.minecraft.world.level.BlockGett
 
 @Override
 public VoxelShape getCollisionShape(BlockState state, net.minecraft.world.level.BlockGetter level, BlockPos pos, CollisionContext ctx) {
-    // Usually same as outline shape for cables
     return getShape(state, level, pos, ctx);
 }
 
@@ -146,7 +145,6 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         if (otherState.getBlock() instanceof BasicEnergyCableBlock
             || otherState.getBlock() instanceof EnergyCableMk2Block) return true;
 
-        // Connect to blocks with energy capability
         if (level instanceof Level l && l instanceof ILevelExtension ext) {
             IEnergyStorage storage = ext.getCapability(
                 Capabilities.EnergyStorage.BLOCK,

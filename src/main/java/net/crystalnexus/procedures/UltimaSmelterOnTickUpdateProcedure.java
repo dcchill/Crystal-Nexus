@@ -42,8 +42,7 @@ public final class UltimaSmelterOnTickUpdateProcedure {
 		}
 
 		ItemStack upgrade = inventory.getStackInSlot(2);
-		double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 25
-				: upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 10 : 50;
+		double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 50, 25, 10);
 		double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime);
 		blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
 

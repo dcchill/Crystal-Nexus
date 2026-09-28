@@ -132,6 +132,8 @@ public class TurbineGUIMenu extends AbstractContainerMenu implements Crystalnexu
 				if (!this.moveItemStackTo(itemstack1, 1, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 0, 1, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
 				if (index < 1 + 27) {
 					if (!this.moveItemStackTo(itemstack1, 1 + 27, this.slots.size(), true))

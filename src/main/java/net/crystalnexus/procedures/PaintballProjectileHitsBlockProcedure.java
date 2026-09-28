@@ -20,7 +20,6 @@ public class PaintballProjectileHitsBlockProcedure {
             ItemStack held = le.getMainHandItem();
             if (!held.isEmpty()) {
                 dyeStack = new ItemStack(held.getItem());
-                // copy dye NBT using components
                 CustomData.update(DataComponents.CUSTOM_DATA, dyeStack, tag -> 
                     tag.putString("dye", held.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getString("dye"))
                 );

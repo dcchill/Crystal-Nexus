@@ -5,7 +5,6 @@ import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.AnimationChannel;
 
-// Save this class in your mod and generate all required imports
 /**
  * Made with Blockbench 5.0.7 Exported for Minecraft version 1.19 or later with
  * Mojang mappings

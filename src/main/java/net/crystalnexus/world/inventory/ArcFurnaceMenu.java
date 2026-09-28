@@ -53,7 +53,9 @@ public final class ArcFurnaceMenu extends AbstractContainerMenu {
 		ItemStack original = slot.getItem(), copy = original.copy();
 		if (index < 4) {
 			if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
-		} else if (!moveItemStackTo(original, 0, 4, false)) return ItemStack.EMPTY;
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(original)) {
+			if (!moveItemStackTo(original, 3, 4, false)) return ItemStack.EMPTY;
+		} else if (!moveItemStackTo(original, 0, 3, false)) return ItemStack.EMPTY;
 		if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;
 		slot.onTake(player, original);

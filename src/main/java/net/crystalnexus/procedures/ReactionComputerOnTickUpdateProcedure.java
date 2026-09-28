@@ -36,35 +36,14 @@ public class ReactionComputerOnTickUpdateProcedure {
 		CenteredMultiblockValidator.Link structure = ReactionBlocksCheckerProcedure.executeFromController(world, controllerPos);
 		outputAmount = structure == null ? 1 : CenteredMultiblockDimensions.reactionOutputMultiplier(structure.minBounds, structure.maxBounds);
 		energy = EeMatterEconomy.creationCost(outputAmount);
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 25);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 5);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-			}
-		} else {
-			if (!world.isClientSide()) {
-				BlockPos _bp = BlockPos.containing(x, y, z);
-				BlockEntity _blockEntity = world.getBlockEntity(_bp);
-				BlockState _bs = world.getBlockState(_bp);
-				if (_blockEntity != null)
-					_blockEntity.getPersistentData().putDouble("maxProgress", 50);
-				if (world instanceof Level _level)
-					_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+		ItemStack upgrade = itemFromBlockInventory(world, controllerPos, 1);
+		cookTime = net.crystalnexus.util.MachineUpgradeHelper.processingTime(upgrade, 50, 25, 5);
+		if (!world.isClientSide()) {
+			BlockEntity blockEntity = world.getBlockEntity(controllerPos);
+			if (blockEntity != null) blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
+			if (world instanceof Level level) {
+				BlockState state = world.getBlockState(controllerPos);
+				level.sendBlockUpdated(controllerPos, state, state, 3);
 			}
 		}
 		if (getBlockNBTLogic(world, BlockPos.containing(x, y, z), "canOpenInventory") == true) {

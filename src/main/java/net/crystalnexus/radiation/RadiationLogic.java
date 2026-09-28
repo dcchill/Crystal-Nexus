@@ -30,7 +30,6 @@ public class RadiationLogic {
 		
 		        if (entity instanceof Player p && p.isCreative()) continue;
 		
-		        // Apply radiation effect
 		        entity.addEffect(new MobEffectInstance(
 		                CrystalnexusModMobEffects.RADIATION_SICKNESS,
 		                EFFECT_DURATION_TICKS,
@@ -40,7 +39,6 @@ public class RadiationLogic {
 		        ));
 		        entity.getPersistentData().putLong(LAST_EXPOSURE_TICK_TAG, level.getGameTime());
 		
-		        // 🔥 Store radiation value for Geiger
 		        if (entity instanceof Player player) {
 		        }
 		    }

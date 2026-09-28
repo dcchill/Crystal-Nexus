@@ -39,7 +39,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         int totalAmount = controller.getTank().getFluidAmount();
         if (fluid.isEmpty() || totalAmount <= 0) return;
 
-        // Bottom-up member ordering (client)
         List<BlockPos> members = collectComponent(level, controller.getBlockPos(), controller);
         members.sort(Comparator.<BlockPos>comparingInt(BlockPos::getY)
                 .thenComparingInt(BlockPos::getX)
@@ -70,7 +69,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float g = ((argb >>  8) & 0xFF) / 255f;
         float b = ((argb      ) & 0xFF) / 255f;
 
-        // Inner bounds
         float inset = 1f / 16f;
         float min = inset;
         float max = 1f - inset;
@@ -87,13 +85,11 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
 
         VertexConsumer vc = buffers.getBuffer(Sheets.translucentCullBlockSheet());
 
-        // Sides (still texture, cropped V so it fills upward)
         drawNorth(vc, mat, min, y0, min,  max, y1, min,  still, r, g, b, a, packedLight, packedOverlay, fill);
         drawSouth(vc, mat, min, y0, max,  max, y1, max,  still, r, g, b, a, packedLight, packedOverlay, fill);
         drawWest (vc, mat, min, y0, min,  min, y1, max,  still, r, g, b, a, packedLight, packedOverlay, fill);
         drawEast (vc, mat, max, y0, min,  max, y1, max,  still, r, g, b, a, packedLight, packedOverlay, fill);
 
-        // Top surface
         if (fill > 0.001f) {
             drawTop(vc, mat, topInset, topY, topInset,  1f - topInset, topY, 1f - topInset,
                     still, r, g, b, a, packedLight, packedOverlay);
@@ -122,7 +118,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         return new ArrayList<>(out);
     }
 
-    // ---- Vertex helper (1.21 format: UV2 + Normal required) ----
     private static void v(VertexConsumer vc, Matrix4f mat,
                           float x, float y, float z,
                           float r, float g, float b, float a,
@@ -138,7 +133,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
           .setNormal(nx, ny, nz);
     }
 
-    // ---- Faces (cropped V: reveal from bottom upward, no stretching) ----
+    // Faces (cropped V: reveal from bottom upward, no stretching)
     private static void drawNorth(VertexConsumer vc, Matrix4f mat,
                                   float x0, float y0, float z,
                                   float x1, float y1, float z1,
@@ -150,7 +145,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float v0 = s.getV0(), v1 = s.getV1();
         float vFill = v1 - (v1 - v0) * fill;
 
-        // normal -Z
         v(vc, mat, x0, y0, z, r,g,b,a, u0, v1,    light, overlay, 0, 0, -1);
         v(vc, mat, x0, y1, z, r,g,b,a, u0, vFill, light, overlay, 0, 0, -1);
         v(vc, mat, x1, y1, z, r,g,b,a, u1, vFill, light, overlay, 0, 0, -1);
@@ -168,7 +162,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float v0 = s.getV0(), v1 = s.getV1();
         float vFill = v1 - (v1 - v0) * fill;
 
-        // normal +Z
         v(vc, mat, x1, y0, z, r,g,b,a, u0, v1,    light, overlay, 0, 0,  1);
         v(vc, mat, x1, y1, z, r,g,b,a, u0, vFill, light, overlay, 0, 0,  1);
         v(vc, mat, x0, y1, z, r,g,b,a, u1, vFill, light, overlay, 0, 0,  1);
@@ -186,7 +179,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float v0 = s.getV0(), v1 = s.getV1();
         float vFill = v1 - (v1 - v0) * fill;
 
-        // normal -X
         v(vc, mat, x, y0, z1, r,g,b,a, u0, v1,    light, overlay, -1, 0, 0);
         v(vc, mat, x, y1, z1, r,g,b,a, u0, vFill, light, overlay, -1, 0, 0);
         v(vc, mat, x, y1, z0, r,g,b,a, u1, vFill, light, overlay, -1, 0, 0);
@@ -204,7 +196,6 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float v0 = s.getV0(), v1 = s.getV1();
         float vFill = v1 - (v1 - v0) * fill;
 
-        // normal +X
         v(vc, mat, x, y0, z0, r,g,b,a, u0, v1,    light, overlay,  1, 0, 0);
         v(vc, mat, x, y1, z0, r,g,b,a, u0, vFill, light, overlay,  1, 0, 0);
         v(vc, mat, x, y1, z1, r,g,b,a, u1, vFill, light, overlay,  1, 0, 0);

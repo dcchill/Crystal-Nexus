@@ -38,9 +38,6 @@ public class ItemChargerOnTickUpdateProcedure {
         if (blockEnergy == null || itemHandler == null)
             return "0 FE/t";
 
-        // ----------------------------------
-        //  SLOT 2 = Upgrade Logic
-        // ----------------------------------
 
         int baseInput = 512;
         double inputMult = 1.0;
@@ -50,10 +47,10 @@ public class ItemChargerOnTickUpdateProcedure {
         if (!upgradeStack.isEmpty()) {
 
             if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-                inputMult = 1.5;
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 1.5);
 
             else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-                inputMult = 3.0;
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 3.0);
         }
 
         CompoundTag data = null;
@@ -73,9 +70,6 @@ public class ItemChargerOnTickUpdateProcedure {
         inputMult = Math.max(0.05, Math.min(inputMult, 20.0));
         int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
 
-        // ----------------------------------
-        //  Charging Logic (SERVER ONLY)
-        // ----------------------------------
 
         if (!level.isClientSide()) {
 
@@ -116,16 +110,12 @@ public class ItemChargerOnTickUpdateProcedure {
                 }
             }
 
-            // Update blockstate server-side
             if (isCharging)
                 setBlockState(world, pos, 2);
             else
                 setBlockState(world, pos, 1);
         }
 
-        // ----------------------------------
-        // Return FE/t for GUI
-        // ----------------------------------
 
         return maxTransferPerTick + " FE/t";
     }

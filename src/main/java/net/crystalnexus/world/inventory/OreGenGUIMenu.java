@@ -97,7 +97,8 @@ public class OreGenGUIMenu extends AbstractContainerMenu implements Crystalnexus
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem();
+				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem()
+						|| CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get() == stack.getItem();
 			}
 		}));
 		for (int si = 0; si < 3; ++si)

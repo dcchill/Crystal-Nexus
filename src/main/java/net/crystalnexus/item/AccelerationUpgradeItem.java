@@ -4,6 +4,6 @@ import net.minecraft.world.item.Item;
 
 public class AccelerationUpgradeItem extends Item {
 	public AccelerationUpgradeItem() {
-		super(new Item.Properties());
+		super(new Item.Properties().stacksTo(16));
 	}
 }

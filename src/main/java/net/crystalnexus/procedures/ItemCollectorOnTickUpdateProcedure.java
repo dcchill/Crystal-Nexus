@@ -32,11 +32,9 @@ public class ItemCollectorOnTickUpdateProcedure {
 		double cookTime = 0;
 		double rangeCount = 0;
 		if ((world instanceof Level _level0 && _level0.hasNeighborSignal(BlockPos.containing(x, y, z))) == false) {
-			if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == CrystalnexusModItems.RANGE_UPGRADE.get()) {
-				rangeCount = 25;
-			} else {
-				rangeCount = 12;
-			}
+			ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1);
+			rangeCount = upgrade.is(CrystalnexusModItems.RANGE_UPGRADE.get())
+					? net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 12, 25) : 12;
 			{
 				final Vec3 _center = new Vec3(x, y, z);
 				for (Entity entityiterator : world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(rangeCount / 2d), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center))).toList()) {

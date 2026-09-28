@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -32,13 +34,7 @@ public class OreGeneratorOnTickUpdateProcedure {
 		double xOffset = 0;
 		double yOffset = 0;
 		double zOffset = 0;
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 5;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 1;
-		} else {
-			cookTime = 10;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0), 10, 5, 1);
 		if (("up").equals(getBlockNBTString(world, BlockPos.containing(x, y, z), "rotation"))) {
 			xOffset = 0;
 			yOffset = 1;

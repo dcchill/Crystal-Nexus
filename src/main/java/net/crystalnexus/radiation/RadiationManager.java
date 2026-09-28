@@ -28,7 +28,7 @@ public class RadiationManager {
 
         double total = 0;
 
-        // === Registered radiation sources (reactors etc.)
+        // Registered radiation sources (reactors etc.)
         Iterator<IRadiationSource> iterator = SOURCES.iterator();
 
         while (iterator.hasNext()) {
@@ -55,7 +55,7 @@ public class RadiationManager {
             total += source.getRadiationStrength() * falloff;
         }
 
-        // === Tag-based radioactive blocks
+        // Tag-based radioactive blocks
 			BlockPos min = pos.offset(-SCAN_XZ, -SCAN_Y, -SCAN_XZ);
 			BlockPos max = pos.offset(SCAN_XZ, SCAN_Y, SCAN_XZ);
 

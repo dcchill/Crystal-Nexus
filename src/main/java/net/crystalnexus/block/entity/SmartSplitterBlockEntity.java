@@ -28,7 +28,6 @@ import java.util.stream.IntStream;
 
 public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 
-	// Slot layout
 	public static final int SLOT_INPUT = 0;
 	public static final int SLOT_FILTER_LEFT = 1;
 	public static final int SLOT_FILTER_FORWARD = 2;
@@ -41,9 +40,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		super(CrystalnexusModBlockEntities.SMART_SPLITTER.get(), position, state);
 	}
 
-	/* -------------------------
-	   Saving / sync
-	   ------------------------- */
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
@@ -71,9 +67,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		return this.saveWithFullMetadata(lookupProvider);
 	}
 
-	/* -------------------------
-	   Container basics
-	   ------------------------- */
 
 	@Override
 	public int getContainerSize() {
@@ -95,8 +88,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory) {
-		// If you want your custom GUI, keep this as whatever MCreator uses OR leave it;
-		// your block opens SmartSplitterGUIMenu directly, so this isn't critical.
 		return ChestMenu.threeRows(id, inventory);
 	}
 
@@ -120,13 +111,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		return true;
 	}
 
-	/* -------------------------
-	   Smart routing tick
-	   ------------------------- */
 
-	/**
-	 * Call this from your block ticker.
-	 */
 	public static void tick(Level level, BlockPos pos, BlockState state, SmartSplitterBlockEntity be) {
 		if (level.isClientSide) return;
 
@@ -144,7 +129,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		ItemStack fwdFilter = be.getItem(SLOT_FILTER_FORWARD);
 		ItemStack rightFilter = be.getItem(SLOT_FILTER_RIGHT);
 
-		// Attempt to route exactly 1 item
 		ItemStack one = in.copy();
 		one.setCount(1);
 
@@ -194,7 +178,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 	private static boolean tryInsertIntoNeighbor(Level level, BlockPos pos, Direction dir, ItemStack stack) {
 		BlockPos neighborPos = pos.relative(dir);
 
-		// NeoForge 1.21.x: returns IItemHandler or null
 		IItemHandler handler = level.getCapability(
 				Capabilities.ItemHandler.BLOCK,
 				neighborPos,
@@ -237,9 +220,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		return null;
 	}
 
-	/* -------------------------
-	   Sided IO rules (WorldlyContainer)
-	   ------------------------- */
 
 	@Override
 	public int[] getSlotsForFace(Direction side) {
@@ -252,15 +232,12 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 		Direction back = facing.getOpposite();
 
 		if (side == Direction.UP) {
-			// Filters only
 			return new int[]{SLOT_FILTER_LEFT, SLOT_FILTER_FORWARD, SLOT_FILTER_RIGHT};
 		}
 		if (side == back) {
-			// Input only
 			return new int[]{SLOT_INPUT};
 		}
 		if (side == Direction.DOWN) {
-			// Overflow buffer output
 			return new int[]{SLOT_OVERFLOW_BUFFER};
 		}
 		return new int[0];
@@ -275,7 +252,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 		Direction back = facing.getOpposite();
 
-		// Insert to INPUT from back
 		if (direction == back) return index == SLOT_INPUT;
 
 		// Set filters from top (do NOT allow automation to insert into overflow buffer)
@@ -290,7 +266,6 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
-		// Only allow automation to extract overflow buffer from the bottom
 		return index == SLOT_OVERFLOW_BUFFER && direction == Direction.DOWN;
 	}
 }

@@ -30,8 +30,6 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 		return 512;
 	}
 
-	// NOTE: In some 1.21.x mappings this exists but doesn't override cleanly in MCreator.
-	// Keep it WITHOUT @Override. If it still errors, delete this method.
 	public boolean isGlobalRenderer(QuarryBlockEntity be) {
 		return true;
 	}
@@ -54,10 +52,8 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 		// Thickness: higher = thicker (0.02 small, 0.06 medium, 0.12 chunky)
 		double thickness = 0.01;
 
-		// Start at bottom center of quarry block (local space)
 		Vec3 start = new Vec3(0.5, 0.05, 0.5);
 
-		// End is target center converted into local space relative to this BE
 		Vec3 endWorld = Vec3.atCenterOf(target);
 		Vec3 end = new Vec3(
 			endWorld.x - be.getBlockPos().getX(),
@@ -70,7 +66,6 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 
 		Vec3 dirNorm = dir.normalize();
 
-		// Camera-facing thickness direction
 		var cam = Minecraft.getInstance().gameRenderer.getMainCamera();
 		Vec3 camWorld = cam.getPosition();
 		Vec3 camLocal = camWorld.subtract(be.getBlockPos().getX(), be.getBlockPos().getY(), be.getBlockPos().getZ());
@@ -79,12 +74,10 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 		if (toCam.lengthSqr() < 1.0E-6) toCam = new Vec3(0, 1, 0);
 		else toCam = toCam.normalize();
 
-		// Right vector perpendicular to beam and camera direction
 		Vec3 right = dirNorm.cross(toCam);
 		if (right.lengthSqr() < 1.0E-6) right = new Vec3(1, 0, 0);
 		else right = right.normalize();
 
-		// Up-ish vector perpendicular to beam and right
 		Vec3 up = right.cross(dirNorm);
 		if (up.lengthSqr() < 1.0E-6) up = new Vec3(0, 1, 0);
 		else up = up.normalize();
@@ -97,10 +90,8 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 		VertexConsumer vc = bufferSource.getBuffer(RenderType.lines());
 		Matrix4f mat = poseStack.last().pose();
 
-		// Color (RGBA) - #D17DF3
 		float r = 1.0f, g = 0.231f, b = 0.0f, a = 0.0f;
 
-		// Draw main beam + 4 offset beams to simulate thickness
 		addLine(vc, mat, r, g, b, a, start, end);
 		addLine(vc, mat, r, g, b, a, start.add(right), end.add(right));
 		addLine(vc, mat, r, g, b, a, start.subtract(right), end.subtract(right));

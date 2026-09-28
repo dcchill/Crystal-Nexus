@@ -91,7 +91,6 @@ public class QuarryBlock extends Block implements EntityBlock {
 		return new QuarryBlockEntity(pos, state);
 	}
 
-	// ✅ This is the ONLY ticker you want (server-side only)
 	@Override
 	@Nullable
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {

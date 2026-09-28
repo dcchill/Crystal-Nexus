@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -40,9 +42,6 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		double energyBase;
 		double outputAmount = 1;
 
-		// ======================
-		// VISUAL STATE
-		// ======================
 		int state = net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress")) ? 1 : 2;
 		BlockState bs = world.getBlockState(pos);
 		if (bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty prop
@@ -50,38 +49,23 @@ public class EnergyExtractorOnTickUpdateProcedure {
 			world.setBlock(pos, bs.setValue(prop, state), 3);
 		}
 
-		// ======================
-		// UPGRADES
-		// ======================
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 1);
 
 		energyBase = EeMatterEconomy.EXTRACTION_FE_PER_ITEM;
 		cookTime = 200;
 
-		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-			cookTime = 175;
-		else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-			cookTime = 100;
+		cookTime = MachineUpgradeHelper.processingTime(upgrade, 200, 175, 100);
 
-		// ======================
-		// STORE + SYNC MAX PROGRESS
-		// ======================
 		setNBTAndSync(world, pos, "maxProgress", cookTime);
 
-		// ======================
-		// RECIPE LOOKUP
-		// ======================
 		ItemStack recipeResult = getRecipeResult(world, pos);
 		boolean hasRecipe = !recipeResult.isEmpty() && recipeResult.getItem() != Blocks.AIR.asItem();
 
-		// =========================================================
 		// PRIMARY MODE – RECIPE → FE
-		// =========================================================
 		if (hasRecipe) {
 
 			if (getMaxEnergyStored(world, pos, null) - getEnergyStored(world, pos, null) >= (int) energyBase) {
 
-				// output slot room + match
 				if (itemFromBlockInventory(world, pos, 2).getCount() < recipeResult.getMaxStackSize()) {
 
 					ItemStack outSlot = itemFromBlockInventory(world, pos, 2).copy();
@@ -100,7 +84,6 @@ public class EnergyExtractorOnTickUpdateProcedure {
 
 						if (getBlockNBTNumber(world, pos, "progress") >= cookTime) {
 
-							// output item + consume input
 							if (world instanceof ILevelExtension ext
 									&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
@@ -114,12 +97,10 @@ public class EnergyExtractorOnTickUpdateProcedure {
 								inv.setStackInSlot(0, in);
 							}
 
-							// charge internal FE
 							GeneratorEnergyStorage generator = generatorStorage(world, pos);
 							if (generator != null && generator.generateEnergy((int) energyBase, true) == (int) energyBase)
 								generator.generateEnergy((int) energyBase, false);
 
-							// reset progress and sync
 							setNBTAndSync(world, pos, "progress", 0);
 						}
 					}
@@ -127,15 +108,12 @@ public class EnergyExtractorOnTickUpdateProcedure {
 			}
 		}
 
-		// =========================================================
 		// SECONDARY MODE – BATTERY → FE (drains real stack + syncs)
-		// =========================================================
 		else {
 
 			if (world instanceof ILevelExtension ext
 					&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
-				// REAL stack (no copy)
 				ItemStack batteryStack = inv.getStackInSlot(0);
 				IEnergyStorage battery = batteryStack.getCapability(Capabilities.EnergyStorage.ITEM);
 
@@ -160,7 +138,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 							if (pulled > 0) {
 								generator.generateEnergy(pulled, false);
 
-								// IMPORTANT: re-set stack to force save/sync
+								// Reassign the changed stack so the handler saves and syncs it.
 								inv.setStackInSlot(0, batteryStack);
 
 								if (world instanceof ServerLevel lvl)
@@ -173,7 +151,6 @@ public class EnergyExtractorOnTickUpdateProcedure {
 				}
 			}
 
-			// battery mode keeps progress 0 and syncs it
 			if (getBlockNBTNumber(world, pos, "progress") != 0)
 				setNBTAndSync(world, pos, "progress", 0);
 		}
@@ -182,9 +159,6 @@ public class EnergyExtractorOnTickUpdateProcedure {
 				.format(getEnergyStored(world, pos, null));
 	}
 
-	// =========================================================
-	// HELPERS
-	// =========================================================
 
 	private static ItemStack getRecipeResult(LevelAccessor world, BlockPos pos) {
 		if (world instanceof Level lvl) {
@@ -203,7 +177,6 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		return ItemStack.EMPTY;
 	}
 
-	/** Write persistent NBT AND sync to client with sendBlockUpdated. */
 	private static void setNBTAndSync(LevelAccessor world, BlockPos pos, String key, double value) {
 		if (world.isClientSide())
 			return;

@@ -292,11 +292,6 @@ public class CrystalWrenchItem extends Item {
                         && ChestBlock.getConnectedDirection(oldPartnerState)
                         == oldPartnerDirection.getOpposite();
 
-        /*
-         * =========================================================
-         * SINGLE CHEST
-         * =========================================================
-         */
         if (!hasPartner) {
             level.setBlockAndUpdate(
                     pos,
@@ -311,23 +306,12 @@ public class CrystalWrenchItem extends Item {
             return InteractionResult.SUCCESS;
         }
 
-        /*
-         * =========================================================
-         * DOUBLE CHEST
-         * =========================================================
-         *
-         * Once the clicked half rotates, find where its partner
-         * should now be located.
-         */
         Direction newPartnerDirection =
                 ChestBlock.getConnectedDirection(rotatedState);
 
         BlockPos newPartnerPos =
                 pos.relative(newPartnerDirection);
 
-        /*
-         * Don't rotate the chest if the destination is occupied.
-         */
         if (!newPartnerPos.equals(oldPartnerPos)
                 && !level.getBlockState(newPartnerPos).isAir()) {
 
@@ -346,9 +330,6 @@ public class CrystalWrenchItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        /*
-         * Rotate the partner's state too.
-         */
         BlockState rotatedPartnerState =
                 oldPartnerState.rotate(
                         level,
@@ -384,37 +365,24 @@ public class CrystalWrenchItem extends Item {
             }
         }
 
-        /*
-         * Remove the old partner location without immediately
-         * causing normal neighbor updates.
-         */
         level.setBlock(
                 oldPartnerPos,
                 Blocks.AIR.defaultBlockState(),
                 Block.UPDATE_CLIENTS
         );
 
-        /*
-         * Rotate clicked chest.
-         */
         level.setBlock(
                 pos,
                 rotatedState,
                 Block.UPDATE_CLIENTS
         );
 
-        /*
-         * Place partner at its new position.
-         */
         level.setBlock(
                 newPartnerPos,
                 rotatedPartnerState,
                 Block.UPDATE_CLIENTS
         );
 
-        /*
-         * Restore partner BlockEntity data.
-         */
         if (partnerData != null) {
             BlockEntity newPartnerEntity =
                     level.getBlockEntity(newPartnerPos);
@@ -429,10 +397,6 @@ public class CrystalWrenchItem extends Item {
             }
         }
 
-        /*
-         * Now that both chest halves are correctly positioned,
-         * perform neighbor updates.
-         */
         level.updateNeighborsAt(
                 pos,
                 rotatedState.getBlock()
@@ -448,9 +412,6 @@ public class CrystalWrenchItem extends Item {
                 Blocks.AIR
         );
 
-        /*
-         * Explicitly synchronize changed states to clients.
-         */
         level.sendBlockUpdated(
                 pos,
                 state,
@@ -535,9 +496,6 @@ public class CrystalWrenchItem extends Item {
         Block block =
                 state.getBlock();
 
-        /*
-         * Never allow removal of air or bedrock.
-         */
         if (block == Blocks.AIR
                 || block == Blocks.BEDROCK) {
 
@@ -568,18 +526,12 @@ public class CrystalWrenchItem extends Item {
             return InteractionResult.PASS;
         }
 
-        /*
-         * Create the block item before removing the block.
-         */
         boolean isConveyor = block instanceof ConveyerBeltBlock
                 || block instanceof ConveyerBeltInputBlock
                 || block instanceof ConveyerBeltOutputBlock;
         boolean preserveBeltContents = blockEntity instanceof ConveyerBeltBaseBlockEntity belt && !belt.isEmpty();
         ItemStack blockItem = new ItemStack(isConveyor ? ConveyerBeltMode.normalBlock(state) : block.asItem());
 
-        /*
-         * Preserve BlockEntity data.
-         */
         if (blockEntity != null && (!isConveyor || preserveBeltContents)) {
             CustomData.update(
                     DataComponents.CUSTOM_DATA,
@@ -603,26 +555,17 @@ public class CrystalWrenchItem extends Item {
             belt.clearContent();
         }
 
-        /*
-         * Remove block.
-         */
         level.removeBlock(
                 pos,
                 false
         );
 
-        /*
-         * Play normal breaking particles.
-         */
         level.levelEvent(
                 2001,
                 pos,
                 Block.getId(state)
         );
 
-        /*
-         * Drop the resulting block item.
-         */
         if (!blockItem.isEmpty()) {
             Containers.dropItemStack(
                     level,
@@ -693,23 +636,14 @@ public class CrystalWrenchItem extends Item {
         BlockState state =
                 level.getBlockState(pos);
 
-        /*
-         * Depot cables always support mode cycling.
-         */
         if (state.getBlock() instanceof DepotCableBlock) {
             return true;
         }
 
-        /*
-         * Chests use custom rotation logic.
-         */
         if (state.getBlock() instanceof ChestBlock) {
             return true;
         }
 
-        /*
-         * Native block rotation.
-         */
         BlockState rotated =
                 state.rotate(
                         level,
@@ -721,9 +655,6 @@ public class CrystalWrenchItem extends Item {
             return true;
         }
 
-        /*
-         * Manual facing-property fallback.
-         */
         BlockState rotatedState =
                 rotateDirectional(state);
 

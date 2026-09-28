@@ -53,13 +53,7 @@ public class NodeMinerOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 1;
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 200;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 75;
-		} else {
-			cookTime = 250;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3), 250, 200, 75);
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
@@ -74,12 +68,10 @@ public class NodeMinerOnTickUpdateProcedure {
 			if (_cn_data.contains("cook_mult"))
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
 		}
-		// 2) Apply multipliers (STACK onto existing values)
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		// 3) Output cap
 		double MACHINE_MAX_OUTPUT = 8; // set per machine
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;

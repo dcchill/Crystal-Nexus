@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.extensions.ILevelExtension;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -83,11 +85,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 	}
 
 	private static int cookTime(ItemStack upgrade) {
-		if (upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()))
-			return 150;
-		if (upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()))
-			return 200;
-		return 300;
+		return (int) Math.ceil(MachineUpgradeHelper.processingTime(upgrade, 300, 200, 150));
 	}
 
 	private static void reset(LevelAccessor world, BlockPos pos, int cookTime) {

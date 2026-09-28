@@ -30,16 +30,13 @@ public class BuddingSulfurCrystalBlock extends Block {
     @Override
     public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
 
-        // Slow growth rate
         if (random.nextInt(30) != 0) return;
 
-        // Pick random face
         Direction direction = Direction.values()[random.nextInt(6)];
         BlockPos targetPos = pos.relative(direction);
 
         BlockState targetState = level.getBlockState(targetPos);
 
-        // Only grow into air
         if (!targetState.isAir()) return;
 
         level.setBlock(targetPos,

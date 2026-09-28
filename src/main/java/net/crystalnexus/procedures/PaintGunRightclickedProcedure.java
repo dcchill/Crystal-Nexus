@@ -34,7 +34,6 @@ public class PaintGunRightclickedProcedure {
     ItemStack main = (entity instanceof LivingEntity _livEnt ? _livEnt.getMainHandItem() : ItemStack.EMPTY);
     ItemStack off = (entity instanceof LivingEntity _livEnt ? _livEnt.getOffhandItem() : ItemStack.EMPTY);
 
-    // Determine which hand has the paintball
     ItemStack paintballStack = ItemStack.EMPTY;
     if (main.is(ItemTags.create(ResourceLocation.parse("crystalnexus:paintballs"))))
         paintballStack = main;
@@ -43,20 +42,16 @@ public class PaintGunRightclickedProcedure {
 
     if (itemstack.getItem() == CrystalnexusModItems.PAINT_GUN.get() && !paintballStack.isEmpty()) {
 
-        // Get dye string from paintball item
         String dyeID = BuiltInRegistries.ITEM.getKey(paintballStack.getItem()).toString();
 
-        // Save NBT tag “dye” onto the gun (optional)
         CustomData.update(DataComponents.CUSTOM_DATA, itemstack, tag -> tag.putString("dye", dyeID));
 
         String set_color = paintballStack.getDisplayName().getString();
 
-        // Consume paintball unless in creative
         if (!(entity instanceof Player _plr ? _plr.getAbilities().instabuild : false)) {
             paintballStack.shrink(1);
         }
 
-        // Shoot 7 paintballs
         for (int i = 0; i < 7; i++) {
             if (world instanceof ServerLevel projectileLevel) {
                 PaintballEntity paintball = new PaintballEntity(CrystalnexusModEntities.PAINTBALL.get(), projectileLevel);
@@ -73,14 +68,12 @@ public class PaintGunRightclickedProcedure {
                         3, 3
                 );
 
-                // Store dye on projectile
                 paintball.getPersistentData().putString("dye", dyeID);
 
                 projectileLevel.addFreshEntity(paintball);
             }
         }
 
-        // Play splash sound
         if (world instanceof Level _level) {
             if (!_level.isClientSide()) {
                 _level.playSound(null, BlockPos.containing(x, y, z),
@@ -93,7 +86,6 @@ public class PaintGunRightclickedProcedure {
             }
         }
 
-        // Damage the gun
         if (!(entity instanceof Player _plr ? _plr.getAbilities().instabuild : false)) {
             if (world instanceof ServerLevel _level) {
                 itemstack.hurtAndBreak(1, _level, null, _stkprov -> {});
@@ -103,7 +95,6 @@ public class PaintGunRightclickedProcedure {
         return "Set color: " + set_color;
     }
 
-    // Default return if gun not used
     return "Set color:";
 }
 }

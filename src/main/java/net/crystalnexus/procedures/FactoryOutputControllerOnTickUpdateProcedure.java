@@ -34,7 +34,6 @@ public class FactoryOutputControllerOnTickUpdateProcedure {
             int linkSlot = pair[0];
             int controllerSlot = pair[1];
 
-            // Read link item from controller's link slot
             ItemStack linkStack = controllerHandler.getStackInSlot(linkSlot).copy();
             if (linkStack.isEmpty()) continue;
 
@@ -58,10 +57,8 @@ public class FactoryOutputControllerOnTickUpdateProcedure {
 
                     if (!worldly.canTakeItemThroughFace(slot, stack, Direction.DOWN)) continue;
 
-                    // Simulate controller insert
                     ItemStack simulated = controllerHandler.insertItem(controllerSlot, stack.copy().split(1), true);
                     if (simulated.isEmpty()) {
-                        // Do actual transfer
                         ItemStack toMove = stack.split(1);
                         controllerHandler.insertItem(controllerSlot, toMove, false);
                         worldly.setItem(slot, stack);

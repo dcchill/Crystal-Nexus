@@ -23,7 +23,6 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.assembly.AssemblyLineMachine;
 import net.minecraft.resources.ResourceLocation;
 
-// NEW imports for 1.21 custom_data reading
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.util.MachineUpgradeHelper;
@@ -41,31 +40,21 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 
 		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return "";
 
-		// --- blockstate based on progress ---
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress"))) {
 			setIntegerBlockState(world, pos, "blockstate", 1);
 		} else {
 			setIntegerBlockState(world, pos, "blockstate", 2);
 		}
 
-		// --- upgrades (old items kept) ---
 		ItemStack upgrade = itemFromBlockInventory(world, pos, 4).copy();
 
-		// outputAmount "base" (you currently always set 1)
 		outputAmount = 1;
 
-		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 75;
-		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 50;
-		} else {
-			cookTime = 100;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 
 		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		int energyCost = MachineUpgradeHelper.energyCost(upgrade, 4096);
 
-		// store maxProgress
 		if (!world.isClientSide()) {
 			BlockEntity be = world.getBlockEntity(pos);
 			BlockState bs = world.getBlockState(pos);
@@ -73,21 +62,17 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 			if (world instanceof Level lvl) lvl.sendBlockUpdated(pos, bs, bs, 3);
 		}
 
-		// --- ONE recipe lookup per tick (shapeless) ---
 		MatchingRecipe match = getMatchingRecipe(world, pos);
 		ItemStack resultStack = (match != null) ? match.result : ItemStack.EMPTY;
 
-		// if no result, do nothing
 		if (resultStack.isEmpty() || resultStack.getItem() == Blocks.AIR.asItem()) {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// energy requirement (kept)
 		if (getEnergyStored(world, pos, null) < energyCost) {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 		}
 
-		// Output slot checks
 		ItemStack outSlot = itemFromBlockInventory(world, pos, 3).copy();
 		boolean outSlotEmpty = outSlot.isEmpty() || outSlot.getItem() == Blocks.AIR.asItem();
 		boolean outSlotMatches = outSlotEmpty || outSlot.getItem() == resultStack.getItem();
@@ -98,7 +83,6 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 
 		int addCount = Math.clamp(resultStack.getCount(), 1, 8);
 
-		// Slot safety cap (space left)
 		int currentOutCount = itemFromBlockInventory(world, pos, 3).getCount();
 		int spaceLeft = 64 - currentOutCount;
 		if (spaceLeft <= 0) {
@@ -106,9 +90,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		}
 		if (addCount > spaceLeft) addCount = spaceLeft;
 
-		// Also keep outputAmount around for any legacy checks (optional)
 		outputAmount = addCount;
-		// ===============================================================================
 
 final int _finalAddCount = addCount;
 final ItemStack _finalResult = resultStack.copy();
@@ -122,9 +104,6 @@ processRecipeTick(world, pos, cookTime, () -> {
 		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
 	}
 
-	// ----------------------------
-	// Recipe lookup + shapeless match
-	// ----------------------------
 
 	private static class MatchingRecipe {
 		final ChemicalReactionRecipe recipe;
@@ -169,9 +148,6 @@ processRecipeTick(world, pos, cookTime, () -> {
 			   (ing.get(0).test(c) && ing.get(1).test(b) && ing.get(2).test(a));
 	}
 
-	// ----------------------------
-	// Tick/progress helpers
-	// ----------------------------
 
 	private static void processRecipeTick(LevelAccessor world, BlockPos pos, double cookTime, Runnable onFinish) {
 		if (getBlockNBTNumber(world, pos, "progress") < cookTime) {
@@ -240,9 +216,6 @@ processRecipeTick(world, pos, cookTime, () -> {
 		}
 	}
 
-	// ----------------------------
-	// Existing helpers
-	// ----------------------------
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);

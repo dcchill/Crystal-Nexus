@@ -91,8 +91,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
             && energy.getEnergyStored() >= energyCost;
         if (working) {
             double cookTime = recipe.processingTime();
-            if (upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())) cookTime *= 0.75;
-            else if (upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())) cookTime *= 0.5;
+            cookTime = MachineUpgradeHelper.processingTime(upgrade, cookTime, cookTime * 0.75, cookTime * 0.5);
             maxProgress = (int) Math.ceil(MachineUpgradeHelper.cookTime(upgrade, cookTime));
             energy.extractEnergy(energyCost, false);
             progress++;

@@ -64,7 +64,6 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         return null;
     }
 
-    /** Attempts to get energy storage via NeoForge capability system. */
     private static IEnergyStorage getEnergyStorage(Level level, BlockPos pos, SideProfile profile) {
         if (level == null) return null;
         if (profile != null) {

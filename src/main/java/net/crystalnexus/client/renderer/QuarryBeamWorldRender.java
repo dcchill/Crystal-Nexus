@@ -21,7 +21,6 @@ public class QuarryBeamWorldRender {
 
     @SubscribeEvent
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
-        // reliable render phase
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -55,11 +54,9 @@ public class QuarryBeamWorldRender {
                                       VertexConsumer vc, Matrix4f mat, Vec3 cam,
                                       float thickness) {
 
-        // Start: bottom-center of quarry
         Vec3 startWorld = new Vec3(quarryPos.getX() + 0.5, quarryPos.getY() + 0.05, quarryPos.getZ() + 0.5);
         Vec3 endWorld   = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 0.5, targetPos.getZ() + 0.5);
 
-        // camera-relative
         Vec3 start = startWorld.subtract(cam);
         Vec3 end   = endWorld.subtract(cam);
 
@@ -67,9 +64,7 @@ public class QuarryBeamWorldRender {
         if (dir.lengthSqr() < 1.0E-6) return;
         Vec3 dirNorm = dir.normalize();
 
-        // camera direction relative to start
         Vec3 toCam = new Vec3(0, 1, 0);
-        // Right vector = perpendicular to beam & camera-ish direction
         Vec3 right = dirNorm.cross(toCam);
         if (right.lengthSqr() < 1.0E-6) right = new Vec3(1, 0, 0);
         else right = right.normalize();
@@ -81,10 +76,8 @@ public class QuarryBeamWorldRender {
         right = right.scale(thickness);
         up    = up.scale(thickness);
 
-        // #D17DF3
         float r = 1.0f, g = 0.231f, b = 0.0f, a = 1.0f;
 
-        // 5 lines to fake thickness (like your BER)
         addLine(vc, mat, r, g, b, a, start, end);
         addLine(vc, mat, r, g, b, a, start.add(right), end.add(right));
         addLine(vc, mat, r, g, b, a, start.subtract(right), end.subtract(right));

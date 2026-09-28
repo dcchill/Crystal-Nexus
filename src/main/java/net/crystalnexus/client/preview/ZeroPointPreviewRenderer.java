@@ -30,15 +30,12 @@ public class ZeroPointPreviewRenderer {
 
     public record GhostBlock(int dx, int dy, int dz, BlockState state) {}
 
-    // Mini-block scale (0..1)
     private static final float MINI_SCALE = 0.45f;
 
-    // Pulse parameters (alpha)
     private static final float BASE_ALPHA  = 0.32f;
     private static final float PULSE_ALPHA = 0.5f;
     private static final float PULSE_SPEED = 0.12f;
 
-    // Outline color/alpha
     private static final float OUTLINE_R = 0.2f;
     private static final float OUTLINE_G = 0.9f;
     private static final float OUTLINE_B = 1.0f;
@@ -75,7 +72,6 @@ public class ZeroPointPreviewRenderer {
 
         Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
 
-        // DeltaTracker -> partial tick float (your mappings)
         float pt = event.getPartialTick().getGameTimeDeltaPartialTick(false);
         float tt = (((float) level.getGameTime()) + pt) * PULSE_SPEED;
         float pulse01 = 0.5f + 0.5f * (float) Math.sin(tt);
@@ -86,7 +82,6 @@ public class ZeroPointPreviewRenderer {
 
         boolean allCorrect = true;
 
-        // ---------- PASS 1: Ghost mini-blocks ----------
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.depthMask(false);
@@ -111,14 +106,12 @@ public class ZeroPointPreviewRenderer {
 
                 poseStack.pushPose();
 
-                // Camera-relative translate
                 poseStack.translate(
                         worldPos.getX() - cam.x,
                         worldPos.getY() - cam.y,
                         worldPos.getZ() - cam.z
                 );
 
-                // Center -> scale -> uncenter
                 poseStack.translate(0.5, 0.5, 0.5);
                 poseStack.scale(MINI_SCALE, MINI_SCALE, MINI_SCALE);
                 poseStack.translate(-0.5, -0.5, -0.5);
@@ -145,7 +138,6 @@ public class ZeroPointPreviewRenderer {
             RenderSystem.disableBlend();
         }
 
-        // ---------- PASS 2: Outline boxes ----------
         // Use lines render type; draw in camera space (AABB moved by -cam)
         for (GhostBlock gb : blocks) {
             BlockPos worldPos = controller.offset(gb.dx, gb.dy, gb.dz);
@@ -167,7 +159,6 @@ public class ZeroPointPreviewRenderer {
 
         buffer.endBatch();
 
-        // Auto-hide when complete
         if (allCorrect && !planActive) {
             ZeroPointPreviewState.clear();
             if (mc.player != null) {
@@ -176,10 +167,6 @@ public class ZeroPointPreviewRenderer {
         }
     }
 
-    /**
-     * VertexConsumer wrapper for your 1.21-style API (MCreator mappings):
-     * old vertex()/uv() do NOT exist; you have addVertex/setUv/setColor/etc.
-     */
     private static class AlphaVC implements VertexConsumer {
         private final VertexConsumer d;
         private final float alphaMul;

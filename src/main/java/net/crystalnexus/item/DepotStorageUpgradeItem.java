@@ -48,10 +48,8 @@ public class DepotStorageUpgradeItem extends Item {
 
         long cap = depot.getCapacity();
 
-        // Consume item
         stack.shrink(1);
 
-        // Feedback
         player.displayClientMessage(
                 Component.literal("Dimensional Depot upgraded! New capacity: " + cap)
                         .withStyle(ChatFormatting.AQUA),

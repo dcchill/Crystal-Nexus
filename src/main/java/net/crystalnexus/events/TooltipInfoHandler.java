@@ -28,10 +28,9 @@ public class TooltipInfoHandler {
 		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
 
-		// POWER & ENERGY GENERATION
 
 		addTooltip("battery",
-				"Stores energy for later use.",
+				"Stores energy.",
 				"Connect machines to this to buffer your power grid.");
 		addTooltip("battery_cell",
 				"Portable energy storage cell.",
@@ -46,7 +45,7 @@ public class TooltipInfoHandler {
 				"Advanced portable energy storage.",
 				"Automatically charges FE items in your inventory.");
 		addTooltip("ee_battery",
-				"EE-based energy storage block.",
+				"High-capacity energy storage block.",
 				"Connect machines to this to buffer your power grid.");
 
 		addTooltip("steam_chamber",
@@ -78,7 +77,7 @@ public class TooltipInfoHandler {
 				"Every core column needs a Control Rod directly above it.");
 		addTooltip("reactor_computer",
 				"Master control block for the Reactor.",
-				"Holds fuel and upgrades, and controls the reaction.");
+				"Holds fuel and upgrades, and controls the reactor.");
 		addTooltip("reactor_waste_output",
 				"Outputs waste from the Reactor.",
 				"Collects Blutonium Waste produced by the reaction.");
@@ -118,48 +117,31 @@ public class TooltipInfoHandler {
 		addTooltip("energy_cable_mk_2",
 				"Advanced energy transfer cable.",
 				"Transfers energy with high throughput to machines.");
-		addTooltip("cryogenically_cooled_energy_cable",
-				"Cryogenically cooled high-capacity energy cable.",
-				"Transfers up to 2,048,000 FE/t.");
 
-		addTooltip("crystal_guide",
-				"End Crystal beam guide.",
-				"Redirects the End Crystal beam.");
-
-		// RESOURCE PROCESSING
 
 		addTooltip("crystal_crusher",
-				"Crushes raw ores into dusts.",
-				"Multiplies ore yield for better efficiency.");
+				"Crushes raw ores into dusts.");
 		addTooltip("chlorophyte_crusher",
-				"Tier 3 ore crusher.",
-				"Processes recipes available to its machine tier.");
+				"Tier 3 ore crusher.");
 		addTooltip("invertium_crusher",
-				"Tier 5 ore crusher.",
-				"Processes advanced crushing recipes faster.");
+				"Tier 5 ore crusher.");
 		addTooltip("hyper_crusher",
-				"Tier 9 ore crusher.",
-				"Processes the highest-tier crushing recipes.");
+				"Tier 9 ore crusher.");
 		addTooltip("ore_processor",
 				"Advanced ore processing plant.",
 				"Processes raw ores.");
 		addTooltip("parts_assembler",
 				"Forms ingots into plates, rods, or bolts.",
-				"Select the output shape from its GUI.",
-				"Accepts machine upgrades in the side slot.");
+				"Select the output shape from its GUI.");
 
 		addTooltip("chlorophyte_smelter",
-				"Specialized Chlorophyte furnace.",
-				"Smelts dusts and raw materials into ingots.");
+				"Specialized Chlorophyte furnace.");
 		addTooltip("iron_smelter",
-				"Specialized Tier 1 furnace.",
-				"Smelts dusts and raw materials into ingots.");
+				"Specialized Tier 1 furnace.");
 		addTooltip("invertium_smelter",
-				"Specialized Invertium furnace.",
-				"Smelts dusts and raw materials into ingots.");
+				"Specialized Invertium furnace.");
 		addTooltip("crystal_smelter",
-				"Specialized crystal furnace.",
-				"Smelts dusts and raw materials into ingots.");
+				"Specialized crystal furnace.");
 		addTooltip("ultima_smelter",
 				"Multi-purpose high-tier furnace.",
 				"Smelts multiple stacks of materials.");
@@ -168,25 +150,22 @@ public class TooltipInfoHandler {
 				"Extreme high-pressure compressor.",
 				"Condenses thousands of items into Singularities.");
 		addTooltip("crystal_purifier",
-				"Creates Crystalized Alloy and Nitrile.");
+				"PLACEHOLDER.");
 		addTooltip("chemical_reaction_chamber",
-				"Combines base resources with reactants.",
-				"Processes chemical reactions for materials.");
+				"Processes solid reactions for materials.");
 		addTooltip("fluid_chemical_reaction_chamber",
-				"Combines fluids and items into advanced materials.",
-				"Check JEI for valid tagged inputs and outputs.");
+				"Processes fluid reactions for materials.");
 		addTooltip("refinery",
-				"Refines processing fluids into useful materials.",
-				"Basic refinery tier.");
+				"Refines processing fluids into materials.");
 		addTooltip("chlorophyte_refinery",
 				"Tier 3 material refinery.",
-				"Handles recipes available to its machine tier.");
+				"Refines processing fluids into materials.");
 		addTooltip("invertium_refinery",
 				"Tier 5 material refinery.",
-				"Handles advanced refining recipes.");
+				"Refines processing fluids into materials.");
 		addTooltip("hyper_refinery",
 				"Tier 9 material refinery.",
-				"Handles the highest-tier refining recipes.");
+				"Refines processing fluids into materials.");
 
 		addTooltip("reaction_chamber_computer",
 				"Controls the Reaction Chamber multiblock.",
@@ -204,33 +183,28 @@ public class TooltipInfoHandler {
 		addTooltip("gene_splicer",
 				"Extracts biological materials from captured mobs.",
 				"Put Biomass in the green slot",
-				"and a filled Prison Cube in the middle slot.",
-				"Consumes Biomass and the mob; keeps the empty cube.",
-				"Collect the spawn egg and drops from the right slots. See JEI for recipes.");
+				"and a filled Prison Cube in the middle slot.");
 		addTooltip("dust_separator",
-				"Sifts through mixed dust.",
 				"Separates dust into nuggets.");
 		addTooltip("chlorophyte_dust_separator",
 				"Tier 3 dust separator.",
-				"Processes recipes available to its machine tier.");
+				"Separates dust into nuggets.");
 		addTooltip("invertium_dust_separator",
 				"Tier 5 dust separator.",
-				"Processes advanced separation recipes faster.");
+				"Separates dust into nuggets.");
 		addTooltip("hyper_dust_separator",
 				"Tier 9 dust separator.",
-				"Processes the highest-tier separation recipes.");
+				"Separates dust into nuggets.");
 		addTooltip("matter_transmutation_table",
 				"Matter conversion block.",
 				"Allows for advanced crafting.");
 
-		// RESOURCE GATHERING
 
 		addTooltip("quarry",
 				"Automated laser mining machine.",
 				"Automatically mines resources within a chunk.");
 		addTooltip("quantum_miner",
-				"Quantum resource extraction.",
-				"Produces weighted common resources at high FE cost.");
+				"PLACEHOLDER.");
 		addTooltip("node_miner",
 				"Mines from Ore Nodes.",
 				"Slowly mines resources at the cost of power");
@@ -258,14 +232,11 @@ public class TooltipInfoHandler {
 				"Extract with Node Extractor.");
 
 		addTooltip("conveyer_belt",
-				"Transports items horizontally.",
-				"Basic tier: half the original conveyor speed.");
+				"Transports items.");
 		addTooltip("azurine_conveyer_belt",
-				"Transports items horizontally.",
-				"Azurine tier: twice the basic conveyor speed.");
+				"Transports items faster.");
 		addTooltip("meteorite_conveyer_belt",
-				"Transports items horizontally.",
-				"Meteorite tier: twice the azurine conveyor speed.");
+				"Transports items fastest.");
 		addTooltip("conveyer_belt_input",
 				"Inserts items from adjacent containers.",
 				"Puts items onto conveyor system.");
@@ -273,11 +244,9 @@ public class TooltipInfoHandler {
 				"Extracts items into containers.",
 				"Pulls items from conveyor system.");
 		addTooltip("item_elevator",
-				"Moves items vertically upward.",
-				"Safely transports items.");
+				"Moves items vertically upward.");
 		addTooltip("item_elevator_down",
-				"Moves items vertically downward.",
-				"Safely transports items.");
+				"Moves items vertically downward.");
 		addTooltip("smart_splitter",
 				"Intelligent item routing.",
 				"Routes items based on filters.");
@@ -286,14 +255,14 @@ public class TooltipInfoHandler {
 				"Multi-directional fluid transport.",
 				"Connects fluid lines.");
 		addTooltip("pipe_straight",
-				"Straight fluid transport pipe.",
+				"Fluid transport pipe.",
 				"Transfers fluids between machines.");
 		addTooltip("copper_fluid_pipe",
 				"Basic fluid transport pipe.",
-				"Transfers fluids at one quarter speed.");
+				"Transfers fluids between machines.");
 		addTooltip("fluid_packager",
 				"Packages fluids into cells.",
-				"Enables manual fluid transport.");
+				"Enables fluid transport in stackable item form.");
 		addTooltip("tank",
 				"Mass fluid storage.",
 				"Stores large quantities of fluids.");
@@ -305,22 +274,20 @@ public class TooltipInfoHandler {
 				"Wireless item download station.",
 				"Retrieves items from your personal Depot.");
 		addTooltip("depot_controller",
-				"The powered center of your personal Depot system.",
-				"Uses 20 FE/t base power; each connected Depot component adds 2 FE/t.");
+				"The powered center of your personal Depot system.");
 		addTooltip("depot_cli",
 				"Terminal for browsing and crafting from Depot storage.",
-				"Connect it to a powered Depot Controller network.");
+				"Allows for advanced automation and control of your Depot storage.");
 		addTooltip("depot_cable",
 				"Links Depot Controllers to Depot components.",
-				"Does not connect to energy cables or transfer FE.");
+				"Right click with wrench to set Import or Export modes to basic storage.",
+				"Right click with hand to change settings.");
 		addTooltip("crafting_upgrade",
 				"Unlocks crafting in the Depot CLI.",
 				"Add more processors to increase crafting speed.");
 		addTooltip("crafting_core",
-				"Adds an extra crafting process.",
-				"Increases Depot Controller power draw.");
+				"Adds an extra crafting process.");
 		addTooltip("depot_uplink",
-				"Expandable wireless storage system.",
 				"Transfers items wirelessly to your personal Depot.");
 		addTooltip("depot_storage_upgrade",
 				"Doubles depot storage capacity.");
@@ -333,7 +300,6 @@ public class TooltipInfoHandler {
 		addTooltip("link_card",
 				"Used to link machines or blocks.");
 
-		// UTILITY
 
 		addTooltip("crafting_factory",
 				"Automated recipe crafter.",
@@ -349,14 +315,17 @@ public class TooltipInfoHandler {
 				"Output controller for Machines.",
 				"Manages item output.");
 		addTooltip("machineblock",
-				"General machine block for factory multiblocks.",
-				"Connect it to the appropriate controllers.");
+				"PLACEHOLDER.");
 		addTooltip("machine_core",
-				"Processing core for factory multiblocks.",
-				"Install it inside the machine structure.");
+				"PLACEHOLDER.");
 		addTooltip("machine_energy_input",
 				"Energy input for factory multiblocks.",
 				"Connect FE cables to this block.");
+		addTooltip("solar_simulator_controller",
+				"Generates resources from Planets.",
+				"Or generates FE from stars, using a Dyson Sphere.",
+				"Different Stars effect resource and FE generation.",
+				"Dyson integrity decays over time and lowers output. Insert a Dyson Repair Kit to restore it.");
 
 		addTooltip("biomatic_composter",
 				"Processes organic matter into biomass.",
@@ -381,8 +350,7 @@ public class TooltipInfoHandler {
 				"Area-of-effect item charger.",
 				"Charges nearby inventory items in a radius.");
 		addTooltip("temporal_exploiter",
-				"Accelerates nearby block ticks using Temporal Essence.",
-				"Configure its range and operation from the GUI.");
+				"Accelerates facing block ticks using Temporal Essence.");
 
 		addTooltip("electromagnet",
 				"Powers Particle Accelerator.",
@@ -392,8 +360,7 @@ public class TooltipInfoHandler {
 				"Attracts nearby items.");
 
 		addTooltip("container",
-				"High density portable item storage.",
-				"Large storage capacity.");
+				"High density portable item storage.");
 		addTooltip("blueprint_base",
 				"Blueprint designer floor block.",
 				"Build a complete flat floor with Blueprint Base.",
@@ -405,71 +372,61 @@ public class TooltipInfoHandler {
 		addTooltip("blueprint_controller",
 				"Blueprint designer controller.",
 				"Attach it to a valid Blueprint Base and Frame structure.",
-				"Open the GUI, enter a name, and save everything inside the blueprint volume.");
+				"Must be outside the blueprint build volume to function.");
 
-		// RESOURCES
 
 		addTooltip("oil_fuel_cell",
-				"Oil Fuel Cell.",
-				"Refine into better fuels via processing.");
+				"Oil Fuel Cell.");
 		addTooltip("gas_fuel_cell",
-				"Gas Fuel Cell.",
-				"Refined fuel for generators.");
+				"Gas Fuel Cell.");
 		addTooltip("empty_fuel_cell",
-				"Empty Fuel Cell.",
-				"Fill at Fluid Packager.");
+				"Empty Fuel Cell.");
 		addTooltip("overfuel_cell",
-				"Overfuel Cell.",
-				"High-energy fuel cell.");
+				"Overfuel Cell.");
 		addTooltip("dark_matter_fuel_cell",
 				"Weak alone; resonates with every Dark Matter Fuel Cell in the reactor.",
 				"Total FE output from these cells grows with the square of their count.");
 		addTooltip("biomass",
 				"Processed organic biomass.",
 				"Fuel source from composting.");
+		addTooltip("dyson_repair",
+				"Repairs Dyson integrity in Dyson mode.",
+				"Each point of durability restores one point of integrity.");
 
-		// EQUIPMENT
 
 		addTooltip("prison_cube",
 				"Captures and transports one mob at a time.",
 				"Right-click a mob with an empty cube to begin sealing.",
 				"Keep the cube in hand and stay nearby until it closes.",
 				"Shift + right-click a block with room to release the mob.",
-				"Insert a filled cube into a Gene Splicer to process its mob.",
-				"Cannot capture players.");
+				"Insert a filled cube into a Gene Splicer to process its mob.");
 
 		addTooltip("compound_pickaxe",
-				"Compound Paxel - all-in-one mining tool.",
-				"Mines all block types. Uses 200 FE per block.");
+				"Omni-tool that uses energy to mine blocks.");
 		addTooltip("compound_sword",
-				"Energy-powered combat weapon.",
-				"High damage weapon. Uses 500 FE per hit.");
+				"Sword that uses energy to attack.");
 		addTooltip("mining_laser",
-				"High-tech mining laser.",
-				"Mines blocks remotely using stored FE.");
+				"Mines blocks using stored energy.");
 		addTooltip("paint_gun",
-				"Paintball Gun.",
 				"Fires paint to color blocks.");
 		addTooltip("flamethrower",
-				"Flamethrower weapon.",
-				"Projects flames for combat.");
+				"PLACEHOLDER.");
 		addTooltip("ore_scanner",
-				"Ore Scanner tool.",
-				"Scans for ore deposits.");
+				"Scans for ore deposits.",
+				"Right Click to scan for ores.",
+				"Shift Right Click to set a filter.");
 		addTooltip("geiger_counter",
-				"Radiation detector.",
 				"Measures radiation levels.");
 		addTooltip("build_gun",
 				"Schematic builder and placement tool.",
 				"Press the Buildgun Menu key to choose a saved blueprint.",
 				"Shift Right Click loads placement mode.",
 				"Shift Left Click toggles Default and Prefer Flat Ground placement modes.",
-				"Prefer Flat Ground settles the whole schematic onto nearby support like a real placement.",
-				"Scroll moves the preview. Hold Shift and scroll to rotate.",
+				"Prefer Flat Ground settles the whole schematic onto nearby support.",
+				"Scroll moves the placement. Hold Shift and scroll to rotate.",
 				"Right Click places the loaded schematic.",
 				"Shows required and missing materials on screen while preparing placement.",
 				"Can pull materials from inventory, shulker boxes, and Container items you are carrying.",
-				"Creative mode ignores material requirements.",
 				"Placed storage blocks keep the block but do not restore stored item contents.");
 		addTooltip("structure_tracker",
 				"Locates a selected world structure or Resource Meteor.",
@@ -486,22 +443,28 @@ public class TooltipInfoHandler {
 
 		addTooltip("acceleration_upgrade",
 				"Machine Acceleration Upgrade.",
-				"Increases processing speed.");
+				"Increases processing speed.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("carbon_acceleration_upgrade",
 				"Carbon Acceleration Upgrade.",
-				"Advanced speed boost.");
+				"Advanced speed boost.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("fe_efficiency_upgrade",
 				"Machine FE Efficiency Upgrade.",
-				"Reduces power consumption.");
+				"Reduces power consumption.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("carbon_fe_efficiency_upgrade",
 				"Carbon FE Efficiency Upgrade.",
-				"Advanced power reduction.");
+				"Advanced power reduction.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("range_upgrade",
 				"Machine Range Upgrade.",
-				"Increases operational range.");
+				"Increases operational range.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("carbon_range_upgrade",
 				"Carbon Range Upgrade.",
-				"Advanced range boost.");
+				"Advanced range boost.",
+				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 
 		addTooltip("iron_singularity",
 				"Compressed Iron Singularity.",

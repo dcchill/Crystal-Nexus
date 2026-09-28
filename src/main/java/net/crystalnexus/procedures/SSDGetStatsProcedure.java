@@ -52,7 +52,6 @@ public class SSDGetStatsProcedure {
 			}
 		}
 
-		// Optional: add a gold header line when jackpot
 
 		return speedLine + "\n" + efficiencyLine;
 	}

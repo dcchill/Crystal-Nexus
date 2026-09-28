@@ -44,7 +44,6 @@ public class DepotSavedData extends SavedData {
     private static final ResourceLocation UPLINK_ID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "depot_uplink");
     private static final String FLUID_KEY_PREFIX = "depot_fluid/";
 
-    // ===== Capacity / Upgrades =====
     private int upgradeLevel = 0;
     private ResourceLocation controllerDimension;
     private BlockPos controllerPos;
@@ -57,7 +56,6 @@ public class DepotSavedData extends SavedData {
     private final Map<UUID, DepotProgram> programs = new LinkedHashMap<>();
     private int nextCraftingJobId = 1;
 
-    // ===== Stored items =====
     private final Object2LongMap<ResourceLocation> counts = new Object2LongOpenHashMap<>();
     private final Object2LongMap<ResourceLocation> fluidCounts = new Object2LongOpenHashMap<>();
     private transient @Nullable DepotStorageBridge storageBridge;
@@ -278,7 +276,6 @@ public class DepotSavedData extends SavedData {
         return tag;
     }
 
-    // ===== Capacity helpers =====
 
     public int getUpgradeLevel() {
         return upgradeLevel;
@@ -347,7 +344,6 @@ public class DepotSavedData extends SavedData {
         return baseCapacity << upgradeLevel;
     }
 
-    /** Total items stored (sum of all counts). */
     public long getUsed() {
         long sum = 0L;
         for (long v : combinedCounts().values()) {
@@ -390,7 +386,6 @@ public class DepotSavedData extends SavedData {
         return amount <= getFree();
     }
 
-    /** @return whether the depot was upgraded. */
     public boolean addUpgrade() {
         if (upgradeLevel >= MAX_UPGRADE_LEVEL || getLocalCapacity() == Long.MAX_VALUE) return false;
         upgradeLevel++;
@@ -888,7 +883,6 @@ public class DepotSavedData extends SavedData {
         });
     }
 
-    // ===== Storage API (SAFE) =====
 
     public long getCount(ResourceLocation itemId) {
         ResourceLocation fluidId = fluidId(itemId);
@@ -982,7 +976,6 @@ public class DepotSavedData extends SavedData {
         return deposit(itemId, amount);
     }
 
-    // ===== Storage API (UNSAFE) =====
 
     /**
      * UNSAFE: ignores capacity. Only use for admin/debug/migrations.

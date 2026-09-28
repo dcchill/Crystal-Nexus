@@ -66,17 +66,15 @@ public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
         return Serializer.INSTANCE;
     }
 
-    // ===================== TYPE =====================
     public static class Type implements RecipeType<ExtractinatorJEIRecipe> {
         private Type() {}
         public static final RecipeType<ExtractinatorJEIRecipe> INSTANCE = new Type();
     }
 
-    // ===================== SERIALIZER =====================
 public static class Serializer implements RecipeSerializer<ExtractinatorJEIRecipe> {
     public static final Serializer INSTANCE = new Serializer();
 
-    // --- CODEC for JSON/Datapack parsing ---
+    // CODEC for JSON/Datapack parsing
     public static final MapCodec<ExtractinatorJEIRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
         builder.group(
             ItemStack.CODEC.listOf().fieldOf("results")
@@ -92,7 +90,7 @@ public static class Serializer implements RecipeSerializer<ExtractinatorJEIRecip
         ).apply(builder, ExtractinatorJEIRecipe::new)
     );
 
-    // --- STREAM_CODEC for Network Sync ---
+    // STREAM_CODEC for Network Sync
     public static final StreamCodec<RegistryFriendlyByteBuf, ExtractinatorJEIRecipe> STREAM_CODEC =
         StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 

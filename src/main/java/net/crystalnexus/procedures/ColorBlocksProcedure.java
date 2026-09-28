@@ -17,14 +17,12 @@ public class ColorBlocksProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z, ItemStack itemstack) {
         if (world == null || itemstack == null) return;
 
-        // --- Get dye color from NBT ---
         String dye = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().getString("dye");
         if (dye == null || dye.isEmpty()) return;
 
         String dyeName = dye.contains(":") ? dye.split(":")[1] : dye;
         dyeName = dyeName.replace("_dye", "").replace("_paintball", "").toLowerCase(Locale.ENGLISH);
 
-        // --- Get current block info ---
         BlockPos pos = BlockPos.containing(x, y, z);
         BlockState oldState = world.getBlockState(pos);
         ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(oldState.getBlock());
@@ -33,7 +31,6 @@ public class ColorBlocksProcedure {
         String namespace = blockId.getNamespace();
         String blockPath = blockId.getPath();
 
-        // --- Detect existing color prefix/suffix ---
         String[] knownColors = {
             "white","orange","magenta","light_blue","yellow","lime","pink","gray","light_gray",
             "cyan","purple","blue","brown","green","red","black"
@@ -54,18 +51,15 @@ public class ColorBlocksProcedure {
             }
         }
 
-        // --- Build possible new block IDs ---
         ResourceLocation newIdPrefix = ResourceLocation.fromNamespaceAndPath(namespace, dyeName + "_" + baseName);
         ResourceLocation newIdSuffix = ResourceLocation.fromNamespaceAndPath(namespace, baseName + "_" + dyeName);
 
-        // --- Determine if the block can be recolored ---
         boolean isDyed = oldState.is(BlockTags.create(ResourceLocation.parse("c:dyed")))
             || oldState.is(BlockTags.create(ResourceLocation.fromNamespaceAndPath(namespace, "dyed_blocks")))
             || (existingColor != null);
 
         if (!isDyed) return;
 
-        // --- Try replacing block ---
         ResourceLocation finalId = null;
         if (BuiltInRegistries.BLOCK.containsKey(newIdPrefix)) {
             finalId = newIdPrefix;
@@ -76,7 +70,6 @@ public class ColorBlocksProcedure {
         if (finalId != null) {
             BlockState newState = BuiltInRegistries.BLOCK.get(finalId).defaultBlockState();
 
-            // --- Copy block properties ---
             for (Property<?> prop : oldState.getProperties()) {
                 Property<?> targetProp = newState.getBlock().getStateDefinition().getProperty(prop.getName());
                 if (targetProp != null) {

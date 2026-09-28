@@ -408,7 +408,6 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         }
         if (level.getGameTime() % 20 == 0) be.sync();
     }
-    /** Graph execution gate and status refresh. */
     public void runGraphTick() {
         String error = graph.validate();
         if (!error.isEmpty()) { setStatus(error); graph.enabled = false; return; }

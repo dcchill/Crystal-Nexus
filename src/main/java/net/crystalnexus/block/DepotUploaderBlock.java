@@ -20,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class DepotUploaderBlock extends Block implements EntityBlock {
 
-    // ✅ No-arg constructor so DepotUploaderBlock::new works in your registry
     public DepotUploaderBlock() {
         super(BlockBehaviour.Properties.of()
                 .strength(2.0f, 6.0f)
@@ -44,7 +43,6 @@ public class DepotUploaderBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        // only tick our own BE type
         if (type != CrystalnexusModBlockEntities.DEPOT_UPLOADER.get()) return null;
 
         return (lvl, pos, st, be) -> {

@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 
 public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
-	// ===== CONFIG =====
 	private static final int MIN_LEN = 5;
 	private static final int MAX_LEN = 64;
 
@@ -40,14 +39,12 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	private static final double MIN_COOK_TIME  = 25;       // hard floor
 	private static final double MAGNET_EFFICIENCY = 0.25;   // 1.0 = strong effect, 0.5 = weaker
 
-	// Input slots (unordered)
 	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
-		// ---- SERVER ONLY ----
 		if (world.isClientSide()) return;
 
 		BlockEntity be = world.getBlockEntity(pos);
@@ -56,9 +53,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		Direction forward = world.getBlockState(pos)
 			.getValue(net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING);
 
-		// =====================================================
-		// Scan: linear OR ring (corners supported)
-		// =====================================================
 		PathScanResult scan = scanPath(world, pos, forward, MIN_LEN, MAX_LEN);
 
 		int len = scan.len();
@@ -67,7 +61,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		boolean ringMode = scan.ringMode();
 		ArrayList<BlockPos> magnets = scan.magnets();
 
-		// ---- Store for GUI + renderer ----
 		be.getPersistentData().putDouble("linacLen", len);
 		be.getPersistentData().putDouble("magCount", magnetCount);
 		be.getPersistentData().putDouble("formed", formed ? 1 : 0);
@@ -80,7 +73,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		cookTime = Math.max(MIN_COOK_TIME, cookTime);
 		be.getPersistentData().putDouble("maxProgress", cookTime);
 
-		// reset default status flags each tick
 		be.getPersistentData().putDouble("reason", 0);
 		be.getPersistentData().putDouble("stalled", 0);
 		be.getPersistentData().putDouble("stallNeed", 0);
@@ -100,10 +92,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			return;
 		}
 
-		// =====================================================
-		// Inventory (up to 4 unordered inputs)
 		// Slots: 0,2,3,4  Outputs: 1,5,6,7
-		// =====================================================
 		if (!(world instanceof ILevelExtension ext)) return;
 		IItemHandler inv = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
 		if (inv == null) return;
@@ -118,9 +107,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			}
 		}
 
-		// =====================================================
-		// Recipe lookup (order-independent)
-		// =====================================================
 		List<ItemStack> results = List.of();
 		List<Integer> consumedSlots = List.of();
 
@@ -168,9 +154,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			return;
 		}
 
-		// =====================================================
-		// Output slot check
-		// =====================================================
 		List<Integer> outputSlots = new ArrayList<>();
 		for (ItemStack result : results) {
 			int outputSlot = -1;
@@ -184,9 +167,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			outputSlots.add(outputSlot);
 		}
 
-		// =====================================================
 		// POWER: ALL MAGNETS MUST PAY
-		// =====================================================
 		int per = TOTAL_FE_PER_TICK / magnetCount;
 		int rem = TOTAL_FE_PER_TICK % magnetCount;
 
@@ -203,16 +184,12 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			}
 		}
 
-		// drain pass
 		for (int i = 0; i < magnets.size(); i++) {
 			int cost = per + (i < rem ? 1 : 0);
 			IEnergyStorage es = getDrainableEnergyStorage(world, magnets.get(i), cost);
 			if (es != null) es.extractEnergy(cost, false);
 		}
 
-		// =====================================================
-		// Progress + Craft
-		// =====================================================
 		double progress = be.getPersistentData().getDouble("progress");
 		cookTime = be.getPersistentData().getDouble("maxProgress");
 
@@ -241,9 +218,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		sync(world, pos);
 	}
 
-	// =====================================================
-	// SCAN SUPPORT (linear OR ring, corners supported)
-	// =====================================================
 	private record PathScanResult(boolean ok, boolean ringMode, int len, int magnetCount, ArrayList<BlockPos> magnets) {}
 
 	private static boolean isTubeOrMagnet(LevelAccessor world, BlockPos p) {
@@ -257,7 +231,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	}
 
 	private static PathScanResult scanPath(LevelAccessor world, BlockPos controllerPos, Direction facing, int minLen, int maxLen) {
-		// ---- 1) Linear scan forward ----
 		ArrayList<BlockPos> mags = new ArrayList<>();
 		int len = 0;
 
@@ -272,7 +245,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			return new PathScanResult(true, false, len, mags.size(), mags);
 		}
 
-		// ---- 2) Ring scan (horizontal loop, corners supported) ----
 		Direction[] candidates = new Direction[] {
 			facing,
 			facing.getClockWise(),
@@ -357,9 +329,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		return new PathScanResult(false, true, 0, 0, new ArrayList<>());
 	}
 
-	// =====================================================
 	// Energy: pick a capability that can actually extract
-	// =====================================================
 	private static IEnergyStorage getDrainableEnergyStorage(LevelAccessor world, BlockPos pos, int cost) {
 		if (!(world instanceof ILevelExtension ext)) return null;
 

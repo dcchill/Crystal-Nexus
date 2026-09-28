@@ -13,7 +13,6 @@ public class DiamondSingularityItemInInventoryTickProcedure {
         if (entity instanceof Player player) {
             boolean hasSingularity = false;
 
-            // Check if the player has the diamond singularity
             for (ItemStack stack : player.getInventory().items) {
                 if (!stack.isEmpty() && stack.getItem() == CrystalnexusModItems.DIAMOND_SINGULARITY.get()) {
                     hasSingularity = true;
@@ -21,14 +20,11 @@ public class DiamondSingularityItemInInventoryTickProcedure {
                 }
             }
 
-            // Loop through inventory
             for (ItemStack stack : player.getInventory().items) {
                 if (stack.isEmpty()) continue;
 
-                // Only affect damageable items (tools/weapons/armor)
                 if (stack.isDamageableItem()) {
                     if (hasSingularity) {
-                        // Reset damage to 0 so it never wears down
                         stack.setDamageValue(0);
                     }
                 }

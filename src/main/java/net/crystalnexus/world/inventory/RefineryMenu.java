@@ -51,7 +51,9 @@ public final class RefineryMenu extends AbstractContainerMenu {
         ItemStack original = slot.getItem(), copy = original.copy();
         if (index < 3) {
             if (!moveItemStackTo(original, 3, slots.size(), true)) return ItemStack.EMPTY;
-        } else if (!moveItemStackTo(original, 0, 3, false)) return ItemStack.EMPTY;
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(original)) {
+            if (!moveItemStackTo(original, 2, 3, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(original, 0, 2, false)) return ItemStack.EMPTY;
         if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;
         slot.onTake(player, original);

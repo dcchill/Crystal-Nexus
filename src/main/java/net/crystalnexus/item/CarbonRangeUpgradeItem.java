@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CarbonRangeUpgradeItem extends Item {
 	public CarbonRangeUpgradeItem() {
-		super(new Item.Properties());
+		super(new Item.Properties().stacksTo(16));
 	}
 
 	@Override

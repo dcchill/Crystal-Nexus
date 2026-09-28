@@ -61,7 +61,6 @@ public final class TankNetwork {
         BlockEntity cbe = level.getBlockEntity(controllerPos);
         if (!(cbe instanceof TankBlockEntity newController)) return;
 
-        // Snapshot unique old controllers
         Map<BlockPos, TankBlockEntity> oldControllers = new HashMap<>();
         for (BlockPos p : members) {
             BlockEntity be = level.getBlockEntity(p);
@@ -90,7 +89,6 @@ public final class TankNetwork {
             total += amt;
         }
 
-        // Rewire
         for (BlockPos p : members) {
             BlockEntity be = level.getBlockEntity(p);
             if (!(be instanceof TankBlockEntity t)) continue;
@@ -101,7 +99,6 @@ public final class TankNetwork {
         newController.setControllerPos(controllerPos);
         newController.setMemberCount(members.size());
 
-        // Restore
         if (!proto.isEmpty()) {
             int cap = newController.getTank().getCapacity();
             int clamped = Math.min(total, cap);
@@ -110,7 +107,6 @@ public final class TankNetwork {
             newController.getTank().setFluid(finalStack);
         }
 
-        // Clear old controllers except the new controller
         for (Map.Entry<BlockPos, TankBlockEntity> e : oldControllers.entrySet()) {
             if (e.getKey().equals(controllerPos)) continue;
             e.getValue().getTank().setFluid(FluidStack.EMPTY);

@@ -68,7 +68,7 @@ public final class DepotProcessingService {
         Map<ResourceLocation, Long> inserted = new HashMap<>();
         // Insert each slot entry into a consecutive slot position so machines with
         // order-sensitive recipes (e.g. Matter Transmutation Table) receive items in
-        // the correct positions: entry 0 -> slot 0, entry 1 -> slot 1, ...
+        // the correct positions: entry 0 -> slot 0, entry 1 -> slot 1,
         List<IItemHandler> handlers = handlers(machine.level(), machine.machinePos());
         int totalSlots = handlers.stream().mapToInt(IItemHandler::getSlots).sum();
         int slot = 0;

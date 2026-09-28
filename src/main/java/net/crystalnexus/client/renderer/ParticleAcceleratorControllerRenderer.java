@@ -68,7 +68,6 @@ public class ParticleAcceleratorControllerRenderer
 		Level level = be.getLevel();
 		if (level == null) return;
 
-		// Only show when formed + working + not stalled
 		if (be.getPersistentData().getDouble("formed") != 1) return;
 		if (be.getPersistentData().getDouble("progress") <= 0) return;
 		if (be.getPersistentData().getDouble("stalled") == 1) return;
@@ -105,7 +104,6 @@ public class ParticleAcceleratorControllerRenderer
 		}
 		if (ingredients.isEmpty()) return;
 
-		// Pulse aimation
 		float pulse = 0.85f + 0.35f * Mth.sin((level.getGameTime() + partialTick) * 0.6f);
 
 		float ticksPerLoop = Mth.lerp(heat, 12f, 1.5f);
@@ -157,13 +155,11 @@ public class ParticleAcceleratorControllerRenderer
 				poseStack.popPose();
 			}
 
-			// GLOW (colored)
 			poseStack.pushPose();
 			float glowScale = segScale * (1.6f + 0.4f * pulse * headFactor);
 			poseStack.scale(glowScale, glowScale, glowScale);
 			poseStack.translate(-0.5, -0.5, -0.5);
 
-			// Slightly stronger alpha near the head
 			float alpha = (0.30f + 0.15f * pulse) * headFactor;
 
 			renderGlowCube(poseStack, bufferSource, beamR, beamG, beamB, alpha);

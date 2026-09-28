@@ -116,7 +116,7 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 		if (index == 0)
 			return false;
 		if (index == 1)
-			return false;
+			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 

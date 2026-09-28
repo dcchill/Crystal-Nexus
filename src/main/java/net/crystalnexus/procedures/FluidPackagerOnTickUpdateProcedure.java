@@ -1,5 +1,7 @@
 package net.crystalnexus.procedures;
 
+import net.crystalnexus.util.MachineUpgradeHelper;
+
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -31,7 +33,6 @@ public class FluidPackagerOnTickUpdateProcedure {
 		ItemStack fluidItem = ItemStack.EMPTY;
 		outputAmount = 1;
 
-		// --- visuals: blockstate 1 when idle, 2 when working ---
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
@@ -52,17 +53,8 @@ public class FluidPackagerOnTickUpdateProcedure {
 			}
 		}
 
-		// --- cook time from upgrade in slot 2 ---
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 30;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 10;
-		} else {
-			cookTime = 50;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2), 50, 30, 10);
 
-		// --- decide output item based on the actual fluid in tank 1 ---
-		// NOTE: if your block only has one tank, it is usually tank 0 (0-based). If nothing works, change 1 -> 0 here and below.
 		FluidStack fs = getFluidInTank(world, BlockPos.containing(x, y, z), 1, null);
 		if (!fs.isEmpty()) {
 			ResourceLocation id = BuiltInRegistries.FLUID.getKey(fs.getFluid());
@@ -75,7 +67,6 @@ public class FluidPackagerOnTickUpdateProcedure {
 			}
 		}
 
-		// --- update maxProgress for UI ---
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -86,14 +77,12 @@ public class FluidPackagerOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 
-		// --- main logic ---
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EMPTY_FUEL_CELL.get()) {
 			if (!fluidItem.isEmpty()
 					&& 4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)
 					&& 64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount()
 					&& 250 <= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null)) {
 
-				// progress tick
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 					if (!world.isClientSide()) {
 						BlockPos _bp = BlockPos.containing(x, y, z);
@@ -108,31 +97,26 @@ public class FluidPackagerOnTickUpdateProcedure {
 						_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 				}
 
-				// craft
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 
-					// output item into slot 1
 					if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 						ItemStack _setstack = fluidItem.copy();
 						_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount));
 						_itemHandlerModifiable.setStackInSlot(1, _setstack);
 					}
 
-					// drain energy
 					if (world instanceof ILevelExtension _ext) {
 						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_entityStorage != null)
 							_entityStorage.extractEnergy(4096, false);
 					}
 
-					// drain fluid (250mB)
 					if (world instanceof ILevelExtension _ext) {
 						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_fluidHandler != null)
 							_fluidHandler.drain(250, IFluidHandler.FluidAction.EXECUTE);
 					}
 
-					// consume empty fuel cell from slot 0
 					if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 						int _slotid = 0;
 						ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
@@ -140,7 +124,6 @@ public class FluidPackagerOnTickUpdateProcedure {
 						_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 					}
 
-					// reset progress
 					if (!world.isClientSide()) {
 						BlockPos _bp = BlockPos.containing(x, y, z);
 						BlockEntity _blockEntity = world.getBlockEntity(_bp);

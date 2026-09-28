@@ -13,7 +13,6 @@ import java.util.Optional;
 /** Ghost-only JEI integration; drops are configuration and never grant resources. */
 public final class AssemblyLineJeiGhostHandler implements IGhostIngredientHandler<AssemblyLineScreen> {
     @Override public <I> List<Target<I>> getTargetsTyped(AssemblyLineScreen screen, ITypedIngredient<I> ingredient, boolean doStart) {
-        // Try item first using correct JEI API
         Optional<ItemStack> optItem = ingredient.getItemStack();
         if (optItem.isPresent() && !optItem.get().isEmpty()) {
             ItemStack stack = optItem.get();

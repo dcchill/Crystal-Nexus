@@ -137,6 +137,8 @@ public class ReactionGUIMenu extends AbstractContainerMenu implements Crystalnex
 				if (!this.moveItemStackTo(itemstack1, 2, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 1, 2, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 2, false)) {
 				if (index < 2 + 27) {
 					if (!this.moveItemStackTo(itemstack1, 2 + 27, this.slots.size(), true))

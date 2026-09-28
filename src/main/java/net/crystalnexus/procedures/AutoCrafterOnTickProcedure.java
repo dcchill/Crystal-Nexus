@@ -30,7 +30,6 @@ import java.util.List;
 
 public class AutoCrafterOnTickProcedure {
 
-    // Only compares item types, ignores NBT
     private static boolean stacksMatch(ItemStack a, ItemStack b) {
         return a.getItem() == b.getItem();
     }
@@ -50,9 +49,6 @@ public class AutoCrafterOnTickProcedure {
         var cap = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
         if (!(cap instanceof IItemHandlerModifiable inv)) return;
 
-        // -----------------------------
-        // Collect 3x3 crafting grid
-        // -----------------------------
         ItemStack[] grid = new ItemStack[9];
         boolean empty = true;
         for (int i = 0; i < 9; i++) {
@@ -95,15 +91,14 @@ public class AutoCrafterOnTickProcedure {
         }
 
         IEnergyStorage energy = ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        boolean canCraftEnergy = energy == null || energy.getEnergyStored() >= energyPerCraft;
+		int payableEnergy = Math.min(energyPerCraft, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CRAFTING_FACTORY.maxExtract());
+		boolean canCraftEnergy = energy == null || energy.getEnergyStored() >= payableEnergy;
         if (!canCraftEnergy) {
             updateBlockState(world, pos, crafting);
             return;
         }
 
-        // -----------------------------
         // Check output slot has room BEFORE consuming ingredients
-        // -----------------------------
         ItemStack output = inv.getStackInSlot(9);
 		int maxStack = hyperFactory ? Math.min(result.getMaxStackSize(), 64) : Math.min(result.getMaxStackSize(), 127);
 
@@ -132,7 +127,7 @@ public class AutoCrafterOnTickProcedure {
 			for (int i = 0; i < consumption.length; i++) {
 				if (consumption[i] > 0) craftCount = Math.min(craftCount, inv.getStackInSlot(i).getCount() / consumption[i]);
 			}
-			if (energy != null) craftCount = Math.min(craftCount, energy.getEnergyStored() / energyPerCraft);
+			if (energy != null) craftCount = Math.min(craftCount, Math.max(1, energy.getEnergyStored() / energyPerCraft));
 			craftCount = Math.min(craftCount, 64);
 		}
 		if (craftCount <= 0) {
@@ -140,16 +135,10 @@ public class AutoCrafterOnTickProcedure {
 			return;
 		}
 
-		// -----------------------------
-		// Consume ingredients
-		// -----------------------------
 		for (int i = 0; i < consumption.length; i++) {
 			inv.getStackInSlot(i).shrink(consumption[i] * craftCount);
 		}
 
-        // -----------------------------
-        // Insert output
-        // -----------------------------
         if (output.isEmpty()) {
             ItemStack toInsert = result.copy();
 			toInsert.setCount(Math.min(toInsert.getCount() * craftCount, maxStack));
@@ -158,20 +147,11 @@ public class AutoCrafterOnTickProcedure {
 			output.grow(result.getCount() * craftCount);
         }
 
-        // -----------------------------
-        // Drain energy
-        // -----------------------------
 		if (energy != null) energy.extractEnergy(energyPerCraft * craftCount, false);
 		setProgress(world, pos, 0);
 
-        // -----------------------------
-        // Crafting happened
-        // -----------------------------
         crafting = true;
 
-        // -----------------------------
-        // Update block state based on crafting status
-        // -----------------------------
         updateBlockState(world, pos, crafting);
     }
 
@@ -210,9 +190,6 @@ public class AutoCrafterOnTickProcedure {
         return false;
     }
 
-    // -----------------------------
-    // Block state update helper
-    // -----------------------------
     private static void updateBlockState(LevelAccessor world, BlockPos pos, boolean crafting) {
         int value = crafting ? 2 : 1;
         BlockState bs = world.getBlockState(pos);
@@ -245,9 +222,6 @@ public class AutoCrafterOnTickProcedure {
 		}
 	}
 
-    // -----------------------------
-    // Helper methods
-    // -----------------------------
     public static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
         if (world instanceof ILevelExtension ext) {
             IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);

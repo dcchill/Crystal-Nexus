@@ -119,7 +119,7 @@ public class UltimaSmelterBlockEntity extends RandomizableContainerBlockEntity i
 		if (index == 1)
 			return false;
 		if (index == 2)
-			return false;
+			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		if (index == 7)
 			return false;
 		if (index == 9)

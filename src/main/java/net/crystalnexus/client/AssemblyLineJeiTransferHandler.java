@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/** Copies the currently displayed JEI recipe into the selected graph node. */
 public final class AssemblyLineJeiTransferHandler implements IUniversalRecipeTransferHandler<AssemblyLineMenu> {
     @Override public Class<? extends AssemblyLineMenu> getContainerClass() { return AssemblyLineMenu.class; }
     @Override public Optional<MenuType<AssemblyLineMenu>> getMenuType() {

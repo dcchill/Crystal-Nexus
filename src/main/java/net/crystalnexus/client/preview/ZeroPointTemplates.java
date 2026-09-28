@@ -13,7 +13,6 @@ public class ZeroPointTemplates {
 
         ArrayList<ZeroPointPreviewRenderer.GhostBlock> out = new ArrayList<>(512);
 
-        // Map the names your generator used -> actual BlockStates
         BlockState CARBON_BLOCK = CrystalnexusModBlocks.CARBON_BLOCK.get().defaultBlockState();
         BlockState CARBON_GLASS = CrystalnexusModBlocks.CARBON_GLASS.get().defaultBlockState();
         BlockState CARBON_MACHINE_FRAME = CrystalnexusModBlocks.CARBON_MACHINE_FRAME.get().defaultBlockState();

@@ -34,8 +34,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         transferContainers(chamber);
 
         ItemStack upgrade = chamber.getItem(3);
-        double baseCookTime = upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
-            : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100;
+        double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
         double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime) / chamber.getSpeedMultiplier();
         int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_REACTION);
         RecipeMatch match = findRecipe(level, chamber);

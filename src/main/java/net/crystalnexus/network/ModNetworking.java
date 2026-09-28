@@ -50,7 +50,6 @@ public class ModNetworking {
 		r.playToClient(S2C_DepotCraftingResponse.TYPE, S2C_DepotCraftingResponse.STREAM_CODEC, ClientHandlers::onDepotCraftingResponse);
 		r.playToClient(S2C_DepotProgramsResponse.TYPE, S2C_DepotProgramsResponse.STREAM_CODEC, ClientHandlers::onDepotProgramsResponse);
 
-		// Ore scanner results
 		r.playToClient(S2C_OreScanResult.TYPE, S2C_OreScanResult.STREAM_CODEC, ClientHandlers::onOreScanResult);
 
 		r.playToClient(S2C_ZeroPointPreview.TYPE, S2C_ZeroPointPreview.STREAM_CODEC, ClientHandlers::onZeroPointPreview);

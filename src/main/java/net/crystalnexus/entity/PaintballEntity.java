@@ -53,10 +53,8 @@ public class PaintballEntity extends AbstractArrow implements ItemSupplier {
 	public PaintballEntity(EntityType<? extends PaintballEntity> type, LivingEntity entity, Level world, @Nullable ItemStack firedFromWeapon) {
 		super(type, entity, world, PROJECTILE_ITEM, firedFromWeapon);
 
-		// Default to white paintball
 		this.paintballItem = new ItemStack(BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", "PAINTBALL_PLACEHOLDER")));
 
-		// Apply knockback if weapon has enchantment
 		if (firedFromWeapon != null) {
 			setKnockback(EnchantmentHelper.getItemEnchantmentLevel(
 				world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(Enchantments.KNOCKBACK),
@@ -64,7 +62,6 @@ public class PaintballEntity extends AbstractArrow implements ItemSupplier {
 			));
 		}
 
-		// Check offhand for paintball
 		ItemStack offhand = entity.getOffhandItem();
 		if (offhand.is(TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath("crystalnexus", "paintballs")))) {
 			this.paintballItem = offhand.copy();
@@ -115,10 +112,8 @@ public class PaintballEntity extends AbstractArrow implements ItemSupplier {
 public void tick() {
     super.tick();
 
-    // Spawn colored particle while flying
     PaintballWhileProjectileFlyingTickProcedure.execute(this.level(), this.getX(), this.getY(), this.getZ(), this);
 
-    // Remove projectile if in ground
     if (this.inGround)
         this.discard();
 }

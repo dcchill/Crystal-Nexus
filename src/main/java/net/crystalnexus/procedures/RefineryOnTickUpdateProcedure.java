@@ -7,6 +7,7 @@ import net.crystalnexus.jei_recipes.RefiningRecipe;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.config.CrystalnexusConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -26,14 +27,13 @@ public final class RefineryOnTickUpdateProcedure {
         ItemStack upgrade = refinery.getItem(2);
         MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
         double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade,
-            upgrade.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get()) ? 75
-                : upgrade.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) ? 50 : 100));
+            MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50)));
         int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
         RefiningRecipe recipe = findRecipe(level, refinery, machineTier);
         ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.output();
         boolean fluidReady = recipe != null && recipe.fluidOutput().map(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.SIMULATE) == outputFluid.amount()).orElse(true);
         if (recipe == null || (output.isEmpty() && recipe.fluidOutput().isEmpty()) || !fluidReady
-                || refinery.getEnergyStorage().getEnergyStored() < energyCost
+                || refinery.getEnergyStorage().getEnergyStored() < Math.min(energyCost, CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract())
                 || (!output.isEmpty() && !FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(refinery.getItem(1), output))) {
             setActive(level, pos, false);
             refinery.getPersistentData().putDouble("maxProgress", cookTime);

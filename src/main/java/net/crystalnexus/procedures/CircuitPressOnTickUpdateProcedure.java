@@ -70,14 +70,7 @@ public class CircuitPressOnTickUpdateProcedure {
 			}
 		}
 
-		// Base cook time from upgrade item
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 75;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 50;
-		} else {
-			cookTime = 100;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3), 100, 75, 50);
 
 		// Optional multipliers on the upgrade stack (CUSTOM_DATA)
 		double _cn_cookMult = 1.0;
@@ -97,14 +90,12 @@ public class CircuitPressOnTickUpdateProcedure {
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
 		}
 
-		// Apply multipliers
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
 		cookTime = MachineTier.from(world.getBlockState(pressPos)).processingTime(cookTime);
 
-		// Sync maxProgress for GUI/progress bars
 		if (cookTime < 1)
 			cookTime = 1;
 
@@ -132,7 +123,6 @@ public class CircuitPressOnTickUpdateProcedure {
 			}
 		}
 
-		// Resolve original circuit-press recipe result
 		ItemStack _cn_result = (new Object() {
 			public ItemStack getResult() {
 				if (world instanceof Level _lvl) {
@@ -158,18 +148,16 @@ public class CircuitPressOnTickUpdateProcedure {
 			outputAmount = batchSize;
 		}
 
-		// If no valid result, do nothing
 		if (Blocks.AIR.asItem() == _cn_result.getItem()) {
 			setBatchPressState(world, pressPos, batchPress, 1);
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
 		}
 
-		// ---- OUTPUT LIMIT FIX (respects handler slot limit + item max stack size) ----
+		// Respect both the handler's slot limit and the item's stack limit.
 		int out = (int) Math.floor(outputAmount * _cn_result.getCount());
 		if (out < 0)
 			out = 0;
 
-		// Slot 1 limits
 		int slotMax = 64; // fallback
 		if (world instanceof ILevelExtension _ext) {
 			IItemHandler _ih = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
@@ -191,11 +179,7 @@ public class CircuitPressOnTickUpdateProcedure {
 		} else if (out > spaceLeft)
 			out = spaceLeft;
 
-		// If there's no space, we should not be able to finish a craft
-		// (you can still tick progress if you want; this code only blocks completion safely)
-		// ---------------------------------------------------------------------------
 
-		// Main machine logic
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
 			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
 			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
@@ -206,14 +190,14 @@ public class CircuitPressOnTickUpdateProcedure {
 				&& press.getNitrogenTank().getFluid().getAmount() >= advancedRecipe.fluidInput(0).get().amount();
 			if (_cn_input.getCount() >= requiredInput && _cn_material.getCount() >= requiredMaterial
 					&& hasAdvancedFluid
-					&& MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048) <= getEnergyStored(world, pressPos, null)) {
+					&& (world instanceof Level assignedLevel && net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(assignedLevel, pressPos) != null
+						? MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048)
+						: Math.min(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048), net.crystalnexus.config.CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract())) <= getEnergyStored(world, pressPos, null)) {
 
-				// Only allow processing if output slot is compatible and has space
 				if (out > 0) {
 					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == _cn_result.getItem()
 							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
 
-						// Progress
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 							setBatchPressState(world, pressPos, batchPress, 2);
 							craftingThisTick = true;
@@ -230,10 +214,8 @@ public class CircuitPressOnTickUpdateProcedure {
 								_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 						}
 
-						// Complete craft
 						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 
-							// Insert output (clamped to realMax)
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int current2 = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
 
@@ -252,7 +234,6 @@ public class CircuitPressOnTickUpdateProcedure {
 								_itemHandlerModifiable.setStackInSlot(1, _setstack);
 							}
 
-							// Consume inputs
 							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 0;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
@@ -269,7 +250,6 @@ public class CircuitPressOnTickUpdateProcedure {
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
 
-							// Reset progress
 							if (!world.isClientSide()) {
 								BlockPos _bp = BlockPos.containing(x, y, z);
 								BlockEntity _blockEntity = world.getBlockEntity(_bp);
@@ -280,7 +260,6 @@ public class CircuitPressOnTickUpdateProcedure {
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 							}
 
-							// Consume energy
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 								if (_entityStorage != null) {

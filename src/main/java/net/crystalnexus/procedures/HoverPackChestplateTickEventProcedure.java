@@ -14,40 +14,34 @@ import net.minecraft.world.phys.Vec3;
 
 public class HoverPackChestplateTickEventProcedure {
 
-	// Costs
 	private static final int FE_IDLE_PER_TICK = 4;   // holding hover
 	private static final int FE_RISE_PER_TICK = 8;   // extra while rising
-	private static final int FE_SPRINT_PER_TICK = 12; // extra while sprint-boosting (tweak)
+	private static final int FE_SPRINT_PER_TICK = 12;
 
-	// Base Horizontal feel
 	private static final double BASE_HOVER_ACCEL = 0.12;
 	private static final double BASE_HOVER_DRAG = 0.94;
 	private static final double BASE_MAX_HORIZ_SPEED = 0.65;
 
-	// Thruster offsets (derived from your hover_pack.java parts)
-	// X/Z are in blocks (pixels/16). Y is a world height from feet; tweak until it lines up perfectly.
+	// Thruster offsets match the hover pack model.
+	// X/Z use model pixels divided by 16; Y is measured from the player's feet.
 	private static final double THRUSTER_SIDE = 7.5 / 16.0;  // ~0.46875
 	private static final double THRUSTER_BACK = 8.5 / 16.0;  // ~0.53125
-	private static final double THRUSTER_Y    = -0.5;        // backpack height (tweak)
+	private static final double THRUSTER_Y    = -0.5;
 
 	
-	// Base Vertical feel
 	private static final double BASE_RISE_TARGET_SPEED = 0.40;
 	private static final double BASE_MAX_UP_SPEED = 0.75;
 	private static final double BASE_MAX_DOWN_SPEED = -0.22;
 
-	// Sprint boost multipliers
 	private static final double SPRINT_ACCEL_MULT = 1.85;     // accel boost
 	private static final double SPRINT_MAXSPEED_MULT = 1.75;  // top speed boost
 	private static final double SPRINT_RISE_MULT = 1.75;      // faster climb while rising
 	private static final double SPRINT_UPSPEED_MULT = 1.55;   // higher vertical speed cap
 
-	// PersistentData keys
 	private static final String PD_ACTIVE = "cn_hoverpack_active";
 	private static final String PD_TARGETY = "cn_hoverpack_targetY";
 	private static final String PD_RISE = "cn_hoverpack_rise";
 
-	// Movement key booleans you set via MCreator keybinds
 	private static final String PD_FWD = "cn_hp_fwd";
 	private static final String PD_BACK = "cn_hp_back";
 	private static final String PD_LEFT = "cn_hp_left";
@@ -67,19 +61,16 @@ public class HoverPackChestplateTickEventProcedure {
 		if (!(world instanceof Level level) || level.isClientSide) return;
 		if (!(entity instanceof LivingEntity living)) return;
 
-		// Disable while sneaking
 		if (entity.isShiftKeyDown()) {
 			entity.getPersistentData().putBoolean(PD_ACTIVE, false);
 			return;
 		}
 
-		// No hover in fluids
 		if (living.isInWater() || living.isInLava()) {
 			entity.getPersistentData().putBoolean(PD_ACTIVE, false);
 			return;
 		}
 
-		// Only while airborne
 		if (living.onGround()) {
 			entity.getPersistentData().putBoolean(PD_ACTIVE, false);
 			return;
@@ -88,7 +79,6 @@ public class HoverPackChestplateTickEventProcedure {
 		boolean riseHeld = entity.getPersistentData().getBoolean(PD_RISE);
 		boolean sprintBoost = (entity instanceof Player p) && p.isSprinting();
 
-		// Apply sprint-scaled parameters
 		double hoverAccel = BASE_HOVER_ACCEL * (sprintBoost ? SPRINT_ACCEL_MULT : 1.0);
 		double hoverDrag = BASE_HOVER_DRAG;
 		double maxHorizSpeed = BASE_MAX_HORIZ_SPEED * (sprintBoost ? SPRINT_MAXSPEED_MULT : 1.0);
@@ -101,30 +91,25 @@ public class HoverPackChestplateTickEventProcedure {
 				+ (riseHeld ? FE_RISE_PER_TICK : 0)
 				+ (sprintBoost ? FE_SPRINT_PER_TICK : 0);
 
-		// If we can't pay, shut off hover
 		if (!canPayEnergy(entity, costThisTick)) {
 			entity.getPersistentData().putBoolean(PD_ACTIVE, false);
 			return;
 		}
 
-		// Init target altitude on first powered tick
 		if (!entity.getPersistentData().getBoolean(PD_ACTIVE)) {
 			entity.getPersistentData().putBoolean(PD_ACTIVE, true);
 			entity.getPersistentData().putDouble(PD_TARGETY, entity.getY());
 		}
 
-		// Update target altitude while rising
 		double targetY = entity.getPersistentData().getDouble(PD_TARGETY);
 		if (riseHeld) {
 			targetY += riseTargetSpeed;
 			entity.getPersistentData().putDouble(PD_TARGETY, targetY);
 		}
 
-		// Altitude hold
 		double error = targetY - entity.getY();
 		double desiredVy = clamp(error * 0.25, maxDownSpeed, maxUpSpeed);
 
-		// ----- Horizontal control using keybind booleans -----
 		double forward = 0.0;
 		double strafe = 0.0;
 
@@ -133,7 +118,6 @@ public class HoverPackChestplateTickEventProcedure {
 		if (entity.getPersistentData().getBoolean(PD_LEFT)) strafe -= 1.0;
 		if (entity.getPersistentData().getBoolean(PD_RIGHT)) strafe += 1.0;
 
-		// Normalize diagonal input
 		double len = Math.sqrt(forward * forward + strafe * strafe);
 		if (len > 1e-6) {
 			forward /= len;
@@ -142,7 +126,6 @@ public class HoverPackChestplateTickEventProcedure {
 
 		Vec3 vel = entity.getDeltaMovement();
 
-		// Apply thrust in look-yaw space
 		if (forward != 0.0 || strafe != 0.0) {
 			float yawRad = (float) Math.toRadians(entity.getYRot());
 			double sin = Mth.sin(yawRad);
@@ -154,32 +137,26 @@ public class HoverPackChestplateTickEventProcedure {
 			vel = vel.add(ax, 0.0, az);
 		}
 
-		// Drag (glide)
 		vel = new Vec3(vel.x * hoverDrag, vel.y, vel.z * hoverDrag);
 
-		// Clamp horizontal speed
 		double hspeed = Math.sqrt(vel.x * vel.x + vel.z * vel.z);
 		if (hspeed > maxHorizSpeed) {
 			double s = maxHorizSpeed / hspeed;
 			vel = new Vec3(vel.x * s, vel.y, vel.z * s);
 		}
 
-		// Apply ONE final velocity (keep altitude hold on Y)
 		entity.setDeltaMovement(vel.x, desiredVy, vel.z);
 		entity.hurtMarked = true;
 		entity.fallDistance = 0;
 
-		// Wind particles out the bottom while powered
 		spawnHoverpackWind(level, living, riseHeld, sprintBoost);
 
-		// Drain energy after applying
 		drainEnergy(entity, costThisTick);
 	}
 
 private static void spawnHoverpackWind(Level level, LivingEntity living, boolean riseHeld, boolean sprintBoost) {
 	if (!(level instanceof ServerLevel serverLevel)) return;
 
-	// Only show “air movement” when it’s actually doing something
 	Vec3 v = living.getDeltaMovement();
 	double horiz = Math.sqrt(v.x * v.x + v.z * v.z);
 	boolean doingWork = riseHeld || sprintBoost || horiz > 0.06 || v.y > 0.06;
@@ -190,30 +167,25 @@ private static void spawnHoverpackWind(Level level, LivingEntity living, boolean
 	double sin = Mth.sin(bodyYawRad);
 	double cos = Mth.cos(bodyYawRad);
 
-	// Right vector (XZ): (cos, sin)
 	double rightX = cos;
 	double rightZ = sin;
 
-	// Back vector (XZ): (sin, -cos) (behind the torso)
 	double backX = sin;
 	double backZ = -cos;
 
 	// Anchor around chest/back area based on entity height (more stable than fixed Y)
 	double chestY = living.getY() + living.getBbHeight() * 0.65;
 
-	// Base point: behind player at chest/back height
 	double baseX = living.getX() + backX * THRUSTER_BACK;
 	double baseY = chestY + THRUSTER_Y;
 	double baseZ = living.getZ() + backZ * THRUSTER_BACK;
 
-	// Two emitters: left and right
 	double leftX = baseX - rightX * THRUSTER_SIDE;
 	double leftZ = baseZ - rightZ * THRUSTER_SIDE;
 
 	double rightXX = baseX + rightX * THRUSTER_SIDE;
 	double rightZZ = baseZ + rightZ * THRUSTER_SIDE;
 
-	// More particles when sprinting / rising
 	int count = 2 + (sprintBoost ? 5 : 0) + (riseHeld ? 4 : 0);
 	double spreadXZ = 0.06 + (sprintBoost ? 0.05 : 0.0);
 	double spreadY  = 0.01; // VERY small vertical spread

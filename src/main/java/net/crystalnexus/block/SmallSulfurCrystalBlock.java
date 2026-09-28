@@ -80,7 +80,6 @@ public class SmallSulfurCrystalBlock extends Block {
         if (!supportState.is(CrystalnexusModBlocks.BUDDING_SULFUR_CRYSTAL.get()))
             return;
 
-        // 20% growth chance
         if (random.nextInt(35) == 0) {
             level.setBlock(pos,
                     CrystalnexusModBlocks.MEDIUM_SULFUR_CRYSTAL.get()

@@ -52,13 +52,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 100;
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 20;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 10;
-		} else {
-			cookTime = 25;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0), 25, 20, 10);
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
@@ -73,12 +67,10 @@ public class NodeExtractorOnTickUpdateProcedure {
 			if (_cn_data.contains("cook_mult"))
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
 		}
-		// 2) Apply multipliers (STACK onto existing values)
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		// 3) Output caps (machine cap + slot space cap)
 		double MACHINE_MAX_OUTPUT = 4000; // set per machine
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;

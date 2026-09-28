@@ -122,7 +122,7 @@ public class InverterBlockEntity extends RandomizableContainerBlockEntity implem
 		if (index == 1)
 			return false;
 		if (index == 2)
-			return false;
+			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 

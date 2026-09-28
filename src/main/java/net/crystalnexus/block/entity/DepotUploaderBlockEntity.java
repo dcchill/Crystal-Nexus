@@ -33,7 +33,6 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         super(CrystalnexusModBlockEntities.DEPOT_UPLOADER.get(), pos, state);
     }
 
-    // ---- ticking upload ----
     public static void tick(Level level, BlockPos pos, BlockState state, DepotUploaderBlockEntity be) {
         if (level.isClientSide) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
@@ -51,22 +50,18 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
             ItemStack stack = be.getItem(i);
             if (stack.isEmpty()) continue;
 
-            // Try to move up to 64 per slot per cycle
             int want = Math.min(64, stack.getCount());
 
             ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
             if (itemId == null) continue;
 
-            // ✅ IMPORTANT: only accept what fits
             long acceptedLong = data.addCapped(itemId, want);
             int accepted = (int) Math.min(Integer.MAX_VALUE, acceptedLong);
 
             if (accepted <= 0) {
-                // Depot full (or no space). Optional: stop early to avoid looping.
                 break;
             }
 
-            // ✅ Remove only what was accepted
             stack.shrink(accepted);
             if (stack.isEmpty()) {
                 be.items.set(i, ItemStack.EMPTY);
@@ -74,7 +69,6 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
 
             changed = true;
 
-            // Optional: if depot is full now, stop early
             if (data.getFree() <= 0) break;
         }
 
@@ -83,7 +77,6 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         }
     }
 
-    // ---- WorldlyContainer (sided inventory) ----
 
     @Override
     public int[] getSlotsForFace(Direction side) {
@@ -92,19 +85,16 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         return slots;
     }
 
-    // input-only: allow inserting from any side
     @Override
     public boolean canPlaceItemThroughFace(int slot, ItemStack stack, Direction side) {
         return true;
     }
 
-    // input-only: deny extracting from any side
     @Override
     public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
         return false;
     }
 
-    // ---- Container basics ----
 
     @Override
     public int getContainerSize() {
@@ -157,7 +147,6 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         setChanged();
     }
 
-    // ---- Save/load ----
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {

@@ -196,16 +196,18 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 9) {
-				if (!this.moveItemStackTo(itemstack1, 9, this.slots.size(), true))
+			if (index < 11) {
+				if (!this.moveItemStackTo(itemstack1, 11, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 9, false)) {
-				if (index < 9 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 9 + 27, this.slots.size(), true))
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 2, 3, false)) return ItemStack.EMPTY;
+			} else if (!this.moveItemStackTo(itemstack1, 0, 11, false)) {
+				if (index < 11 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 11 + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 9, 9 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, 11, 11 + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

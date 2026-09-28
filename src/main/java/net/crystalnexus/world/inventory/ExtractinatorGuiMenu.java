@@ -207,6 +207,8 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				if (!this.moveItemStackTo(itemstack1, 8, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 7, 8, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 8, false)) {
 				if (index < 8 + 27) {
 					if (!this.moveItemStackTo(itemstack1, 8 + 27, this.slots.size(), true))

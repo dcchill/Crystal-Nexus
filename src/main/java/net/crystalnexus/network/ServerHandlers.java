@@ -240,7 +240,6 @@ public class ServerHandlers {
 
     // Signature MUST be (payload, context) for playToServer(...)
     public static void onRequestPage(C2S_RequestPage msg, IPayloadContext ctx) {
-        // Ensure this runs on the server thread
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;
             if (!(sp.containerMenu instanceof DepotMenu menu)) return;

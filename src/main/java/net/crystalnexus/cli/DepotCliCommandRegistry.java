@@ -374,7 +374,6 @@ public final class DepotCliCommandRegistry {
     }
 
     private DepotCliCommandResult craft(DepotCliCommandContext context, List<String> args) {
-        // Parse optional --machine <id> argument
         ResourceLocation targetMachine = null;
         int machineIndex = args.indexOf("--machine");
         if (machineIndex >= 0 && machineIndex + 1 < args.size()) {
@@ -389,12 +388,10 @@ public final class DepotCliCommandRegistry {
         if (parsed == null) return itemSyntax("craft [--machine <id>] <item> <amount>");
         DepotItemResolver.Result resolved = DepotItemResolver.registry(parsed.query());
         if (!resolved.found()) return DepotItemResolver.unresolved(parsed.query(), resolved);
-        // Temporarily set preferred machine if specified
         ResourceLocation previousMachine = targetMachine != null
                 ? context.depot().getPreferredMachine(resolved.match().id()) : null;
         if (targetMachine != null) context.depot().setPreferredMachine(resolved.match().id(), targetMachine);
         DepotCraftingService.Result result = DepotCraftingService.craft(context.player(), context.depot(), resolved.match().item(), parsed.amount());
-        // Restore previous machine preference if we changed it
         if (targetMachine != null) {
             if (previousMachine != null) context.depot().setPreferredMachine(resolved.match().id(), previousMachine);
             else context.depot().clearPreferredMachine(resolved.match().id());

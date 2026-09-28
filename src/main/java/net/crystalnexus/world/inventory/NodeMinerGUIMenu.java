@@ -147,6 +147,8 @@ public class NodeMinerGUIMenu extends AbstractContainerMenu implements Crystalne
 				if (!this.moveItemStackTo(itemstack1, 4, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+				if (!this.moveItemStackTo(itemstack1, 3, 4, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 4, false)) {
 				if (index < 4 + 27) {
 					if (!this.moveItemStackTo(itemstack1, 4 + 27, this.slots.size(), true))

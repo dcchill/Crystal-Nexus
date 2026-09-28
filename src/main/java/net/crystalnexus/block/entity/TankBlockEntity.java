@@ -30,7 +30,6 @@ public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
     private BlockPos controllerPos;
     private int memberCount = 1;
 
-    // ✅ MCreator-friendly ItemHandler shim (1 slot, locked)
     private final ItemStackHandler itemHandler = new ItemStackHandler(1) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -56,7 +55,6 @@ public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
         }
     };
 
-    // ✅ expose it for capability registration
     public ItemStackHandler getItemHandler() {
         return itemHandler;
     }
@@ -121,7 +119,6 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
         return getController().tank;
     }
 
-    // --------- Sync / NBT ----------
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
         super.saveAdditional(tag, lookup);
@@ -131,10 +128,8 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
         }
         tag.putInt("Members", memberCount);
 
-        // ✅ save item handler
         tag.put("Inv", itemHandler.serializeNBT(lookup));
 
-        // save fluid tank
         CompoundTag tankTag = new CompoundTag();
         tank.writeToNBT(lookup, tankTag);
         tag.put("Tank", tankTag);
@@ -147,7 +142,6 @@ public net.neoforged.neoforge.fluids.capability.templates.FluidTank getFluidTank
         controllerPos = tag.contains("Controller") ? BlockPos.of(tag.getLong("Controller")) : null;
         memberCount = Math.max(1, tag.getInt("Members"));
 
-        // ✅ load item handler
         if (tag.contains("Inv")) itemHandler.deserializeNBT(lookup, tag.getCompound("Inv"));
 
         if (tag.contains("Tank")) tank.readFromNBT(lookup, tag.getCompound("Tank"));

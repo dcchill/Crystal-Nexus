@@ -41,9 +41,6 @@ public class ConveyerBeltOnTickUpdateProcedure {
         double minY = pos.getY() + 0.55;
         double maxY = pos.getY() + 0.8;
 
-        /* ===================================================
-         * 1️⃣ PULL ITEMS FROM STORAGE IF THIS IS AN OUTPUT BELT
-         * =================================================== */
         if (isOutputBelt) {
             BlockPos inputPos = pos.relative(back);
             IItemHandler inputHandler = level.getCapability(
@@ -59,11 +56,10 @@ if (inputHandler != null) {
         ItemStack extractedTotal = ItemStack.EMPTY;
 
         while (remaining > 0) {
-            // Simulate (some handlers only ever give 1 even if you ask for more)
+            // Some handlers cap simulated extraction at one item.
             ItemStack sim = inputHandler.extractItem(slot, remaining, true);
             if (sim.isEmpty()) break;
 
-            // Actually extract what the simulation says is possible
             ItemStack got = inputHandler.extractItem(slot, sim.getCount(), false);
             if (got.isEmpty()) break;
 
@@ -86,7 +82,6 @@ if (inputHandler != null) {
         }
 
         if (!extractedTotal.isEmpty()) {
-            // ---- your existing merge/spawn code, using extractedTotal instead of extracted ----
 
             AABB beltBox = new AABB(centerX - 0.4, minY, centerZ - 0.4,
                                     centerX + 0.4, maxY, centerZ + 0.4);
@@ -121,9 +116,6 @@ if (inputHandler != null) {
 
         }
 
-        /* ===================================================
-         * 2️⃣ MOVE ITEMS ON BELT (CENTERED)
-         * =================================================== */
         double forwardSpeed = 0.075;
         double centeringStrength = 0.25;
 
@@ -136,7 +128,6 @@ if (inputHandler != null) {
 
             item.setUnlimitedLifetime();
 
-            // Centering movement
             double offsetX = centerX - item.getX();
             double offsetZ = centerZ - item.getZ();
 
@@ -156,9 +147,6 @@ if (inputHandler != null) {
             );
             item.hasImpulse = true;
 
-            /* ===================================================
-             * 3️⃣ PUSH INTO STORAGE IF THIS IS AN INPUT BELT
-             * =================================================== */
             if (isInputBelt) {
                 BlockPos outputPos = pos.relative(facing);
                 IItemHandler outputHandler = level.getCapability(

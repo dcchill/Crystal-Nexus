@@ -27,15 +27,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class OreScannerRightclickedProcedure {
 
-	// tuning
 	private static final int RADIUS = 32;
 	private static final int MAX_FOUND = 1200;
 	private static final int DURATION_TICKS = 100;
 
-	// FE cost per scan
 	private static final int FE_COST = 5120;
 
-	// persistent filter key on the player
 	private static final String FILTER_TAG = "crystalnexus_ore_scanner_filter";
 
 	public static void execute(LevelAccessor world, Entity entity, ItemStack scanner) {
@@ -44,13 +41,11 @@ public class OreScannerRightclickedProcedure {
 		if (level.isClientSide) return;
 		if (!(entity instanceof ServerPlayer sp)) return;
 
-		// ✅ SHIFT = set/clear filter (NO FE cost)
 		if (sp.isShiftKeyDown()) {
 			handleFilterPick(level, sp);
 			return;
 		}
 
-		// ✅ Normal use = costs FE
 		if (!net.crystalnexus.item.ToolEnergy.consume(sp, scanner, FE_COST, false)) {
 			sp.displayClientMessage(Component.literal("Not enough FE (" + FE_COST + ")"), true);
 			level.playSound(null, sp.blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.PLAYERS, 0.6f, 0.5f);
@@ -65,7 +60,6 @@ public class OreScannerRightclickedProcedure {
 		level.playSound(null, sp.blockPosition(), SoundEvents.AMETHYST_BLOCK_RESONATE, SoundSource.PLAYERS, 0.9f, 1.2f);
 	}
 
-	// ---------------- FILTER PICK ----------------
 
 	// Shift+RightClick:
 	// - If looking at an ore block: set filter to its ore token (iron/copper/tin/etc.)
@@ -116,7 +110,6 @@ public class OreScannerRightclickedProcedure {
 		return level.clip(ctx);
 	}
 
-	// ---------------- SCAN ----------------
 
 	private static List<BlockPos> scanForOresSphereNearestFirst(Level level, BlockPos center, int radius, int maxFound, String filter) {
 		final int r2 = radius * radius;

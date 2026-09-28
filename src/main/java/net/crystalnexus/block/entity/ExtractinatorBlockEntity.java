@@ -125,7 +125,7 @@ public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity i
 		if (index == 6)
 			return false;
 		if (index == 7)
-			return false;
+			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 

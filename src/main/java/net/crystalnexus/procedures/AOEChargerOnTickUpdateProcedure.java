@@ -47,9 +47,6 @@ public class AOEChargerOnTickUpdateProcedure {
         if (itemHandler == null)
             return "No Inventory Capability";
 
-        // ----------------------------------
-        // Combined Upgrade Slot
-        // ----------------------------------
 
         CrystalnexusConfig.AoeChargerValues config = CrystalnexusConfig.MACHINES.AOE_CHARGER_BEHAVIOR;
         int baseInput = config.baseTransferPerTick();
@@ -61,16 +58,16 @@ public class AOEChargerOnTickUpdateProcedure {
         if (!upgrade.isEmpty()) {
 
             if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-                inputMult = config.accelerationUpgradeMultiplier();
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.accelerationUpgradeMultiplier());
 
             else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-                inputMult = config.carbonAccelerationUpgradeMultiplier();
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.carbonAccelerationUpgradeMultiplier());
 
             else if (upgrade.getItem() == CrystalnexusModItems.RANGE_UPGRADE.get())
-                range = config.rangeUpgradeRange();
+                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.rangeUpgradeRange());
 
             else if (upgrade.getItem() == CrystalnexusModItems.CARBON_RANGE_UPGRADE.get())
-                range = config.carbonRangeUpgradeRange();
+                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.carbonRangeUpgradeRange());
         }
 
         // SSD override (inverse cook_mult)
@@ -91,9 +88,6 @@ public class AOEChargerOnTickUpdateProcedure {
         inputMult = Math.max(config.minTransferMultiplier(), Math.min(inputMult, config.maxTransferMultiplier()));
         int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
 
-        // ----------------------------------
-        // Charging Logic
-        // ----------------------------------
 
         if (blockEnergy.getEnergyStored() > 0) {
 
@@ -137,9 +131,6 @@ public class AOEChargerOnTickUpdateProcedure {
             }
         }
 
-			// ----------------------------------
-			// Blockstate + Sparks
-			// ----------------------------------
 			
 			if (isCharging) {
 			
@@ -167,9 +158,6 @@ public class AOEChargerOnTickUpdateProcedure {
 			    setBlockState(world, pos, 1);
 			}
 
-        // ----------------------------------
-        // Return Status Text
-        // ----------------------------------
 
         return "Range: " + (int) range + " blocks | "
                 + maxTransferPerTick + " FE/t";

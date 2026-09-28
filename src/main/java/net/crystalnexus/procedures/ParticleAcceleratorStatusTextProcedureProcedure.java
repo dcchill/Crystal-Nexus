@@ -22,7 +22,6 @@ public class ParticleAcceleratorStatusTextProcedureProcedure {
 		double stallNeed = be.getPersistentData().getDouble("stallNeed");
 		double stallStored = be.getPersistentData().getDouble("stallStored");
 
-		// ---- Highest priority errors first ----
 
 		if (formed == 0) {
 			return "Structure incomplete";
@@ -33,18 +32,15 @@ public class ParticleAcceleratorStatusTextProcedureProcedure {
 		}
 
 		if (stalled == 1) {
-			// Show useful power diagnostics
 			return "Insufficient magnet power (" +
 				(int) stallStored + " / " +
 				(int) stallNeed + " FE)";
 		}
 
-		// ---- Warnings / info ----
 		if (magCount <= 0) {
 			return "No electromagnets detected";
 		}
 
-		// ---- All good ----
 		return "Accelerator online";
 	}
 }

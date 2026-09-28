@@ -52,13 +52,7 @@ public class ChlorophyteSmelterOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = 50;
-		} else if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy()).getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = 35;
-		} else {
-			cookTime = 75;
-		}
+		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2), 75, 50, 35);
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
@@ -73,12 +67,10 @@ public class ChlorophyteSmelterOnTickUpdateProcedure {
 			if (_cn_data.contains("cook_mult"))
 				_cn_cookMult = _cn_data.getDouble("cook_mult");
 		}
-		// 2) Apply multipliers (STACK onto existing values)
 		if (_cn_hasKeys) {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		// 3) Output caps (machine cap + slot space cap)
 		double MACHINE_MAX_OUTPUT = 8; // set per machine
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
@@ -100,7 +92,7 @@ public class ChlorophyteSmelterOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		if (true == (world instanceof Level _level9 && _level9.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _level9).isPresent())) {
-			if (MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+			if (Math.min(MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048), net.crystalnexus.config.CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract()) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 				if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount && ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == (world instanceof Level _lvlSmeltResult
 						? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
 								.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)

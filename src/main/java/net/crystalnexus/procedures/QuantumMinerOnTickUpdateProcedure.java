@@ -68,13 +68,7 @@ public class QuantumMinerOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get()) {
-			cookTime = ACCELERATED_COOK_TIME;
-		} else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get()) {
-			cookTime = CARBON_ACCELERATED_COOK_TIME;
-		} else {
-			cookTime = BASE_COOK_TIME;
-		}
+		cookTime = (int) MachineUpgradeHelper.processingTime(upgrade, BASE_COOK_TIME, ACCELERATED_COOK_TIME, CARBON_ACCELERATED_COOK_TIME);
 		cookTime = (int) MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
 			BlockPos _bp = BlockPos.containing(x, y, z);

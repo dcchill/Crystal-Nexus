@@ -23,22 +23,18 @@ public record S2C_SendPage(
 
     public static final StreamCodec<RegistryFriendlyByteBuf, S2C_SendPage> STREAM_CODEC =
             StreamCodec.composite(
-                    // item entries
                     Entry.STREAM_CODEC.apply(ByteBufCodecs.list()),
                     S2C_SendPage::entries,
 
                     ByteBufCodecs.VAR_INT,
                     S2C_SendPage::totalEntries,
 
-                    // upgrade level
                     ByteBufCodecs.VAR_INT,
                     S2C_SendPage::upgradeLevel,
 
-                    // used storage
                     ByteBufCodecs.VAR_LONG,
                     S2C_SendPage::used,
 
-                    // max capacity
                     ByteBufCodecs.VAR_LONG,
                     S2C_SendPage::capacity,
 
@@ -50,9 +46,6 @@ public record S2C_SendPage(
         return TYPE;
     }
 
-    // =========================
-    // Entry (single item row)
-    // =========================
     public record Entry(ResourceLocation itemId, long count) {
 
         public static final StreamCodec<RegistryFriendlyByteBuf, Entry> STREAM_CODEC =

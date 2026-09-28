@@ -48,12 +48,10 @@ public class FactoryItemControllerOnTickUpdateProcedure {
             ItemStack inputStack = distributorHandler.getStackInSlot(sourceSlot).copy();
             if (inputStack.isEmpty()) continue;
 
-            // Try to insert 1 item into target slot safely
             for (int i = 0; i < targetHandler.getSlots(); i++) {
                 ItemStack toInsert = inputStack.copy().split(1);
                 ItemStack simulated = targetHandler.insertItem(i, toInsert.copy(), true); // simulate insertion
                 if (simulated.getCount() < toInsert.getCount()) {
-                    // Slot accepts item
                     targetHandler.insertItem(i, toInsert, false); // actually insert
                     distributorHandler.extractItem(sourceSlot, 1, false); // remove from distributor
                     break;

@@ -15,7 +15,6 @@ public class HoverpackToggleOnKeyPressedProcedure {
 
 		entity.getPersistentData().putBoolean(PD_TOGGLE, enabled);
 
-		// Message (client-side only)
 		if (entity instanceof Player player && player.level().isClientSide) {
 			player.displayClientMessage(Component.literal(enabled ? "Hover Pack Toggle" : "Hover Pack Toggle"), true);
 		}

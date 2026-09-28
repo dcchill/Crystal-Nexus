@@ -25,12 +25,10 @@ public class BatteryOnTickUpdateProcedure {
 		Block batteryBlock = CrystalnexusModBlocks.BATTERY.get();
 		int maxTransfer = 204800; // FE per tick per connection
 		
-		// ---- Get this battery's energy ----
 		IEnergyStorage selfStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
 		if (selfStorage == null)
 			return;
 
-		// ---- Find connected batteries ----
 		List<BlockPos> connectedBatteries = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
 			BlockPos neighborPos = pos.relative(dir);
@@ -38,7 +36,6 @@ public class BatteryOnTickUpdateProcedure {
 				connectedBatteries.add(neighborPos);
 		}
 
-		// ---- Balance energy between connected batteries ----
 		if (!connectedBatteries.isEmpty()) {
 			List<IEnergyStorage> storages = new ArrayList<>();
 			storages.add(selfStorage);
@@ -49,18 +46,15 @@ public class BatteryOnTickUpdateProcedure {
 					storages.add(neighborStorage);
 			}
 
-			// Compute total and average energy
 			int totalEnergy = 0;
 			for (IEnergyStorage storage : storages)
 				totalEnergy += storage.getEnergyStored();
 
 			int average = totalEnergy / storages.size();
 
-			// Balance toward average
 			for (IEnergyStorage storage : storages) {
 				int diff = average - storage.getEnergyStored();
 				if (diff > 0) {
-					// Needs energy: pull from others
 					for (IEnergyStorage donor : storages) {
 						if (donor == storage) continue;
 						int toTransfer = diff;
@@ -75,7 +69,6 @@ public class BatteryOnTickUpdateProcedure {
 			}
 		}
 
-		// ---- Push excess energy to non-battery blocks ----
 		for (Direction dir : Direction.values()) {
 			BlockPos neighbor = pos.relative(dir);
 			if (world.getBlockState(neighbor).getBlock() == batteryBlock)

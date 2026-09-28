@@ -29,9 +29,7 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 	private final NonNullList<Ingredient> ingredients;
 	private final List<Integer> integers;
 
-	/* ------------------------------------------------------------ */
-	/* Constructor + normalization                                 */
-	/* ------------------------------------------------------------ */
+	// Constructor + normalization
 
 	public MatterTransmutationRecipe(ItemStack output,
 	                                 NonNullList<Ingredient> ingredients,
@@ -51,9 +49,6 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 		this.integers = normalized;
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Helpers                                                      */
-	/* ------------------------------------------------------------ */
 
 	@Override
 	public int getInputCount(int index) {
@@ -81,9 +76,6 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 		return ingredients;
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Vanilla Recipe stuff                                         */
-	/* ------------------------------------------------------------ */
 
 	@Override
 	public boolean matches(RecipeInput input, Level level) {
@@ -115,17 +107,11 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 		return Serializer.INSTANCE;
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Type                                                         */
-	/* ------------------------------------------------------------ */
 
 	public static class Type implements RecipeType<MatterTransmutationRecipe> {
 		public static final Type INSTANCE = new Type();
 	}
 
-	/* ------------------------------------------------------------ */
-	/* Serializer                                                   */
-	/* ------------------------------------------------------------ */
 
 	public static class Serializer implements RecipeSerializer<MatterTransmutationRecipe> {
 

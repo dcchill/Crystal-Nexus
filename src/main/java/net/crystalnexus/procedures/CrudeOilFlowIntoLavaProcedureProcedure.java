@@ -23,10 +23,8 @@ public class CrudeOilFlowIntoLavaProcedureProcedure {
             BlockPos neighborPos = pos.relative(dir);
 
             if (world.getBlockState(neighborPos).getBlock() == Blocks.LAVA) {
-                // Create Tarrock where the lava was
                 world.setBlock(neighborPos, CrystalnexusModBlocks.TARROCK.get().defaultBlockState(), 3);
 
-                // Add particle effects
                 if (world instanceof ServerLevel _level) {
                     _level.sendParticles(ParticleTypes.SMOKE, x + 0.5, y + 0.5, z + 0.5,
                             15, 0.3, 0.3, 0.3, 0.02);
@@ -36,7 +34,6 @@ public class CrudeOilFlowIntoLavaProcedureProcedure {
                             6, 0.2, 0.1, 0.2, 0.02);
                 }
 
-                // Play bubbling/hissing sounds
                 if (world instanceof Level _level) {
                     if (!_level.isClientSide()) {
                         _level.playSound(null, pos,

@@ -122,8 +122,9 @@ public final class MaterialProcessingGameTests {
         chlorophyte.setItem(0, new ItemStack(CrystalnexusModItems.RAW_INVERTIUM.get()));
         for (int i = 0; i < 4; i++) {
             crystal.getEnergyStorage().receiveEnergy(1024, false);
-            chlorophyte.getEnergyStorage().receiveEnergy(1024, false);
         }
+        // This tier quotes 8192 FE, but a completed operation extracts only 2048 FE.
+        for (int i = 0; i < 2; i++) chlorophyte.getEnergyStorage().receiveEnergy(1024, false);
 
         BlockPos absoluteCrystal = helper.absolutePos(crystalPos);
         BlockPos absoluteChlorophyte = helper.absolutePos(chlorophytePos);
@@ -139,6 +140,8 @@ public final class MaterialProcessingGameTests {
         helper.assertTrue(chlorophyte.getItem(1).is(CrystalnexusModItems.INVERTIUM_DUST.get())
                 && chlorophyte.getItem(1).getCount() == 2 && chlorophyte.getItem(0).isEmpty(),
             "Chlorophyte-tier crushers must unlock Invertium processing");
+        helper.assertTrue(chlorophyte.getEnergyStorage().getEnergyStored() == 0,
+            "The crusher must run with the 2048 FE it actually extracts");
         helper.succeed();
     }
 

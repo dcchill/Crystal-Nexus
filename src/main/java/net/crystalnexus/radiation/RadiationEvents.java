@@ -68,9 +68,6 @@ public class RadiationEvents {
 
                 double totalRadiation = Math.min(result.total, 200);
 
-                // ----------------------------
-                // 🔊 Geiger Click Logic
-                // ----------------------------
                 if (totalRadiation > 0.01) {
 
                     double intensity =
@@ -93,9 +90,6 @@ public class RadiationEvents {
                     }
                 }
 
-                // ----------------------------
-                // 🧭 Compass Display
-                // ----------------------------
                 if (result.strongestPos != null) {
 
                     String bar = buildCompassBar(player, result.strongestPos);
@@ -109,9 +103,6 @@ public class RadiationEvents {
         }
     }
 
-    // =========================================
-    // 🧠 Radiation Calculation
-    // =========================================
 
     private static RadiationResult calculateRadiation(ServerLevel level, BlockPos center) {
 
@@ -132,19 +123,12 @@ public class RadiationEvents {
 
             double value = 0;
 
-					// ----------------------------------
-					//  SPECIAL RAD_PLACEHOLDER BLOCK
-					// ----------------------------------
 					if (level.getBlockState(pos).getBlock() ==
 					        CrystalnexusModBlocks.RAD_PLACEHOLDER.get()) {
 					
-					    // MUCH stronger
 					    value += 55.0 * falloff;
 					}
 					
-					// ----------------------------------
-					// ️ Tagged radioactive blocks
-					// ----------------------------------
 					else if (level.getBlockState(pos).is(
 					        BlockTags.create(
 					                ResourceLocation.fromNamespaceAndPath(
@@ -156,7 +140,6 @@ public class RadiationEvents {
 					}
 
 
-            // Containers
             BlockEntity be = level.getBlockEntity(pos);
             if (be != null && !be.isRemoved()) {
 
@@ -209,9 +192,6 @@ public class RadiationEvents {
         return new RadiationResult(total, strongestPos);
     }
 
-    // =========================================
-    // 🧭 Compass Logic
-    // =========================================
 	
 	private static String buildCompassBar(ServerPlayer player, BlockPos target) {
 	
@@ -227,15 +207,12 @@ public class RadiationEvents {
 	            target.getZ() + 0.5 - playerPos.z
 	    ).normalize();
 	
-	    // 🔥 Dot product check
 	    double dot = look.dot(toSource);
 	
-	    // If facing away, blank it
 	    if (dot <= 0) {
 	        return "================"; //
 	    }
 	
-	    // Cross product for left/right offset
 	    double cross = look.x * toSource.z - look.z * toSource.x;
 	
 	    int offset = (int)(cross * center);
@@ -257,9 +234,6 @@ public class RadiationEvents {
 	}
 
 
-    // =========================================
-    // 🎨 Color Based on Intensity
-    // =========================================
 
     private static Style getColorForRadiation(double radiation) {
 
@@ -275,9 +249,6 @@ public class RadiationEvents {
         return Style.EMPTY.withColor(TextColor.fromRgb(0xFF5555)); // Red
     }
 
-    // =========================================
-    // 📦 Result Record
-    // =========================================
 
     private record RadiationResult(double total, BlockPos strongestPos) {}
 }
