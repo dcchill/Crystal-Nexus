@@ -462,7 +462,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ENERGIZED_SILICON = REGISTRY.register("energized_silicon", EnergizedSiliconItem::new);
 	public static final DeferredItem<Item> SOLAR_SHEET = REGISTRY.register("solar_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> CARBON_SOLAR_SHEET = REGISTRY.register("carbon_solar_sheet", () -> new Item(new Item.Properties()));
-	public static final DeferredItem<Item> DYSON_STRUCTURE = REGISTRY.register("dyson_structure", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> DYSON_STRUCTURE = REGISTRY.register("dyson_structure", () -> new Item(new Item.Properties().stacksTo(512)));
+	public static final DeferredItem<Item> DYSON_REPAIR = REGISTRY.register("dyson_repair", () -> new Item(new Item.Properties().durability(5000)));
 	public static final DeferredItem<Item> COFFEE = REGISTRY.register("coffee", CoffeeItem::new);
 	public static final DeferredItem<Item> ATOMIC_COFFEE = REGISTRY.register("atomic_coffee", AtomicCoffeeItem::new);
 	public static final DeferredItem<Item> ANCIENT_CRYSTAL_ORE_STONE = block(CrystalnexusModBlocks.ANCIENT_CRYSTAL_ORE_STONE);

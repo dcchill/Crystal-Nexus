@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Axis;
 import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.recipe.DysonOutput;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,6 +22,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import org.joml.Matrix4f;
 
 import java.util.Random;
@@ -28,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@EventBusSubscriber(modid = "crystalnexus", value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSimulatorControllerBlockEntity> {
     private static final int STACKS = 32;
     private static final int SLICES = 64;
@@ -36,6 +42,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
     private static final int DYSON_FRAME_SIDE_COLOR = 0xFF6BBDEB;
     private static final float[][] BACKGROUND_STARS = createBackgroundStars();
     private static final List<Vec3[]> DYSON_CELLS = createDysonCells();
+    private static final List<PendingDyson> PENDING_DYSON = new ArrayList<>();
     private static final RenderType VOID_RENDER_TYPE = RenderType.create(
         "crystalnexus_solar_simulator_void",
         DefaultVertexFormat.POSITION_COLOR,
@@ -117,7 +124,8 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
 
         if (controller.isDysonMode()) {
             if (!star.isEmpty() && controller.getDysonStructures() > 0)
-                drawDysonShell(poseStack.last().pose(), buffers.getBuffer(DYSON_RENDER_TYPE), controller);
+                PENDING_DYSON.add(new PendingDyson(new Matrix4f(poseStack.last().pose()),
+                    controller.getDysonStructures(), controller.getDysonCarbonSheets(), controller.getDysonSolarSheets(), cameraOffset));
             poseStack.popPose();
             return;
         }
@@ -139,18 +147,39 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
         poseStack.popPose();
     }
 
-    private static void drawDysonShell(Matrix4f matrix, VertexConsumer consumer, SolarSimulatorControllerBlockEntity controller) {
+    @SubscribeEvent
+    public static void renderDysonAfterTranslucentBlocks(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
+        if (PENDING_DYSON.isEmpty()) return;
+        MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer consumer = buffers.getBuffer(DYSON_RENDER_TYPE);
+        for (PendingDyson shell : PENDING_DYSON)
+            drawDysonShell(shell.matrix(), consumer, shell.structures(), shell.carbon(), shell.solar(), shell.cameraOffset());
+        PENDING_DYSON.clear();
+        buffers.endBatch(DYSON_RENDER_TYPE);
+    }
+
+    private static void drawDysonShell(Matrix4f matrix, VertexConsumer consumer, int structures, int carbonSheets,
+                                       int solarSheets, Vec3 cameraOffset) {
         int built = Math.min(DYSON_CELLS.size(), (int) Math.ceil(DYSON_CELLS.size()
-            * Math.min(1.0, controller.getDysonStructures() / 512.0)));
+            * Math.min(1.0, structures / 512.0)));
         int carbon = Math.min(built, (int) Math.ceil(DYSON_CELLS.size()
-            * controller.getDysonCarbonSheets() / (6.0 * 512.0)));
+            * carbonSheets / (DysonOutput.CARBON_SHEETS_PER_STRUCTURE * (double) Math.max(1, structures))));
         int solar = Math.min(built - carbon, (int) Math.ceil(DYSON_CELLS.size()
-            * controller.getDysonSolarSheets() / (6.0 * 512.0)));
+            * solarSheets / (DysonOutput.SOLAR_SHEETS_PER_STRUCTURE * (double) Math.max(1, structures))));
+        Vec3 viewDirection = cameraOffset.normalize();
+        List<VisibleDysonCell> orderedCells = new ArrayList<>(built);
         for (int i = 0; i < built; i++) {
-            Vec3[] cell = DYSON_CELLS.get(i);
             Vec3 center = Vec3.ZERO;
-            for (Vec3 point : cell) center = center.add(point);
-            center = center.scale(1.0 / cell.length).normalize().scale(5.5);
+            for (Vec3 point : DYSON_CELLS.get(i)) center = center.add(point);
+            center = center.scale(1.0 / DYSON_CELLS.get(i).length).normalize();
+            orderedCells.add(new VisibleDysonCell(i, center, center.dot(viewDirection)));
+        }
+        orderedCells.sort(Comparator.comparingDouble(VisibleDysonCell::depth));
+        for (VisibleDysonCell visibleCell : orderedCells) {
+            int i = visibleCell.index();
+            Vec3[] cell = DYSON_CELLS.get(i);
+            Vec3 center = visibleCell.center().scale(5.5);
             int panel = i < carbon ? 0x66313131 : i < carbon + solar ? 0x665BBEFF : 0;
             for (int edge = 0; edge < cell.length; edge++) {
                 Vec3 start = cell[edge].scale(5.5);
@@ -168,6 +197,9 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
             }
         }
     }
+
+    private record VisibleDysonCell(int index, Vec3 center, double depth) { }
+    private record PendingDyson(Matrix4f matrix, int structures, int carbon, int solar, Vec3 cameraOffset) { }
 
     private static void triangle(VertexConsumer consumer, Matrix4f matrix, Vec3 a, Vec3 b, Vec3 c, int argb) {
         for (Vec3 point : new Vec3[] { a, b, c }) consumer.addVertex(matrix, (float) point.x, (float) point.y, (float) point.z)

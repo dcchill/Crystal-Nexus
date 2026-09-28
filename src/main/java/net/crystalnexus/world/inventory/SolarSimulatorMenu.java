@@ -46,22 +46,22 @@ public final class SolarSimulatorMenu extends AbstractContainerMenu {
         return controller != null && player.level().getBlockEntity(controller.getBlockPos()) == controller
             && stillValid(access, player, CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get());
     }
+    @Override public boolean canDragTo(Slot slot) {
+        return !(controller != null && controller.isDysonMode() && slots.indexOf(slot) < SolarSimulatorControllerBlockEntity.DYSON_SUPPLY_SLOTS) && super.canDragTo(slot);
+    }
     @Override public void clicked(int slotId, int button, ClickType type, Player player) {
         if (controller == null || !stillValid(player)) return;
-        if (controller.isDysonMode()) {
+        if (controller.isDysonMode() && slotId >= 0 && slotId < SolarSimulatorControllerBlockEntity.DYSON_SUPPLY_SLOTS) {
             if (type == ClickType.QUICK_CRAFT || type == ClickType.PICKUP_ALL) return;
-            if (slotId >= 0 && slotId < 4) {
-                if (player.level().isClientSide) return;
-                if (type == ClickType.QUICK_MOVE) { quickMoveStack(player, slotId); return; }
-                if (type != ClickType.PICKUP || button < 0 || button > 1) return;
-                ItemStack carried = getCarried();
-                if (!carried.isEmpty()) {
-                    carried.shrink(controller.insertDyson(slotId, carried, button == 1 ? 1 : carried.getCount(), false));
-                    setCarried(carried);
-                } else setCarried(controller.extractDyson(slotId, button == 1 ? 1 : Integer.MAX_VALUE, false));
-                broadcastChanges();
-                return;
-            }
+            if (type == ClickType.QUICK_MOVE) { quickMoveStack(player, slotId); return; }
+            if (type != ClickType.PICKUP || button < 0 || button > 1) return;
+            ItemStack carried = getCarried();
+            if (!carried.isEmpty()) {
+                carried.shrink(controller.insertDyson(slotId, carried, button == 1 ? 1 : carried.getCount(), false));
+                setCarried(carried);
+            } else setCarried(controller.extractDyson(slotId, button == 1 ? 1 : Integer.MAX_VALUE, false));
+            broadcastChanges();
+            return;
         }
         super.clicked(slotId, button, type, player);
     }
@@ -70,25 +70,40 @@ public final class SolarSimulatorMenu extends AbstractContainerMenu {
         Slot slot = slots.get(index);
         if (slot == null || !slot.hasItem()) return ItemStack.EMPTY;
         if (controller.isDysonMode()) {
-            if (index < 4) {
+            if (index < SolarSimulatorControllerBlockEntity.DYSON_SUPPLY_SLOTS) {
                 ItemStack preview = controller.extractDyson(index, Integer.MAX_VALUE, true);
                 if (preview.isEmpty() || !moveItemStackTo(preview, 5, slots.size(), true)) return ItemStack.EMPTY;
                 int moved = Math.min(controller.getDysonCount(index), slot.getItem().getMaxStackSize()) - preview.getCount();
                 return controller.extractDyson(index, moved, false);
             }
+            if (index == SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT) {
+                ItemStack stack = slot.getItem(), copy = stack.copy();
+                if (!moveItemStackTo(stack, 5, slots.size(), true)) return ItemStack.EMPTY;
+                if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
+                return copy;
+            }
+            if (index >= 5 && controller.canPlaceItem(SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT, slot.getItem())) {
+                ItemStack input = slot.getItem(), original = input.copy();
+                if (!moveItemStackTo(input, SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT,
+                    SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT + 1, false)) return ItemStack.EMPTY;
+                if (input.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
+                return original;
+            }
             if (index >= 5 && controller.canPlaceItem(0, slot.getItem())) {
                 ItemStack input = slot.getItem(), original = input.copy();
-                for (int i = 0; i < 4 && !input.isEmpty(); i++)
+                for (int i = 0; i < SolarSimulatorControllerBlockEntity.DYSON_SUPPLY_SLOTS && !input.isEmpty(); i++)
                     if (!controller.getItem(i).isEmpty() && ItemStack.isSameItemSameComponents(controller.getItem(i), input))
                         input.shrink(controller.insertDyson(i, input, input.getCount(), false));
-                for (int i = 0; i < 4 && !input.isEmpty(); i++)
+                for (int i = 0; i < SolarSimulatorControllerBlockEntity.DYSON_SUPPLY_SLOTS && !input.isEmpty(); i++)
                     if (controller.getItem(i).isEmpty()) input.shrink(controller.insertDyson(i, input, input.getCount(), false));
                 if (input.getCount() == original.getCount()) return ItemStack.EMPTY;
                 if (input.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
                 return original;
             }
             ItemStack stack = slot.getItem(), copy = stack.copy();
-            if (index == 4 ? !moveItemStackTo(stack, 5, slots.size(), true) : !moveItemStackTo(stack, 4, 5, false)) return ItemStack.EMPTY;
+            if (index == 4 ? !moveItemStackTo(stack, 5, slots.size(), true)
+                : !moveItemStackTo(stack, SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT,
+                    SolarSimulatorControllerBlockEntity.DYSON_REPAIR_SLOT + 1, false)) return ItemStack.EMPTY;
             if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
             return copy;
         }

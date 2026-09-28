@@ -178,6 +178,15 @@ public final class CometForgeGameTests {
         MachineEnergyOutputBlockEntity output = helper.getBlockEntity(ports.get(0));
         helper.assertTrue(output.isBoundTo(simulator.getBlockPos()), "Energy port binds to simulator");
         simulator.setItem(4, new ItemStack(CrystalnexusModItems.PINK_STAR.get()));
+        helper.assertTrue(!simulator.canPlaceItem(3, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get())),
+            "Bottom Dyson slot rejects swarm parts");
+        helper.assertTrue(simulator.canPlaceItem(3, new ItemStack(CrystalnexusModItems.DYSON_REPAIR.get())),
+            "Bottom Dyson slot accepts service kits");
+        helper.assertTrue(simulator.canPlaceItemThroughFace(3, new ItemStack(CrystalnexusModItems.DYSON_REPAIR.get()), Direction.UP)
+            && !simulator.canPlaceItemThroughFace(3, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get()), Direction.UP),
+            "Automation accepts only service kits in the bottom slot");
+        helper.assertTrue(new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get()).getMaxStackSize() == 512,
+            "Dyson structures stack to 512");
         for (int i = 0; i < 16; i++) simulator.insertDyson(0, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get(), 64), 64, false);
         for (int i = 0; i < 16; i++) simulator.insertDyson(1, new ItemStack(CrystalnexusModItems.CARBON_SOLAR_SHEET.get(), 64), 64, false);
         helper.assertTrue(simulator.getDysonCount(0) == 1024 && simulator.getDysonCount(1) == 1024,
@@ -187,11 +196,32 @@ public final class CometForgeGameTests {
         helper.assertTrue(!simulator.setDysonMode(false), "Cannot switch modes with occupied reserves");
         helper.assertTrue(simulator.getDysonPotentialFePerTick() == 1024 * 16384 * 8, "Star multiplier applies to sheet energy");
         simulator.serverTick();
-        helper.assertTrue(simulator.getDysonEnergyStored() == simulator.getDysonPotentialFePerTick(), "Produces FE without consuming sheets");
+        int integrityAfterFirstTick = simulator.getDysonIntegrity();
+        helper.assertTrue(integrityAfterFirstTick == 1000 || integrityAfterFirstTick == 949,
+            "Structure-scaled drain has a 30% chance to apply per tick");
+        helper.assertTrue(simulator.getDysonPotentialFePerTick() == (long) 1024 * 16384 * 8 * integrityAfterFirstTick / 1000,
+            "Dyson output falls in proportion to integrity");
+        helper.assertTrue(simulator.getDysonEnergyStored() == simulator.getDysonPotentialFePerTick(), "Produces FE at integrity-scaled output without consuming sheets");
         var saved = simulator.saveWithoutMetadata(helper.getLevel().registryAccess());
         simulator.loadAdditional(saved, helper.getLevel().registryAccess());
         helper.assertTrue(simulator.isDysonMode() && simulator.getDysonCount(0) == 1024
-            && simulator.getDysonCount(1) == 1024, "Dyson mode and reserves survive reload");
+            && simulator.getDysonCount(1) == 1024 && simulator.getDysonIntegrity() == integrityAfterFirstTick,
+            "Dyson mode, reserves, integrity, and drain remainder survive reload");
+        simulator.serverTick();
+        int integrityAfterSecondTick = simulator.getDysonIntegrity();
+        helper.assertTrue(integrityAfterSecondTick == integrityAfterFirstTick
+            || integrityAfterSecondTick == integrityAfterFirstTick - 51,
+            "Structure drain remains chance-based after reload");
+        for (int i = 0; i < 3; i++) simulator.extractDyson(i, 1024, false);
+        saved = simulator.saveWithoutMetadata(helper.getLevel().registryAccess());
+        saved.putInt("dysonIntegrity", 999);
+        simulator.loadAdditional(saved, helper.getLevel().registryAccess());
+        simulator.setItem(3, new ItemStack(CrystalnexusModItems.DYSON_REPAIR.get()));
+        helper.assertTrue(simulator.getItem(3).getMaxDamage() == 5000, "Service kit has 5000 durability");
+        simulator.serverTick();
+        helper.assertTrue(simulator.getDysonIntegrity() == 1000 && simulator.getItem(3).is(CrystalnexusModItems.DYSON_REPAIR.get())
+            && simulator.getItem(3).getDamageValue() == 1,
+            "A service kit remains in the slot and loses one durability per integrity restored");
         helper.setBlock(ports.get(0), Blocks.AIR);
         helper.assertTrue(!simulator.validateStructureNow(), "Removing output invalidates the structure");
         helper.succeed();

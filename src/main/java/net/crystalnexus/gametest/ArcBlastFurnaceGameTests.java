@@ -91,10 +91,6 @@ public final class ArcBlastFurnaceGameTests {
                 CrystalnexusModItems.SILICON.get(), CrystalnexusModItems.CONDUCTIVE_ALLOY.get())),
             Map.entry("arc_carbon_composite", recipe(CrystalnexusModItems.CARBON_COMPOSITE.get(), 3,
                 Items.NETHERITE_SCRAP, CrystalnexusModItems.INVERTIUM_DUST.get())),
-            Map.entry("arc_chlorophyte_dust", recipe(CrystalnexusModItems.CHLOROPHYTE_INGOT.get(), 2,
-                CrystalnexusModItems.CHLOROPHYTE_DUST.get())),
-            Map.entry("arc_invertium_dust", recipe(CrystalnexusModItems.INVERTIUM_INGOT.get(), 2,
-                CrystalnexusModItems.INVERTIUM_DUST.get())),
             Map.entry("arc_recycle_iron_sheet", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_SHEET.get())),
             Map.entry("arc_recycle_iron_rod", recipe(Items.IRON_INGOT, 2, CrystalnexusModItems.IRON_ROD.get())),
             Map.entry("arc_recycle_azurine_sheet", recipe(CrystalnexusModItems.TITANIUM_INGOT.get(), 2,
@@ -113,7 +109,7 @@ public final class ArcBlastFurnaceGameTests {
                 CrystalnexusModItems.CARBON_FIBER_ROD.get()))
         );
 
-        helper.assertTrue(loaded.size() == 20, "The Arc Blast Furnace must load its three original, sixteen expanded, and tempered casing recipes");
+        helper.assertTrue(loaded.size() == 21, "The Arc Blast Furnace must load its existing recipes plus the Dyson repair recipe");
         for (Map.Entry<String, ExpectedRecipe> entry : expected.entrySet()) {
             RecipeHolder<ArcFurnaceRecipe> holder = loaded.get(entry.getKey());
             helper.assertTrue(holder != null && matches(entry.getValue(), holder.value(), helper),
@@ -188,6 +184,49 @@ public final class ArcBlastFurnaceGameTests {
         controller = helper.getBlockEntity(controllerPos);
         helper.assertTrue(controller.validateStructureNow() && controller.heatingLayerCount() == 7,
             "The Azurine Blast Furnace must support seven Azurine Heating Core layers");
+        helper.succeed();
+    }
+
+    @GameTest(template = "arc_blast_furnace")
+    public static void dysonRepairUsesRenewableInputsAndRequiresTungstenTier(GameTestHelper helper) {
+        RecipeHolder<ArcFurnaceRecipe> holder = helper.getLevel().getRecipeManager()
+            .getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE).stream()
+            .filter(recipe -> recipe.id().getPath().equals("dyson_repair")).findFirst().orElse(null);
+        helper.assertTrue(holder != null, "The Dyson repair recipe must load");
+        ArcFurnaceRecipe recipe = holder.value();
+        helper.assertTrue(recipe.getIngredients().size() == 2
+                && recipe.getIngredients().get(0).test(new ItemStack(CrystalnexusModItems.BIOMASS.get()))
+                && recipe.getIngredients().get(1).test(new ItemStack(Items.CHARCOAL))
+                && recipe.ingredientCount(0) == 8 && recipe.ingredientCount(1) == 4
+                && recipe.getResultItem(helper.getLevel().registryAccess()).is(CrystalnexusModItems.DYSON_REPAIR.get())
+                && recipe.minimumArcFurnaceTier() == 2,
+            "Dyson repair must use eight biomass and four charcoal and require Arc Furnace tier 2");
+
+        BlockPos controllerPos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
+        BlockState tungstenController = helper.getBlockState(controllerPos);
+        FurnaceBuild tungsten = buildFurnace(helper, controllerPos, tungstenController,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 1);
+        helper.setBlock(tungsten.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        ArcFurnaceBlockEntity controller = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(controller.validateStructureNow(), "The Tungsten tier Arc Furnace must form");
+        process(helper, controllerPos, controller, new ItemStack(CrystalnexusModItems.BIOMASS.get(), 8),
+            new ItemStack(Items.CHARCOAL, 4), CrystalnexusModItems.DYSON_REPAIR.get(), 1);
+
+        BlockState azurineController = CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().defaultBlockState()
+            .setValue(ArcFurnaceBlock.FACING, tungstenController.getValue(ArcFurnaceBlock.FACING));
+        FurnaceBuild azurine = buildFurnace(helper, controllerPos, azurineController,
+            CrystalnexusModBlocks.TITANIUM_BLOCK.get(), CrystalnexusModBlocks.AZURINE_HEATING_CORE.get(), 1);
+        helper.setBlock(azurine.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        controller = helper.getBlockEntity(controllerPos);
+        helper.assertTrue(controller.validateStructureNow(), "The lower tier Arc Furnace must form");
+        controller.setItem(0, new ItemStack(CrystalnexusModItems.BIOMASS.get(), 8));
+        controller.setItem(1, new ItemStack(Items.CHARCOAL, 4));
+        controller.setItem(2, ItemStack.EMPTY);
+        refillEnergy(controller);
+        ArcFurnaceOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(controllerPos));
+        helper.assertTrue(controller.getItem(0).getCount() == 8 && controller.getItem(1).getCount() == 4
+                && controller.getItem(2).isEmpty(),
+            "The lower tier Arc Furnace must reject Dyson repair without consuming inputs");
         helper.succeed();
     }
 

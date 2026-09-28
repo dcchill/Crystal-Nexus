@@ -220,9 +220,8 @@ public class TooltipInfoHandler {
 				"Tier 9 dust separator.",
 				"Processes the highest-tier separation recipes.");
 		addTooltip("matter_transmutation_table",
-				"Endgame resource conversion block.",
-				"Converts EE-matter into resources,",
-				"and allows for advanced crafting.");
+				"Matter conversion block.",
+				"Allows for advanced crafting.");
 
 		// RESOURCE GATHERING
 
@@ -326,7 +325,7 @@ public class TooltipInfoHandler {
 		addTooltip("depot_storage_upgrade",
 				"Doubles depot storage capacity.");
 		addTooltip("tesseract",
-				"Endgame wireless transfer gateway.",
+				"Wireless transfer.",
 				"Transfers energy across any distance.");
 		addTooltip("tesseract_output",
 				"Tesseract output endpoint.",

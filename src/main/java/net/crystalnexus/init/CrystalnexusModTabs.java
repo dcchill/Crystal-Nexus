@@ -226,6 +226,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.SOLAR_SHEET.get());
 				tabData.accept(CrystalnexusModItems.CARBON_SOLAR_SHEET.get());
 				tabData.accept(CrystalnexusModItems.DYSON_STRUCTURE.get());
+				tabData.accept(CrystalnexusModItems.DYSON_REPAIR.get());
 				tabData.accept(CrystalnexusModItems.COMPUTATION_NODE.get());
 				tabData.accept(CrystalnexusModBlocks.COMPUTATION_CLUSTER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LASER_DIODE.get());
