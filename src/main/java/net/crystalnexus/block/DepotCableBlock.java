@@ -226,7 +226,7 @@ public class DepotCableBlock extends Block implements EntityBlock {
 
         DepotNetwork.importFluidsFromCable(level, pos, depot, 1_000);
 
-        int remaining = 64; // Maximum items imported per tick
+        int remaining = 64; 
 
         for (Direction direction : Direction.values()) {
             if (remaining <= 0) return;

@@ -53,8 +53,8 @@ public class CrystalnexusMod {
 	public static final String MODID = "crystalnexus";
 
 	public CrystalnexusMod(IEventBus modEventBus) {
-		// Start of user code block mod constructor
-		// End of user code block mod constructor
+		
+		
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
 		modEventBus.addListener(ModChunkTickets::onRegisterTicketControllers);
@@ -75,12 +75,12 @@ public class CrystalnexusMod {
 		CrystalnexusModFluids.REGISTRY.register(modEventBus);
 		CrystalnexusModFluidTypes.REGISTRY.register(modEventBus);
 
-		// Start of user code block mod init
-		// End of user code block mod init
+		
+		
 	}
 
-	// Start of user code block mod methods
-	// End of user code block mod methods
+	
+	
 	private static boolean networkingRegistered = false;
 	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
 

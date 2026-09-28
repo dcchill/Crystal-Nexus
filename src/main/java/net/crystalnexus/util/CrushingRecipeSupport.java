@@ -31,9 +31,9 @@ public final class CrushingRecipeSupport {
 		if (input.isEmpty())
 			return ItemStack.EMPTY;
 
-		// Material profiles are Crystal Nexus's canonical raw-material recipes.
-		// Resolve them before recipes supplied by integrations so raw material always
-		// yields the configured dust amount (two by default).
+		
+		
+		
 		var generated = MaterialProcessingCatalog.get(level).source(input);
 		if (generated.isPresent()) {
 			var material = generated.get();
@@ -66,8 +66,8 @@ public final class CrushingRecipeSupport {
 		Map<String, OreCrushingJeiRecipe> unique = new LinkedHashMap<>();
 		level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || isExternalCrushing(recipe))
-				// Generated material recipes are registered separately. Do not also show
-				// an integration's alternative for the same raw material.
+				
+				
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || !isMaterialSource(level, recipe))
 				.map(recipe -> toJeiRecipe(recipe, level))
 				.filter(recipe -> recipe != null)
@@ -133,7 +133,7 @@ public final class CrushingRecipeSupport {
 					return NonNullList.of(Ingredient.EMPTY, Ingredient.of(stacks));
 			}
 		} catch (ReflectiveOperationException | LinkageError ignored) {
-			// Optional recipe APIs are deliberately not compile-time dependencies.
+			
 		}
 		return NonNullList.create();
 	}

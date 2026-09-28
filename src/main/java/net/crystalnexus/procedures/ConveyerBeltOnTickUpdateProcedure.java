@@ -56,20 +56,20 @@ if (inputHandler != null) {
         ItemStack extractedTotal = ItemStack.EMPTY;
 
         while (remaining > 0) {
-            // Some handlers cap simulated extraction at one item.
+            
             ItemStack sim = inputHandler.extractItem(slot, remaining, true);
             if (sim.isEmpty()) break;
 
             ItemStack got = inputHandler.extractItem(slot, sim.getCount(), false);
             if (got.isEmpty()) break;
 
-            // First pull sets the type; later pulls must match
+            
             if (extractedTotal.isEmpty()) {
                 extractedTotal = got.copy();
             } else {
                 if (got.getItem() != extractedTotal.getItem()) {
-                    // Slot changed to a different item somehow; stop to avoid mixing
-                    // (putting it back is hard with IItemHandler, so we just stop)
+                    
+                    
                     break;
                 }
                 extractedTotal.grow(got.getCount());
@@ -77,7 +77,7 @@ if (inputHandler != null) {
 
             remaining -= got.getCount();
 
-            // Safety: if handler returns 0-count (shouldn't happen), avoid infinite loop
+            
             if (got.getCount() <= 0) break;
         }
 
@@ -108,7 +108,7 @@ if (inputHandler != null) {
                 level.addFreshEntity(entity);
             }
 
-            break; // one slot per tick, but up to 32 items
+            break; 
         }
     }
 }

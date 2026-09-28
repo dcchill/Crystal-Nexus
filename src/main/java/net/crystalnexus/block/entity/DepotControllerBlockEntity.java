@@ -46,8 +46,8 @@ public class DepotControllerBlockEntity extends BlockEntity {
     }
 
     public boolean isPowered() {
-        // Network discovery calls this method, so it must not calculate its own
-        // component draw here (that would recurse through the cable scan).
+        
+        
         return energyStorage.getEnergyStored() >= ENERGY_PER_TICK;
     }
 
@@ -112,7 +112,7 @@ public class DepotControllerBlockEntity extends BlockEntity {
         }
     }
 
-    /** Keeps AE2 classes out of this block entity's eager class-loading path. */
+    
     private static final class Ae2Compat {
         private static void sync(ServerLevel level, BlockPos controllerPos, DepotSavedData depot) {
             net.crystalnexus.integration.ae2.Ae2DepotIntegration.sync(level, controllerPos, depot);

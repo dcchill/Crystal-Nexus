@@ -185,7 +185,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
                 Vec3 start = cell[edge].scale(5.5);
                 Vec3 end = cell[(edge + 1) % cell.length].scale(5.5);
                 if (panel != 0) triangle(consumer, matrix, center, start, end, panel);
-                // A wide band facing into the cell, with an outward-facing side for visible depth.
+                
                 Vec3 innerStart = start.lerp(center, 0.15).normalize().scale(5.57);
                 Vec3 innerEnd = end.lerp(center, 0.15).normalize().scale(5.57);
                 Vec3 outerStart = start.normalize().scale(5.57);
@@ -206,7 +206,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
             .setColor(argb >> 16 & 255, argb >> 8 & 255, argb & 255, argb >>> 24);
     }
 
-    /** Dual of a frequency-three icosahedron: hexagonal faces plus twelve pentagons. */
+    
     private static List<Vec3[]> createDysonCells() {
         double t = (1.0 + Math.sqrt(5.0)) / 2.0;
         Vec3[] vertices = {

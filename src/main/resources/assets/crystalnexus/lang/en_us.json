@@ -854,6 +854,8 @@
   "block.crystalnexus.blood": "Blood",
   "item.crystalnexus.blood_bucket": "Blood Bucket",
   "item.crystalnexus.resource_comet": "Resource Comet",
+  "item.crystalnexus.generated_singularity": "Generated Singularity",
+  "item.crystalnexus.generated_singularity.named": "%s Singularity",
   "item.crystalnexus.resource_comet.named": "%s Comet",
   "tooltip.crystalnexus.resource_comet": "Generates %s in a solar simulator.",
   "tooltip.crystalnexus.resource_comet.invalid": "Invalid or missing resource.",

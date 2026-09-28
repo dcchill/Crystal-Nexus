@@ -49,7 +49,7 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 		BlockPos target = be.getTargetPos();
 		if (target == null) return;
 
-		// Thickness: higher = thicker (0.02 small, 0.06 medium, 0.12 chunky)
+		
 		double thickness = 0.01;
 
 		Vec3 start = new Vec3(0.5, 0.05, 0.5);
@@ -105,7 +105,7 @@ public class QuarryBlockEntityRenderer implements BlockEntityRenderer<QuarryBloc
 	                            float r, float g, float b, float a,
 	                            Vec3 start, Vec3 end) {
 
-		// 1.21.x VertexConsumer API (MCreator mappings): addVertex + setColor + setNormal
+		
 		vc.addVertex(mat, (float) start.x, (float) start.y, (float) start.z)
 			.setColor(r, g, b, a)
 			.setNormal(0f, 1f, 0f);

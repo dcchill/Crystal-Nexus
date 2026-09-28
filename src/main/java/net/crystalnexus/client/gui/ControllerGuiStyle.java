@@ -2,7 +2,7 @@ package net.crystalnexus.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 
-/** Vanilla container colors and stepped pixel corners, at any panel size. */
+
 final class ControllerGuiStyle {
     private ControllerGuiStyle() {}
 

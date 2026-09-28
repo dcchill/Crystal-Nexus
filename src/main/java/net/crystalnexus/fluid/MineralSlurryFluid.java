@@ -7,7 +7,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
-/** Tank-only fluid: world placement intentionally resolves to air and no bucket is registered. */
+
 public abstract class MineralSlurryFluid extends BaseFlowingFluid {
     public static final Properties PROPERTIES = new Properties(
         CrystalnexusModFluidTypes.MINERAL_SLURRY_TYPE,

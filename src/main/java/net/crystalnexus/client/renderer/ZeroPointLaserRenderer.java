@@ -94,7 +94,7 @@ public class ZeroPointLaserRenderer {
         int glowA = 90;
 
         boolean firstPerson = mc.options.getCameraType().isFirstPerson();
-        float muzzleLen = firstPerson ? 1.25f : 0.0f; // blocks
+        float muzzleLen = firstPerson ? 1.25f : 0.0f; 
         float muzzleExtra = firstPerson ? 0.06f : 0.0f;
 
         Vector3f muzzleEnd = new Vector3f(e);
@@ -133,17 +133,17 @@ private static Vec3 getBeamStartWorld(LocalPlayer player, float partialTick, Vec
     if (right.lengthSqr() < 1.0e-6) right = new Vec3(1, 0, 0);
     right = right.normalize();
 
-    // Main hand: based on main arm. Offhand: opposite.
+    
     double mainHandSide = (player.getMainArm() == net.minecraft.world.entity.HumanoidArm.RIGHT) ? 1.0 : -1.0;
     boolean usingOffhand = player.getUsedItemHand() == net.minecraft.world.InteractionHand.OFF_HAND;
     double sideSign = usingOffhand ? -mainHandSide : mainHandSide;
 
-    // Strong offsets so it DOES NOT look like it starts at the face
+    
     boolean firstPerson = mc.options.getCameraType().isFirstPerson();
 
-    double side   = (firstPerson ? 0.65 : 0.35) * sideSign; // right/left
-    double down   = (firstPerson ? -0.28 : -0.15);          // lower a bit
-    double forward= (firstPerson ? 0.85 : 0.40);            // push out
+    double side   = (firstPerson ? 0.65 : 0.35) * sideSign; 
+    double down   = (firstPerson ? -0.28 : -0.15);          
+    double forward= (firstPerson ? 0.85 : 0.40);            
 
     return eye
             .add(right.scale(side))
@@ -153,7 +153,7 @@ private static Vec3 getBeamStartWorld(LocalPlayer player, float partialTick, Vec
 
 
 
-    /** Draws a “tube-ish” beam using two crossed ribbons (billboarded) */
+    
     private static void drawBeamTube(VertexConsumer vc, Matrix4f mat,
                                      Vector3f s, Vector3f e,
                                      Vector3f side, Vector3f up,

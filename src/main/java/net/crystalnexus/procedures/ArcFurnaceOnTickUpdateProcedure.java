@@ -5,6 +5,7 @@ import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.util.ArcFurnaceRecipeSupport;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -57,6 +58,8 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 		for (var holder : level.getRecipeManager().getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE))
 			if (furnace.recipeTier() >= holder.value().minimumArcFurnaceTier()
 					&& matches(holder.value(), furnace.getItem(0), furnace.getItem(1))) return holder.value();
+		for (ArcFurnaceRecipe recipe : ArcFurnaceRecipeSupport.externalRecipes(level))
+			if (matches(recipe, furnace.getItem(0), furnace.getItem(1))) return recipe;
 		return null;
 	}
 
@@ -82,7 +85,9 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 			return;
 		}
 		Ingredient first = recipe.getIngredients().get(0);
-		int firstSlot = first.test(furnace.getItem(0)) && furnace.getItem(0).getCount() >= recipe.ingredientCount(0) ? 0 : 1;
+		Ingredient second = recipe.getIngredients().get(1);
+		int firstSlot = first.test(furnace.getItem(0)) && furnace.getItem(0).getCount() >= recipe.ingredientCount(0)
+			&& second.test(furnace.getItem(1)) && furnace.getItem(1).getCount() >= recipe.ingredientCount(1) ? 0 : 1;
 		furnace.removeItem(firstSlot, recipe.ingredientCount(0));
 		furnace.removeItem(1 - firstSlot, recipe.ingredientCount(1));
 	}

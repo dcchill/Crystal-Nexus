@@ -132,7 +132,7 @@ public final class DepotCliCommandRegistry {
             if (tokens.size() == 1 || tokens.size() == 2 && !trailingSpace) {
                 return List.of("--machine ").stream().filter(value -> value.startsWith(current)).map(base::concat).toList();
             }
-            // Suggest item names after jei, or after jei --machine <id>
+            
             int itemTokenIndex = tokens.getLast().equals("--machine") || tokens.get(tokens.size() - 2).equals("--machine") ? -1 : tokens.size() - 1;
             if (itemTokenIndex < 0) return List.of();
             return DepotCraftingService.availableRecipes(context.player()).stream()
@@ -557,8 +557,8 @@ public final class DepotCliCommandRegistry {
     }
 
     private DepotCliCommandResult jeiCmd(DepotCliCommandContext context, List<String> args) {
-        // JEI is client-only; this server-side handler acknowledges the command
-        // while the actual JEI opening happens client-side in DepotCliScreen.
+        
+        
         return DepotCliCommandResult.info("Use the JEI command on the client terminal to open JEI recipes.");
     }
 

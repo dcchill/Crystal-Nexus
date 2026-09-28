@@ -38,7 +38,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 	}
 
 	public static void tick(Level level, BlockPos pos, BlockState state, MachineEnergyInputBlockEntity blockEntity) {
-		// Energy is relayed by the capability directly to the bound controller.
+		
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 		return true;
 	}
 
-	/** Direct capability relay; this port never owns stored energy. */
+	
 	private final IEnergyStorage energyRelay = new IEnergyStorage() {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
 			IEnergyStorage target = target();

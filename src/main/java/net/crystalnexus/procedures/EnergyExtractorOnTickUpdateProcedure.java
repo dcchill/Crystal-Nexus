@@ -61,7 +61,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 		ItemStack recipeResult = getRecipeResult(world, pos);
 		boolean hasRecipe = !recipeResult.isEmpty() && recipeResult.getItem() != Blocks.AIR.asItem();
 
-		// PRIMARY MODE – RECIPE → FE
+		
 		if (hasRecipe) {
 
 			if (getMaxEnergyStored(world, pos, null) - getEnergyStored(world, pos, null) >= (int) energyBase) {
@@ -108,7 +108,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 			}
 		}
 
-		// SECONDARY MODE – BATTERY → FE (drains real stack + syncs)
+		
 		else {
 
 			if (world instanceof ILevelExtension ext
@@ -138,7 +138,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 							if (pulled > 0) {
 								generator.generateEnergy(pulled, false);
 
-								// Reassign the changed stack so the handler saves and syncs it.
+								
 								inv.setStackInSlot(0, batteryStack);
 
 								if (world instanceof ServerLevel lvl)
@@ -187,7 +187,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
 
 		double old = be.getPersistentData().getDouble(key);
 		if (old == value)
-			return; // avoid spam updates
+			return; 
 
 		be.getPersistentData().putDouble(key, value);
 

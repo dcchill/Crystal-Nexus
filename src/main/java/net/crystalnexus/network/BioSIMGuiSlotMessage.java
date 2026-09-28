@@ -46,7 +46,7 @@ public record BioSIMGuiSlotMessage(int slotID, int x, int y, int z, int changeTy
 
 	public static void handleSlotAction(Player entity, int slot, int changeType, int meta, int x, int y, int z) {
 		Level world = entity.level();
-		// security measure to prevent arbitrary chunk generation
+		
 		if (!world.hasChunkAt(new BlockPos(x, y, z)))
 			return;
 		if (slot == 0 && changeType == 1) {

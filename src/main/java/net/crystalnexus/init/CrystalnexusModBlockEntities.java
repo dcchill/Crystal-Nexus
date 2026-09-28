@@ -253,7 +253,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_CONTROLLER = register("blueprint_controller", CrystalnexusModBlocks.BLUEPRINT_CONTROLLER, BlueprintControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLACK_HOLE_TNT = register("black_hole_tnt", CrystalnexusModBlocks.BLACK_HOLE_TNT, BlackHoleTntBlockEntity::new);
 
-	// Start of user code block custom block entities
+	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> GRAVITATIONAL_ARRAY_CONTROLLER = register("gravitational_array_controller", CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER,
 			GravitationalArrayControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> COMET_FORGE_CONTROLLER = register("comet_forge_controller", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER,
@@ -272,7 +272,7 @@ public class CrystalnexusModBlockEntities {
 		MultiblockItemInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MULTIBLOCK_FLUID_OUTPUT = register("multiblock_fluid_output", CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT,
 		MultiblockFluidOutputBlockEntity::new);
-	// End of user code block custom block entities
+	
 	private static DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> register(String registryname, DeferredHolder<Block, Block> block, BlockEntityType.BlockEntitySupplier<?> supplier) {
 		return REGISTRY.register(registryname, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
 	}

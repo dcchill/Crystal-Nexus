@@ -14,18 +14,18 @@ import net.minecraft.world.phys.Vec3;
 
 public class HoverPackChestplateTickEventProcedure {
 
-	private static final int FE_IDLE_PER_TICK = 4;   // holding hover
-	private static final int FE_RISE_PER_TICK = 8;   // extra while rising
+	private static final int FE_IDLE_PER_TICK = 4;   
+	private static final int FE_RISE_PER_TICK = 8;   
 	private static final int FE_SPRINT_PER_TICK = 12;
 
 	private static final double BASE_HOVER_ACCEL = 0.12;
 	private static final double BASE_HOVER_DRAG = 0.94;
 	private static final double BASE_MAX_HORIZ_SPEED = 0.65;
 
-	// Thruster offsets match the hover pack model.
-	// X/Z use model pixels divided by 16; Y is measured from the player's feet.
-	private static final double THRUSTER_SIDE = 7.5 / 16.0;  // ~0.46875
-	private static final double THRUSTER_BACK = 8.5 / 16.0;  // ~0.53125
+	
+	
+	private static final double THRUSTER_SIDE = 7.5 / 16.0;  
+	private static final double THRUSTER_BACK = 8.5 / 16.0;  
 	private static final double THRUSTER_Y    = -0.5;
 
 	
@@ -33,10 +33,10 @@ public class HoverPackChestplateTickEventProcedure {
 	private static final double BASE_MAX_UP_SPEED = 0.75;
 	private static final double BASE_MAX_DOWN_SPEED = -0.22;
 
-	private static final double SPRINT_ACCEL_MULT = 1.85;     // accel boost
-	private static final double SPRINT_MAXSPEED_MULT = 1.75;  // top speed boost
-	private static final double SPRINT_RISE_MULT = 1.75;      // faster climb while rising
-	private static final double SPRINT_UPSPEED_MULT = 1.55;   // higher vertical speed cap
+	private static final double SPRINT_ACCEL_MULT = 1.85;     
+	private static final double SPRINT_MAXSPEED_MULT = 1.75;  
+	private static final double SPRINT_RISE_MULT = 1.75;      
+	private static final double SPRINT_UPSPEED_MULT = 1.55;   
 
 	private static final String PD_ACTIVE = "cn_hoverpack_active";
 	private static final String PD_TARGETY = "cn_hoverpack_targetY";
@@ -162,7 +162,7 @@ private static void spawnHoverpackWind(Level level, LivingEntity living, boolean
 	boolean doingWork = riseHeld || sprintBoost || horiz > 0.06 || v.y > 0.06;
 	if (!doingWork) return;
 
-	// Use BODY yaw (torso), not head/camera yaw
+	
 	float bodyYawRad = (float) Math.toRadians(living.yBodyRot);
 	double sin = Mth.sin(bodyYawRad);
 	double cos = Mth.cos(bodyYawRad);
@@ -173,7 +173,7 @@ private static void spawnHoverpackWind(Level level, LivingEntity living, boolean
 	double backX = sin;
 	double backZ = -cos;
 
-	// Anchor around chest/back area based on entity height (more stable than fixed Y)
+	
 	double chestY = living.getY() + living.getBbHeight() * 0.65;
 
 	double baseX = living.getX() + backX * THRUSTER_BACK;
@@ -188,7 +188,7 @@ private static void spawnHoverpackWind(Level level, LivingEntity living, boolean
 
 	int count = 2 + (sprintBoost ? 5 : 0) + (riseHeld ? 4 : 0);
 	double spreadXZ = 0.06 + (sprintBoost ? 0.05 : 0.0);
-	double spreadY  = 0.01; // VERY small vertical spread
+	double spreadY  = 0.01; 
 
 	double speed = 0.06 + (sprintBoost ? 0.08 : 0.0);
 

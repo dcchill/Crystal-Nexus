@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
 import java.util.List;
 
-/** Reuses the Hemolyzer's compact energy, progress, and blood layout. */
+
 public final class HemochanterScreen extends AbstractContainerScreen<HemochanterMenu> {
     private static final ResourceLocation BACKGROUND = ResourceLocation.parse("crystalnexus:textures/screens/hemolyzer_gui.png");
     private static final ResourceLocation BATTERY = ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png");

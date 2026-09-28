@@ -251,7 +251,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             return;
         }
 
-        // Older worlds may have saved the former false-complete value.
+        
         progress = Math.min(progress, DURATION - 1);
         List<ItemStack> results = progress == DURATION - 1 && !outputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
         List<FluidStack> fluidResults = progress == DURATION - 1 && !fluidOutputs.isEmpty() ? createFluidResults(multiplier) : List.of();
@@ -519,7 +519,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
     @Override public void setItem(int slot, ItemStack stack) {
         if (dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS) {
-            // Hopper/container merges write an icon with its added amount included; do not replace the reserve.
+            
             if (level != null && !level.isClientSide && !stack.isEmpty()) {
                 ItemStack icon = stacks.get(slot);
                 if (icon.isEmpty()) insertDyson(slot, stack, stack.getCount(), false);
@@ -531,7 +531,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         super.setItem(slot, stack);
     }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
-    // Normal hopper extraction calls removeItem; insertion calls setItem with an icon plus the inserted amount.
+    
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) {
         return canPlaceItem(slot, stack) && (!dysonMode || slot == STAR_SLOT || slot == DYSON_REPAIR_SLOT ||
             dysonCounts[slot] < DYSON_SLOT_LIMIT && (stacks.get(slot).isEmpty() || ItemStack.isSameItemSameComponents(stacks.get(slot), stack)));

@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.WeakHashMap;
 
-/** Validates world blocks against a Structure NBT while allowing explicit block substitutions. */
+
 public final class StructureNbtValidator {
     private static final Map<StructureTemplate, ParsedTemplate> CACHE =
         Collections.synchronizedMap(new WeakHashMap<>());

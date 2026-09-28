@@ -91,7 +91,7 @@ public final class CenteredMultiblockValidator {
 		return structure;
 	}
 
-	/** Discover bounds from the connected exterior shell, never from a core position. */
+	
 	private static Link findStructure(LevelAccessor world, BlockPos controllerPos,
 			Block core, Block controller, TagKey<Block> casingTag) {
 		lastReason = "";
@@ -120,7 +120,7 @@ public final class CenteredMultiblockValidator {
 		return new Link(controllerPos, bounds.min, bounds.max);
 	}
 
-	/** Locate a controller from a core, then let that controller discover the bounds. */
+	
 	private static Link findStructureFromCore(LevelAccessor world, BlockPos corePos,
 			Block core, Block controller, TagKey<Block> casingTag) {
 		lastReason = "";
@@ -326,7 +326,7 @@ public final class CenteredMultiblockValidator {
 
 	private static String lastReason = "";
 
-	/** Bindings are usable only on the shell of the controller's last validated structure. */
+	
 	public static boolean acceptsPort(BlockEntity controller, BlockPos pos) {
 		CompoundTag data = controller.getPersistentData();
 		return data.getBoolean("canOpenInventory") && CenteredMultiblockDimensions.isShellPosition(pos,

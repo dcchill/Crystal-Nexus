@@ -1,4 +1,4 @@
-// Save this class in your mod and generate all required imports
+
 
 /**
  * Made with Blockbench 5.0.7 Exported for Minecraft version 1.19 or later with

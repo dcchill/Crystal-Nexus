@@ -1,6 +1,8 @@
 package net.crystalnexus.jei_recipes;
 
 import net.minecraft.world.level.Level;
+import net.crystalnexus.item.GeneratedSingularityItem;
+import net.crystalnexus.item.ResourceCometItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -21,6 +23,15 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Codec;
 
 public class SingularityCompressionRecipe implements CrystalNexusRecipe {
+	public static ItemStack resultFor(Level level, ItemStack material) {
+		if (!ResourceCometItem.isMaterial(material)) return ItemStack.EMPTY;
+		return level.getRecipeManager().getAllRecipesFor(Type.INSTANCE).stream()
+			.map(holder -> holder.value())
+			.filter(recipe -> recipe.getInputCount(0) == GeneratedSingularityItem.COST
+				&& !recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(material))
+			.map(recipe -> recipe.getResultItem(level.registryAccess()))
+			.findFirst().orElseGet(() -> GeneratedSingularityItem.create(material));
+	}
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;
 	private final List<Integer> integers;
@@ -95,7 +106,7 @@ public class SingularityCompressionRecipe implements CrystalNexusRecipe {
 		public static final Serializer INSTANCE = new Serializer();
 		private static final MapCodec<SingularityCompressionRecipe> CODEC = RecordCodecBuilder
 				.mapCodec(builder -> builder.group(ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
-					Ingredient[] aingredient = ingredients.toArray(Ingredient[]::new); // Skip the empty check and create the array.
+					Ingredient[] aingredient = ingredients.toArray(Ingredient[]::new); 
 					if (aingredient.length == 0) {
 						return DataResult.error(() -> "No ingredients found in custom recipe");
 					} else {

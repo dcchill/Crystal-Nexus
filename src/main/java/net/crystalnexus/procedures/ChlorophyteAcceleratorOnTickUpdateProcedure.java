@@ -22,14 +22,14 @@ public class ChlorophyteAcceleratorOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
         if (getEnergyStored(world, BlockPos.containing(x, y, z), null) >= 256) {
 
-            int radius = 5; // how far around the block to boost growth
+            int radius = 5; 
             for (int dx = -radius; dx <= radius; dx++) {
                 for (int dz = -radius; dz <= radius; dz++) {
-                    for (int dy = -1; dy <= 1; dy++) { // check slightly above/below
+                    for (int dy = -1; dy <= 1; dy++) { 
                         BlockPos targetPos = BlockPos.containing(x + dx, y + dy, z + dz);
                         BlockState state = world.getBlockState(targetPos);
 					   	Block block = state.getBlock();
-                        // Only grow crops that have the AGE property
+                        
 						if (block instanceof CropBlock crop && state.hasProperty(CropBlock.AGE)) {
    							 int age = state.getValue(CropBlock.AGE);
     						 int maxAge = crop.getMaxAge();

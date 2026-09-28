@@ -70,7 +70,7 @@ public class AOEChargerOnTickUpdateProcedure {
                 range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.carbonRangeUpgradeRange());
         }
 
-        // SSD override (inverse cook_mult)
+        
         CompoundTag data = null;
 
         if (!upgrade.isEmpty() && upgrade.has(DataComponents.CUSTOM_DATA)) {
@@ -147,9 +147,9 @@ public class AOEChargerOnTickUpdateProcedure {
 			            serverLevel.sendParticles(
 			                    ParticleTypes.ELECTRIC_SPARK,
 			                    px, py, pz,
-			                    3,              // count
-			                    0.1, 0.1, 0.1,  // spread
-			                    0.02            // speed
+			                    3,              
+			                    0.1, 0.1, 0.1,  
+			                    0.02            
 			            );
 			        }
 			    }

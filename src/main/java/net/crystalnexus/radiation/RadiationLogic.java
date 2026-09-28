@@ -14,7 +14,7 @@ public class RadiationLogic {
     private static final int MAX_RADIUS = 24;
     private static final int MAX_AMPLIFIER = 4;
 
-    private static final int EFFECT_DURATION_TICKS = 60; // 3 seconds
+    private static final int EFFECT_DURATION_TICKS = 60; 
     public static final int MIN_CONTAINER_WASTE_AMOUNT = 64;
     public static final String LAST_EXPOSURE_TICK_TAG = "lastRadiationExposureTick";
 

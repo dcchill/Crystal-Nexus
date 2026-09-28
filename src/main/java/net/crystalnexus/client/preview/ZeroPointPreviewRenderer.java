@@ -97,7 +97,7 @@ public class ZeroPointPreviewRenderer {
 
                 BlockState existing = level.getBlockState(worldPos);
 
-                // Block-only compare for guide
+                
                 if (existing.getBlock() == gb.state().getBlock()) continue;
 
                 allCorrect = false;
@@ -138,7 +138,7 @@ public class ZeroPointPreviewRenderer {
             RenderSystem.disableBlend();
         }
 
-        // Use lines render type; draw in camera space (AABB moved by -cam)
+        
         for (GhostBlock gb : blocks) {
             BlockPos worldPos = controller.offset(gb.dx, gb.dy, gb.dz);
 

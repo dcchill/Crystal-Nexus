@@ -47,7 +47,7 @@ public class LaserPistolRightclickedProcedure {
 							if (!(entity instanceof Player p))
 								return;
 
-							// Only allow firing if we can extract 512 FE from batteries in inventory
+							
 							if (!canExtractFromInventoryBatteries(p, FE_PER_SHOT))
 								return;
 						}
@@ -57,7 +57,7 @@ public class LaserPistolRightclickedProcedure {
 						if (!projectileLevel.isClientSide()) {
 
 							if (!creative && _shootFrom instanceof Player p) {
-								// If for some reason it fails now, abort
+								
 								if (!extractFromInventoryBatteries(p, FE_PER_SHOT))
 									return;
 							}
@@ -112,7 +112,7 @@ public class LaserPistolRightclickedProcedure {
 			if (energy == null)
 				continue;
 
-			int canTake = energy.extractEnergy(remaining, true); // simulate
+			int canTake = energy.extractEnergy(remaining, true); 
 			if (canTake > 0) {
 				remaining -= canTake;
 				if (remaining <= 0)
@@ -138,7 +138,7 @@ public class LaserPistolRightclickedProcedure {
 			if (energy == null)
 				continue;
 
-			int taken = energy.extractEnergy(remaining, false); // real drain
+			int taken = energy.extractEnergy(remaining, false); 
 			if (taken > 0) {
 				remaining -= taken;
 				if (remaining <= 0)

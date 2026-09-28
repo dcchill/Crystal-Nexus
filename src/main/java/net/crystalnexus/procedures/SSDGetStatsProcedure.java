@@ -12,11 +12,11 @@ public class SSDGetStatsProcedure {
 
 		boolean god = tag.contains("god_roll") && tag.getInt("god_roll") == 1;
 
-		// If god roll: make EVERYTHING gold
+		
 		String godPrefix = god ? "§6" : "";
 		String reset = "§r";
 
-		// Speed display uses inverse of cook_mult
+		
 		String speedLine;
 		if (!tag.contains("cook_mult")) {
 			speedLine = "Speed Multiplier: §7???§r";

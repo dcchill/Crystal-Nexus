@@ -54,7 +54,7 @@ public final class ResourceMeteorFeature extends Feature<NoneFeatureConfiguratio
             } else if (random.nextFloat() < 0.15F) state = ORES[random.nextInt(ORES.length)];
             level.setBlock(pos, state, 2);
         }
-        // Guarantee the requested 1-3 scrap blocks even if random positions miss.
+        
         while (scraps-- > 0) level.setBlock(center.offset(random.nextInt(7) - 3, random.nextInt(7) - 3, random.nextInt(7) - 3),
                 CrystalnexusModBlocks.METEORITE_SCRAP_BLOCK.get().defaultBlockState(), 2);
         ServerLevel serverLevel = level.getLevel();

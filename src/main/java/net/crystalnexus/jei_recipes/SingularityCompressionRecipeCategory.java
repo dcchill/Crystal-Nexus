@@ -59,14 +59,15 @@ public class SingularityCompressionRecipeCategory implements IRecipeCategory<Sin
 	@Override
 	public void draw(SingularityCompressionRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
 		this.background.draw(guiGraphics);
+		guiGraphics.drawString(net.minecraft.client.Minecraft.getInstance().font,
+			String.format(java.util.Locale.ROOT, "%,d items", recipe.getInputCount(0)), 38, 43, 0xff404040, false);
 	}
 
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, SingularityCompressionRecipe recipe, IFocusGroup focuses) {
 		List<ItemStack> stacks = new ArrayList<>();
-		stacks.clear();
-		for (ItemStack item : (List<ItemStack>) List.of(recipe.getIngredients().get(0).getItems()))
-			stacks.add(new ItemStack(item.getItem(), recipe.integers().get(0)));
+		for (ItemStack item : recipe.getIngredients().get(0).getItems())
+			stacks.add(item.copyWithCount(1));
 		builder.addSlot(RecipeIngredientRole.INPUT, 38, 21).addItemStacks(stacks);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 105, 21).addItemStack(recipe.getResultItem(null));
 	}

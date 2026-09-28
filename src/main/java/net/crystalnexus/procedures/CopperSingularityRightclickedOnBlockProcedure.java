@@ -30,8 +30,8 @@ public class CopperSingularityRightclickedOnBlockProcedure {
 
         if (block instanceof WeatheringCopper) {
             Block next = reverse
-                    ? WeatheringCopper.getPrevious(block).orElse(null) // de-oxidize
-                    : WeatheringCopper.getNext(block).orElse(null);    // oxidize
+                    ? WeatheringCopper.getPrevious(block).orElse(null) 
+                    : WeatheringCopper.getNext(block).orElse(null);    
 
             if (next != null) {
                 world.setBlock(pos, next.defaultBlockState(), 3);

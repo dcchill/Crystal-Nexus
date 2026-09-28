@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-/** Adds defaults before recipes are sent to clients, so machines and JEI use the same outputs. */
+
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public final class GeneSplicingDefaults {
     private GeneSplicingDefaults() {}
@@ -58,7 +58,7 @@ public final class GeneSplicingDefaults {
         }
     }
 
-    // One output slot holds one ordinary drop; explicit recipes control special items and quantities.
+    
     private static ItemStack firstDrop(ResourceManager resources, JsonElement element, Set<ResourceLocation> visited) {
         if (element.isJsonObject()) {
             var object = element.getAsJsonObject();

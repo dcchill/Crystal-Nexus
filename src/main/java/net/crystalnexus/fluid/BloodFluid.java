@@ -10,7 +10,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;
 
-/** A machine fluid for biotech processing. It intentionally has no world block or bucket yet. */
+
 public abstract class BloodFluid extends BaseFlowingFluid {
     public static final Properties PROPERTIES = new Properties(CrystalnexusModFluidTypes.BLOOD_TYPE,
         CrystalnexusModFluids.BLOOD, CrystalnexusModFluids.FLOWING_BLOOD).tickRate(15)

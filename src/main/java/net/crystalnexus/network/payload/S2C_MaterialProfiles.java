@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-/** Server-authoritative datapack overrides used by the client-side generated recipe view. */
+
 public record S2C_MaterialProfiles(List<Entry> entries) implements CustomPacketPayload {
     public static final Type<S2C_MaterialProfiles> TYPE = new Type<>(DepotNetIds.id("material_profiles"));
     public static final StreamCodec<RegistryFriendlyByteBuf, S2C_MaterialProfiles> STREAM_CODEC =

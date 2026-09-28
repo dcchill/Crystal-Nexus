@@ -17,7 +17,7 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 
 public class ItemElevatorOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-		// Only mutate inventories on the server
+		
 		if (world instanceof Level lvl && lvl.isClientSide) return;
 
 		BlockPos pos = BlockPos.containing(x, y, z);

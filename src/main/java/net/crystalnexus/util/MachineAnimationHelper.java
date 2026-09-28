@@ -5,7 +5,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
-/** Prevents a completed operation from showing one idle frame before the next operation starts. */
+
 public final class MachineAnimationHelper {
     private static final String IDLE_GRACE = "animationIdleGrace";
 

@@ -10,7 +10,10 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.procedures.ArcFurnaceOnTickUpdateProcedure;
+import net.crystalnexus.util.ArcFurnaceRecipeSupport;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -37,6 +40,53 @@ public final class ArcBlastFurnaceGameTests {
 
     private record ExpectedRecipe(List<Item> inputs, Item output, int count) {}
     private record FurnaceBuild(List<BlockPos> casing, List<BlockPos> cores) {}
+
+    @GameTest(template = "arc_blast_furnace")
+    public static void processesExternalAlloyInBothTiers(GameTestHelper helper) {
+        ResourceLocation id = ResourceLocation.parse("alltheores:alloy_smelting/bronze_ingot");
+        if (helper.getLevel().getRecipeManager().byKey(id).isEmpty()) {
+            helper.succeed(); // Ender IO and AllTheOres are optional in test installations.
+            return;
+        }
+        Item copper = Items.COPPER_INGOT;
+        Item tin = BuiltInRegistries.ITEM.get(ResourceLocation.parse("alltheores:tin_ingot"));
+        Item bronze = BuiltInRegistries.ITEM.get(ResourceLocation.parse("alltheores:bronze_ingot"));
+        helper.assertTrue(ArcFurnaceRecipeSupport.externalRecipes(helper.getLevel()).stream().anyMatch(recipe ->
+                recipe.getResultItem(helper.getLevel().registryAccess()).is(bronze)
+                    && recipe.ingredientCount(0) + recipe.ingredientCount(1) == 4),
+            "Ender IO's sized alloy recipe must be visible with its exact counts");
+
+        BlockPos pos = find(helper, CrystalnexusModBlocks.ARC_FURNACE.get()).getFirst();
+        BlockState state = helper.getBlockState(pos);
+        FurnaceBuild tierTwo = buildFurnace(helper, pos, state,
+            CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK.get(), CrystalnexusModBlocks.HEATING_CORE.get(), 1);
+        helper.setBlock(tierTwo.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        ArcFurnaceBlockEntity controller = helper.getBlockEntity(pos);
+        helper.assertTrue(controller.validateStructureNow(), "Tier 2 must form for external alloying");
+        process(helper, pos, controller, new ItemStack(copper, 3), new ItemStack(tin), bronze, 4);
+
+        controller.setItem(0, new ItemStack(copper, 3));
+        controller.setItem(1, new ItemStack(tin));
+        controller.setItem(2, new ItemStack(bronze, 61));
+        refillEnergy(controller);
+        int energyBefore = controller.availableEnergy();
+        for (int tick = 0; tick < 100; tick++)
+            ArcFurnaceOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+        helper.assertTrue(controller.getItem(0).getCount() == 3 && controller.getItem(1).getCount() == 1
+                && controller.getItem(2).getCount() == 61 && controller.availableEnergy() == energyBefore,
+            "External alloys must not consume inputs or energy when the output slot is full");
+
+        BlockState azurineState = CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().defaultBlockState()
+            .setValue(ArcFurnaceBlock.FACING, state.getValue(ArcFurnaceBlock.FACING));
+        FurnaceBuild tierOne = buildFurnace(helper, pos, azurineState,
+            CrystalnexusModBlocks.TITANIUM_BLOCK.get(), CrystalnexusModBlocks.AZURINE_HEATING_CORE.get(), 1);
+        helper.setBlock(tierOne.casing().getFirst(), CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
+        controller = helper.getBlockEntity(pos);
+        helper.assertTrue(controller.validateStructureNow(), "Tier 1 must form for external alloying");
+        process(helper, pos, controller, new ItemStack(tin), new ItemStack(copper, 3), bronze, 4);
+
+        helper.succeed();
+    }
 
     @GameTest(template = "arc_blast_furnace")
     public static void validatesPortsAndActivatesHeatingCores(GameTestHelper helper) {
@@ -282,7 +332,7 @@ public final class ArcBlastFurnaceGameTests {
     private static void refillEnergy(ArcFurnaceBlockEntity controller) {
         controller.getEnergyStorage().extractEnergy(Integer.MAX_VALUE, false);
         while (controller.getEnergyStorage().receiveEnergy(Integer.MAX_VALUE, false) > 0) {
-            // Fill past the configured per-transfer limit.
+            
         }
     }
 

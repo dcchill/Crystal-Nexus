@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public final class MachineUpgradeHelper {
 	private static final double MIN_MULTIPLIER = 0.05;
 	private static final double MAX_MULTIPLIER = 10.0;
-	// Based on the requested 1.00x to 4.75x example, normalized so one upgrade has weight 1.
+	
 	private static final double[] STACK_WEIGHTS = {
 		0, 1, 2, 2.875, 3.75, 4.5, 5.25, 5.875, 6.5,
 		7, 7.5, 7.875, 8.25, 8.5625, 8.875, 9.125, 9.375

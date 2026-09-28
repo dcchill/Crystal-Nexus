@@ -85,12 +85,12 @@ public final class DepotCraftingService {
         return create(player, depot, target, requested, PlanMode.CRAFT);
     }
 
-    /** Queues the GUI's craft-first plan; machine routes must have been explicitly preferred. */
+    
     public static Result craftVisual(ServerPlayer player, DepotSavedData depot, Item target, int requested) {
         return create(player, depot, target, requested, PlanMode.VISUAL);
     }
 
-    /** Queues a recipe whose final step must run in an external processing machine. */
+    
     public static Result process(ServerPlayer player, DepotSavedData depot, Item target, int requested) {
         return create(player, depot, target, requested, PlanMode.PROCESS);
     }
@@ -138,7 +138,7 @@ public final class DepotCraftingService {
         return new Result(true, new ItemStack(target, job.amount()), job, List.of());
     }
 
-    /** Queues a direct item-to-item smelting operation without considering crafting recipes. */
+    
     public static Result smelt(ServerPlayer player, DepotSavedData depot, Item input, int requested) {
         int processors = DepotNetwork.craftingProcessorCount(player);
         if (processors <= 0) return new Result(false, ItemStack.EMPTY, null, List.of(
@@ -669,7 +669,7 @@ public final class DepotCraftingService {
         };
     }
 
-    /** Machine identities that are safe to derive from a server recipe type. */
+    
     private static List<ResourceLocation> knownMachines(ResourceLocation type) {
         return switch (type.toString()) {
             case "ae2:inscriber" -> List.of(ResourceLocation.parse("ae2:inscriber"));
@@ -693,9 +693,9 @@ public final class DepotCraftingService {
             boolean processing = type != RecipeType.CRAFTING;
             ResourceLocation typeId = BuiltInRegistries.RECIPE_TYPE.getKey(type);
             if (processing && typeId != null && typeId.getPath().contains("guide")) continue;
-            // Skip tag/lookup/group recipe types — they are informational groupings, not
-            // actionable machine recipes. This prevents items from being "craftable" via
-            // tag-based categories that have no real processing machines behind them.
+            
+            
+            
             if (processing && typeId != null) {
                 String path = typeId.getPath().toLowerCase(java.util.Locale.ROOT);
                 if (path.contains("tag") || path.contains("lookup") || path.contains("group")) continue;
@@ -704,13 +704,13 @@ public final class DepotCraftingService {
                 Recipe<?> recipe = holder.value();
                 ItemStack output = recipe.getResultItem(player.serverLevel().registryAccess());
                 AvailableRecipe candidate = new AvailableRecipe(holder.id(), recipe, output.copy(), processing);
-                // A recipe with no deterministic machine target must be imported via
-                // the JEI bridge. Never send it to an arbitrary item handler.
-                // Check route support before touching ingredients. Some third-party processing
-                // recipes expose cached, immutable ingredient stacks (for example when
-                // AllTheLeaks ingredient deduplication is enabled). Unsupported recipe types
-                // are imported through the JEI bridge, so inspecting their ingredients here is
-                // both unnecessary and can throw ATLUnsupportedOperation.
+                
+                
+                
+                
+                
+                
+                
                 if (!output.isEmpty() && output.getCount() > 0
                         && (!processing || !machineTypes(candidate).isEmpty())
                         && !recipe.getIngredients().isEmpty()) {
@@ -881,7 +881,7 @@ public final class DepotCraftingService {
         private Optional<Map<ResourceLocation, Long>> ensure(Map<ResourceLocation, Long> inventory,
                 ResourceLocation itemId, long needed, Set<ResourceLocation> visiting, int depth) {
             if (inventory.getOrDefault(itemId, 0L) >= needed) return Optional.of(inventory);
-            // ponytail: bounded recursive search; raise these limits only if real recipe packs exceed them.
+            
             if (depth >= MAX_DEPTH || ++steps > MAX_STEPS) {
                 missing.add(itemId);
                 return Optional.empty();
@@ -893,9 +893,9 @@ public final class DepotCraftingService {
             }
             try {
                 List<RecipeHolder<CraftingRecipe>> candidates = new ArrayList<>(recipes.getOrDefault(itemId, List.of()));
-                // `process` requires the requested final item to come from an
-                // external machine. Recursive dependencies may still use a normal
-                // crafting recipe when that is their only available path.
+                
+                
+                
                 if (mode == PlanMode.PROCESS && depth == 0) candidates.clear();
                 ResourceLocation preferred = depot.getPreferredRecipe(itemId);
                 if (NO_RECIPE_ROUTE.equals(preferred)) {
@@ -924,8 +924,8 @@ public final class DepotCraftingService {
                 }
                 candidates.sort(Comparator
                         .comparing((RecipeHolder<CraftingRecipe> holder) -> preferred == null || !holder.id().equals(preferred))
-                    // Without an explicit user preference, consume the fewest
-                    // missing inputs first, then favor compact, high-yield recipes.
+                    
+                    
                     .thenComparingLong(holder -> directMissing(holder.value(), inventory))
                     .thenComparingLong(holder -> recipeCost(holder.value()))
                         .thenComparing(holder -> holder.id().toString()));
@@ -993,9 +993,9 @@ public final class DepotCraftingService {
                     if (result.isPresent() && result.get().getOrDefault(itemId, 0L) >= needed) return result;
                     craftingSteps.subList(beforeSteps, craftingSteps.size()).clear();
                 }
-                // Standard `craft` must be able to recursively make ordinary
-                // crafting-table dependencies. The direct attempt above is kept
-                // first because it is cheaper when all inputs are already stored.
+                
+                
+                
                 if (mode != PlanMode.PROCESS) {
                     for (RecipeHolder<CraftingRecipe> holder : candidates) {
                         int beforeSteps = craftingSteps.size();

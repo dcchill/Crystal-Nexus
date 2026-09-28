@@ -38,7 +38,7 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 
 		setBlockNBT(world, pos, "maxProgress", cookTime);
 
-		// Find a matching recipe ONCE (and require correct counts)
+		
 		MatterTransmutationRecipe recipe = findMatchingRecipe(world, pos, inputSlots);
 		if (recipe == null) {
 			setBlockNBT(world, pos, "progress", 0);

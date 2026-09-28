@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.blockentity.EnchantTableRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 
-/** Delegates directly to Mojang's enchanting-table renderer. */
+
 public final class HemochanterRenderer implements BlockEntityRenderer<HemochanterBlockEntity> {
     private final EnchantTableRenderer book;
     public HemochanterRenderer(BlockEntityRendererProvider.Context context) { book = new EnchantTableRenderer(context); }

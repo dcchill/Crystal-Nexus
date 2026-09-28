@@ -38,7 +38,7 @@ public class DepotMenu extends AbstractContainerMenu {
 
     public DepotMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv, extraData.readBlockPos(), extraData.readBoolean());
-        extraData.readBoolean(); // Legacy crafting-grid flag; crafting is CLI-only now.
+        extraData.readBoolean(); 
     }
 
     public DepotMenu(int id, Inventory inv) {

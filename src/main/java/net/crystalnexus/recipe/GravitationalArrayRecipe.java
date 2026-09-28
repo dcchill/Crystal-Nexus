@@ -61,7 +61,7 @@ public final class GravitationalArrayRecipe implements CrystalNexusRecipe {
     public ItemStack output() { return output.copy(); }
     public Optional<Visuals> visuals() { return visuals; }
 
-    /** Returns per-slot consumption, or an empty array when the four input slots do not satisfy this recipe. */
+    
     public int[] consumptionPlan(List<ItemStack> stacks) {
         int[] remaining = new int[stacks.size()];
         for (int i = 0; i < stacks.size(); i++) remaining[i] = stacks.get(i).getCount();

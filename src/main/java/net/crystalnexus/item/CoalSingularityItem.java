@@ -24,6 +24,6 @@ public class CoalSingularityItem extends ResourceSingularityItem {
 
 	@Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        return itemStack.copy(); // stays in the furnace instead of being consumed
+        return itemStack.copy(); 
     }
 }

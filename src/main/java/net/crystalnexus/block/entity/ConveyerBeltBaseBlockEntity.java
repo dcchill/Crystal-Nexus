@@ -34,7 +34,7 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
 
     public static final int SEGMENTS = 4;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
-	private static final int GAP_SEGMENTS = 1; // 1 = one empty slot between items (recommended)
+	private static final int GAP_SEGMENTS = 1; 
     private long lastMoveGameTime = 0L;
     private long incomingHeadGameTime = Long.MIN_VALUE;
     private final ConveyerBeltRenderClock clientRenderClock = new ConveyerBeltRenderClock();
@@ -122,7 +122,7 @@ public void serverTick() {
     long gameTime = level.getGameTime();
     if (gameTime - lastMoveGameTime < ticksPerMove()) return;
 
-    // This timestamp drives both movement cadence and smooth client interpolation.
+    
     lastMoveGameTime = gameTime;
 
     BlockState state = getBlockState();
@@ -133,8 +133,8 @@ public void serverTick() {
 
         boolean changed = false;
 
-        // Doing this after the loop let segment 2 move to 3 and immediately cross
-        // into the next block, skipping the final quarter of the rendered path.
+        
+        
         boolean movedToNextBelt = tryMoveToNextBelt(facing);
         changed |= movedToNextBelt;
 
@@ -261,7 +261,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
     int toPullMax = Math.min(PULL_MAX, headSpace);
     if (toPullMax <= 0) return false;
 
-    // Try common sides + null (more compatible with different inventories)
+    
     IItemHandler input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, primarySide);
     if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, null);
     if (input == null) input = level.getCapability(Capabilities.ItemHandler.BLOCK, inputPos, fallbackSide);
@@ -269,7 +269,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
     for (int slot = 0; slot < input.getSlots(); slot++) {
 
-        // Peek what item is available (some handlers only reveal 1 even if asked for more)
+        
         ItemStack peek = input.extractItem(slot, 1, true);
         if (peek.isEmpty()) continue;
 
@@ -279,7 +279,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         ItemStack pulledTotal = ItemStack.EMPTY;
 
         while (remaining > 0) {
-            // Try to extract remaining (handler might still only give 1)
+            
             ItemStack sim = input.extractItem(slot, remaining, true);
             if (sim.isEmpty()) break;
 
@@ -297,14 +297,14 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
             remaining -= got.getCount();
 
-            // safety against weird 0-count behavior
+            
             if (got.getCount() <= 0) break;
         }
 
         if (pulledTotal.isEmpty()) continue;
 
         belt[0] = insertIntoSegment(belt[0], pulledTotal);
-        return true; // pulled up to 32 (or up to space), from one slot per step
+        return true; 
     }
 
     return false;
@@ -318,7 +318,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
         BlockPos outPos = worldPosition.relative(facing);
 
-        // Try common sides + null (more compatible with different inventories)
+        
         IItemHandler out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, back);
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, null);
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, facing);
@@ -336,7 +336,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
             belt[SEGMENTS - 1] = remainder;
             return true;
         }
-        return false; // no space -> backs up
+        return false; 
     }
 
     private boolean tryDropOffFront(Direction facing) {

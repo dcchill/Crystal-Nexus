@@ -119,7 +119,7 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
 
     @Override
     public boolean canPlaceItem(int index, ItemStack stack) {
-        if (index >= 14 && index <= 18) { // input slots
+        if (index >= 14 && index <= 18) { 
             return !stack.is(net.minecraft.tags.ItemTags.create(net.minecraft.resources.ResourceLocation.tryParse("crystalnexus:machine_upgrades")));
         }
         return true;
@@ -131,13 +131,13 @@ public class FactoryItemControllerBlockEntity extends RandomizableContainerBlock
         BlockState state = getBlockState();
         Direction facing = state.hasProperty(HorizontalDirectionalBlock.FACING) ? state.getValue(HorizontalDirectionalBlock.FACING) : Direction.NORTH;
 
-        if (side == Direction.UP) return new int[]{14}; // top input
-        if (side == Direction.DOWN) return new int[0]; // bottom does nothing
+        if (side == Direction.UP) return new int[]{14}; 
+        if (side == Direction.DOWN) return new int[0]; 
 
-        if (side == facing) return new int[]{17}; // front
-        if (side == facing.getOpposite()) return new int[]{15}; // back
-        if (side == facing.getClockWise(Direction.Axis.Y)) return new int[]{16}; // right
-        if (side == facing.getCounterClockWise(Direction.Axis.Y)) return new int[]{18}; // left
+        if (side == facing) return new int[]{17}; 
+        if (side == facing.getOpposite()) return new int[]{15}; 
+        if (side == facing.getClockWise(Direction.Axis.Y)) return new int[]{16}; 
+        if (side == facing.getCounterClockWise(Direction.Axis.Y)) return new int[]{18}; 
 
         return new int[0];
     }

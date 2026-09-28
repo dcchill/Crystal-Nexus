@@ -3,6 +3,8 @@ package net.crystalnexus.gametest;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
 import net.crystalnexus.item.ResourceSingularityItem;
+import net.crystalnexus.item.GeneratedSingularityItem;
+import net.crystalnexus.item.ResourceCometItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -38,6 +40,20 @@ public final class SingularityGameTests {
 		verify(helper, breakdown, CrystalnexusModItems.WOOD_SINGULARITY.get(), Items.OAK_LOG, ResourceSingularityItem.ITEM_CAPACITY);
 		verify(helper, breakdown, CrystalnexusModItems.STONE_SINGULARITY.get(), Items.STONE, ResourceSingularityItem.ITEM_CAPACITY);
 		verify(helper, breakdown, CrystalnexusModItems.DIRT_SINGULARITY.get(), Items.DIRT, ResourceSingularityItem.ITEM_CAPACITY);
+		ItemStack generated = GeneratedSingularityItem.create(new ItemStack(Items.RAW_IRON));
+		helper.assertTrue(GeneratedSingularityItem.material(generated).is(Items.RAW_IRON),
+				"Generated singularity must retain its source item");
+		helper.assertTrue(GeneratedSingularityItem.create(new ItemStack(Items.DIAMOND_SWORD)).isEmpty()
+				&& GeneratedSingularityItem.create(new ItemStack(Items.DIRT)).isEmpty()
+				&& ResourceCometItem.isMaterial(new ItemStack(Items.IRON_INGOT)),
+				"Only tagged raw materials and ingots can be compressed");
+		NonNullList<ItemStack> generatedGrid = NonNullList.withSize(9, ItemStack.EMPTY);
+		generatedGrid.set(0, generated);
+		CraftingInput generatedInput = CraftingInput.of(3, 3, generatedGrid);
+		helper.assertTrue(breakdown.matches(generatedInput, helper.getLevel())
+				&& breakdown.assemble(generatedInput, helper.getLevel().registryAccess()).is(Items.RAW_IRON)
+				&& breakdown.getRemainingItems(generatedInput).getFirst().getDamageValue() == 64,
+				"Generated singularity must return its material and consume matching charges");
 		helper.assertTrue(!new ItemStack(CrystalnexusModItems.GOLD_SINGULARITY.get()).hasCraftingRemainingItem(),
 				"Singularities must only leave a remainder in the dedicated breakdown recipe");
 		helper.succeed();
@@ -49,7 +65,7 @@ public final class SingularityGameTests {
 				.map(holder -> holder.value())
 				.filter(recipe -> recipe.getResultItem(helper.getLevel().registryAccess()).is(singularity))
 				.findFirst().orElseThrow();
-		helper.assertTrue(compression.getInputCount(0) == capacity
+		helper.assertTrue(compression.getInputCount(0) == GeneratedSingularityItem.COST
 				&& compression.getIngredients().getFirst().test(new ItemStack(resource)),
 				"Singularity compression must use its configured material and item count");
 		NonNullList<ItemStack> grid = NonNullList.withSize(9, ItemStack.EMPTY);

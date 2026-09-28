@@ -72,7 +72,7 @@ public class BiomaticSimulatorOnTickUpdateProcedure {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		double MACHINE_MAX_OUTPUT = 16; // set per machine
+		double MACHINE_MAX_OUTPUT = 16; 
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
 		outputAmount = Math.floor(outputAmount);

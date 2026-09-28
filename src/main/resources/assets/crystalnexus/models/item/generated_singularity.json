@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "crystalnexus:item/singularity_base",
+    "layer1": "crystalnexus:item/singularity_center"
+  }
+}

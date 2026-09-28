@@ -27,7 +27,7 @@ import org.joml.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Vanilla display entities synchronize the entire seal with nearby clients. */
+
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public final class PrisonCubeCapture {
 	private static final List<Capture> ACTIVE = new ArrayList<>();
@@ -147,7 +147,7 @@ public final class PrisonCubeCapture {
 				Vec3 pos = from.lerp(around, surround).scale(1 - close);
 				float pulse = 1 + 0.035f * (float) Math.sin(age * 0.35 + i);
 				float size = (0.12f + opening * 0.85f) * pulse * (1 - close);
-				// The existing cube occupies half a block and is centered two pixels above the item origin.
+				
 				cubes[i].pose(new Matrix4f().translation(vector(pos)).rotateY(yaw + x * surround * 0.3f * (1 - close))
 						.scale(size * 2).translate(0, -0.125f, 0));
 				Vec3 contact = right.scale(x * target.getBbWidth() * 0.2).add(0, y * target.getBbHeight() * 0.18, 0);
@@ -165,7 +165,7 @@ public final class PrisonCubeCapture {
 					previous = next;
 				}
 			}
-			// Enclose the still-visible target before storage, then contract to a small sealed cube.
+			
 			float shell = progress(age, 76, 86) * (radius * 4.8f);
 			shell = (shell + (0.85f - shell) * progress(age, 88, 98)) * (1 - vanish);
 			seal.pose(new Matrix4f().rotateY(yaw).scale(shell).translate(0, -0.125f, 0));
@@ -181,7 +181,7 @@ public final class PrisonCubeCapture {
 
 	private static Vector3f vector(Vec3 v) { return new Vector3f((float) v.x, (float) v.y, (float) v.z); }
 
-	/** Ephemeral vanilla displays must never be left in a saved chunk after a restart. */
+	
 	private static final class Piece extends Display.ItemDisplay {
 		final CompoundTag visual = new CompoundTag();
 		Piece(ServerLevel level, Vec3 center, ItemStack stack) {

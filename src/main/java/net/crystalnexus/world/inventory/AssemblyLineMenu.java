@@ -10,7 +10,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 
-/** Menu anchor for the full-screen graph editor. Item movement stays at the physical ports. */
+
 public final class AssemblyLineMenu extends AbstractContainerMenu {
     public final AssemblyLineControllerBlockEntity controller;
     public final Inventory playerInventory;

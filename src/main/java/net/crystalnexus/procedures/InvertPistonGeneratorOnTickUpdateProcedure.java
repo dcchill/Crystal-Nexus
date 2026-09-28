@@ -24,7 +24,7 @@ import net.crystalnexus.util.MachineUpgradeHelper;
 
 public class InvertPistonGeneratorOnTickUpdateProcedure {
 
-    private static final int FUEL_CELL_AMOUNT = 250; // mB per fuel cell
+    private static final int FUEL_CELL_AMOUNT = 250; 
 
     public static void execute(LevelAccessor worldAccess, double x, double y, double z) {
         if (!(worldAccess instanceof Level level)) return;
@@ -96,11 +96,11 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
             progress += 1;
             be.getPersistentData().putDouble("progress", progress);
 
-            // Try to insert real energy into the block’s buffer
+            
             int energyOutput = ENERGY_PER_TICK;
 
 				if (isOverfuel) {
-				    energyOutput *= 2; // 2x power for Overfuel
+				    energyOutput *= 2; 
 				}
 				
 				energyStorage.generateEnergy(energyOutput, false);
@@ -120,7 +120,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
                 IEnergyStorage neighbor = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighborPos, dir.getOpposite());
                 if (neighbor == null) continue;
 
-                int energyToSend = Math.min(energyStorage.getEnergyStored(), 4096); // push up to 1000 FE/tick
+                int energyToSend = Math.min(energyStorage.getEnergyStored(), 4096); 
                 int accepted = neighbor.receiveEnergy(energyToSend, false);
                 if (accepted > 0) {
                     if (energyStorage instanceof net.neoforged.neoforge.energy.EnergyStorage modifiable) {

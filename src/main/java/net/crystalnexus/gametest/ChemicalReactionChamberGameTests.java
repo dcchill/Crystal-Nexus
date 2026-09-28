@@ -58,7 +58,7 @@ public final class ChemicalReactionChamberGameTests {
         chamber.setItem(2, new ItemStack(Items.FLINT));
         for (int i = 0; i < 4; i++) chamber.getEnergyStorage().receiveEnergy(1024, false);
 
-        // The first invocation switches the chamber from its placed blockstate to its idle state.
+        
         for (int tick = 0; tick < 101; tick++)
             ChemicalReactionChamberOnTickUpdateProcedure.execute(
                 helper.getLevel(), helper.absolutePos(pos).getX(),

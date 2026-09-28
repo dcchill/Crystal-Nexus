@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.wrapper.SidedInvWrapper;
 
-/** Bridges virtual Dyson supplies to bounded item transfers without exposing oversized stacks. */
+
 public final class SolarSimulatorItemHandler implements IItemHandler {
     private final SolarSimulatorControllerBlockEntity controller;
     private final SidedInvWrapper normal;

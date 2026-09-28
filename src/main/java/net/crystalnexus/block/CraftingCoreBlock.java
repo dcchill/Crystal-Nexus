@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jetbrains.annotations.Nullable;
 
-/** A cabled 1x1-to-2x2 multiblock that adds Depot crafting throughput. */
+
 public class CraftingCoreBlock extends Block implements EntityBlock {
     public static final BooleanProperty CONNECTED = BooleanProperty.create("connected");
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");

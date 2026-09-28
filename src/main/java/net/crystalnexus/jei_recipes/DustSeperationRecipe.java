@@ -19,7 +19,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.Optional;
 
-/** Backward-compatible separator recipe. The misspelled ID remains part of the datapack API. */
+
 public class DustSeperationRecipe implements CrystalNexusRecipe {
     private final Optional<ItemStack> output;
     private final Optional<FluidChemicalReactionRecipe.TaggedItemOutput> taggedOutput;

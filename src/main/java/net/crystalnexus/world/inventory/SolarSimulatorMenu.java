@@ -39,7 +39,7 @@ public final class SolarSimulatorMenu extends AbstractContainerMenu {
     public SolarSimulatorControllerBlockEntity controller() { return controller; }
     @Override public boolean clickMenuButton(Player player, int button) {
         if (button != 0 || !stillValid(player)) return false;
-        if (player.level().isClientSide) return true; // Permit the inventory-button packet; only the server changes state.
+        if (player.level().isClientSide) return true; 
         return controller.setDysonMode(!controller.isDysonMode());
     }
     @Override public boolean stillValid(Player player) {

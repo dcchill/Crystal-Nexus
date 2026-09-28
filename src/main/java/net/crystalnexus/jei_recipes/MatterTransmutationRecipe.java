@@ -29,7 +29,7 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 	private final NonNullList<Ingredient> ingredients;
 	private final List<Integer> integers;
 
-	// Constructor + normalization
+	
 
 	public MatterTransmutationRecipe(ItemStack output,
 	                                 NonNullList<Ingredient> ingredients,
@@ -37,7 +37,7 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 		this.output = output;
 		this.ingredients = ingredients;
 
-		// Normalize integers -> same length as ingredients, default 1
+		
 		int size = ingredients.size();
 		List<Integer> normalized = new ArrayList<>(size);
 		for (int i = 0; i < size; i++) {

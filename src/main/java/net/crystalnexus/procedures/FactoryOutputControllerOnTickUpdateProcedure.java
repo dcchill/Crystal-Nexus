@@ -17,7 +17,7 @@ public class FactoryOutputControllerOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
         BlockPos controllerPos = BlockPos.containing(x, y, z);
 
-        // Slot pairs: {linkSlot, controllerSlot}
+        
         int[][] slotPairs = {
             {9, 14},
             {10, 15},
@@ -47,7 +47,7 @@ public class FactoryOutputControllerOnTickUpdateProcedure {
             int linkZ = (int) linkData.copyTag().getDouble("linkZ");
             BlockPos targetPos = BlockPos.containing(linkX, linkY, linkZ);
 
-            // First try WorldlyContainer (like a hopper would)
+            
             var blockEntity = world.getBlockEntity(targetPos);
             if (blockEntity instanceof WorldlyContainer worldly) {
                 int[] outputSlots = worldly.getSlotsForFace(Direction.DOWN);
@@ -62,13 +62,13 @@ public class FactoryOutputControllerOnTickUpdateProcedure {
                         ItemStack toMove = stack.split(1);
                         controllerHandler.insertItem(controllerSlot, toMove, false);
                         worldly.setItem(slot, stack);
-                        break; // one item per tick per link
+                        break; 
                     }
                 }
-                continue; // done with this pair
+                continue; 
             }
 
-            // Fallback: normal IItemHandler, but beware this may include input slots
+            
             IItemHandler targetHandler = _ext.getCapability(Capabilities.ItemHandler.BLOCK, targetPos, null);
             if (targetHandler == null) continue;
 

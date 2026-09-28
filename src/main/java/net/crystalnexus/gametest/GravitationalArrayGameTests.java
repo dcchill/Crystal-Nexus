@@ -23,7 +23,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder("crystalnexus")
 @PrefixGameTestTemplate(false)
 public final class GravitationalArrayGameTests {
-    // GameTest's relative Y=0 is its structure block; template Y=0 begins one block above it.
+    
     private static final BlockPos CONTROLLER = new BlockPos(0, 3, 5);
     private static final BlockPos TUNGSTEN = new BlockPos(2, 3, 1);
     private static final BlockPos CENTER_BLOCK = new BlockPos(5, 6, 5);
@@ -64,7 +64,7 @@ public final class GravitationalArrayGameTests {
         BlockState controllerState = helper.getBlockState(CONTROLLER);
         helper.assertTrue(controllerState.is(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get()),
             "The Structure NBT must provide the controller anchor");
-        // GameTest does not instantiate block entities saved inside its own template at tick zero.
+        
         helper.setBlock(CONTROLLER, Blocks.AIR);
         helper.setBlock(CONTROLLER, controllerState);
         helper.setBlock(TUNGSTEN, CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());

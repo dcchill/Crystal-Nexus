@@ -122,7 +122,7 @@ public class ParticleAcceleratorControllerRenderer
 		for (int i = 0; i < trailCount; i++) {
 			float idx = head - i * trailStep;
 
-			// Wrap safely (prevents negative index crash)
+			
 			while (idx < 0) idx += points.size();
 			while (idx >= points.size()) idx -= points.size();
 

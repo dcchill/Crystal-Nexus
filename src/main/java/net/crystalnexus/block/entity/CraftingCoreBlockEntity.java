@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.UUID;
 
-/** Tracks whether this core belongs to a connected horizontal 1x1 through 2x2 core cluster. */
+
 public class CraftingCoreBlockEntity extends BlockEntity {
     private int ticks;
     private boolean refreshSoon;
@@ -29,8 +29,8 @@ public class CraftingCoreBlockEntity extends BlockEntity {
         core.refreshSoon = false;
         UUID owner = DepotNetwork.componentOwner(level, pos);
         boolean connected = owner != null;
-        // The illuminated texture represents a valid core that is receiving
-        // power from its Depot network, not whether a job happens this tick.
+        
+        
         boolean active = connected && DepotNetwork.craftingCoreSize(level, pos) > 0;
         if (state.getValue(CraftingCoreBlock.CONNECTED) != connected
             || state.getValue(CraftingCoreBlock.ACTIVE) != active) {

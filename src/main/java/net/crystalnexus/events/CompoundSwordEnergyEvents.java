@@ -22,7 +22,7 @@ public class CompoundSwordEnergyEvents {
         ItemStack weapon = player.getMainHandItem();
         if (!weapon.is(CrystalnexusModItems.COMPOUND_SWORD.get())) return;
 
-        // If we can't pay, cancel the attack (no damage)
+        
         if (!net.crystalnexus.item.ToolEnergy.consume(player, weapon, CrystalnexusConfig.ITEMS.COMPOUND_SWORD.energyCost(), false)) {
             event.setCanceled(true);
 

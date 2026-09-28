@@ -337,6 +337,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> EE_MATTER_BLOCK = block(CrystalnexusModBlocks.EE_MATTER_BLOCK);
 	public static final DeferredItem<Item> BLOCK_PLACER = block(CrystalnexusModBlocks.BLOCK_PLACER);
 	public static final DeferredItem<Item> SINGULARITY_COMPRESSOR = block(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR);
+	public static final DeferredItem<Item> GENERATED_SINGULARITY = REGISTRY.register("generated_singularity", net.crystalnexus.item.GeneratedSingularityItem::new);
 	public static final DeferredItem<Item> REACTOR_UPGRADE = REGISTRY.register("reactor_upgrade", ReactorUpgradeItem::new);
 	public static final DeferredItem<Item> IRON_SINGULARITY = REGISTRY.register("iron_singularity", IronSingularityItem::new);
 	public static final DeferredItem<Item> DIAMOND_SINGULARITY = REGISTRY.register("diamond_singularity", DiamondSingularityItem::new);
@@ -679,8 +680,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLACK_HOLE_TNT = block(CrystalnexusModBlocks.BLACK_HOLE_TNT);
 	public static final DeferredItem<Item> ORBITAL_STRIKE_REMOTE = REGISTRY.register("orbital_strike_remote", OrbitalStrikeRemoteItem::new);
 
-	// Start of user code block custom items
-	// End of user code block custom items
+	
+	
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new DepotUplinkInventoryCapability(stack), DEPOT_UPLINK.get());
@@ -712,6 +713,7 @@ public class CrystalnexusModItems {
 		@SubscribeEvent
 		public static void registerItemColors(RegisterColorHandlersEvent.Item event) {
 			event.register(net.crystalnexus.client.ResourceCometColors::tint, RESOURCE_COMET.get());
+			event.register(net.crystalnexus.client.GeneratedSingularityColors::tint, GENERATED_SINGULARITY.get());
 			event.register((stack, tintIndex) -> tintIndex == 0
 					? LaserSaberItem.bladeColor(stack) : 0xFFFFFFFF, LASER_SABER.get());
 		}

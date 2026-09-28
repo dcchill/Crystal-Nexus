@@ -238,7 +238,7 @@ public class ServerHandlers {
                 new S2C_DepotCliResponse(menu.containerId, menu.isConnected(player), lines, suggestions));
     }
 
-    // Signature MUST be (payload, context) for playToServer(...)
+    
     public static void onRequestPage(C2S_RequestPage msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;
@@ -270,7 +270,7 @@ public class ServerHandlers {
         });
     }
 
-    // Signature MUST be (payload, context) for playToServer(...)
+    
     public static void onWithdraw(C2S_Withdraw msg, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             if (!(ctx.player() instanceof ServerPlayer sp)) return;

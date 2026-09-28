@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** Ghost-only JEI integration; drops are configuration and never grant resources. */
+
 public final class AssemblyLineJeiGhostHandler implements IGhostIngredientHandler<AssemblyLineScreen> {
     @Override public <I> List<Target<I>> getTargetsTyped(AssemblyLineScreen screen, ITypedIngredient<I> ingredient, boolean doStart) {
         Optional<ItemStack> optItem = ingredient.getItemStack();

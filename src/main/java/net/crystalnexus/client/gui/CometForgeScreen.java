@@ -50,7 +50,7 @@ public final class CometForgeScreen extends AbstractContainerScreen<CometForgeMe
 		}
         if (isHovering(4, 81, 168, 12, mouseX, mouseY)) {
             graphics.renderComponentTooltip(font, List.of(Component.literal("500,000 FE / 25,000 mB / 10 s"),
-                Component.literal("3 high-tier singularities + 1 full material stack")), mouseX, mouseY);
+                Component.literal("3 high-tier singularities + 1 matching material singularity")), mouseX, mouseY);
         } else if (isHovering(4, 2, 70, 12, mouseX, mouseY)) {
             graphics.renderComponentTooltip(font, List.of(Component.literal("Replace meteorite alloy casing with"),
                 Component.literal("at least one Energy Input and Fluid Input.")), mouseX, mouseY);

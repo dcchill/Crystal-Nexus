@@ -66,9 +66,9 @@ public final class DepotProcessingService {
 
         List<DepotSavedData.SlotEntry> remainingInputs = new ArrayList<>(task.remainingInputs());
         Map<ResourceLocation, Long> inserted = new HashMap<>();
-        // Insert each slot entry into a consecutive slot position so machines with
-        // order-sensitive recipes (e.g. Matter Transmutation Table) receive items in
-        // the correct positions: entry 0 -> slot 0, entry 1 -> slot 1,
+        
+        
+        
         List<IItemHandler> handlers = handlers(machine.level(), machine.machinePos());
         int totalSlots = handlers.stream().mapToInt(IItemHandler::getSlots).sum();
         int slot = 0;
@@ -197,10 +197,10 @@ public final class DepotProcessingService {
                     cursor++;
                     continue;
                 }
-                // Capability insertion can bypass menu-level mayPlace checks.
-                // Respect the handler's slot validity first so output-only slots
-                // (for example the Particle Accelerator output) never receive an
-                // ingredient from the depot.
+                
+                
+                
+                
                 if (!handler.isItemValid(slot, new ItemStack(item))) {
                     cursor++;
                     continue;

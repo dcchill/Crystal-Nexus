@@ -13,7 +13,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 
 public class CompoundPickaxeEnergyEvents {
 
-    // 1) "Starts breaking" – block mining should NOT even begin if no power
+    
     @SubscribeEvent
     public void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         Player player = event.getEntity();
@@ -32,7 +32,7 @@ public class CompoundPickaxeEnergyEvents {
         }
     }
 
-    // 2) "Actually breaks" – drain energy once (and also cancel if somehow no power)
+    
     @SubscribeEvent
     public void onBlockBreak(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();

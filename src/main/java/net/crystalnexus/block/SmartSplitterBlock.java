@@ -52,7 +52,7 @@ public class SmartSplitterBlock extends Block implements EntityBlock {
     @Override
     @Nullable
     public BlockState getStateForPlacement(BlockPlaceContext ctx) {
-        // Face toward player (front points away from player)
+        
         return this.defaultBlockState().setValue(FACING, ctx.getHorizontalDirection().getOpposite());
     }
 

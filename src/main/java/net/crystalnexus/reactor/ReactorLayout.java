@@ -93,8 +93,8 @@ public final class ReactorLayout {
 		if (fuel.isEmpty()) {
 			return invalid("Missing fuel rods");
 		}
-		// Enforce the vertical column rule: every interior (x,z) column's non-air
-		// blocks must be one uniform, allowed component type.
+		
+		
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int z = minBounds.getZ() + 1; z < maxBounds.getZ(); z++) {
 				Block columnType = null;
@@ -122,7 +122,7 @@ public final class ReactorLayout {
 				return invalid("Fuel column missing roof control rod");
 			}
 		}
-		// Every control rod on the top shell must have a reactor core column directly below it.
+		
 		for (int x = minBounds.getX(); x <= maxBounds.getX(); x++) {
 			for (int z = minBounds.getZ(); z <= maxBounds.getZ(); z++) {
 				BlockPos rodPos = new BlockPos(x, maxBounds.getY(), z);

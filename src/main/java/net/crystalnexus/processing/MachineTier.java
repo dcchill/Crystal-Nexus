@@ -4,7 +4,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.state.BlockState;
 
-/** Shared progression and balance values for ore-processing machines. */
+
 public enum MachineTier {
     IRON(0, 1.25, 0.50, "Iron"),
     CRYSTAL(1, 1.00, 1.00, "Crystal"),

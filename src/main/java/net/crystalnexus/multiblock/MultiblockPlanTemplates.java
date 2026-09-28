@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/** Reads the same NBT templates that multiblock controllers validate against. */
+
 public final class MultiblockPlanTemplates {
     private static final Map<Block, ResourceLocation> TEMPLATES = Map.of(
         CrystalnexusModBlocks.ZERO_POINT.get(), id("zero_point"),

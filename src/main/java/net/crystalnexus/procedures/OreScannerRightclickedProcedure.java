@@ -61,9 +61,9 @@ public class OreScannerRightclickedProcedure {
 	}
 
 
-	// Shift+RightClick:
-	// - If looking at an ore block: set filter to its ore token (iron/copper/tin/etc.)
-	// - Otherwise: clear filter (ALL)
+	
+	
+	
 	private static void handleFilterPick(Level level, ServerPlayer sp) {
 		HitResult hit = rayTrace(level, sp, 6.0);
 
@@ -139,7 +139,7 @@ public class OreScannerRightclickedProcedure {
 				for (int z = minZ; z <= maxZ; z++) {
 					int dz = z - center.getZ();
 					int dist2 = base + (dz * dz);
-					if (dist2 > r2) continue; // sphere boundary
+					if (dist2 > r2) continue; 
 
 					mp.set(x, y, z);
 					BlockState state = level.getBlockState(mp);
@@ -150,7 +150,7 @@ public class OreScannerRightclickedProcedure {
 
 					candidates.add(new PosWithDist(mp.immutable(), dist2));
 
-					// cap candidate growth to avoid huge lag in ore-dense areas
+					
 					if (candidates.size() >= maxFound * 6) break;
 				}
 			}
@@ -176,15 +176,15 @@ public class OreScannerRightclickedProcedure {
 		return oreTokenFromState(state).equals(filter);
 	}
 
-	// Convert block id like:
-	// minecraft:iron_ore -> iron
-	// minecraft:deepslate_iron_ore -> iron
-	// mod:tin_ore -> tin
+	
+	
+	
+	
 	private static String oreTokenFromState(BlockState state) {
 		var key = BuiltInRegistries.BLOCK.getKey(state.getBlock());
 		if (key == null) return "";
 
-		String path = key.getPath(); // e.g. deepslate_copper_ore
+		String path = key.getPath(); 
 		if (!path.contains("ore")) return "";
 
 		path = path.replace("deepslate_", "");
@@ -192,7 +192,7 @@ public class OreScannerRightclickedProcedure {
 		path = path.replace("end_", "");
 
 		if (path.endsWith("_ore")) {
-			return path.substring(0, path.length() - 4); // remove "_ore"
+			return path.substring(0, path.length() - 4); 
 		}
 
 		int idx = path.indexOf("_ore");

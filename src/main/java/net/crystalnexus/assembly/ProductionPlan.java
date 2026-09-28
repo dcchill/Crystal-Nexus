@@ -9,7 +9,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import java.util.*;
 
-/** A bounded dependency graph: one node is one physical machine operation. */
+
 public final class ProductionPlan {
     public static final int MAX_OPERATIONS = 4096;
     public final ItemStack requested;
@@ -50,7 +50,7 @@ public final class ProductionPlan {
         ProductionPlan plan = new ProductionPlan(target);
         State state = new State();
         available.stream().filter(i -> !i.isEmpty()).forEach(i -> state.stock.add(new Supply(i.copy(), -1)));
-        // Registry lookup is per user request, never per tick. No JEI runtime dependency.
+        
         List<RecipeHolder<?>> recipes = level.getRecipeManager().getRecipes().stream()
             .filter(r -> AssemblyLineMachine.kind(r) != null).sorted(Comparator.comparing(r -> r.id().toString())).toList();
         int[] budget = {16384};

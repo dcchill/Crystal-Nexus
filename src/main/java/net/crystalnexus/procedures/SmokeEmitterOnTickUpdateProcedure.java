@@ -12,7 +12,7 @@ public class SmokeEmitterOnTickUpdateProcedure {
         if (world instanceof ServerLevel serverLevel &&
             !serverLevel.hasNeighborSignal(BlockPos.containing(x, y, z))) {
 
-            // Slow it down so it's not every tick
+            
             if (serverLevel.getGameTime() % 3 != 0) return;
 
             RandomSource random = serverLevel.getRandom();
@@ -26,11 +26,11 @@ public class SmokeEmitterOnTickUpdateProcedure {
 						        x + 0.5 + offsetX,
 						        y + 1.05,
 						        z + 0.5 + offsetZ,
-						        0,          // Zero count makes the offsets act as particle velocity.
+						        0,          
 						        0.0,
-						        0.16,       // direct upward motion
+						        0.16,       
 						        0.0,
-						        1.0         // ignored when count = 0
+						        1.0         
 						);
             }
         }

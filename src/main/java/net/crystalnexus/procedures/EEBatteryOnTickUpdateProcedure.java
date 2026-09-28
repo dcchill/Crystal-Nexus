@@ -23,7 +23,7 @@ public class EEBatteryOnTickUpdateProcedure {
 
 		BlockPos pos = BlockPos.containing(x, y, z);
 		Block batteryBlock = CrystalnexusModBlocks.EE_BATTERY.get();
-		int maxTransfer = 2048000; // FE per tick per connection
+		int maxTransfer = 2048000; 
 		
 		IEnergyStorage selfStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
 		if (selfStorage == null)
@@ -72,7 +72,7 @@ public class EEBatteryOnTickUpdateProcedure {
 		for (Direction dir : Direction.values()) {
 			BlockPos neighbor = pos.relative(dir);
 			if (world.getBlockState(neighbor).getBlock() == batteryBlock)
-				continue; // skip connected batteries
+				continue; 
 
 			IEnergyStorage neighborStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, neighbor, dir.getOpposite());
 			if (neighborStorage == null || !neighborStorage.canReceive()) continue;

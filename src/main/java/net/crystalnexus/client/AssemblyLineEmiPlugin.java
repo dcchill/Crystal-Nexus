@@ -10,7 +10,7 @@ import net.crystalnexus.client.gui.AssemblyLineScreen;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/** Native EMI support; JEMI does not bridge JEI ghost ingredient handlers. */
+
 @EmiEntrypoint
 public final class AssemblyLineEmiPlugin implements EmiPlugin {
     @Override public void register(EmiRegistry registry) {
@@ -71,7 +71,7 @@ public final class AssemblyLineEmiPlugin implements EmiPlugin {
     
     private static FluidStack parseFluidFromString(String str) {
         try {
-            // EMI stacks often look like "fluid_namespace:fluid_id(amount)"
+            
             String parsed = str.replaceAll("[()0-9]", "").trim();
             if (parsed.contains(":") && !parsed.startsWith("item@")) {
                 net.minecraft.resources.ResourceLocation id = net.minecraft.resources.ResourceLocation.parse(parsed);

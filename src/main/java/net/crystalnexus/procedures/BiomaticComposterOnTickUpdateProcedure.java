@@ -74,7 +74,7 @@ public class BiomaticComposterOnTickUpdateProcedure {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		double MACHINE_MAX_OUTPUT = 8; // set per machine
+		double MACHINE_MAX_OUTPUT = 8; 
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
 		if (outputAmount < 0)

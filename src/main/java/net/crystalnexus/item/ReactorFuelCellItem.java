@@ -8,7 +8,7 @@ import net.crystalnexus.reactor.ReactorBalance;
 
 import java.util.List;
 
-/** Per-cell reactor output, heat and lifetime. Other tiers can supply different values. */
+
 public class ReactorFuelCellItem extends Item {
     private final double feMultiplier;
     private final double heatMultiplier;

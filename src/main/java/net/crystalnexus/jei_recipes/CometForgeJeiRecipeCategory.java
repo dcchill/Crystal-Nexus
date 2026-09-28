@@ -35,15 +35,15 @@ public final class CometForgeJeiRecipeCategory implements IRecipeCategory<CometF
             new ItemStack(CrystalnexusModItems.DIAMOND_SINGULARITY.get()),
             new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get()),
             new ItemStack(CrystalnexusModItems.EMERALD_SINGULARITY.get())));
-        builder.addSlot(RecipeIngredientRole.INPUT, 28, 34).addItemStack(recipe.material());
+        builder.addSlot(RecipeIngredientRole.INPUT, 28, 34).addItemStack(recipe.singularity().copy());
         builder.addSlot(RecipeIngredientRole.INPUT, 78, 20).setFluidRenderer(CometForgeControllerBlockEntity.FLUID, false, 16, 32)
             .addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(CrystalnexusModFluids.TEMPORAL_ESSENCE.get(), CometForgeControllerBlockEntity.FLUID));
         builder.addSlot(RecipeIngredientRole.OUTPUT, 140, 24).addItemStack(recipe.comet());
     }
     @Override public void draw(CometForgeJeiRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double x, double y) {
         var font = Minecraft.getInstance().font;
-        graphics.drawString(font, "Any mix of 3 singularities", 4, 57, 0xff404040, false);
+        graphics.drawString(font, "3 high-tier singularities", 4, 57, 0xff404040, false);
         graphics.drawString(font, "500,000 FE / 25,000 mB / 10 s", 4, 70, 0xff404040, false);
-        graphics.drawString(font, "1 full stack -> reusable comet", 4, 83, 0xff404040, false);
+        graphics.drawString(font, "1 matching singularity", 4, 83, 0xff404040, false);
     }
 }

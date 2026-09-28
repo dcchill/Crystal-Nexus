@@ -1,6 +1,6 @@
 package net.crystalnexus.processing;
 
-/** Pure naming rules shared by catalog discovery and unit tests. */
+
 public final class MaterialProcessingNames {
     private MaterialProcessingNames() {}
 

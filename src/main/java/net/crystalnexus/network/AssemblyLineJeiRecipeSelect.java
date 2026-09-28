@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-/** Selects from the server's synchronized JEI index, including generated and third-party recipes. */
+
 public record AssemblyLineJeiRecipeSelect(int menu, int node, String output, String input) implements CustomPacketPayload {
     public static final Type<AssemblyLineJeiRecipeSelect> TYPE = new Type<>(ResourceLocation.parse("crystalnexus:assembly_jei_recipe_select"));
     public static final StreamCodec<RegistryFriendlyByteBuf, AssemblyLineJeiRecipeSelect> STREAM_CODEC = StreamCodec.of(

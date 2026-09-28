@@ -17,7 +17,7 @@ import com.mojang.serialization.DataResult;
 
 import java.util.*;
 
-// JEI-only recipe for displaying Extractinator processing
+
 public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
     private final NonNullList<Ingredient> recipeItems;
     private final List<ItemStack> results;
@@ -29,7 +29,7 @@ public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
 
     @Override
     public boolean matches(RecipeInput pContainer, Level pLevel) {
-        return false; // Not used for JEI display
+        return false; 
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
 public static class Serializer implements RecipeSerializer<ExtractinatorJEIRecipe> {
     public static final Serializer INSTANCE = new Serializer();
 
-    // CODEC for JSON/Datapack parsing
+    
     public static final MapCodec<ExtractinatorJEIRecipe> CODEC = RecordCodecBuilder.mapCodec(builder ->
         builder.group(
             ItemStack.CODEC.listOf().fieldOf("results")
@@ -90,7 +90,7 @@ public static class Serializer implements RecipeSerializer<ExtractinatorJEIRecip
         ).apply(builder, ExtractinatorJEIRecipe::new)
     );
 
-    // STREAM_CODEC for Network Sync
+    
     public static final StreamCodec<RegistryFriendlyByteBuf, ExtractinatorJEIRecipe> STREAM_CODEC =
         StreamCodec.of(Serializer::toNetwork, Serializer::fromNetwork);
 

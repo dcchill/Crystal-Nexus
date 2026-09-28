@@ -35,7 +35,7 @@ public class AutoCrafterOnTickProcedure {
     }
 
     public static void execute(LevelAccessor world, double x, double y, double z) {
-        boolean crafting = false; // starts as false
+        boolean crafting = false; 
 
         if (!(world instanceof ILevelExtension ext)) return;
         BlockPos pos = BlockPos.containing(x, y, z);
@@ -98,18 +98,18 @@ public class AutoCrafterOnTickProcedure {
             return;
         }
 
-        // Check output slot has room BEFORE consuming ingredients
+        
         ItemStack output = inv.getStackInSlot(9);
 		int maxStack = hyperFactory ? Math.min(result.getMaxStackSize(), 64) : Math.min(result.getMaxStackSize(), 127);
 
         if (!output.isEmpty()) {
             if (!stacksMatch(output, result)) {
                 updateBlockState(world, pos, crafting);
-                return; // output is different → cannot craft
+                return; 
             }
             if (output.getCount() + result.getCount() > maxStack) {
                 updateBlockState(world, pos, crafting);
-                return; // no room → cannot craft
+                return; 
             }
         }
 

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:generated_singularity",
     "crystalnexus:iron_singularity",
     "crystalnexus:diamond_singularity",
     "crystalnexus:emerald_singularity",

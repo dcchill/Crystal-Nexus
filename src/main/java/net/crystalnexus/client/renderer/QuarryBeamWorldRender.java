@@ -41,7 +41,7 @@ public class QuarryBeamWorldRender {
             BlockPos targetPos = entry.getValue();
             if (targetPos == null) continue;
 
-            // distance cap so it doesn't draw forever
+            
             if (quarryPos.getCenter().distanceToSqr(cam) > max2) continue;
 
             drawThickBeam(quarryPos, targetPos, vc, mat, cam, 0.08f);

@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/** Optional AE2 integration. This class is only loaded when AE2 is present. */
+
 public final class Ae2DepotIntegration {
     private static final Map<DepotSavedData, Ae2StorageBridge> BRIDGES = new WeakHashMap<>();
 
@@ -52,8 +52,8 @@ public final class Ae2DepotIntegration {
             depot.setStorageBridge(bridge);
         }
 
-        // Empty the local depot buffer into AE2 over time. Anything AE2 cannot
-        // currently accept stays local and remains visible to the depot.
+        
+        
         for (DepotSavedData.Entry entry : depot.localEntries()) {
             if (!depot.accepts(entry.itemId())) continue;
             long inserted = bridge.insert(entry.itemId(), entry.count());

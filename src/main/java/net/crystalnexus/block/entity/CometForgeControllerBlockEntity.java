@@ -98,7 +98,7 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
         if (validationDelay-- <= 0) { validateStructure(serverLevel); validationDelay = VALIDATION_INTERVAL; }
         if (activeRecipe != null && !sameInputs()) resetProgress();
         if (!formed || !hasIngredients()) return;
-        ItemStack result = ResourceCometItem.create(stacks.get(3));
+        ItemStack result = ResourceCometItem.create(ResourceCometItem.singularityMaterial(stacks.get(3)));
         ItemStack output = stacks.get(OUTPUT_SLOT);
         if (!output.isEmpty() && (!ItemStack.isSameItemSameComponents(output, result)
             || output.getCount() >= output.getMaxStackSize())) return;
@@ -118,12 +118,7 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
         consumedFluid = nextFluid;
         progress++;
         if (progress == DURATION) {
-            int remaining = 3;
-            for (int i = 0; i < 3; i++) {
-                int used = Math.min(remaining, stacks.get(i).getCount());
-                stacks.get(i).shrink(used); remaining -= used;
-            }
-            stacks.get(3).shrink(stacks.get(3).getMaxStackSize());
+            for (int i = 0; i < 4; i++) stacks.get(i).shrink(1);
             if (output.isEmpty()) stacks.set(OUTPUT_SLOT, result); else output.grow(1);
             resetProgress();
         }
@@ -131,14 +126,10 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     }
 
     private boolean hasIngredients() {
-        if (!ResourceCometItem.isMaterial(stacks.get(3))
-            || stacks.get(3).getCount() < stacks.get(3).getMaxStackSize()) return false;
-        int count = 0;
-        for (int i = 0; i < 3; i++) {
-            if (!stacks.get(i).isEmpty() && !ResourceCometItem.isSingularity(stacks.get(i))) return false;
-            count += stacks.get(i).getCount();
-        }
-        return count >= 3;
+        if (ResourceCometItem.singularityMaterial(stacks.get(3)).isEmpty()) return false;
+        for (int i = 0; i < 3; i++)
+            if (!ResourceCometItem.isHighTierSingularity(stacks.get(i))) return false;
+        return true;
     }
 
     private boolean sameInputs() {
@@ -231,8 +222,8 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     @Override public Component getDisplayName() { return getDefaultName(); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot >= 0 && slot < 3 ? ResourceCometItem.isSingularity(stack)
-        : slot == 3 && ResourceCometItem.isMaterial(stack); }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot >= 0 && slot < 3 ? ResourceCometItem.isHighTierSingularity(stack)
+        : slot == 3 && ResourceCometItem.isSingularity(stack); }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == OUTPUT_SLOT; }

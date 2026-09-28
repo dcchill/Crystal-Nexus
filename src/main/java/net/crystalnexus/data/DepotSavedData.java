@@ -200,7 +200,7 @@ public class DepotSavedData extends SavedData {
         data.nextCraftingJobId = Math.max(1, tag.getInt("nextCraftingJobId"));
         ListTag jobs = tag.getList("craftingJobs", Tag.TAG_COMPOUND);
         for (int i = 0; i < jobs.size(); i++) data.loadJob(jobs.getCompound(i));
-        // Migrate worlds saved before concurrent crafting jobs were supported.
+        
         if (data.craftingJobs.isEmpty() && tag.contains("craftingJob")) data.loadJob(tag.getCompound("craftingJob"));
 
         ListTag tasks = tag.getList("processingTasks", Tag.TAG_COMPOUND);
@@ -332,7 +332,7 @@ public class DepotSavedData extends SavedData {
         return false;
     }
 
-    /** Doubles capacity per upgrade (BASE * 2^upgradeLevel). */
+    
     public long getCapacity() {
         if (activeStorageBridge() != null) return Long.MAX_VALUE;
         return getLocalCapacity();
@@ -397,7 +397,7 @@ public class DepotSavedData extends SavedData {
         return preferredRecipes.get(itemId);
     }
 
-    /** Fluid capacity is measured in mB: every item-capacity unit stores one bucket. */
+    
     public long getFluidCapacity() {
         long capacity = getLocalCapacity();
         return capacity > Long.MAX_VALUE / 1_000L ? Long.MAX_VALUE : capacity * 1_000L;
@@ -971,7 +971,7 @@ public class DepotSavedData extends SavedData {
         return accepted;
     }
 
-    // Backward compatibility: keep addCapped name if other code calls it
+    
     public long addCapped(ResourceLocation itemId, long amount) {
         return deposit(itemId, amount);
     }
@@ -1059,7 +1059,7 @@ public class DepotSavedData extends SavedData {
         return Map.copyOf(combinedCounts());
     }
 
-    /** Item ids plus encoded fluid ids for the crafting planner. */
+    
     public Map<ResourceLocation, Long> resourceSnapshot() {
         Map<ResourceLocation, Long> resources = new ConcurrentHashMap<>(combinedCounts());
         fluidCounts.object2LongEntrySet().forEach(entry -> {

@@ -1,6 +1,7 @@
 package net.crystalnexus.recipe;
 
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.item.GeneratedSingularityItem;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.Item;
@@ -40,7 +41,8 @@ public class SingularityBreakdownRecipe extends CustomRecipe {
 	public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
 		ItemStack singularity = singularity(input);
 		Item output = outputFor(singularity);
-		return output == Items.AIR ? ItemStack.EMPTY : new ItemStack(output, Math.min(STACK_SIZE, remainingItems(singularity)));
+		return output == Items.AIR ? ItemStack.EMPTY : new ItemStack(output,
+				Math.min(Math.min(STACK_SIZE, new ItemStack(output).getMaxStackSize()), remainingItems(singularity)));
 	}
 
 	@Override
@@ -50,7 +52,8 @@ public class SingularityBreakdownRecipe extends CustomRecipe {
 			ItemStack stack = input.getItem(slot);
 			if (outputFor(stack) == Items.AIR)
 				continue;
-			int damage = stack.getDamageValue() + Math.min(STACK_SIZE, remainingItems(stack));
+			int damage = stack.getDamageValue() + Math.min(Math.min(STACK_SIZE,
+					new ItemStack(outputFor(stack)).getMaxStackSize()), remainingItems(stack));
 			if (damage < stack.getMaxDamage()) {
 				ItemStack remainder = stack.copyWithCount(1);
 				remainder.setDamageValue(damage);
@@ -81,7 +84,9 @@ public class SingularityBreakdownRecipe extends CustomRecipe {
 		return stack.isDamageableItem() ? stack.getMaxDamage() - stack.getDamageValue() : 0;
 	}
 
-	private static Item outputFor(ItemStack stack) {
+	public static Item outputFor(ItemStack stack) {
+		ItemStack generatedMaterial = GeneratedSingularityItem.material(stack);
+		if (!generatedMaterial.isEmpty()) return generatedMaterial.getItem();
 		if (stack.is(CrystalnexusModItems.IRON_SINGULARITY.get())) return Items.IRON_INGOT;
 		if (stack.is(CrystalnexusModItems.GOLD_SINGULARITY.get())) return Items.GOLD_INGOT;
 		if (stack.is(CrystalnexusModItems.DIAMOND_SINGULARITY.get())) return Items.DIAMOND;

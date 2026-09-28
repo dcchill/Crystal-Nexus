@@ -1,6 +1,6 @@
 package net.crystalnexus.recipe;
 
-/** Pure capacity and rate calculations for reusable Dyson construction supplies. */
+
 public final class DysonOutput {
     public static final int MAX_INTEGRITY = 1_000;
     public static final int CARBON_SHEETS_PER_STRUCTURE = 4;

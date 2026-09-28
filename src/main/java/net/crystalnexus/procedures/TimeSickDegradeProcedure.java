@@ -25,7 +25,7 @@ public class TimeSickDegradeProcedure {
 
         double currentTimeSick = entity.getPersistentData().getDouble("timeSick");
 
-        // Only degrade once per second
+        
         if (entity.tickCount % 20 != 0)
             return;
 
@@ -33,7 +33,7 @@ public class TimeSickDegradeProcedure {
         long lastExposureTick = entity.getPersistentData().getLong(RadiationLogic.LAST_EXPOSURE_TICK_TAG);
         boolean isActivelyExposed = currentTick - lastExposureTick <= EXPOSURE_GRACE_TICKS;
 
-        // Recover rapidly once no radiation source has exposed the player recently.
+        
         if (!isActivelyExposed && currentTimeSick > 0) {
 
             entity.getPersistentData().putDouble(

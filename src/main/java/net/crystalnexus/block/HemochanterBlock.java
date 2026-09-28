@@ -20,7 +20,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-/** A blood-powered enchantment table. Its model deliberately uses vanilla's table geometry. */
+
 public final class HemochanterBlock extends Block implements EntityBlock {
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 12, 16);
     public HemochanterBlock() { super(BlockBehaviour.Properties.of().sound(SoundType.STONE).strength(5.0F).requiresCorrectToolForDrops()); }

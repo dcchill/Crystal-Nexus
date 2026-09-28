@@ -52,9 +52,9 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         int blockAmount = Math.max(0, Math.min(per, totalAmount - start));
         if (blockAmount <= 0) return;
 
-        float fill = blockAmount / (float) per; // 0..1
+        float fill = blockAmount / (float) per; 
 
-        // Use STILL texture everywhere (reliable; no random atlas garbage)
+        
         IClientFluidTypeExtensions ext = IClientFluidTypeExtensions.of(fluid.getFluid());
         ResourceLocation stillTex = ext.getStillTexture(fluid);
         if (stillTex == null) return;
@@ -76,7 +76,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
         float y0 = inset;
         float y1 = inset + (max - inset) * fill;
 
-        // Epsilon so the top plane doesn't z-fight
+        
         float topY = y1 - 0.0005f;
         float topInset = inset + 0.001f;
 
@@ -133,7 +133,7 @@ public class TankBER<T extends TankBlockEntity> implements BlockEntityRenderer<T
           .setNormal(nx, ny, nz);
     }
 
-    // Faces (cropped V: reveal from bottom upward, no stretching)
+    
     private static void drawNorth(VertexConsumer vc, Matrix4f mat,
                                   float x0, float y0, float z,
                                   float x1, float y1, float z1,
@@ -211,7 +211,7 @@ private static void drawTop(VertexConsumer vc, Matrix4f mat,
     float u0 = s.getU0(), u1 = s.getU1();
     float v0 = s.getV0(), v1 = s.getV1();
 
-    // CCW when viewed from above (+Y) so it won't get culled
+    
     v(vc, mat, x0, y, z0, r,g,b,a, u0, v0, light, overlay, 0, 1, 0);
     v(vc, mat, x0, y, z1, r,g,b,a, u0, v1, light, overlay, 0, 1, 0);
     v(vc, mat, x1, y, z1, r,g,b,a, u1, v1, light, overlay, 0, 1, 0);

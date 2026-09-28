@@ -32,7 +32,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 	public static final int SLOT_FILTER_LEFT = 1;
 	public static final int SLOT_FILTER_FORWARD = 2;
 	public static final int SLOT_FILTER_RIGHT = 3;
-	public static final int SLOT_OVERFLOW_BUFFER = 4; // was "overflow filter", now buffer
+	public static final int SLOT_OVERFLOW_BUFFER = 4; 
 
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 
@@ -134,7 +134,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 		boolean moved = false;
 
-		// 1) Strict filter matches first (priority: left -> forward -> right)
+		
 		if (!moved && matchesFilter(one, leftFilter)) {
 			moved = tryInsertIntoNeighbor(level, pos, leftDir, one);
 		}
@@ -145,7 +145,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 			moved = tryInsertIntoNeighbor(level, pos, rightDir, one);
 		}
 
-		// 2) If not matched anywhere, empty filter slots act as "ANY (unmatched)"
+		
 		if (!moved) {
 			if (!moved && leftFilter.isEmpty()) {
 				moved = tryInsertIntoNeighbor(level, pos, leftDir, one);
@@ -158,7 +158,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 			}
 		}
 
-		// 3) If still not moved, push into slot 4 (overflow buffer)
+		
 		if (!moved) {
 			moved = tryMoveOneIntoOverflowBuffer(be, one);
 		}
@@ -223,7 +223,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public int[] getSlotsForFace(Direction side) {
-		// Back = input, Top = filters, Bottom = overflow buffer extraction
+		
 		if (this.level == null) return new int[]{SLOT_INPUT};
 
 		Direction facing = getHorizontalFacing(this.getBlockState());
@@ -254,7 +254,7 @@ public class SmartSplitterBlockEntity extends RandomizableContainerBlockEntity i
 
 		if (direction == back) return index == SLOT_INPUT;
 
-		// Set filters from top (do NOT allow automation to insert into overflow buffer)
+		
 		if (direction == Direction.UP) {
 			return index == SLOT_FILTER_LEFT
 					|| index == SLOT_FILTER_FORWARD

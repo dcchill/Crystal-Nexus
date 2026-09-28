@@ -93,7 +93,7 @@ public class AcceleratorJeiRecipe implements CrystalNexusRecipe {
 		public static final Serializer INSTANCE = new Serializer();
 		private static final MapCodec<AcceleratorJeiRecipe> CODEC = RecordCodecBuilder
 				.mapCodec(builder -> builder.group(ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output), ItemStack.STRICT_CODEC.listOf().optionalFieldOf("additional_outputs", List.of()).forGetter(recipe -> recipe.additionalOutputs), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> {
-					Ingredient[] aingredient = ingredients.toArray(Ingredient[]::new); // Skip the empty check and create the array.
+					Ingredient[] aingredient = ingredients.toArray(Ingredient[]::new); 
 					if (aingredient.length == 0) {
 						return DataResult.error(() -> "No ingredients found in custom recipe");
 					} else {

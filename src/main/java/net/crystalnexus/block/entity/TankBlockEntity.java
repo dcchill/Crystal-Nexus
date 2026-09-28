@@ -41,17 +41,17 @@ public class TankBlockEntity extends BlockEntity implements WorldlyContainer {
 
         @Override
         public boolean isItemValid(int slot, ItemStack stack) {
-            return false; // lock inserts
+            return false; 
         }
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            return stack; // refuse inserts
+            return stack; 
         }
 
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
-            return ItemStack.EMPTY; // refuse extracts
+            return ItemStack.EMPTY; 
         }
     };
 

@@ -18,7 +18,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/** Datapack-defined item-to-Blood conversion used by the Hemolyzer. */
+
 public final class HemolyzerRecipe implements CrystalNexusRecipe {
     public record BloodOutput(ResourceLocation fluid, int amount) {
         private static final Codec<BloodOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(

@@ -41,9 +41,9 @@ public class DepotCliMenu extends AbstractContainerMenu {
         this.data = data;
         checkContainerDataCount(data, DATA_COUNT);
         addDataSlots(data);
-        // JEI requires a real player inventory range to consider a transfer
-        // handler applicable. Keep the slots off-screen because the Depot CLI is
-        // command-driven, but expose all inventory stacks rather than one slot.
+        
+        
+        
         for (int index = 0; index < inventory.items.size(); index++) {
             addSlot(new Slot(inventory, index, -9999, -9999));
         }

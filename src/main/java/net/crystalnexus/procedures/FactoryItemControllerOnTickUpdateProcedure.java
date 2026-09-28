@@ -14,7 +14,7 @@ public class FactoryItemControllerOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
         BlockPos distributorPos = BlockPos.containing(x, y, z);
 
-        // Slot pairs: {linkSlot, inputSlot}
+        
         int[][] slotPairs = {
         	 {9, 14},
             {10, 15},
@@ -50,10 +50,10 @@ public class FactoryItemControllerOnTickUpdateProcedure {
 
             for (int i = 0; i < targetHandler.getSlots(); i++) {
                 ItemStack toInsert = inputStack.copy().split(1);
-                ItemStack simulated = targetHandler.insertItem(i, toInsert.copy(), true); // simulate insertion
+                ItemStack simulated = targetHandler.insertItem(i, toInsert.copy(), true); 
                 if (simulated.getCount() < toInsert.getCount()) {
-                    targetHandler.insertItem(i, toInsert, false); // actually insert
-                    distributorHandler.extractItem(sourceSlot, 1, false); // remove from distributor
+                    targetHandler.insertItem(i, toInsert, false); 
+                    distributorHandler.extractItem(sourceSlot, 1, false); 
                     break;
                 }
             }

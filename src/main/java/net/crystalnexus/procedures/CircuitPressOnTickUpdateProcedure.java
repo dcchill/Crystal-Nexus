@@ -72,7 +72,7 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3), 100, 75, 50);
 
-		// Optional multipliers on the upgrade stack (CUSTOM_DATA)
+		
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
 		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
@@ -153,12 +153,12 @@ public class CircuitPressOnTickUpdateProcedure {
 			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
 		}
 
-		// Respect both the handler's slot limit and the item's stack limit.
+		
 		int out = (int) Math.floor(outputAmount * _cn_result.getCount());
 		if (out < 0)
 			out = 0;
 
-		int slotMax = 64; // fallback
+		int slotMax = 64; 
 		if (world instanceof ILevelExtension _ext) {
 			IItemHandler _ih = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
 			if (_ih != null) {

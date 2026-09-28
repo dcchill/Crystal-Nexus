@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** A cable is an instantaneous routed link with no internal energy storage. */
+
 public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyContainer {
     private final int maxTransfer;
     private final IEnergyStorage energyLink = new NetworkEnergyStorage(null);

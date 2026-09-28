@@ -69,7 +69,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 	private static final int SKIP_LIMIT_PER_TICK = 1024;
 	private static final ItemStack VIRTUAL_TOOL = new ItemStack(Items.NETHERITE_PICKAXE);
 
-	// Slots 0..8 are visible output, slot 9 is the SSD upgrade.
+	
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(10, ItemStack.EMPTY);
 	private final ItemStackHandler hiddenBuffer = new ItemStackHandler(HYPER_BUFFER_SLOTS) {
 		@Override

@@ -71,7 +71,7 @@ public final class DepotNetwork {
 
     public record DepotTransferResult(int movedCount) {}
 
-    /** The single Depot -> machine routing operation used by CLI and programs. */
+    
     public static DepotTransferResult routeItemToMachine(ServerPlayer player, DepotSavedData depot,
             ResourceLocation itemId, int amount) {
         Item item = itemId == null ? null : net.minecraft.core.registries.BuiltInRegistries.ITEM.get(itemId);
@@ -184,7 +184,7 @@ public final class DepotNetwork {
         return inserted;
     }
 
-    /** Automatically exports only the exact items listed on this cable's connected faces. */
+    
     public static int exportListedFromCable(ServerLevel level, BlockPos cablePos, DepotSavedData depot, int limit) {
         if (depot == null || limit <= 0
                 || !(level.getBlockEntity(cablePos) instanceof DepotCableBlockEntity cable)) return 0;
@@ -241,7 +241,7 @@ public final class DepotNetwork {
         TOPOLOGIES.remove(level);
     }
 
-    /** One base process plus one concurrent process for each valid connected core block. */
+    
     public static int craftingJobCapacity(ServerPlayer player) {
         DepotControllerBlockEntity controller = DepotSavedData.getController(player.serverLevel(), player.getUUID());
         if (controller == null || !controller.isPowered() || !(controller.getLevel() instanceof ServerLevel level)
@@ -249,7 +249,7 @@ public final class DepotNetwork {
         return 1 + craftingCoreCapacity(level, controller.getBlockPos());
     }
 
-    /** Each core block in a valid cabled horizontal 1x1–2x2 core adds one crafting lane. */
+    
     private static int craftingCoreCapacity(ServerLevel level, BlockPos controllerPos) {
         Set<BlockPos> remaining = collect(level, controllerPos,
                 pos -> level.getBlockState(pos).getBlock() instanceof CraftingCoreBlock);
@@ -274,8 +274,8 @@ public final class DepotNetwork {
         Set<BlockPos> cluster = new HashSet<>();
         ArrayDeque<BlockPos> open = new ArrayDeque<>();
         open.add(pos);
-        // Traverse the complete touching cluster. Truncating at five blocks could
-        // accidentally split an oversized cluster into a valid 1x1 remainder.
+        
+        
         while (!open.isEmpty() && cluster.size() <= MAX_CABLES) {
             BlockPos current = open.removeFirst();
             if (!cluster.add(current)) continue;
@@ -309,7 +309,7 @@ public final class DepotNetwork {
         return owner[0];
     }
 
-    /** Finds the controller for power input even when its buffer is currently empty. */
+    
     public static @Nullable UUID energyImportOwner(ServerLevel level, BlockPos componentPos) {
         UUID[] owner = {null};
         scan(level, componentPos, pos -> {
@@ -482,7 +482,7 @@ public final class DepotNetwork {
             }
         }
 
-        // ponytail: bounded loaded-chunk scan; raise MAX_CABLES only if legitimate networks exceed it.
+        
         while (!open.isEmpty() && visited.size() <= MAX_CABLES) {
             BlockPos pos = open.removeFirst();
             for (Direction direction : Direction.values()) {

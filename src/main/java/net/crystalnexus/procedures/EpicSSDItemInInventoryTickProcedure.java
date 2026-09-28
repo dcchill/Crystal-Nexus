@@ -17,20 +17,20 @@ public class EpicSSDItemInInventoryTickProcedure {
 	public static void execute(ItemStack itemstack) {
 		var tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
-		// Roll only once when tags are missing
+		
 		if (!tag.contains("cook_mult") || !tag.contains("fe_efficiency")) {
 			RandomSource rand = RandomSource.create();
 
 			if (rand.nextFloat() < 0.02f) {
 				CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
-					t.putDouble("cook_mult", 0.05);     // 20x (fastest supported)
-					t.putDouble("fe_efficiency", 8.0);   // max (highest)
-					t.putInt("god_roll", 1);            // <-- FLAG
+					t.putDouble("cook_mult", 0.05);     
+					t.putDouble("fe_efficiency", 8.0);   
+					t.putInt("god_roll", 1);            
 				});
 				return;
 			}
 
-			// Not jackpot -> normal roll (also clear flag)
+			
 			double cookMult;
 			if (rand.nextFloat() < 0.85f) {
 				cookMult = biasedRange(rand, 0.05, 1.00, 0.55);
@@ -48,7 +48,7 @@ public class EpicSSDItemInInventoryTickProcedure {
 			CustomData.update(DataComponents.CUSTOM_DATA, itemstack, t -> {
 				t.putDouble("cook_mult", cookMult);
 				t.putDouble("fe_efficiency", feEfficiency);
-				t.remove("god_roll"); // <-- make sure only jackpots are marked
+				t.remove("god_roll"); 
 			});
 		}
 	}

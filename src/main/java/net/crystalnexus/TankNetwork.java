@@ -83,7 +83,7 @@ public final class TankNetwork {
                 proto = fs.copy();
                 proto.setAmount(0);
             } else if (!FluidStack.isSameFluidSameComponents(proto, fs)) {
-                continue; // don’t mix
+                continue; 
             }
 
             total += amt;

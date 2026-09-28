@@ -123,7 +123,7 @@ public final class MaterialProcessingGameTests {
         for (int i = 0; i < 4; i++) {
             crystal.getEnergyStorage().receiveEnergy(1024, false);
         }
-        // This tier quotes 8192 FE, but a completed operation extracts only 2048 FE.
+        
         for (int i = 0; i < 2; i++) chlorophyte.getEnergyStorage().receiveEnergy(1024, false);
 
         BlockPos absoluteCrystal = helper.absolutePos(crystalPos);

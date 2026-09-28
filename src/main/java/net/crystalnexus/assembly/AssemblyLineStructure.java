@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
-/** Bounded, event-driven discovery of a sealed rectangular shell. */
+
 public final class AssemblyLineStructure {
     public static final int MAX_SIZE = 32;
     public record Bounds(BlockPos min, BlockPos max) {

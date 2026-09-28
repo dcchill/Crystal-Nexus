@@ -39,7 +39,7 @@ public class PaintballWhileProjectileFlyingTickProcedure {
             case "crystalnexus:purple_paintball": color = "0.8,0.0,1.0"; break;
             case "crystalnexus:magenta_paintball": color = "1.0,0.0,1.0"; break;
             case "crystalnexus:pink_paintball": color = "1.0,0.7,1.0"; break;
-            default: color = "1.0,1.0,1.0"; // fallback to white
+            default: color = "1.0,1.0,1.0"; 
         }
 
 		if (world instanceof ServerLevel _level)

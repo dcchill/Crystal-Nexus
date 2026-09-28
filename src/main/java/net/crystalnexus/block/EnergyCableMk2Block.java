@@ -65,10 +65,10 @@ public class EnergyCableMk2Block extends Block implements EntityBlock {
             .setValue(DOWN, false)
         );
     }
-// Core matches model: 6..10 in all axes
+
 private static final VoxelShape CORE = Block.box(6, 6, 6, 10, 10, 10);
 
-// Arms are 4x4 extending from the core
+
 private static final VoxelShape ARM_NORTH = Block.box(6, 6, 0, 10, 10, 6);
 private static final VoxelShape ARM_SOUTH = Block.box(6, 6, 10, 10, 10, 16);
 private static final VoxelShape ARM_WEST  = Block.box(0, 6, 6, 6, 10, 10);
@@ -141,7 +141,7 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         BlockPos otherPos = pos.relative(dir);
         BlockState otherState = level.getBlockState(otherPos);
 
-        // All cable tiers share one network.
+        
         if (otherState.getBlock() instanceof BasicEnergyCableBlock
             || otherState.getBlock() instanceof EnergyCableMk2Block) return true;
 

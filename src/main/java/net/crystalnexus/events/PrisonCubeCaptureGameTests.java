@@ -28,7 +28,7 @@ public final class PrisonCubeCaptureGameTests {
 		var position = mob.position();
 		mob.setCustomName(net.minecraft.network.chat.Component.literal("Sealed pig"));
 		((PrisonCubeItem) stack.getItem()).capture(stack, player, mob);
-		// A second interaction must neither duplicate visuals nor finish the capture early.
+		
 		((PrisonCubeItem) stack.getItem()).capture(stack, player, mob);
 		var visuals = helper.getLevel().getEntitiesOfClass(Display.ItemDisplay.class, mob.getBoundingBox().inflate(0.5));
 		helper.assertTrue(visuals.size() == 34, "One capture must spawn one set of wall, cubes, tendrils and seal");

@@ -32,12 +32,12 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 	private static final int MIN_MAGNETS = 1;
 
-	// TOTAL FE drained per tick (split across all magnets)
+	
 	private static final int TOTAL_FE_PER_TICK = 5120;
 
-	private static final double BASE_COOK_TIME = 875;      // time at MIN_MAGNETS
-	private static final double MIN_COOK_TIME  = 25;       // hard floor
-	private static final double MAGNET_EFFICIENCY = 0.25;   // 1.0 = strong effect, 0.5 = weaker
+	private static final double BASE_COOK_TIME = 875;      
+	private static final double MIN_COOK_TIME  = 25;       
+	private static final double MAGNET_EFFICIENCY = 0.25;   
 
 	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
@@ -67,7 +67,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		be.getPersistentData().putDouble("ringMode", ringMode ? 1 : 0);
 		be.getPersistentData().putDouble("minMagReq", MIN_MAGNETS);
 
-		// Cook time shrinks with magnets (diminishing returns)
+		
 		double effectiveMagnets = Math.max(0, magnetCount - MIN_MAGNETS);
 		double cookTime = BASE_COOK_TIME / (1.0 + (effectiveMagnets * MAGNET_EFFICIENCY));
 		cookTime = Math.max(MIN_COOK_TIME, cookTime);
@@ -80,19 +80,19 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 		if (!formed) {
 			be.getPersistentData().putDouble("progress", 0);
-			be.getPersistentData().putDouble("reason", 1); // invalid structure
+			be.getPersistentData().putDouble("reason", 1); 
 			sync(world, pos);
 			return;
 		}
 
 		if (magnetCount < MIN_MAGNETS) {
 			be.getPersistentData().putDouble("progress", 0);
-			be.getPersistentData().putDouble("reason", 2); // not enough magnets
+			be.getPersistentData().putDouble("reason", 2); 
 			sync(world, pos);
 			return;
 		}
 
-		// Slots: 0,2,3,4  Outputs: 1,5,6,7
+		
 		if (!(world instanceof ILevelExtension ext)) return;
 		IItemHandler inv = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
 		if (inv == null) return;
@@ -167,11 +167,11 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			outputSlots.add(outputSlot);
 		}
 
-		// POWER: ALL MAGNETS MUST PAY
+		
 		int per = TOTAL_FE_PER_TICK / magnetCount;
 		int rem = TOTAL_FE_PER_TICK % magnetCount;
 
-		// simulate pass (must be extractable)
+		
 		for (int i = 0; i < magnets.size(); i++) {
 			int cost = per + (i < rem ? 1 : 0);
 			IEnergyStorage es = getDrainableEnergyStorage(world, magnets.get(i), cost);
@@ -329,7 +329,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 		return new PathScanResult(false, true, 0, 0, new ArrayList<>());
 	}
 
-	// Energy: pick a capability that can actually extract
+	
 	private static IEnergyStorage getDrainableEnergyStorage(LevelAccessor world, BlockPos pos, int cost) {
 		if (!(world instanceof ILevelExtension ext)) return null;
 

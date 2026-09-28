@@ -4,7 +4,7 @@ import net.crystalnexus.data.DepotSavedData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-/** V1 program action: the cable network, not the program, chooses the destination. */
+
 public record SendItemAction(ResourceLocation itemId, int amount) {
     public SendItemAction {
         if (itemId == null) throw new IllegalArgumentException("itemId");

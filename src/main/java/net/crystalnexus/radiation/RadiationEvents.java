@@ -238,15 +238,15 @@ public class RadiationEvents {
     private static Style getColorForRadiation(double radiation) {
 
         if (radiation < 10)
-            return Style.EMPTY.withColor(TextColor.fromRgb(0x55FF55)); // Green
+            return Style.EMPTY.withColor(TextColor.fromRgb(0x55FF55)); 
 
         if (radiation < 25)
-            return Style.EMPTY.withColor(TextColor.fromRgb(0xFFFF55)); // Yellow
+            return Style.EMPTY.withColor(TextColor.fromRgb(0xFFFF55)); 
 
         if (radiation < 50)
-            return Style.EMPTY.withColor(TextColor.fromRgb(0xFFAA00)); // Orange
+            return Style.EMPTY.withColor(TextColor.fromRgb(0xFFAA00)); 
 
-        return Style.EMPTY.withColor(TextColor.fromRgb(0xFF5555)); // Red
+        return Style.EMPTY.withColor(TextColor.fromRgb(0xFF5555)); 
     }
 
 

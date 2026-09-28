@@ -27,7 +27,7 @@ import net.crystalnexus.block.entity.ChlorophyteSmelterBlockEntity;
 import net.crystalnexus.block.entity.InvertiumSmelterBlockEntity;
 import net.crystalnexus.block.entity.UltimaSmelterBlockEntity;
 
-/** Small adapters preserve each worker's normal processing, sounds and energy costs. */
+
 public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind kind, IEnergyStorage energy, SideProfile profile) {
     public enum Kind { CRUSHER, CIRCUIT_PRESS, PARTS_ASSEMBLER, CHEMICAL_REACTION, SMELTER, GENERIC }
     public static final String OWNER = "assembly_owner", TASK = "assembly_task", RECIPE = "assembly_recipe";
@@ -42,20 +42,20 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         if (be instanceof PartsAssemblerBlockEntity c) return new AssemblyLineMachine(c, c, Kind.PARTS_ASSEMBLER, c.getEnergyStorage(), profile);
         if (be instanceof ChemicalReactionChamberBlockEntity c)
             return new AssemblyLineMachine(c, c, Kind.CHEMICAL_REACTION, c.getEnergyStorage(), profile);
-        // Detect Crystal Nexus smelter blocks
+        
         if (be instanceof IronSmelterBlockEntity c || be instanceof CrystalSmelterBlockEntity c2
             || be instanceof ChlorophyteSmelterBlockEntity c3 || be instanceof InvertiumSmelterBlockEntity c4
             || be instanceof UltimaSmelterBlockEntity c5) {
             IEnergyStorage energyStorage = getEnergyStorage(level, pos, profile);
             return new AssemblyLineMachine(be, (Container) be, Kind.SMELTER, energyStorage, profile);
         }
-        // Accept any block with an inventory and/or energy capability as a generic worker.
+        
         if (be instanceof Container c) {
             IEnergyStorage energyStorage = getEnergyStorage(level, pos, profile);
             return new AssemblyLineMachine(be, c, Kind.GENERIC, energyStorage, profile);
         }
-        // External machines may expose only item or fluid capabilities rather than
-        // implementing Container or exposing energy directly.
+        
+        
         IEnergyStorage energyStorage = getEnergyStorage(level, pos, profile);
         if (energyStorage != null || hasItemHandler(level, pos) || hasFluidHandler(level, pos)) {
             Container minimalInventory = createMinimalContainer(be);
@@ -95,7 +95,7 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         return false;
     }
 
-    /** Creates a minimal non-functional container for blocks that have energy but no inventory. */
+    
     private static Container createMinimalContainer(BlockEntity be) {
         return new Container() {
             @Override public int getContainerSize() { return 0; }
@@ -130,7 +130,7 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     }
     public boolean empty() {
         if (kind == Kind.GENERIC) return false;
-        // Do not claim an inventory while a player is editing it through an already-open menu.
+        
         if (entity.getLevel().players().stream().anyMatch(p ->
             p.containerMenu instanceof net.crystalnexus.world.inventory.CrusherGuiMenu m && m.x == entity.getBlockPos().getX() && m.y == entity.getBlockPos().getY() && m.z == entity.getBlockPos().getZ()
             || p.containerMenu instanceof net.crystalnexus.world.inventory.CircuitPressGUIMenu m2 && m2.x == entity.getBlockPos().getX() && m2.y == entity.getBlockPos().getY() && m2.z == entity.getBlockPos().getZ()
@@ -202,8 +202,8 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             int accepted = storage.receiveEnergy(amount, simulate);
             if (accepted > 0) return accepted;
         }
-        // Fallback: for external machines that may not expose energy via capabilities,
-        // use the energy field directly if it was set during machine creation
+        
+        
         if (energy != null && energy.canReceive()) {
             return energy.receiveEnergy(amount, simulate);
         }
@@ -268,7 +268,7 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     public void release() {
         var tag = entity.getPersistentData(); tag.remove(OWNER); tag.remove(TASK); tag.remove(RECIPE); entity.setChanged();
     }
-    /** An unloaded owner is paused, never interpreted as permission to restart independently. */
+    
     public static boolean mayTick(Level level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null || !be.getPersistentData().contains(OWNER)) return true;
@@ -286,7 +286,7 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             ? ResourceLocation.tryParse(be.getPersistentData().getString(RECIPE)) : null;
     }
     public static void consumeAssignedEnergy(IEnergyStorage storage, int cost) {
-        // FE transfer limits must not discount an assigned operation's recipe cost.
+        
         while (cost > 0) {
             int paid = storage.extractEnergy(cost, false);
             if (paid == 0) throw new IllegalStateException("Assigned machine cannot consume recipe energy");

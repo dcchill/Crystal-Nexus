@@ -119,11 +119,7 @@ public class SingularityCompressorBlockEntity extends RandomizableContainerBlock
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		if (index == 1)
-			return false;
-		if (index == 2)
-			return false;
-		return true;
+		return index == 0 && net.crystalnexus.item.ResourceCometItem.isMaterial(stack);
 	}
 
 	@Override

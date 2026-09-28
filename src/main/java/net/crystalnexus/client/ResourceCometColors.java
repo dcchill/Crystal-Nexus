@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Sample the target item's texture, including textures supplied by resource packs. */
+
 public final class ResourceCometColors {
     private static final Map<Item, Integer> CACHE = new ConcurrentHashMap<>();
     private ResourceCometColors() {}
@@ -16,8 +16,12 @@ public final class ResourceCometColors {
     public static int tint(ItemStack comet, int tintIndex) {
         if (tintIndex != 0) return 0xffffffff;
         ItemStack material = ResourceCometItem.material(comet);
-        if (material.isEmpty()) return 0xffffffff;
-        return CACHE.computeIfAbsent(material.getItem(), ignored -> color(material));
+        return colorFor(material);
+    }
+
+    public static int colorFor(ItemStack material) {
+        return material.isEmpty() ? 0xffffffff
+            : CACHE.computeIfAbsent(material.getItem(), ignored -> color(material));
     }
 
     private static int color(ItemStack material) {

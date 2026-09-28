@@ -28,13 +28,13 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public final class AssemblyLineControllerBlockEntity extends BlockEntity implements MenuProvider, net.crystalnexus.multiblock.MultiblockPortTarget {
-    /** Player-authored node program. Legacy queued jobs remain below for migration/recovery. */
+    
     private AssemblyGraph graph = new AssemblyGraph();
     public final ItemStackHandler inventory = new ItemStackHandler(36) {
         @Override protected void onContentsChanged(int slot) { planDirty = true; setChanged(); }
         @Override public boolean isItemValid(int slot, ItemStack stack) { return slot < 27; }
     };
-    // Reserved raw materials and intermediates are physically held here, never exposed to automation.
+    
     private final ItemStackHandler reserved = new ItemStackHandler(108);
     private final FluidTank fluidBuffer = new FluidTank(16_000) { @Override protected void onContentsChanged() { setChanged(); } };
     private final IFluidHandler fluidPorts = new IFluidHandler() {
@@ -79,7 +79,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (level != null && !level.isClientSide) {
             dirty = true; formed = false;
             AssemblyLineEvents.register(this);
-            rescan(); // Immediately validate structure on world load
+            rescan(); 
         }
     }
     @Override public void setRemoved() { AssemblyLineEvents.unregister(this); super.setRemoved(); }
@@ -156,8 +156,8 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (machine.kind() == AssemblyLineMachine.Kind.CHEMICAL_REACTION) return new int[] {machine.outputSlot()};
         var handler = machine.itemHandler();
         if (handler != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC) {
-            // For generic modded machines, just use all non-empty slots that aren't input slots.
-            // Don't require canTakeItemThroughFace since modded machines may not implement it correctly.
+            
+            
             List<Integer> available = new ArrayList<>();
             int[] inputs = machine.inputs();
             for (int i = 0; i < handler.getSlots(); i++) {
@@ -175,7 +175,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             boolean input = false; for (int candidate : inputs) if (candidate == slot) input = true;
             if (input) continue;
             if (slot == 0 || slot == 2 || slot == 3 && machine.kind() != AssemblyLineMachine.Kind.CIRCUIT_PRESS) {
-                // Slot 0 is conventionally an input and slots 2/3 are commonly upgrades.
+                
                 if (machine.kind() != AssemblyLineMachine.Kind.GENERIC) continue;
             }
             slots.add(slot);
@@ -198,15 +198,15 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
 
     @Override public boolean acceptsMultiblockPort(BlockPos pos) {
-        // Ports are valid anywhere on the shell, including edges and corners.
-        // Requiring exactly one face made visually valid energy hatches silently reject FE.
+        
+        
         return formed && bounds != null && bounds.contains(pos) && bounds.faces(pos) >= 1;
     }
     @Override public net.neoforged.neoforge.energy.IEnergyStorage multiblockEnergyInput() { return energy; }
     @Override public IFluidHandler multiblockFluidInput() { return fluidPorts; }
     @Override public IFluidHandler multiblockFluidOutput() { return fluidPorts; }
 
-    /** Fairly fills all discovered worker batteries, independent of graph run state. */
+    
     private void distributeMachineEnergy() {
         distributeEnergyFrom(energy);
     }
@@ -218,8 +218,8 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     public int distributeEnergyFrom(net.neoforged.neoforge.energy.IEnergyStorage source) {
         if (!formed() || source == null || !source.canExtract() || source.getEnergyStored() <= 0) return 0;
         List<AssemblyLineMachine> allWorkers = workers();
-        // Use canReceive() instead of receiveEnergy(1, true) because some mods (Mekanism)
-        // have ForgeEnergyIntegration that returns 0 in simulate mode even when canReceive=true
+        
+        
         List<AssemblyLineMachine> targets = new ArrayList<>(allWorkers.stream()
             .filter(worker -> worker.energy() != null && worker.energy().canReceive()).toList());
         int budget = Math.min(1_000_000, source.getEnergyStored());
@@ -229,14 +229,14 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             boolean progress = false;
             for (var iterator = targets.iterator(); iterator.hasNext() && budget > 0;) {
                 AssemblyLineMachine worker = iterator.next();
-                // Don't use simulate mode to check acceptance - Mekanism returns 0 in simulate
-                // even when canReceive() is true. Just attempt the transfer directly.
+                
+                
                 int extracted = source.extractEnergy(Math.min(share, budget), false);
                 if (extracted <= 0) break;
                 int received = worker.receiveEnergy(extracted, false);
                 if (received < extracted) source.receiveEnergy(extracted - received, false);
                 moved += received; budget -= received; progress |= received > 0;
-                // Only remove from distribution list if truly can't receive (not just temporarily full)
+                
                 if (worker.energy() != null && !worker.energy().canReceive()) iterator.remove();
             }
             if (!progress) break;
@@ -259,7 +259,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (bounds != null) for (BlockPos p : BlockPos.betweenClosed(bounds.min(), bounds.max()))
             if (level.hasChunkAt(p)) blocks.put(p.immutable(), level.getBlockState(p).getBlock());
         setStatus(formed ? "Ready" : result.error());
-        if (formed) { /* Assembly Line formed at {} */ }
+        if (formed) {  }
         if (formed) discoverGraphMachines();
         if (formed) bindShellPorts();
         taskRecipes.clear();
@@ -666,7 +666,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             .filter(Objects::nonNull).toList();
     }
     private void startNext() {
-        // A failed request is retried only when inventory, structure or the user changes it.
+        
         List<ItemStack> stock = new ArrayList<>(); for (int i = 0; i < 27; i++) stock.add(inventory.getStackInSlot(i));
         ProductionPlan plan = ProductionPlan.build(level, queue.peek(), stock, workers());
 

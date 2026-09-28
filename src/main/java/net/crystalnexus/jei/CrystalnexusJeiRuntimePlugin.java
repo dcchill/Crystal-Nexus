@@ -103,7 +103,7 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
         generatedSeparation = List.copyOf(separation);
     }
 
-    /** Replace only the prior generated snapshot; explicit and external JEI recipes remain untouched. */
+    
     public static void refreshMaterialRecipes() {
         IJeiRuntime jeiRuntime = runtime;
         Minecraft minecraft = Minecraft.getInstance();
@@ -137,8 +137,8 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
             needsSync = true;
         }
         if (needsSync) beginSync(jeiRuntime);
-        // Send external-machine recipes promptly. A large pack otherwise takes
-        // several minutes to reach categories at the end of JEI's registry.
+        
+        
         int remaining = 128;
         while (remaining-- > 0 && workIndex < work.size()) {
             Work current = work.get(workIndex++);
@@ -191,16 +191,16 @@ public class CrystalnexusJeiRuntimePlugin implements IModPlugin {
         ResourceLocation categoryId = category.getRecipeType().getUid();
         CATEGORY_RECIPE_CLASSES.putIfAbsent(categoryId, category.getRecipeType().getRecipeClass());
         if (categoryId.equals(ResourceLocation.fromNamespaceAndPath("minecraft", "crafting"))) return;
-        // Skip JEI tag/lookup categories (Item Tags, Block Tags, Fluid Tags, etc.)
-        // These are informational groupings, not real machine recipes.
+        
+        
         String path = categoryId.getPath().toLowerCase(java.util.Locale.ROOT);
         if (path.contains("tag") || path.contains("lookup")) return;
         List<ResourceLocation> discoveredMachines = manager.createRecipeCatalystLookup(category.getRecipeType()).getItemStack()
                 .map(ItemStack::getItem).filter(BlockItem.class::isInstance).map(BlockItem.class::cast)
                 .map(BlockItem::getBlock).map(BuiltInRegistries.BLOCK::getKey).distinct().toList();
-        // Several integrations expose extra or incorrect catalysts. For categories
-        // with a single known machine, use the authoritative mapping rather than
-        // allowing a visually similar Crystal Nexus machine to receive the recipe.
+        
+        
+        
         List<ResourceLocation> knownMachines = inferredMachines(categoryId);
         final List<ResourceLocation> machines = knownMachines.isEmpty()
             ? discoveredMachines : knownMachines;

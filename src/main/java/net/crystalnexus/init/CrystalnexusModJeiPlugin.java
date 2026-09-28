@@ -1,6 +1,7 @@
 package net.crystalnexus.init;
 
 import net.crystalnexus.item.ResourceCometItem;
+import net.crystalnexus.item.GeneratedSingularityItem;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipe;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipeCategory;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -76,6 +77,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.crystalnexus.util.CrushingRecipeSupport;
+import net.crystalnexus.util.ArcFurnaceRecipeSupport;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin;
 import net.crystalnexus.client.gui.MultiblockStructurePreview;
@@ -99,9 +101,19 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
     @Override public void registerExtraIngredients(mezz.jei.api.registration.IExtraIngredientRegistration registration) {
         registration.addExtraItemStacks(ResourceCometItem.materials().stream().map(ResourceCometItem::create).toList());
+        registration.addExtraItemStacks(generatedSingularityMaterials().stream().map(GeneratedSingularityItem::create).toList());
     }
     @Override public void registerItemSubtypes(mezz.jei.api.registration.ISubtypeRegistration registration) {
         registration.registerSubtypeInterpreter(CrystalnexusModItems.RESOURCE_COMET.get(),
+            new mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter<ItemStack>() {
+                @Override public Object getSubtypeData(ItemStack stack, mezz.jei.api.ingredients.subtypes.UidContext context) {
+                    return stack.get(CrystalnexusModDataComponents.MATERIAL.get());
+                }
+                @Override public String getLegacyStringSubtypeInfo(ItemStack stack, mezz.jei.api.ingredients.subtypes.UidContext context) {
+                    return Objects.toString(getSubtypeData(stack, context), "");
+                }
+            });
+        registration.registerSubtypeInterpreter(CrystalnexusModItems.GENERATED_SINGULARITY.get(),
             new mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter<ItemStack>() {
                 @Override public Object getSubtypeData(ItemStack stack, mezz.jei.api.ingredients.subtypes.UidContext context) {
                     return stack.get(CrystalnexusModDataComponents.MATERIAL.get());
@@ -211,9 +223,17 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(EnergyExtraction_Type, EnergyExtractionRecipes);
 		List<MatterTransmutationRecipe> MatterTransmutationRecipes = recipes(recipeManager, MatterTransmutationRecipe.class);
 		registration.addRecipes(MatterTransmutation_Type, MatterTransmutationRecipes);
-		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class);
+		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class).stream()
+			.filter(recipe -> !recipe.getIngredients().isEmpty() && java.util.Arrays.stream(recipe.getIngredients().getFirst().getItems())
+				.anyMatch(ResourceCometItem::isMaterial)).toList();
 		registration.addRecipes(SingularityCompression_Type, SingularityCompressionRecipes);
+		registration.addRecipes(SingularityCompression_Type, generatedSingularityMaterials().stream().map(material ->
+			new SingularityCompressionRecipe(GeneratedSingularityItem.create(material),
+				net.minecraft.core.NonNullList.of(net.minecraft.world.item.crafting.Ingredient.EMPTY,
+					net.minecraft.world.item.crafting.Ingredient.of(material.getItem())),
+				List.of(GeneratedSingularityItem.COST), List.of())).toList());
 		registration.addRecipes(ArcFurnace_Type, recipes(recipeManager, ArcFurnaceRecipe.class));
+		registration.addRecipes(ArcFurnace_Type, ArcFurnaceRecipeSupport.externalRecipes(Minecraft.getInstance().level));
 		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
 		registration.addRecipes(ChemicalReaction_Type, ChemicalReactionRecipes);
 		List<FluidChemicalReactionRecipe> FluidChemicalReactionRecipes = freezerRecipes(recipeManager, false);
@@ -238,16 +258,30 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(SolarSimulator_Type, solarSimulatorRecipes());
         var materials = ResourceCometItem.materials();
         registration.addRecipes(CometForge_Type, materials.stream().map(material ->
-            new CometForgeJeiRecipe(material.copyWithCount(material.getMaxStackSize()), ResourceCometItem.create(material))).toList());
+            new CometForgeJeiRecipe(SingularityCompressionRecipe.resultFor(Minecraft.getInstance().level, material),
+                ResourceCometItem.create(material))).toList());
         registration.addRecipes(SolarSimulator_Type, materials.stream().map(material ->
             new SolarSimulatorJeiRecipe(ResourceCometItem.create(material), List.of(material), java.util.Optional.empty())).toList());
         registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()),
-            net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and a full normal stack of an unmodified item tagged crystalnexus:comet_material (raw materials and ingots by default) into the controller."));
+            net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and one singularity of the tagged raw material or ingot for the comet."));
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
 		return manager.getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipeClass::isInstance).map(recipeClass::cast).toList();
+	}
+
+	private static List<ItemStack> generatedSingularityMaterials() {
+		var level = Minecraft.getInstance().level;
+		var fixed = level == null ? List.<SingularityCompressionRecipe>of()
+			: level.getRecipeManager().getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE).stream()
+				.map(RecipeHolder::value).toList();
+		return net.minecraft.core.registries.BuiltInRegistries.ITEM.stream()
+			.map(net.minecraft.world.item.Item::getDefaultInstance)
+			.filter(stack -> ResourceCometItem.isMaterial(stack) && fixed.stream().noneMatch(recipe ->
+				recipe.getInputCount(0) == GeneratedSingularityItem.COST
+					&& !recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(stack)))
+			.toList();
 	}
 
 	private static List<FluidChemicalReactionRecipe> freezerRecipes(RecipeManager manager, boolean freezer) {

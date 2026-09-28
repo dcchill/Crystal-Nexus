@@ -484,7 +484,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> BLUEPRINT_FRAME = REGISTRY.register("blueprint_frame", BlueprintFrameBlock::new);
 	public static final DeferredBlock<Block> BLUEPRINT_CONTROLLER = REGISTRY.register("blueprint_controller", BlueprintControllerBlock::new);
 	public static final DeferredBlock<Block> BLACK_HOLE_TNT = REGISTRY.register("black_hole_tnt", BlackHoleTntBlock::new);
-	// Start of user code block custom blocks
+	
 	public static final DeferredBlock<Block> GRAVITY_CONTROL_POINT = REGISTRY.register("gravity_control_point",
 			() -> new Block(Block.Properties.of().sound(net.minecraft.world.level.block.SoundType.METAL).strength(1.75f, 18f)
 					.requiresCorrectToolForDrops().lightLevel(state -> 15)));
@@ -508,5 +508,5 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CONTROLLER = REGISTRY.register("assembly_line_controller", net.crystalnexus.block.AssemblyLineControllerBlock::new);
 	public static final DeferredBlock<Block> DIESEL_GENERATOR_DRIVESHAFT = REGISTRY.register("diesel_generator_driveshaft", net.crystalnexus.block.GasolineGeneratorDriveshaftBlock::new);
 	public static final DeferredBlock<Block> DIESEL_GENERATOR_CONTROLLER = REGISTRY.register("diesel_generator_controller", net.crystalnexus.block.GasolineGeneratorControllerBlock::new);
-	// End of user code block custom blocks
+	
 }

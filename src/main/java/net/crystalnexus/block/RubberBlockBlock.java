@@ -13,7 +13,7 @@ import net.minecraft.world.level.material.PushReaction;
 public class RubberBlockBlock extends Block {
     public RubberBlockBlock() {
         super(BlockBehaviour.Properties.of()
-                .sound(SoundType.SLIME_BLOCK) // more fitting sound
+                .sound(SoundType.SLIME_BLOCK) 
                 .strength(0.75f, 8.5f)
                 .noOcclusion());
     }
@@ -31,7 +31,7 @@ public class RubberBlockBlock extends Block {
     @Override
     public void updateEntityAfterFallOn(BlockGetter level, Entity entity) {
         if (!entity.isSuppressingBounce()) {
-            double bounceStrength = 0.9; // adjust bounce height (1.0 = equal to fall)
+            double bounceStrength = 0.9; 
             entity.setDeltaMovement(
                     entity.getDeltaMovement().x,
                     -entity.getDeltaMovement().y * bounceStrength,
@@ -49,7 +49,7 @@ public class RubberBlockBlock extends Block {
 	public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
     super.onPlace(state, level, pos, oldState, isMoving);
 
-    if (isMoving) { // means piston pushed it
+    if (isMoving) { 
         var entities = level.getEntities(null, new net.minecraft.world.phys.AABB(pos).inflate(0.5));
         for (Entity entity : entities) {
             if (!entity.isPassenger() && !entity.isVehicle() && entity.isPushable()) {

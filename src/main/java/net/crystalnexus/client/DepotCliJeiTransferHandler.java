@@ -33,7 +33,7 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
         if (output != null) PROGRAMMED_OUTPUTS.add(output);
     }
 
-    /** Associates a JEI recipe instance with its category's machine catalyst. */
+    
     public static void registerMachine(Object recipe, ResourceLocation machine) {
         if (recipe != null && machine != null) RECIPE_MACHINES.put(recipeKey(recipe), machine);
     }
@@ -49,8 +49,8 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
 
     @Override
     public Optional<MenuType<DepotCliMenu>> getMenuType() {
-        // JEI needs the concrete menu type to make this handler eligible for its
-        // plus button across third-party recipe categories.
+        
+        
         return Optional.of(CrystalnexusModMenus.DEPOT_CLI.get());
     }
 
@@ -59,14 +59,14 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
             IRecipeSlotsView slotsView, Player player, boolean maxTransfer, boolean doTransfer) {
         try {
             ItemStack output = primaryOutput(slotsView);
-            // Never block JEI's plus button during its dry-run availability check.
-            // The Depot uses its own storage rather than the visible player slots.
+            
+            
             if (output.isEmpty()) return null;
             if (doTransfer) {
                 queueFromSlots(slotsView, recipe, machineFor(recipe), RECIPE_CATEGORIES.get(recipeKey(recipe)));
             }
         } catch (RuntimeException ignored) {
-            // A modded category must never disable the Depot CLI transfer button.
+            
             return null;
         }
         return null;
@@ -78,9 +78,9 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
         if (output.isEmpty()) return;
         ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(output.getItem());
         int count = Math.max(1, output.getCount());
-        // Category identity is authoritative. A crafting-table recipe can have a
-        // catalyst in another mod's JEI view, so slot count/catalyst alone cannot
-        // distinguish it from a machine recipe.
+        
+        
+        
         if (ResourceLocation.fromNamespaceAndPath("minecraft", "crafting").equals(category)
             || isCraftingTableRecipe(recipe)) {
             pendingCommand.set("craft " + outputId + " " + count);
@@ -126,8 +126,8 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
     private static boolean isCraftingTableRecipe(Object recipe) {
         if (recipe instanceof RecipeHolder<?> holder && holder.value() instanceof CraftingRecipe) return true;
         if (recipe instanceof CraftingRecipe) return true;
-        // Create and similar mods wrap vanilla CraftingRecipe objects in their
-        // own JEI category class. Use the class hierarchy as a reliable indicator.
+        
+        
         for (Class<?> cls = recipe.getClass(); cls != null && !cls.equals(Object.class); cls = cls.getSuperclass()) {
             for (Class<?> iface : cls.getInterfaces()) {
                 if (iface.getName().contains("CraftingRecipe")) return true;
@@ -145,7 +145,7 @@ public class DepotCliJeiTransferHandler implements IUniversalRecipeTransferHandl
         return recipe.getClass().getName() + "|" + recipe;
     }
 
-    /** Exact-category wrapper: JEI checks these before universal handlers. */
+    
     public static final class CategoryHandler implements IRecipeTransferHandler<DepotCliMenu, Object> {
         private final RecipeType<Object> type;
         private final DepotCliJeiTransferHandler delegate;

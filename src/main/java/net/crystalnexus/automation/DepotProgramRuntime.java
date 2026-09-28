@@ -76,7 +76,7 @@ public final class DepotProgramRuntime {
         int tickActions = 0;
         long currentTick = player.getServer().getTickCount();
 
-        // Process timed interval triggers
+        
         if (currentTick - state.lastTimedCheckTick >= 1) {
             state.lastTimedCheckTick = currentTick;
             for (DepotProgram program : depot.getPrograms()) {
@@ -97,7 +97,7 @@ public final class DepotProgramRuntime {
             }
         }
 
-        // Process event-based triggers
+        
         if (state.events.isEmpty()) return tickActions;
         while (!state.events.isEmpty() && tickActions < MAX_NETWORK_ACTIONS_PER_TICK) {
             DepotEvent event = state.events.removeFirst();
@@ -133,7 +133,7 @@ public final class DepotProgramRuntime {
             case FLUID_ADDED -> event.type() == DepotEvent.Type.FLUID_ADDED
                     && program.trigger().itemId().equals(event.resourceId());
             case INVENTORY_CHANGED -> event.type() == DepotEvent.Type.INVENTORY_CHANGED;
-            case TIMED_INTERVAL -> false; // handled separately in process()
+            case TIMED_INTERVAL -> false; 
         };
     }
 

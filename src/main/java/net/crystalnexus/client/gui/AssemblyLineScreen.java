@@ -25,10 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-/** Full-screen, server-owned assembly program editor. JEI drops configure recipes; they never create items. */
+
 public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu> {
     private static final int NODE_W = 190, HEADER_H = 25, ROW_H = 18, OUTPUT_ROW_H = 30, SOCKET_TOP_GAP = 28;
-    /** Keep a permanent right-side strip for JEI's ingredient list and search field. */
+    
     private static final int JEI_STRIP = 190;
     private int canvasLeft, canvasTop, canvasRight, canvasBottom;
     private double panX = 24, panY = 24;
@@ -58,7 +58,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             return TRANSFER_SELECTIONS.getOrDefault(menu, -1);
         }
     }
-    /** JEI can invoke its transfer button without a graph click having selected a node. */
+    
     public int transferTargetNode() {
         int remembered = rememberedSelection(menu);
         if (menu.controller.graph().node(remembered) != null) return remembered;
@@ -92,8 +92,8 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         imageWidth = Math.max(320, width - JEI_STRIP);
         imageHeight = Math.max(300, height - 28);
         super.init();
-        // AbstractContainerScreen centers containers. This editor is left-aligned so
-        // JEI has a contiguous, unobstructed area on the right instead of two slivers.
+        
+        
         leftPos = 8;
         topPos = Math.max(8, (height - imageHeight) / 2);
         canvasLeft = leftPos + 8;
@@ -280,9 +280,9 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
 
     @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        // AbstractContainerScreen consumes otherwise-empty clicks inside its GUI.
-        // Handle the graph canvas first; header widgets are outside this rectangle
-        // and continue through normal Screen dispatch below.
+        
+        
+        
         if (!insideCanvas(mouseX, mouseY)) return super.mouseClicked(mouseX, mouseY, button);
         double lx = mouseX - leftPos, ly = mouseY - topPos;
         if (openInputNode >= 0 && clickInputDropdown(lx, ly)) return true;

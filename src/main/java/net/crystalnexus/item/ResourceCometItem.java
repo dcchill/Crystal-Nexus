@@ -2,6 +2,7 @@ package net.crystalnexus.item;
 
 import net.crystalnexus.init.CrystalnexusModDataComponents;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.recipe.SingularityBreakdownRecipe;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -45,14 +46,23 @@ public final class ResourceCometItem extends Item {
         var id = comet.get(CrystalnexusModDataComponents.MATERIAL.get());
         if (id == null || !BuiltInRegistries.ITEM.containsKey(id)) return ItemStack.EMPTY;
         ItemStack result = BuiltInRegistries.ITEM.get(id).getDefaultInstance();
-        // The tag gates new crafting; already-forged comets retain their target.
         return isBaseMaterial(result) ? result : ItemStack.EMPTY;
     }
 
     public static boolean isSingularity(ItemStack stack) {
+        return !singularityMaterial(stack).isEmpty();
+    }
+
+    public static boolean isHighTierSingularity(ItemStack stack) {
         return stack.is(CrystalnexusModItems.DIAMOND_SINGULARITY.get())
             || stack.is(CrystalnexusModItems.ENERGY_SINGULARITY.get())
             || stack.is(CrystalnexusModItems.EMERALD_SINGULARITY.get());
+    }
+
+    public static ItemStack singularityMaterial(ItemStack stack) {
+        if (stack.isEmpty() || stack.getDamageValue() != 0) return ItemStack.EMPTY;
+        ItemStack material = new ItemStack(SingularityBreakdownRecipe.outputFor(stack));
+        return isMaterial(material) ? material : ItemStack.EMPTY;
     }
 
     @Override public Component getName(ItemStack stack) {

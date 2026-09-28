@@ -3,6 +3,7 @@ package net.crystalnexus.gametest;
 import net.crystalnexus.block.entity.*;
 import net.crystalnexus.init.*;
 import net.crystalnexus.item.ResourceCometItem;
+import net.crystalnexus.item.GeneratedSingularityItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
@@ -51,11 +52,11 @@ public final class CometForgeGameTests {
         helper.assertTrue(forge.getTemporalFluidTank().getFluidAmount() == 25_000, "Fluid port forwards to controller");
         return forge;
     }
-    private static void ingredients(CometForgeControllerBlockEntity forge, ItemStack material) {
+    private static void ingredients(CometForgeControllerBlockEntity forge, ItemStack singularity) {
         forge.setItem(0, new ItemStack(CrystalnexusModItems.DIAMOND_SINGULARITY.get()));
         forge.setItem(1, new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get()));
         forge.setItem(2, new ItemStack(CrystalnexusModItems.EMERALD_SINGULARITY.get()));
-        forge.setItem(3, material);
+        forge.setItem(3, singularity);
     }
     private static void tick(CometForgeControllerBlockEntity forge, int count) {
         for (int i = 0; i < count; i++) {
@@ -66,18 +67,18 @@ public final class CometForgeGameTests {
     @GameTest(template = "comet_forge")
     public static void craftsAndReloads(GameTestHelper helper) {
         var forge = setup(helper);
-        ingredients(forge, new ItemStack(Items.IRON_INGOT, 64));
+        ingredients(forge, new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get()));
         forge.serverTick();
         helper.assertTrue(forge.getProgress() == 0, "No progress without energy");
         tick(forge, 80);
-        helper.assertTrue(forge.getProgress() == 80 && forge.getItem(3).getCount() == 64, "Ingredients remain until completion");
+        helper.assertTrue(forge.getProgress() == 80 && forge.getItem(3).is(CrystalnexusModItems.IRON_SINGULARITY.get()), "Ingredients remain until completion");
         var saved = forge.saveWithoutMetadata(helper.getLevel().registryAccess());
         forge.loadAdditional(saved, helper.getLevel().registryAccess());
         forge.validateStructureNow();
         tick(forge, 120);
         helper.assertTrue(ResourceCometItem.material(forge.getItem(4)).is(Items.IRON_INGOT), "Correct comet after reload");
-        helper.assertTrue(forge.getItem(0).isEmpty() && forge.getItem(1).isEmpty() && forge.getItem(2).isEmpty()
-            && forge.getItem(3).isEmpty(), "Exactly three mixed singularities and full material stack consumed");
+        helper.assertTrue(java.util.stream.IntStream.range(0, 4).allMatch(i -> forge.getItem(i).isEmpty()),
+            "Three high-tier and one matching singularity consumed");
         helper.assertTrue(forge.getTemporalFluidTank().isEmpty() && forge.multiblockEnergyInput().getEnergyStored() == 0, "Exact costs charged");
         helper.succeed();
     }
@@ -104,7 +105,7 @@ public final class CometForgeGameTests {
         var forge = setup(helper);
         var named = new ItemStack(Items.IRON_INGOT, 64);
         named.set(DataComponents.CUSTOM_NAME, Component.literal("Custom"));
-        helper.assertTrue(!forge.canPlaceItem(3, named) && !ResourceCometItem.isMaterial(new ItemStack(Items.DIAMOND_SWORD)), "Reject modified and unstackable materials");
+        helper.assertTrue(!forge.canPlaceItem(3, named) && !ResourceCometItem.isMaterial(new ItemStack(Items.DIAMOND_SWORD)), "Reject raw items and unstackable materials");
         helper.assertTrue(!forge.canPlaceItemThroughFace(0, new ItemStack(Items.DIRT), Direction.UP)
             && !forge.canPlaceItem(4, new ItemStack(Items.DIRT)), "Automation obeys slot rules");
         helper.assertTrue(forge.canTakeItemThroughFace(4, ItemStack.EMPTY, Direction.DOWN)
@@ -112,15 +113,22 @@ public final class CometForgeGameTests {
         helper.assertTrue(ResourceCometItem.isMaterial(new ItemStack(Items.IRON_INGOT))
             && ResourceCometItem.isMaterial(new ItemStack(Items.RAW_IRON)), "Tag inherits ingots and raw materials");
         helper.assertTrue(!forge.canPlaceItem(3, new ItemStack(Items.ENDER_PEARL))
-            && !forge.canPlaceItem(3, new ItemStack(Items.DIAMOND))
+            && !forge.canPlaceItem(3, GeneratedSingularityItem.create(new ItemStack(Items.DIAMOND)))
             && ResourceCometItem.create(new ItemStack(Items.DIRT)).isEmpty(), "Untagged materials cannot craft comets");
+        ItemStack spent = new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get());
+        spent.setDamageValue(1);
+        helper.assertTrue(!forge.canPlaceItem(3, spent)
+            && !forge.canPlaceItem(0, new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get()))
+            && forge.canPlaceItem(0, new ItemStack(CrystalnexusModItems.DIAMOND_SINGULARITY.get())),
+            "High-tier slots and matching singularity slot enforce their roles");
         helper.assertTrue(ResourceCometItem.materials().stream().allMatch(stack -> stack.is(ResourceCometItem.COMET_MATERIAL)),
             "JEI material enumeration respects the tag");
-        ingredients(forge, new ItemStack(Items.RAW_IRON, 63));
+        ingredients(forge, GeneratedSingularityItem.create(new ItemStack(Items.RAW_IRON)));
+        forge.setItem(3, ItemStack.EMPTY);
         tick(forge, 1);
-        helper.assertTrue(forge.getProgress() == 0, "Partial stack cannot craft");
+        helper.assertTrue(forge.getProgress() == 0, "Missing matching singularity cannot craft");
         forge.multiblockEnergyInput().extractEnergy(2500, false);
-        forge.setItem(3, new ItemStack(Items.RAW_IRON, 64));
+        forge.setItem(3, GeneratedSingularityItem.create(new ItemStack(Items.RAW_IRON)));
         tick(forge, 200);
         helper.assertTrue(ResourceCometItem.material(forge.getItem(4)).is(Items.RAW_IRON), "Tagged raw material crafts");
         ItemStack legacy = new ItemStack(CrystalnexusModItems.RESOURCE_COMET.get());
@@ -131,16 +139,17 @@ public final class CometForgeGameTests {
     @GameTest(template = "comet_forge")
     public static void pausesAndChangesInputs(GameTestHelper helper) {
         var forge = setup(helper);
-        ingredients(forge, new ItemStack(Items.IRON_INGOT, 64));
+        ingredients(forge, new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get()));
         forge.setItem(4, new ItemStack(Items.DIRT));
         tick(forge, 1);
         helper.assertTrue(forge.getProgress() == 0 && forge.getTemporalFluidTank().getFluidAmount() == 25_000, "Blocked output charges nothing");
         forge.setItem(4, ItemStack.EMPTY);
         forge.serverTick();
         helper.assertTrue(forge.getProgress() == 1, "Cleared output resumes");
-        forge.setItem(3, new ItemStack(Items.GOLD_INGOT, 64));
+        forge.setItem(0, new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get()));
         forge.serverTick();
-        helper.assertTrue(forge.getProgress() == 0, "Different material resets progress");
+        helper.assertTrue(forge.getProgress() == 0, "Invalid high-tier input resets progress");
+        ingredients(forge, new ItemStack(CrystalnexusModItems.GOLD_SINGULARITY.get()));
         tick(forge, 2);
         var remaining = forge.getTemporalFluidTank().drain(100_000, IFluidHandler.FluidAction.EXECUTE);
         tick(forge, 1);

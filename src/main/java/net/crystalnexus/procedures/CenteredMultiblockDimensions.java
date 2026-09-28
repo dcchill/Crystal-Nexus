@@ -44,7 +44,7 @@ final class CenteredMultiblockDimensions {
 				Math.floorDiv(min.getZ() + max.getZ(), 2));
 	}
 
-	/** Legacy scaling value retained for ports and reaction-chamber output. */
+	
 	static int legacyRadius(BlockPos min, BlockPos max) {
 		return legacyRadius(size(min.getX(), max.getX()), size(min.getY(), max.getY()), size(min.getZ(), max.getZ()));
 	}

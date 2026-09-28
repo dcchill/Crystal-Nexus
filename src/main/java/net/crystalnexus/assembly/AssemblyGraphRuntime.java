@@ -7,7 +7,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import java.util.*;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-/** Bounded server-side execution facade for the persisted graph. */
+
 public final class AssemblyGraphRuntime {
     private AssemblyGraphRuntime() {}
 

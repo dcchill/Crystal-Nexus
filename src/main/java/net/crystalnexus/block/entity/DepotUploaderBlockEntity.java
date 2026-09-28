@@ -38,7 +38,7 @@ public class DepotUploaderBlockEntity extends BlockEntity implements WorldlyCont
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         be.tickCounter++;
-        if (be.tickCounter % 5 != 0) return; // every 5 ticks
+        if (be.tickCounter % 5 != 0) return; 
 
         if (be.owner == null) return;
         if (!DepotSavedData.hasPoweredController(serverLevel, be.owner)) return;

@@ -7,7 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.core.HolderLookup;
 import java.util.*;
 
-/** Server-owned, directed acyclic assembly program. UI coordinates are persisted with the program. */
+
 public final class AssemblyGraph {
     public static final int MAX_NODES = 128;
     public static final int MAX_EDGES = 512;
@@ -31,7 +31,7 @@ public final class AssemblyGraph {
         public int[] outputSlots = new int[] { 1 };
         public String[] outputItems = new String[] { "" };
         public String[] outputFluids = new String[0];
-        /** Explicit terminal routing. A disconnected output is exported only when its flag is set. */
+        
         public boolean[] outputExport = new boolean[] { true };
         public Node(int id, long machine, String block, float x, float y) {
             this.id = id; this.machine = machine; this.block = block; this.x = x; this.y = y;
@@ -43,7 +43,7 @@ public final class AssemblyGraph {
     public int nextId() { return nodes.stream().mapToInt(n -> n.id).max().orElse(-1) + 1; }
     public void syncRevision() { revision++; }
 
-    /** Returns an actionable validation message, or an empty string when executable. */
+    
     public String validate() {
         if (nodes.size() > MAX_NODES) return "Too many graph nodes";
         if (edges.size() > MAX_EDGES) return "Too many graph connections";

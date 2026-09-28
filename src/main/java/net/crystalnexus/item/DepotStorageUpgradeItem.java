@@ -22,7 +22,7 @@ public class DepotStorageUpgradeItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        // Client: succeed instantly for responsiveness
+        
         if (level.isClientSide) {
             return InteractionResultHolder.success(stack);
         }
