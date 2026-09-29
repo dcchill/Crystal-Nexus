@@ -43,7 +43,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> stack.is(CrystalnexusModFluids.NITROGEN.get())) {
 		@Override protected void onContentsChanged() {
 			setChanged();
-			if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+			if (level != null && level.getGameTime() % 5 == 0) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 		}
 	};
 
@@ -54,6 +54,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	public static void tick(Level level, BlockPos pos, BlockState state, CircuitPressBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
 		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
 		CircuitPressOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 		if (blockEntity.getPersistentData().contains(net.crystalnexus.assembly.AssemblyLineMachine.OWNER)) blockEntity.setChanged();
@@ -168,9 +169,10 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) {
+			if (!simulate && retval > 0) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+				if (level != null && level.getGameTime() % 5 == 0)
+					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 			}
 			return retval;
 		}
@@ -178,9 +180,10 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) {
+			if (!simulate && retval > 0) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+				if (level != null && level.getGameTime() % 5 == 0)
+					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 			}
 			return retval;
 		}

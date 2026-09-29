@@ -10,6 +10,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+import net.crystalnexus.block.entity.EnergyCableNetworkManager;
 
 @GameTestHolder("crystalnexus")
 @PrefixGameTestTemplate(false)
@@ -59,6 +60,51 @@ public final class EnergyCableGameTests {
         int accepted = link.receiveEnergy(100_000, false);
         helper.assertTrue(accepted == 2_048 && sink.getEnergyStored() == 2_048,
             "A mixed cable route must be limited by its slowest tier");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void simulationDoesNotMoveEnergy(GameTestHelper helper) {
+        BlockPos cablePos = new BlockPos(2, 4, 2);
+        BlockPos sinkPos = cablePos.east();
+        helper.setBlock(cablePos, CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get());
+        helper.setBlock(sinkPos, CrystalnexusModBlocks.TESSERACT.get());
+        IEnergyStorage link = energy(helper, cablePos, Direction.WEST);
+        IEnergyStorage sink = energy(helper, sinkPos, Direction.WEST);
+        helper.assertTrue(link.receiveEnergy(1_000, true) == 1_000 && sink.getEnergyStored() == 0,
+            "A simulated cable transfer must report capacity without mutating the sink");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void removalSplitsCachedNetwork(GameTestHelper helper) {
+        BlockPos first = new BlockPos(1, 4, 1);
+        BlockPos second = first.east();
+        BlockPos sinkPos = second.east();
+        helper.setBlock(first, CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get());
+        helper.setBlock(second, CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get());
+        helper.setBlock(sinkPos, CrystalnexusModBlocks.TESSERACT.get());
+        IEnergyStorage link = energy(helper, first, Direction.WEST);
+        helper.destroyBlock(second);
+        helper.assertTrue(link.receiveEnergy(1_000, false) == 0,
+            "Removing a cable must invalidate and split the cached component immediately");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void networkTickPullsFromExternalSource(GameTestHelper helper) {
+        BlockPos sourcePos = new BlockPos(1, 4, 1);
+        BlockPos cablePos = sourcePos.east();
+        BlockPos sinkPos = cablePos.east();
+        helper.setBlock(sourcePos, CrystalnexusModBlocks.TESSERACT.get());
+        helper.setBlock(cablePos, CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get());
+        helper.setBlock(sinkPos, CrystalnexusModBlocks.TESSERACT.get());
+        IEnergyStorage source = energy(helper, sourcePos, Direction.EAST);
+        IEnergyStorage sink = energy(helper, sinkPos, Direction.WEST);
+        source.receiveEnergy(4_000, false);
+        EnergyCableNetworkManager.tick(helper.getLevel());
+        helper.assertTrue(source.getEnergyStored() < 4_000 && sink.getEnergyStored() > 0,
+            "The level network tick must pull from a source and deliver to a sink");
         helper.succeed();
     }
 

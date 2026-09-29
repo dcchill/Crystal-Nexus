@@ -34,9 +34,20 @@ public final class ReactorLayout {
 	public final int hash;
 	private final List<FuelColumn> fuelColumnData;
 	private final List<FuelRod> fuelRodData;
+	private final List<BlockPos> energyOutputData;
+	private final List<BlockPos> fluidInputData;
+	private final List<BlockPos> itemInputData;
+	private final List<BlockPos> itemOutputData;
+	private final List<BlockPos> wasteOutputData;
+	private final BlockPos minBounds;
+	private final BlockPos maxBounds;
 
 	private ReactorLayout(boolean valid, String reason, int radius, int fuelRods, int fuelColumns, int coolantChannels, int activeCoolantChannels,
-			double outputMultiplier, double heatMultiplier, double fuelEfficiency, int hash, List<FuelColumn> fuelColumnData, List<FuelRod> fuelRodData) {
+			double outputMultiplier, double heatMultiplier, double fuelEfficiency, int hash,
+			List<FuelColumn> fuelColumnData, List<FuelRod> fuelRodData,
+			List<BlockPos> energyOutputData, List<BlockPos> fluidInputData,
+			List<BlockPos> itemInputData, List<BlockPos> itemOutputData, List<BlockPos> wasteOutputData,
+			BlockPos minBounds, BlockPos maxBounds) {
 		this.valid = valid;
 		this.reason = reason;
 		this.radius = radius;
@@ -51,10 +62,18 @@ public final class ReactorLayout {
 		this.hash = hash;
 		this.fuelColumnData = List.copyOf(fuelColumnData);
 		this.fuelRodData = List.copyOf(fuelRodData);
+		this.energyOutputData = List.copyOf(energyOutputData);
+		this.fluidInputData = List.copyOf(fluidInputData);
+		this.itemInputData = List.copyOf(itemInputData);
+		this.itemOutputData = List.copyOf(itemOutputData);
+		this.wasteOutputData = List.copyOf(wasteOutputData);
+		this.minBounds = minBounds.immutable();
+		this.maxBounds = maxBounds.immutable();
 	}
 
 	public static ReactorLayout invalid(String reason) {
-		return new ReactorLayout(false, reason, 0, 0, 0, 0, 0, 0, 0, 1, 0, List.of(), List.of());
+		return new ReactorLayout(false, reason, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+			List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), BlockPos.ZERO, BlockPos.ZERO);
 	}
 
 	public static ReactorLayout analyze(LevelAccessor world, BlockPos center, int radius) {
@@ -72,6 +91,21 @@ public final class ReactorLayout {
 		double efficiency = 0;
 		Map<BlockPos, FuelColumn> fuelColumnData = new HashMap<>();
 		List<FuelRod> fuelRodData = new java.util.ArrayList<>();
+		List<BlockPos> energyOutputs = new java.util.ArrayList<>();
+		List<BlockPos> fluidInputs = new java.util.ArrayList<>();
+		List<BlockPos> itemInputs = new java.util.ArrayList<>();
+		List<BlockPos> itemOutputs = new java.util.ArrayList<>();
+		List<BlockPos> wasteOutputs = new java.util.ArrayList<>();
+		for (BlockPos cursor : BlockPos.betweenClosed(minBounds, maxBounds)) {
+			if (!isShellPosition(cursor, minBounds, maxBounds)) continue;
+			Block block = world.getBlockState(cursor).getBlock();
+			BlockPos pos = cursor.immutable();
+			if (block == CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get()) energyOutputs.add(pos);
+			else if (block == CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get()) fluidInputs.add(pos);
+			else if (block == CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get()) itemInputs.add(pos);
+			else if (block == CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get()) itemOutputs.add(pos);
+			else if (block == CrystalnexusModBlocks.REACTOR_WASTE_OUTPUT.get()) wasteOutputs.add(pos);
+		}
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int y = minBounds.getY() + 1; y < maxBounds.getY(); y++) {
 				for (int z = minBounds.getZ() + 1; z < maxBounds.getZ(); z++) {
@@ -93,8 +127,8 @@ public final class ReactorLayout {
 		if (fuel.isEmpty()) {
 			return invalid("Missing fuel rods");
 		}
-		
-		
+
+
 		for (int x = minBounds.getX() + 1; x < maxBounds.getX(); x++) {
 			for (int z = minBounds.getZ() + 1; z < maxBounds.getZ(); z++) {
 				Block columnType = null;
@@ -122,7 +156,7 @@ public final class ReactorLayout {
 				return invalid("Fuel column missing roof control rod");
 			}
 		}
-		
+
 		for (int x = minBounds.getX(); x <= maxBounds.getX(); x++) {
 			for (int z = minBounds.getZ(); z <= maxBounds.getZ(); z++) {
 				BlockPos rodPos = new BlockPos(x, maxBounds.getY(), z);
@@ -171,10 +205,18 @@ public final class ReactorLayout {
 				output / fuel.size(), heat / fuel.size(), Math.max(0.25, efficiency / fuel.size()), hash,
 			fuelColumnData.values().stream().toList(), fuelRodData.stream()
 				.sorted(java.util.Comparator.comparingInt((FuelRod rod) -> rod.pos().getY())
-					.thenComparingInt(rod -> rod.pos().getZ()).thenComparingInt(rod -> rod.pos().getX())).toList());
+					.thenComparingInt(rod -> rod.pos().getZ()).thenComparingInt(rod -> rod.pos().getX())).toList(),
+			energyOutputs, fluidInputs, itemInputs, itemOutputs, wasteOutputs, minBounds, maxBounds);
 	}
 
 	public List<FuelRod> fuelRods() { return fuelRodData; }
+	public List<BlockPos> energyOutputs() { return energyOutputData; }
+	public List<BlockPos> fluidInputs() { return fluidInputData; }
+	public List<BlockPos> itemInputs() { return itemInputData; }
+	public List<BlockPos> itemOutputs() { return itemOutputData; }
+	public List<BlockPos> wasteOutputs() { return wasteOutputData; }
+	public BlockPos minBounds() { return minBounds; }
+	public BlockPos maxBounds() { return maxBounds; }
 
 	public record FuelRod(BlockPos pos, BlockPos controlRodPos, double output, double heat) { }
 

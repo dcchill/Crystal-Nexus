@@ -91,7 +91,7 @@ public final class CenteredMultiblockValidator {
 		return structure;
 	}
 
-	
+
 	private static Link findStructure(LevelAccessor world, BlockPos controllerPos,
 			Block core, Block controller, TagKey<Block> casingTag) {
 		lastReason = "";
@@ -120,7 +120,7 @@ public final class CenteredMultiblockValidator {
 		return new Link(controllerPos, bounds.min, bounds.max);
 	}
 
-	
+
 	private static Link findStructureFromCore(LevelAccessor world, BlockPos corePos,
 			Block core, Block controller, TagKey<Block> casingTag) {
 		lastReason = "";
@@ -303,6 +303,10 @@ public final class CenteredMultiblockValidator {
 			}
 		}
 		boolean valid = link != null;
+		if (!valid && blockEntity instanceof ReactorComputerBlockEntity computer
+				&& computer.getCachedLayout().valid) {
+			computer.updateLayoutCache(ReactorLayout.invalid(reason == null ? "Offline" : reason));
+		}
 		int radius = valid ? link.radius : 0;
 		long min = valid ? link.minBounds.asLong() : 0;
 		long max = valid ? link.maxBounds.asLong() : 0;
@@ -326,7 +330,7 @@ public final class CenteredMultiblockValidator {
 
 	private static String lastReason = "";
 
-	
+
 	public static boolean acceptsPort(BlockEntity controller, BlockPos pos) {
 		CompoundTag data = controller.getPersistentData();
 		return data.getBoolean("canOpenInventory") && CenteredMultiblockDimensions.isShellPosition(pos,

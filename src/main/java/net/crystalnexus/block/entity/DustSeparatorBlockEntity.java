@@ -43,6 +43,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 	public static void tick(Level level, BlockPos pos, BlockState state, DustSeparatorBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
 		DustSeparatorOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -144,9 +145,10 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) {
+			if (!simulate && retval > 0) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+				if (level != null && level.getGameTime() % 5 == 0)
+					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 			}
 			return retval;
 		}
@@ -154,9 +156,10 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) {
+			if (!simulate && retval > 0) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+				if (level != null && level.getGameTime() % 5 == 0)
+					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 			}
 			return retval;
 		}

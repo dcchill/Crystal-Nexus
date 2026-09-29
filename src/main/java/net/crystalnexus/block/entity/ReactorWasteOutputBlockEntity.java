@@ -32,6 +32,26 @@ public class ReactorWasteOutputBlockEntity extends RandomizableContainerBlockEnt
 		super(CrystalnexusModBlockEntities.REACTOR_WASTE_OUTPUT.get(), position, state);
 	}
 
+	public boolean insert(ItemStack source, boolean simulate) {
+		ItemStack remaining = source.copy();
+		for (int slot = 0; slot < stacks.size() && !remaining.isEmpty(); slot++) {
+			ItemStack current = stacks.get(slot);
+			if (!current.isEmpty() && !ItemStack.isSameItemSameComponents(current, remaining)) continue;
+			int room = current.isEmpty() ? remaining.getMaxStackSize() : current.getMaxStackSize() - current.getCount();
+			int moved = Math.min(room, remaining.getCount());
+			if (!simulate && moved > 0) {
+				if (current.isEmpty()) stacks.set(slot, remaining.copyWithCount(moved));
+				else current.grow(moved);
+			}
+			remaining.shrink(moved);
+		}
+		if (!simulate && remaining.getCount() != source.getCount()) {
+			setChanged();
+			if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+		}
+		return remaining.isEmpty();
+	}
+
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);

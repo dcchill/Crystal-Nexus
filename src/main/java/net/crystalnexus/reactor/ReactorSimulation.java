@@ -208,16 +208,19 @@ public final class ReactorSimulation {
 
 	private static void setStatus(LevelAccessor world, BlockPos pos, ReactorComputerBlockEntity computer, String status, int blockState) {
 		CompoundTag data = computer.getPersistentData();
+		boolean statusChanged = !status.equals(data.getString("reactorStatus"));
 		data.putString("reactorStatus", status);
 		computer.setChanged();
 		if (world instanceof Level level) {
 			var state = level.getBlockState(pos);
-			if (state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop
-					&& prop.getPossibleValues().contains(blockState)) {
+			boolean blockChanged = state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop
+					&& prop.getPossibleValues().contains(blockState) && state.getValue(prop) != blockState;
+			if (blockChanged && state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop) {
 				level.setBlock(pos, state.setValue(prop, blockState), 3);
 			}
-			level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
-			if ("SCRAM".equals(status) && !level.getLevelData().getGameRules().getBoolean(CrystalnexusModGameRules.DISABLE_MELTDOWNS)) {
+			if (statusChanged || blockChanged || level.getGameTime() % 5 == 0)
+				level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+			if (statusChanged && "SCRAM".equals(status) && !level.getLevelData().getGameRules().getBoolean(CrystalnexusModGameRules.DISABLE_MELTDOWNS)) {
 				level.playSound(null, pos, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("crystalnexus:reactor_failure")), SoundSource.BLOCKS, 1, 1);
 			}
 		}

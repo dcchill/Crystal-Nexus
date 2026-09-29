@@ -20,8 +20,6 @@ public class HyperEnergyCableBlock extends EnergyCableMk2Block {
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide) return null;
-        return type == CrystalnexusModBlockEntities.HYPER_ENERGY_CABLE.get()
-            ? (lvl, pos, blockState, be) -> ((HyperEnergyCableBlockEntity) be).serverTick() : null;
+        return null;
     }
 }

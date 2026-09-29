@@ -4,6 +4,7 @@ package net.crystalnexus.block.entity;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.reactor.ReactorLayout;
 import net.crystalnexus.reactor.ReactorSimulation;
+import net.crystalnexus.reactor.ReactorLayoutInvalidation;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.procedures.CenteredMultiblockValidator;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -147,7 +148,8 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	private void syncEnergy() {
 		setChanged();
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		if (level != null && level.getGameTime() % 5 == 0)
+			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {
@@ -160,7 +162,8 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 		protected void onContentsChanged() {
 			super.onContentsChanged();
 			setChanged();
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			if (level != null && level.getGameTime() % 5 == 0)
+				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 		}
 	};
 
@@ -188,21 +191,17 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 				control.setInsertion(insertion);
 	}
 	public void pushEnergyOutputs() {
-		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
-		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
-		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
-		for (BlockPos pos : BlockPos.betweenClosed(min, max))
-			if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output && acceptsMultiblockPort(pos)) output.pushEnergy();
+		if (level == null || !cachedLayout.valid || !getPersistentData().getBoolean("canOpenInventory")) return;
+		for (BlockPos pos : cachedLayout.energyOutputs())
+			if (level.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.pushEnergy();
 	}
 
 	public void pullFuelInputs() {
 		if (level == null || !getPersistentData().getBoolean("canOpenInventory")) return;
 		ReactorLayout layout = getCachedLayout();
 		if (!layout.valid) return;
-		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
-		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
-		for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
-			if (!acceptsMultiblockPort(pos) || !(level.getBlockEntity(pos) instanceof MultiblockItemInputBlockEntity input)) continue;
+		for (BlockPos pos : layout.itemInputs()) {
+			if (!(level.getBlockEntity(pos) instanceof MultiblockItemInputBlockEntity input)) continue;
 			for (int slot = 0; slot < input.getContainerSize(); slot++) {
 				ItemStack offered = input.getItem(slot);
 				if (!ReactorSimulation.isFuel(offered)) continue;
@@ -220,13 +219,21 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	public void pushSpentCells() {
 		if (level == null || !getPersistentData().getBoolean("canOpenInventory") || !cachedLayout.valid) return;
-		BlockPos min = BlockPos.of(getPersistentData().getLong("multiblockMinBounds"));
-		BlockPos max = BlockPos.of(getPersistentData().getLong("multiblockMaxBounds"));
-		java.util.List<MultiblockItemOutputBlockEntity> outputs = new java.util.ArrayList<>();
-		for (BlockPos pos : BlockPos.betweenClosed(min, max)) {
-			if (acceptsMultiblockPort(pos) && level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity output)
-				outputs.add(output);
+		ItemStack waste = getItem(2);
+		if (!waste.isEmpty()) {
+			for (BlockPos pos : cachedLayout.wasteOutputs()) {
+				if (level.getBlockEntity(pos) instanceof ReactorWasteOutputBlockEntity output
+						&& output.insert(waste.copyWithCount(1), true)) {
+					output.insert(waste.copyWithCount(1), false);
+					waste.shrink(1);
+					setChanged();
+					break;
+				}
+			}
 		}
+		java.util.List<MultiblockItemOutputBlockEntity> outputs = new java.util.ArrayList<>();
+		for (BlockPos pos : cachedLayout.itemOutputs())
+			if (level.getBlockEntity(pos) instanceof MultiblockItemOutputBlockEntity output) outputs.add(output);
 		if (outputs.isEmpty()) return;
 		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods()) {
 			if (!(level.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
@@ -250,8 +257,13 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 
 	public void updateLayoutCache(ReactorLayout layout) {
 		this.cachedLayout = layout;
-		this.layoutCheckDelay = 0;
+		if (level instanceof net.minecraft.server.level.ServerLevel serverLevel)
+			ReactorLayoutInvalidation.register(serverLevel, worldPosition, layout);
 		setChanged();
+	}
+
+	public void invalidateLayout() {
+		layoutCheckDelay = 0;
 	}
 
 	public boolean shouldRecheckLayout(int interval) {
@@ -260,5 +272,12 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void setRemoved() {
+		if (level instanceof net.minecraft.server.level.ServerLevel serverLevel)
+			ReactorLayoutInvalidation.unregister(serverLevel, worldPosition);
+		super.setRemoved();
 	}
 }

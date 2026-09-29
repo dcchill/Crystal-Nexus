@@ -105,6 +105,8 @@ public final class ReactorCoolingGameTests {
 		BlockPos outputPos = new BlockPos(5, 1, 3);
 		helper.setBlock(inputPos, CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get());
 		helper.setBlock(outputPos, CrystalnexusModBlocks.MULTIBLOCK_ITEM_OUTPUT.get());
+		computer.updateLayoutCache(ReactorLayout.analyze(helper.getLevel(),
+			helper.absolutePos(new BlockPos(1, 0, 1)), helper.absolutePos(new BlockPos(5, 2, 5))));
 		MultiblockItemInputBlockEntity input = helper.getBlockEntity(inputPos);
 		MultiblockItemOutputBlockEntity output = helper.getBlockEntity(outputPos);
 		input.setItem(0, new ItemStack(CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get()));

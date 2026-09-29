@@ -23,12 +23,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import javax.annotation.Nullable;
+import java.util.Objects;
 
 public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int CAPACITY = 10_000;
@@ -36,12 +38,17 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     private int progress;
     private int maxProgress = 100;
     private int selectedMode;
+    private ItemStack cachedRecipeInput = ItemStack.EMPTY;
+    private PartsAssemblingRecipe cachedRecipe;
+    private RecipeManager cachedRecipeManager;
+    private ResourceLocation cachedAssignedRecipe;
+    private int cachedRecipeMode = -1;
 
     private final EnergyStorage energy = new EnergyStorage(CAPACITY, 2_048, 2_048) {
         @Override
         public int receiveEnergy(int amount, boolean simulate) {
             int received = super.receiveEnergy(amount, simulate);
-            if (received > 0 && !simulate) sync();
+            if (received > 0 && !simulate) setChanged();
             return received;
         }
     };
@@ -72,18 +79,15 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, PartsAssemblerBlockEntity blockEntity) {
+		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity.progress > 0)) return;
         if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
         blockEntity.tickServer(level, pos, state);
     }
 
     private void tickServer(Level level, BlockPos pos, BlockState state) {
         ItemStack input = items.get(0);
-        PartsAssemblingRecipe recipe = level.getRecipeManager().getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
-            .filter(holder -> net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos) == null || holder.id().equals(net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos)))
-            .map(holder -> holder.value())
-            .filter(candidate -> candidate.mode().ordinal() == selectedMode)
-            .filter(candidate -> candidate.matches(new SingleRecipeInput(input), level))
-            .findFirst().orElse(null);
+        ResourceLocation assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos);
+        PartsAssemblingRecipe recipe = findRecipe(level, input, assigned);
 
         ItemStack upgrade = items.get(2);
         int energyCost = recipe == null ? 0 : MachineUpgradeHelper.energyCost(upgrade, recipe.energyPerTick());
@@ -105,7 +109,27 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
         boolean lit = state.getValue(PartsAssemblerBlock.LIT);
         if (lit != working) level.setBlock(pos, state.setValue(PartsAssemblerBlock.LIT, working), 3);
-        if (working || lit != working) sync();
+        if (working || lit != working) setChanged();
+    }
+
+    private @Nullable PartsAssemblingRecipe findRecipe(Level level, ItemStack input, @Nullable ResourceLocation assigned) {
+        RecipeManager manager = level.getRecipeManager();
+        if (manager == cachedRecipeManager && selectedMode == cachedRecipeMode
+                && Objects.equals(assigned, cachedAssignedRecipe)
+                && input.getCount() == cachedRecipeInput.getCount()
+                && ItemStack.isSameItemSameComponents(input, cachedRecipeInput)) return cachedRecipe;
+
+        cachedRecipe = manager.getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
+            .filter(holder -> assigned == null || holder.id().equals(assigned))
+            .map(holder -> holder.value())
+            .filter(candidate -> candidate.mode().ordinal() == selectedMode)
+            .filter(candidate -> candidate.matches(new SingleRecipeInput(input), level))
+            .findFirst().orElse(null);
+        cachedRecipeManager = manager;
+        cachedRecipeMode = selectedMode;
+        cachedAssignedRecipe = assigned;
+        cachedRecipeInput = input.copy();
+        return cachedRecipe;
     }
 
     private boolean canAccept(ItemStack result) {

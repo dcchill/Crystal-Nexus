@@ -13,16 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 
 public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyContainer {
     private final int maxTransfer;
@@ -50,115 +42,23 @@ public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyCon
         return side == null ? energyLink : new NetworkEnergyStorage(side);
     }
 
-    public void serverTick() {
-        if (level == null || level.isClientSide) return;
-        if (legacyEnergy > 0 && moveLegacyEnergy()) return;
-
-        for (Direction direction : Direction.values()) {
-            if (!canPull(direction)) continue;
-            BlockPos sourcePos = worldPosition.relative(direction);
-            if (level.getBlockEntity(sourcePos) instanceof EnergyCableMk2BlockEntity) continue;
-            IEnergyStorage source = energyAt(sourcePos, direction.getOpposite());
-            if (source == null || !source.canExtract()) continue;
-            int offered = source.extractEnergy(maxTransfer, true);
-            if (offered > 0 && routeEnergy(sourcePos, direction, offered, false) > 0) return;
-        }
-    }
-
-    private int routeEnergy(@Nullable BlockPos sourcePos, @Nullable Direction sourceSide,
-                            int offered, boolean simulate) {
-        for (Endpoint endpoint : endpoints(sourceSide)) {
-            if (endpoint.pos.equals(sourcePos) || !endpoint.pipe.canPush(endpoint.side)) continue;
-            int amount = Math.min(Math.min(offered, maxTransfer), endpoint.limit);
-            int accepted = endpoint.storage.receiveEnergy(amount, true);
-            if (accepted <= 0) continue;
-            if (simulate) return accepted;
-            int moved = accepted;
-            if (sourcePos != null) {
-                IEnergyStorage source = energyAt(sourcePos, sourceSide.getOpposite());
-                if (source == null || !source.canExtract()) continue;
-                moved = source.extractEnergy(accepted, false);
-                if (moved <= 0) continue;
-            }
-            moved = endpoint.storage.receiveEnergy(moved, false);
-            if (moved <= 0) continue;
-            setAutomaticInput(sourceSide);
-            endpoint.pipe.setAutomaticOutput(endpoint.side);
-            return moved;
-        }
-        return 0;
-    }
-
-    private boolean moveLegacyEnergy() {
-        for (Endpoint endpoint : endpoints(null)) {
-            if (!endpoint.pipe.canPush(endpoint.side)) continue;
-            int moved = endpoint.storage.receiveEnergy(
-                Math.min(Math.min(legacyEnergy, maxTransfer), endpoint.limit), false);
-            if (moved <= 0) continue;
-            legacyEnergy -= moved;
-            endpoint.pipe.setAutomaticOutput(endpoint.side);
-            setChanged();
-            return true;
-        }
-        return false;
-    }
-
     private int receiveNetworkEnergy(int amount, boolean simulate, @Nullable Direction ingress) {
-        if (amount <= 0 || ingress != null && !canPull(ingress)) return 0;
-        return routeEnergy(null, ingress, amount, simulate);
+        return EnergyCableNetworkManager.receive(this, amount, simulate, ingress);
     }
 
-    private List<Endpoint> endpoints(@Nullable Direction excludedSide) {
-        List<Endpoint> result = new ArrayList<>();
-        if (level == null) return result;
-        ArrayDeque<NetworkNode> queue = new ArrayDeque<>();
-        Set<BlockPos> visited = new HashSet<>();
-        queue.add(new NetworkNode(worldPosition, maxTransfer));
-        visited.add(worldPosition);
+    int maxTransfer() { return maxTransfer; }
+    int legacyEnergy() { return legacyEnergy; }
+    void consumeLegacyEnergy(int amount) { legacyEnergy = Math.max(0, legacyEnergy - amount); setChanged(); }
 
-        while (!queue.isEmpty()) {
-            NetworkNode node = queue.removeFirst();
-            if (!(level.getBlockEntity(node.pos) instanceof EnergyCableMk2BlockEntity cable)) continue;
-            for (Direction direction : Direction.values()) {
-                BlockPos neighborPos = node.pos.relative(direction);
-                if (level.getBlockEntity(neighborPos) instanceof EnergyCableMk2BlockEntity neighbor) {
-                    if (visited.add(neighborPos)) {
-                        queue.addLast(new NetworkNode(neighborPos,
-                            Math.min(node.limit, neighbor.maxTransfer)));
-                    }
-                    continue;
-                }
-                if (node.pos.equals(worldPosition) && direction == excludedSide) continue;
-                IEnergyStorage storage = cable.energyAt(neighborPos, direction.getOpposite());
-                if (storage != null && storage.canReceive()) {
-                    result.add(new Endpoint(neighborPos, direction, cable, storage, node.limit));
-                }
-            }
-        }
-        return result;
-    }
-
-    private @Nullable IEnergyStorage energyAt(BlockPos pos, @Nullable Direction preferredSide) {
-        IEnergyStorage storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, preferredSide);
-        if (storage != null) return storage;
-        storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-        if (storage != null) return storage;
-        for (Direction side : Direction.values()) {
-            storage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, side);
-            if (storage != null) return storage;
-        }
-        return null;
-    }
-
-    private boolean canPull(Direction direction) {
+    boolean canPullFrom(Direction direction) {
         return (automaticOutputSides & 1 << direction.ordinal()) == 0;
     }
 
-    private boolean canPush(Direction direction) {
+    boolean canPushTo(Direction direction) {
         return (automaticInputSides & 1 << direction.ordinal()) == 0;
     }
 
-    private void setAutomaticInput(@Nullable Direction direction) {
+    void markAutomaticInput(@Nullable Direction direction) {
         if (direction == null) return;
         int side = 1 << direction.ordinal();
         automaticInputSides |= side;
@@ -166,7 +66,7 @@ public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyCon
         setChanged();
     }
 
-    private void setAutomaticOutput(Direction direction) {
+    void markAutomaticOutput(Direction direction) {
         int side = 1 << direction.ordinal();
         automaticOutputSides |= side;
         automaticInputSides &= ~side;
@@ -192,9 +92,17 @@ public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyCon
         if (legacyEnergy > 0) tag.putInt("legacyEnergy", legacyEnergy);
     }
 
-    private record NetworkNode(BlockPos pos, int limit) {}
-    private record Endpoint(BlockPos pos, Direction side, EnergyCableMk2BlockEntity pipe,
-                            IEnergyStorage storage, int limit) {}
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        EnergyCableNetworkManager.register(this);
+    }
+
+    @Override
+    public void setRemoved() {
+        EnergyCableNetworkManager.unregister(this);
+        super.setRemoved();
+    }
     private final class NetworkEnergyStorage implements IEnergyStorage {
         private final Direction side;
         private NetworkEnergyStorage(@Nullable Direction side) { this.side = side; }

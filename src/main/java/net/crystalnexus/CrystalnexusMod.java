@@ -8,6 +8,8 @@ import net.neoforged.neoforge.network.handling.IPayloadHandler;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.fml.util.thread.SidedThreadGroups;
@@ -39,6 +41,8 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModDataComponents;
 import net.crystalnexus.init.CrystalnexusModFeatures;
+import net.crystalnexus.block.entity.EnergyCableNetworkManager;
+import net.crystalnexus.reactor.ReactorLayoutInvalidation;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.Map;
@@ -53,8 +57,8 @@ public class CrystalnexusMod {
 	public static final String MODID = "crystalnexus";
 
 	public CrystalnexusMod(IEventBus modEventBus) {
-		
-		
+
+
 		NeoForge.EVENT_BUS.register(this);
 		modEventBus.addListener(this::registerNetworking);
 		modEventBus.addListener(ModChunkTickets::onRegisterTicketControllers);
@@ -75,12 +79,12 @@ public class CrystalnexusMod {
 		CrystalnexusModFluids.REGISTRY.register(modEventBus);
 		CrystalnexusModFluidTypes.REGISTRY.register(modEventBus);
 
-		
-		
+
+
 	}
 
-	
-	
+
+
 	private static boolean networkingRegistered = false;
 	private static final Map<CustomPacketPayload.Type<?>, NetworkMessage<?>> MESSAGES = new HashMap<>();
 
@@ -109,6 +113,7 @@ public class CrystalnexusMod {
 
 	@SubscribeEvent
 	public void tick(ServerTickEvent.Post event) {
+		event.getServer().getAllLevels().forEach(EnergyCableNetworkManager::tick);
 		List<Tuple<Runnable, Integer>> actions = new ArrayList<>();
 		workQueue.forEach(work -> {
 			work.setB(work.getB() - 1);
@@ -117,6 +122,24 @@ public class CrystalnexusMod {
 		});
 		actions.forEach(e -> e.getA().run());
 		workQueue.removeAll(actions);
+	}
+
+	@SubscribeEvent
+	public void reactorBlockPlaced(BlockEvent.EntityPlaceEvent event) {
+		if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)
+			ReactorLayoutInvalidation.invalidateAt(level, event.getPos());
+	}
+
+	@SubscribeEvent
+	public void reactorBlockBroken(BlockEvent.BreakEvent event) {
+		if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)
+			ReactorLayoutInvalidation.invalidateAt(level, event.getPos());
+	}
+
+	@SubscribeEvent
+	public void levelUnloaded(LevelEvent.Unload event) {
+		if (event.getLevel() instanceof net.minecraft.server.level.ServerLevel level)
+			EnergyCableNetworkManager.unload(level);
 	}
 
 	public static class CuriosApiHelper {

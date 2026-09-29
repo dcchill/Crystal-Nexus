@@ -20,15 +20,32 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.AmethystClusterBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CactusBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.NetherWartBlock;
+import net.minecraft.world.level.block.SugarCaneBlock;
 
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 import javax.annotation.Nullable;
 
 import java.util.stream.IntStream;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+	private static final int RADIUS = 5;
+	private static final int HEIGHT = 3;
+	private static final int SCAN_VOLUME = (RADIUS * 2 + 1) * (RADIUS * 2 + 1) * HEIGHT;
+	private static final int SCAN_PER_CYCLE = (SCAN_VOLUME + 19) / 20;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(0, ItemStack.EMPTY);
+	private final Set<BlockPos> growableTargets = new LinkedHashSet<>();
+	private int scanCursor;
 
 	public ChlorophyteAcceleratorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CHLOROPHYTE_ACCELERATOR.get(), position, state);
@@ -127,7 +144,6 @@ public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBloc
 			int retval = super.receiveEnergy(maxReceive, simulate);
 			if (!simulate) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 			}
 			return retval;
 		}
@@ -137,7 +153,6 @@ public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBloc
 			int retval = super.extractEnergy(maxExtract, simulate);
 			if (!simulate) {
 				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
 			}
 			return retval;
 		}
@@ -146,4 +161,76 @@ public class ChlorophyteAcceleratorBlockEntity extends RandomizableContainerBloc
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+
+	public void runAccelerationCycle(ServerLevel level) {
+		refreshTargetSlice(level);
+		if (energyStorage.getEnergyStored() < 256) return;
+
+		Iterator<BlockPos> targets = growableTargets.iterator();
+		while (targets.hasNext()) {
+			BlockPos target = targets.next();
+			BlockState state = level.getBlockState(target);
+			if (!isGrowable(state)) {
+				targets.remove();
+				continue;
+			}
+			Block block = state.getBlock();
+			if (block instanceof CropBlock crop) {
+				int age = state.getValue(CropBlock.AGE);
+				if (level.random.nextFloat() < 0.25f) {
+					level.setBlock(target, state.setValue(CropBlock.AGE, age + 1), 2);
+					if (age + 1 >= crop.getMaxAge()) targets.remove();
+				}
+			} else if (block instanceof AmethystClusterBlock) {
+				level.scheduleTick(target, block, 1 + level.random.nextInt(3));
+			} else if (block instanceof NetherWartBlock) {
+				int age = state.getValue(NetherWartBlock.AGE);
+				if (level.random.nextFloat() < 0.25f) {
+					level.setBlock(target, state.setValue(NetherWartBlock.AGE, age + 1), 2);
+					if (age + 1 >= 3) targets.remove();
+				}
+			} else if (state.hasProperty(SugarCaneBlock.AGE)) {
+				int age = state.getValue(SugarCaneBlock.AGE);
+				if (level.random.nextFloat() < 0.25f) {
+					level.setBlock(target, state.setValue(SugarCaneBlock.AGE, age + 1), 2);
+					if (age + 1 >= 15) targets.remove();
+				}
+			} else if (state.hasProperty(CactusBlock.AGE)) {
+				int age = state.getValue(CactusBlock.AGE);
+				if (level.random.nextFloat() < 0.25f) {
+					level.setBlock(target, state.setValue(CactusBlock.AGE, age + 1), 2);
+					if (age + 1 >= 15) targets.remove();
+				}
+			}
+		}
+		energyStorage.extractEnergy(256, false);
+	}
+
+	private void refreshTargetSlice(ServerLevel level) {
+		for (int scanned = 0; scanned < SCAN_PER_CYCLE; scanned++) {
+			int index = scanCursor++;
+			if (scanCursor >= SCAN_VOLUME) scanCursor = 0;
+			int dy = index % HEIGHT - 1;
+			int horizontal = index / HEIGHT;
+			int dz = horizontal % (RADIUS * 2 + 1) - RADIUS;
+			int dx = horizontal / (RADIUS * 2 + 1) - RADIUS;
+			BlockPos target = worldPosition.offset(dx, dy, dz);
+			if (isGrowable(level.getBlockState(target))) growableTargets.add(target.immutable());
+			else growableTargets.remove(target);
+		}
+	}
+
+	static boolean isGrowable(BlockState state) {
+		Block block = state.getBlock();
+		if (block == Blocks.TORCHFLOWER_CROP) return false;
+		if (block instanceof CropBlock crop)
+			return state.hasProperty(CropBlock.AGE) && state.getValue(CropBlock.AGE) < crop.getMaxAge();
+		if (block instanceof NetherWartBlock)
+			return state.getValue(NetherWartBlock.AGE) < 3;
+		if (block instanceof AmethystClusterBlock) return true;
+		if (state.hasProperty(SugarCaneBlock.AGE)) return state.getValue(SugarCaneBlock.AGE) < 15;
+		return state.hasProperty(CactusBlock.AGE) && state.getValue(CactusBlock.AGE) < 15;
+	}
+
+	public int cachedTargetCount() { return growableTargets.size(); }
 }

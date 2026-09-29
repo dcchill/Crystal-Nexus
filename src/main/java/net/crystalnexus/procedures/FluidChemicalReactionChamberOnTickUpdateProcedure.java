@@ -212,6 +212,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
 
     private static void sync(ServerLevel level, BlockPos pos, FluidChemicalReactionChamberBlockEntity chamber) {
         chamber.setChanged();
-        level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+        if (chamber.getPersistentData().getDouble("progress") == 0 || level.getGameTime() % 5 == 0)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
     }
 }

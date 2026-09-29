@@ -20,6 +20,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.text.DecimalFormat;
+import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 
 public class CrystalCrusherOnTickUpdateProcedure {
 	private static final int ENERGY_PER_OPERATION = 4096;
@@ -27,9 +28,10 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
+		if (!(world.getBlockEntity(pos) instanceof CrystalCrusherBlockEntity crusher)) return "FE: 0";
 		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress")) ? 1 : 2);
 
-		ItemStack upgrade = itemFromBlockInventory(world, pos, 2);
+		ItemStack upgrade = crusher.getItem(2);
 		MachineTier machineTier = MachineTier.from(world.getBlockState(pos));
 		double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
@@ -39,21 +41,17 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		if (!(world instanceof Level level))
 			return energyText(world, pos);
 
-		ItemStack input = itemFromBlockInventory(world, pos, 0);
-		ItemStack result;
+		ItemStack input = crusher.getItem(0);
         var assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos);
-        if (assigned == null) result = CrushingRecipeSupport.findResult(level, input, machineTier);
-        else result = level.getRecipeManager().byKey(assigned)
-            .filter(h -> h.value() instanceof net.crystalnexus.jei_recipes.OreCrushingJeiRecipe r && machineTier.supports(r.minimumMachineTier()) && r.getIngredients().getFirst().test(input))
-            .map(h -> h.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+		ItemStack result = crusher.crushingResult(level, input, machineTier, assigned);
 		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
-		ItemStack currentOutput = itemFromBlockInventory(world, pos, 1);
+		ItemStack currentOutput = crusher.getItem(1);
 		boolean outputFits = outputCount > 0
 				&& (currentOutput.isEmpty() || ItemStack.isSameItemSameComponents(currentOutput, result))
 				&& currentOutput.getCount() + outputCount <= result.getMaxStackSize();
 
 		int requiredEnergy = assigned != null ? energyCost : Math.min(energyCost, CrystalnexusConfig.MACHINES.CRYSTAL_CRUSHER.maxExtract());
-		if (result.isEmpty() || getEnergyStored(world, pos, null) < requiredEnergy || !outputFits)
+		if (result.isEmpty() || crusher.getEnergyStorage().getEnergyStored() < requiredEnergy || !outputFits)
 			return energyText(world, pos);
 
 		double progress = getBlockNBTNumber(world, pos, "progress") + 1;
@@ -62,21 +60,18 @@ public class CrystalCrusherOnTickUpdateProcedure {
 			serverLevel.sendParticles(net.minecraft.core.particles.ParticleTypes.DRAGON_BREATH,
 					x + 0.5, y + 0.5, z + 0.5, 1, 0.25, 0, 0.25, 0);
 
-		if (progress >= cookTime && world instanceof ILevelExtension extension
-				&& extension.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inventory) {
+		if (progress >= cookTime) {
 			ItemStack produced = result.copy();
 			produced.setCount(currentOutput.getCount() + outputCount);
-			inventory.setStackInSlot(1, produced);
-			ItemStack remainingInput = inventory.getStackInSlot(0).copy();
+			crusher.setItem(1, produced);
+			ItemStack remainingInput = crusher.getItem(0).copy();
 			remainingInput.shrink(1);
-			inventory.setStackInSlot(0, remainingInput);
+			crusher.setItem(0, remainingInput);
 			setBlockNBTNumber(world, pos, "progress", 0);
 
-			IEnergyStorage energy = extension.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
-			if (energy != null) {
-                if (assigned != null) net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(energy, energyCost);
-                else energy.extractEnergy(energyCost, false);
-            }
+			IEnergyStorage energy = crusher.getEnergyStorage();
+            if (assigned != null) net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(energy, energyCost);
+            else energy.extractEnergy(energyCost, false);
 		}
 
 		return energyText(world, pos);
@@ -99,8 +94,9 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		if (blockEntity == null || blockEntity.getPersistentData().getDouble(tag) == value)
 			return;
 		blockEntity.getPersistentData().putDouble(tag, value);
+		blockEntity.setChanged();
 		BlockState state = world.getBlockState(pos);
-		if (world instanceof Level level)
+		if (world instanceof Level level && (!"progress".equals(tag) || value == 0 || level.getGameTime() % 5 == 0))
 			level.sendBlockUpdated(pos, state, state, 3);
 	}
 

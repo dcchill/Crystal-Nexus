@@ -60,6 +60,7 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
     public static void tick(Level level, BlockPos pos, BlockState state, FluidChemicalReactionChamberBlockEntity blockEntity) {
         if (!(level instanceof ServerLevel serverLevel))
             return;
+        if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
         FluidChemicalReactionChamberOnTickUpdateProcedure.execute(serverLevel, pos);
     }
 
@@ -107,17 +108,18 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
         CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract(), 0) {
         @Override public int receiveEnergy(int amount, boolean simulate) {
             int received = super.receiveEnergy(amount, simulate);
-            if (!simulate) changed();
+            if (!simulate && received > 0) changed();
             return received;
         }
         @Override public int extractEnergy(int amount, boolean simulate) {
             int extracted = super.extractEnergy(amount, simulate);
-            if (!simulate) changed();
+            if (!simulate && extracted > 0) changed();
             return extracted;
         }
         private void changed() {
             setChanged();
-            if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            if (level != null && level.getGameTime() % 5 == 0)
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
         }
     };
 

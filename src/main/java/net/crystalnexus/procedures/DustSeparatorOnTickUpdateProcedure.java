@@ -136,7 +136,8 @@ public final class DustSeparatorOnTickUpdateProcedure {
 
     private static void sync(Level level, BlockPos pos, BlockEntity entity) {
         entity.setChanged();
-        level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+        if (entity.getPersistentData().getDouble("progress") == 0 || level.getGameTime() % 5 == 0)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
     }
 
     private static String energyText(DustSeparatorBlockEntity separator) {

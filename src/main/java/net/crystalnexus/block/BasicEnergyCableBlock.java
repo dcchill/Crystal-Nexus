@@ -28,6 +28,7 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
 import net.crystalnexus.block.entity.BasicEnergyCableBlockEntity;
+import net.crystalnexus.block.entity.EnergyCableMk2BlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 
 public class BasicEnergyCableBlock extends Block implements EntityBlock {
@@ -116,6 +117,13 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
     }
 
     @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean moving) {
+        super.onPlace(state, level, pos, oldState, moving);
+        if (!level.isClientSide && level.getBlockEntity(pos) instanceof EnergyCableMk2BlockEntity cable)
+            net.crystalnexus.block.entity.EnergyCableNetworkManager.register(cable);
+    }
+
+    @Override
     public BlockState updateShape(
         BlockState state,
         Direction dir,
@@ -124,6 +132,9 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         BlockPos pos,
         BlockPos neighborPos
     ) {
+        if (level instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+            net.crystalnexus.block.entity.EnergyCableNetworkManager.invalidate(serverLevel, pos);
+        }
         return updateConnections(level, pos, state);
     }
 
@@ -141,7 +152,7 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         BlockPos otherPos = pos.relative(dir);
         BlockState otherState = level.getBlockState(otherPos);
 
-        
+
         if (otherState.getBlock() instanceof BasicEnergyCableBlock
             || otherState.getBlock() instanceof EnergyCableMk2Block) return true;
 
@@ -168,10 +179,6 @@ public boolean propagatesSkylightDown(BlockState state, net.minecraft.world.leve
         BlockState state,
         BlockEntityType<T> type
     ) {
-        if (level.isClientSide) return null;
-
-        return type == CrystalnexusModBlockEntities.BASIC_ENERGY_CABLE.get()
-            ? (lvl, p, s, be) -> ((BasicEnergyCableBlockEntity) be).serverTick()
-            : null;
+        return null;
     }
 }

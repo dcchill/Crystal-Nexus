@@ -98,6 +98,7 @@ public final class RefineryOnTickUpdateProcedure {
     }
     private static void sync(ServerLevel level, BlockPos pos, RefineryBlockEntity refinery) {
         refinery.setChanged();
-        level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
+        if (refinery.getPersistentData().getDouble("progress") == 0 || level.getGameTime() % 5 == 0)
+            level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
     }
 }

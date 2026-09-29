@@ -40,8 +40,7 @@ public class ReactorWasteOutputBlock extends Block implements EntityBlock {
 
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-		return level.isClientSide() ? null : (tickLevel, pos, tickState, blockEntity) ->
-				ReactorWasteOutputOnTickUpdateProcedure.execute(tickLevel, pos);
+		return null;
 	}
 
 	@Override
