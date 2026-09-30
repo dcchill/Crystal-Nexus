@@ -1,7 +1,18 @@
 {
+  "loader": "neoforge:item_layers",
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "crystalnexus:item/solaris"
+    "layer0": "crystalnexus:item/solaris",
+    "layer1": "crystalnexus:item/solaris"
+  },
+  "neoforge_data": {
+    "layers": {
+      "1": {
+        "block_light": 15,
+        "sky_light": 15,
+        "ambient_occlusion": false
+      }
+    }
   },
   "display": {
     "firstperson_righthand": { "rotation": [0, -90, 55], "translation": [0, 8, 0], "scale": [1.25, 1.25, 1.25] },
