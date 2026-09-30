@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [" h ", "bfb", " m "],
+  "key": {
+    "h": { "item": "crystalnexus:hemochanter" },
+    "b": { "item": "crystalnexus:obsidrax_machine_bolt" },
+    "f": { "item": "crystalnexus:hyper_machine_frame" },
+    "m": { "item": "crystalnexus:matter_transmutation_table" }
+  },
+  "result": { "id": "crystalnexus:celestial_gear_forge", "count": 1 }
+}

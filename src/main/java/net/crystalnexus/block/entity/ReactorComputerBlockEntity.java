@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.reactor.ReactorLayout;
@@ -39,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 	private ReactorLayout cachedLayout = ReactorLayout.invalid("Offline");
 	private int layoutCheckDelay = 0;
@@ -50,6 +53,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	public static void tick(Level level, BlockPos pos, BlockState state, ReactorComputerBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		ReactorComputerOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -147,9 +151,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.maxExtract(), this::syncEnergy);
 
 	private void syncEnergy() {
-		setChanged();
-		if (level != null && level.getGameTime() % 5 == 0)
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		machineSync.changed();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {
@@ -161,9 +163,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
-			setChanged();
-			if (level != null && level.getGameTime() % 5 == 0)
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			machineSync.changed();
 		}
 	};
 

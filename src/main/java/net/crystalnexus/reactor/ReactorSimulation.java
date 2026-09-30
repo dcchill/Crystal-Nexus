@@ -17,9 +17,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 public final class ReactorSimulation {
 	private ReactorSimulation() {
@@ -210,7 +208,7 @@ public final class ReactorSimulation {
 		CompoundTag data = computer.getPersistentData();
 		boolean statusChanged = !status.equals(data.getString("reactorStatus"));
 		data.putString("reactorStatus", status);
-		computer.setChanged();
+		computer.machineSync.changed();
 		if (world instanceof Level level) {
 			var state = level.getBlockState(pos);
 			boolean blockChanged = state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop
@@ -218,7 +216,7 @@ public final class ReactorSimulation {
 			if (blockChanged && state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop) {
 				level.setBlock(pos, state.setValue(prop, blockState), 3);
 			}
-			if (statusChanged || blockChanged || level.getGameTime() % 5 == 0)
+			if (statusChanged || blockChanged)
 				level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
 			if (statusChanged && "SCRAM".equals(status) && !level.getLevelData().getGameRules().getBoolean(CrystalnexusModGameRules.DISABLE_MELTDOWNS)) {
 				level.playSound(null, pos, BuiltInRegistries.SOUND_EVENT.get(ResourceLocation.parse("crystalnexus:reactor_failure")), SoundSource.BLOCKS, 1, 1);

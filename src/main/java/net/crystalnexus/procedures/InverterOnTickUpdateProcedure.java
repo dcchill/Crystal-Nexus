@@ -27,13 +27,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.InverterJeiRecipe;
-import net.crystalnexus.init.CrystalnexusModItems;
 
 import java.util.stream.Collectors;
 import java.util.List;
 
 public class InverterOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		double outputAmount = 0;
 		double cookTime = 0;
 		String registry_name_no_namespace = "";
@@ -175,7 +175,7 @@ public class InverterOnTickUpdateProcedure {
 				}
 			}
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		return;
 	}
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {

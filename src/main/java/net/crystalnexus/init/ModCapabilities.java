@@ -20,6 +20,8 @@ public class ModCapabilities {
                 net.crystalnexus.item.ToolEnergy.MAX_RECEIVE, Integer.MAX_VALUE),
             CrystalnexusModItems.COMPOUND_PICKAXE.get(),
             CrystalnexusModItems.COMPOUND_SWORD.get(),
+            CrystalnexusModItems.METEOR_SWORD.get(),
+            CrystalnexusModItems.SOLARIS.get(),
             CrystalnexusModItems.MINING_LASER.get(),
             CrystalnexusModItems.ORE_SCANNER.get(),
             CrystalnexusModItems.GEIGER_COUNTER.get(),

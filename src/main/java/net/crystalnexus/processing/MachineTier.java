@@ -1,5 +1,7 @@
 package net.crystalnexus.processing;
 
+import net.crystalnexus.item.GradientItemName;
+import net.crystalnexus.item.GradientItemName.Palette;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,22 +32,27 @@ public enum MachineTier {
 
     public int level() { return level; }
     public int displayNumber() { return level + 1; }
-    public int displayColor() {
+    public Palette primaryPalette() {
         return switch (this) {
-            case IRON -> 0xD0D0D0;
-            case CRYSTAL -> 0x55FFFF;
-            case CHLOROPHYTE -> 0x55FF55;
-            case INVERTIUM -> 0xFF55FF;
-            case TITANIUM -> 0x80AAFF;
-            case CARBON -> 0x9999AA;
-            case TITANIUM_CARBIDE -> 0xAA88FF;
-            case TUNGSTEN -> 0xFFAA55;
-            case HYPER -> 0xFF5555;
+            case IRON -> null;
+            case CRYSTAL -> Palette.ANCIENT_CRYSTAL;
+            case CHLOROPHYTE -> Palette.CHLOROPHYTE;
+            case INVERTIUM -> Palette.INVERTIUM;
+            case TITANIUM -> Palette.AZURINE;
+            case CARBON -> Palette.CARBON_FIBER;
+            case TITANIUM_CARBIDE -> Palette.FERROSTEEL;
+            case TUNGSTEN -> Palette.OBSIDRAX;
+            case HYPER -> Palette.METEORITE_ALLOY;
         };
     }
+    public int displayColor() {
+        Palette palette = primaryPalette();
+        return palette == null ? 0xD0D0D0 : palette.midpoint();
+    }
     public MutableComponent tierLabel() {
-        return Component.translatable("tooltip.crystalnexus.machine_tier", displayNumber())
-            .withStyle(style -> style.withColor(displayColor()));
+        MutableComponent label = Component.translatable("tooltip.crystalnexus.machine_tier", displayNumber());
+        return this == HYPER ? GradientItemName.gradient(label, Palette.METEORITE_ALLOY)
+            : label.withStyle(style -> style.withColor(displayColor()));
     }
     public double processingTimeMultiplier() { return processingTimeMultiplier; }
     public double energyMultiplier() { return energyMultiplier; }

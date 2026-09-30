@@ -24,6 +24,7 @@ import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarSimulatorControllerBlockEntity;
 import net.crystalnexus.block.entity.SolarEngineControllerBlockEntity;
 import net.crystalnexus.block.entity.HemochanterBlockEntity;
+import net.crystalnexus.block.entity.CelestialGearForgeBlockEntity;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.client.resources.model.BakedModel;
@@ -139,6 +140,11 @@ public class ClientEventHandler {
 
 @SubscribeEvent
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<CelestialGearForgeBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.CELESTIAL_GEAR_FORGE.get(),
+        net.crystalnexus.client.renderer.CelestialGearForgeRenderer::new
+    );
 
     event.registerBlockEntityRenderer(
         (BlockEntityType<HemochanterBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.HEMOCHANTER.get(),

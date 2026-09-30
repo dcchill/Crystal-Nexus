@@ -1,11 +1,5 @@
 {
-  "replace": false,
   "values": [
-    "crystalnexus:compound_pickaxe",
-    "crystalnexus:azurine_sword",
-    "crystalnexus:cystalized_sword",
-    "crystalnexus:invertium_sword",
-    "crystalnexus:compound_sword",
-    "crystalnexus:chlorophyte_sword"
+    "crystalnexus:meteor_sword"
   ]
 }

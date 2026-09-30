@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 import net.crystalnexus.block.SolarEngineControllerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
@@ -48,6 +50,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class SolarEngineControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
+    public final MachineSync machineSync = new MachineSync(this);
 	public static final int TANK_CAPACITY = 1_000_000;
 	public static final int MAX_HEAT = 50_000;
 	public static final int MAX_CONTAINMENT_STRESS = 10_000;
@@ -59,10 +62,10 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 	private final FluidTank coolant = new FluidTank(TANK_CAPACITY, stack -> stack.is(Fluids.WATER)) {
-		@Override protected void onContentsChanged() { sync(); }
+		@Override protected void onContentsChanged() { machineSync.changed(); }
 	};
 	private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(
-		100_000_000, Integer.MAX_VALUE, this::sync);
+		100_000_000, Integer.MAX_VALUE, machineSync::changed);
 	private final List<BlockPos> energyOutputs = new ArrayList<>();
 	private final List<BlockPos> fluidInputs = new ArrayList<>();
 	@Nullable private StructureNbtValidator.Match structure;
@@ -101,6 +104,7 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 	}
 
 	public void serverTick() {
+        machineSync.tick();
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		if (validationDelay-- <= 0) {
 			validateStructure(serverLevel);
@@ -117,7 +121,8 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 			outputPerTick = 0;
 			heat = Math.max(0, heat - 2);
 			containmentStress = Math.max(0, containmentStress - 20);
-			if (changed || serverLevel.getGameTime() % 20 == 0) sync();
+			if (changed) sync();
+            else machineSync.changed();
 			return;
 		}
 
@@ -138,8 +143,10 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 
 		int requested = Math.max(1, (int) Math.round(profile.baseFePerTick() * extraction));
 		outputPerTick = distributeEnergy(requested);
-		operating = true;
-		if (serverLevel.getGameTime() % 10 == 0) sync();
+		boolean started = !operating;
+        operating = true;
+        if (started) sync();
+        else machineSync.changed();
 	}
 
 	private void validateStructure(ServerLevel level) {

@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 import net.crystalnexus.block.PlasmaGeneratorControllerBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
@@ -41,6 +43,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget {
+    public final MachineSync machineSync = new MachineSync(this);
     public static final int TANK_CAPACITY = 100;
     public static final int ARGON_PER_TICK = 1;
     public static final int GENERATION_PER_TICK = 512_000;
@@ -53,10 +56,10 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     private final FluidTank argonTank = new FluidTank(TANK_CAPACITY,
         stack -> stack.is(CrystalnexusModFluids.ARGON.get())) {
-        @Override protected void onContentsChanged() { sync(); }
+        @Override protected void onContentsChanged() { machineSync.changed(); }
     };
 	private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(
-		100_000_000, Integer.MAX_VALUE, this::sync);
+		100_000_000, Integer.MAX_VALUE, machineSync::changed);
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private final List<BlockPos> heatingCores = new ArrayList<>();
@@ -88,6 +91,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     }
 
     public void serverTick() {
+        machineSync.tick();
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (validationDelay-- <= 0) {
             validateStructure(serverLevel);

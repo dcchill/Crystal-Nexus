@@ -11,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.ExtractinatorGuiMenu;
 import net.crystalnexus.procedures.ProgressDisplay6Procedure;
-import net.crystalnexus.procedures.ExtractinatorOnTickUpdateProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
@@ -50,7 +49,7 @@ public class ExtractinatorGuiScreen extends AbstractContainerScreen<Extractinato
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		boolean customTooltipShown = false;
 		if (mouseX > leftPos + -22 && mouseX < leftPos + 2 && mouseY > topPos + 9 && mouseY < topPos + 33) {
-			String hoverText = ExtractinatorOnTickUpdateProcedure.execute(world, x, y, z);
+			String hoverText = net.crystalnexus.util.MachineEnergyDisplay.text(world, x, y, z);
 			if (hoverText != null) {
 				guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
 			}

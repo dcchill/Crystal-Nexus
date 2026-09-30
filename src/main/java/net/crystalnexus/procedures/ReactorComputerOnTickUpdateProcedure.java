@@ -7,6 +7,7 @@ import net.minecraft.world.level.LevelAccessor;
 
 public class ReactorComputerOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		BlockPos controllerPos = BlockPos.containing(x, y, z);
 		if (world.getBlockEntity(controllerPos) instanceof ReactorComputerBlockEntity computer) {
 			if (computer.shouldRecheckLayout(20)) {

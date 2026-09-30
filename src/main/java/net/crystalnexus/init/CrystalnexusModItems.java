@@ -140,6 +140,8 @@ import net.crystalnexus.item.CopperSingularityItem;
 import net.crystalnexus.item.ConductiveAlloyItem;
 import net.crystalnexus.item.ComputationNodeItem;
 import net.crystalnexus.item.CompoundSwordItem;
+import net.crystalnexus.item.MeteorSwordItem;
+import net.crystalnexus.item.SolarisItem;
 import net.crystalnexus.item.CompoundPickaxeItem;
 import net.crystalnexus.item.CompoundEItem;
 import net.crystalnexus.item.CoffeeItem;
@@ -229,6 +231,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> FLESH_BLOCK = block(CrystalnexusModBlocks.FLESH_BLOCK);
 	public static final DeferredItem<Item> HEMOLYZER = block(CrystalnexusModBlocks.HEMOLYZER);
 	public static final DeferredItem<Item> HEMOCHANTER = block(CrystalnexusModBlocks.HEMOCHANTER);
+	public static final DeferredItem<Item> CELESTIAL_GEAR_FORGE = block(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE);
 	public static final DeferredItem<Item> FLESH_MACHINE_FRAME = block(CrystalnexusModBlocks.FLESH_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_MACHINE_FRAME = block(CrystalnexusModBlocks.CHLOROPHYTE_MACHINE_FRAME);
 	public static final DeferredItem<Item> CHLOROPHYTE_ACCELERATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_ACCELERATOR);
@@ -330,6 +333,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> UNSTABLE_EE_MATTER = REGISTRY.register("unstable_ee_matter", UnstableEEMatterItem::new);
 	public static final DeferredItem<Item> ULTIMA_SMELTER = block(CrystalnexusModBlocks.ULTIMA_SMELTER);
 	public static final DeferredItem<Item> COMPOUND_SWORD = REGISTRY.register("compound_sword", CompoundSwordItem::new);
+	public static final DeferredItem<Item> METEOR_SWORD = REGISTRY.register("meteor_sword", MeteorSwordItem::new);
+	public static final DeferredItem<Item> SOLARIS = REGISTRY.register("solaris", SolarisItem::new);
 	public static final DeferredItem<Item> LASER_SABER = REGISTRY.register("laser_saber", LaserSaberItem::new);
 	public static final DeferredItem<Item> ENERGY_EXTRACTOR = block(CrystalnexusModBlocks.ENERGY_EXTRACTOR);
 	public static final DeferredItem<Item> CHLOROPHYTE_SOLAR_PANEL = block(CrystalnexusModBlocks.CHLOROPHYTE_SOLAR_PANEL);

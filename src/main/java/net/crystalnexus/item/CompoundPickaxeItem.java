@@ -80,9 +80,15 @@ public class CompoundPickaxeItem extends TieredItem {
 				.add(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, -3, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).build()));
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return slotChanged || oldStack.getItem() != newStack.getItem();
+	}
+
 	@SubscribeEvent
 	public static void handleToolDamage(ModifyDefaultComponentsEvent event) {
 		event.modify(CrystalnexusModItems.COMPOUND_PICKAXE.get(), builder -> builder.remove(DataComponents.MAX_DAMAGE));
+		event.modify(CrystalnexusModItems.SOLARIS.get(), builder -> builder.remove(DataComponents.MAX_DAMAGE));
 	}
 
 	@Override

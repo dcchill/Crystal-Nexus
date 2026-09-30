@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "crystalnexus:block/celestial_gear_forge", "y": 0 },
+    "facing=east": { "model": "crystalnexus:block/celestial_gear_forge", "y": 90 },
+    "facing=south": { "model": "crystalnexus:block/celestial_gear_forge", "y": 180 },
+    "facing=west": { "model": "crystalnexus:block/celestial_gear_forge", "y": 270 }
+  }
+}

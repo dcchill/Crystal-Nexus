@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
@@ -30,6 +32,7 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class ZeroPointBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
 	public ZeroPointBlockEntity(BlockPos position, BlockState state) {
@@ -39,6 +42,7 @@ public class ZeroPointBlockEntity extends RandomizableContainerBlockEntity imple
 	public static void tick(Level level, BlockPos pos, BlockState state, ZeroPointBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		ZeroPointMultiblockCheckProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -132,8 +136,7 @@ public class ZeroPointBlockEntity extends RandomizableContainerBlockEntity imple
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.ZERO_POINT.capacity(), CrystalnexusConfig.MACHINES.ZERO_POINT.maxExtract(), this::syncEnergy);
 
 	private void syncEnergy() {
-		setChanged();
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		machineSync.changed();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {

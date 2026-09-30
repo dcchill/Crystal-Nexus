@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -35,6 +37,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class SteamEngineUpgradeBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
 	public SteamEngineUpgradeBlockEntity(BlockPos position, BlockState state) {
@@ -44,6 +47,7 @@ public class SteamEngineUpgradeBlockEntity extends RandomizableContainerBlockEnt
 	public static void tick(Level level, BlockPos pos, BlockState state, SteamEngineUpgradeBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		SteamEngineUpgradeOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -140,8 +144,7 @@ public class SteamEngineUpgradeBlockEntity extends RandomizableContainerBlockEnt
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.STEAM_ENGINE_UPGRADE.capacity(), CrystalnexusConfig.MACHINES.STEAM_ENGINE_UPGRADE.maxExtract(), this::syncEnergy);
 
 	private void syncEnergy() {
-		setChanged();
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		machineSync.changed();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {
@@ -158,8 +161,7 @@ public class SteamEngineUpgradeBlockEntity extends RandomizableContainerBlockEnt
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
-			setChanged();
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			machineSync.changed();
 		}
 	};
 

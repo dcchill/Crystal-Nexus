@@ -24,6 +24,11 @@ public class OreScannerItem extends Item {
 	}
 
 	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return slotChanged || oldStack.getItem() != newStack.getItem();
+	}
+
+	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player entity, InteractionHand hand) {
 		InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
 		OreScannerRightclickedProcedure.execute(world, entity, entity.getItemInHand(hand));

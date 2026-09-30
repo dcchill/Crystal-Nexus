@@ -69,6 +69,11 @@ public class CompoundSwordItem extends SwordItem {
 		super(TOOL_TIER, new Item.Properties().attributes(SwordItem.createAttributes(TOOL_TIER, 21f, -2.2f)));
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return slotChanged || oldStack.getItem() != newStack.getItem();
+	}
+
 	@SubscribeEvent
 	public static void handleToolDamage(ModifyDefaultComponentsEvent event) {
 		event.modify(CrystalnexusModItems.COMPOUND_SWORD.get(), builder -> builder.remove(DataComponents.MAX_DAMAGE));

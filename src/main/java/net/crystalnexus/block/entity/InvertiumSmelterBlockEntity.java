@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.energy.EnergyStorage;
@@ -33,6 +35,9 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class InvertiumSmelterBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
+    public final net.crystalnexus.util.SmeltingRecipeCache recipeCache = new net.crystalnexus.util.SmeltingRecipeCache();
+    public boolean processing;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public InvertiumSmelterBlockEntity(BlockPos position, BlockState state) {
@@ -42,12 +47,15 @@ public class InvertiumSmelterBlockEntity extends RandomizableContainerBlockEntit
 	public static void tick(Level level, BlockPos pos, BlockState state, InvertiumSmelterBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
+        if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity.processing || blockEntity.getPersistentData().getDouble("progress") > 0)) return;
 		InvertiumSmelterOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
+		recipeCache.clear();
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
@@ -149,9 +157,8 @@ public class InvertiumSmelterBlockEntity extends RandomizableContainerBlockEntit
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			if (!simulate && retval > 0) {
+				machineSync.changed();
 			}
 			return retval;
 		}
@@ -159,9 +166,8 @@ public class InvertiumSmelterBlockEntity extends RandomizableContainerBlockEntit
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
-			if (!simulate) {
-				setChanged();
-				level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			if (!simulate && retval > 0) {
+				machineSync.changed();
 			}
 			return retval;
 		}

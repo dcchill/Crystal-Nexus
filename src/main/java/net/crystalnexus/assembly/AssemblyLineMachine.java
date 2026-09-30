@@ -270,8 +270,11 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     }
     
     public static boolean mayTick(Level level, BlockPos pos) {
-        BlockEntity be = level.getBlockEntity(pos);
+        return mayTick(level, level.getBlockEntity(pos));
+    }
+    public static boolean mayTick(Level level, BlockEntity be) {
         if (be == null || !be.getPersistentData().contains(OWNER)) return true;
+        BlockPos pos = be.getBlockPos();
         BlockPos owner = BlockPos.of(be.getPersistentData().getLong(OWNER));
         if (!level.hasChunkAt(owner)) return false;
         if (level.getBlockEntity(owner) instanceof AssemblyLineControllerBlockEntity controller)
@@ -281,7 +284,9 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         return true;
     }
     public static ResourceLocation assignedRecipe(Level level, BlockPos pos) {
-        BlockEntity be = level.getBlockEntity(pos);
+        return assignedRecipe(level.getBlockEntity(pos));
+    }
+    public static ResourceLocation assignedRecipe(BlockEntity be) {
         return be != null && be.getPersistentData().contains(RECIPE)
             ? ResourceLocation.tryParse(be.getPersistentData().getString(RECIPE)) : null;
     }

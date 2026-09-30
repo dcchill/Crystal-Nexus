@@ -74,6 +74,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOCHANTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.REFINERY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ITEM_CHARGER.get().asItem());
@@ -367,6 +368,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.FLORATHANE_WAND.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_PICKAXE.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
+				tabData.accept(CrystalnexusModItems.METEOR_SWORD.get());
+				tabData.accept(CrystalnexusModItems.SOLARIS.get());
 				tabData.accept(CrystalnexusModItems.LASER_SABER.get());
 				tabData.accept(CrystalnexusModItems.GAS_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.CRUDE_OIL_BUCKET.get());
@@ -510,6 +513,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOLYZER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HEMOCHANTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_CRUSHER.get().asItem());
@@ -720,6 +724,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.INVERTIUM_HOE.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_PICKAXE.get());
 				tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
+				tabData.accept(CrystalnexusModItems.METEOR_SWORD.get());
+				tabData.accept(CrystalnexusModItems.SOLARIS.get());
 				tabData.accept(CrystalnexusModItems.LASER_SABER.get());
 				tabData.accept(CrystalnexusModItems.FLORATHANE_WAND.get());
 				tabData.accept(CrystalnexusModItems.JET_PACK_CHESTPLATE.get());
@@ -764,6 +770,8 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 			tabData.accept(CrystalnexusModItems.INVERTIUM_SWORD.get());
 			tabData.accept(CrystalnexusModItems.COMPOUND_SWORD.get());
+			tabData.accept(CrystalnexusModItems.METEOR_SWORD.get());
+			tabData.accept(CrystalnexusModItems.SOLARIS.get());
 			tabData.accept(CrystalnexusModItems.LASER_SABER.get());
 			tabData.accept(CrystalnexusModItems.CARBON_HELMET.get());
 			tabData.accept(CrystalnexusModItems.CARBON_CHESTPLATE.get());

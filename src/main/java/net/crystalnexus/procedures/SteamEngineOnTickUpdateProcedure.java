@@ -12,18 +12,18 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.util.MachineUpgradeHelper;
 
 public class SteamEngineOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
+        if (!(world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof SteamEngineBlockEntity machine)) return;
 		double feEfficiency;
 		double cookTime = 0;
 		double nrgstrt = 0;
@@ -34,7 +34,7 @@ public class SteamEngineOnTickUpdateProcedure {
 				int _value = 1;
 				BlockPos _pos = BlockPos.containing(x, y, z);
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		} else {
@@ -42,48 +42,24 @@ public class SteamEngineOnTickUpdateProcedure {
 				int _value = 2;
 				BlockPos _pos = BlockPos.containing(x, y, z);
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
 		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy();
 		feEfficiency = MachineUpgradeHelper.generatorEfficiency(upgrade, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgrade);
 		cookTime = MachineUpgradeHelper.generatorCycleTime(upgrade, 250, 325, 500);
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-		}
+		machine.machineSync.setDouble("maxProgress", cookTime);
 		if (getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) >= 1000) {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
+				machine.machineSync.setDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
 				if (world instanceof ServerLevel _level)
 					_level.sendParticles(ParticleTypes.CLOUD, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 				if (world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof SteamEngineBlockEntity engine)
 					engine.getEnergyStorage().generateEnergy((int) (64 * feEfficiency), false);
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-				if (!world.isClientSide()) {
-					BlockPos _bp = BlockPos.containing(x, y, z);
-					BlockEntity _blockEntity = world.getBlockEntity(_bp);
-					BlockState _bs = world.getBlockState(_bp);
-					if (_blockEntity != null)
-						_blockEntity.getPersistentData().putDouble("progress", 0);
-					if (world instanceof Level _level)
-						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-				}
+				machine.machineSync.setDouble("progress", 0);
 				if (world instanceof ILevelExtension _ext) {
 					IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_fluidHandler != null)

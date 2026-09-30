@@ -22,7 +22,8 @@ import net.crystalnexus.block.BlockPlacerBlock;
 public class BlockPlacerOnTickUpdateProcedure {
 	private static final int ENERGY_PER_USE = 256;
 
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		BlockPos placerPos = BlockPos.containing(x, y, z);
 		if (world instanceof ServerLevel level && getEnergyStored(level, placerPos, null) >= ENERGY_PER_USE
 				&& level.getCapability(Capabilities.ItemHandler.BLOCK, placerPos, null) instanceof IItemHandlerModifiable handler
@@ -30,7 +31,7 @@ public class BlockPlacerOnTickUpdateProcedure {
 			Direction facing = level.getBlockState(placerPos).getValue(BlockPlacerBlock.FACING);
 			useItem(level, placerPos, facing, handler);
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, placerPos, null));
+		return;
 	}
 
 	private static void useItem(ServerLevel level, BlockPos placerPos, Direction facing, IItemHandlerModifiable handler) {

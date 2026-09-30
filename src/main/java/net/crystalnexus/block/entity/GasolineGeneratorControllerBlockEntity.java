@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 import net.crystalnexus.block.GasolineGeneratorControllerBlock;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
@@ -22,21 +24,18 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public final class GasolineGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget {
+    public final MachineSync machineSync = new MachineSync(this);
     public static final int MIN_SHAFTS = 3;
     public static final int MAX_SHAFTS = 16;
     public static final int GASOLINE_FE_PER_TICK_PER_SHAFT = 2_048;
@@ -49,10 +48,10 @@ public final class GasolineGeneratorControllerBlockEntity extends BlockEntity im
     private static final TagKey<Fluid> OVERFUEL = TagKey.create(Registries.FLUID, ResourceLocation.fromNamespaceAndPath("c", "overfuel"));
 
     private final FluidTank fuelTank = new FluidTank(FUEL_CAPACITY, stack -> stack.is(GASOLINE) || stack.is(OVERFUEL)) {
-        @Override protected void onContentsChanged() { sync(); }
+        @Override protected void onContentsChanged() { machineSync.changed(); }
     };
     private final GeneratorEnergyStorage energy = new GeneratorEnergyStorage(ENERGY_CAPACITY,
-        Integer.MAX_VALUE, this::sync);
+        Integer.MAX_VALUE, machineSync::changed);
     private final List<BlockPos> fluidInputs = new ArrayList<>();
     private final List<BlockPos> energyOutputs = new ArrayList<>();
     private boolean formed;
@@ -86,6 +85,7 @@ public final class GasolineGeneratorControllerBlockEntity extends BlockEntity im
     }
 
     public void serverTick() {
+        machineSync.tick();
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (validationDelay-- <= 0) {
             validateStructure(serverLevel);

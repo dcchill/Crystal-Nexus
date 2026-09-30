@@ -24,14 +24,15 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.crystalnexus.init.CrystalnexusModItems;
 
 public class CrystalPurifierOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		BlockPos pos = BlockPos.containing(x, y, z);
 		if (world.isClientSide())
-			return energyText(world, pos);
+			return;
 
 		IItemHandlerModifiable inventory = itemHandler(world, pos);
 		if (inventory == null)
-			return energyText(world, pos);
+			return;
 
 		int cookTime = cookTime(inventory.getStackInSlot(3));
 		ItemStack input = inventory.getStackInSlot(0);
@@ -53,13 +54,13 @@ public class CrystalPurifierOnTickUpdateProcedure {
 			energyCost = 64;
 		} else {
 			reset(world, pos, cookTime);
-			return energyText(world, pos);
+			return;
 		}
 
 		ItemStack output = inventory.getStackInSlot(1);
 		if ((!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, result)) || output.getCount() + resultCount > result.getMaxStackSize()) {
 			reset(world, pos, cookTime);
-			return energyText(world, pos);
+			return;
 		}
 
 		double progress = progress(world, pos) + 1;
@@ -81,7 +82,7 @@ public class CrystalPurifierOnTickUpdateProcedure {
 			update(world, pos, 0, cookTime, 1);
 		}
 
-		return energyText(world, pos);
+		return;
 	}
 
 	private static int cookTime(ItemStack upgrade) {
@@ -122,10 +123,5 @@ public class CrystalPurifierOnTickUpdateProcedure {
 
 	private static IEnergyStorage energyStorage(LevelAccessor world, BlockPos pos, Direction direction) {
 		return world instanceof ILevelExtension ext ? ext.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction) : null;
-	}
-
-	private static String energyText(LevelAccessor world, BlockPos pos) {
-		IEnergyStorage energy = energyStorage(world, pos, null);
-		return new java.text.DecimalFormat("FE: ##.##").format(energy == null ? 0 : energy.getEnergyStored());
 	}
 }

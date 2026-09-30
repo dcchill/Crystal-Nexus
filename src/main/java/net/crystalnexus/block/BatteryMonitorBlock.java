@@ -38,6 +38,7 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.world.inventory.BatteryMonitorGuiMenu;
 import net.crystalnexus.procedures.BatteryMonitorOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.BatteryMonitorBlockEntity;
+import net.crystalnexus.util.MachineTickPolicy;
 
 import java.util.List;
 
@@ -90,7 +91,8 @@ public class BatteryMonitorBlock extends Block implements EntityBlock {
 	@Override
 	public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
 		super.tick(blockstate, world, pos, random);
-		BatteryMonitorOnTickUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+		if (MachineTickPolicy.shouldTick(world, pos, false))
+			BatteryMonitorOnTickUpdateProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
 		world.scheduleTick(pos, this, 1);
 	}
 

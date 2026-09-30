@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 import net.crystalnexus.block.SolarSimulatorControllerBlock;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
@@ -32,7 +34,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -52,6 +53,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 public final class SolarSimulatorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, MultiblockPortTarget {
+    public final MachineSync machineSync = new MachineSync(this);
     public static final int DURATION = 3;
     public static final int DYSON_SLOT_LIMIT = 1024;
     public static final int DYSON_SUPPLY_SLOTS = 3;
@@ -73,7 +75,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
     private final int[] dysonCounts = new int[STAR_SLOT];
     private boolean dysonMode;
-    private final GeneratorEnergyStorage dysonEnergy = new GeneratorEnergyStorage(1_000_000_000, Integer.MAX_VALUE, this::sync);
+    private final GeneratorEnergyStorage dysonEnergy = new GeneratorEnergyStorage(1_000_000_000, Integer.MAX_VALUE, machineSync::changed);
     private int dysonIntegrity = DysonOutput.MAX_INTEGRITY;
     private int dysonDrainRemainder;
     private final List<BlockPos> energyOutputs = new ArrayList<>();
@@ -83,10 +85,10 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract(), REQUIRED_ENERGY_TRANSFER)) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
             if (dysonMode) return 0;
-			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+			int moved = super.receiveEnergy(amount, simulate); if (!simulate && moved > 0) machineSync.changed(); return moved;
 		}
 		@Override public int extractEnergy(int amount, boolean simulate) {
-			int moved = super.extractEnergy(amount, simulate); if (!simulate && moved > 0) sync(); return moved;
+			int moved = super.extractEnergy(amount, simulate); if (!simulate && moved > 0) machineSync.changed(); return moved;
 		}
 	};
     private final List<BlockPos> energyInputs = new ArrayList<>();
@@ -130,7 +132,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
     private FluidTank createFluidOutputTank() {
         return new FluidTank(4000) {
-            @Override protected void onContentsChanged() { sync(); }
+            @Override protected void onContentsChanged() { machineSync.changed(); }
         };
     }
 
@@ -212,6 +214,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
 
     public void serverTick() {
+        machineSync.tick();
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (validationDelay-- <= 0) {
             validateStructure(serverLevel);
@@ -270,7 +273,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             progress = 0;
             consumedEnergy = 0;
             sync();
-        } else if (progress % 20 == 0) sync();
+        } else machineSync.changed();
     }
 
     private void validateStructure(ServerLevel level) {

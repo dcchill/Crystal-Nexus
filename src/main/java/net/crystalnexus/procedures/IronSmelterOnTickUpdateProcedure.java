@@ -10,7 +10,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -25,37 +24,47 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.init.CrystalnexusModItems;
 
 public class IronSmelterOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (!(world instanceof Level level) || level.isClientSide()) return;
+        BlockPos pos = BlockPos.containing(x, y, z);
+        if (!(level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.IronSmelterBlockEntity machine)) return;
+        machine.processing = false;
+        IItemHandler inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+        IEnergyStorage energy = machine.getEnergyStorage();
+        if (inventory == null) return;
+        ItemStack inputStack = inventory.getStackInSlot(0);
+        ItemStack outputStack = inventory.getStackInSlot(1);
+
+        ItemStack upgrade = inventory.getStackInSlot(2);
+        var recipe = machine.recipeCache.find(level, inputStack);
+        ItemStack recipeResult = recipe.result();
 		double outputAmount = 0;
 		double cookTime = 0;
-		String registry_name_no_namespace = "";
-		String registry_name_nugget = "";
-		String registry_name = "";
 		outputAmount = 1;
-		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(machine, machine.getBlockState(), machine.getPersistentData().getDouble("progress"))) {
 			{
 				int _value = 1;
-				BlockPos _pos = BlockPos.containing(x, y, z);
+				BlockPos _pos = pos;
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		} else {
 			{
 				int _value = 2;
-				BlockPos _pos = BlockPos.containing(x, y, z);
+				BlockPos _pos = pos;
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2), 100, 75, 50);
+		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
+		ItemStack _cn_upg = upgrade;
+        int energyCost = MachineUpgradeHelper.energyCost(machine.getBlockState(), upgrade, 2048);
 		CompoundTag _cn_data = null;
 		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
 			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
@@ -74,7 +83,7 @@ public class IronSmelterOnTickUpdateProcedure {
 		double MACHINE_MAX_OUTPUT = 2; 
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
-		double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+		double _cn_currentCount = outputStack.getCount();
 		double _cn_spaceLeft = 64 - _cn_currentCount; 
 		if (outputAmount > _cn_spaceLeft)
 			outputAmount = _cn_spaceLeft;
@@ -82,84 +91,39 @@ public class IronSmelterOnTickUpdateProcedure {
 			outputAmount = 0;
 		if (cookTime < 1)
 			cookTime = 1;
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-		}
-		if (true == (world instanceof Level _level9 && _level9.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _level9).isPresent())) {
-			if (Math.min(MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048), net.crystalnexus.config.CrystalnexusConfig.MACHINES.IRON_SMELTER.maxExtract()) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-				if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() && ((world instanceof Level _lvlSmeltResult
-						? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
-								.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-						: ItemStack.EMPTY).getItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() || Blocks.AIR.asItem() == (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem())) {
-					if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ServerLevel _level)
+		machine.machineSync.setDouble("maxProgress", cookTime);
+		if (recipe.present()) {
+			if (Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.IRON_SMELTER.maxExtract()) <= energy.getEnergyStored()) {
+				if (64 != outputStack.getCount() && ((recipeResult).getItem() == outputStack.getItem() || Blocks.AIR.asItem() == outputStack.getItem())) {
+					if (machine.getPersistentData().getDouble("progress") < cookTime) {
+						machine.machineSync.setDouble("progress", (machine.getPersistentData().getDouble("progress") + 1));
+						machine.processing = true;
+						if (world instanceof ServerLevel _level && net.crystalnexus.util.MachineSync.isUpdateTick(_level.getGameTime(), pos))
 							_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 					}
-					if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							ItemStack _setstack = (world instanceof Level _lvlSmeltResult
-									? _lvlSmeltResult.getRecipeManager().getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())), _lvlSmeltResult)
-											.map(recipe -> recipe.value().getResultItem(_lvlSmeltResult.registryAccess()).copy()).orElse(ItemStack.EMPTY)
-									: ItemStack.EMPTY).copy();
-							_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount));
+					if (machine.getPersistentData().getDouble("progress") >= cookTime) {
+						if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							ItemStack _setstack = (recipeResult).copy();
+							_setstack.setCount((int) (outputStack.getCount() + outputAmount));
 							_itemHandlerModifiable.setStackInSlot(1, _setstack);
 						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+						if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
 							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
 							_stk.shrink(1);
 							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 						}
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
+						machine.machineSync.setDouble("progress", 0);
 						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+							IEnergyStorage _entityStorage = energy;
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(world.getBlockState(BlockPos.containing(x, y, z)), _cn_upg, 2048), false);
+								_entityStorage.extractEnergy(energyCost, false);
 						}
 					}
 				}
 			}
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
-	}
-
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
-	}
-
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
+		return;
 	}
 
 	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {

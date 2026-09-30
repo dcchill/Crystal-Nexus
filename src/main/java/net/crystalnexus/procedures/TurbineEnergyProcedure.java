@@ -26,6 +26,7 @@ import java.util.Comparator;
 
 public class TurbineEnergyProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		double energyPerFuel;
 		double T = 0;
 		double energy = 0;
@@ -35,7 +36,7 @@ public class TurbineEnergyProcedure {
 			int _value = 1;
 			BlockPos _pos = BlockPos.containing(x, y, z);
 			BlockState _bs = world.getBlockState(_pos);
-			if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+			if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 				world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 		}
 		T = 1;
@@ -59,7 +60,7 @@ public class TurbineEnergyProcedure {
 								int _value = 2;
 								BlockPos _pos = BlockPos.containing(x, y, z);
 								BlockState _bs = world.getBlockState(_pos);
-								if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+								if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 									world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 							}
 							break;

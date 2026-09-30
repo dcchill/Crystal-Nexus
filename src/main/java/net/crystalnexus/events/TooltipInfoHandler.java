@@ -1,15 +1,24 @@
 package net.crystalnexus.events;
 
 import net.crystalnexus.CrystalnexusMod;
+import net.crystalnexus.item.GradientItemName;
+import net.crystalnexus.item.GradientItemName.Palette;
+import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.processing.TieredMachineBlock;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.Level;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -23,10 +32,65 @@ import java.util.Map;
 public class TooltipInfoHandler {
 
 	private static final Map<String, String[]> TOOLTIP_DATA = new HashMap<>();
+	private static Object cachedRecipes;
+	private static Level cachedLevel;
+	private static Map<Item, FrameColors> frameRecipeColors = Map.of();
+
+	private record FrameColors(Palette palette) {
+		Component tierLabel(MachineTier tier) {
+			if (tier == MachineTier.HYPER) return tier.tierLabel();
+			Component label = Component.translatable("tooltip.crystalnexus.machine_tier", tier.displayNumber());
+			return label.copy().withStyle(style -> style.withColor(palette.midpoint()));
+		}
+	}
+
+	private static FrameColors frameColors(Item item) {
+		ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+		if (!id.getNamespace().equals(CrystalnexusMod.MODID)) return null;
+		return switch (id.getPath()) {
+			case "machine_frame", "iron_machine_frame" -> new FrameColors(Palette.IRON);
+			case "crystal_machine_frame" -> new FrameColors(Palette.ANCIENT_CRYSTAL);
+			case "chlorophyte_machine_frame" -> new FrameColors(Palette.CHLOROPHYTE);
+			case "invertium_machine_frame" -> new FrameColors(Palette.INVERTIUM);
+			case "azurine_machine_frame" -> new FrameColors(Palette.AZURINE);
+			case "carbon_machine_frame" -> new FrameColors(Palette.CARBON_FIBER);
+			case "ferrosteel_machine_frame" -> new FrameColors(Palette.FERROSTEEL);
+			case "obsidrax_machine_frame" -> new FrameColors(Palette.OBSIDRAX);
+			case "hyper_machine_frame" -> new FrameColors(Palette.METEORITE_ALLOY);
+			case "flesh_machine_frame" -> new FrameColors(Palette.ENGINEERED_FLESH);
+			default -> null;
+		};
+	}
+
+	private static Map<Item, FrameColors> frameRecipeColors(Level level) {
+		Object recipes = level.getRecipeManager().getRecipes();
+		if (cachedLevel != level || cachedRecipes != recipes) {
+			Map<Item, FrameColors> colors = new HashMap<>();
+			for (RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
+				FrameColors frame = null;
+				for (Ingredient ingredient : holder.value().getIngredients()) {
+					for (ItemStack input : ingredient.getItems()) {
+						frame = frameColors(input.getItem());
+						if (frame != null) break;
+					}
+					if (frame != null) break;
+				}
+				if (frame != null) {
+					ItemStack result = holder.value().getResultItem(level.registryAccess());
+					if (!result.isEmpty()) colors.putIfAbsent(result.getItem(), frame);
+				}
+			}
+			frameRecipeColors = colors;
+			cachedRecipes = recipes;
+			cachedLevel = level;
+		}
+		return frameRecipeColors;
+	}
 
 	static {
 		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
+		addTooltip("meteor_sword", "Hold Shift + right-click to charge, then release when ready.", "Each second adds a charge level, up to 5; your next successful hit consumes it.", "Each level doubles damage and FE use, up to 32x.", "Base hit costs 500 FE; a full charge costs 16,000 FE.", "Grants +2 blocks of reach and a wide forward sweep.", "Supports standard sword enchantments, including Sweeping Edge.");
 
 
 		addTooltip("battery",
@@ -598,15 +662,51 @@ public class TooltipInfoHandler {
 	@SubscribeEvent
 	public static void onItemTooltip(ItemTooltipEvent event) {
 		ItemStack stack = event.getItemStack();
-		if (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine) {
-			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
-					machine.machineTier().tierLabel());
-		}
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+		String path = itemId.getPath();
+		boolean tierX = itemId.getNamespace().equals(CrystalnexusMod.MODID)
+				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("bear"));
+		FrameColors colors = null;
+		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
+			if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
+					|| path.equals("hemochanter") || path.equals("hemolyzer") || path.equals("gene_splicer")) {
+				colors = new FrameColors(Palette.ENGINEERED_FLESH);
+			} else if (path.equals("singularity_compressor") || path.equals("matter_transmutation_table")
+					|| path.equals("ee_matter") || path.equals("ee_matter_block")
+					|| path.equals("compound_e") || path.equals("compound_pickaxe")
+					|| path.equals("compound_sword") || path.equals("carbon_battery_cell")) {
+				colors = new FrameColors(Palette.EE_MATTER);
+			} else if (!tierX) {
+				colors = frameColors(stack.getItem());
+				Level level = Minecraft.getInstance().level;
+				if (colors == null && level != null) colors = frameRecipeColors(level).get(stack.getItem());
+			}
+		}
+		MachineTier tier = stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
+				? machine.machineTier() : null;
+		if (tier != null) {
+			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
+					colors == null ? tier.tierLabel() : colors.tierLabel(tier));
+		}
+		if (tierX) {
+			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
+					GradientItemName.rainbow(Component.translatable("tooltip.crystalnexus.machine_tier_x")));
+		}
 		if (!itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
 			return;
 		}
-		String path = itemId.getPath();
+		if (!stack.has(DataComponents.CUSTOM_NAME) && !event.getToolTip().isEmpty()
+				&& !path.equals("meteor_sword") && !path.equals("solaris")) {
+			if (tierX) {
+				event.getToolTip().set(0, GradientItemName.rainbow(event.getToolTip().get(0)));
+			} else {
+				Palette palette = colors != null ? colors.palette() : tier == null ? materialPalette(path) : tier.primaryPalette();
+				if (palette != null) {
+					Component name = event.getToolTip().get(0);
+					event.getToolTip().set(0, GradientItemName.gradient(name, palette));
+				}
+			}
+		}
 		String[] tooltipLines = TOOLTIP_DATA.get(path);
 		if (tooltipLines == null) {
 			return;
@@ -621,5 +721,22 @@ public class TooltipInfoHandler {
 							.append(Component.literal("[SHIFT]").withStyle(ChatFormatting.YELLOW))
 							.append(Component.literal(" for info").withStyle(ChatFormatting.DARK_GRAY)));
 		}
+	}
+
+	private static Palette materialPalette(String path) {
+		if (path.contains("blutonium") || path.equals("blu_tnt")) return Palette.BLUTONIUM;
+		if (path.contains("crystalized_alloy") || path.startsWith("cystalized_")
+				|| path.startsWith("crystalalloy_") || path.startsWith("crystal_alloy_")) return Palette.ANCIENT_CRYSTAL;
+		if (path.startsWith("hyper_")) return Palette.METEORITE_ALLOY;
+		if (path.contains("ferrosteel") || path.contains("titanium_carbide")) return Palette.FERROSTEEL;
+		if (path.contains("obsidrax")) return Palette.OBSIDRAX;
+		if (path.contains("meteorite")) return Palette.METEORITE_ALLOY;
+		if (path.contains("chlorophyte") || path.equals("circuit_press") || path.equals("energy_extractor")) return Palette.CHLOROPHYTE;
+		if (path.contains("invertium") || path.equals("inverter") || path.equals("invert_piston_generator")) return Palette.INVERTIUM;
+		if (path.contains("azurine") || path.contains("titanium") || path.equals("tank") || path.equals("jet_pack_chestplate")) return Palette.AZURINE;
+		if (path.contains("ancient_crystal") || path.startsWith("raw_crystal")
+				|| path.startsWith("crystal_") && !path.startsWith("crystal_alloy")) return Palette.ANCIENT_CRYSTAL;
+		if (path.startsWith("carbon_") || path.startsWith("raw_carbon") || path.contains("_carbon_")) return Palette.CARBON_FIBER;
+		return null;
 	}
 }

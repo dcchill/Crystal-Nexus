@@ -5,7 +5,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
@@ -28,9 +27,9 @@ import java.util.List;
 
 public class AOEChargerOnTickUpdateProcedure {
 
-    public static String execute(LevelAccessor world, double x, double y, double z) {
+    public static void execute(LevelAccessor world, double x, double y, double z) {
 
-        if (!(world instanceof Level level)) return "";
+        if (!(world instanceof Level level) || level.isClientSide()) return;
 
         BlockPos pos = BlockPos.containing(x, y, z);
         boolean isCharging = false;
@@ -39,54 +38,19 @@ public class AOEChargerOnTickUpdateProcedure {
                 level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, Direction.UP);
 
         if (blockEnergy == null)
-            return "No Energy Capability";
+            return;
 
         IItemHandler itemHandler =
                 level.getCapability(Capabilities.ItemHandler.BLOCK, pos, Direction.UP);
 
         if (itemHandler == null)
-            return "No Inventory Capability";
+            return;
 
 
         CrystalnexusConfig.AoeChargerValues config = CrystalnexusConfig.MACHINES.AOE_CHARGER_BEHAVIOR;
-        int baseInput = config.baseTransferPerTick();
-        double inputMult = 1.0;
-        double range = config.baseRange();
-
-        ItemStack upgrade = itemHandler.getStackInSlot(0);
-
-        if (!upgrade.isEmpty()) {
-
-            if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.accelerationUpgradeMultiplier());
-
-            else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.carbonAccelerationUpgradeMultiplier());
-
-            else if (upgrade.getItem() == CrystalnexusModItems.RANGE_UPGRADE.get())
-                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.rangeUpgradeRange());
-
-            else if (upgrade.getItem() == CrystalnexusModItems.CARBON_RANGE_UPGRADE.get())
-                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.carbonRangeUpgradeRange());
-        }
-
-        
-        CompoundTag data = null;
-
-        if (!upgrade.isEmpty() && upgrade.has(DataComponents.CUSTOM_DATA)) {
-            CustomData cd = upgrade.get(DataComponents.CUSTOM_DATA);
-            if (cd != null)
-                data = cd.copyTag();
-        }
-
-        if (data != null && data.contains("cook_mult")) {
-            double cookMult = data.getDouble("cook_mult");
-            if (cookMult > 0)
-                inputMult = 1.0 / cookMult;
-        }
-
-        inputMult = Math.max(config.minTransferMultiplier(), Math.min(inputMult, config.maxTransferMultiplier()));
-        int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
+        Settings settings = settings(itemHandler.getStackInSlot(0));
+        double range = settings.range();
+        int maxTransferPerTick = settings.transfer();
 
 
         if (blockEnergy.getEnergyStored() > 0) {
@@ -159,8 +123,63 @@ public class AOEChargerOnTickUpdateProcedure {
 			}
 
 
-        return "Range: " + (int) range + " blocks | "
-                + maxTransferPerTick + " FE/t";
+
+    }
+
+
+    private record Settings(double range, int transfer) {}
+
+    private static Settings settings(ItemStack upgrade) {
+        CrystalnexusConfig.AoeChargerValues config = CrystalnexusConfig.MACHINES.AOE_CHARGER_BEHAVIOR;
+        int baseInput = config.baseTransferPerTick();
+        double inputMult = 1.0;
+        double range = config.baseRange();
+
+
+
+        if (!upgrade.isEmpty()) {
+
+            if (upgrade.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.accelerationUpgradeMultiplier());
+
+            else if (upgrade.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, 1.0, config.carbonAccelerationUpgradeMultiplier());
+
+            else if (upgrade.getItem() == CrystalnexusModItems.RANGE_UPGRADE.get())
+                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.rangeUpgradeRange());
+
+            else if (upgrade.getItem() == CrystalnexusModItems.CARBON_RANGE_UPGRADE.get())
+                range = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgrade, config.baseRange(), config.carbonRangeUpgradeRange());
+        }
+
+        
+        CompoundTag data = null;
+
+        if (!upgrade.isEmpty() && upgrade.has(DataComponents.CUSTOM_DATA)) {
+            CustomData cd = upgrade.get(DataComponents.CUSTOM_DATA);
+            if (cd != null)
+                data = cd.copyTag();
+        }
+
+        if (data != null && data.contains("cook_mult")) {
+            double cookMult = data.getDouble("cook_mult");
+            if (cookMult > 0)
+                inputMult = 1.0 / cookMult;
+        }
+
+        inputMult = Math.max(config.minTransferMultiplier(), Math.min(inputMult, config.maxTransferMultiplier()));
+        int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
+        return new Settings(range, maxTransferPerTick);
+    }
+
+    public static String displayText(LevelAccessor world, double x, double y, double z) {
+        if (!(world instanceof Level level)) return "";
+        BlockPos pos = BlockPos.containing(x, y, z);
+        if (level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, Direction.UP) == null) return "No Energy Capability";
+        var inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, Direction.UP);
+        if (inventory == null) return "No Inventory Capability";
+        Settings settings = settings(inventory.getStackInSlot(0));
+        return "Range: " + (int) settings.range() + " blocks | " + settings.transfer() + " FE/t";
     }
 
     private static void setBlockState(LevelAccessor world, BlockPos pos, int value) {

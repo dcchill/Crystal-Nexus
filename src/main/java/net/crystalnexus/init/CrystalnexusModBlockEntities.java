@@ -101,6 +101,7 @@ import net.crystalnexus.block.entity.CrystalCrusherBlockEntity;
 import net.crystalnexus.block.entity.MasticatorBlockEntity;
 import net.crystalnexus.block.entity.HemolyzerBlockEntity;
 import net.crystalnexus.block.entity.HemochanterBlockEntity;
+import net.crystalnexus.block.entity.CelestialGearForgeBlockEntity;
 import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
@@ -140,6 +141,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MASTICATOR = register("gene_splicer", CrystalnexusModBlocks.MASTICATOR, MasticatorBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HEMOLYZER = register("hemolyzer", CrystalnexusModBlocks.HEMOLYZER, HemolyzerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HEMOCHANTER = register("hemochanter", CrystalnexusModBlocks.HEMOCHANTER, HemochanterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CELESTIAL_GEAR_FORGE = register("celestial_gear_forge", CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE, CelestialGearForgeBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DUST_SEPARATOR = registerMany("dust_separator", DustSeparatorBlockEntity::new,
 		CrystalnexusModBlocks.DUST_SEPARATOR, CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR,
 		CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR, CrystalnexusModBlocks.HYPER_DUST_SEPARATOR);
@@ -297,6 +299,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, HEMOLYZER.get(), (blockEntity, side) -> ((HemolyzerBlockEntity) blockEntity).getBloodTank());
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HEMOLYZER.get(), (blockEntity, side) -> ((HemolyzerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CELESTIAL_GEAR_FORGE.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> ((HemochanterBlockEntity) blockEntity).getBloodTank());
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, HEMOCHANTER.get(), (blockEntity, side) -> ((HemochanterBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, DUST_SEPARATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

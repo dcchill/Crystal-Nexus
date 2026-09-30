@@ -12,7 +12,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.crystalnexus.world.inventory.CrusherGuiMenu;
 import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
-import net.crystalnexus.procedures.CrystalCrusherOnTickUpdateProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 
 import java.util.stream.Collectors;
@@ -50,7 +49,7 @@ public class CrusherGuiScreen extends AbstractContainerScreen<CrusherGuiMenu> im
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		boolean customTooltipShown = false;
 		if (mouseX > leftPos + -22 && mouseX < leftPos + 2 && mouseY > topPos + 9 && mouseY < topPos + 33) {
-			String hoverText = CrystalCrusherOnTickUpdateProcedure.execute(world, x, y, z);
+			String hoverText = net.crystalnexus.util.MachineEnergyDisplay.text(world, x, y, z);
 			if (hoverText != null) {
 				guiGraphics.renderComponentTooltip(font, Arrays.stream(hoverText.split("\n")).map(Component::literal).collect(Collectors.toList()), mouseX, mouseY);
 			}

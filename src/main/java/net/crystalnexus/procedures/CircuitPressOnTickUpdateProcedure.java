@@ -10,7 +10,6 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
@@ -29,53 +28,58 @@ import net.minecraft.core.BlockPos;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
 import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipe;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.block.CircuitPressBlock;
 import net.crystalnexus.processing.MachineTier;
 
-import java.util.stream.Collectors;
-import java.util.List;
 
 public class CircuitPressOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (!(world instanceof Level level) || level.isClientSide()) return;
+        BlockPos pos = BlockPos.containing(x, y, z);
+        if (!(level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.CircuitPressBlockEntity machine)) return;
+        IItemHandler inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+        IEnergyStorage energy = machine.getEnergyStorage();
+        if (inventory == null) return;
+        ItemStack inputStack = inventory.getStackInSlot(0);
+        ItemStack outputStack = inventory.getStackInSlot(1);
+        ItemStack materialStack = inventory.getStackInSlot(2);
+
+        ItemStack upgrade = inventory.getStackInSlot(3);
 		double cookTime = 0;
 		double outputAmount = 0;
-		String registry_name = "";
-		String registry_name_no_namespace = "";
-		String registry_name_ore = "";
-		String registry_name_nugget = "";
 		outputAmount = 1;
-		BlockPos pressPos = BlockPos.containing(x, y, z);
+		BlockPos pressPos = pos;
 		boolean batchPress = world.getBlockState(pressPos).is(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get());
 		boolean craftingThisTick = false;
 		int batchSize = 1;
 		outputAmount = batchSize;
 
-		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
+		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(machine, machine.getBlockState(), machine.getPersistentData().getDouble("progress"))) {
 			{
 				int _value = 1;
-				BlockPos _pos = BlockPos.containing(x, y, z);
+				BlockPos _pos = pos;
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		} else if (!batchPress) {
 			{
 				int _value = 2;
-				BlockPos _pos = BlockPos.containing(x, y, z);
+				BlockPos _pos = pos;
 				BlockState _bs = world.getBlockState(_pos);
-				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value))
+				if (_bs.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty _integerProp && _integerProp.getPossibleValues().contains(_value) && _bs.getValue(_integerProp) != _value)
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
 
-		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3), 100, 75, 50);
+		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 
 		
 		double _cn_cookMult = 1.0;
 		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 3).copy();
+		ItemStack _cn_upg = upgrade;
+        int energyCost = MachineUpgradeHelper.energyCost(machine.getBlockState(), upgrade, 2048);
 		CompoundTag _cn_data = null;
 
 		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
@@ -99,49 +103,14 @@ public class CircuitPressOnTickUpdateProcedure {
 		if (cookTime < 1)
 			cookTime = 1;
 
-		if (!world.isClientSide()) {
-			BlockPos _bp = BlockPos.containing(x, y, z);
-			BlockEntity _blockEntity = world.getBlockEntity(_bp);
-			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
-				_blockEntity.getPersistentData().putDouble("maxProgress", cookTime);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-		}
+		machine.machineSync.setDouble("maxProgress", cookTime);
 
-		TitaniumCarbideCircuitPressRecipe advancedRecipe = null;
-		if (batchPress && world instanceof Level level) {
-			for (RecipeHolder<TitaniumCarbideCircuitPressRecipe> holder : level.getRecipeManager().getAllRecipesFor(TitaniumCarbideCircuitPressRecipe.Type.INSTANCE)) {
-				TitaniumCarbideCircuitPressRecipe recipe = holder.value();
-				if (recipe.itemInput(0).isPresent() && recipe.itemInput(0).get().test(itemFromBlockInventory(world, pressPos, 0))
-						&& recipe.itemInput(1).map(input -> input.test(itemFromBlockInventory(world, pressPos, 2))).orElse(true)
-						&& recipe.fluidInput(0).isPresent() && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
-						&& recipe.fluidInput(0).get().matches(press.getNitrogenTank().getFluid())) {
-					advancedRecipe = recipe;
-					break;
-				}
-			}
-		}
-
-		ItemStack _cn_result = (new Object() {
-			public ItemStack getResult() {
-				if (world instanceof Level _lvl) {
-					net.minecraft.world.item.crafting.RecipeManager rm = _lvl.getRecipeManager();
-					List<CircuitPressingRecipe> recipes = rm.getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE).stream().filter(h -> net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(_lvl, pressPos) == null || h.id().equals(net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(_lvl, pressPos))).map(RecipeHolder::value).collect(Collectors.toList());
-					for (CircuitPressingRecipe recipe : recipes) {
-						NonNullList<Ingredient> ingredients = recipe.getIngredients();
-						if (!ingredients.get(0).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy())))
-							continue;
-						if (!ingredients.get(1).test((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy())))
-							continue;
-						return recipe.getResultItem(null);
-					}
-				}
-				return ItemStack.EMPTY;
-			}
-		}.getResult()).copy();
+		var assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(machine);
+		var recipeMatch = machine.recipeCache.find(level, inputStack, materialStack,
+			machine.getNitrogenTank().getFluid(), batchPress, assigned);
+		TitaniumCarbideCircuitPressRecipe advancedRecipe = recipeMatch.advanced();
+		ItemStack _cn_result = recipeMatch.result();
 		if (advancedRecipe != null) {
-			_cn_result = advancedRecipe.getResultItem(null);
 			outputAmount = 1;
 		} else if (batchPress) {
 			batchSize = 8;
@@ -150,7 +119,7 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		if (Blocks.AIR.asItem() == _cn_result.getItem()) {
 			setBatchPressState(world, pressPos, batchPress, 1);
-			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+			return;
 		}
 
 		
@@ -160,7 +129,7 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		int slotMax = 64; 
 		if (world instanceof ILevelExtension _ext) {
-			IItemHandler _ih = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
+			IItemHandler _ih = inventory;
 			if (_ih != null) {
 				slotMax = _ih.getSlotLimit(1);
 			}
@@ -169,59 +138,50 @@ public class CircuitPressOnTickUpdateProcedure {
 		int itemMax = Math.min(_cn_result.getMaxStackSize(), 64);
 		int realMax = Math.min(slotMax, itemMax);
 
-		int current = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+		int current = outputStack.getCount();
 		int spaceLeft = Math.max(0, realMax - current);
 
 		if (batchPress && advancedRecipe == null) {
-			batchSize = CircuitPressBatching.basicBatchSize(itemFromBlockInventory(world, pressPos, 0).getCount(),
-				itemFromBlockInventory(world, pressPos, 2).getCount(), spaceLeft, _cn_result.getCount());
+			batchSize = CircuitPressBatching.basicBatchSize(inputStack.getCount(),
+				materialStack.getCount(), spaceLeft, _cn_result.getCount());
 			out = batchSize * _cn_result.getCount();
 		} else if (out > spaceLeft)
 			out = spaceLeft;
 
 
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
-			ItemStack _cn_input = itemFromBlockInventory(world, pressPos, 0);
-			ItemStack _cn_material = itemFromBlockInventory(world, pressPos, 2);
+			ItemStack _cn_input = inputStack;
+			ItemStack _cn_material = materialStack;
 			int requiredInput = advancedRecipe == null ? batchSize : advancedRecipe.itemInputCount(0);
 			int requiredMaterial = advancedRecipe == null ? batchSize
 				: advancedRecipe.itemInput(1).isPresent() ? advancedRecipe.itemInputCount(1) : 0;
-			boolean hasAdvancedFluid = advancedRecipe == null || world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press
-				&& press.getNitrogenTank().getFluid().getAmount() >= advancedRecipe.fluidInput(0).get().amount();
+			boolean hasAdvancedFluid = advancedRecipe == null || machine.getNitrogenTank().getFluid().getAmount() >= advancedRecipe.fluidInput(0).get().amount();
 			if (_cn_input.getCount() >= requiredInput && _cn_material.getCount() >= requiredMaterial
 					&& hasAdvancedFluid
-					&& (world instanceof Level assignedLevel && net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(assignedLevel, pressPos) != null
-						? MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048)
-						: Math.min(MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048), net.crystalnexus.config.CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract())) <= getEnergyStored(world, pressPos, null)) {
+					&& (assigned != null
+						? energyCost
+						: Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract())) <= energy.getEnergyStored()) {
 
 				if (out > 0) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == _cn_result.getItem()
-							|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
+					if (outputStack.getItem() == _cn_result.getItem()
+							|| outputStack.getItem() == Blocks.AIR.asItem()) {
 
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
+						if (machine.getPersistentData().getDouble("progress") < cookTime) {
 							setBatchPressState(world, pressPos, batchPress, 2);
 							craftingThisTick = true;
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") + 1));
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
-							if (world instanceof ServerLevel _level)
+							machine.machineSync.setDouble("progress", (machine.getPersistentData().getDouble("progress") + 1));
+							if (world instanceof ServerLevel _level && net.crystalnexus.util.MachineSync.isUpdateTick(_level.getGameTime(), pos))
 								_level.sendParticles(ParticleTypes.DRAGON_BREATH, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 						}
 
-						if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
+						if (machine.getPersistentData().getDouble("progress") >= cookTime) {
 
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-								int current2 = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
+							if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+								int current2 = outputStack.getCount();
 
 								int slotMax2 = 64;
 								int realMax2 = Math.min(_cn_result.getMaxStackSize(), 64);
-								IItemHandler _ih2 = _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null);
+								IItemHandler _ih2 = inventory;
 								if (_ih2 != null) {
 									slotMax2 = _ih2.getSlotLimit(1);
 									realMax2 = Math.min(realMax2, slotMax2);
@@ -234,37 +194,29 @@ public class CircuitPressOnTickUpdateProcedure {
 								_itemHandlerModifiable.setStackInSlot(1, _setstack);
 							}
 
-							if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 0;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
 							_stk.shrink(requiredInput);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
-							if (advancedRecipe != null && world.getBlockEntity(pressPos) instanceof CircuitPressBlockEntity press) {
-								press.getNitrogenTank().drain(advancedRecipe.fluidInput(0).get().amount(), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+							if (advancedRecipe != null) {
+								machine.getNitrogenTank().drain(advancedRecipe.fluidInput(0).get().amount(), net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
 							}
-							if (requiredMaterial > 0 && world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
+							if (requiredMaterial > 0 && world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int _slotid = 2;
 								ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
 								_stk.shrink(requiredMaterial);
 								_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 							}
 
-							if (!world.isClientSide()) {
-								BlockPos _bp = BlockPos.containing(x, y, z);
-								BlockEntity _blockEntity = world.getBlockEntity(_bp);
-								BlockState _bs = world.getBlockState(_bp);
-								if (_blockEntity != null)
-									_blockEntity.getPersistentData().putDouble("progress", 0);
-								if (world instanceof Level _level)
-									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-							}
+							machine.machineSync.setDouble("progress", 0);
 
 							if (world instanceof ILevelExtension _ext) {
-								IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
+								IEnergyStorage _entityStorage = energy;
 								if (_entityStorage != null) {
-                                    int cost = MachineUpgradeHelper.energyCost(world.getBlockState(pressPos), _cn_upg, 2048);
-                                    if (world instanceof Level assignedLevel && net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(assignedLevel, pressPos) != null)
+                                    int cost = energyCost;
+                                    if (assigned != null)
                                         net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(_entityStorage, cost);
                                     else _entityStorage.extractEnergy(cost, false);
                                 }
@@ -277,7 +229,7 @@ public class CircuitPressOnTickUpdateProcedure {
 		if (!craftingThisTick)
 			setBatchPressState(world, pressPos, batchPress, 1);
 
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		return;
 	}
 
 	private static void setBatchPressState(LevelAccessor world, BlockPos pos, boolean batchPress, int value) {
@@ -285,22 +237,6 @@ public class CircuitPressOnTickUpdateProcedure {
 		BlockState state = world.getBlockState(pos);
 		if (state.getValue(CircuitPressBlock.BLOCKSTATE) != value)
 			world.setBlock(pos, state.setValue(CircuitPressBlock.BLOCKSTATE, value), 3);
-	}
-
-	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
-		BlockEntity blockEntity = world.getBlockEntity(pos);
-		if (blockEntity != null)
-			return blockEntity.getPersistentData().getDouble(tag);
-		return -1;
-	}
-
-	private static ItemStack itemFromBlockInventory(LevelAccessor world, BlockPos pos, int slot) {
-		if (world instanceof ILevelExtension ext) {
-			IItemHandler itemHandler = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
-			if (itemHandler != null)
-				return itemHandler.getStackInSlot(slot);
-		}
-		return ItemStack.EMPTY;
 	}
 
 	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {

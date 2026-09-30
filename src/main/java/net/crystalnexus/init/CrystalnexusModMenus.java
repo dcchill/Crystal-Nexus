@@ -69,6 +69,7 @@ import net.crystalnexus.world.inventory.CrusherGuiMenu;
 import net.crystalnexus.world.inventory.MasticatorMenu;
 import net.crystalnexus.world.inventory.HemolyzerMenu;
 import net.crystalnexus.world.inventory.HemochanterMenu;
+import net.crystalnexus.world.inventory.CelestialGearForgeMenu;
 import net.crystalnexus.world.inventory.CraftingFactoryGUIMenu;
 import net.crystalnexus.world.inventory.ContainerGUIMenu;
 import net.crystalnexus.world.inventory.ComputationClusterGUIMenu;
@@ -101,6 +102,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<MasticatorMenu>> MASTICATOR = REGISTRY.register("gene_splicer", () -> IMenuTypeExtension.create(MasticatorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<HemolyzerMenu>> HEMOLYZER = REGISTRY.register("hemolyzer", () -> IMenuTypeExtension.create(HemolyzerMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<HemochanterMenu>> HEMOCHANTER = REGISTRY.register("hemochanter", () -> IMenuTypeExtension.create(HemochanterMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<CelestialGearForgeMenu>> CELESTIAL_GEAR_FORGE = REGISTRY.register("celestial_gear_forge", () -> IMenuTypeExtension.create(CelestialGearForgeMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SeparatorGuiMenu>> SEPARATOR_GUI = REGISTRY.register("separator_gui", () -> IMenuTypeExtension.create(SeparatorGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<OreGenGUIMenu>> ORE_GEN_GUI = REGISTRY.register("ore_gen_gui", () -> IMenuTypeExtension.create(OreGenGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.MawMenu>> MAW = REGISTRY.register("maw", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.MawMenu::new));

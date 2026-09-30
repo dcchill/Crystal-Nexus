@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/enchanting_table",
+  "textures": {
+    "top": "crystalnexus:block/celestial_gear_forge_top",
+    "side": "crystalnexus:block/celestial_gear_forge_side",
+    "bottom": "crystalnexus:block/purebottom",
+    "particle": "crystalnexus:block/celestial_gear_forge_side"
+  }
+}

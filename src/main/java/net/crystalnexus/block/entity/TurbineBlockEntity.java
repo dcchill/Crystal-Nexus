@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
@@ -33,6 +35,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class TurbineBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
 	public TurbineBlockEntity(BlockPos position, BlockState state) {
@@ -42,6 +45,7 @@ public class TurbineBlockEntity extends RandomizableContainerBlockEntity impleme
 	public static void tick(Level level, BlockPos pos, BlockState state, TurbineBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		TurbineEnergyProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -137,8 +141,7 @@ public class TurbineBlockEntity extends RandomizableContainerBlockEntity impleme
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.TURBINE.capacity(), CrystalnexusConfig.MACHINES.TURBINE.maxExtract(), this::syncEnergy);
 
 	private void syncEnergy() {
-		setChanged();
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		machineSync.changed();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {

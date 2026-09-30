@@ -71,7 +71,7 @@ public class ItemChargerGuiScreen extends AbstractContainerScreen<ItemChargerGui
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.item_charger_gui.label_item_charger"), 80, -10, -12829636, false);
-		guiGraphics.drawString(this.font, ItemChargerOnTickUpdateProcedure.execute(world, x, y, z), 8, 68, -12829636, false);
+		guiGraphics.drawString(this.font, ItemChargerOnTickUpdateProcedure.displayText(world, x, y, z), 8, 68, -12829636, false);
 	}
 
 	@Override

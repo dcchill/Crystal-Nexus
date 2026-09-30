@@ -29,7 +29,8 @@ import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.processing.MachineTier;
 
 public class ExtractinatorOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		String registry_name_no_namespace = "";
 		String registry_name_nugget = "";
 		String registry_name = "";
@@ -490,7 +491,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 				}
 			}
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		return;
 	}
 
 	static int energyCost(LevelAccessor world, BlockPos pos, ItemStack upgrade, int baseEnergy) {

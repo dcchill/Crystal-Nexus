@@ -21,9 +21,9 @@ import net.crystalnexus.init.CrystalnexusModItems;
 
 public class ItemChargerOnTickUpdateProcedure {
 
-    public static String execute(LevelAccessor world, double x, double y, double z) {
+    public static void execute(LevelAccessor world, double x, double y, double z) {
 
-        if (!(world instanceof Level level)) return "";
+        if (!(world instanceof Level level) || level.isClientSide()) return;
 
         BlockPos pos = BlockPos.containing(x, y, z);
 
@@ -36,39 +36,10 @@ public class ItemChargerOnTickUpdateProcedure {
                 level.getCapability(Capabilities.ItemHandler.BLOCK, pos, Direction.UP);
 
         if (blockEnergy == null || itemHandler == null)
-            return "0 FE/t";
+            return;
 
 
-        int baseInput = 512;
-        double inputMult = 1.0;
-
-        ItemStack upgradeStack = itemHandler.getStackInSlot(2);
-
-        if (!upgradeStack.isEmpty()) {
-
-            if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
-                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 1.5);
-
-            else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
-                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 3.0);
-        }
-
-        CompoundTag data = null;
-
-        if (!upgradeStack.isEmpty() && upgradeStack.has(DataComponents.CUSTOM_DATA)) {
-            CustomData cd = upgradeStack.get(DataComponents.CUSTOM_DATA);
-            if (cd != null)
-                data = cd.copyTag();
-        }
-
-        if (data != null && data.contains("cook_mult")) {
-            double cookMult = data.getDouble("cook_mult");
-            if (cookMult > 0)
-                inputMult = 1.0 / cookMult;
-        }
-
-        inputMult = Math.max(0.05, Math.min(inputMult, 20.0));
-        int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
+        int maxTransferPerTick = transferRate(itemHandler.getStackInSlot(2));
 
 
         if (!level.isClientSide()) {
@@ -117,7 +88,50 @@ public class ItemChargerOnTickUpdateProcedure {
         }
 
 
-        return maxTransferPerTick + " FE/t";
+
+    }
+
+
+    private static int transferRate(ItemStack upgradeStack) {
+        int baseInput = 512;
+        double inputMult = 1.0;
+
+
+
+        if (!upgradeStack.isEmpty()) {
+
+            if (upgradeStack.getItem() == CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 1.5);
+
+            else if (upgradeStack.getItem() == CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
+                inputMult = net.crystalnexus.util.MachineUpgradeHelper.scaledEffect(upgradeStack, 1.0, 3.0);
+        }
+
+        CompoundTag data = null;
+
+        if (!upgradeStack.isEmpty() && upgradeStack.has(DataComponents.CUSTOM_DATA)) {
+            CustomData cd = upgradeStack.get(DataComponents.CUSTOM_DATA);
+            if (cd != null)
+                data = cd.copyTag();
+        }
+
+        if (data != null && data.contains("cook_mult")) {
+            double cookMult = data.getDouble("cook_mult");
+            if (cookMult > 0)
+                inputMult = 1.0 / cookMult;
+        }
+
+        inputMult = Math.max(0.05, Math.min(inputMult, 20.0));
+        int maxTransferPerTick = (int) Math.floor(baseInput * inputMult);
+        return maxTransferPerTick;
+    }
+
+    public static String displayText(LevelAccessor world, double x, double y, double z) {
+        if (!(world instanceof Level level)) return "";
+        BlockPos pos = BlockPos.containing(x, y, z);
+        var energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, Direction.UP);
+        var inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, Direction.UP);
+        return energy == null || inventory == null ? "0 FE/t" : transferRate(inventory.getStackInSlot(2)) + " FE/t";
     }
 
     private static void setBlockState(LevelAccessor world, BlockPos pos, int value) {

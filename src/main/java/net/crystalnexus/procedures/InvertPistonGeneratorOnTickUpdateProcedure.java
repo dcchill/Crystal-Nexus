@@ -46,7 +46,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
         ENERGY_PER_TICK = (int) (1024 * MachineUpgradeHelper.generatorEfficiency(upgradeStack, 1.25, 1.5) * MachineUpgradeHelper.generatorSpeed(upgradeStack));
 
         COOK_TIME = (int) Math.ceil(MachineUpgradeHelper.generatorCycleTime(upgradeStack, 350, 450, 500));
-        be.getPersistentData().putDouble("maxProgress", COOK_TIME);
+        generator.machineSync.setDouble("maxProgress", COOK_TIME);
 
         ItemStack fuelStack = getItemFromSlot(level, pos, 0);
 
@@ -94,7 +94,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
 
         if (canRun && energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
             progress += 1;
-            be.getPersistentData().putDouble("progress", progress);
+            generator.machineSync.setDouble("progress", progress);
 
             
             int energyOutput = ENERGY_PER_TICK;
@@ -110,7 +110,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
                     fluidHandler.drain(FUEL_CELL_AMOUNT, IFluidHandler.FluidAction.EXECUTE);
                 }
                 progress = 0;
-                be.getPersistentData().putDouble("progress", progress);
+                generator.machineSync.setDouble("progress", progress);
             }
         }
 
@@ -169,7 +169,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
     private static void setBlockStateInteger(LevelAccessor world, BlockPos pos, String propertyName, int value) {
         BlockState bs = world.getBlockState(pos);
         if (bs.getBlock().getStateDefinition().getProperty(propertyName) instanceof IntegerProperty intProp
-                && intProp.getPossibleValues().contains(value)) {
+                && intProp.getPossibleValues().contains(value) && bs.getValue(intProp) != value) {
             world.setBlock(pos, bs.setValue(intProp, value), 3);
         }
     }

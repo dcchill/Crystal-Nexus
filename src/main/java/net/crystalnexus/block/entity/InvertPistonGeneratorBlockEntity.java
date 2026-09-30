@@ -1,5 +1,7 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -35,6 +37,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public InvertPistonGeneratorBlockEntity(BlockPos position, BlockState state) {
@@ -44,6 +47,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 	public static void tick(Level level, BlockPos pos, BlockState state, InvertPistonGeneratorBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		InvertPistonGeneratorOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -157,8 +161,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.INVERT_PISTON_GENERATOR.capacity(), CrystalnexusConfig.MACHINES.INVERT_PISTON_GENERATOR.maxExtract(), this::syncEnergy);
 
 	private void syncEnergy() {
-		setChanged();
-		level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+		machineSync.changed();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {
@@ -179,8 +182,7 @@ public class InvertPistonGeneratorBlockEntity extends RandomizableContainerBlock
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
-			setChanged();
-			level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 2);
+			machineSync.changed();
 		}
 	};
 

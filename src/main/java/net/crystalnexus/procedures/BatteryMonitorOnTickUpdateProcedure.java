@@ -13,37 +13,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 public class BatteryMonitorOnTickUpdateProcedure {
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		double connectedCount = 0;
-		double yOffset = 0;
-		double xOffset = 0;
-		double cookTime = 0;
-		double zOffset = 0;
-		if (canReceiveEnergy(world, BlockPos.containing(x, y + 1, z), null)) {
-			xOffset = 0;
-			yOffset = 1;
-			zOffset = 0;
-		} else if (canReceiveEnergy(world, BlockPos.containing(x, y - 1, z), null)) {
-			xOffset = 0;
-			yOffset = -1;
-			zOffset = 0;
-		} else if (canReceiveEnergy(world, BlockPos.containing(x, y, z - 1), null)) {
-			xOffset = 0;
-			yOffset = 0;
-			zOffset = -1;
-		} else if (canReceiveEnergy(world, BlockPos.containing(x, y, z + 1), null)) {
-			xOffset = 0;
-			yOffset = 0;
-			zOffset = 1;
-		} else if (canReceiveEnergy(world, BlockPos.containing(x + 1, y, z), null)) {
-			xOffset = 1;
-			yOffset = 0;
-			zOffset = 0;
-		} else if (canReceiveEnergy(world, BlockPos.containing(x - 1, y, z), null)) {
-			xOffset = -1;
-			yOffset = 0;
-			zOffset = 0;
-		}
+
 		{
 			java.util.Set<BlockPos> visited = new java.util.HashSet<>();
 			java.util.function.Function<BlockPos, Integer> countConnected = new java.util.function.Function<>() {
@@ -84,13 +57,29 @@ public class BatteryMonitorOnTickUpdateProcedure {
 			BlockPos _bp = BlockPos.containing(x, y, z);
 			BlockEntity _blockEntity = world.getBlockEntity(_bp);
 			BlockState _bs = world.getBlockState(_bp);
-			if (_blockEntity != null)
+			if (_blockEntity != null && _blockEntity.getPersistentData().getDouble("connectedCount") != connectedCount) {
 				_blockEntity.getPersistentData().putDouble("connectedCount", connectedCount);
-			if (world instanceof Level _level)
-				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
+				_blockEntity.setChanged();
+				if (world instanceof Level _level)
+					_level.sendBlockUpdated(_bp, _bs, _bs, 2);
+			}
 		}
-		return new java.text.DecimalFormat("\u00A7fTotal Energy: ##.## FE").format(getEnergyStored(world, BlockPos.containing(x + xOffset, y + yOffset, z + zOffset), null) * connectedCount);
 	}
+
+    public static String displayText(LevelAccessor world, double x, double y, double z) {
+        BlockPos pos = BlockPos.containing(x, y, z);
+        BlockPos source = pos;
+        for (Direction direction : new Direction[] { Direction.UP, Direction.DOWN, Direction.NORTH,
+                Direction.SOUTH, Direction.EAST, Direction.WEST }) {
+            if (canReceiveEnergy(world, pos.relative(direction), null)) {
+                source = pos.relative(direction);
+                break;
+            }
+        }
+        BlockEntity machine = world.getBlockEntity(pos);
+        double count = machine == null ? 0 : machine.getPersistentData().getDouble("connectedCount");
+        return new java.text.DecimalFormat("\u00A7fTotal Energy: ##.## FE").format(getEnergyStored(world, source, null) * count);
+    }
 
 	private static boolean canReceiveEnergy(LevelAccessor level, BlockPos pos, Direction direction) {
 		if (level instanceof ILevelExtension levelExtension) {

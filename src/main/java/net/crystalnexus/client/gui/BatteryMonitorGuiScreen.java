@@ -65,7 +65,7 @@ public class BatteryMonitorGuiScreen extends AbstractContainerScreen<BatteryMoni
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, BatteryMonitorOnTickUpdateProcedure.execute(world, x, y, z), 8, 52, -12829636, false);
+		guiGraphics.drawString(this.font, BatteryMonitorOnTickUpdateProcedure.displayText(world, x, y, z), 8, 52, -12829636, false);
 		guiGraphics.drawString(this.font, BatteryMonitorOnBlockRightClickedProcedure.execute(world, x, y, z), 8, 10, -12829636, false);
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.battery_monitor_gui.label_battery_monitor"), 71, -10, -12829636, false);
 	}

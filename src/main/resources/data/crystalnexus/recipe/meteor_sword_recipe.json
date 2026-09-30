@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:celestial_gear_forge",
+  "ingredients": [
+    { "item": "crystalnexus:meteorite_alloy" },
+    { "item": "crystalnexus:meteorite_alloy" },
+    { "tag": "crystalnexus:celestial_gear_forge_stars" },
+    { "item": "crystalnexus:meteorite_alloy" },
+    { "item": "crystalnexus:compound_sword" }
+  ],
+  "output": { "id": "crystalnexus:meteor_sword", "count": 1 }
+}

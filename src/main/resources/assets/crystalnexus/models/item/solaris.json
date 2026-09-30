@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "crystalnexus:item/solaris"
+  },
+  "display": {
+    "firstperson_righthand": { "rotation": [0, -90, 55], "translation": [0, 8, 0], "scale": [1.25, 1.25, 1.25] },
+    "firstperson_lefthand": { "rotation": [0, 90, -55], "translation": [0, 8, 0], "scale": [1.25, 1.25, 1.25] },
+    "thirdperson_righthand": { "rotation": [0, -90, 55], "translation": [0, 8, 0], "scale": [1.2, 1.2, 1.2] },
+    "thirdperson_lefthand": { "rotation": [0, 90, -55], "translation": [0, 8, 0], "scale": [1.2, 1.2, 1.2] }
+  }
+}

@@ -57,6 +57,7 @@ public class ZeroPointMultiblockCheckProcedure {
 	};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		BlockPos controllerPos = BlockPos.containing(x, y, z);
 		BlockState controllerState = world.getBlockState(controllerPos);
 		BlockEntity controllerEntity = world.getBlockEntity(controllerPos);
@@ -108,25 +109,21 @@ public class ZeroPointMultiblockCheckProcedure {
 	}
 
 	private static void handleProgress(LevelAccessor world, BlockPos controllerPos, BlockEntity controllerEntity) {
-		if (controllerEntity == null || world.isClientSide()) {
+		if (!(controllerEntity instanceof net.crystalnexus.block.entity.ZeroPointBlockEntity machine) || world.isClientSide()) {
 			return;
 		}
 
 		int progress = (int) controllerEntity.getPersistentData().getDouble(PROGRESS_TAG);
 		BlockState state = world.getBlockState(controllerPos);
 		if (progress >= CrystalnexusConfig.MACHINES.ZERO_POINT_MULTIBLOCK.soundCycleTicks()) {
-			controllerEntity.getPersistentData().putDouble(PROGRESS_TAG, 0);
+			machine.machineSync.setDouble(PROGRESS_TAG, 0);
 			if (world instanceof Level level) {
-				level.sendBlockUpdated(controllerPos, state, state, 3);
 				level.playSound(null, controllerPos, BuiltInRegistries.SOUND_EVENT.get(ACTIVE_SOUND), SoundSource.NEUTRAL, 1, 1);
 			}
 			return;
 		}
 
-		controllerEntity.getPersistentData().putDouble(PROGRESS_TAG, progress + 1);
-		if (world instanceof Level level) {
-			level.sendBlockUpdated(controllerPos, state, state, 3);
-		}
+		machine.machineSync.setDouble(PROGRESS_TAG, progress + 1);
 	}
 
 	private static void pushEnergy(LevelAccessor world, BlockPos controllerPos) {

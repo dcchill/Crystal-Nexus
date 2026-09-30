@@ -24,21 +24,19 @@ import net.crystalnexus.assembly.AssemblyLineMachine;
 import net.minecraft.resources.ResourceLocation;
 
 import net.crystalnexus.jei_recipes.ChemicalReactionRecipe;
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.util.MachineUpgradeHelper;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class ChemicalReactionChamberOnTickUpdateProcedure {
 
-	public static String execute(LevelAccessor world, double x, double y, double z) {
+	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
 		double outputAmount = 0;
 		double cookTime = 0;
 
 		BlockPos pos = BlockPos.containing(x, y, z);
 
-		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return "";
+		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return;
 
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress"))) {
 			setIntegerBlockState(world, pos, "blockstate", 1);
@@ -66,11 +64,11 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		ItemStack resultStack = (match != null) ? match.result : ItemStack.EMPTY;
 
 		if (resultStack.isEmpty() || resultStack.getItem() == Blocks.AIR.asItem()) {
-			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+			return;
 		}
 
 		if (getEnergyStored(world, pos, null) < energyCost) {
-			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+			return;
 		}
 
 		ItemStack outSlot = itemFromBlockInventory(world, pos, 3).copy();
@@ -78,7 +76,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		boolean outSlotMatches = outSlotEmpty || outSlot.getItem() == resultStack.getItem();
 
 		if (!outSlotMatches) {
-			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+			return;
 		}
 
 		int addCount = Math.clamp(resultStack.getCount(), 1, 8);
@@ -86,7 +84,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		int currentOutCount = itemFromBlockInventory(world, pos, 3).getCount();
 		int spaceLeft = 64 - currentOutCount;
 		if (spaceLeft <= 0) {
-			return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+			return;
 		}
 		if (addCount > spaceLeft) addCount = spaceLeft;
 
@@ -101,7 +99,7 @@ processRecipeTick(world, pos, cookTime, () -> {
 	extractEnergy(world, pos, energyCost);
 });
 
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, pos, null));
+		return;
 	}
 
 

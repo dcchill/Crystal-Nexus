@@ -1,8 +1,11 @@
 package net.crystalnexus.block.entity;
 
+import net.crystalnexus.util.MachineSync;
+
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.processing.MaterialProcessingCatalog;
 import net.neoforged.neoforge.energy.EnergyStorage;
 
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,18 +36,21 @@ import java.util.stream.IntStream;
 import java.util.Objects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.util.CrushingRecipeSupport;
 
 import io.netty.buffer.Unpooled;
 
 public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 	private ItemStack cachedRecipeInput = ItemStack.EMPTY;
 	private ItemStack cachedRecipeResult = ItemStack.EMPTY;
 	private MachineTier cachedRecipeTier;
 	private ResourceLocation cachedAssignedRecipe;
 	private RecipeManager cachedRecipeManager;
+	private Object cachedRecipes;
+	private MaterialProcessingCatalog.Snapshot cachedMaterials;
+	private Level cachedLevel;
 
 	public CrystalCrusherBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYSTAL_CRUSHER.get(), position, state);
@@ -53,19 +59,22 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 	public static void tick(Level level, BlockPos pos, BlockState state, CrystalCrusherBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
-		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, pos)) return;
+		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, blockEntity)) return;
 		CrystalCrusherOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
-		if (blockEntity.getPersistentData().contains(net.crystalnexus.assembly.AssemblyLineMachine.OWNER)) blockEntity.setChanged();
 	}
 
 	public ItemStack crushingResult(Level level, ItemStack input, MachineTier tier, @Nullable ResourceLocation assigned) {
 		RecipeManager manager = level.getRecipeManager();
-		if (manager == cachedRecipeManager && tier == cachedRecipeTier
+		Object recipes = manager.getRecipes();
+		MaterialProcessingCatalog.Snapshot materials = assigned == null ? MaterialProcessingCatalog.get(level) : null;
+		if (manager == cachedRecipeManager && recipes == cachedRecipes && materials == cachedMaterials
+				&& level == cachedLevel && tier == cachedRecipeTier
 				&& Objects.equals(assigned, cachedAssignedRecipe)
 				&& input.getCount() == cachedRecipeInput.getCount()
 				&& ItemStack.isSameItemSameComponents(input, cachedRecipeInput)) {
-			return cachedRecipeResult.copy();
+			return cachedRecipeResult;
 		}
 		ItemStack result;
 		if (assigned == null) {
@@ -78,16 +87,27 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 				.map(h -> h.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
 		}
 		cachedRecipeManager = manager;
+		cachedRecipes = recipes;
+		cachedMaterials = materials;
+		cachedLevel = level;
 		cachedRecipeTier = tier;
 		cachedAssignedRecipe = assigned;
 		cachedRecipeInput = input.copy();
 		cachedRecipeResult = result.copy();
-		return result;
+		return cachedRecipeResult;
 	}
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
+		cachedRecipeManager = null;
+		cachedRecipes = null;
+		cachedMaterials = null;
+		cachedLevel = null;
+		cachedRecipeInput = ItemStack.EMPTY;
+		cachedRecipeResult = ItemStack.EMPTY;
+		cachedRecipeTier = null;
+		cachedAssignedRecipe = null;
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
@@ -190,9 +210,7 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
 			if (!simulate && retval > 0) {
-				setChanged();
-				if (level != null && level.getGameTime() % 5 == 0)
-					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+				machineSync.changed();
 			}
 			return retval;
 		}
@@ -201,9 +219,7 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
 			if (!simulate && retval > 0) {
-				setChanged();
-				if (level != null && level.getGameTime() % 5 == 0)
-					level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+				machineSync.changed();
 			}
 			return retval;
 		}

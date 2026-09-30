@@ -71,7 +71,7 @@ public class AOEChargerGuiScreen extends AbstractContainerScreen<AOEChargerGuiMe
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.aoe_charger_gui.label_item_charger"), 80, -10, -12829636, false);
-		guiGraphics.drawString(this.font, AOEChargerOnTickUpdateProcedure.execute(world, x, y, z), 8, 68, -12829636, false);
+		guiGraphics.drawString(this.font, AOEChargerOnTickUpdateProcedure.displayText(world, x, y, z), 8, 68, -12829636, false);
 	}
 
 	@Override

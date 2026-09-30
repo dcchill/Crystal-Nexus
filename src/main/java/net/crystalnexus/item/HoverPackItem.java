@@ -81,6 +81,11 @@ public abstract class HoverPackItem extends ArmorItem {
 		super(ARMOR_MATERIAL, type, properties);
 	}
 
+	@Override
+	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+		return slotChanged || oldStack.getItem() != newStack.getItem();
+	}
+
 	public static class Chestplate extends HoverPackItem {
     @Override public boolean isBarVisible(ItemStack stack) { return true; }
     @Override public int getBarWidth(ItemStack stack) { return ToolEnergy.barWidth(stack); }
