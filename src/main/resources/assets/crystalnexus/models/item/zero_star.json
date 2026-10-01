@@ -1,0 +1,7 @@
+{
+  "parent": "crystalnexus:item/star",
+  "textures": {
+    "0": "crystalnexus:item/zero_star",
+    "particle": "crystalnexus:item/zero_star"
+  }
+}

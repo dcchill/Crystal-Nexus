@@ -70,6 +70,9 @@ public class MultiblockStructureRecipeCategory implements IRecipeCategory<Multib
         Minecraft minecraft = Minecraft.getInstance();
         recipe.preview().render(guiGraphics, minecraft.font, minecraft.level.registryAccess(), 0, 0, (int) mouseX, (int) mouseY);
         guiGraphics.drawString(minecraft.font, recipe.title(), 145, 5, 0x404040, false);
+        if (recipe.id().getPath().equals("celestial_gear_forge")) {
+            guiGraphics.drawWordWrap(minecraft.font, Component.translatable("jei.crystalnexus.celestial_gear_forge.ports"), 145, 58, 144, 0x404040);
+        }
         recipe.preview().renderHoverTooltip(guiGraphics, minecraft.font, minecraft.level.registryAccess(), 0, 0, (int) mouseX, (int) mouseY);
     }
 

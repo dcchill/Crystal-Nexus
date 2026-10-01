@@ -40,7 +40,7 @@
         "@C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\build\\moddev\\gameTestServerRunVmArgs.txt",
         "-Dfml.modFolders\u003dcrystalnexus%%C:\\Users\\dsmar\\Documents\\GitHub\\Crystal-Nexus\\bin\\main"
       ],
-      "cwd": "${workspaceFolder}\\build\\machine-benchmark-run",
+      "cwd": "${workspaceFolder}\\run",
       "env": {},
       "console": "internalConsole",
       "shortenCommandLine": "none"

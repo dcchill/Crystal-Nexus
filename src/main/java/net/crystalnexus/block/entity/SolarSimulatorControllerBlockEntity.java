@@ -493,6 +493,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         if (stack.is(CrystalnexusModItems.ORANGE_STAR.get())) return 2;
         if (stack.is(CrystalnexusModItems.BLUE_STAR.get())) return 4;
         if (stack.is(CrystalnexusModItems.PINK_STAR.get())) return 8;
+        if (stack.is(CrystalnexusModItems.ZERO_STAR.get())) return 16;
         return 0;
     }
     private static List<TagKey<Item>> tags(String... paths) {

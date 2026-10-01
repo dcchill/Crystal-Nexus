@@ -60,6 +60,7 @@ public final class SolarEngineRenderer implements BlockEntityRenderer<SolarEngin
 
 	private static void renderGlow(ItemStack star, PoseStack poseStack, MultiBufferSource buffers, float time) {
 		int color = star.is(CrystalnexusModItems.BLUE_STAR.get()) ? 0x62C8FF
+			: star.is(CrystalnexusModItems.ZERO_STAR.get()) ? 0x62FFFF
 			: star.is(CrystalnexusModItems.PINK_STAR.get()) ? 0xFF62D8
 			: star.is(CrystalnexusModItems.ORANGE_STAR.get()) ? 0xFF8A32 : 0xFFE06A;
 		float radius = 3.3F * (1.0F + Mth.sin(time * 0.16F) * 0.08F);

@@ -50,7 +50,8 @@ public final class SolarSimulatorJeiRecipeCategory implements IRecipeCategory<So
         builder.addSlot(RecipeIngredientRole.INPUT, 53, 37).addItemStacks(recipe.planetInput());
         builder.addSlot(RecipeIngredientRole.INPUT, 80, 37).addItemStacks(java.util.List.of(
             new ItemStack(CrystalnexusModItems.YELLOW_DWARF_STAR.get()), new ItemStack(CrystalnexusModItems.ORANGE_STAR.get()),
-            new ItemStack(CrystalnexusModItems.BLUE_STAR.get()), new ItemStack(CrystalnexusModItems.PINK_STAR.get())));
+            new ItemStack(CrystalnexusModItems.BLUE_STAR.get()), new ItemStack(CrystalnexusModItems.PINK_STAR.get()),
+            new ItemStack(CrystalnexusModItems.ZERO_STAR.get())));
         if (recipe.fluidOutput().isPresent()) builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 37)
             .setFluidRenderer(recipe.fluidOutput().get().getAmount(), false, 16, 16)
             .addIngredient(NeoForgeTypes.FLUID_STACK, recipe.fluidOutput().get());

@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:gravitational_array",
+  "ingredients": [
+    { "ingredient": { "item": "crystalnexus:pink_star" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:zero_point_core" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:pink_star" }, "count": 1 },
+    { "ingredient": { "item": "crystalnexus:zero_point_core" }, "count": 1 }
+  ],
+  "temporal_fluid": 400000,
+  "energy": 1000000,
+  "duration": 400,
+  "output": { "id": "crystalnexus:zero_star", "count": 1 },
+  "visuals": { "red": 0.4, "green": 0.9, "blue": 1.0, "scale": 1.3 }
+}

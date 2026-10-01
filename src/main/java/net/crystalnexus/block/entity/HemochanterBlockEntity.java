@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class HemochanterBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    public static final int BLOOD_TANK_CAPACITY = 32_000, ENERGY_CAPACITY = 1_000_000, MAX_LEVEL = 32;
+    public static final int BLOOD_TANK_CAPACITY = 32_000, ENERGY_CAPACITY = 1_000_000, MAX_LEVEL = 8;
     private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
     private int progress;
     private int operationLevel;

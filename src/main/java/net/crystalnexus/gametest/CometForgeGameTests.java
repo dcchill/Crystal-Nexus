@@ -194,8 +194,8 @@ public final class CometForgeGameTests {
         helper.assertTrue(simulator.canPlaceItemThroughFace(3, new ItemStack(CrystalnexusModItems.DYSON_REPAIR.get()), Direction.UP)
             && !simulator.canPlaceItemThroughFace(3, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get()), Direction.UP),
             "Automation accepts only service kits in the bottom slot");
-        helper.assertTrue(new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get()).getMaxStackSize() == 512,
-            "Dyson structures stack to 512");
+        helper.assertTrue(new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get()).getMaxStackSize() == 64,
+            "Dyson structures stack to 64");
         for (int i = 0; i < 16; i++) simulator.insertDyson(0, new ItemStack(CrystalnexusModItems.DYSON_STRUCTURE.get(), 64), 64, false);
         for (int i = 0; i < 16; i++) simulator.insertDyson(1, new ItemStack(CrystalnexusModItems.CARBON_SOLAR_SHEET.get(), 64), 64, false);
         helper.assertTrue(simulator.getDysonCount(0) == 1024 && simulator.getDysonCount(1) == 1024,

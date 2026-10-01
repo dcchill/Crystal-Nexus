@@ -15,8 +15,8 @@ class ConveyerBeltModeTest {
 
     @Test
     void tiersDoubleInSpeed() {
-        assertEquals(8, ConveyerBeltTier.BASIC.ticksPerMove());
-        assertEquals(4, ConveyerBeltTier.TITANIUM.ticksPerMove());
-        assertEquals(2, ConveyerBeltTier.METEORITE.ticksPerMove());
+        assertEquals(4, ConveyerBeltTier.BASIC.ticksPerMove());
+        assertEquals(2, ConveyerBeltTier.TITANIUM.ticksPerMove());
+        assertEquals(1, ConveyerBeltTier.METEORITE.ticksPerMove());
     }
 }

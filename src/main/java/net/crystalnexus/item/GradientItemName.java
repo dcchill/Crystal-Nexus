@@ -46,7 +46,7 @@ public final class GradientItemName {
         float phase = (System.currentTimeMillis() % 4000L) / 4000.0F;
         MutableComponent result = Component.empty();
         for (int i = 0; i < chars.length; i++) {
-            int color = Color.HSBtoRGB((phase + (float) i / Math.max(1, chars.length)) % 1.0F, 1.0F, 1.0F) & 0xFFFFFF;
+            int color = Color.HSBtoRGB((phase + (float) i / Math.max(1, chars.length)) % 1.0F, 0.85F, 1.0F) & 0xFFFFFF;
             result.append(Component.literal(new String(Character.toChars(chars[i]))).withStyle(style -> style.withColor(color)));
         }
         return result;

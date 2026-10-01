@@ -11,6 +11,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModJeiPlugin;
 import net.crystalnexus.recipe.CelestialGearForgeRecipe;
+import net.crystalnexus.world.inventory.CelestialGearForgeMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 
 public final class CelestialGearForgeJeiRecipeCategory implements IRecipeCategory<CelestialGearForgeRecipe> {
 	public static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath("crystalnexus", "celestial_gear_forge");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "textures/screens/gear_forge_jei.png");
 	private final IDrawable icon;
 
 	public CelestialGearForgeJeiRecipeCategory(IGuiHelper helper) {
@@ -26,23 +28,18 @@ public final class CelestialGearForgeJeiRecipeCategory implements IRecipeCategor
 	@Override public mezz.jei.api.recipe.RecipeType<CelestialGearForgeRecipe> getRecipeType() { return CrystalnexusModJeiPlugin.CelestialGearForge_Type; }
 	@Override public Component getTitle() { return Component.translatable("block.crystalnexus.celestial_gear_forge"); }
 	@Override public IDrawable getIcon() { return icon; }
-	@Override public int getWidth() { return 162; }
-	@Override public int getHeight() { return 102; }
+	@Override public int getWidth() { return 176; }
+	@Override public int getHeight() { return 92; }
 
 	@Override public void setRecipe(IRecipeLayoutBuilder builder, CelestialGearForgeRecipe recipe, IFocusGroup focuses) {
-		int[][] positions = {{55, 0}, {27, 27}, {55, 27}, {83, 27}, {55, 55}};
-		for (int index = 0; index < positions.length; index++)
+		int[][] positions = CelestialGearForgeMenu.SLOT_POSITIONS;
+		for (int index = 0; index < CelestialGearForgeRecipe.INPUT_COUNT; index++)
 			builder.addSlot(RecipeIngredientRole.INPUT, positions[index][0], positions[index][1]).addIngredients(recipe.getIngredients().get(index));
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 131, 27).addItemStack(recipe.output());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 134, 37).addItemStack(recipe.output());
 	}
 
 	@Override public void draw(CelestialGearForgeRecipe recipe, IRecipeSlotsView slots, GuiGraphics graphics, double mouseX, double mouseY) {
-		graphics.fillGradient(0, 0, getWidth(), getHeight(), 0xff302d38, 0xff1b1921);
-		graphics.fill(0, 0, getWidth(), 1, 0xff88734f);
-		graphics.fill(0, getHeight() - 1, getWidth(), getHeight(), 0xff88734f);
-		graphics.fill(0, 0, 1, getHeight(), 0xff88734f);
-		graphics.fill(getWidth() - 1, 0, getWidth(), getHeight(), 0xff88734f);
-		graphics.fill(110, 43, 126, 47, 0xffb89c64);
-		graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.literal("200 ticks"), 109, 76, 0xffded5c4, false);
+		graphics.blit(TEXTURE, 0, 0, 0, 0, getWidth(), getHeight(), 256, 256);
+		graphics.drawString(net.minecraft.client.Minecraft.getInstance().font, Component.literal("200 ticks / 100 FE/t"), 60, 81, 0xffded5c4, false);
 	}
 }

@@ -16,6 +16,31 @@ public final class WorldgenGameTests {
     }
 
     @GameTest(template = "zero_point")
+    public static void fortuneIncreasesOreDrops(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var tool = new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE);
+        var fortune = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT)
+            .getOrThrow(net.minecraft.world.item.enchantment.Enchantments.FORTUNE);
+        net.minecraft.world.item.enchantment.EnchantmentHelper.updateEnchantments(tool, mutable -> mutable.set(fortune, 10));
+        for (String name : new String[]{"ancient_crystal_ore", "ancient_crystal_ore_stone", "azurine_ore", "deepslate_azurine_ore",
+                "blutonium_ore", "chlorophyte_ore", "invertium_ore", "silicon_ore", "deepslate_silicon_ore", "sulfur_ore"}) {
+            var block = net.minecraft.core.registries.BuiltInRegistries.BLOCK.get(ResourceLocation.fromNamespaceAndPath("crystalnexus", name));
+            var loot = level.getServer().reloadableRegistries().getLootTable(block.getLootTable());
+            var params = new net.minecraft.world.level.storage.loot.LootParams.Builder(level)
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.ORIGIN, helper.absolutePos(net.minecraft.core.BlockPos.ZERO).getCenter())
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.BLOCK_STATE, block.defaultBlockState())
+                .withParameter(net.minecraft.world.level.storage.loot.parameters.LootContextParams.TOOL, tool)
+                .create(net.minecraft.world.level.storage.loot.parameters.LootContextParamSets.BLOCK);
+            int drops = 0;
+            for (int seed = 1; seed <= 16; seed++)
+                drops += loot.getRandomItems(params, seed).stream().mapToInt(net.minecraft.world.item.ItemStack::getCount).sum();
+            int base = name.equals("ancient_crystal_ore") ? 4 : name.equals("ancient_crystal_ore_stone") || name.equals("sulfur_ore") ? 2 : 1;
+            helper.assertTrue(drops > base * 16, name + " must grant bonus drops with Fortune");
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void oreFeaturesAreAttachedToBiomes(GameTestHelper helper) {
         var registries = helper.getLevel().registryAccess();
         var placedFeatures = registries.registryOrThrow(Registries.PLACED_FEATURE);

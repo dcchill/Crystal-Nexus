@@ -18,7 +18,8 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 
 public final class CelestialGearForgeRecipe implements CrystalNexusRecipe {
-	public static final int INPUT_COUNT = 5;
+	public static final int INPUT_COUNT = 9;
+	public static final int STAR_SLOT = 8;
 	private final List<Ingredient> ingredients;
 	private final ItemStack output;
 
@@ -59,7 +60,7 @@ public final class CelestialGearForgeRecipe implements CrystalNexusRecipe {
 		public static final Serializer INSTANCE = new Serializer();
 		private static final MapCodec<CelestialGearForgeRecipe> CODEC = RecordCodecBuilder.<CelestialGearForgeRecipe>mapCodec(instance -> instance.group(
 			Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap(ingredients -> ingredients.size() == INPUT_COUNT
-				? DataResult.success(ingredients) : DataResult.error(() -> "Celestial Gear Forge recipes require exactly five ingredients"), DataResult::success)
+				? DataResult.success(ingredients) : DataResult.error(() -> "Celestial Gear Forge recipes require eight ingredients and one star ingredient"), DataResult::success)
 				.forGetter(recipe -> recipe.ingredients),
 			ItemStack.STRICT_CODEC.fieldOf("output").forGetter(recipe -> recipe.output)
 		).apply(instance, CelestialGearForgeRecipe::new)).flatXmap(recipe -> recipe.output.isEmpty()

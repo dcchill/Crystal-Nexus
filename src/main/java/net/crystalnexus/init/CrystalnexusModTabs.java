@@ -160,6 +160,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ORANGE_STAR.get());
 				tabData.accept(CrystalnexusModItems.BLUE_STAR.get());
 				tabData.accept(CrystalnexusModItems.PINK_STAR.get());
+				tabData.accept(CrystalnexusModItems.ZERO_STAR.get());
 				tabData.accept(CrystalnexusModItems.DEAD_STAR.get());
 				tabData.accept(CrystalnexusModItems.TERRA.get());
 				tabData.accept(CrystalnexusModItems.CAELUS.get());
@@ -580,6 +581,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ORANGE_STAR.get());
 				tabData.accept(CrystalnexusModItems.BLUE_STAR.get());
 				tabData.accept(CrystalnexusModItems.PINK_STAR.get());
+				tabData.accept(CrystalnexusModItems.ZERO_STAR.get());
 				tabData.accept(CrystalnexusModItems.DEAD_STAR.get());
 				tabData.accept(CrystalnexusModItems.TERRA.get());
 				tabData.accept(CrystalnexusModItems.CAELUS.get());

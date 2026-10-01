@@ -18,6 +18,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 
 import net.neoforged.api.distmarker.Dist;
@@ -662,10 +663,18 @@ public class TooltipInfoHandler {
 	@SubscribeEvent
 	public static void onItemTooltip(ItemTooltipEvent event) {
 		ItemStack stack = event.getItemStack();
+		var highLevelEnchants = EnchantmentHelper.getEnchantmentsForCrafting(stack).entrySet().stream()
+			.filter(entry -> entry.getIntValue() > 255)
+			.map(entry -> entry.getKey().value().description().getString()).toList();
+		for (int i = 0; i < event.getToolTip().size(); i++) {
+			Component line = event.getToolTip().get(i);
+			if (highLevelEnchants.stream().anyMatch(name -> line.getString().startsWith(name)))
+				event.getToolTip().set(i, GradientItemName.rainbow(line));
+		}
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 		String path = itemId.getPath();
 		boolean tierX = itemId.getNamespace().equals(CrystalnexusMod.MODID)
-				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("bear"));
+				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("zero_star") || path.equals("bear"));
 		FrameColors colors = null;
 		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
 			if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
@@ -708,9 +717,7 @@ public class TooltipInfoHandler {
 			}
 		}
 		String[] tooltipLines = TOOLTIP_DATA.get(path);
-		if (tooltipLines == null) {
-			return;
-		}
+		if (tooltipLines == null) return;
 		if (Screen.hasShiftDown()) {
 			for (String line : tooltipLines) {
 				event.getToolTip().add(Component.literal(line).withStyle(ChatFormatting.GRAY));

@@ -5,6 +5,7 @@ public final class StarDurability {
     public static final int ORANGE = 1 << 11;
     public static final int BLUE = 1 << 12;
     public static final int PINK = 1 << 13;
+    public static final int ZERO = 1 << 14;
 
     private StarDurability() {}
 

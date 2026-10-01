@@ -18,6 +18,7 @@ import net.crystalnexus.jei_recipes.ArcFurnaceRecipe;
 import net.crystalnexus.jei_recipes.MultiblockStructureRecipeCategory;
 import net.crystalnexus.jei_recipes.MultiblockStructureRecipe;
 import net.crystalnexus.jei_recipes.CelestialGearForgeJeiRecipeCategory;
+import net.crystalnexus.jei_recipes.CelestialGearForgeEnchantingCategory;
 import net.crystalnexus.recipe.CelestialGearForgeRecipe;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipeCategory;
 import net.crystalnexus.jei_recipes.ReactorMultiblockGuideRecipe;
@@ -136,6 +137,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<MultiblockStructureRecipe> MultiblockStructure_Type = new mezz.jei.api.recipe.RecipeType<>(MultiblockStructureRecipeCategory.UID, MultiblockStructureRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<CelestialGearForgeRecipe> CelestialGearForge_Type = new mezz.jei.api.recipe.RecipeType<>(CelestialGearForgeJeiRecipeCategory.UID, CelestialGearForgeRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<CelestialGearForgeEnchantingCategory.Example> CelestialGearForgeEnchanting_Type = new mezz.jei.api.recipe.RecipeType<>(CelestialGearForgeEnchantingCategory.UID, CelestialGearForgeEnchantingCategory.Example.class);
 	public static final mezz.jei.api.recipe.RecipeType<ReactorMultiblockGuideRecipe> ReactorMultiblockGuide_Type = new mezz.jei.api.recipe.RecipeType<>(ReactorMultiblockGuideRecipeCategory.UID, ReactorMultiblockGuideRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<CircuitPressingRecipe> CircuitPressing_Type = new mezz.jei.api.recipe.RecipeType<>(CircuitPressingRecipeCategory.UID, CircuitPressingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<TitaniumCarbideCircuitPressRecipe> TitaniumCarbideCircuitPress_Type = new mezz.jei.api.recipe.RecipeType<>(TitaniumCarbideCircuitPressRecipeCategory.UID, TitaniumCarbideCircuitPressRecipe.class);
@@ -174,6 +176,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MultiblockStructureRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CelestialGearForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CelestialGearForgeEnchantingCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CircuitPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new TitaniumCarbideCircuitPressRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new InverterJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -198,6 +201,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
 		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
+		registration.addRecipes(CelestialGearForgeEnchanting_Type, CelestialGearForgeEnchantingCategory.examples(Minecraft.getInstance().level.registryAccess()));
 		List<PurificationRecipe> PurificationRecipes = recipes(recipeManager, PurificationRecipe.class);
 		registration.addRecipes(Purification_Type, PurificationRecipes);
 		List<ExtractinatorJEIRecipe> ExtractinatorJEIRecipes = recipes(recipeManager, ExtractinatorJEIRecipe.class);
@@ -346,7 +350,9 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	private static MultiblockStructureRecipe multiblockStructure(String id, ItemStack icon, net.minecraft.core.RegistryAccess access) {
 		MultiblockStructurePreview preview = new MultiblockStructurePreview(id, net.minecraft.world.level.block.Block.byItem(icon.getItem()));
-		return new MultiblockStructureRecipe(ResourceLocation.fromNamespaceAndPath("crystalnexus", id), icon.getHoverName(), preview.getRequiredBlocks(access), preview);
+		var ingredients = new java.util.ArrayList<>(preview.getRequiredBlocks(access));
+		if (id.equals("celestial_gear_forge")) ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
+		return new MultiblockStructureRecipe(ResourceLocation.fromNamespaceAndPath("crystalnexus", id), icon.getHoverName(), List.copyOf(ingredients), preview);
 	}
 
 	@Override
@@ -395,6 +401,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem()), CelestialGearForge_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem()), CelestialGearForgeEnchanting_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get().asItem()), MatterTransmutation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get().asItem()), SingularityCompression_Type);
@@ -416,6 +423,9 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+		net.crystalnexus.jei.MachineRecipeTransfers.register(registration);
+		if (net.neoforged.fml.ModList.get().isLoaded("ae2"))
+			registration.addUniversalRecipeTransferHandler(new net.crystalnexus.integration.ae2.Ae2PatternJeiTransferHandler(registration.getTransferHelper()));
 		registration.addUniversalRecipeTransferHandler(new net.crystalnexus.client.DepotCliJeiTransferHandler());
         registration.addUniversalRecipeTransferHandler(new net.crystalnexus.client.AssemblyLineJeiTransferHandler());
 		net.crystalnexus.jei.CrystalnexusJeiRuntimePlugin.registerCategoryTransferHandlers(registration);

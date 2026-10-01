@@ -1,9 +1,9 @@
 package net.crystalnexus.block;
 
 public enum ConveyerBeltTier {
-    BASIC(0, 8),
-    TITANIUM(1, 4),
-    METEORITE(2, 2);
+    BASIC(0, 4),
+    TITANIUM(1, 2),
+    METEORITE(2, 1);
 
     private final int index;
     private final int ticksPerMove;

@@ -6,15 +6,15 @@
       "count": 1
     },
     {
-      "ingredient": { "item": "crystalnexus:redstone_singularity" },
-      "count": 1
-    },
-    {
-      "ingredient": { "item": "crystalnexus:gold_singularity" },
+      "ingredient": { "item": "crystalnexus:yellow_dwarf_star" },
       "count": 1
     },
     {
       "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:yellow_dwarf_star" },
       "count": 1
     }
   ],

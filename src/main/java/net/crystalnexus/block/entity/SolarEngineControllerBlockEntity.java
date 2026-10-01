@@ -277,6 +277,7 @@ public final class SolarEngineControllerBlockEntity extends RandomizableContaine
 		if (stack.is(CrystalnexusModItems.ORANGE_STAR.get())) return new StarProfile(750_000, 16, 50, 2500);
 		if (stack.is(CrystalnexusModItems.BLUE_STAR.get())) return new StarProfile(2_000_000, 32, 100, 4000);
 		if (stack.is(CrystalnexusModItems.PINK_STAR.get())) return new StarProfile(5_000_000, 64, 200, 6000);
+		if (stack.is(CrystalnexusModItems.ZERO_STAR.get())) return new StarProfile(10_000_000, 64, 200, 6000);
 		return null;
 	}
 

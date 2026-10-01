@@ -95,7 +95,42 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 				return recipe;
 			}
 		}
+		// AE2 processing patterns pool identical ingredients instead of retaining ring positions.
+		for (MatterTransmutationRecipe recipe : recipes)
+			if (recipe.isEnabledByConfig() && arrangePooledInputs(lvl, pos, recipe, inputSlots)) return recipe;
 		return null;
+	}
+
+	private static boolean arrangePooledInputs(Level level, BlockPos pos, MatterTransmutationRecipe recipe, int slots) {
+		if (recipe.getIngredients().size() != slots
+				|| !(level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inventory)) return false;
+		var remaining = new java.util.ArrayList<ItemStack>();
+		var arranged = new java.util.ArrayList<ItemStack>();
+		for (int i = 0; i < slots; i++) remaining.add(inventory.getStackInSlot(i).copy());
+		int total = remaining.stream().mapToInt(ItemStack::getCount).sum();
+		int batchSize = java.util.stream.IntStream.range(0, slots).map(recipe::getInputCount).sum();
+		if (total == 0 || total % batchSize != 0) return false;
+		int batches = total / batchSize;
+		for (int target = 0; target < slots; target++) {
+			Ingredient ingredient = recipe.getIngredients().get(target);
+			ItemStack chosen = remaining.stream().filter(stack -> !stack.isEmpty()
+				&& ingredient.test(stack)).findFirst().orElse(ItemStack.EMPTY);
+			int needed = recipe.getInputCount(target) * batches;
+			if (chosen.isEmpty() || needed > chosen.getMaxStackSize()) return false;
+			ItemStack result = chosen.copyWithCount(needed);
+			for (ItemStack source : remaining) {
+				if (!ItemStack.isSameItemSameComponents(source, result)) continue;
+				int taken = Math.min(needed, source.getCount());
+				source.shrink(taken);
+				needed -= taken;
+			}
+			if (needed != 0) return false;
+			arranged.add(result);
+		}
+		// Commit only after every input has been accounted for; failed matches leave inventory intact.
+		if (remaining.stream().anyMatch(stack -> !stack.isEmpty())) return false;
+		for (int i = 0; i < slots; i++) inventory.setStackInSlot(i, arranged.get(i));
+		return true;
 	}
 
 	private static boolean recipeMatchesWithCounts(LevelAccessor world, BlockPos pos, MatterTransmutationRecipe recipe, int inputSlots) {

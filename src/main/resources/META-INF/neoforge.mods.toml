@@ -12,6 +12,9 @@ credits="Dcchill"
 authors="Dcchill"
 enumExtensions="META-INF/enumextensions.json"
 
+[[mixins]]
+config="crystalnexus.mixins.json"
+
 # Start of user code block mod configuration
 # End of user code block mod configuration
 

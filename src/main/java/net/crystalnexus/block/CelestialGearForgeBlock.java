@@ -61,8 +61,10 @@ public final class CelestialGearForgeBlock extends Block implements EntityBlock 
 
 	@Override
 	protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-		if (state.getBlock() != next.getBlock() && level.getBlockEntity(pos) instanceof CelestialGearForgeBlockEntity forge)
+		if (state.getBlock() != next.getBlock() && level.getBlockEntity(pos) instanceof CelestialGearForgeBlockEntity forge) {
+			forge.onControllerRemoved();
 			Containers.dropContents(level, pos, forge);
+		}
 		super.onRemove(state, level, pos, next, moving);
 	}
 

@@ -6,15 +6,15 @@
       "count": 1
     },
     {
-      "ingredient": { "item": "crystalnexus:emerald_singularity" },
-      "count": 1
-    },
-    {
-      "ingredient": { "item": "crystalnexus:quartz_singularity" },
+      "ingredient": { "item": "crystalnexus:orange_star" },
       "count": 1
     },
     {
       "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:orange_star" },
       "count": 1
     }
   ],

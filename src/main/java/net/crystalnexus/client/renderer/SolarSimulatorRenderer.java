@@ -273,6 +273,7 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
     public static void renderSunGlow(ItemStack star, PoseStack poseStack, MultiBufferSource buffers, float time) {
         if (star.isEmpty()) return;
         int color = star.is(CrystalnexusModItems.BLUE_STAR.get()) ? 0x62C8FF
+            : star.is(CrystalnexusModItems.ZERO_STAR.get()) ? 0x62FFFF
             : star.is(CrystalnexusModItems.PINK_STAR.get()) ? 0xFF62D8
             : star.is(CrystalnexusModItems.ORANGE_STAR.get()) ? 0xFF8A32 : 0xFFE06A;
         float pulse = 1.0F + Mth.sin(time * 0.16F) * 0.08F;

@@ -10,6 +10,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 repositories {
     mavenCentral()
+    maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
     maven { url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
     maven {
         name = "Progwml6's maven"
@@ -25,11 +26,13 @@ repositories {
 
 dependencies {
     implementation 'software.bernie.geckolib:geckolib-neoforge-1.21.1:4.7.6'
-    compileOnly 'org.appliedenergistics:appliedenergistics2:19.2.17:api'
+    compileOnly 'org.appliedenergistics:appliedenergistics2:19.2.17'
     compileOnly 'mezz.jei:jei-1.21.1-common-api:19.21.0.247'
     compileOnly 'mezz.jei:jei-1.21.1-neoforge-api:19.21.0.247'
     runtimeOnly 'mezz.jei:jei-1.21.1-neoforge:19.21.0.247'
     compileOnly 'dev.emi:emi-neoforge:1.1.22+1.21.1:api'
+    compileOnly 'org.spongepowered:mixin:0.8.5'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
 }
 

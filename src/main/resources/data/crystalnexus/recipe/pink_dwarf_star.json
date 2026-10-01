@@ -2,19 +2,19 @@
   "type": "crystalnexus:gravitational_array",
   "ingredients": [
     {
-      "ingredient": { "item": "crystalnexus:redstone_singularity" },
+      "ingredient": { "item": "crystalnexus:emerald_singularity" },
       "count": 1
     },
     {
-      "ingredient": { "item": "crystalnexus:iron_singularity" },
-      "count": 1
-    },
-    {
-      "ingredient": { "item": "crystalnexus:quartz_singularity" },
+      "ingredient": { "item": "crystalnexus:blue_star" },
       "count": 1
     },
     {
       "ingredient": { "item": "crystalnexus:energy_singularity" },
+      "count": 1
+    },
+    {
+      "ingredient": { "item": "crystalnexus:blue_star" },
       "count": 1
     }
   ],

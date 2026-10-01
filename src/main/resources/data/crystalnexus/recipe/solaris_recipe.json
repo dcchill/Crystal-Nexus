@@ -1,0 +1,36 @@
+{
+  "type": "crystalnexus:celestial_gear_forge",
+  "ingredients": [
+    {
+      "item": "crystalnexus:laser_diode"
+    },
+    {
+      "item": "crystalnexus:omega_chip"
+    },
+    {
+      "item": "crystalnexus:meteorite_sheet"
+    },
+    {
+      "item": "crystalnexus:obsidrax_machine_bolt"
+    },
+    {
+      "item": "crystalnexus:compound_pickaxe"
+    },
+    {
+      "item": "crystalnexus:obsidrax_machine_bolt"
+    },
+    {
+      "item": "crystalnexus:meteorite_sheet"
+    },
+    {
+      "item": "crystalnexus:omega_chip"
+    },
+    {
+      "tag": "crystalnexus:celestial_gear_forge_stars"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:solaris",
+    "count": 1
+  }
+}
