@@ -196,6 +196,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CometForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SolarSimulatorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new ReactorMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
 	@Override
@@ -271,6 +272,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
                 ResourceCometItem.create(material))).toList());
         registration.addRecipes(SolarSimulator_Type, materials.stream().map(material ->
             new SolarSimulatorJeiRecipe(ResourceCometItem.create(material), List.of(material), java.util.Optional.empty())).toList());
+        registration.addRecipes(ReactorMultiblockGuide_Type, recipes(recipeManager, ReactorMultiblockGuideRecipe.class));
         registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()),
             net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and one singularity of the tagged raw material or ingot for the comet."));
 	}

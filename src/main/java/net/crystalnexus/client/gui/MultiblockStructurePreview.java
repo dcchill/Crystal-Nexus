@@ -55,6 +55,7 @@ public class MultiblockStructurePreview {
     private static final float PREVIEW_ORIGIN_Y = 80.0f;
     private static final Map<String, StructurePreviewData> CACHE = new HashMap<>();
 
+    private StructurePreviewData customData;
     private final String structureId;
     private final Block controllerBlock;
     private float yaw = DEFAULT_YAW;
@@ -76,6 +77,19 @@ public class MultiblockStructurePreview {
     public MultiblockStructurePreview(String structureId, Block controllerBlock) {
         this.structureId = structureId;
         this.controllerBlock = controllerBlock;
+    }
+
+    public void setBlocks(Map<BlockPos, BlockState> states, int size) {
+        List<PreviewBlock> blocks = states.entrySet().stream()
+                .map(entry -> new PreviewBlock(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparingInt((PreviewBlock block) -> block.pos.getY())
+                        .thenComparingInt(block -> block.pos.getZ()).thenComparingInt(block -> block.pos.getX()))
+                .toList();
+        customData = new StructurePreviewData(blocks, size, size, size, 0, size - 1, size,
+                size / 2.0f, size / 2.0f, size / 2.0f, null);
+        visibleLayer = Math.min(visibleLayer, size - 2);
+        dragging = false;
+        clickedBlock = null;
     }
 
     public List<ItemStack> getRequiredBlocks(RegistryAccess registryAccess) {
@@ -222,7 +236,7 @@ public class MultiblockStructurePreview {
     }
 
     private StructurePreviewData getData(RegistryAccess registryAccess) {
-        StructurePreviewData data = CACHE.computeIfAbsent(this.structureId, id -> load(id, registryAccess.lookupOrThrow(Registries.BLOCK)));
+        StructurePreviewData data = customData != null ? customData : CACHE.computeIfAbsent(this.structureId, id -> load(id, registryAccess.lookupOrThrow(Registries.BLOCK)));
         if (!defaultViewInitialized && controllerBlock != null) {
             data.blocks.stream().filter(block -> block.state.is(controllerBlock)
                     && block.state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)).findFirst()

@@ -148,7 +148,7 @@ public final class ReactorSimulation {
 		return computer.getFluidTank().getFluid().is(CrystalnexusModFluids.NITROGEN.get()) ? 2.0 : 1.0;
 	}
 
-	private static int runningCoolantDemand(double temperature, double heatGenerated, double coolantEfficiency) {
+	static int runningCoolantDemand(double temperature, double heatGenerated, double coolantEfficiency) {
 		double requestedHeatRemoval = heatGenerated - passiveHeatLoss(temperature)
 				+ (temperature - ReactorBalance.TARGET_TEMPERATURE) * ReactorBalance.COOLING_FEEDBACK_PER_DEGREE;
 		return (int) Math.ceil(Math.max(0, requestedHeatRemoval) / (ReactorBalance.HEAT_PER_MB_COOLANT * coolantEfficiency));
@@ -195,7 +195,7 @@ public final class ReactorSimulation {
 		computer.setItem(2, waste);
 	}
 
-	private static double temperatureCurve(double temperature) {
+	static double temperatureCurve(double temperature) {
 		return interpolate(temperature, ReactorBalance.AMBIENT_TEMPERATURE, 0.60,
 				ReactorBalance.SCRAM_TEMPERATURE, 1.20);
 	}

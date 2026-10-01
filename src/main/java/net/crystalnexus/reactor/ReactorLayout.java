@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
@@ -76,11 +77,11 @@ public final class ReactorLayout {
 			List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), List.of(), BlockPos.ZERO, BlockPos.ZERO);
 	}
 
-	public static ReactorLayout analyze(LevelAccessor world, BlockPos center, int radius) {
+	public static ReactorLayout analyze(BlockGetter world, BlockPos center, int radius) {
 		return analyze(world, center.offset(-radius, -radius, -radius), center.offset(radius, radius, radius));
 	}
 
-	public static ReactorLayout analyze(LevelAccessor world, BlockPos minBounds, BlockPos maxBounds) {
+	public static ReactorLayout analyze(BlockGetter world, BlockPos minBounds, BlockPos maxBounds) {
 		Set<BlockPos> fuel = new HashSet<>();
 		Set<BlockPos> columns = new HashSet<>();
 		Set<BlockPos> coolant = new HashSet<>();
@@ -270,7 +271,7 @@ public final class ReactorLayout {
 		return block == CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get();
 	}
 
-	private static Set<BlockPos> findActiveCoolant(LevelAccessor world, BlockPos minBounds, BlockPos maxBounds,
+	private static Set<BlockPos> findActiveCoolant(BlockGetter world, BlockPos minBounds, BlockPos maxBounds,
 			Set<BlockPos> fuel, Set<BlockPos> coolant, Set<BlockPos> conductors) {
 		Set<BlockPos> active = new HashSet<>();
 		Set<BlockPos> remaining = new HashSet<>(coolant);
@@ -347,7 +348,7 @@ public final class ReactorLayout {
 		return false;
 	}
 
-	private static boolean touchesFluidInput(LevelAccessor world, BlockPos pos, BlockPos minBounds, BlockPos maxBounds) {
+	private static boolean touchesFluidInput(BlockGetter world, BlockPos pos, BlockPos minBounds, BlockPos maxBounds) {
 		for (Direction direction : ALL) {
 			BlockPos next = pos.relative(direction);
 			if (isShellPosition(next, minBounds, maxBounds)) {
