@@ -38,10 +38,7 @@ public class OreCrushingJeiRecipe implements CrystalNexusRecipe {
 
 	@Override
 	public boolean matches(RecipeInput pContainer, Level pLevel) {
-		if (pLevel.isClientSide()) {
-			return false;
-		}
-		return false;
+		return CrystalNexusRecipe.super.matches(pContainer, pLevel);
 	}
 
 	@Override

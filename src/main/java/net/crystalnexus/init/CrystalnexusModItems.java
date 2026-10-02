@@ -65,6 +65,7 @@ import net.crystalnexus.item.PolyacrylonitrileDustItem;
 import net.crystalnexus.item.PinkPaintballItem;
 import net.crystalnexus.item.PaintballPlaceholderItem;
 import net.crystalnexus.item.PaintGunItem;
+import net.crystalnexus.item.ParallelizationChipItem;
 import net.crystalnexus.item.PrisonCubeItem;
 import net.crystalnexus.item.OverfuelCellItem;
 import net.crystalnexus.item.OreScannerItem;
@@ -185,6 +186,7 @@ public class CrystalnexusModItems {
 	public static final DeferredRegister.Items REGISTRY = DeferredRegister.createItems(CrystalnexusMod.MODID);
 	public static final DeferredItem<Item> CRYSTAL_PURIFIER = block(CrystalnexusModBlocks.CRYSTAL_PURIFIER);
 	public static final DeferredItem<Item> RANGE_UPGRADE = REGISTRY.register("range_upgrade", RangeUpgradeItem::new);
+	public static final DeferredItem<Item> PARALLELIZATION_CHIP = REGISTRY.register("parallelization_chip", ParallelizationChipItem::new);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY = REGISTRY.register("crystalized_alloy", CystalizedAlloyItem::new);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_BLOCK = block(CrystalnexusModBlocks.CRYSTALIZED_ALLOY_BLOCK);
 	public static final DeferredItem<Item> CRYSTAL_CRUSHER = block(CrystalnexusModBlocks.CRYSTAL_CRUSHER);

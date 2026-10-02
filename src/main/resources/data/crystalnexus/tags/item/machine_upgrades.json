@@ -9,6 +9,7 @@
     "crystalnexus:range_upgrade",
     "crystalnexus:carbon_range_upgrade",
     "crystalnexus:carbon_fe_efficiency_upgrade",
-    "crystalnexus:ssd"
+    "crystalnexus:ssd",
+    "crystalnexus:parallelization_chip"
   ]
 }

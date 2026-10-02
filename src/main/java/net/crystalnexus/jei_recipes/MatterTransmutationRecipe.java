@@ -79,7 +79,7 @@ public class MatterTransmutationRecipe implements CrystalNexusRecipe {
 
 	@Override
 	public boolean matches(RecipeInput input, Level level) {
-		return false;
+		return CrystalNexusRecipe.super.matches(input, level);
 	}
 
 	@Override

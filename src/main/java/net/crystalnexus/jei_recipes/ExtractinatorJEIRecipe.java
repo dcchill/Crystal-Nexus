@@ -29,7 +29,7 @@ public class ExtractinatorJEIRecipe implements CrystalNexusRecipe {
 
     @Override
     public boolean matches(RecipeInput pContainer, Level pLevel) {
-        return false; 
+        return CrystalNexusRecipe.super.matches(pContainer, pLevel);
     }
 
     @Override

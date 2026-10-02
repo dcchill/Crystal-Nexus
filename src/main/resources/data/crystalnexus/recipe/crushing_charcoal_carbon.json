@@ -8,5 +8,6 @@
   "output": {
     "id": "crystalnexus:raw_carbon",
     "count": 2
-  }
+  },
+  "minimum_machine_tier": 1
 }

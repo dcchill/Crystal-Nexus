@@ -57,7 +57,7 @@ public final class RefiningRecipe implements CrystalNexusRecipe {
     }
     public Optional<FluidChemicalReactionRecipe.FluidAmount> fluidOutput() { return fluidOutput; }
 
-    @Override public boolean matches(RecipeInput input, Level level) { return false; }
+    @Override public boolean matches(RecipeInput input, Level level) { return CrystalNexusRecipe.super.matches(input, level); }
     @Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) { return output(); }
     @Override public boolean canCraftInDimensions(int width, int height) { return true; }
     @Override public ItemStack getResultItem(HolderLookup.Provider provider) { return output(); }

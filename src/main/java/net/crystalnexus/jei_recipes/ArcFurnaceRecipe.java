@@ -42,7 +42,7 @@ public final class ArcFurnaceRecipe implements CrystalNexusRecipe {
 	public int minimumArcFurnaceTier() { return minimumArcFurnaceTier; }
 	public int ingredientCount(int index) { return ingredientCounts.get(index); }
 
-	@Override public boolean matches(RecipeInput input, Level level) { return false; }
+	@Override public boolean matches(RecipeInput input, Level level) { return CrystalNexusRecipe.super.matches(input, level); }
 	@Override public NonNullList<Ingredient> getIngredients() { return ingredients; }
 	@Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) { return output.copy(); }
 	@Override public boolean canCraftInDimensions(int width, int height) { return true; }

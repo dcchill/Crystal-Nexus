@@ -29,6 +29,15 @@ public final class MachineUpgradeHelper {
 				|| stack.is(CrystalnexusModItems.CARBON_RANGE_UPGRADE.get());
 	}
 
+	public static boolean isParallelizationChip(ItemStack stack) {
+		return stack.is(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
+	}
+
+	public static int parallelCraftCount(ItemStack upgrade) {
+		return isParallelizationChip(upgrade)
+				? 2 * upgrade.getCount() : 1;
+	}
+
 	public static double stackWeight(ItemStack upgrade) {
 		return weightForCount(upgrade.getCount());
 	}

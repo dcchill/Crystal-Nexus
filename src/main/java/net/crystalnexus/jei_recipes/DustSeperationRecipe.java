@@ -63,7 +63,7 @@ public class DustSeperationRecipe implements CrystalNexusRecipe {
     public float secondaryChance() { return secondaryChance; }
     public int minimumMachineTier() { return minimumMachineTier; }
 
-    @Override public boolean matches(RecipeInput input, Level level) { return false; }
+    @Override public boolean matches(RecipeInput input, Level level) { return CrystalNexusRecipe.super.matches(input, level); }
     @Override public NonNullList<Ingredient> getIngredients() { return recipeItems; }
     @Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider holder) { return getResultItem(holder); }
     @Override public boolean canCraftInDimensions(int width, int height) { return true; }

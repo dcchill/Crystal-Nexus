@@ -35,6 +35,11 @@ public final class MachineUpgradeStackGameTests {
                 CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get(), CrystalnexusModItems.CARBON_FE_EFFICIENCY_UPGRADE.get(),
                 CrystalnexusModItems.RANGE_UPGRADE.get(), CrystalnexusModItems.CARBON_RANGE_UPGRADE.get() })
             helper.assertTrue(new ItemStack(item).getMaxStackSize() == 16, "Machine upgrade must stack to 16: " + item);
+        helper.assertTrue(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get()).getMaxStackSize() == 4,
+                "Parallelization chips must stack to 4");
+        helper.assertTrue(MachineUpgradeHelper.parallelCraftCount(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get())) == 2
+                && MachineUpgradeHelper.parallelCraftCount(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get(), 4)) == 8,
+                "Each parallelization chip must add two crafts");
 
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.CRYSTAL_CRUSHER.get());
@@ -43,6 +48,14 @@ public final class MachineUpgradeStackGameTests {
         helper.assertTrue(automation.insertItem(2, new ItemStack(CrystalnexusModItems.ACCELERATION_UPGRADE.get(), 16), false).isEmpty()
                 && crusher.getItem(2).getCount() == 16, "Automation must insert all 16 upgrades");
         crusher.setItem(2, ItemStack.EMPTY);
+        helper.assertTrue(automation.insertItem(2, new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get(), 4), false).getCount() == 4
+                && crusher.getItem(2).isEmpty(), "Parallelization chips must not enter unsupported machines");
+
+        BlockPos smelterPos = new BlockPos(3, 1, 1);
+        helper.setBlock(smelterPos, CrystalnexusModBlocks.IRON_SMELTER.get());
+        var smelter = new net.neoforged.neoforge.items.wrapper.InvWrapper(helper.getBlockEntity(smelterPos));
+        helper.assertTrue(smelter.insertItem(2, new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get(), 4), false).isEmpty()
+                && smelter.getStackInSlot(2).getCount() == 4, "Compatible smelters must accept all 4 parallelization chips");
 
         ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
                 new GameProfile(UUID.randomUUID(), "upgrade-stack-test"), ClientInformation.createDefault());

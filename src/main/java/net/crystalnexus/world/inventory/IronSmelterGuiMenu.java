@@ -121,7 +121,8 @@ public class IronSmelterGuiMenu extends AbstractContainerMenu implements Crystal
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
+				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")))
+						|| net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack);
 			}
 		}));
 		for (int si = 0; si < 3; ++si)

@@ -234,6 +234,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.LASER_DIODE.get());
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
+				tabData.accept(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
@@ -677,6 +678,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.HYPER_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
+				tabData.accept(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_RANGE_UPGRADE.get());

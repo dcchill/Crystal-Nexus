@@ -89,10 +89,21 @@ public class ChlorophyteSmelterOnTickUpdateProcedure {
 			outputAmount = _cn_spaceLeft;
 		if (outputAmount < 0)
 			outputAmount = 0;
+		int perCraftOutput = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.PARALLELIZATION_CHIP.get())
+				? Math.max(1, recipeResult.getCount()) : 1;
+		int outputSpace = Math.min(64, recipeResult.getMaxStackSize()) - outputStack.getCount();
+		if (!outputStack.isEmpty() && outputStack.getItem() != recipeResult.getItem())
+			outputSpace = 0;
+		int batchCrafts = Math.min(net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(upgrade), inputStack.getCount());
+		batchCrafts = Math.min(batchCrafts, Math.max(0, outputSpace) / perCraftOutput);
+		int energyPerCraft = Math.max(1, Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract()));
+		batchCrafts = Math.min(batchCrafts, energy.getEnergyStored() / energyPerCraft);
+		if (upgrade.is(net.crystalnexus.init.CrystalnexusModItems.PARALLELIZATION_CHIP.get()))
+			outputAmount = batchCrafts * perCraftOutput;
 		if (cookTime < 1)
 			cookTime = 1;
 		machine.machineSync.setDouble("maxProgress", cookTime);
-		if (recipe.present()) {
+		if (recipe.present() && batchCrafts > 0) {
 			if (Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract()) <= energy.getEnergyStored()) {
 				if (64 >= outputStack.getCount() + outputAmount && (outputStack.getItem() == (recipeResult).getItem() || outputStack.getItem() == Blocks.AIR.asItem())) {
 					if (machine.getPersistentData().getDouble("progress") < cookTime) {
@@ -110,14 +121,15 @@ public class ChlorophyteSmelterOnTickUpdateProcedure {
 						if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 							int _slotid = 0;
 							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
+							_stk.shrink(batchCrafts);
 							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
 						}
 						machine.machineSync.setDouble("progress", 0);
 						if (world instanceof ILevelExtension _ext) {
 							IEnergyStorage _entityStorage = energy;
 							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost, false);
+								for (int craftIndex = 0; craftIndex < batchCrafts; craftIndex++)
+									_entityStorage.extractEnergy(energyPerCraft, false);
 						}
 					}
 				}

@@ -47,6 +47,24 @@ public final class CrystalCrusherGameTests {
 				.anyMatch(recipe -> recipe.getIngredients().getFirst().test(new ItemStack(Items.BONE))
 						&& recipe.getResultItem(helper.getLevel().registryAccess()).is(Items.BONE_MEAL)),
 				"Expected the Mekanism bone recipe in the Crystal Crusher JEI entries");
+		var visibleCrushingRecipes = new java.util.ArrayList<>(CrushingRecipeSupport.jeiRecipes(helper.getLevel()));
+		visibleCrushingRecipes.addAll(CrushingRecipeSupport.generatedJeiRecipes(helper.getLevel()));
+		var crushingInputs = new java.util.HashSet<net.minecraft.resources.ResourceLocation>();
+		for (var recipe : visibleCrushingRecipes) {
+			if (recipe.getIngredients().isEmpty()) continue;
+			ItemStack[] inputs = recipe.getIngredients().getFirst().getItems();
+			if (inputs.length == 0) continue;
+			ItemStack recipeInput = inputs[0];
+			if (recipeInput.isEmpty()) continue;
+			helper.assertTrue(crushingInputs.add(net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(recipeInput.getItem())),
+					"An input item must have only one visible crushing output: " + recipeInput);
+			var tier = net.crystalnexus.processing.MachineTier.forLevel(recipe.minimumMachineTier());
+			ItemStack expected = recipe.getResultItem(helper.getLevel().registryAccess());
+			ItemStack actual = CrushingRecipeSupport.findResult(helper.getLevel(), recipeInput, tier);
+			helper.assertTrue(ItemStack.isSameItemSameComponents(actual, expected)
+					&& actual.getCount() == expected.getCount(),
+				"JEI crushing recipe must work in the machine for " + recipeInput);
+		}
 		ItemStack rawCopper = new ItemStack(Items.RAW_COPPER);
 		ItemStack copperDust = CrushingRecipeSupport.findResult(helper.getLevel(), rawCopper);
 		helper.assertTrue(!copperDust.isEmpty() && copperDust.getCount() == 2,

@@ -34,53 +34,102 @@ public final class CrushingRecipeSupport {
 		
 		
 		
-		var generated = MaterialProcessingCatalog.get(level).source(input);
-		if (generated.isPresent()) {
-			var material = generated.get();
-			return machineTier.supports(material.profile().minimumMachineTier())
-				&& !material.profile().disabledStages().contains("crushing")
-				? MaterialProcessingCatalog.generatedCrushingResult(material, input) : ItemStack.EMPTY;
-		}
-
-		for (RecipeHolder<OreCrushingJeiRecipe> holder : level.getRecipeManager().getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE)) {
-			OreCrushingJeiRecipe recipe = holder.value();
-			if (!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(input))
-				return machineTier.supports(recipe.minimumMachineTier())
-					? recipe.getResultItem(level.registryAccess()) : ItemStack.EMPTY;
-		}
-
-		SingleRecipeInput recipeInput = new SingleRecipeInput(input);
+		ItemStack bestResult = ItemStack.EMPTY;
+		int bestPriority = Integer.MAX_VALUE;
+		int bestMinimumTier = 1;
+		boolean matchedRecipe = false;
 		for (RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
 			Recipe<?> recipe = holder.value();
-			if (isExternalCrushing(recipe)) {
-				ItemStack result = tryAssemble(recipe, recipeInput, level);
-				if (!result.isEmpty())
-					return result;
+			ItemStack result = ItemStack.EMPTY;
+			int minimumTier = 1;
+			if (recipe instanceof OreCrushingJeiRecipe crushingRecipe) {
+				if (crushingRecipe.getIngredients().isEmpty()
+						|| !crushingRecipe.getIngredients().getFirst().test(input)) continue;
+				matchedRecipe = true;
+				result = crushingRecipe.getResultItem(level.registryAccess());
+				minimumTier = crushingRecipe.minimumMachineTier();
+			} else if (isExternalCrushing(recipe) && !isMaterialSource(level, recipe)) {
+				NonNullList<Ingredient> recipeIngredients = ingredients(recipe);
+				if (recipeIngredients.isEmpty() || !recipeIngredients.getFirst().test(input)) continue;
+				result = recipe.getResultItem(level.registryAccess());
+				if (result.isEmpty())
+					result = tryAssemble(recipe, new SingleRecipeInput(input), level);
+				matchedRecipe |= !result.isEmpty();
+			}
+			int priority = outputPriority(result);
+			if (priority < bestPriority) {
+				bestResult = result;
+				bestPriority = priority;
+				bestMinimumTier = minimumTier;
 			}
 		}
+		if (matchedRecipe)
+			return !bestResult.isEmpty() && machineTier.supports(bestMinimumTier) ? bestResult : ItemStack.EMPTY;
 
-		return ItemStack.EMPTY;
+		var materials = MaterialProcessingCatalog.get(level).materials().values();
+		for (var material : materials) {
+			if (!material.matchesSource(input) || material.profile().disabledStages().contains("crushing")) continue;
+			ItemStack result = MaterialProcessingCatalog.generatedCrushingResult(material, input);
+			int priority = outputPriority(result);
+			if (priority < bestPriority) {
+				bestResult = result;
+				bestPriority = priority;
+				bestMinimumTier = material.profile().minimumMachineTier();
+			}
+		}
+		return !bestResult.isEmpty() && machineTier.supports(bestMinimumTier) ? bestResult : ItemStack.EMPTY;
 	}
 
 	public static List<OreCrushingJeiRecipe> jeiRecipes(Level level) {
-		Map<String, OreCrushingJeiRecipe> unique = new LinkedHashMap<>();
-		level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
+		List<OreCrushingJeiRecipe> candidates = level.getRecipeManager().getRecipes().stream().map(RecipeHolder::value)
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || isExternalCrushing(recipe))
 				
 				
 				.filter(recipe -> recipe instanceof OreCrushingJeiRecipe || !isMaterialSource(level, recipe))
 				.map(recipe -> toJeiRecipe(recipe, level))
 				.filter(recipe -> recipe != null)
-				.forEach(recipe -> unique.putIfAbsent(inputSignature(recipe), recipe));
-		return List.copyOf(unique.values());
+				.toList();
+		return preferredPerInput(candidates, level);
 	}
 
-	private static String inputSignature(OreCrushingJeiRecipe recipe) {
-		String inputs = recipe.getIngredients().stream()
-				.flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
-				.map(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()) + "#" + stack.getCount())
-				.sorted().toList().toString();
-		return inputs;
+	private static List<OreCrushingJeiRecipe> preferredPerInput(List<OreCrushingJeiRecipe> recipes, Level level) {
+		Map<ResourceLocation, OreCrushingJeiRecipe> preferred = new LinkedHashMap<>();
+		for (OreCrushingJeiRecipe recipe : recipes) {
+			if (recipe.getIngredients().isEmpty()) continue;
+			ItemStack output = recipe.getResultItem(level.registryAccess());
+			if (output.isEmpty()) continue;
+			for (ItemStack input : recipe.getIngredients().getFirst().getItems()) {
+				if (input.isEmpty()) continue;
+				OreCrushingJeiRecipe candidate = new OreCrushingJeiRecipe(output.copy(),
+					NonNullList.of(Ingredient.EMPTY, Ingredient.of(input.copyWithCount(1))), recipe.minimumMachineTier());
+				ResourceLocation inputId = BuiltInRegistries.ITEM.getKey(input.getItem());
+				preferred.merge(inputId, candidate, (current, next) ->
+					outputPriority(next.getResultItem(level.registryAccess()))
+						< outputPriority(current.getResultItem(level.registryAccess())) ? next : current);
+			}
+		}
+		return List.copyOf(preferred.values());
+	}
+
+	private static int outputPriority(ItemStack output) {
+		if (output.isEmpty()) return Integer.MAX_VALUE;
+		ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(output.getItem());
+		String path = outputId.getPath().toLowerCase(java.util.Locale.ROOT);
+		boolean taggedDust = isDustTagged(output);
+		boolean namedDust = path.contains("dust");
+		if (outputId.getNamespace().equals("crystalnexus")) return 0;
+		if (outputId.getNamespace().equals("alltheores") && (taggedDust || namedDust)) return 1;
+		if (taggedDust) return 2;
+		if (namedDust) return 3;
+		return 4;
+	}
+
+	private static boolean isDustTagged(ItemStack stack) {
+		return BuiltInRegistries.ITEM.getTagNames().anyMatch(tag -> {
+			String path = tag.location().getPath();
+			return (path.equals("dust") || path.equals("dusts") || path.startsWith("dust/")
+					|| path.startsWith("dusts/")) && stack.is(tag);
+		});
 	}
 
 	private static boolean isMaterialSource(Level level, Recipe<?> recipe) {
@@ -91,18 +140,22 @@ public final class CrushingRecipeSupport {
 	public static List<OreCrushingJeiRecipe> generatedJeiRecipes(Level level) {
 		List<OreCrushingJeiRecipe> explicit = level.getRecipeManager()
 			.getAllRecipesFor(OreCrushingJeiRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList();
-		return MaterialProcessingCatalog.get(level).materials().values().stream()
-			.filter(material -> !material.profile().disabledStages().contains("crushing"))
-			.filter(material -> explicit.stream().noneMatch(recipe -> !recipe.getIngredients().isEmpty()
-				&& java.util.Arrays.stream(material.sourceIngredient().getItems())
-				.anyMatch(recipe.getIngredients().getFirst()::test)))
-			.map(material -> {
-				ItemStack[] sources = material.sourceIngredient().getItems();
-				ItemStack output = sources.length == 0 ? ItemStack.EMPTY
-					: MaterialProcessingCatalog.generatedCrushingResult(material, sources[0]);
-				return output.isEmpty() ? null : new OreCrushingJeiRecipe(output,
-					NonNullList.of(Ingredient.EMPTY, material.sourceIngredient()), material.profile().minimumMachineTier());
-			}).filter(java.util.Objects::nonNull).toList();
+		List<OreCrushingJeiRecipe> generated = new java.util.ArrayList<>();
+		for (var material : MaterialProcessingCatalog.get(level).materials().values()) {
+			if (material.profile().disabledStages().contains("crushing")) continue;
+			ItemStack[] sources = material.sourceIngredient().getItems();
+			boolean overridden = explicit.stream().anyMatch(recipe -> !recipe.getIngredients().isEmpty()
+				&& java.util.Arrays.stream(sources).anyMatch(recipe.getIngredients().getFirst()::test));
+			if (overridden) continue;
+			for (ItemStack source : sources) {
+				ItemStack output = MaterialProcessingCatalog.generatedCrushingResult(material, source);
+				if (output.isEmpty()) continue;
+				generated.add(new OreCrushingJeiRecipe(output,
+					NonNullList.of(Ingredient.EMPTY, Ingredient.of(source.copyWithCount(1))),
+					material.profile().minimumMachineTier()));
+			}
+		}
+		return preferredPerInput(generated, level);
 	}
 
 	private static boolean isExternalCrushing(Recipe<?> recipe) {

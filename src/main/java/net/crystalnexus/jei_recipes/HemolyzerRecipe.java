@@ -34,7 +34,7 @@ public final class HemolyzerRecipe implements CrystalNexusRecipe {
     public Ingredient input() { return input; }
     public BloodOutput blood() { return blood; }
     public boolean matches(ItemStack stack) { return input.test(stack); }
-    @Override public boolean matches(RecipeInput input, Level level) { return false; }
+    @Override public boolean matches(RecipeInput input, Level level) { return CrystalNexusRecipe.super.matches(input, level); }
     @Override public NonNullList<Ingredient> getIngredients() { return NonNullList.of(Ingredient.EMPTY, input); }
     @Override public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) { return ItemStack.EMPTY; }
     @Override public boolean canCraftInDimensions(int width, int height) { return true; }

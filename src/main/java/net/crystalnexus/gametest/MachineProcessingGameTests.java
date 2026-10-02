@@ -65,6 +65,45 @@ public final class MachineProcessingGameTests {
     }
 
     @GameTest(template = "zero_point")
+    public static void parallelizationChipsBatchSmelterCrafts(GameTestHelper helper) {
+        Block[] blocks = { CrystalnexusModBlocks.IRON_SMELTER.get(), CrystalnexusModBlocks.CRYSTAL_SMELTER.get(),
+            CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get(), CrystalnexusModBlocks.INVERTIUM_SMELTER.get() };
+        int[] times = {100, 75, 75, 60};
+        for (int variant = 0; variant < blocks.length; variant++) {
+            BlockPos pos = new BlockPos(1 + variant * 2, 1, 1);
+            helper.setBlock(pos, blocks[variant]);
+            BlockEntity machine = helper.getBlockEntity(pos);
+            Container inventory = (Container) machine;
+            IEnergyStorage energy = machine instanceof IronSmelterBlockEntity smelter ? smelter.getEnergyStorage()
+                : machine instanceof CrystalSmelterBlockEntity smelter ? smelter.getEnergyStorage()
+                : machine instanceof ChlorophyteSmelterBlockEntity smelter ? smelter.getEnergyStorage()
+                : ((InvertiumSmelterBlockEntity) machine).getEnergyStorage();
+            ItemStack chips = new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get(), 2);
+            inventory.setItem(0, new ItemStack(Items.RAW_IRON, 4));
+            inventory.setItem(1, ItemStack.EMPTY);
+            inventory.setItem(2, chips);
+            machine.getPersistentData().putDouble("progress", 0);
+            fill(energy);
+            int before = energy.getEnergyStored();
+            int maxExtract = switch (variant) {
+                case 0 -> net.crystalnexus.config.CrystalnexusConfig.MACHINES.IRON_SMELTER.maxExtract();
+                case 1 -> net.crystalnexus.config.CrystalnexusConfig.MACHINES.CRYSTAL_SMELTER.maxExtract();
+                case 2 -> net.crystalnexus.config.CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract();
+                default -> net.crystalnexus.config.CrystalnexusConfig.MACHINES.INVERTIUM_SMELTER.maxExtract();
+            };
+            int energyPerCraft = Math.min(MachineUpgradeHelper.energyCost(machine.getBlockState(), chips, 2048), maxExtract);
+
+            for (int tick = 0; tick < times[variant] + 1; tick++) tick(machine);
+
+            helper.assertTrue(inventory.getItem(1).is(Items.IRON_INGOT) && inventory.getItem(1).getCount() == 4
+                    && inventory.getItem(0).isEmpty() && energy.getEnergyStored() == before - energyPerCraft * 4,
+                "Parallel smelter variant=" + variant + " output=" + inventory.getItem(1)
+                    + " input=" + inventory.getItem(0) + " energy=" + energy.getEnergyStored());
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void processorsPauseAndResumeWithBlockedOutputs(GameTestHelper helper) {
         BlockPos pos = new BlockPos(1, 1, 1);
         helper.setBlock(pos, CrystalnexusModBlocks.INVERTIUM_SMELTER.get());
