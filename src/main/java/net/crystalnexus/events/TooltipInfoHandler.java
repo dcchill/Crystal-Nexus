@@ -67,8 +67,13 @@ public class TooltipInfoHandler {
 		Object recipes = level.getRecipeManager().getRecipes();
 		if (cachedLevel != level || cachedRecipes != recipes) {
 			Map<Item, FrameColors> colors = new HashMap<>();
-			for (RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
-				FrameColors frame = null;
+				for (RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
+					// check only crystalnexus
+					if (!holder.id().getNamespace().equals(CrystalnexusMod.MODID)) {
+						continue;
+					}
+
+					FrameColors frame = null;
 				for (Ingredient ingredient : holder.value().getIngredients()) {
 					for (ItemStack input : ingredient.getItems()) {
 						frame = frameColors(input.getItem());
