@@ -74,6 +74,27 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
+	public static void fissileFuelCellsHaveDistinctHeatAndLifetimes(GameTestHelper helper) {
+		ItemStack overtonium = new ItemStack(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get());
+		ItemStack azurine = new ItemStack(CrystalnexusModItems.AZURINE_FUEL_CELL.get());
+		ItemStack chlorophyte = new ItemStack(CrystalnexusModItems.CHLOROPHYTE_FUEL_CELL.get());
+		ReactorFuelCellItem overtoniumFuel = (ReactorFuelCellItem) overtonium.getItem();
+		ReactorFuelCellItem azurineFuel = (ReactorFuelCellItem) azurine.getItem();
+		ReactorFuelCellItem chlorophyteFuel = (ReactorFuelCellItem) chlorophyte.getItem();
+		helper.assertTrue(azurineFuel.heatMultiplier() == overtoniumFuel.heatMultiplier() * 0.9
+				&& azurineFuel.feMultiplier() == overtoniumFuel.feMultiplier(),
+				"Fissile Azurine must run ten percent cooler than Overtonium at the same output");
+		helper.assertTrue(azurine.getMaxDamage() == overtonium.getMaxDamage() * 3 / 2,
+				"Fissile Azurine must last fifty percent longer at the same reactor wear rate");
+		helper.assertTrue(chlorophyteFuel.heatMultiplier() == overtoniumFuel.heatMultiplier() * 1.2
+				&& chlorophyte.getMaxDamage() == overtonium.getMaxDamage(),
+				"Fissile Chlorophyte must run hot with the standard medium burn duration");
+		helper.assertTrue(ReactorSimulation.isFuel(azurine) && ReactorSimulation.isFuel(chlorophyte),
+				"Both fissile cells must be accepted as reactor fuel");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
 	public static void threeSlotsScalePowerAndSpentCellsStopGenerating(GameTestHelper helper) {
 		BlockPos computerPos = new BlockPos(15, 1, 15);
 		ReactorComputerBlockEntity computer = preparedComputer(helper, computerPos);

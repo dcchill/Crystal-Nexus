@@ -1,6 +1,7 @@
 package net.crystalnexus.init;
 
 import net.crystalnexus.item.ResourceCometItem;
+import net.crystalnexus.item.DemonCoreItem;
 import net.crystalnexus.item.GeneratedSingularityItem;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipe;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipeCategory;
@@ -71,6 +72,9 @@ import net.crystalnexus.jei_recipes.GravitationalArrayRecipeCategory;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.crystalnexus.jei_recipes.SolarSimulatorJeiRecipe;
 import net.crystalnexus.jei_recipes.SolarSimulatorJeiRecipeCategory;
+import net.crystalnexus.jei_recipes.NeutronFluxChamberJeiRecipe;
+import net.crystalnexus.jei_recipes.NeutronFluxChamberJeiRecipeCategory;
+import net.crystalnexus.block.entity.NeutronFluxChamberHatchBlockEntity;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.minecraft.tags.TagKey;
@@ -158,6 +162,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<AcceleratorJeiRecipe> AcceleratorJei_Type = new mezz.jei.api.recipe.RecipeType<>(AcceleratorJeiRecipeCategory.UID, AcceleratorJeiRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<GravitationalArrayRecipe> GravitationalArray_Type = new mezz.jei.api.recipe.RecipeType<>(GravitationalArrayRecipeCategory.UID, GravitationalArrayRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<SolarSimulatorJeiRecipe> SolarSimulator_Type = new mezz.jei.api.recipe.RecipeType<>(SolarSimulatorJeiRecipeCategory.UID, SolarSimulatorJeiRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<NeutronFluxChamberJeiRecipe> NeutronFluxChamber_Type = new mezz.jei.api.recipe.RecipeType<>(NeutronFluxChamberJeiRecipeCategory.UID, NeutronFluxChamberJeiRecipe.class);
 
 	@Override
 	public ResourceLocation getPluginUid() {
@@ -196,6 +201,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CometForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SolarSimulatorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new NeutronFluxChamberJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactorMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 	}
 
@@ -266,6 +272,9 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(AcceleratorJei_Type, AcceleratorJeiRecipes);
 		registration.addRecipes(GravitationalArray_Type, recipes(recipeManager, GravitationalArrayRecipe.class));
 		registration.addRecipes(SolarSimulator_Type, solarSimulatorRecipes());
+		registration.addRecipes(NeutronFluxChamber_Type, List.of(new NeutronFluxChamberJeiRecipe(
+			DemonCoreItem.createClosedStack(),
+			new FluidStack(CrystalnexusModFluids.NEUTRON_FLUX.get(), NeutronFluxChamberHatchBlockEntity.FLUX_PER_TICK))));
         var materials = ResourceCometItem.materials();
         registration.addRecipes(CometForge_Type, materials.stream().map(material ->
             new CometForgeJeiRecipe(SingularityCompressionRecipe.resultFor(Minecraft.getInstance().level, material),
@@ -347,13 +356,18 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				multiblockStructure("arc_blast_furnace", CrystalnexusModBlocks.ARC_FURNACE.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("azurine_blast_furnace", CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("celestial_gear_forge", CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem().getDefaultInstance(), access),
-				multiblockStructure("cryogenic_flash_freezer", CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem().getDefaultInstance(), access));
+				multiblockStructure("cryogenic_flash_freezer", CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("neutron_flux_chamber", CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH.get().asItem().getDefaultInstance(), access));
 	}
 
 	private static MultiblockStructureRecipe multiblockStructure(String id, ItemStack icon, net.minecraft.core.RegistryAccess access) {
 		MultiblockStructurePreview preview = new MultiblockStructurePreview(id, net.minecraft.world.level.block.Block.byItem(icon.getItem()));
 		var ingredients = new java.util.ArrayList<>(preview.getRequiredBlocks(access));
 		if (id.equals("celestial_gear_forge")) ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
+		if (id.equals("neutron_flux_chamber")) {
+			ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
+			ingredients.add(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get()));
+		}
 		return new MultiblockStructureRecipe(ResourceLocation.fromNamespaceAndPath("crystalnexus", id), icon.getHoverName(), List.copyOf(ingredients), preview);
 	}
 
@@ -401,6 +415,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ARC_FURNACE.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH.get().asItem()), MultiblockStructure_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH.get().asItem()), NeutronFluxChamber_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION.get().asItem()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem()), CelestialGearForge_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem()), CelestialGearForgeEnchanting_Type);

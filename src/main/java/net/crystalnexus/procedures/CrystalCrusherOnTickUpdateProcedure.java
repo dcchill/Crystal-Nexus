@@ -27,7 +27,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		BlockPos pos = BlockPos.containing(x, y, z);
 		if (!(world.getBlockEntity(pos) instanceof CrystalCrusherBlockEntity crusher)) return;
         IEnergyStorage energy = crusher.getEnergyStorage();
-		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(crusher, crusher.getBlockState(), crusher.getPersistentData().getDouble("progress")) ? 1 : 2);
+		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, crusher.getPersistentData().getDouble("progress")) ? 1 : 2);
 
 		ItemStack upgrade = crusher.getItem(2);
 		MachineTier machineTier = MachineTier.from(world.getBlockState(pos));
@@ -38,7 +38,16 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 		ItemStack input = crusher.getItem(0);
         var assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(crusher);
-		ItemStack result = crusher.crushingResult(level, input, machineTier, assigned);
+		ItemStack result;
+		if (assigned == null) {
+			result = net.crystalnexus.util.CrushingRecipeSupport.findResult(level, input, machineTier);
+		} else {
+			result = level.getRecipeManager().byKey(assigned)
+				.filter(h -> h.value() instanceof net.crystalnexus.jei_recipes.OreCrushingJeiRecipe r
+					&& machineTier.supports(r.minimumMachineTier()) && !r.getIngredients().isEmpty()
+					&& r.getIngredients().getFirst().test(input))
+				.map(h -> h.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
+		}
 		int outputCount = Math.min(MAX_OUTPUT, result.getCount());
 		ItemStack currentOutput = crusher.getItem(1);
 		boolean outputFits = outputCount > 0

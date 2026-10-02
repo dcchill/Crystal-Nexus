@@ -73,6 +73,9 @@ public class MultiblockStructureRecipeCategory implements IRecipeCategory<Multib
         if (recipe.id().getPath().equals("celestial_gear_forge")) {
             guiGraphics.drawWordWrap(minecraft.font, Component.translatable("jei.crystalnexus.celestial_gear_forge.ports"), 145, 58, 144, 0x404040);
         }
+        if (recipe.id().getPath().equals("neutron_flux_chamber")) {
+            guiGraphics.drawWordWrap(minecraft.font, Component.literal("Replace carbon blocks with Energy Inputs and Fluid Outputs. At least one of each is required."), 145, 58, 144, 0x404040);
+        }
         recipe.preview().renderHoverTooltip(guiGraphics, minecraft.font, minecraft.level.registryAccess(), 0, 0, (int) mouseX, (int) mouseY);
     }
 

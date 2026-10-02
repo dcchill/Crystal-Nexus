@@ -55,7 +55,7 @@ public class CircuitPressOnTickUpdateProcedure {
 		int batchSize = 1;
 		outputAmount = batchSize;
 
-		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(machine, machine.getBlockState(), machine.getPersistentData().getDouble("progress"))) {
+		if (!batchPress && net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, machine.getPersistentData().getDouble("progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = pos;
@@ -106,10 +106,32 @@ public class CircuitPressOnTickUpdateProcedure {
 		machine.machineSync.setDouble("maxProgress", cookTime);
 
 		var assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(machine);
-		var recipeMatch = machine.recipeCache.find(level, inputStack, materialStack,
-			machine.getNitrogenTank().getFluid(), batchPress, assigned);
-		TitaniumCarbideCircuitPressRecipe advancedRecipe = recipeMatch.advanced();
-		ItemStack _cn_result = recipeMatch.result();
+		TitaniumCarbideCircuitPressRecipe advancedRecipe = null;
+		if (batchPress) {
+			for (var holder : level.getRecipeManager().getAllRecipesFor(TitaniumCarbideCircuitPressRecipe.Type.INSTANCE)) {
+				var recipe = holder.value();
+				if (recipe.itemInput(0).isPresent() && recipe.itemInput(0).get().test(inputStack)
+						&& recipe.itemInput(1).map(ingredient -> ingredient.test(materialStack)).orElse(true)
+						&& recipe.fluidInput(0).isPresent()
+						&& recipe.fluidInput(0).get().matches(machine.getNitrogenTank().getFluid())) {
+					advancedRecipe = recipe;
+					break;
+				}
+			}
+		}
+		ItemStack _cn_result = ItemStack.EMPTY;
+		if (advancedRecipe != null) {
+			_cn_result = advancedRecipe.getResultItem(null).copy();
+		} else {
+			for (var holder : level.getRecipeManager().getAllRecipesFor(CircuitPressingRecipe.Type.INSTANCE)) {
+				if (assigned != null && !assigned.equals(holder.id())) continue;
+				var ingredients = holder.value().getIngredients();
+				if (ingredients.get(0).test(inputStack) && ingredients.get(1).test(materialStack)) {
+					_cn_result = holder.value().getResultItem(null).copy();
+					break;
+				}
+			}
+		}
 		if (advancedRecipe != null) {
 			outputAmount = 1;
 		} else if (batchPress) {

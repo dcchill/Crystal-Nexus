@@ -47,6 +47,15 @@ class ProgressionRecipeAuditTest {
     }
 
     @Test
+    void parallelizationChipRequiresTheFerrosteelPressInputs() throws IOException {
+        assertContains("parallelization_chip_recipe.json", "crystalnexus:ferrosteel_circuit_press",
+            "crystalnexus:carbon_composite", "crystalnexus:silicon_wafer",
+            "crystalnexus:nitrogen", "\"amount\":50", "crystalnexus:parallelization_chip");
+        assertFalse(compact(RECIPES.resolve("parallelization_chip_recipe.json"))
+            .contains("crystalnexus:circuit_pressing"));
+    }
+
+    @Test
     void hyperProcessingUsesCarbonBoltsAndPreviousTierMachines() throws IOException {
         for (String recipe : List.of("hyper_crusher_recipe.json", "hyper_dust_separator_recipe.json",
             "hyper_refinery_recipe.json", "hyper_machine_frame_recipe.json")) {

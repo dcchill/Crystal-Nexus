@@ -36,7 +36,6 @@ import io.netty.buffer.Unpooled;
 
 public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
-    public final net.crystalnexus.util.SmeltingRecipeCache recipeCache = new net.crystalnexus.util.SmeltingRecipeCache();
     public boolean processing;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 
@@ -47,15 +46,13 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 	public static void tick(Level level, BlockPos pos, BlockState state, ChlorophyteSmelterBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
-        blockEntity.machineSync.tick();
-        if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity.processing || blockEntity.getPersistentData().getDouble("progress") > 0)) return;
 		ChlorophyteSmelterOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		blockEntity.machineSync.flushPending();
 	}
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
-		recipeCache.clear();
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);

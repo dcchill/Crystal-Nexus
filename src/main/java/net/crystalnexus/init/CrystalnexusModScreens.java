@@ -83,6 +83,7 @@ import net.crystalnexus.client.gui.SolarEngineScreen;
 import net.crystalnexus.client.gui.PlasmaGeneratorScreen;
 import net.crystalnexus.client.gui.GasolineGeneratorScreen;
 import net.crystalnexus.client.gui.AOEChargerGuiScreen;
+import net.crystalnexus.client.gui.NeutronFluxChamberHatchScreen;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class CrystalnexusModScreens {
@@ -119,6 +120,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.CHEMICAL_REACTION_CHAMBER_GUI.get(), ChemicalReactionChamberGUIScreen::new);
 		event.register(CrystalnexusModMenus.FLUID_CHEMICAL_REACTION_CHAMBER_GUI.get(), FluidChemicalReactionChamberGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRYOGENIC_FLASH_FREEZER.get(), CryogenicFlashFreezerScreen::new);
+		event.register(CrystalnexusModMenus.NEUTRON_FLUX_CHAMBER_HATCH.get(), NeutronFluxChamberHatchScreen::new);
 		event.register(CrystalnexusModMenus.REFINERY_GUI.get(), RefineryScreen::new);
 		event.register(CrystalnexusModMenus.TEMPORAL_EXPLOITER.get(), TemporalExploiterScreen::new);
 		event.register(CrystalnexusModMenus.CONTAINER_GUI.get(), ContainerGUIScreen::new);

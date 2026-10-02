@@ -132,6 +132,7 @@ import net.crystalnexus.item.CrystalizedAlloyMagnetItem;
 import net.crystalnexus.item.CrystalAlloyNuggetItem;
 
 import net.crystalnexus.item.CrystalAlloyHammerItem;
+import net.crystalnexus.item.DemonCoreItem;
 import net.crystalnexus.item.ChlorophyteHammerItem;
 import net.crystalnexus.item.InvertiumHammerItem;
 import net.crystalnexus.item.TitaniumHammerItem;
@@ -217,6 +218,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> EXTRACTINATOR = block(CrystalnexusModBlocks.EXTRACTINATOR);
 	public static final DeferredItem<Item> TITANIUM_EXTRACTINATOR = block(CrystalnexusModBlocks.TITANIUM_EXTRACTINATOR);
 	public static final DeferredItem<Item> CHLOROPHYTE_INGOT = REGISTRY.register("chlorophyte_ingot", ChlorophyteIngotItem::new);
+	public static final DeferredItem<Item> FISSILE_CHLOROPHYTE_INGOT = REGISTRY.register("fissile_chlorophyte", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> CHLOROPHYTE_BLOCK = block(CrystalnexusModBlocks.CHLOROPHYTE_BLOCK);
 	public static final DeferredItem<Item> CHLOROPHYTE_PICKAXE = REGISTRY.register("chlorophyte_pickaxe", ChlorophytePickaxeItem::new);
 	public static final DeferredItem<Item> CHLOROPHYTE_AXE = REGISTRY.register("chlorophyte_axe", ChlorophyteAxeItem::new);
@@ -240,6 +242,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CHLOROPHYTE_NUGGET = REGISTRY.register("chlorophyte_nugget", ChlorophyteNuggetItem::new);
 	public static final DeferredItem<Item> CRYSTAL_ALLOY_NUGGET = REGISTRY.register("crystal_alloy_nugget", CrystalAlloyNuggetItem::new);
 	public static final DeferredItem<Item> BLUTONIUM_INGOT = REGISTRY.register("blutonium_ingot", BlutoniumIngotItem::new);
+	public static final DeferredItem<Item> DEMON_CORE = REGISTRY.register("demon_core", DemonCoreItem::new);
 	public static final DeferredItem<Item> OVERTONIUM_INGOT = REGISTRY.register("overtonium_ingot", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> RAW_BLUTONIUM = REGISTRY.register("raw_blutonium", RawBlutoniumItem::new);
 	public static final DeferredItem<Item> BLUTONIUM_ORE = block(CrystalnexusModBlocks.BLUTONIUM_ORE);
@@ -312,6 +315,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> INVERTIUM_SMELTER = block(CrystalnexusModBlocks.INVERTIUM_SMELTER);
 	public static final DeferredItem<Item> CHLOROPHYTE_SMELTER = block(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER);
 	public static final DeferredItem<Item> CRYOGENIC_FLASH_FREEZER_HATCH = block(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH);
+	public static final DeferredItem<Item> NEUTRON_FLUX_CHAMBER_HATCH = block(CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH);
 	public static final DeferredItem<Item> TESSERACT = block(CrystalnexusModBlocks.TESSERACT);
 	public static final DeferredItem<Item> LINK_CARD = REGISTRY.register("link_card", LinkCardItem::new);
 	public static final DeferredItem<Item> TESSERACT_OUTPUT = block(CrystalnexusModBlocks.TESSERACT_OUTPUT);
@@ -403,6 +407,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_ELECTRIC_MOTOR = REGISTRY.register("ferrosteel_electric_motor", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_SHEET = REGISTRY.register("azurine_sheet", TitaniumSheetItem::new);
 	public static final DeferredItem<Item> TITANIUM_INGOT = REGISTRY.register("azurine_ingot", TitaniumIngotItem::new);
+	public static final DeferredItem<Item> FISSILE_AZURINE_INGOT = REGISTRY.register("fissile_azurine_ingot", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_INGOT = REGISTRY.register("ferrosteel_ingot", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_SHEET = REGISTRY.register("ferrosteel_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_BLOCK = block(CrystalnexusModBlocks.TITANIUM_CARBIDE_BLOCK);
@@ -498,6 +503,8 @@ public class CrystalnexusModItems {
 			() -> new BucketItem(CrystalnexusModFluids.GASOLINE.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> ARGON_BUCKET = REGISTRY.register("argon_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.ARGON.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
+	public static final DeferredItem<Item> NEUTRON_FLUX_BUCKET = REGISTRY.register("neutron_flux_bucket",
+			() -> new BucketItem(CrystalnexusModFluids.NEUTRON_FLUX.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> OXYGEN_BUCKET = REGISTRY.register("oxygen_bucket",
 			() -> new BucketItem(CrystalnexusModFluids.OXYGEN.get(), new Item.Properties().craftRemainder(Items.BUCKET).stacksTo(1)));
 	public static final DeferredItem<Item> NITROGEN_BUCKET = REGISTRY.register("nitrogen_bucket",
@@ -515,6 +522,10 @@ public class CrystalnexusModItems {
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 1.0, 0.75));
 	public static final DeferredItem<Item> OVERTONIUM_FUEL_CELL = REGISTRY.register("overtonium_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 3.0, 5.0));
+	public static final DeferredItem<Item> AZURINE_FUEL_CELL = REGISTRY.register("azurine_fuel_cell",
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(9000, 3.0, 4.5));
+	public static final DeferredItem<Item> CHLOROPHYTE_FUEL_CELL = REGISTRY.register("chlorophyte_fuel_cell",
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 2.5, 4.5));
 	public static final DeferredItem<Item> DARK_MATTER_FUEL_CELL = REGISTRY.register("dark_matter_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 0.05, 0.25));
 	public static final DeferredItem<Item> SPENT_REACTOR_CELL = REGISTRY.register("spent_reactor_cell",

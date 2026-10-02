@@ -3,6 +3,8 @@
   "values": [
     "crystalnexus:blutonium_fuel_cell",
     "crystalnexus:pure_blutonium_fuel_cell",
-    "crystalnexus:overtonium_fuel_cell"
+    "crystalnexus:overtonium_fuel_cell",
+    "crystalnexus:azurine_fuel_cell",
+    "crystalnexus:chlorophyte_fuel_cell"
   ]
 }

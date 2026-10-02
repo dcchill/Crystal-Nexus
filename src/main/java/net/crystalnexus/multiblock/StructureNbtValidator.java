@@ -102,6 +102,17 @@ public final class StructureNbtValidator {
                                                     Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
                                                     boolean requireSubstitution, boolean centerMustBeAir,
                                                     Map<Block, Integer> maxSubstitutions, boolean ignoreBlockStates) {
+        return validateDetailed(level, structureId, controllerPos, controllerFacing, controllerBlock, facingProperty,
+            substitutions, stateAgnosticBlocks, requireSubstitution, centerMustBeAir, maxSubstitutions, ignoreBlockStates, false);
+        }
+
+        public static ValidationResult validateDetailed(ServerLevel level, ResourceLocation structureId,
+                                BlockPos controllerPos, Direction controllerFacing,
+                                Block controllerBlock, Property<Direction> facingProperty,
+                                Map<Block, Set<Block>> substitutions, Set<Block> stateAgnosticBlocks,
+                                boolean requireSubstitution, boolean centerMustBeAir,
+                                Map<Block, Integer> maxSubstitutions, boolean ignoreBlockStates,
+                                boolean allowAllSubstitutionSlots) {
         Optional<StructureTemplate> loaded = level.getStructureManager().get(structureId);
         if (loaded.isEmpty()) return failure("Template unavailable: " + structureId);
 
@@ -153,7 +164,7 @@ public final class StructureNbtValidator {
             }
         }
         if (requireSubstitution && replacements.isEmpty()) return failure("No multiblock port installed");
-        if (substitutionSlots > 1 && replacements.size() == substitutionSlots)
+        if (!allowAllSubstitutionSlots && substitutionSlots > 1 && replacements.size() == substitutionSlots)
             return failure("Leave one port slot as its template block");
 
         Vec3 center = StructureTemplate.transform(parsed.center, Mirror.NONE, rotation, BlockPos.ZERO)

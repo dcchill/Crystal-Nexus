@@ -1,0 +1,11 @@
+{
+  "parent": "crystalnexus:item/demon_core_open",
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 1
+      },
+      "model": "crystalnexus:item/demon_core_closed"
+    }
+  ]
+}

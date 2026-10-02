@@ -1,0 +1,7 @@
+{
+  "replace": false,
+  "values": [
+    "crystalnexus:neutron_flux",
+    "crystalnexus:flowing_neutron_flux"
+  ]
+}

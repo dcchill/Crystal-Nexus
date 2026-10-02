@@ -128,11 +128,14 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_DUST.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_INGOT.get());
+				tabData.accept(CrystalnexusModItems.DEMON_CORE.get());
 				tabData.accept(CrystalnexusModItems.REACTOR_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.OVERTONIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.AZURINE_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.SPENT_REACTOR_CELL.get());
 				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM.get());
@@ -382,6 +385,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.OIL_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.GASOLINE_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.ARGON_BUCKET.get());
+				tabData.accept(CrystalnexusModItems.NEUTRON_FLUX_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.OXYGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.NITROGEN_BUCKET.get());
 				tabData.accept(CrystalnexusModItems.ATMOSPHERE_BUCKET.get());
@@ -510,6 +514,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_CRUSHER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.MASTICATOR.get().asItem());
@@ -615,6 +620,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.CRYSTALIZED_ALLOY.get());
 				tabData.accept(CrystalnexusModItems.CRYSTAL_ALLOY_NUGGET.get());
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_INGOT.get());
+				tabData.accept(CrystalnexusModItems.FISSILE_CHLOROPHYTE_INGOT.get());
+				tabData.accept(CrystalnexusModItems.FISSILE_AZURINE_INGOT.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_INGOT.get());
 				tabData.accept(CrystalnexusModItems.BLUTONIUM_INGOT.get());

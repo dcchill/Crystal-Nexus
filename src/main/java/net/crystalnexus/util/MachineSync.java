@@ -35,6 +35,16 @@ public final class MachineSync {
         level.sendBlockUpdated(machine.getBlockPos(), state, state, 2);
     }
 
+    /** Sends a pending processor update immediately so its progress stays smooth on clients. */
+    public void flushPending() {
+        Level level = machine.getLevel();
+        if (level == null || level.isClientSide() || !pending) return;
+        pending = false;
+        lastSent = level.getGameTime();
+        var state = machine.getBlockState();
+        level.sendBlockUpdated(machine.getBlockPos(), state, state, 2);
+    }
+
     boolean takeUpdate(long now, BlockPos pos) {
         if (!pending || now == lastSent || !isUpdateTick(now, pos)) return false;
         pending = false;

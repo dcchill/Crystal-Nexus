@@ -40,7 +40,6 @@ import io.netty.buffer.Unpooled;
 
 public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
-	public final net.crystalnexus.util.PressRecipeCache recipeCache = new net.crystalnexus.util.PressRecipeCache();
 	public static final int TANK_CAPACITY = 4000;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
 	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> stack.is(CrystalnexusModFluids.NITROGEN.get())) {
@@ -56,16 +55,14 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	public static void tick(Level level, BlockPos pos, BlockState state, CircuitPressBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
-        blockEntity.machineSync.tick();
-		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
 		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, blockEntity)) return;
 		CircuitPressOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		blockEntity.machineSync.flushPending();
 	}
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
-		recipeCache.clear();
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);

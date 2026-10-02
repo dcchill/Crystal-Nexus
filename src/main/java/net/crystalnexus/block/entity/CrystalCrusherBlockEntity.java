@@ -43,14 +43,6 @@ import io.netty.buffer.Unpooled;
 public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
-	private ItemStack cachedRecipeInput = ItemStack.EMPTY;
-	private ItemStack cachedRecipeResult = ItemStack.EMPTY;
-	private MachineTier cachedRecipeTier;
-	private ResourceLocation cachedAssignedRecipe;
-	private RecipeManager cachedRecipeManager;
-	private Object cachedRecipes;
-	private MaterialProcessingCatalog.Snapshot cachedMaterials;
-	private Level cachedLevel;
 
 	public CrystalCrusherBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYSTAL_CRUSHER.get(), position, state);
@@ -59,55 +51,14 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 	public static void tick(Level level, BlockPos pos, BlockState state, CrystalCrusherBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
-        blockEntity.machineSync.tick();
-		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
 		if (!net.crystalnexus.assembly.AssemblyLineMachine.mayTick(level, blockEntity)) return;
 		CrystalCrusherOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
-	}
-
-	public ItemStack crushingResult(Level level, ItemStack input, MachineTier tier, @Nullable ResourceLocation assigned) {
-		RecipeManager manager = level.getRecipeManager();
-		Object recipes = manager.getRecipes();
-		MaterialProcessingCatalog.Snapshot materials = assigned == null ? MaterialProcessingCatalog.get(level) : null;
-		if (manager == cachedRecipeManager && recipes == cachedRecipes && materials == cachedMaterials
-				&& level == cachedLevel && tier == cachedRecipeTier
-				&& Objects.equals(assigned, cachedAssignedRecipe)
-				&& input.getCount() == cachedRecipeInput.getCount()
-				&& ItemStack.isSameItemSameComponents(input, cachedRecipeInput)) {
-			return cachedRecipeResult;
-		}
-		ItemStack result;
-		if (assigned == null) {
-			result = CrushingRecipeSupport.findResult(level, input, tier);
-		} else {
-			result = manager.byKey(assigned)
-				.filter(h -> h.value() instanceof net.crystalnexus.jei_recipes.OreCrushingJeiRecipe r
-					&& tier.supports(r.minimumMachineTier()) && !r.getIngredients().isEmpty()
-					&& r.getIngredients().getFirst().test(input))
-				.map(h -> h.value().getResultItem(level.registryAccess())).orElse(ItemStack.EMPTY);
-		}
-		cachedRecipeManager = manager;
-		cachedRecipes = recipes;
-		cachedMaterials = materials;
-		cachedLevel = level;
-		cachedRecipeTier = tier;
-		cachedAssignedRecipe = assigned;
-		cachedRecipeInput = input.copy();
-		cachedRecipeResult = result.copy();
-		return cachedRecipeResult;
+		blockEntity.machineSync.flushPending();
 	}
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
-		cachedRecipeManager = null;
-		cachedRecipes = null;
-		cachedMaterials = null;
-		cachedLevel = null;
-		cachedRecipeInput = ItemStack.EMPTY;
-		cachedRecipeResult = ItemStack.EMPTY;
-		cachedRecipeTier = null;
-		cachedAssignedRecipe = null;
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);

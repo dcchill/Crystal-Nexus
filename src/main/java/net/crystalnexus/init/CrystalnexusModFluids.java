@@ -27,6 +27,7 @@ import net.crystalnexus.fluid.ResinFluid;
 import net.crystalnexus.fluid.InversionSolutionFluid;
 import net.crystalnexus.fluid.MineralSlurryFluid;
 import net.crystalnexus.fluid.ArgonFluid;
+import net.crystalnexus.fluid.NeutronFluxFluid;
 import net.crystalnexus.fluid.OxygenFluid;
 import net.crystalnexus.fluid.AtmosphereFluid;
 import net.crystalnexus.fluid.NitrogenFluid;
@@ -57,6 +58,8 @@ public class CrystalnexusModFluids {
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_MINERAL_SLURRY = REGISTRY.register("flowing_mineral_slurry", MineralSlurryFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> ARGON = REGISTRY.register("argon", ArgonFluid.Source::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_ARGON = REGISTRY.register("flowing_argon", ArgonFluid.Flowing::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> NEUTRON_FLUX = REGISTRY.register("neutron_flux", NeutronFluxFluid.Source::new);
+	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_NEUTRON_FLUX = REGISTRY.register("flowing_neutron_flux", NeutronFluxFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> OXYGEN = REGISTRY.register("oxygen", OxygenFluid.Source::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> FLOWING_OXYGEN = REGISTRY.register("flowing_oxygen", OxygenFluid.Flowing::new);
 	public static final DeferredHolder<Fluid, FlowingFluid> NITROGEN = REGISTRY.register("nitrogen", NitrogenFluid.Source::new);
@@ -91,6 +94,8 @@ public class CrystalnexusModFluids {
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_TEMPORAL_ESSENCE.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(ARGON.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_ARGON.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(NEUTRON_FLUX.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(FLOWING_NEUTRON_FLUX.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(OXYGEN.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(FLOWING_OXYGEN.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(NITROGEN.get(), RenderType.translucent());

@@ -38,12 +38,14 @@ public class CrystalSmelterOnTickUpdateProcedure {
         ItemStack outputStack = inventory.getStackInSlot(1);
 
         ItemStack upgrade = inventory.getStackInSlot(2);
-        var recipe = machine.recipeCache.find(level, inputStack);
-        ItemStack recipeResult = recipe.result();
+        var recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,
+            new SingleRecipeInput(inputStack), level);
+        ItemStack recipeResult = recipe.map(holder ->
+            holder.value().getResultItem(level.registryAccess()).copy()).orElse(ItemStack.EMPTY);
 		double outputAmount = 0;
 		double cookTime = 0;
 		outputAmount = 1;
-		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(machine, machine.getBlockState(), machine.getPersistentData().getDouble("progress"))) {
+		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, machine.getPersistentData().getDouble("progress"))) {
 			{
 				int _value = 1;
 				BlockPos _pos = pos;
@@ -103,7 +105,7 @@ public class CrystalSmelterOnTickUpdateProcedure {
 		if (cookTime < 1)
 			cookTime = 1;
 		machine.machineSync.setDouble("maxProgress", cookTime);
-		if (recipe.present() && batchCrafts > 0) {
+		if (recipe.isPresent() && batchCrafts > 0) {
 			if (Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CRYSTAL_SMELTER.maxExtract()) <= energy.getEnergyStored()) {
 				if (64 != outputStack.getCount() && (outputStack.getItem() == (recipeResult).getItem() || outputStack.getItem() == Blocks.AIR.asItem())) {
 					if (machine.getPersistentData().getDouble("progress") < cookTime) {

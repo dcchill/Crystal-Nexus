@@ -1,0 +1,14 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": {
+    "fluid": "crystalnexus:neutron_flux",
+    "amount": 250
+  },
+  "item_input_1": {
+    "tag": "c:ingots/azurine"
+  },
+  "item_output": {
+    "id": "crystalnexus:fissile_azurine_ingot",
+    "count": 1
+  }
+}

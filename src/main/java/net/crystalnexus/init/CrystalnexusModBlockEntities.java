@@ -128,6 +128,7 @@ import net.crystalnexus.block.entity.BatteryMonitorBlockEntity;
 import net.crystalnexus.block.entity.BatteryBlockEntity;
 import net.crystalnexus.block.entity.BasicEnergyCableBlockEntity;
 import net.crystalnexus.block.entity.AOEChargerBlockEntity;
+import net.crystalnexus.block.entity.NeutronFluxChamberHatchBlockEntity;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber
@@ -250,6 +251,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> RAD_PLACEHOLDER = register("rad_placeholder", CrystalnexusModBlocks.RAD_PLACEHOLDER, RadPlaceholderBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_CHARGER = register("item_charger", CrystalnexusModBlocks.ITEM_CHARGER, ItemChargerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> AOE_CHARGER = register("aoe_charger", CrystalnexusModBlocks.AOE_CHARGER, AOEChargerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> NEUTRON_FLUX_CHAMBER_HATCH = register("neutron_flux_chamber_hatch", CrystalnexusModBlocks.NEUTRON_FLUX_CHAMBER_HATCH, NeutronFluxChamberHatchBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMOKE_EMITTER = register("smoke_emitter", CrystalnexusModBlocks.SMOKE_EMITTER, SmokeEmitterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_BASE = register("blueprint_base", CrystalnexusModBlocks.BLUEPRINT_BASE, BlueprintBaseBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> BLUEPRINT_CONTROLLER = register("blueprint_controller", CrystalnexusModBlocks.BLUEPRINT_CONTROLLER, BlueprintControllerBlockEntity::new);
@@ -370,6 +372,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> ((CryogenicFlashFreezerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CRYOGENIC_FLASH_FREEZER.get(), (blockEntity, side) -> ((CryogenicFlashFreezerBlockEntity) blockEntity).getFluidHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, NEUTRON_FLUX_CHAMBER_HATCH.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, NEUTRON_FLUX_CHAMBER_HATCH.get(), (blockEntity, side) -> ((NeutronFluxChamberHatchBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, REFINERY.get(), (blockEntity, side) -> ((RefineryBlockEntity) blockEntity).getFluidHandler());
@@ -480,5 +484,6 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_ITEM_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_ITEM_INPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MULTIBLOCK_FLUID_OUTPUT.get(), (blockEntity, side) -> ((MultiblockFluidOutputBlockEntity) blockEntity).getFluidOutput());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, NEUTRON_FLUX_CHAMBER_HATCH.get(), (blockEntity, side) -> ((NeutronFluxChamberHatchBlockEntity) blockEntity).getFluidOutputTank());
 	}
 }
