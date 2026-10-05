@@ -21,7 +21,7 @@ public final class HemolyzerMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
     private final ContainerData data;
     public HemolyzerMenu(int id, Inventory inventory, FriendlyByteBuf data) {
-        this(id, inventory, data != null && data.readableBytes() >= Long.BYTES ? at(inventory, data) : new SimpleContainer(1));
+        this(id, inventory, data != null && data.readableBytes() >= Long.BYTES ? at(inventory, data) : new SimpleContainer(2));
     }
     public HemolyzerMenu(int id, Inventory inventory, Container container) {
         super(CrystalnexusModMenus.HEMOLYZER.get(), id);
@@ -32,11 +32,12 @@ public final class HemolyzerMenu extends AbstractContainerMenu {
         access = container instanceof BlockEntity blockEntity ? ContainerLevelAccess.create(inventory.player.level(), blockEntity.getBlockPos()) : ContainerLevelAccess.NULL;
         container.startOpen(inventory.player);
         addSlot(new Slot(container, 0, 80, 35) { @Override public boolean mayPlace(ItemStack stack) { return container instanceof HemolyzerBlockEntity hemolyzer && HemolyzerBlockEntity.accepts(inventory.player.level(), stack); } });
+        addSlot(new MachineUpgradeSlot(new net.neoforged.neoforge.items.wrapper.InvWrapper(container), 1, container instanceof BlockEntity machine ? machine.getBlockState() : CrystalnexusModBlocks.HEMOLYZER.get().defaultBlockState(), 0));
         addPlayerSlots(inventory);
     }
     private static Container at(Inventory inventory, FriendlyByteBuf data) {
         BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.readBlockPos());
-        return blockEntity instanceof HemolyzerBlockEntity hemolyzer ? hemolyzer : new SimpleContainer(1);
+        return blockEntity instanceof HemolyzerBlockEntity hemolyzer ? hemolyzer : new SimpleContainer(2);
     }
     private void addPlayerSlots(Inventory inventory) {
         for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 84 + row * 18));
@@ -48,7 +49,11 @@ public final class HemolyzerMenu extends AbstractContainerMenu {
     @Override public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index); if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack stack = slot.getItem(), copy = stack.copy();
-        if (index == 0 ? !moveItemStackTo(stack, 1, slots.size(), true) : !moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
+        if (index < 2) {
+            if (!moveItemStackTo(stack, 2, slots.size(), true)) return ItemStack.EMPTY;
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+            if (!moveItemStackTo(stack, 1, 2, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         return copy;
     }

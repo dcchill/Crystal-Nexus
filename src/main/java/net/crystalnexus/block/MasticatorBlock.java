@@ -9,6 +9,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -79,6 +83,16 @@ public class MasticatorBlock extends Block implements EntityBlock, TieredMachine
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
 		return level.isClientSide || type != CrystalnexusModBlockEntities.MASTICATOR.get() ? null
 				: (BlockEntityTicker<T>) (BlockEntityTicker<MasticatorBlockEntity>) MasticatorBlockEntity::tick;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+			Player player, InteractionHand hand, BlockHitResult hit) {
+		if (FluidUtil.getFluidHandler(stack).isPresent()) {
+			if (level.isClientSide || FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection()))
+				return ItemInteractionResult.sidedSuccess(level.isClientSide);
+		}
+		return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 	}
 
 	@Override

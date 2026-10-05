@@ -21,6 +21,13 @@ public class SingularityCompressorOnTickUpdateProcedure {
     private static final int TIME = 300;
 
     public static void execute(LevelAccessor world, double x, double y, double z) {
+        BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
+        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2
+                ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        for (int step = 0; step < steps; step++) executeSingle(world, x, y, z);
+    }
+
+    private static void executeSingle(LevelAccessor world, double x, double y, double z) {
         if (!(world instanceof Level level) || level.isClientSide()) return;
         BlockPos pos = BlockPos.containing(x, y, z);
         BlockEntity entity = level.getBlockEntity(pos);

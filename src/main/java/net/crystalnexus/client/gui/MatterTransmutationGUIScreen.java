@@ -54,6 +54,7 @@ public class MatterTransmutationGUIScreen extends AbstractContainerScreen<Matter
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), this.leftPos + -33, this.topPos + -1, 0, 0, 48, 48, 48, 48);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 7, this.topPos + 41, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+        MachineUpgradeSlots.render(guiGraphics, menu, leftPos, topPos);
 		RenderSystem.disableBlend();
 	}
 

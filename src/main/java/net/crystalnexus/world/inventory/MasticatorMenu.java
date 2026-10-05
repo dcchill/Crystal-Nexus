@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class MasticatorMenu extends AbstractContainerMenu {
 	private final Container container;
+    private final int machineSlots;
 	private final ContainerLevelAccess access;
 	private final ContainerData data;
 
@@ -40,10 +41,9 @@ public class MasticatorMenu extends AbstractContainerMenu {
 				? ContainerLevelAccess.create(inventory.player.level(), blockEntity.getBlockPos()) : ContainerLevelAccess.NULL;
 		container.startOpen(inventory.player);
 
-		addSlot(new Slot(container, 0, 26, 35) {
-			@Override public boolean mayPlace(ItemStack stack) { return stack.is(CrystalnexusModItems.BIOMASS.get()); }
+		addSlot(new Slot(container, 1, 80, 35) {
+			@Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(1, stack); }
 		});
-		addSlot(new Slot(container, 1, 80, 35));
 		addSlot(new Slot(container, 2, 134, 26) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		});
@@ -51,6 +51,12 @@ public class MasticatorMenu extends AbstractContainerMenu {
 		addSlot(new Slot(container, 3, 134, 44) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		});
+
+        var upgradeState = container instanceof BlockEntity machine ? machine.getBlockState() : CrystalnexusModBlocks.MASTICATOR.get().defaultBlockState();
+        var upgradeItems = new net.neoforged.neoforge.items.wrapper.InvWrapper(container);
+        for (int i = 0; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
+            addSlot(new MachineUpgradeSlot(upgradeItems, 4 + i, upgradeState, i));
+        machineSlots = slots.size();
 
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 9; column++) {
@@ -69,7 +75,7 @@ public class MasticatorMenu extends AbstractContainerMenu {
 
 	private static Container containerAt(Inventory inventory, FriendlyByteBuf data) {
 		BlockEntity blockEntity = inventory.player.level().getBlockEntity(data.readBlockPos());
-		return blockEntity instanceof MasticatorBlockEntity masticator ? masticator : new SimpleContainer(4);
+		return blockEntity instanceof MasticatorBlockEntity masticator ? masticator : new SimpleContainer(10);
 	}
 
 	@Override
@@ -85,11 +91,14 @@ public class MasticatorMenu extends AbstractContainerMenu {
 		}
 		ItemStack stack = slot.getItem();
 		ItemStack copy = stack.copy();
-		if (index < 4) {
-			if (!moveItemStackTo(stack, 4, slots.size(), true)) return ItemStack.EMPTY;
+		if (index < machineSlots) {
+			if (!moveItemStackTo(stack, machineSlots, slots.size(), true)) return ItemStack.EMPTY;
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(stack)) {
+            boolean moved = false;
+            for (int i = 3; i < machineSlots && !stack.isEmpty(); i++) moved |= moveItemStackTo(stack, i, i + 1, false);
+            if (!moved) return ItemStack.EMPTY;
 		} else {
-			int target = stack.is(CrystalnexusModItems.BIOMASS.get()) ? 0 : 1;
-			if (!moveItemStackTo(stack, target, target + 1, false)) return ItemStack.EMPTY;
+			if (!stack.is(CrystalnexusModItems.PRISON_CUBE.get()) || !moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
 		}
 		if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		return copy;

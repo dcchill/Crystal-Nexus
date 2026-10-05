@@ -15,12 +15,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
@@ -37,7 +34,7 @@ public class IronSmelterOnTickUpdateProcedure {
         ItemStack inputStack = inventory.getStackInSlot(0);
         ItemStack outputStack = inventory.getStackInSlot(1);
 
-        ItemStack upgrade = inventory.getStackInSlot(2);
+        var upgrade = MachineUpgradeHelper.upgrades(machine, 2, 3);
         var recipe = level.getRecipeManager().getRecipeFor(RecipeType.SMELTING,
             new SingleRecipeInput(inputStack), level);
         ItemStack recipeResult = recipe.map(holder ->
@@ -63,25 +60,8 @@ public class IronSmelterOnTickUpdateProcedure {
 			}
 		}
 		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
-		double _cn_cookMult = 1.0;
-		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = upgrade;
         int energyCost = MachineUpgradeHelper.energyCost(machine.getBlockState(), upgrade, 2048);
-		CompoundTag _cn_data = null;
-		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
-			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
-			if (_cn_cd != null)
-				_cn_data = _cn_cd.copyTag();
-		}
-		if (_cn_data != null && _cn_data.contains("cook_mult")) {
-			_cn_hasKeys = true;
-			if (_cn_data.contains("cook_mult"))
-				_cn_cookMult = _cn_data.getDouble("cook_mult");
-		}
-		if (_cn_hasKeys) {
-			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-			cookTime = cookTime * _cn_cookMult;
-		}
+        cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		double MACHINE_MAX_OUTPUT = 2; 
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
@@ -91,7 +71,7 @@ public class IronSmelterOnTickUpdateProcedure {
 			outputAmount = _cn_spaceLeft;
 		if (outputAmount < 0)
 			outputAmount = 0;
-		int perCraftOutput = upgrade.is(net.crystalnexus.init.CrystalnexusModItems.PARALLELIZATION_CHIP.get())
+		int perCraftOutput = (MachineUpgradeHelper.parallelCraftCount(upgrade) > 1)
 				? Math.max(1, recipeResult.getCount()) : 1;
 		int outputSpace = Math.min(64, recipeResult.getMaxStackSize()) - outputStack.getCount();
 		if (!outputStack.isEmpty() && outputStack.getItem() != recipeResult.getItem())
@@ -100,7 +80,7 @@ public class IronSmelterOnTickUpdateProcedure {
 		batchCrafts = Math.min(batchCrafts, Math.max(0, outputSpace) / perCraftOutput);
 		int energyPerCraft = Math.max(1, Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.IRON_SMELTER.maxExtract()));
 		batchCrafts = Math.min(batchCrafts, energy.getEnergyStored() / energyPerCraft);
-		if (upgrade.is(net.crystalnexus.init.CrystalnexusModItems.PARALLELIZATION_CHIP.get()))
+		if ((MachineUpgradeHelper.parallelCraftCount(upgrade) > 1))
 			outputAmount = batchCrafts * perCraftOutput;
 		if (cookTime < 1)
 			cookTime = 1;

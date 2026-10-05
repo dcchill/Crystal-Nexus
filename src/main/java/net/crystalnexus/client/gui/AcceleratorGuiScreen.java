@@ -55,6 +55,7 @@ public class AcceleratorGuiScreen extends AbstractContainerScreen<AcceleratorGui
 		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 72, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+        MachineUpgradeSlots.render(guiGraphics, menu, leftPos, topPos);
 		RenderSystem.disableBlend();
 	}
 

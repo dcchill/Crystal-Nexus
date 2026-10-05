@@ -28,12 +28,13 @@ public final class GravitationalArrayMenu extends AbstractContainerMenu {
 		this.controller = controller;
 		BlockPos pos = controller == null ? BlockPos.ZERO : controller.getBlockPos();
 		access = ContainerLevelAccess.create(inventory.player.level(), pos);
-		Container container = controller == null ? new SimpleContainer(5) : controller;
+		Container container = controller == null ? new SimpleContainer(5 + 1) : controller;
 		addSlot(new Slot(container, 0, 53, 37));
 		addSlot(new Slot(container, 1, 107, 37));
 		addSlot(new Slot(container, 2, 80, 9));
 		addSlot(new Slot(container, 3, 80, 63));
 		addSlot(new Slot(container, 4, 80, 37) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        addSlot(new MachineUpgradeSlot(new net.neoforged.neoforge.items.wrapper.InvWrapper(container), 5, controller == null ? CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().defaultBlockState() : controller.getBlockState(), 0));
 		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 99 + row * 18));
 		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 157));
 	}
@@ -51,7 +52,11 @@ public final class GravitationalArrayMenu extends AbstractContainerMenu {
 		Slot slot = slots.get(index);
 		if (slot == null || !slot.hasItem()) return ItemStack.EMPTY;
 		ItemStack stack = slot.getItem(), copy = stack.copy();
-		if (index < 5 ? !moveItemStackTo(stack, 5, slots.size(), true) : !moveItemStackTo(stack, 0, 4, false)) return ItemStack.EMPTY;
+		if (index < 6) {
+            if (!moveItemStackTo(stack, 6, slots.size(), true)) return ItemStack.EMPTY;
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+            if (!moveItemStackTo(stack, 5, 6, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, 0, 4, false)) return ItemStack.EMPTY;
 		if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		return copy;
 	}

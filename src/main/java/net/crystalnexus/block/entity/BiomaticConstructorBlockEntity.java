@@ -122,7 +122,7 @@ public class BiomaticConstructorBlockEntity extends RandomizableContainerBlockEn
 		if (index == 1)
 			return false;
 		if (index == 2)
-			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
+			return net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(stack);
 		return true;
 	}
 

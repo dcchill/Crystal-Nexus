@@ -64,6 +64,7 @@ public class SingularityCompressorGUIScreen extends AbstractContainerScreen<Sing
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarvert.png"), this.leftPos + 6, this.topPos + 18, 0, Mth.clamp((int) ItemDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 72, this.topPos + 18, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+        MachineUpgradeSlots.render(guiGraphics, menu, leftPos, topPos);
 		RenderSystem.disableBlend();
 	}
 

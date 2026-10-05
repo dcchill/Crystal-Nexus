@@ -50,6 +50,7 @@ public final class CelestialGearForgeScreen extends AbstractContainerScreen<Cele
 	}
 
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
 		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, 92, imageWidth, 181);
 		graphics.fill(leftPos, topPos + 92, leftPos + imageWidth, topPos + 104, 0xff0b0031);
 		graphics.blit(TEXTURE, leftPos, topPos + 104, 0, 92, imageWidth, 89, imageWidth, 181);

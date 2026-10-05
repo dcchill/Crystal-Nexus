@@ -30,15 +30,24 @@ public final class UltimaSmelterOnTickUpdateProcedure {
 	}
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
+        BlockPos pos = BlockPos.containing(x, y, z);
+        return energyText(world, pos);
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
 		BlockPos pos = BlockPos.containing(x, y, z);
 		checkMachineCore(world, pos);
 		if (!(world instanceof Level level) || level.isClientSide() || !getBlockNBTLogic(world, pos, "canOpenInventory")) {
-			return energyText(world, pos);
+			return false;
 		}
 		IItemHandler handler = itemHandler(world, pos);
 		BlockEntity blockEntity = world.getBlockEntity(pos);
 		if (!(handler instanceof IItemHandlerModifiable inventory) || blockEntity == null) {
-			return energyText(world, pos);
+			return false;
 		}
 
 		ItemStack upgrade = inventory.getStackInSlot(2);
@@ -85,12 +94,13 @@ public final class UltimaSmelterOnTickUpdateProcedure {
 				}
 				energy.extractEnergy(energyCost, false);
 				blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 			}
 		}
 
 		blockEntity.setChanged();
 		level.sendBlockUpdated(pos, level.getBlockState(pos), level.getBlockState(pos), 3);
-		return energyText(world, pos);
+		return completed;
 	}
 
 	private static ItemStack smeltingResult(Level level, ItemStack input) {

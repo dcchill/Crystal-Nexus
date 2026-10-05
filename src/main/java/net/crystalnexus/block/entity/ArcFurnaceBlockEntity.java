@@ -42,7 +42,7 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	private static final int MAX_ENERGY_INPUTS = 1;
 	private static final int MAX_ITEM_INPUTS = 2;
 	private static final int MAX_ITEM_OUTPUTS = 1;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
 	private final List<BlockPos> energyInputs = new ArrayList<>();
 	private final List<BlockPos> itemInputs = new ArrayList<>();
 	private final List<BlockPos> itemOutputs = new ArrayList<>();
@@ -88,10 +88,13 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	@Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
 		return new ArcFurnaceMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
 	}
-	@Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot != 2; }
+	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 3 || slot >= 4)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot == 3 ? 0 : slot - 4 + 1, stack); return slot != 2; }
 	@Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
 	@Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
-	@Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 2; }
+	@Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+        if (slot == 3 || slot >= 4) return false; return slot == 2; }
 
 	private final EnergyStorage energyStorage = new EnergyStorage(
 		MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.ARC_FURNACE.capacity(), 4096), CrystalnexusConfig.MACHINES.ARC_FURNACE.maxReceive(),

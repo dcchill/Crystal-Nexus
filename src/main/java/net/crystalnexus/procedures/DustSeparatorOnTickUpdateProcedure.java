@@ -23,13 +23,19 @@ public final class DustSeparatorOnTickUpdateProcedure {
     private DustSeparatorOnTickUpdateProcedure() {}
 
     public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (world.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 2, 4)), () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (world.isClientSide()) return false;
         BlockPos pos = BlockPos.containing(x, y, z);
         if (!(world instanceof Level level) || !(level.getBlockEntity(pos) instanceof DustSeparatorBlockEntity separator))
-            return;
-        if (level.isClientSide()) return;
+            return false;
+        if (level.isClientSide()) return false;
 
-        ItemStack upgrade = separator.getItem(2);
+        var upgrade = MachineUpgradeHelper.upgrades(separator, 2, 4);
         MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
         double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
         double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
@@ -42,12 +48,12 @@ public final class DustSeparatorOnTickUpdateProcedure {
             separator.getPersistentData().remove("pendingSecondary");
             setActive(level, pos, false);
             sync(level, pos, separator);
-            return;
+            return false;
         }
         if (separator.getEnergyStorage().getEnergyStored() < Math.min(energyCost, CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract())) {
             setActive(level, pos, false);
             sync(level, pos, separator);
-            return;
+            return false;
         }
 
         boolean pendingSecondary = separator.getPersistentData().contains("pendingSecondary")
@@ -58,7 +64,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
             || pendingSecondary && !fits(separator.getItem(3), match.secondary())) {
             setActive(level, pos, false);
             sync(level, pos, separator);
-            return;
+            return false;
         }
 
         setActive(level, pos, true);
@@ -66,7 +72,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
         separator.getPersistentData().putDouble("progress", progress);
         if (progress < cookTime) {
             sync(level, pos, separator);
-            return;
+            return false;
         }
 
         separator.setItem(1, merged(separator.getItem(1), match.primary()));
@@ -75,9 +81,10 @@ public final class DustSeparatorOnTickUpdateProcedure {
         separator.getItem(0).shrink(match.itemCount());
         separator.getEnergyStorage().extractEnergy(energyCost, false);
         separator.getPersistentData().putDouble("progress", 0);
+        completed = true;
         separator.getPersistentData().remove("pendingSecondary");
         sync(level, pos, separator);
-        return;
+        return completed;
     }
 
     private static Match findMatch(Level level, DustSeparatorBlockEntity separator, MachineTier machineTier) {

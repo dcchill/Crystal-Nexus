@@ -5,11 +5,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.util.RandomSource;
-import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.registries.Registries;
@@ -49,17 +46,12 @@ public static void execute(LevelAccessor world, Entity entity) {
 
         if (!hasHazmat) {
 
-            double time = entity.getPersistentData().getDouble(TIME_SICK_TAG) + 1;
+            int amplifier = living.getEffect(CrystalnexusModMobEffects.RADIATION_SICKNESS).getAmplifier();
+            double time = entity.getPersistentData().getDouble(TIME_SICK_TAG) + amplifier + 1;
             entity.getPersistentData().putDouble(TIME_SICK_TAG, time);
 
-            if (!living.level().isClientSide())
-                living.addEffect(new MobEffectInstance(MobEffects.GLOWING, 40, 1, false, false));
-
-            if (time >= 1000 && !living.level().isClientSide())
-                living.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 1, false, false));
-
             if (time >= 1500) {
-                if (living.getRandom().nextInt(20) == 0) {
+                if (living.getRandom().nextInt(Math.max(1, 20 - amplifier * 3)) == 0) {
                     living.hurt(
                         new DamageSource(world.holderOrThrow(
                                 ResourceKey.create(

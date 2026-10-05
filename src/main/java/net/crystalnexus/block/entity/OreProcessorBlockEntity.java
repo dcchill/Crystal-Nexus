@@ -121,7 +121,7 @@ public class OreProcessorBlockEntity extends RandomizableContainerBlockEntity im
 		if (index == 4)
 			return false;
 		if (index == 0)
-			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
+			return net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(stack);
 		return true;
 	}
 

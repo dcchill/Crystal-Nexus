@@ -57,7 +57,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 	}
 	private static final int VALIDATION_INTERVAL = 20;
 	private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "celestial_gear_forge");
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(INPUT_COUNT + 1, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(INPUT_COUNT + 2, ItemStack.EMPTY);
 	private NonNullList<ItemStack> activeInputs = NonNullList.withSize(INPUT_COUNT, ItemStack.EMPTY);
 	@Nullable private ResourceLocation activeRecipe;
 	@Nullable private ResourceLocation selectedEnchantment;
@@ -117,6 +117,14 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 	}
 
 	public void serverTick() {
+        // ponytail: serialized work steps; separate lanes only if simultaneous recipe selection is needed.
+        int crafts = level instanceof ServerLevel server && findRecipe(server, inputStacks()) != null
+            ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(getItem(OUTPUT_SLOT + 1)) : 1;
+        for (int craft = 0; craft < crafts; craft++)
+            processStep();
+    }
+
+    private void processStep() {
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		var choices = enchantmentChoices(getItem(0), getItem(STAR_SLOT));
 		if (selectedIndex() < 0 && !choices.isEmpty()) selectedEnchantment = choices.getFirst().unwrapKey().orElseThrow().location();
@@ -326,6 +334,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 		super.setItem(slot, stack);
 	}
 	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == OUTPUT_SLOT + 1) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack);
 		if (slot < 0 || slot >= INPUT_COUNT || stack.isEmpty()) return false;
 		if (slot == STAR_SLOT) return isActiveStar(stack);
 		if (slot == 0 && (stack.is(Items.ENCHANTED_BOOK) || stack.getItem().getEnchantmentValue(stack) > 0 || !EnchantmentHelper.getEnchantmentsForCrafting(stack).isEmpty())) return true;
@@ -346,7 +355,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 
 	@Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
-		stacks = NonNullList.withSize(INPUT_COUNT + 1, ItemStack.EMPTY);
+		stacks = NonNullList.withSize(INPUT_COUNT + 2, ItemStack.EMPTY);
 		loadInventory(tag, stacks, registries, tag.getInt("inventoryVersion") < 2);
 		progress = tag.getInt("progress");
 		activeRecipe = tag.contains("activeRecipe") ? ResourceLocation.tryParse(tag.getString("activeRecipe")) : null;

@@ -176,7 +176,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
 				if (!this.moveItemStackTo(itemstack1, 0, 1, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 5, false)) {
 				if (index < 5 + 27) {

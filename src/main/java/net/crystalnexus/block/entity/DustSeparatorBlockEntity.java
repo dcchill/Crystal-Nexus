@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
 
 	public DustSeparatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.DUST_SEPARATOR.get(), position, state);
@@ -121,6 +121,8 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 2 || index >= 4)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 2 ? 0 : index - 4 + 1, stack);
 		if (index == 1 || index == 3)
 			return false;
 		return true;
@@ -138,6 +140,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index == 2 || index >= 4) return false;
 		return index == 1 || index == 3;
 	}
 

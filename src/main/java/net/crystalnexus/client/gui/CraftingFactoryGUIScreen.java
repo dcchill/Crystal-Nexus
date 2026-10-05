@@ -65,6 +65,7 @@ public class CraftingFactoryGUIScreen extends AbstractContainerScreen<CraftingFa
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 89, this.topPos + 47, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/red.png"), this.leftPos + 132, this.topPos + 34, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+        MachineUpgradeSlots.render(guiGraphics, menu, leftPos, topPos);
 		RenderSystem.disableBlend();
 	}
 

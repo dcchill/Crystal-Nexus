@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(11, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(17, ItemStack.EMPTY);
 
 	public CraftingFactoryBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRAFTING_FACTORY.get(), position, state);
@@ -120,6 +120,7 @@ public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index >= 11) return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index - 11, stack);
 		if (index == 9)
 			return false;
 		return true;
@@ -137,6 +138,7 @@ public class CraftingFactoryBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index >= 11) return false;
 		if (index == 0)
 			return false;
 		if (index == 1)

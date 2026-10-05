@@ -19,6 +19,7 @@ public final class GravitationalArrayScreen extends AbstractContainerScreen<Grav
 	private static final int FLUID_X = 7, FLUID_Y = 29, FLUID_WIDTH = 16, FLUID_HEIGHT = 34;
 	public GravitationalArrayScreen(GravitationalArrayMenu menu, Inventory inventory, Component title) { super(menu, inventory, title); imageWidth = 176; imageHeight = 181; }
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
 		GravitationalArrayControllerBlockEntity controller = menu.controller();

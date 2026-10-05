@@ -23,6 +23,7 @@ public final class HemolyzerScreen extends AbstractContainerScreen<HemolyzerMenu
     private HemolyzerBlockEntity hemolyzer() { return menu.getSlot(0).container instanceof HemolyzerBlockEntity hemolyzer ? hemolyzer : null; }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
         HemolyzerBlockEntity hemolyzer = hemolyzer();

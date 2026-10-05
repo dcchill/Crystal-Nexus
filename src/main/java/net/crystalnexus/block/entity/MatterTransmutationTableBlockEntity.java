@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class MatterTransmutationTableBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(10, ItemStack.EMPTY);
 
 	public MatterTransmutationTableBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.MATTER_TRANSMUTATION_TABLE.get(), position, state);
@@ -114,6 +114,7 @@ public class MatterTransmutationTableBlockEntity extends RandomizableContainerBl
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+		if (index == 9) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack);
 		if (index == 8)
 			return false;
 		return true;
@@ -131,6 +132,7 @@ public class MatterTransmutationTableBlockEntity extends RandomizableContainerBl
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+		if (index == 9) return false;
 		if (index == 0)
 			return false;
 		if (index == 1)

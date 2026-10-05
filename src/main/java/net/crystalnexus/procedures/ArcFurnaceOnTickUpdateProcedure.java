@@ -17,14 +17,20 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 	private ArcFurnaceOnTickUpdateProcedure() {}
 
 	public static void execute(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
-		if (!(level.getBlockEntity(pos) instanceof ArcFurnaceBlockEntity furnace)) return;
+        var machine = level.getBlockEntity(pos);
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 3, 4)), () -> executeSingle(level, pos));
+    }
+
+    private static boolean executeSingle(net.minecraft.server.level.ServerLevel level, BlockPos pos) {
+        boolean completed = false;
+		if (!(level.getBlockEntity(pos) instanceof ArcFurnaceBlockEntity furnace)) return false;
 		if (!furnace.prepareForProcessing(level)) {
 			furnace.getPersistentData().putDouble("progress", 0);
 			setActive(level, pos, furnace, false);
 			sync(level, pos, furnace);
-			return;
+			return false;
 		}
-		ItemStack upgrade = furnace.getItem(3);
+		var upgrade = MachineUpgradeHelper.upgrades(furnace, 3, 4);
 		MachineTier tier = MachineTier.from(level.getBlockState(pos));
 		double baseTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		double cookTime = Math.max(1, Math.ceil(tier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseTime))
@@ -38,21 +44,24 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 			furnace.getPersistentData().putDouble("progress", 0);
 			setActive(level, pos, furnace, false);
 			sync(level, pos, furnace);
-			return;
+			return false;
 		}
 
 		setActive(level, pos, furnace, true);
 		double progress = furnace.getPersistentData().getDouble("progress") + 1;
 		furnace.getPersistentData().putDouble("progress", progress);
 		if (progress >= cookTime) {
-			if (!furnace.consumeEnergy(energyCost)) return;
+			if (!furnace.consumeEnergy(energyCost)) return false;
 			consumeInputs(furnace, recipe);
 			output.setCount(output.getCount() + furnace.getItem(2).getCount());
 			furnace.setItem(2, output);
 			furnace.getPersistentData().putDouble("progress", 0);
+        completed = true;
 		}
 		sync(level, pos, furnace);
-	}
+
+        return completed;
+    }
 
 	private static ArcFurnaceRecipe findRecipe(net.minecraft.server.level.ServerLevel level, ArcFurnaceBlockEntity furnace) {
 		for (var holder : level.getRecipeManager().getAllRecipesFor(ArcFurnaceRecipe.Type.INSTANCE))

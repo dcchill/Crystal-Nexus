@@ -31,6 +31,17 @@ public enum MachineTier {
     }
 
     public int level() { return level; }
+    public int upgradeSlots() {
+        return switch (level) {
+            case 0 -> 0;
+            case 1 -> 1;
+            case 2 -> 2;
+            case 3, 4 -> 3;
+            case 5, 6 -> 4;
+            case 7 -> 5;
+            default -> 5;
+        };
+    }
     public int displayNumber() { return level + 1; }
     public Palette primaryPalette() {
         return switch (this) {

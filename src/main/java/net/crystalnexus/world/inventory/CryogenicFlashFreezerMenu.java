@@ -27,9 +27,10 @@ public final class CryogenicFlashFreezerMenu extends AbstractContainerMenu {
 		x = pos.getX(); y = pos.getY(); z = pos.getZ();
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		freezer = entity.level().getBlockEntity(pos) instanceof CryogenicFlashFreezerBlockEntity be ? be : null;
-		InvWrapper items = new InvWrapper(freezer == null ? new SimpleContainer(2) : freezer);
+		InvWrapper items = new InvWrapper(freezer == null ? new SimpleContainer(2 + 1) : freezer);
 		addSlot(new SlotItemHandler(items, 0, 50, 54));
 		addSlot(new SlotItemHandler(items, 1, 113, 54) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        addSlot(new MachineUpgradeSlot(items, 2, entity.level().getBlockState(pos), 0));
 		for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
 			addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));
 		for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 142));
@@ -45,9 +46,11 @@ public final class CryogenicFlashFreezerMenu extends AbstractContainerMenu {
 		Slot slot = slots.get(index);
 		if (!slot.hasItem()) return ItemStack.EMPTY;
 		ItemStack original = slot.getItem(), copy = original.copy();
-		if (index < 2) {
-			if (!moveItemStackTo(original, 2, slots.size(), true)) return ItemStack.EMPTY;
-		} else if (!moveItemStackTo(original, 0, 1, false)) return ItemStack.EMPTY;
+		if (index < 3) {
+			if (!moveItemStackTo(original, 3, slots.size(), true)) return ItemStack.EMPTY;
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(original)) {
+            if (!moveItemStackTo(original, 2, 3, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(original, 0, 1, false)) return ItemStack.EMPTY;
 		if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;
 		slot.onTake(player, original);

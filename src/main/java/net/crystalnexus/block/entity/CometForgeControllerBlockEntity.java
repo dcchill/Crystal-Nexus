@@ -49,7 +49,7 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     private static final int VALIDATION_INTERVAL = 20;
     private static final int OUTPUT_SLOT = 4;
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "comet_forge");
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(6, ItemStack.EMPTY);
     private final FluidTank temporalFluid = new FluidTank(TANK_CAPACITY,
         stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
         @Override protected void onContentsChanged() { sync(); }
@@ -94,6 +94,12 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     }
 
     public void serverTick() {
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(stacks.get(5));
+        // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
+        for (int step = 0; step < steps; step++) processStep();
+    }
+
+    private void processStep() {
         if (!(level instanceof ServerLevel serverLevel)) return;
         if (validationDelay-- <= 0) { validateStructure(serverLevel); validationDelay = VALIDATION_INTERVAL; }
         if (activeRecipe != null && !sameInputs()) resetProgress();
@@ -222,9 +228,9 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     @Override public Component getDisplayName() { return getDefaultName(); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot >= 0 && slot < 3 ? ResourceCometItem.isHighTierSingularity(stack)
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == 5 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : slot >= 0 && slot < 3 ? ResourceCometItem.isHighTierSingularity(stack)
         : slot == 3 && ResourceCometItem.isSingularity(stack); }
-    @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
+    @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == OUTPUT_SLOT; }
 

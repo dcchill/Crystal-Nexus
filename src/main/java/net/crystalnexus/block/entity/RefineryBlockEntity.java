@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
 
 public final class RefineryBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int TANK_CAPACITY = 4000;
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
     private final FluidTank[] tanks = { createTank(), createTank() };
 
     private FluidTank createTank() {
@@ -85,10 +85,13 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
     @Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
         return new RefineryMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
     }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot != 1; }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 2 || slot >= 3)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot == 2 ? 0 : slot - 3 + 1, stack); return slot != 1; }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
-    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
+    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
+        if (slot == 2 || slot >= 3) return false; return slot == 1; }
 
     private final EnergyStorage energyStorage = new EnergyStorage(
         MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.capacity(), 4096),

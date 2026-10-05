@@ -4,6 +4,7 @@ import net.crystalnexus.block.PartsAssemblerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
+import net.crystalnexus.processing.PartsAssemblingDefaults;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.world.inventory.PartsAssemblerMenu;
 import net.minecraft.core.BlockPos;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
@@ -31,6 +33,7 @@ import net.neoforged.neoforge.energy.EnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.Collection;
 
 public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int CAPACITY = 10_000;
@@ -41,6 +44,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     private ItemStack cachedRecipeInput = ItemStack.EMPTY;
     private PartsAssemblingRecipe cachedRecipe;
     private RecipeManager cachedRecipeManager;
+    private Collection<RecipeHolder<?>> cachedRecipes;
     private ResourceLocation cachedAssignedRecipe;
     private int cachedRecipeMode = -1;
 
@@ -85,6 +89,11 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     private void tickServer(Level level, BlockPos pos, BlockState state) {
+        int steps = MachineUpgradeHelper.parallelCraftCount(items.get(2));
+        for (int step = 0; step < steps; step++) tickStep(level, pos, level.getBlockState(pos));
+    }
+
+    private void tickStep(Level level, BlockPos pos, BlockState state) {
         ItemStack input = items.get(0);
         ResourceLocation assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos);
         PartsAssemblingRecipe recipe = findRecipe(level, input, assigned);
@@ -114,7 +123,8 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
     private @Nullable PartsAssemblingRecipe findRecipe(Level level, ItemStack input, @Nullable ResourceLocation assigned) {
         RecipeManager manager = level.getRecipeManager();
-        if (manager == cachedRecipeManager && selectedMode == cachedRecipeMode
+        var recipes = manager.getRecipes();
+        if (manager == cachedRecipeManager && recipes == cachedRecipes && selectedMode == cachedRecipeMode
                 && Objects.equals(assigned, cachedAssignedRecipe)
                 && input.getCount() == cachedRecipeInput.getCount()
                 && ItemStack.isSameItemSameComponents(input, cachedRecipeInput)) return cachedRecipe;
@@ -124,8 +134,10 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
             .map(holder -> holder.value())
             .filter(candidate -> candidate.mode().ordinal() == selectedMode)
             .filter(candidate -> candidate.matches(new SingleRecipeInput(input), level))
-            .findFirst().orElse(null);
+            .min(java.util.Comparator.comparing(candidate -> candidate.getResultItem(level.registryAccess()),
+                PartsAssemblingDefaults.OUTPUT_ORDER)).orElse(null);
         cachedRecipeManager = manager;
+        cachedRecipes = recipes;
         cachedRecipeMode = selectedMode;
         cachedAssignedRecipe = assigned;
         cachedRecipeInput = input.copy();

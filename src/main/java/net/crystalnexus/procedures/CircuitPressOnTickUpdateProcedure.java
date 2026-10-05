@@ -15,12 +15,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
@@ -35,17 +32,23 @@ import net.crystalnexus.processing.MachineTier;
 
 public class CircuitPressOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (!(world instanceof Level level) || level.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 3, 4)), () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (!(world instanceof Level level) || level.isClientSide()) return false;
         BlockPos pos = BlockPos.containing(x, y, z);
-        if (!(level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.CircuitPressBlockEntity machine)) return;
+        if (!(level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.CircuitPressBlockEntity machine)) return false;
         IItemHandler inventory = level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
         IEnergyStorage energy = machine.getEnergyStorage();
-        if (inventory == null) return;
+        if (inventory == null) return false;
         ItemStack inputStack = inventory.getStackInSlot(0);
         ItemStack outputStack = inventory.getStackInSlot(1);
         ItemStack materialStack = inventory.getStackInSlot(2);
 
-        ItemStack upgrade = inventory.getStackInSlot(3);
+        var upgrade = MachineUpgradeHelper.upgrades(machine, 3, 4);
 		double cookTime = 0;
 		double outputAmount = 0;
 		outputAmount = 1;
@@ -76,28 +79,8 @@ public class CircuitPressOnTickUpdateProcedure {
 		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 
 		
-		double _cn_cookMult = 1.0;
-		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = upgrade;
         int energyCost = MachineUpgradeHelper.energyCost(machine.getBlockState(), upgrade, 2048);
-		CompoundTag _cn_data = null;
-
-		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
-			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
-			if (_cn_cd != null)
-				_cn_data = _cn_cd.copyTag();
-		}
-
-		if (_cn_data != null && _cn_data.contains("cook_mult")) {
-			_cn_hasKeys = true;
-			if (_cn_data.contains("cook_mult"))
-				_cn_cookMult = _cn_data.getDouble("cook_mult");
-		}
-
-		if (_cn_hasKeys) {
-			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-			cookTime = cookTime * _cn_cookMult;
-		}
+        cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		cookTime = MachineTier.from(world.getBlockState(pressPos)).processingTime(cookTime);
 
 		if (cookTime < 1)
@@ -141,7 +124,7 @@ public class CircuitPressOnTickUpdateProcedure {
 
 		if (Blocks.AIR.asItem() == _cn_result.getItem()) {
 			setBatchPressState(world, pressPos, batchPress, 1);
-			return;
+			return false;
 		}
 
 		
@@ -233,6 +216,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							}
 
 							machine.machineSync.setDouble("progress", 0);
+        completed = true;
 
 							if (world instanceof ILevelExtension _ext) {
 								IEnergyStorage _entityStorage = energy;
@@ -251,8 +235,8 @@ public class CircuitPressOnTickUpdateProcedure {
 		if (!craftingThisTick)
 			setBatchPressState(world, pressPos, batchPress, 1);
 
-		return;
-	}
+		return completed;
+    }
 
 	private static void setBatchPressState(LevelAccessor world, BlockPos pos, boolean batchPress, int value) {
 		if (!batchPress || world.isClientSide()) return;

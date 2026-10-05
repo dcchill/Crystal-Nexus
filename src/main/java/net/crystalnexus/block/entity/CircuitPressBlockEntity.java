@@ -41,7 +41,7 @@ import io.netty.buffer.Unpooled;
 public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
 	public static final int TANK_CAPACITY = 4000;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
 	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> stack.is(CrystalnexusModFluids.NITROGEN.get())) {
 		@Override protected void onContentsChanged() {
 			machineSync.changed();
@@ -137,10 +137,10 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 3 || index >= 4)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 3 ? 0 : index - 4 + 1, stack);
 		if (index == 1)
 			return false;
-		if (index == 3)
-			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 
@@ -156,6 +156,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index == 3 || index >= 4) return false;
 		if (index == 0)
 			return false;
 		if (index == 2)
@@ -170,7 +171,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
 		}
@@ -179,7 +180,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
 		}

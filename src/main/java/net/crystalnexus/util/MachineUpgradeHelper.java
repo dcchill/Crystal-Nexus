@@ -7,6 +7,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.Container;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MachineUpgradeHelper {
 	private static final double MIN_MULTIPLIER = 0.05;
@@ -19,6 +25,68 @@ public final class MachineUpgradeHelper {
 
 	private MachineUpgradeHelper() {
 	}
+
+    public static boolean isMachineUpgrade(ItemStack stack) {
+        return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
+    }
+
+    public static boolean acceptsUpgrade(BlockState state, int ordinal, ItemStack stack) {
+        return ordinal < MachineTier.from(state).upgradeSlots()
+            && isMachineUpgrade(stack);
+    }
+
+    // Extra slots are appended so existing saves keep their input/output indices.
+    public static List<ItemStack> upgrades(BlockEntity machine, int firstSlot, int extraStart) {
+        List<ItemStack> upgrades = new ArrayList<>();
+        if (machine instanceof Container inventory) {
+            int count = MachineTier.from(machine.getBlockState()).upgradeSlots();
+            for (int i = 0; i < count; i++) {
+                int slot = i == 0 ? firstSlot : extraStart + i - 1;
+                if (slot < inventory.getContainerSize()) upgrades.add(inventory.getItem(slot));
+            }
+        }
+        return upgrades;
+    }
+
+    public static double processingTime(List<ItemStack> upgrades, double base, double basic, double carbon) {
+        double speed = 1.0;
+        for (ItemStack upgrade : upgrades) speed += base / processingTime(upgrade, base, basic, carbon) - 1.0;
+        return base / speed;
+    }
+
+    public static double cookTime(List<ItemStack> upgrades, double base) {
+        for (ItemStack upgrade : upgrades) base *= cookMultiplier(upgrade);
+        return Math.max(1.0, base);
+    }
+
+    public static int energyCost(List<ItemStack> upgrades, int baseCost) {
+        double efficiency = 1.0;
+        for (ItemStack upgrade : upgrades) efficiency += feEfficiency(upgrade) - 1.0;
+        return Math.max(1, (int) Math.ceil(baseCost / Math.max(MIN_MULTIPLIER, efficiency)));
+    }
+
+    public static int energyCost(BlockState state, List<ItemStack> upgrades, int baseCost) {
+        return MachineTier.from(state).energyCost(energyCost(upgrades, baseCost));
+    }
+
+    public static int parallelCraftCount(List<ItemStack> upgrades) {
+        int count = 0;
+        for (ItemStack upgrade : upgrades) if (isParallelizationChip(upgrade)) count += 2 * upgrade.getCount();
+        return Math.max(1, count);
+    }
+
+    public static void processParallel(BlockEntity machine, int crafts, java.util.function.BooleanSupplier cycle) {
+        if (!cycle.getAsBoolean() || machine == null) return;
+        // Reuse each machine's recipe/resource checks for every additional operation.
+        for (int craft = 1; craft < crafts; craft++) {
+            var data = machine.getPersistentData();
+            data.putDouble("progress", data.getDouble("maxProgress"));
+            boolean completed;
+            try { completed = cycle.getAsBoolean(); }
+            finally { data.putDouble("progress", 0); machine.setChanged(); }
+            if (!completed) break;
+        }
+    }
 
 	public static boolean isStackableUpgrade(ItemStack stack) {
 		return stack.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())

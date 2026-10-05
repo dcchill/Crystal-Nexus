@@ -2,7 +2,10 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.MasticatorBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
-import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.init.CrystalnexusModFluids;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.jei_recipes.GeneSplicingRecipe;
 import net.crystalnexus.item.PrisonCubeItem;
@@ -28,13 +31,22 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class MasticatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+	public static final int BLOOD_TANK_CAPACITY = 4000;
+	private final FluidTank bloodTank = new FluidTank(BLOOD_TANK_CAPACITY,
+			fluid -> fluid.is(CrystalnexusModFluids.BLOOD.get())) {
+		@Override protected void onContentsChanged() {
+			setChanged();
+			if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+		}
+	};
 	private static final int PROCESSING_TICKS = (int) MachineTier.TITANIUM.processingTime(100);
 	private static final int MAX_OUTPUT = 16;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	// Keep legacy slot 0 so saved biomass remains recoverable through automation or breaking the block.
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(10, ItemStack.EMPTY);
 	private int progress;
 	private final ContainerData data = new ContainerData() {
 		@Override public int get(int index) {
-			return index == 0 ? progress : PROCESSING_TICKS;
+			return index == 0 ? progress : processingTicks();
 		}
 
 		@Override public void set(int index, int value) {
@@ -48,20 +60,34 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 		super(CrystalnexusModBlockEntities.MASTICATOR.get(), pos, state);
 	}
 
+    private int processingTicks() {
+        var upgrades = net.crystalnexus.util.MachineUpgradeHelper.upgrades(this, 4, 5);
+        return (int) Math.ceil(net.crystalnexus.util.MachineUpgradeHelper.cookTime(upgrades,
+            net.crystalnexus.util.MachineUpgradeHelper.processingTime(upgrades, PROCESSING_TICKS, PROCESSING_TICKS * 0.75, PROCESSING_TICKS * 0.5)));
+    }
+
 	public ContainerData data() {
 		return data;
 	}
 
+	public FluidTank getBloodTank() { return bloodTank; }
+	@Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
+	@Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) { return saveWithFullMetadata(registries); }
+
 	public static void tick(Level level, BlockPos pos, BlockState state, MasticatorBlockEntity blockEntity) {
+        int crafts = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(blockEntity, 4, 5));
+        for (int craft = 0; craft < crafts; craft++) tickSingle(level, pos, state, blockEntity);
+    }
+
+    private static void tickSingle(Level level, BlockPos pos, BlockState state, MasticatorBlockEntity blockEntity) {
 		if (level.isClientSide) {
 			return;
 		}
 
-		ItemStack biomass = blockEntity.getItem(0);
 		ItemStack input = blockEntity.getItem(1);
 		GeneSplicingRecipe recipe = level.getRecipeManager().getAllRecipesFor(GeneSplicingRecipe.Type.INSTANCE).stream()
 				.map(holder -> holder.value())
-				.filter(candidate -> candidate.matches(biomass, input))
+				.filter(candidate -> candidate.matches(blockEntity.bloodTank.getFluid(), input))
 				.findFirst().orElse(null);
 		ItemStack result = recipe == null ? ItemStack.EMPTY : recipe.getResultItem(level.registryAccess());
 		ItemStack egg = recipe == null ? ItemStack.EMPTY : recipe.spawnEgg();
@@ -77,10 +103,10 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 			return;
 		}
 
-		boolean completes = MasticatorCycle.completes(blockEntity.progress, PROCESSING_TICKS);
-		blockEntity.progress = MasticatorCycle.advance(blockEntity.progress, PROCESSING_TICKS);
+		boolean completes = MasticatorCycle.completes(blockEntity.progress, blockEntity.processingTicks());
+		blockEntity.progress = MasticatorCycle.advance(blockEntity.progress, blockEntity.processingTicks());
 		if (completes) {
-			biomass.shrink(recipe.fuelCount());
+			blockEntity.bloodTank.drain(recipe.bloodAmount(), IFluidHandler.FluidAction.EXECUTE);
 			PrisonCubeItem.clearStoredEntity(input);
 			blockEntity.addOutput(2, egg);
 			blockEntity.addOutput(3, result);
@@ -123,6 +149,7 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 		stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, stacks, registries);
 		progress = tag.getInt("Progress");
+		if (tag.get("blood") instanceof CompoundTag blood) bloodTank.readFromNBT(registries, blood);
 	}
 
 	@Override
@@ -130,6 +157,7 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 		super.saveAdditional(tag, registries);
 		ContainerHelper.saveAllItems(tag, stacks, registries);
 		tag.putInt("Progress", progress);
+		tag.put("blood", bloodTank.writeToNBT(registries, new CompoundTag()));
 	}
 
 	@Override
@@ -149,7 +177,8 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 
 	@Override
 	public boolean canPlaceItem(int slot, ItemStack stack) {
-		return slot == 0 ? stack.is(CrystalnexusModItems.BIOMASS.get()) : slot == 1;
+        if (slot >= 4) return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot - 4, stack);
+		return slot == 1 && stack.is(net.crystalnexus.init.CrystalnexusModItems.PRISON_CUBE.get());
 	}
 
 	@Override
@@ -164,6 +193,7 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 
 	@Override
 	public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) {
-		return slot == 2 || slot == 3;
+        if (slot >= 4) return false;
+		return slot == 0 || slot == 2 || slot == 3;
 	}
 }

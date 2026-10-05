@@ -517,7 +517,7 @@ public class TooltipInfoHandler {
 				"Stack up to 16 in one slot; bonuses taper at higher counts.");
 		addTooltip("parallelization_chip",
 				"Machine Parallelization Chip.",
-				"Runs two crafts per chip in compatible machines.",
+				"Runs two crafts per chip in recipe-processing machines.",
 				"Stack up to 4 in one slot.");
 		addTooltip("carbon_acceleration_upgrade",
 				"Carbon Acceleration Upgrade.",

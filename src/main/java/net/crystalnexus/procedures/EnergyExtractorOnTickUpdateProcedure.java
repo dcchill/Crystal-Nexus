@@ -17,9 +17,16 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 
 public class EnergyExtractorOnTickUpdateProcedure {
     public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (!(world instanceof Level level) || level.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 1 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(1)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (!(world instanceof Level level) || level.isClientSide()) return false;
         BlockPos pos = BlockPos.containing(x, y, z);
-        if (!(level.getBlockEntity(pos) instanceof EnergyExtractorBlockEntity machine)) return;
+        if (!(level.getBlockEntity(pos) instanceof EnergyExtractorBlockEntity machine)) return false;
         var energy = machine.getEnergyStorage();
         var data = machine.getPersistentData();
         var state = machine.getBlockState();
@@ -44,7 +51,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
             ItemStack output = machine.getItem(2);
             if (energy.getMaxEnergyStored() - energy.getEnergyStored() < energyBase
                     || output.getCount() >= result.getMaxStackSize()
-                    || !(output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))) return;
+                    || !(output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))) return false;
             double progress = data.getDouble("progress");
             if (progress < cookTime) {
                 machine.machineSync.setDouble("progress", ++progress);
@@ -61,6 +68,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
                 if (energy.generateEnergy(energyBase, true) == energyBase)
                     energy.generateEnergy(energyBase, false);
                 machine.machineSync.setDouble("progress", 0);
+        completed = true;
             }
         } else {
             var battery = input.getCapability(Capabilities.EnergyStorage.ITEM);
@@ -83,5 +91,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
             }
             machine.machineSync.setDouble("progress", 0);
         }
+
+        return completed;
     }
 }

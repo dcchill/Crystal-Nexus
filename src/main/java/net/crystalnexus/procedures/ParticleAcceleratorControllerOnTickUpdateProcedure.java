@@ -43,6 +43,14 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
+        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 8
+                ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(8)) : 1;
+        // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
+        for (int step = 0; step < steps; step++) executeSingle(world, x, y, z);
+    }
+
+    private static void executeSingle(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		if (world.isClientSide()) return;

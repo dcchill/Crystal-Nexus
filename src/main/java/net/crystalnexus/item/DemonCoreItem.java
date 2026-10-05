@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -22,6 +23,13 @@ public final class DemonCoreItem extends Item {
 
 	public DemonCoreItem() {
 		super(new Item.Properties().stacksTo(1));
+	}
+
+	@Override
+	public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean selected) {
+		super.inventoryTick(stack, level, entity, slot, selected);
+		if (!level.isClientSide())
+			net.crystalnexus.procedures.BlutoniumIngotItemInInventoryTickProcedure.execute(level, entity, isClosed(stack) ? 9 : 4);
 	}
 
 	@Override

@@ -21,6 +21,7 @@ public final class CometForgeScreen extends AbstractContainerScreen<CometForgeMe
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		graphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+        MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
 		CometForgeControllerBlockEntity controller = menu.controller();
 		if (controller == null) return;
 		int duration = controller.getActiveDuration();

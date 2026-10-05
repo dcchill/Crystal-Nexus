@@ -221,7 +221,7 @@
   "item.crystalnexus.carbon_range_upgrade.description_0": "§5Greatly increases compatible machine range",
   "item.crystalnexus.carbon_range_upgrade": "Carbon Range Upgrade",
   "item.crystalnexus.carbon_acceleration_upgrade": "Carbon Acceleration Upgrade",
-  "item.crystalnexus.parallelization_chip.description_0": "§5Runs two crafts per chip in compatible machines",
+  "item.crystalnexus.parallelization_chip.description_0": "§5Runs two crafts per chip in recipe-processing machines",
   "item.crystalnexus.carbon_fe_efficiency_upgrade": "Carbon FE Efficiency Upgrade",
   "item.crystalnexus.carbon_chip": "Carbon Chip",
   "item.crystalnexus.carbon_chip.description_0": "§5Used to craft carbon-tier upgrades",

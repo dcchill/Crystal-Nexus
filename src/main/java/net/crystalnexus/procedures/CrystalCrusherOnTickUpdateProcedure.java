@@ -24,12 +24,20 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
         if (!(world instanceof Level level) || level.isClientSide()) return;
+        var profiler = net.crystalnexus.commands.NexusDebugCommand.profiler(level);
+        profiler.push("crystalnexus_crusher_processing");
+        try { process(level, x, y, z); }
+        finally { profiler.pop(); }
+    }
+
+    private static void process(Level world, double x, double y, double z) {
+        Level level = world;
 		BlockPos pos = BlockPos.containing(x, y, z);
 		if (!(world.getBlockEntity(pos) instanceof CrystalCrusherBlockEntity crusher)) return;
         IEnergyStorage energy = crusher.getEnergyStorage();
 		setMachineState(world, pos, net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, crusher.getPersistentData().getDouble("progress")) ? 1 : 2);
 
-		ItemStack upgrade = crusher.getItem(2);
+		var upgrade = MachineUpgradeHelper.upgrades(crusher, 2, 3);
 		MachineTier machineTier = MachineTier.from(world.getBlockState(pos));
 		double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade, baseCookTime));
@@ -65,26 +73,32 @@ public class CrystalCrusherOnTickUpdateProcedure {
 					x + 0.5, y + 0.5, z + 0.5, 1, 0.25, 0, 0.25, 0);
 
 		if (progress >= cookTime) {
+            int crafts = Math.min(MachineUpgradeHelper.parallelCraftCount(upgrade), input.getCount());
+            crafts = Math.min(crafts, (result.getMaxStackSize() - currentOutput.getCount()) / outputCount);
+            crafts = Math.min(crafts, energy.getEnergyStored() / requiredEnergy);
+            var profiler = net.crystalnexus.commands.NexusDebugCommand.profiler(level);
+            profiler.push("crystalnexus_inventory");
+            try {
 			ItemStack produced = result.copy();
-			produced.setCount(currentOutput.getCount() + outputCount);
+			produced.setCount(currentOutput.getCount() + outputCount * crafts);
 			crusher.setItem(1, produced);
 			ItemStack remainingInput = crusher.getItem(0).copy();
-			remainingInput.shrink(1);
+			remainingInput.shrink(crafts);
 			crusher.setItem(0, remainingInput);
 			crusher.machineSync.setDouble("progress", 0);
+            } finally { profiler.pop(); }
 
-            if (assigned != null) net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(energy, energyCost);
-            else energy.extractEnergy(energyCost, false);
+            if (assigned != null) net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(energy, energyCost * crafts);
+            else for (int craft = 0; craft < crafts; craft++) energy.extractEnergy(energyCost, false);
 		}
 
-		return;
-	}
+    }
 
 	private static void setMachineState(LevelAccessor world, BlockPos pos, int value) {
 		BlockState state = world.getBlockState(pos);
 		if (state.getBlock().getStateDefinition().getProperty("blockstate") instanceof IntegerProperty property
 				&& property.getPossibleValues().contains(value) && state.getValue(property) != value)
-			world.setBlock(pos, state.setValue(property, value), 3);
+			world.setBlock(pos, state.setValue(property, value), 2);
 	}
 
 	public static int getEnergyStored(LevelAccessor level, BlockPos pos, Direction direction) {

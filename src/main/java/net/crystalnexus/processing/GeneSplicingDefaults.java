@@ -37,8 +37,8 @@ public final class GeneSplicingDefaults {
             var mob = BuiltInRegistries.ENTITY_TYPE.getKey(type);
             if (defined.contains(mob) || SpawnEggItem.byId(type) == null) continue;
             ItemStack drop = firstDrop(server.getResourceManager(), type.getDefaultLootTable().location(), new HashSet<>());
-            var recipe = new GeneSplicingRecipe(Ingredient.of(CrystalnexusModItems.BIOMASS.get()),
-                Ingredient.of(CrystalnexusModItems.PRISON_CUBE.get()), mob, drop, 32, 1);
+            var recipe = new GeneSplicingRecipe(Ingredient.of(CrystalnexusModItems.PRISON_CUBE.get()),
+                mob, drop, GeneSplicingRecipe.DEFAULT_BLOOD_AMOUNT, 1);
             recipes.add(new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath("crystalnexus",
                 "generated_gene_splicing/" + mob.getNamespace() + "/" + mob.getPath()), recipe));
         }

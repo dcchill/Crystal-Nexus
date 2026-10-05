@@ -35,6 +35,14 @@ import java.util.List;
 
 public class BiomaticComposterOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
+        return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
 		double outputAmount = 0;
 		double cookTime = 0;
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
@@ -138,6 +146,7 @@ public class BiomaticComposterOnTickUpdateProcedure {
 													BlockState _bs = world.getBlockState(_bp);
 													if (_blockEntity != null)
 														_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 													if (world instanceof Level _level)
 														_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 												}
@@ -157,7 +166,7 @@ public class BiomaticComposterOnTickUpdateProcedure {
 				}
 			}
 		}
-		return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
+		return completed;
 	}
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {

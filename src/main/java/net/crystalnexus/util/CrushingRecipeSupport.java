@@ -9,6 +9,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 
@@ -16,10 +17,52 @@ import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Collection;
+import net.crystalnexus.CrystalnexusMod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.processing.MaterialProcessingCatalog;
 
+@EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public final class CrushingRecipeSupport {
+	private static RecipeManager cachedManager;
+	private static Collection<RecipeHolder<?>> cachedSource;
+	private static MaterialProcessingCatalog.Snapshot cachedMaterials;
+	private record Candidate(Recipe<?> recipe, NonNullList<Ingredient> ingredients) {}
+	private static List<Candidate> cachedCandidates = List.of();
+
+	@SubscribeEvent
+	public static synchronized void tagsUpdated(TagsUpdatedEvent event) {
+		cachedManager = null;
+		cachedSource = null;
+		cachedMaterials = null;
+		cachedCandidates = List.of();
+	}
+
+	private static synchronized List<Candidate> candidates(Level level) {
+		RecipeManager manager = level.getRecipeManager();
+		Collection<RecipeHolder<?>> source = manager.getRecipes();
+		var materials = MaterialProcessingCatalog.get(level);
+		if (manager != cachedManager || source != cachedSource || materials != cachedMaterials) {
+			List<Candidate> found = new java.util.ArrayList<>();
+			for (RecipeHolder<?> holder : source) {
+				Recipe<?> recipe = holder.value();
+				if (!(recipe instanceof OreCrushingJeiRecipe) && !isExternalCrushing(recipe)) continue;
+				NonNullList<Ingredient> inputs = recipe instanceof OreCrushingJeiRecipe
+						? recipe.getIngredients() : ingredients(recipe);
+				if (recipe instanceof OreCrushingJeiRecipe || inputs.stream().flatMap(ingredient -> Arrays.stream(ingredient.getItems()))
+						.noneMatch(input -> materials.source(input).isPresent()))
+					found.add(new Candidate(recipe, inputs));
+			}
+			cachedCandidates = List.copyOf(found);
+			cachedManager = manager;
+			cachedSource = source;
+			cachedMaterials = materials;
+		}
+		return cachedCandidates;
+	}
 	private CrushingRecipeSupport() {
 	}
 
@@ -28,6 +71,13 @@ public final class CrushingRecipeSupport {
 	}
 
 	public static ItemStack findResult(Level level, ItemStack input, MachineTier machineTier) {
+        var profiler = net.crystalnexus.commands.NexusDebugCommand.profiler(level);
+        profiler.push("crystalnexus_recipe_lookup");
+        try { return findResultInternal(level, input, machineTier); }
+        finally { profiler.pop(); }
+    }
+
+    private static ItemStack findResultInternal(Level level, ItemStack input, MachineTier machineTier) {
 		if (input.isEmpty())
 			return ItemStack.EMPTY;
 
@@ -38,19 +88,17 @@ public final class CrushingRecipeSupport {
 		int bestPriority = Integer.MAX_VALUE;
 		int bestMinimumTier = 1;
 		boolean matchedRecipe = false;
-		for (RecipeHolder<?> holder : level.getRecipeManager().getRecipes()) {
-			Recipe<?> recipe = holder.value();
+		for (Candidate candidate : candidates(level)) {
+			Recipe<?> recipe = candidate.recipe();
+			NonNullList<Ingredient> recipeIngredients = candidate.ingredients();
+			if (recipeIngredients.isEmpty() || !recipeIngredients.getFirst().test(input)) continue;
 			ItemStack result = ItemStack.EMPTY;
 			int minimumTier = 1;
 			if (recipe instanceof OreCrushingJeiRecipe crushingRecipe) {
-				if (crushingRecipe.getIngredients().isEmpty()
-						|| !crushingRecipe.getIngredients().getFirst().test(input)) continue;
 				matchedRecipe = true;
 				result = crushingRecipe.getResultItem(level.registryAccess());
 				minimumTier = crushingRecipe.minimumMachineTier();
-			} else if (isExternalCrushing(recipe) && !isMaterialSource(level, recipe)) {
-				NonNullList<Ingredient> recipeIngredients = ingredients(recipe);
-				if (recipeIngredients.isEmpty() || !recipeIngredients.getFirst().test(input)) continue;
+			} else {
 				result = recipe.getResultItem(level.registryAccess());
 				if (result.isEmpty())
 					result = tryAssemble(recipe, new SingleRecipeInput(input), level);
@@ -114,10 +162,10 @@ public final class CrushingRecipeSupport {
 	private static int outputPriority(ItemStack output) {
 		if (output.isEmpty()) return Integer.MAX_VALUE;
 		ResourceLocation outputId = BuiltInRegistries.ITEM.getKey(output.getItem());
+		if (outputId.getNamespace().equals("crystalnexus")) return 0;
 		String path = outputId.getPath().toLowerCase(java.util.Locale.ROOT);
 		boolean taggedDust = isDustTagged(output);
 		boolean namedDust = path.contains("dust");
-		if (outputId.getNamespace().equals("crystalnexus")) return 0;
 		if (outputId.getNamespace().equals("alltheores") && (taggedDust || namedDust)) return 1;
 		if (taggedDust) return 2;
 		if (namedDust) return 3;
@@ -125,10 +173,10 @@ public final class CrushingRecipeSupport {
 	}
 
 	private static boolean isDustTagged(ItemStack stack) {
-		return BuiltInRegistries.ITEM.getTagNames().anyMatch(tag -> {
+		return stack.getTags().anyMatch(tag -> {
 			String path = tag.location().getPath();
 			return (path.equals("dust") || path.equals("dusts") || path.startsWith("dust/")
-					|| path.startsWith("dusts/")) && stack.is(tag);
+					|| path.startsWith("dusts/"));
 		});
 	}
 

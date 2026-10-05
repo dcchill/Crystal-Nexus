@@ -525,7 +525,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> AZURINE_FUEL_CELL = REGISTRY.register("azurine_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(9000, 3.0, 4.5));
 	public static final DeferredItem<Item> CHLOROPHYTE_FUEL_CELL = REGISTRY.register("chlorophyte_fuel_cell",
-			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 2.5, 4.5));
+			() -> new net.crystalnexus.item.ReactorFuelCellItem(9000, 2.5, 4.5));
 	public static final DeferredItem<Item> DARK_MATTER_FUEL_CELL = REGISTRY.register("dark_matter_fuel_cell",
 			() -> new net.crystalnexus.item.ReactorFuelCellItem(6000, 0.05, 0.25));
 	public static final DeferredItem<Item> SPENT_REACTOR_CELL = REGISTRY.register("spent_reactor_cell",

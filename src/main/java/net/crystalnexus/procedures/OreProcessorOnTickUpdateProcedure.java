@@ -95,11 +95,15 @@ public final class OreProcessorOnTickUpdateProcedure {
 		if (progress < cookTime) {
 			return;
 		}
+        for (int craft = 0; craft < MachineUpgradeHelper.parallelCraftCount(upgrade); craft++) {
+            if (inventory.getStackInSlot(inputSlot).getCount() < inputCount
+                    || !fits(inventory.getStackInSlot(outputSlot), result) || energy.getEnergyStored() < energyCost) break;
 		inventory.setStackInSlot(outputSlot, merged(inventory.getStackInSlot(outputSlot), result));
 		ItemStack input = inventory.getStackInSlot(inputSlot).copy();
 		input.shrink(inputCount);
 		inventory.setStackInSlot(inputSlot, input);
 		energy.extractEnergy(energyCost, false);
+        }
 		blockEntity.getPersistentData().putDouble(progressKey, 0);
 	}
 

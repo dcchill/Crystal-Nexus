@@ -157,7 +157,7 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
 				if (!this.moveItemStackTo(itemstack1, 4, 5, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 5, false)) {
 				if (index < 5 + 27) {

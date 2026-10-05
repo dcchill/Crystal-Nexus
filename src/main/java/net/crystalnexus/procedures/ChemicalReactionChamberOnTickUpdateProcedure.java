@@ -30,13 +30,20 @@ import net.crystalnexus.util.MachineUpgradeHelper;
 public class ChemicalReactionChamberOnTickUpdateProcedure {
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (world.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 4 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(4)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (world.isClientSide()) return false;
 		double outputAmount = 0;
 		double cookTime = 0;
 
 		BlockPos pos = BlockPos.containing(x, y, z);
 
-		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return;
+		if (world instanceof Level level && !AssemblyLineMachine.mayTick(level, pos)) return false;
 
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, pos, getBlockNBTNumber(world, pos, "progress"))) {
 			setIntegerBlockState(world, pos, "blockstate", 1);
@@ -64,11 +71,11 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		ItemStack resultStack = (match != null) ? match.result : ItemStack.EMPTY;
 
 		if (resultStack.isEmpty() || resultStack.getItem() == Blocks.AIR.asItem()) {
-			return;
+			return false;
 		}
 
 		if (getEnergyStored(world, pos, null) < energyCost) {
-			return;
+			return false;
 		}
 
 		ItemStack outSlot = itemFromBlockInventory(world, pos, 3).copy();
@@ -76,7 +83,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		boolean outSlotMatches = outSlotEmpty || outSlot.getItem() == resultStack.getItem();
 
 		if (!outSlotMatches) {
-			return;
+			return false;
 		}
 
 		int addCount = Math.clamp(resultStack.getCount(), 1, 8);
@@ -84,7 +91,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		int currentOutCount = itemFromBlockInventory(world, pos, 3).getCount();
 		int spaceLeft = 64 - currentOutCount;
 		if (spaceLeft <= 0) {
-			return;
+			return false;
 		}
 		if (addCount > spaceLeft) addCount = spaceLeft;
 
@@ -93,14 +100,14 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 final int _finalAddCount = addCount;
 final ItemStack _finalResult = resultStack.copy();
 
-processRecipeTick(world, pos, cookTime, () -> {
+completed = processRecipeTick(world, pos, cookTime, () -> {
 	addToOutputSlot(world, pos, _finalResult, _finalAddCount);
 	consumeInputs(world, pos);
 	extractEnergy(world, pos, energyCost);
 });
 
-		return;
-	}
+		return completed;
+    }
 
 
 	private static class MatchingRecipe {
@@ -147,7 +154,7 @@ processRecipeTick(world, pos, cookTime, () -> {
 	}
 
 
-	private static void processRecipeTick(LevelAccessor world, BlockPos pos, double cookTime, Runnable onFinish) {
+	private static boolean processRecipeTick(LevelAccessor world, BlockPos pos, double cookTime, Runnable onFinish) {
 		if (getBlockNBTNumber(world, pos, "progress") < cookTime) {
 			if (!world.isClientSide()) {
 				BlockEntity be = world.getBlockEntity(pos);
@@ -171,7 +178,9 @@ processRecipeTick(world, pos, cookTime, () -> {
 				if (be != null) be.getPersistentData().putDouble("progress", 0);
 				if (world instanceof Level lvl) lvl.sendBlockUpdated(pos, bs, bs, 3);
 			}
+            return true;
 		}
+        return false;
 	}
 
 	private static void addToOutputSlot(LevelAccessor world, BlockPos pos, ItemStack result, int addCount) {

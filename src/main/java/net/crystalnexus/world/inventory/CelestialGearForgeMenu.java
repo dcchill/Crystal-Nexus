@@ -31,13 +31,14 @@ public final class CelestialGearForgeMenu extends AbstractContainerMenu {
 	public CelestialGearForgeMenu(int id, Inventory inventory, CelestialGearForgeBlockEntity forge) {
 		super(CrystalnexusModMenus.CELESTIAL_GEAR_FORGE.get(), id);
 		this.forge = forge;
-		container = forge == null ? new SimpleContainer(CelestialGearForgeBlockEntity.OUTPUT_SLOT + 1) : forge;
+		container = forge == null ? new SimpleContainer(CelestialGearForgeBlockEntity.OUTPUT_SLOT + 1 + 1) : forge;
 		data = forge == null ? new SimpleContainerData(CelestialGearForgeBlockEntity.DATA_COUNT) : forge.data();
 		access = ContainerLevelAccess.create(inventory.player.level(), forge == null ? BlockPos.ZERO : forge.getBlockPos());
 		addDataSlots(data);
 		for (int index = 0; index < CelestialGearForgeBlockEntity.INPUT_COUNT; index++)
 			addSlot(input(index, SLOT_POSITIONS[index][0], SLOT_POSITIONS[index][1]));
 		addSlot(new Slot(container, CelestialGearForgeBlockEntity.OUTPUT_SLOT, 134, 37) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        addSlot(new MachineUpgradeSlot(new net.neoforged.neoforge.items.wrapper.InvWrapper(container), CelestialGearForgeBlockEntity.OUTPUT_SLOT + 1, forge == null ? CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().defaultBlockState() : forge.getBlockState(), 0));
 		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++)
 			addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 111 + row * 18));
 		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 169));
@@ -73,10 +74,12 @@ public final class CelestialGearForgeMenu extends AbstractContainerMenu {
 		Slot slot = slots.get(index);
 		if (!slot.hasItem()) return ItemStack.EMPTY;
 		ItemStack stack = slot.getItem(), original = stack.copy();
-		int inventoryStart = CelestialGearForgeBlockEntity.OUTPUT_SLOT + 1;
+		int inventoryStart = CelestialGearForgeBlockEntity.OUTPUT_SLOT + 2;
 		if (index < inventoryStart) {
 			if (!moveItemStackTo(stack, inventoryStart, slots.size(), true)) return ItemStack.EMPTY;
-		} else if (!moveItemStackTo(stack, 0, CelestialGearForgeBlockEntity.INPUT_COUNT, false)) return ItemStack.EMPTY;
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+            if (!moveItemStackTo(stack, inventoryStart - 1, inventoryStart, false)) return ItemStack.EMPTY;
+        } else if (!moveItemStackTo(stack, 0, CelestialGearForgeBlockEntity.INPUT_COUNT, false)) return ItemStack.EMPTY;
 		if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		if (stack.getCount() == original.getCount()) return ItemStack.EMPTY;
 		slot.onTake(player, stack);

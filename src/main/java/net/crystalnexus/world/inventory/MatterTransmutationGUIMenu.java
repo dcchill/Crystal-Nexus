@@ -54,7 +54,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 		super(CrystalnexusModMenus.MATTER_TRANSMUTATION_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(9);
+		this.internal = new ItemStackHandler(10);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -249,6 +249,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				return false;
 			}
 		}));
+        this.customSlots.put(9, this.addSlot(new MachineUpgradeSlot(internal, 9, world.getBlockState(BlockPos.containing(x, y, z)), 0)));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 24 + 84 + si * 18));
@@ -276,16 +277,18 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 9) {
-				if (!this.moveItemStackTo(itemstack1, 9, this.slots.size(), true))
+			if (index < 10) {
+				if (!this.moveItemStackTo(itemstack1, 10, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 9, false)) {
-				if (index < 9 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 9 + 27, this.slots.size(), true))
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(itemstack1)) {
+                if (!this.moveItemStackTo(itemstack1, 9, 10, false)) return ItemStack.EMPTY;
+            } else if (!this.moveItemStackTo(itemstack1, 0, 9, false)) {
+				if (index < 10 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 10 + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 9, 9 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, 10, 10 + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

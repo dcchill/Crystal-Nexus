@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class SingularityCompressorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public SingularityCompressorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.SINGULARITY_COMPRESSOR.get(), position, state);
@@ -119,7 +119,7 @@ public class SingularityCompressorBlockEntity extends RandomizableContainerBlock
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		return index == 0 && net.crystalnexus.item.ResourceCometItem.isMaterial(stack);
+		return index == 2 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : index == 0 && net.crystalnexus.item.ResourceCometItem.isMaterial(stack);
 	}
 
 	@Override

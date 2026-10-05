@@ -47,11 +47,11 @@ import java.util.concurrent.Executor;
 @EventBusSubscriber(modid = CrystalnexusMod.MODID)
 public final class MaterialProcessingCatalog {
     public static final int SLURRY_AMOUNT = 1000;
-    public static final int NUGGETS_PER_DUST = 9;
+    public static final int REFINING_SLURRY_AMOUNT = 500;
+    public static final int NUGGETS_PER_DUST = 11;
 
     public static int nuggetsPerDust(MachineTier tier) {
-        return tier.level() <= MachineTier.INVERTIUM.level() ? 9 + Math.min(1, Math.max(0, tier.level() - MachineTier.INVERTIUM.level()))
-            : tier.level() <= MachineTier.TITANIUM_CARBIDE.level() ? 11 : 12;
+        return NUGGETS_PER_DUST;
     }
     private static final Gson GSON = new Gson();
     private static volatile Map<String, Profile> profiles = Map.of();
@@ -203,7 +203,7 @@ public final class MaterialProcessingCatalog {
         for (Material material : get(level).materials().values()) {
             if (material.profile().disabledStages().contains("refining")) continue;
             FluidChemicalReactionRecipe.FluidAmount slurry = new FluidChemicalReactionRecipe.FluidAmount(
-                slurryId, SLURRY_AMOUNT, Optional.of(material.id()));
+                slurryId, REFINING_SLURRY_AMOUNT, Optional.of(material.id()));
             if (explicit.stream().anyMatch(recipe -> recipe.input().matches(slurry.stack()))) continue;
             generated.add(new RefiningRecipe(slurry, Optional.empty(),
                 Optional.of(new FluidChemicalReactionRecipe.TaggedItemOutput(

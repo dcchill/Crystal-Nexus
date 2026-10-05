@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class CraftingFactoryGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -52,7 +53,7 @@ public class CraftingFactoryGUIMenu extends AbstractContainerMenu implements Cry
 		super(CrystalnexusModMenus.CRAFTING_FACTORY_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(11);
+		this.internal = new ItemStackHandler(17);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -149,6 +150,10 @@ public class CraftingFactoryGUIMenu extends AbstractContainerMenu implements Cry
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
+        var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
+        for (int i = 0; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
+            customSlots.put(11 + i, addSlot(new MachineUpgradeSlot(internal, 11 + i, upgradeState, i)));
+        machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
@@ -176,16 +181,20 @@ public class CraftingFactoryGUIMenu extends AbstractContainerMenu implements Cry
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 11) {
-				if (!this.moveItemStackTo(itemstack1, 11, this.slots.size(), true))
+			if (index < machineSlots) {
+				if (!this.moveItemStackTo(itemstack1, machineSlots, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (!this.moveItemStackTo(itemstack1, 0, 11, false)) {
-				if (index < 11 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 11 + 27, this.slots.size(), true))
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
+                boolean moved = false;
+                for (int i = 11; i < machineSlots && !itemstack1.isEmpty(); i++) moved |= moveItemStackTo(itemstack1, i, i + 1, false);
+                if (!moved) return ItemStack.EMPTY;
+            } else if (!this.moveItemStackTo(itemstack1, 0, 11, false)) {
+				if (index < machineSlots + 27) {
+					if (!this.moveItemStackTo(itemstack1, machineSlots + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 11, 11 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, machineSlots, machineSlots + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

@@ -42,7 +42,7 @@ import io.netty.buffer.Unpooled;
 
 public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
 
 	public CrystalCrusherBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYSTAL_CRUSHER.get(), position, state);
@@ -130,10 +130,10 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 2 || index >= 3)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 2 ? 0 : index - 3 + 1, stack);
 		if (index == 1)
 			return false;
-		if (index == 2)
-			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 
@@ -149,6 +149,7 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index == 2 || index >= 3) return false;
 		if (index == 0)
 			return false;
 		if (index == 2)
@@ -159,20 +160,28 @@ public class CrystalCrusherBlockEntity extends RandomizableContainerBlockEntity 
 	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CRYSTAL_CRUSHER.capacity(), 4096), CrystalnexusConfig.MACHINES.CRYSTAL_CRUSHER.maxReceive(), CrystalnexusConfig.MACHINES.CRYSTAL_CRUSHER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
+            var profiler = level == null ? net.minecraft.util.profiling.InactiveProfiler.INSTANCE : net.crystalnexus.commands.NexusDebugCommand.profiler(level);
+            profiler.push("crystalnexus_energy_receive");
+            try {
 			int retval = super.receiveEnergy(maxReceive, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
+            } finally { profiler.pop(); }
 		}
 
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate) {
+            var profiler = level == null ? net.minecraft.util.profiling.InactiveProfiler.INSTANCE : net.crystalnexus.commands.NexusDebugCommand.profiler(level);
+            profiler.push("crystalnexus_energy_extract");
+            try {
 			int retval = super.extractEnergy(maxExtract, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
+            } finally { profiler.pop(); }
 		}
 	};
 

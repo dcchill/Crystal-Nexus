@@ -145,7 +145,9 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         if (recipe.value() instanceof ChemicalReactionRecipe) {
             return MachineUpgradeHelper.energyCost(inventory.getItem(4), 4096);
         }
-        ItemStack upgrade = inventory.getItem(kind == Kind.CIRCUIT_PRESS ? 3 : 2);
+        var upgrade = entity.getBlockState().getBlock() instanceof net.crystalnexus.processing.TieredMachineBlock
+            ? MachineUpgradeHelper.upgrades(entity, kind == Kind.CIRCUIT_PRESS ? 3 : 2, kind == Kind.CIRCUIT_PRESS ? 4 : 3)
+            : java.util.List.of(inventory.getItem(2));
         if (recipe.value() instanceof PartsAssemblingRecipe p) return MachineUpgradeHelper.energyCost(upgrade, p.energyPerTick());
         return MachineUpgradeHelper.energyCost(entity.getBlockState(), upgrade, kind == Kind.CRUSHER ? 4096 : 2048);
     }
@@ -190,14 +192,17 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     }
     public int receiveEnergy(int amount, boolean simulate) {
         if (entity.getLevel() == null || amount <= 0) return 0;
-        List<IEnergyStorage> storages = new ArrayList<>();
         IEnergyStorage unsided = entity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, entity.getBlockPos(), null);
+        if (unsided != null && unsided.canReceive()) {
+            int accepted = unsided.receiveEnergy(amount, simulate);
+            if (accepted > 0) return accepted;
+        }
+        List<IEnergyStorage> storages = new ArrayList<>();
         if (unsided != null) storages.add(unsided);
         for (Direction side : profile == null ? Direction.values() : profile.receiveOrder()) {
             IEnergyStorage storage = entity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, entity.getBlockPos(), side);
-            if (storage != null && !storages.contains(storage)) storages.add(storage);
-        }
-        for (IEnergyStorage storage : storages) {
+            if (storage == null || storages.contains(storage)) continue;
+            storages.add(storage);
             if (!storage.canReceive()) continue;
             int accepted = storage.receiveEnergy(amount, simulate);
             if (accepted > 0) return accepted;
@@ -237,11 +242,13 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     private static Direction[] fluidOrder(SideProfile profile) { return profile == null ? Direction.values() : profile.fluidOrder(); }
     public static final class SideProfile {
         private final int insertMask, extractMask, fillMask, drainMask, receiveMask, extractEnergyMask;
-        private final Direction[] itemOrder, fluidOrder, energyOrder;
+        private final Direction[] itemOrder, extractOrder, fluidOrder, energyOrder, receiveOrder;
         public SideProfile(int insertMask, int extractMask, int fillMask, int drainMask, int receiveMask, int extractEnergyMask) {
             this.insertMask = insertMask; this.extractMask = extractMask; this.fillMask = fillMask; this.drainMask = drainMask;
             this.receiveMask = receiveMask; this.extractEnergyMask = extractEnergyMask;
             itemOrder = order(insertMask, extractMask); fluidOrder = order(fillMask, drainMask); energyOrder = order(receiveMask, extractEnergyMask);
+            extractOrder = order(extractMask, insertMask);
+            receiveOrder = order(receiveMask, extractEnergyMask);
         }
         private static Direction[] order(int preferred, int secondary) {
             List<Direction> result = new ArrayList<>();
@@ -251,8 +258,8 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             return result.toArray(Direction[]::new);
         }
         public Direction[] itemOrder() { return itemOrder; }
-        public Direction[] extractOrder() { return order(extractMask, insertMask); }
-        public Direction[] receiveOrder() { return order(receiveMask, extractEnergyMask); }
+        public Direction[] extractOrder() { return extractOrder; }
+        public Direction[] receiveOrder() { return receiveOrder; }
         public Direction[] fluidOrder() { return fluidOrder; }
         public Direction[] energyOrder() { return energyOrder; }
         public int insertMask() { return insertMask; } public int extractMask() { return extractMask; }

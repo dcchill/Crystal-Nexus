@@ -1,6 +1,9 @@
 package net.crystalnexus.jei_recipes;
 
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
+import net.crystalnexus.init.CrystalnexusModFluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -38,9 +41,8 @@ public final class GeneSplicingRecipeCategory implements IRecipeCategory<GeneSpl
 	}
 
 	@Override public void setRecipe(IRecipeLayoutBuilder builder, GeneSplicingRecipe recipe, IFocusGroup focuses) {
-		ItemStack fuel = recipe.fuel().getItems()[0].copy();
-		fuel.setCount(recipe.fuelCount());
-		builder.addSlot(RecipeIngredientRole.INPUT, 26, 35).addItemStack(fuel);
+		builder.addSlot(RecipeIngredientRole.INPUT, 26, 35).setFluidRenderer(recipe.bloodAmount(), false, 16, 16)
+				.addIngredient(NeoForgeTypes.FLUID_STACK, new FluidStack(CrystalnexusModFluids.BLOOD.get(), recipe.bloodAmount()));
 		ItemStack prisonCube = new ItemStack(CrystalnexusModItems.PRISON_CUBE.get());
 		prisonCube.setCount(recipe.prisonCubeCount());
 		PrisonCubeItem.setStoredEntityType(prisonCube, recipe.mob());

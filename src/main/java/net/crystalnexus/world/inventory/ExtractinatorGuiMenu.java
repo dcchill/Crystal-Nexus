@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class ExtractinatorGuiMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -57,7 +58,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 		super(CrystalnexusModMenus.EXTRACTINATOR_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(8);
+		this.internal = new ItemStackHandler(13);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -115,16 +116,8 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 180, 8) {
-			private final int slot = 7;
-			private int x = ExtractinatorGuiMenu.this.x;
-			private int y = ExtractinatorGuiMenu.this.y;
-
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-			}
-		}));
+		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
+        this.customSlots.put(7, this.addSlot(new MachineUpgradeSlot(internal, 7, upgradeState, 0)));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 79, 44) {
 			private final int slot = 2;
 			private int x = ExtractinatorGuiMenu.this.x;
@@ -175,6 +168,9 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
+        for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
+            this.customSlots.put(8 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 8 + i - 1, upgradeState, i)));
+        machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
@@ -203,18 +199,21 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 8) {
-				if (!this.moveItemStackTo(itemstack1, 8, this.slots.size(), true))
+			if (index < machineSlots) {
+				if (!this.moveItemStackTo(itemstack1, machineSlots, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(itemstack1)) {
-				if (!this.moveItemStackTo(itemstack1, 7, 8, false)) return ItemStack.EMPTY;
-			} else if (!this.moveItemStackTo(itemstack1, 0, 8, false)) {
-				if (index < 8 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 8 + 27, this.slots.size(), true))
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
+                boolean moved = false;
+                for (int i = 0; i < machineSlots && !itemstack1.isEmpty(); i++)
+                    if (slots.get(i) instanceof MachineUpgradeSlot) moved |= moveItemStackTo(itemstack1, i, i + 1, false);
+                if (!moved) return ItemStack.EMPTY;
+			} else if (!this.moveItemStackTo(itemstack1, 0, machineSlots, false)) {
+				if (index < machineSlots + 27) {
+					if (!this.moveItemStackTo(itemstack1, machineSlots + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 8, 8 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, machineSlots, machineSlots + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

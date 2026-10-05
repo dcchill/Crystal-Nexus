@@ -10,7 +10,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.network.chat.Component;
 
-import net.crystalnexus.procedures.BlutoniumIngotItemInInventoryTickProcedure;
 
 import java.util.List;
 
@@ -28,6 +27,5 @@ public class UnstableEEMatterItem extends Item {
 	@Override
 	public void inventoryTick(ItemStack itemstack, Level world, Entity entity, int slot, boolean selected) {
 		super.inventoryTick(itemstack, world, entity, slot, selected);
-		BlutoniumIngotItemInInventoryTickProcedure.execute(world, entity);
 	}
 }

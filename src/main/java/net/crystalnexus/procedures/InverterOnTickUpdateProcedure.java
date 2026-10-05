@@ -33,7 +33,14 @@ import java.util.List;
 
 public class InverterOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (world.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (world.isClientSide()) return false;
 		double outputAmount = 0;
 		double cookTime = 0;
 		String registry_name_no_namespace = "";
@@ -162,6 +169,7 @@ public class InverterOnTickUpdateProcedure {
 								BlockState _bs = world.getBlockState(_bp);
 								if (_blockEntity != null)
 									_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 								if (world instanceof Level _level)
 									_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 							}
@@ -175,8 +183,8 @@ public class InverterOnTickUpdateProcedure {
 				}
 			}
 		}
-		return;
-	}
+		return completed;
+    }
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);

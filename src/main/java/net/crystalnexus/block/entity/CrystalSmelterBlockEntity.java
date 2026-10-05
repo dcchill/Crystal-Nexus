@@ -37,7 +37,7 @@ import io.netty.buffer.Unpooled;
 public class CrystalSmelterBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
     public boolean processing;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
 
 	public CrystalSmelterBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.CRYSTAL_SMELTER.get(), position, state);
@@ -124,11 +124,10 @@ public class CrystalSmelterBlockEntity extends RandomizableContainerBlockEntity 
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 2 || index >= 3)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 2 ? 0 : index - 3 + 1, stack);
 		if (index == 1)
 			return false;
-		if (index == 2)
-			return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)
-					|| net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 
@@ -144,6 +143,7 @@ public class CrystalSmelterBlockEntity extends RandomizableContainerBlockEntity 
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index == 2 || index >= 3) return false;
 		if (index == 0)
 			return false;
 		if (index == 2)
@@ -156,7 +156,7 @@ public class CrystalSmelterBlockEntity extends RandomizableContainerBlockEntity 
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
 		}
@@ -165,7 +165,7 @@ public class CrystalSmelterBlockEntity extends RandomizableContainerBlockEntity 
 		public int extractEnergy(int maxExtract, boolean simulate) {
 			int retval = super.extractEnergy(maxExtract, simulate);
 			if (!simulate && retval > 0) {
-				machineSync.changed();
+				machineSync.dataChanged();
 			}
 			return retval;
 		}

@@ -69,10 +69,6 @@ public class RadPlaceholderOnTickUpdateProcedure {
 						if (!entityiterator.level().isClientSide())
 							entityiterator.discard();
 					} else {
-						if (entityiterator instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-							_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 240, 1, false, true));
-							_entity.getPersistentData().putLong(RadiationLogic.LAST_EXPOSURE_TICK_TAG, _entity.level().getGameTime());
-						}
 					}
 				}
 			}

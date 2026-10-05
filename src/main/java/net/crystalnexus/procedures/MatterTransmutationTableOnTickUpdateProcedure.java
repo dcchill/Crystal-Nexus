@@ -29,6 +29,16 @@ import java.util.List;
 public class MatterTransmutationTableOnTickUpdateProcedure {
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
+        BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
+        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 9
+                ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(9)) : 1;
+		String result = "";
+        // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
+        for (int step = 0; step < steps; step++) result = executeSingle(world, x, y, z);
+		return result;
+    }
+
+    private static String executeSingle(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		final int cookTime = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.ticksPerCraft();

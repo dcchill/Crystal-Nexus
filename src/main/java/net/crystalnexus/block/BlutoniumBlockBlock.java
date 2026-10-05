@@ -9,7 +9,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.core.BlockPos;
 
-import net.crystalnexus.procedures.BlutoniumIngotItemInInventoryTickProcedure;
 
 public class BlutoniumBlockBlock extends Block {
 	public BlutoniumBlockBlock() {
@@ -24,6 +23,5 @@ public class BlutoniumBlockBlock extends Block {
 	@Override
 	public void stepOn(Level world, BlockPos pos, BlockState blockstate, Entity entity) {
 		super.stepOn(world, pos, blockstate, entity);
-		BlutoniumIngotItemInInventoryTickProcedure.execute(world, entity);
 	}
 }

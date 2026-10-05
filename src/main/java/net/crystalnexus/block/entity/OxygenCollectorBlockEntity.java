@@ -2,6 +2,8 @@ package net.crystalnexus.block.entity;
 
 import io.netty.buffer.Unpooled;
 import java.util.stream.IntStream;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
@@ -17,6 +19,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
+import net.crystalnexus.util.MachineSync;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -30,6 +34,9 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
+	public final MachineSync machineSync = new MachineSync(this);
+	private List<BlockPos> nearbyLeaves = List.of();
+	private long nextLeafScan = Long.MIN_VALUE;
 
 	public OxygenCollectorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.OXYGEN_COLLECTOR.get(), position, state);
@@ -38,11 +45,27 @@ public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity
 	public static void tick(Level level, BlockPos pos, BlockState state, OxygenCollectorBlockEntity blockEntity) {
 		if (!(level instanceof ServerLevel serverLevel))
 			return;
+		blockEntity.machineSync.tick();
 		OxygenCollectorOnTickUpdateProcedure.execute(serverLevel, pos);
+	}
+
+	public List<BlockPos> nearbyLeaves() {
+		if (level == null) return List.of();
+		long now = level.getGameTime();
+		if (now >= nextLeafScan) {
+			List<BlockPos> leaves = new ArrayList<>();
+			for (BlockPos pos : BlockPos.betweenClosed(worldPosition.offset(-5, -5, -5), worldPosition.offset(5, 5, 5)))
+				if (level.getBlockState(pos).is(BlockTags.LEAVES)) leaves.add(pos.immutable());
+			nearbyLeaves = List.copyOf(leaves);
+			// ponytail: leaf changes take up to 20 ticks; use block-change invalidation if instant detection is needed.
+			nextLeafScan = now + 20 - Math.floorMod(now + worldPosition.asLong(), 20);
+		}
+		return nearbyLeaves;
 	}
 
 	@Override public void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
 		super.loadAdditional(tag, lookup);
+		nextLeafScan = Long.MIN_VALUE;
 		if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(tag, stacks, lookup);
 		if (tag.get("energyStorage") instanceof IntTag energy) energyStorage.deserializeNBT(lookup, energy);
@@ -73,7 +96,7 @@ public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity
 		@Override public int extractEnergy(int amount, boolean simulate) { int extracted = super.extractEnergy(amount, simulate); if (!simulate && extracted > 0) sync(); return extracted; }
 	};
 	private final FluidTank fluidTank = new FluidTank(8000) { @Override protected void onContentsChanged() { super.onContentsChanged(); sync(); } };
-	private void sync() { setChanged(); if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2); }
+	private void sync() { machineSync.dataChanged(); }
 	public EnergyStorage getEnergyStorage() { return energyStorage; }
 	public FluidTank getFluidTank() { return fluidTank; }
 }

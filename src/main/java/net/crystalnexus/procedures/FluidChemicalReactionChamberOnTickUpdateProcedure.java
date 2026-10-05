@@ -30,7 +30,14 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
     private FluidChemicalReactionChamberOnTickUpdateProcedure() {}
 
     public static void execute(ServerLevel level, BlockPos pos) {
-        if (!(level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity chamber)) return;
+        var machine = level.getBlockEntity(pos);
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 3 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(3)) : 1;
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(level, pos));
+    }
+
+    private static boolean executeSingle(ServerLevel level, BlockPos pos) {
+        boolean completed = false;
+        if (!(level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity chamber)) return false;
         transferContainers(chamber);
 
         ItemStack upgrade = chamber.getItem(3);
@@ -44,7 +51,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
                 current.getPersistentData().putDouble("maxProgress", cookTime);
                 sync(level, pos, current);
             }
-            return;
+            return false;
         }
         FluidChemicalReactionRecipe recipe = match.recipe();
 
@@ -53,11 +60,11 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         if ((!fluidOutput.isEmpty() && chamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.SIMULATE) != fluidOutput.getAmount())
                 || (!itemOutput.isEmpty() && !canStackOutput(chamber.getItem(2), itemOutput))) {
             setActive(level, pos, false);
-            return;
+            return false;
         }
 
         setActive(level, pos, true);
-        if (!(level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity activeChamber)) return;
+        if (!(level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity activeChamber)) return false;
         activeChamber.getPersistentData().putDouble("maxProgress", cookTime);
         double progress = activeChamber.getPersistentData().getDouble("progress");
         progress++;
@@ -66,7 +73,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
             1, .25, 0, .25, 0);
         if (progress < cookTime) {
             sync(level, pos, activeChamber);
-            return;
+            return false;
         }
 
         for (int input = 0; input < 2; input++) {
@@ -83,7 +90,10 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         }
         activeChamber.getEnergyStorage().extractEnergy(energyCost, false);
         activeChamber.getPersistentData().putDouble("progress", 0);
+        completed = true;
         if (level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity current) sync(level, pos, current);
+
+        return completed;
     }
 
     private static RecipeMatch findRecipe(ServerLevel level, FluidChemicalReactionChamberBlockEntity chamber) {

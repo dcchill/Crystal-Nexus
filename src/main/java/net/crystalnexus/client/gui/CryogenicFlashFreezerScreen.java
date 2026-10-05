@@ -47,6 +47,7 @@ public final class CryogenicFlashFreezerScreen extends AbstractContainerScreen<C
 	}
 
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
@@ -61,7 +62,6 @@ public final class CryogenicFlashFreezerScreen extends AbstractContainerScreen<C
 			graphics.blit(PROGRESS, leftPos + 73, topPos + 32, 0, frame * 32, 32, 32, 32, 352);
 		}
 		graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
-		graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);
 		graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), leftPos - 33, topPos - 1, 0, 0, 48, 48, 48, 48);
 		graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), leftPos - 25, topPos + 5, 0,
 			Mth.clamp((int) EnergyDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);

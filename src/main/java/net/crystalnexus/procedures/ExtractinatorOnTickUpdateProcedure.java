@@ -30,7 +30,13 @@ import net.crystalnexus.processing.MachineTier;
 
 public class ExtractinatorOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (world.isClientSide()) return;
+        var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 7, 8)), () -> executeSingle(world, x, y, z));
+    }
+
+    private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        boolean completed = false;
+        if (world.isClientSide()) return false;
 		String registry_name_no_namespace = "";
 		String registry_name_nugget = "";
 		String registry_name = "";
@@ -38,7 +44,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 		double outputAmount = 0;
 		double cookTime = 0;
 		double slotnumbercheck = 0;
-		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 7).copy();
+		var upgrade = MachineUpgradeHelper.upgrades(world.getBlockEntity(BlockPos.containing(x, y, z)), 7, 8);
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
 				int _value = 1;
@@ -95,6 +101,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -155,6 +162,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -215,6 +223,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -295,6 +304,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -355,6 +365,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -415,6 +426,7 @@ public class ExtractinatorOnTickUpdateProcedure {
 							BlockState _bs = world.getBlockState(_bp);
 							if (_blockEntity != null)
 								_blockEntity.getPersistentData().putDouble("progress", 0);
+        completed = true;
 							if (world instanceof Level _level)
 								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 						}
@@ -491,10 +503,10 @@ public class ExtractinatorOnTickUpdateProcedure {
 				}
 			}
 		}
-		return;
-	}
+		return completed;
+    }
 
-	static int energyCost(LevelAccessor world, BlockPos pos, ItemStack upgrade, int baseEnergy) {
+	static int energyCost(LevelAccessor world, BlockPos pos, java.util.List<ItemStack> upgrade, int baseEnergy) {
 		return MachineTier.from(world.getBlockState(pos)).energyCost(MachineUpgradeHelper.energyCost(upgrade, baseEnergy));
 	}
 

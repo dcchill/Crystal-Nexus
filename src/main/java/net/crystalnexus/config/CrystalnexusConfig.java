@@ -22,6 +22,7 @@ public final class CrystalnexusConfig {
 	}
 
 	private static boolean getOrDefault(ModConfigSpec.BooleanValue value, boolean fallback) {
+		if (SPEC == null || !SPEC.isLoaded()) return fallback;
 		try {
 			return value.get();
 		} catch (IllegalStateException ignored) {
@@ -30,6 +31,7 @@ public final class CrystalnexusConfig {
 	}
 
 	private static int getOrDefault(ModConfigSpec.IntValue value, int fallback) {
+		if (SPEC == null || !SPEC.isLoaded()) return fallback;
 		try {
 			return value.get();
 		} catch (IllegalStateException ignored) {
@@ -38,6 +40,7 @@ public final class CrystalnexusConfig {
 	}
 
 	private static double getOrDefault(ModConfigSpec.DoubleValue value, double fallback) {
+		if (SPEC == null || !SPEC.isLoaded()) return fallback;
 		try {
 			return value.get();
 		} catch (IllegalStateException ignored) {

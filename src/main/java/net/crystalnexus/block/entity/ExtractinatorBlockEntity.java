@@ -32,7 +32,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(13, ItemStack.EMPTY);
 
 	public ExtractinatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.EXTRACTINATOR.get(), position, state);
@@ -112,6 +112,8 @@ public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 7 || index >= 8)
+            return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 7 ? 0 : index - 8 + 1, stack);
 		if (index == 1)
 			return false;
 		if (index == 2)
@@ -124,8 +126,6 @@ public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity i
 			return false;
 		if (index == 6)
 			return false;
-		if (index == 7)
-			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		return true;
 	}
 
@@ -141,6 +141,7 @@ public class ExtractinatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
+        if (index == 7 || index >= 8) return false;
 		if (index == 0)
 			return false;
 		if (index == 7)

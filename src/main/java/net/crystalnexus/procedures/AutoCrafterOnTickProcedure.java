@@ -43,7 +43,10 @@ public class AutoCrafterOnTickProcedure {
 		boolean azurineFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.TITANIUM_CRAFTING_FACTORY.get());
 		boolean hyperFactory = world.getBlockState(pos).is(CrystalnexusModBlocks.HYPER_CRAFTING_FACTORY.get());
 		int craftTime = hyperFactory ? 5 : azurineFactory ? 10 : crystalFactory ? 25 : 50;
-		int energyPerCraft = MachineTier.from(world.getBlockState(pos)).energyCost(512);
+        var upgrades = net.crystalnexus.util.MachineUpgradeHelper.upgrades(world.getBlockEntity(pos), 11, 12);
+        craftTime = (int) Math.ceil(net.crystalnexus.util.MachineUpgradeHelper.cookTime(upgrades,
+            net.crystalnexus.util.MachineUpgradeHelper.processingTime(upgrades, craftTime, craftTime * 0.75, craftTime * 0.5)));
+        int energyPerCraft = net.crystalnexus.util.MachineUpgradeHelper.energyCost(world.getBlockState(pos), upgrades, 512);
 		setMaxProgress(world, pos, craftTime);
 
         var cap = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
@@ -121,14 +124,15 @@ public class AutoCrafterOnTickProcedure {
 		}
 
 		int craftCount = 1;
-		if (hyperFactory) {
+        int parallelCrafts = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(upgrades);
+		if (hyperFactory || parallelCrafts > 1) {
 			int outputRoom = output.isEmpty() ? maxStack : maxStack - output.getCount();
 			craftCount = outputRoom / result.getCount();
 			for (int i = 0; i < consumption.length; i++) {
 				if (consumption[i] > 0) craftCount = Math.min(craftCount, inv.getStackInSlot(i).getCount() / consumption[i]);
 			}
-			if (energy != null) craftCount = Math.min(craftCount, Math.max(1, energy.getEnergyStored() / energyPerCraft));
-			craftCount = Math.min(craftCount, 64);
+			if (energy != null) craftCount = Math.min(craftCount, energy.getEnergyStored() / payableEnergy);
+			craftCount = Math.min(craftCount, hyperFactory ? 64 : parallelCrafts);
 		}
 		if (craftCount <= 0) {
 			updateBlockState(world, pos, crafting);

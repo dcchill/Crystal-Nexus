@@ -25,7 +25,13 @@ import net.crystalnexus.init.CrystalnexusModItems;
 
 public class CrystalPurifierOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        if (world.isClientSide()) return;
+        BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
+        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 3
+                ? MachineUpgradeHelper.parallelCraftCount(inventory.getItem(3)) : 1;
+        for (int step = 0; step < steps; step++) executeSingle(world, x, y, z);
+    }
+
+    private static void executeSingle(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 		if (world.isClientSide())
 			return;
@@ -63,11 +69,11 @@ public class CrystalPurifierOnTickUpdateProcedure {
 			return;
 		}
 
+        IEnergyStorage energy = energyStorage(world, pos, null);
+        if (energy == null || energy.getEnergyStored() < energyCost) return;
 		double progress = progress(world, pos) + 1;
 		update(world, pos, progress, cookTime, 2);
-		IEnergyStorage energy = energyStorage(world, pos, null);
-		if (energy != null)
-			energy.extractEnergy(energyCost, false);
+        energy.extractEnergy(energyCost, false);
 		if (world instanceof ServerLevel level)
 			level.sendParticles(ParticleTypes.DRAGON_BREATH, x + 0.5, y + 0.5, z + 0.5, 1, 0.25, 0, 0.25, 0);
 

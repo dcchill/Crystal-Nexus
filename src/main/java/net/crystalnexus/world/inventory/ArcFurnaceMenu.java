@@ -17,6 +17,7 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 public final class ArcFurnaceMenu extends AbstractContainerMenu {
+    private final int machineSlots;
 	public final Player entity;
 	public final int x, y, z;
 	private final ContainerLevelAccess access;
@@ -29,15 +30,15 @@ public final class ArcFurnaceMenu extends AbstractContainerMenu {
 		x = pos.getX(); y = pos.getY(); z = pos.getZ();
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		furnace = entity.level().getBlockEntity(pos) instanceof ArcFurnaceBlockEntity be ? be : null;
-		InvWrapper items = new InvWrapper(furnace == null ? new SimpleContainer(4) : furnace);
+		InvWrapper items = new InvWrapper(furnace == null ? new SimpleContainer(9) : furnace);
 		addSlot(new SlotItemHandler(items, 0, 44, 35));
 		addSlot(new SlotItemHandler(items, 1, 26, 35));
 		addSlot(new SlotItemHandler(items, 2, 115, 35) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
-		addSlot(new SlotItemHandler(items, 3, 180, 8) {
-			@Override public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-			}
-		});
+		var upgradeState = entity.level().getBlockState(pos);
+        addSlot(new MachineUpgradeSlot(items, 3, upgradeState, 0));
+        for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
+            addSlot(new MachineUpgradeSlot(items, 4 + i - 1, upgradeState, i));
+        machineSlots = slots.size();
 		for (int row = 0; row < 3; row++)
 			for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));
 		for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 142));
@@ -51,10 +52,13 @@ public final class ArcFurnaceMenu extends AbstractContainerMenu {
 		Slot slot = slots.get(index);
 		if (!slot.hasItem()) return ItemStack.EMPTY;
 		ItemStack original = slot.getItem(), copy = original.copy();
-		if (index < 4) {
-			if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
-		} else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(original)) {
-			if (!moveItemStackTo(original, 3, 4, false)) return ItemStack.EMPTY;
+		if (index < machineSlots) {
+			if (!moveItemStackTo(original, machineSlots, slots.size(), true)) return ItemStack.EMPTY;
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(original)) {
+                boolean moved = false;
+                for (int i = 0; i < machineSlots && !original.isEmpty(); i++)
+                    if (slots.get(i) instanceof MachineUpgradeSlot) moved |= moveItemStackTo(original, i, i + 1, false);
+                if (!moved) return ItemStack.EMPTY;
 		} else if (!moveItemStackTo(original, 0, 3, false)) return ItemStack.EMPTY;
 		if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
 		if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;

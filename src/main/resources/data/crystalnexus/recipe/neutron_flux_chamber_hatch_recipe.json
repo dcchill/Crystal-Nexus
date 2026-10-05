@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["bmb", "mcm", "bmb"],
+  "key": {
+    "b": { "item": "crystalnexus:machine_bolt" },
+    "m": { "item": "crystalnexus:carbon_machine_frame" },
+    "c": { "item": "crystalnexus:container" }
+  },
+  "result": { "id": "crystalnexus:neutron_flux_chamber_hatch", "count": 1 }
+}

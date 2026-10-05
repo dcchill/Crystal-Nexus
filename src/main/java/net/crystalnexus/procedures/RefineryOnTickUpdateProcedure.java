@@ -22,9 +22,15 @@ public final class RefineryOnTickUpdateProcedure {
     private RefineryOnTickUpdateProcedure() {}
 
     public static void execute(ServerLevel level, BlockPos pos) {
-        if (!(level.getBlockEntity(pos) instanceof RefineryBlockEntity refinery)) return;
+        var machine = level.getBlockEntity(pos);
+        net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 2, 3)), () -> executeSingle(level, pos));
+    }
+
+    private static boolean executeSingle(ServerLevel level, BlockPos pos) {
+        boolean completed = false;
+        if (!(level.getBlockEntity(pos) instanceof RefineryBlockEntity refinery)) return false;
         emptyContainer(refinery);
-        ItemStack upgrade = refinery.getItem(2);
+        var upgrade = MachineUpgradeHelper.upgrades(refinery, 2, 3);
         MachineTier machineTier = MachineTier.from(level.getBlockState(pos));
         double cookTime = machineTier.processingTime(MachineUpgradeHelper.cookTime(upgrade,
             MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50)));
@@ -38,13 +44,13 @@ public final class RefineryOnTickUpdateProcedure {
             setActive(level, pos, false);
             refinery.getPersistentData().putDouble("maxProgress", cookTime);
             sync(level, pos, refinery);
-            return;
+            return false;
         }
         setActive(level, pos, true);
         refinery.getPersistentData().putDouble("maxProgress", cookTime);
         double progress = refinery.getPersistentData().getDouble("progress") + 1;
         refinery.getPersistentData().putDouble("progress", progress);
-        if (progress < cookTime) { sync(level, pos, refinery); return; }
+        if (progress < cookTime) { sync(level, pos, refinery); return false; }
 
         refinery.getTank(0).drain(recipe.input().amount(), IFluidHandler.FluidAction.EXECUTE);
         recipe.itemInput().ifPresent(ingredient -> refinery.getItem(0).shrink(1));
@@ -56,7 +62,10 @@ public final class RefineryOnTickUpdateProcedure {
         recipe.fluidOutput().ifPresent(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.EXECUTE));
         refinery.getEnergyStorage().extractEnergy(energyCost, false);
         refinery.getPersistentData().putDouble("progress", 0);
+        completed = true;
         sync(level, pos, refinery);
+
+        return completed;
     }
 
     private static RefiningRecipe findRecipe(ServerLevel level, RefineryBlockEntity refinery, MachineTier machineTier) {
@@ -65,14 +74,14 @@ public final class RefineryOnTickUpdateProcedure {
             if (holder.value().input().matches(input)
                     && holder.value().itemInput().map(ingredient -> ingredient.test(refinery.getItem(0))).orElse(true))
                 return machineTier.supports(holder.value().minimumMachineTier()) ? holder.value() : null;
-        if (input.getAmount() < MaterialProcessingCatalog.SLURRY_AMOUNT) return null;
+        if (input.getAmount() < MaterialProcessingCatalog.REFINING_SLURRY_AMOUNT) return null;
         return MaterialProcessingCatalog.slurryMaterial(input).flatMap(MaterialProcessingCatalog.get(level)::byId)
             .filter(material -> !material.profile().disabledStages().contains("refining"))
             .filter(material -> machineTier.supports(material.profile().minimumMachineTier()))
             .map(material -> new RefiningRecipe(
                 new net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe.FluidAmount(
                     net.minecraft.core.registries.BuiltInRegistries.FLUID.getKey(input.getFluid()),
-                    MaterialProcessingCatalog.SLURRY_AMOUNT, java.util.Optional.of(material.id())),
+                    MaterialProcessingCatalog.REFINING_SLURRY_AMOUNT, java.util.Optional.of(material.id())),
                 java.util.Optional.of(material.dust("crystalnexus", material.profile().advancedMultiplier())),
                 java.util.Optional.empty(), material.profile().minimumMachineTier())).orElse(null);
     }

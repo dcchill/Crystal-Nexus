@@ -56,7 +56,7 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         ItemStack copy = original.copy();
         if (index < 4) {
             if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
-        } else if (net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(original)) {
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(original)) {
             if (!moveItemStackTo(original, 3, 4, false)) return ItemStack.EMPTY;
         } else if (!moveItemStackTo(original, 0, 3, false)) {
             int inventoryEnd = 4 + 27;

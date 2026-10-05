@@ -290,6 +290,7 @@ public class CrystalnexusModBlockEntities {
 
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MASTICATOR.get(), (blockEntity, side) -> ((MasticatorBlockEntity) blockEntity).getBloodTank());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ASSEMBLY_LINE_CONTROLLER.get(), (be, side) -> ((net.crystalnexus.block.entity.AssemblyLineControllerBlockEntity) be).ports);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ASSEMBLY_LINE_CONTROLLER.get(), (be, side) -> ((net.crystalnexus.block.entity.AssemblyLineControllerBlockEntity) be).energy);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRYSTAL_PURIFIER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

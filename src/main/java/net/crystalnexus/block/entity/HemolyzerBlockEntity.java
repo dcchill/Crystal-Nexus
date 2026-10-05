@@ -34,7 +34,7 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
     public static final int FE_PER_ITEM = 1_024;
     public static final int PROCESSING_TICKS = 40;
 
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
+    private NonNullList<ItemStack> stacks = NonNullList.withSize(1 + 1, ItemStack.EMPTY);
     private int progress;
     private final ContainerData data = new ContainerData() {
         @Override public int get(int index) { return index == 0 ? progress : PROCESSING_TICKS; }
@@ -69,6 +69,11 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
     }
 
     public static void tick(Level level, BlockPos pos, BlockState state, HemolyzerBlockEntity blockEntity) {
+        for (int craft = 0; craft < net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(blockEntity.getItem(1)); craft++)
+            tickSingle(level, pos, state, blockEntity);
+    }
+
+    private static void tickSingle(Level level, BlockPos pos, BlockState state, HemolyzerBlockEntity blockEntity) {
         if (level.isClientSide) return;
         ItemStack input = blockEntity.getItem(0);
         HemolyzerRecipe recipe = level.getRecipeManager().getAllRecipesFor(HemolyzerRecipe.Type.INSTANCE).stream()
@@ -113,8 +118,8 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
     @Override public int getContainerSize() { return stacks.size(); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return level != null && slot == 0 && accepts(level, stack); }
-    @Override public int[] getSlotsForFace(Direction side) { return new int[] { 0 }; }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == 1 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : level != null && slot == 0 && accepts(level, stack); }
+    @Override public int[] getSlotsForFace(Direction side) { return new int[] { 0, 1 }; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return false; }
 }

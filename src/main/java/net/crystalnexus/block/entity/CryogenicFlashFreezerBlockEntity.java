@@ -40,7 +40,7 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 	private static final int WORK_PER_RECIPE = 200;
 	private static final int ENERGY_PER_OPERATION = 4096;
 	private static final int VALIDATION_INTERVAL = 20;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(2 + 1, ItemStack.EMPTY);
 	private final FluidTank inputTank = tank();
 	private final FluidTank outputTank = tank();
 	private CryogenicFreezerLayout layout = CryogenicFreezerLayout.invalid("Unvalidated");
@@ -77,6 +77,12 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 	}
 
 	public void serverTick() {
+        // ponytail: serialized work steps; separate lanes only if simultaneous recipe selection is needed.
+        for (int craft = 0; craft < net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(getItem(2)); craft++)
+            processStep();
+    }
+
+    private void processStep() {
 		if (!(level instanceof ServerLevel serverLevel)) return;
 		if (validationDelay-- <= 0) {
 			validate(serverLevel);
@@ -249,7 +255,8 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 	@Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
 		return new CryogenicFlashFreezerMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
 	}
-	@Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == 0; }
+	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 2) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack); return slot == 0; }
 	@Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 2).toArray(); }
 	@Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
 	@Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }

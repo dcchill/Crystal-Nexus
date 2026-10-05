@@ -14,13 +14,13 @@ import net.crystalnexus.init.CrystalnexusModMobEffects;
 import net.crystalnexus.radiation.RadiationLogic;
 
 public class BlutoniumIngotItemInInventoryTickProcedure {
-	public static void execute(LevelAccessor world, Entity entity) {
+	public static void execute(LevelAccessor world, Entity entity, int amplifier) {
 		if (entity == null)
 			return;
 		if (!((entity instanceof LivingEntity _entGetArmor ? _entGetArmor.getItemBySlot(EquipmentSlot.CHEST) : ItemStack.EMPTY)
 				.getEnchantmentLevel(world.registryAccess().lookupOrThrow(Registries.ENCHANTMENT).getOrThrow(ResourceKey.create(Registries.ENCHANTMENT, ResourceLocation.parse("crystalnexus:hazmat")))) != 0)) {
 			if (entity instanceof LivingEntity _entity && !_entity.level().isClientSide()) {
-				_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 40, 1, false, false));
+				_entity.addEffect(new MobEffectInstance(CrystalnexusModMobEffects.RADIATION_SICKNESS, 40, amplifier, false, false));
 				_entity.getPersistentData().putLong(RadiationLogic.LAST_EXPOSURE_TICK_TAG, _entity.level().getGameTime());
 			}
 		}

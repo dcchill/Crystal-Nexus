@@ -49,8 +49,8 @@ public final class MachineProcessingGameTests {
                 machine.getPersistentData().putDouble("progress", 0);
                 fill(energy);
                 int before = energy.getEnergyStored();
-                int cost = energy.extractEnergy(MachineUpgradeHelper.energyCost(machine.getBlockState(), upgrade, 2048), true);
-                int ticks = mode == 1 ? accelerated[variant] : mode == 2 ? (int) Math.ceil(times[variant] * 0.5) : times[variant];
+                int cost = energy.extractEnergy(MachineUpgradeHelper.energyCost(machine.getBlockState(), variant == 0 ? ItemStack.EMPTY : upgrade, 2048), true);
+                int ticks = variant == 0 ? times[variant] : mode == 1 ? accelerated[variant] : mode == 2 ? (int) Math.ceil(times[variant] * 0.5) : times[variant];
                 // The first transition to the working animation invokes the existing onPlace reset.
                 if (mode == 0) ticks++;
                 for (int i = 1; i < ticks; i++) tick(machine);
@@ -69,7 +69,7 @@ public final class MachineProcessingGameTests {
         Block[] blocks = { CrystalnexusModBlocks.IRON_SMELTER.get(), CrystalnexusModBlocks.CRYSTAL_SMELTER.get(),
             CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get(), CrystalnexusModBlocks.INVERTIUM_SMELTER.get() };
         int[] times = {100, 75, 75, 60};
-        for (int variant = 0; variant < blocks.length; variant++) {
+        for (int variant = 1; variant < blocks.length; variant++) {
             BlockPos pos = new BlockPos(1 + variant * 2, 1, 1);
             helper.setBlock(pos, blocks[variant]);
             BlockEntity machine = helper.getBlockEntity(pos);
