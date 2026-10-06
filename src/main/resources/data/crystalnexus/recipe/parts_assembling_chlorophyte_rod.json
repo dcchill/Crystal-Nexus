@@ -1,0 +1,11 @@
+﻿{
+    "ingredient":  {
+                       "tag":  "c:ingots/chlorophyte"
+                   },
+    "result":  {
+                   "id":  "crystalnexus:chlorophyte_rod",
+                   "count":  1
+               },
+    "mode":  "rod",
+    "type":  "crystalnexus:parts_assembling"
+}

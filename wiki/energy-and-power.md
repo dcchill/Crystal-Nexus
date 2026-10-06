@@ -166,7 +166,7 @@ The reactor system uses a multiblock-like set of blocks:
 
 Each Reactor Core holds three Blutonium Fuel Cells. Craft three cells from a Blutonium Ingot and three Iron Nuggets. The controller GUI pages through all cores and lets you insert or remove their cells; connected Multiblock Item Inputs also load empty slots. One loaded cell produces one third of a fully loaded core's FE and heat. Cells wear down as the reactor runs, and connected Multiblock Item Outputs collect spent cells. Fuel left in an old controller is returned when its GUI opens.
 
-The GUI also displays stored energy, coolant, temperature, and reactor status. Each Reactor Core column needs a Control Rod above it, which can be inserted to throttle that column. Carbon Moderators between cores improve fuel efficiency and reduce heat, while adjacent Neutron Reflectors increase output. Coolant Channels must connect to a Fluid Input; Heat Conductors can link core heat to those channels from up to four blocks away. The Permafrost Upgrade reduces coolant demand, while the Reactor Upgrade increases energy produced.
+The GUI also displays stored energy, coolant, temperature, and reactor status. Each Reactor Core column needs a Control Rod above it, which can be inserted to throttle that column. Carbon Moderators between cores improve fuel efficiency and reduce heat, while adjacent Neutron Reflectors increase output. A Fluid Input anywhere on the reactor shell supplies all Coolant Channels; Heat Conductors can link core heat to those channels from up to four blocks away. The Permafrost Upgrade reduces coolant demand, while the Reactor Upgrade increases energy produced.
 
 The gamerule `disableMeltdowns` disables reactor meltdowns.
 
@@ -198,3 +198,19 @@ Zero Point is ultimate endgame energy. It is a massive multiblock with a diamete
 Once built, it generates FE without fuel or coolant.
 
 - Output cap: 1,024,000 FE/t per side by default.
+
+## Plasma Generator component grid
+
+The formed Plasma Generator uses a 5 by 9 GUI grid. Each slot holds one Plasma Injector, Ferrosteel Heatsink, or Induction Coil. Injectors and Coils affect four directly touching slots; Heatsinks affect all eight neighbors, including diagonals. Components can be rearranged while running; their slots retain heat even after removal.
+
+- **Plasma Injector:** uses half its calculated Argon throughput: 4.5 mB/t base, plus 1.5 per adjacent Injector and minus 0.5 per adjacent Coil. Fractional Argon use averages across ticks. It produces one plasma unit per mB and heat equal to throughput times (1 + adjacent Injector count).
+- **Ferrosteel Heatsink:** provides up to 12 heat/t cooling to each Injector in all eight neighboring slots; multiple Heatsinks stack. Each Heatsink within those eight slots of a Coil reduces its FE conversion efficiency by 20%, down to a minimum of zero.
+- **Induction Coil:** receives an equal share of plasma from each adjacent Injector and processes at most 8 plasma/t. Each Coil adjacent to an Injector adds one extraction stack for that Injector, multiplying its processed plasma's 80,000 FE/unit conversion before Heatsink interference. Extra Coils add backpressure but also increase extraction; excess plasma is wasted.
+
+While generating, Injectors also gain 1 heat per 10,000 FE/t they produce. Passive cooling removes 1 heat/t plus 1% of the slot's current heat, so operating temperature settles according to FE output and Heatsink cooling. High output or insufficient cooling can still reach the 10,000-heat rupture limit. Cooling continues while idle. Rupture vents Argon, destroys heating cores, releases plasma, and resets heat. Released plasma rises through connected air, including downward detours through bottom breaches when they lead to a higher space. It disappears upon reaching the top buildable block; below that limit, it settles and stops moving when no higher space is reachable. Installed components and stored FE remain. Breaking a running controller also releases its plasma and drops its components. Normal shutdown removes the contained plasma trail.
+
+The Argon buffer holds 10,000 mB. Injection pauses when there is insufficient Argon for a complete grid tick or the internal FE buffer is full. Unconnected Injectors still consume fuel and generate heat. Partial FE capacity discards excess output.
+
+Eight isolated Heatsink-Injector-Coil groups produce 5,120,000 FE/t at 64 mB Argon/t with stable heat. Use alternating rows with `H I C C I H H I C`, then an empty row, the same full row, another empty row, and `H I C C I H . . .` (H = Heatsink, I = Injector, C = Coil). Alternating group orientation keeps Coils away from Heatsinks. Clustering Injectors increases throughput and heat, while adding Coils reduces throughput and adding Heatsinks near Coils reduces efficiency. The GUI reports actual output, demand, local heat, and component interactions. Hover a component to highlight its affected slots in green; holding a component over a grid slot previews its placement range.
+
+Existing generators keep their fuel and FE but start with an empty component grid. Install components before operating them.

@@ -172,7 +172,7 @@ public final class ReactorLayout {
 				}
 			}
 		}
-		Set<BlockPos> activeCoolant = findActiveCoolant(world, minBounds, maxBounds, fuel, coolant, conductors);
+		Set<BlockPos> activeCoolant = fluidInputs.isEmpty() ? Set.of() : findActiveCoolant(fuel, coolant, conductors);
 		for (BlockPos rod : fuel) {
 			double rodOutput = 1;
 			double rodHeat = 1;
@@ -271,17 +271,12 @@ public final class ReactorLayout {
 		return block == CrystalnexusModBlocks.REACTOR_CONTROL_ROD.get();
 	}
 
-	private static Set<BlockPos> findActiveCoolant(BlockGetter world, BlockPos minBounds, BlockPos maxBounds,
-			Set<BlockPos> fuel, Set<BlockPos> coolant, Set<BlockPos> conductors) {
+	private static Set<BlockPos> findActiveCoolant(Set<BlockPos> fuel, Set<BlockPos> coolant, Set<BlockPos> conductors) {
 		Set<BlockPos> active = new HashSet<>();
 		Set<BlockPos> remaining = new HashSet<>(coolant);
 		Set<BlockPos> reachableConductors = reachableConductors(fuel, conductors);
 		while (!remaining.isEmpty()) {
 			Set<BlockPos> component = coolantComponent(remaining.iterator().next(), remaining, coolant);
-			boolean supplied = component.stream().anyMatch(pos -> touchesFluidInput(world, pos, minBounds, maxBounds));
-			if (!supplied) {
-				continue;
-			}
 			for (BlockPos pos : component) {
 				if (touchesAny(pos, fuel)) {
 					active.add(pos);
@@ -343,18 +338,6 @@ public final class ReactorLayout {
 		for (Direction direction : ALL) {
 			if (targets.contains(pos.relative(direction))) {
 				return true;
-			}
-		}
-		return false;
-	}
-
-	private static boolean touchesFluidInput(BlockGetter world, BlockPos pos, BlockPos minBounds, BlockPos maxBounds) {
-		for (Direction direction : ALL) {
-			BlockPos next = pos.relative(direction);
-			if (isShellPosition(next, minBounds, maxBounds)) {
-				if (world.getBlockState(next).getBlock() == CrystalnexusModBlocks.MACHINE_FLUID_INPUT.get()) {
-					return true;
-				}
 			}
 		}
 		return false;

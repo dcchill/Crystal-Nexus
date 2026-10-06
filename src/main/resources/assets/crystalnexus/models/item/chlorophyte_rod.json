@@ -1,0 +1,6 @@
+﻿{
+    "textures":  {
+                     "layer0":  "crystalnexus:item/chlorophyte_rod"
+                 },
+    "parent":  "minecraft:item/generated"
+}

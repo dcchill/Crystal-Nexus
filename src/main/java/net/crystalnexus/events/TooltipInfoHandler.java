@@ -94,6 +94,9 @@ public class TooltipInfoHandler {
 	}
 
 	static {
+        addTooltip("plasma_injector", "Consumes half the Argon of its original throughput and produces plasma for adjacent Coils.", "Adjacent Injectors boost throughput and heat; each adjacent Coil adds output heat and backpressure.");
+        addTooltip("ferrosteel_heatsink", "Provides up to 12 heat/t cooling to each Injector in all 8 neighboring slots.", "Cooling stacks from multiple Heatsinks.", "Reduces Induction Coil efficiency in all 8 neighboring slots by 20% (minimum 0%).");
+        addTooltip("induction_coil", "Processes up to 8 plasma/t from adjacent Injectors into FE.", "Each Coil adds an extraction multiplier and backpressure to adjacent Injectors.", "Adjacent Heatsinks reduce FE conversion efficiency.");
 		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
 		addTooltip("meteor_sword", "Hold Shift + right-click to charge, then release when ready.", "Each second adds a charge level, up to 5; your next successful hit consumes it.", "Each level doubles damage and FE use, up to 32x.", "Base hit costs 500 FE; a full charge costs 16,000 FE.", "Grants +2 blocks of reach and a wide forward sweep.", "Supports standard sword enchantments, including Sweeping Edge.");
@@ -161,12 +164,12 @@ public class TooltipInfoHandler {
 				"Place next to a reactor core.",
 				"Reflects neutrons back into the core to increase output.");
 		addTooltip("reactor_coolant_channel",
-				"Carries coolant from a connected Fluid Input.",
+				"Uses coolant supplied by any reactor Fluid Input.",
 				"Removes heat from adjacent fuel or connected conductors.");
 		addTooltip("reactor_heat_conductor",
 				"Relays core heat to connected coolant channels.",
 				"Conductor chains can reach up to four blocks from a fuel rod.",
-				"The coolant network still requires a Fluid Input.");
+				"A Fluid Input anywhere on the reactor shell supplies coolant.");
 		addTooltip("reactor_upgrade",
 				"Reactor energy upgrade.",
 				"Boosts reactor energy production.");

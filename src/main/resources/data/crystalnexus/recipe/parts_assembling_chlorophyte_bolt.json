@@ -1,0 +1,11 @@
+﻿{
+    "ingredient":  {
+                       "tag":  "c:ingots/chlorophyte"
+                   },
+    "result":  {
+                   "id":  "crystalnexus:chlorophyte_machine_bolt",
+                   "count":  2
+               },
+    "mode":  "bolt",
+    "type":  "crystalnexus:parts_assembling"
+}

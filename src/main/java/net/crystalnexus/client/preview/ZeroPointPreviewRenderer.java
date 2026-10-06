@@ -40,6 +40,11 @@ public class ZeroPointPreviewRenderer {
     private static final float OUTLINE_G = 0.9f;
     private static final float OUTLINE_B = 1.0f;
     private static final float OUTLINE_A = 0.15f;
+    private static ItemStack cachedPlan = ItemStack.EMPTY;
+    private static BlockPos cachedController;
+    private static BlockState cachedControllerState;
+    private static java.lang.ref.WeakReference<Level> cachedPlanLevel = new java.lang.ref.WeakReference<>(null);
+    private static List<GhostBlock> cachedPlanBlocks = List.of();
 
     public static void onRenderLevelStage(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
@@ -51,6 +56,11 @@ public class ZeroPointPreviewRenderer {
         ItemStack plan = mc.player == null ? ItemStack.EMPTY : mc.player.getMainHandItem();
         if (!(plan.getItem() instanceof MultiblockPlansItem)) plan = mc.player == null ? ItemStack.EMPTY : mc.player.getOffhandItem();
         boolean planActive = plan.getItem() instanceof MultiblockPlansItem && MultiblockPlansItem.previewTemplate(plan) != null && MultiblockPlansItem.previewController(plan) != null;
+        if (!planActive) {
+            cachedPlan = ItemStack.EMPTY;
+            cachedPlanLevel.clear();
+            cachedPlanBlocks = List.of();
+        }
         if (!ZeroPointPreviewState.isActive() && !planActive) return;
 
         BlockPos controller = planActive ? MultiblockPlansItem.previewController(plan) : ZeroPointPreviewState.pos;
@@ -61,10 +71,16 @@ public class ZeroPointPreviewRenderer {
             return;
         }
 
-        List<GhostBlock> blocks = planActive
-                ? MultiblockPlanTemplates.read(level, controller, MultiblockPlansItem.previewTemplate(plan)).stream()
-                    .map(block -> new GhostBlock(block.pos().getX() - controller.getX(), block.pos().getY() - controller.getY(), block.pos().getZ() - controller.getZ(), block.state())).toList()
-                : ZeroPointTemplates.getTemplate(ZeroPointPreviewState.templateId);
+        if (planActive && (cachedPlanLevel.get() != level || !controller.equals(cachedController)
+                || cachedControllerState != level.getBlockState(controller) || !ItemStack.isSameItemSameComponents(plan, cachedPlan))) {
+            cachedPlanBlocks = MultiblockPlansItem.readPlan(level, controller, plan).stream()
+                    .map(block -> new GhostBlock(block.pos().getX() - controller.getX(), block.pos().getY() - controller.getY(), block.pos().getZ() - controller.getZ(), block.state())).toList();
+            cachedPlan = plan.copy();
+            cachedController = controller;
+            cachedControllerState = level.getBlockState(controller);
+            cachedPlanLevel = new java.lang.ref.WeakReference<>(level);
+        }
+        List<GhostBlock> blocks = planActive ? cachedPlanBlocks : ZeroPointTemplates.getTemplate(ZeroPointPreviewState.templateId);
         if (blocks == null || blocks.isEmpty()) return;
 
         PoseStack poseStack = event.getPoseStack();

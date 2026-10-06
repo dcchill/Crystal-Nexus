@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["  f", " c ", "r  "],
+  "key": {
+    "f": { "item": "crystalnexus:copper_fluid_pipe" },
+    "c": { "item": "crystalnexus:carbon_fiber" },
+    "r": { "item": "crystalnexus:ferrosteel_rod" }
+  },
+  "result": { "id": "crystalnexus:plasma_injector", "count": 1 }
+}

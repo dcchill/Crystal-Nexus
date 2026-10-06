@@ -17,6 +17,7 @@ import net.minecraft.world.WorldlyContainer;
 import net.minecraft.core.registries.BuiltInRegistries;
 
 import net.crystalnexus.block.entity.ZeroPointBlockEntity;
+import net.crystalnexus.block.entity.PlasmaBlockEntity;
 import net.crystalnexus.block.entity.ChlorophyteSolarPanelBlockEntity;
 import net.crystalnexus.block.entity.ArcFurnaceBlockEntity;
 import net.crystalnexus.block.entity.OxygenCollectorBlockEntity;
@@ -266,6 +267,8 @@ public class CrystalnexusModBlockEntities {
 			SolarSimulatorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SOLAR_ENGINE_CONTROLLER = register("solar_engine_controller", CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER,
 			SolarEngineControllerBlockEntity::new);
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PLASMA_BLOCK = register("plasma_block", CrystalnexusModBlocks.PLASMA_BLOCK,
+        PlasmaBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PLASMA_GENERATOR_CONTROLLER = register("plasma_generator_controller", CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER,
 			PlasmaGeneratorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> DIESEL_GENERATOR_CONTROLLER = register("diesel_generator_controller", CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER,

@@ -48,7 +48,7 @@ neoForge {
         }
         gameTestServer {
             type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades,crystalnexus_plasma'
         }
 
         configureEach {
@@ -70,4 +70,11 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Reuse the generator template in the namespace used by its focused GameTests.
+tasks.named('processResources') {
+    from('src/main/resources/data/crystalnexus/structure/plasma_gen.nbt') {
+        into 'data/crystalnexus_plasma/structure'
+    }
 }

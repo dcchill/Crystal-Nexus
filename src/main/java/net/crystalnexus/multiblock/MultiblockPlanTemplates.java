@@ -63,13 +63,22 @@ public final class MultiblockPlanTemplates {
         for (int i = 0; i < paletteTag.size(); i++) palette.add(NbtUtils.readBlockState(lookup, paletteTag.getCompound(i)));
 
         ListTag blocks = root.getList("blocks", Tag.TAG_COMPOUND);
-        BlockPos anchor = null;
-        Direction templateFacing = null;
+        List<PlanBlock> plan = new ArrayList<>(blocks.size());
         for (int i = 0; i < blocks.size(); i++) {
             CompoundTag entry = blocks.getCompound(i);
-            BlockState state = palette.get(entry.getInt("state"));
+            plan.add(new PlanBlock(pos(entry), palette.get(entry.getInt("state"))));
+        }
+        return align(controller, controllerPos, plan);
+    }
+
+    public static List<PlanBlock> align(BlockState controller, BlockPos controllerPos, List<PlanBlock> blocks) {
+        if (!controller.hasProperty(HorizontalDirectionalBlock.FACING)) return List.of();
+        BlockPos anchor = null;
+        Direction templateFacing = null;
+        for (PlanBlock entry : blocks) {
+            BlockState state = entry.state();
             if (state.is(controller.getBlock()) && state.hasProperty(HorizontalDirectionalBlock.FACING)) {
-                anchor = pos(entry);
+                anchor = entry.pos();
                 templateFacing = state.getValue(HorizontalDirectionalBlock.FACING);
                 break;
             }
@@ -78,10 +87,9 @@ public final class MultiblockPlanTemplates {
         Rotation rotation = rotationBetween(templateFacing, controller.getValue(HorizontalDirectionalBlock.FACING));
         BlockPos origin = controllerPos.subtract(transform(anchor, rotation));
         List<PlanBlock> result = new ArrayList<>(blocks.size());
-        for (int i = 0; i < blocks.size(); i++) {
-            CompoundTag entry = blocks.getCompound(i);
-            BlockState state = palette.get(entry.getInt("state")).rotate(rotation);
-            result.add(new PlanBlock(origin.offset(transform(pos(entry), rotation)), state));
+        for (PlanBlock entry : blocks) {
+            BlockState state = entry.state().rotate(rotation);
+            result.add(new PlanBlock(origin.offset(transform(entry.pos(), rotation)), state));
         }
         return result;
     }

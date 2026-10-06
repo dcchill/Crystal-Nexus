@@ -1,0 +1,11 @@
+﻿{
+    "ingredient":  {
+                       "tag":  "c:ingots/chlorophyte"
+                   },
+    "result":  {
+                   "id":  "crystalnexus:chlorophyte_sheet",
+                   "count":  1
+               },
+    "mode":  "plate",
+    "type":  "crystalnexus:parts_assembling"
+}

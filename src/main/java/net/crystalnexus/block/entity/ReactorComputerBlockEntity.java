@@ -45,6 +45,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(3, ItemStack.EMPTY);
 	private ReactorLayout cachedLayout = ReactorLayout.invalid("Offline");
 	private int layoutCheckDelay = 0;
+	private int masterControlRodInsertion;
 
 	public ReactorComputerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.REACTOR_COMPUTER.get(), position, state);
@@ -67,6 +68,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 			energyStorage.deserializeNBT(lookupProvider, intTag);
 		if (compound.get("fluidTank") instanceof CompoundTag compoundTag)
 			fluidTank.readFromNBT(lookupProvider, compoundTag);
+		masterControlRodInsertion = net.minecraft.util.Mth.clamp(compound.getInt("masterControlRodInsertion"), 0, 100);
 	}
 
 	@Override
@@ -77,6 +79,7 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
 		compound.put("fluidTank", fluidTank.writeToNBT(lookupProvider, new CompoundTag()));
+		compound.putInt("masterControlRodInsertion", masterControlRodInsertion);
 	}
 
 	@Override
@@ -175,20 +178,22 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	@Override public FluidTank multiblockFluidInput() { return fluidTank; }
 	@Override public GeneratorEnergyStorage multiblockEnergyOutput() { return energyStorage; }
 	public int masterControlRodInsertion() {
-		if (level == null || cachedLayout.fuelRods().isEmpty()) return 0;
+		if (level == null || cachedLayout.fuelRods().isEmpty()) return masterControlRodInsertion;
 		int total = 0, count = 0;
 		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods())
 			if (level.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control) {
 				total += control.getInsertion();
 				count++;
 			}
-		return count == 0 ? 0 : Math.round(total / (float) count);
+		return count == 0 ? masterControlRodInsertion : Math.round(total / (float) count);
 	}
 	public void setAllControlRodInsertion(int insertion) {
+		masterControlRodInsertion = net.minecraft.util.Mth.clamp(insertion, 0, 100);
+		setChanged();
 		if (level == null) return;
 		for (ReactorLayout.FuelRod rod : cachedLayout.fuelRods())
 			if (level.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control)
-				control.setInsertion(insertion);
+				control.setInsertion(masterControlRodInsertion);
 	}
 	public void pushEnergyOutputs() {
 		if (level == null || !cachedLayout.valid || !getPersistentData().getBoolean("canOpenInventory")) return;

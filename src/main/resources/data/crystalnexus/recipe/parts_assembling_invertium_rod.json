@@ -1,0 +1,11 @@
+﻿{
+    "ingredient":  {
+                       "tag":  "c:ingots/invertium"
+                   },
+    "result":  {
+                   "id":  "crystalnexus:invertium_rod",
+                   "count":  1
+               },
+    "mode":  "rod",
+    "type":  "crystalnexus:parts_assembling"
+}

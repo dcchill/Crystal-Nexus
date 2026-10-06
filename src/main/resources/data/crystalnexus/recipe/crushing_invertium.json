@@ -1,0 +1,5 @@
+{
+  "type": "crystalnexus:ore_crushing_jei",
+  "ingredients": [{ "item": "crystalnexus:invertium_ingot" }],
+  "output": { "id": "crystalnexus:invertium_dust", "count": 1 }
+}

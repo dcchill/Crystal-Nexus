@@ -13,6 +13,7 @@ import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.reactor.ReactorBalance;
 import net.crystalnexus.reactor.ReactorLayout;
+import net.crystalnexus.reactor.ReactorPlanner;
 import net.crystalnexus.reactor.ReactorSimulation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
@@ -33,6 +34,29 @@ public final class ReactorCoolingGameTests {
 	private static final BlockPos CORE_POS = new BlockPos(3, 1, 3);
 
 	private ReactorCoolingGameTests() {
+	}
+
+	@GameTest(template = "zero_point")
+	public static void plannerIncludesReflectorsInBuildsAndEstimates(GameTestHelper helper) {
+		var candidates = ReactorPlanner.candidates(5);
+		var reflector = CrystalnexusModBlocks.REACTOR_NEUTRON_REFLECTOR.get();
+		var build = candidates.stream().filter(candidate -> candidate.blocks().values().stream()
+				.anyMatch(state -> state.is(reflector))).findFirst().orElseThrow();
+		helper.assertTrue(build.layout().valid, "Reflector candidates must be valid reactors");
+		var withoutReflectors = new java.util.LinkedHashMap<>(build.blocks());
+		withoutReflectors.replaceAll((pos, state) -> state.is(reflector) ? Blocks.AIR.defaultBlockState() : state);
+		var view = new ReactorPlanner.Build(build.size(), withoutReflectors, null);
+		var layout = ReactorLayout.analyze(view, BlockPos.ZERO, new BlockPos(4, 4, 4));
+		var baseline = new ReactorPlanner.Build(build.size(), withoutReflectors, layout);
+		helper.assertTrue(layout.valid && build.layout().outputMultiplier > layout.outputMultiplier
+				&& build.layout().heatMultiplier > layout.heatMultiplier,
+				"Planner estimates must include reflector output and heat bonuses");
+		helper.assertTrue(ReactorPlanner.estimate(build, 100).fePerTick() > ReactorPlanner.estimate(baseline, 100).fePerTick(),
+				"Reflectors must increase estimated output");
+		helper.assertTrue(candidates.stream().anyMatch(candidate -> candidate.blocks().values().stream()
+				.anyMatch(state -> state.is(CrystalnexusModBlocks.REACTOR_CARBON_MODERATOR.get()))),
+				"Moderator candidates must remain available");
+		helper.succeed();
 	}
 
 	@GameTest(template = "zero_point")
@@ -241,10 +265,10 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
-	public static void conductorsDoNotCarryCoolantFromFluidInputs(GameTestHelper helper) {
+	public static void fluidInputDoesNotNeedToTouchCoolantChannels(GameTestHelper helper) {
 		ReactorLayout layout = layout(helper, 0, 1, "FHC");
 
-		assertCooling(helper, layout, 1, 0);
+		assertCooling(helper, layout, 1, 1);
 		helper.succeed();
 	}
 

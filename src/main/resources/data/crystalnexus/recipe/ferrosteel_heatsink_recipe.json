@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "cic",
+    "ici",
+    "cic"
+  ],
+  "key": {
+    "c": { "tag": "c:rods/invertium" },
+    "i": { "tag": "c:plates/ferrosteel" }
+  },
+  "result": {
+    "id": "crystalnexus:ferrosteel_heatsink",
+    "count": 1
+  }
+}

@@ -1,0 +1,7 @@
+﻿{
+    "textures":  {
+                     "particle":  "crystalnexus:item/placeholderingot",
+                     "0":  "crystalnexus:block/chlorophyte_bolt"
+                 },
+    "parent":  "crystalnexus:custom/iron_bolt"
+}

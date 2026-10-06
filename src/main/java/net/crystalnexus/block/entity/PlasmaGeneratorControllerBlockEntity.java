@@ -4,10 +4,19 @@ import net.crystalnexus.util.MachineSync;
 
 import net.crystalnexus.block.PlasmaGeneratorControllerBlock;
 import net.crystalnexus.block.HeatingCoreBlock;
+import net.crystalnexus.block.PlasmaBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModFluids;
 import net.crystalnexus.energy.GeneratorEnergyStorage;
+import net.crystalnexus.energy.PlasmaGrid;
+import net.crystalnexus.init.CrystalnexusModItems;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.WorldlyContainer;
+import net.minecraft.core.Direction;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
+import net.minecraft.world.item.ItemStack;
 import net.crystalnexus.multiblock.StructureNbtValidator;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
 import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
@@ -42,11 +51,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget {
+public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity implements net.minecraft.world.MenuProvider, MultiblockPortTarget, WorldlyContainer {
     public final MachineSync machineSync = new MachineSync(this);
-    public static final int TANK_CAPACITY = 100;
-    public static final int ARGON_PER_TICK = 1;
-    public static final int GENERATION_PER_TICK = 512_000;
+    public static final int TANK_CAPACITY = 10_000;
+    private final NonNullList<ItemStack> components = NonNullList.withSize(PlasmaGrid.SIZE, ItemStack.EMPTY);
+    private final double[] heat = new double[PlasmaGrid.SIZE];
     private static final int VALIDATION_INTERVAL = 20;
     public static final double PLASMA_SPEED = 0.75D;
     public static final int PLASMA_SIZE = 16;
@@ -68,6 +77,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
     private boolean formed;
     private boolean operating;
     private int outputPerTick;
+    private double argonRemainder;
     private String status = "Incomplete Structure";
     private String structureStatus = "Incomplete Structure";
     private int validationDelay;
@@ -101,15 +111,24 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
             if (serverLevel.getBlockEntity(pos) instanceof MachineEnergyOutputBlockEntity output) output.pushEnergy();
         });
 
-        if (!formed) { updateOperating(false, 0, structureStatus); return; }
-        if (argonTank.getFluidAmount() < ARGON_PER_TICK) { updateOperating(false, 0, "Waiting for Argon"); return; }
+        PlasmaGrid.Result grid = getGrid();
+        int argonToDrain = (int) Math.floor(grid.argonPerTick() + argonRemainder);
+        boolean injecting = formed && grid.argonPerTick() > 0
+            && argonTank.getFluidAmount() >= argonToDrain && availableOutputCapacity(1) > 0;
+        double[] previousHeat = heat.clone();
+        boolean rupture = PlasmaGrid.advanceHeat(heat, grid, injecting);
+        if (!java.util.Arrays.equals(previousHeat, heat)) machineSync.changed();
+        if (rupture) { plasmaArcFailure(serverLevel, List.copyOf(heatingCores)); return; }
+        if (!formed) { updateOperating(false, 0, status.equals("Plasma Arc Failure") ? status : structureStatus); return; }
+        if (grid.argonPerTick() == 0) { updateOperating(false, 0, "No Plasma Injectors"); return; }
+        if (argonTank.getFluidAmount() < argonToDrain) { updateOperating(false, 0, "Waiting for Argon"); return; }
+        if (!injecting) { updateOperating(false, 0, "Energy Output Full"); return; }
 
-        int availableOutput = availableOutputCapacity(GENERATION_PER_TICK);
-        if (availableOutput <= 0) { updateOperating(false, 0, "Energy Output Full"); return; }
-
-        argonTank.drain(ARGON_PER_TICK, IFluidHandler.FluidAction.EXECUTE);
-        int generated = distributeEnergy(Math.min(GENERATION_PER_TICK, availableOutput));
-        updateOperating(generated > 0, generated, generated > 0 ? "Generating" : "Energy Output Full");
+        argonRemainder = grid.argonPerTick() + argonRemainder - argonToDrain;
+        machineSync.changed();
+        argonTank.drain(argonToDrain, IFluidHandler.FluidAction.EXECUTE);
+        int generated = distributeEnergy(grid.outputPerTick());
+        updateOperating(true, generated, generated > 0 ? "Generating" : "No Plasma Extraction");
     }
 
     private void validateStructure(ServerLevel level) {
@@ -202,7 +221,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
             if (plasmaPositions.contains(next) && state.is(CrystalnexusModBlocks.PLASMA_BLOCK.get())) {
                 nextPositions.add(next);
             } else if (state.isAir()
-                    && level.setBlockAndUpdate(next, CrystalnexusModBlocks.PLASMA_BLOCK.get().defaultBlockState())) {
+                    && level.setBlockAndUpdate(next, CrystalnexusModBlocks.PLASMA_BLOCK.get().defaultBlockState().setValue(PlasmaBlock.CONTAINED, true))) {
                 nextPositions.add(next);
             }
         }
@@ -228,11 +247,8 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         setChanged();
     }
 
-    private void destroyPlasmaBlocks(ServerLevel level) {
-        for (BlockPos pos : List.copyOf(plasmaPositions)) {
-            if (level.getBlockState(pos).is(CrystalnexusModBlocks.PLASMA_BLOCK.get()))
-                level.destroyBlock(pos, false);
-        }
+    private void releasePlasmaBlocks(ServerLevel level) {
+        for (BlockPos pos : List.copyOf(plasmaPositions)) PlasmaBlock.release(level, pos);
         plasmaPositions.clear();
         setChanged();
     }
@@ -248,7 +264,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     private void plasmaArcFailure(ServerLevel level, List<BlockPos> cores) {
         Vec3 center = formationCenter == null ? Vec3.atCenterOf(worldPosition) : formationCenter;
-        destroyPlasmaBlocks(level);
+        releasePlasmaBlocks(level);
         setHeatingCoresActive(cores, false);
         cores.stream().filter(pos -> level.getBlockState(pos).is(CrystalnexusModBlocks.HEATING_CORE.get()))
             .forEach(pos -> level.destroyBlock(pos, false));
@@ -258,11 +274,16 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         level.playSound(null, BlockPos.containing(center), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS, 5.0F, 1.4F);
         level.explode(null, center.x, center.y, center.z, 4.5F, Level.ExplosionInteraction.NONE);
         shutDown();
+        java.util.Arrays.fill(heat, 0);
         status = "Plasma Arc Failure";
         sync();
     }
 
     public void onControllerRemoved() {
+        if (level != null && !level.isClientSide) {
+            Containers.dropContents(level, worldPosition, this);
+            clearContent();
+        }
         if (operating && level instanceof ServerLevel serverLevel) {
             plasmaArcFailure(serverLevel, List.copyOf(heatingCores));
             return;
@@ -288,6 +309,50 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
         formationCenter = null;
     }
 
+    public static int componentType(ItemStack stack) {
+        if (stack.is(CrystalnexusModItems.PLASMA_INJECTOR.get())) return PlasmaGrid.INJECTOR;
+        if (stack.is(CrystalnexusModItems.FERROSTEEL_HEATSINK.get())) return PlasmaGrid.HEATSINK;
+        if (stack.is(CrystalnexusModItems.INDUCTION_COIL.get())) return PlasmaGrid.COIL;
+        return PlasmaGrid.EMPTY;
+    }
+
+    public PlasmaGrid.Result getGrid() {
+        int[] grid = new int[PlasmaGrid.SIZE];
+        for (int slot = 0; slot < grid.length; slot++) grid[slot] = componentType(components.get(slot));
+        return PlasmaGrid.calculate(grid);
+    }
+    public double getHeat(int slot) { return heat[slot]; }
+    public int getHottestSlot() {
+        int hottest = 0;
+        for (int slot = 1; slot < heat.length; slot++) if (heat[slot] > heat[hottest]) hottest = slot;
+        return hottest;
+    }
+    public double getHottestHeat() { return heat[getHottestSlot()]; }
+    @Override public int getContainerSize() { return PlasmaGrid.SIZE; }
+    @Override public int getMaxStackSize() { return 1; }
+    @Override public int[] getSlotsForFace(Direction side) { return new int[0]; }
+    @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return false; }
+    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return false; }
+    @Override public boolean isEmpty() { return components.stream().allMatch(ItemStack::isEmpty); }
+    @Override public ItemStack getItem(int slot) { return components.get(slot); }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return componentType(stack) != PlasmaGrid.EMPTY; }
+    @Override public void setItem(int slot, ItemStack stack) {
+        if (!stack.isEmpty() && !canPlaceItem(slot, stack)) return;
+        components.set(slot, stack.copyWithCount(Math.min(1, stack.getCount())));
+        machineSync.changed();
+    }
+    @Override public ItemStack removeItem(int slot, int amount) {
+        ItemStack removed = ContainerHelper.removeItem(components, slot, amount);
+        if (!removed.isEmpty()) machineSync.changed();
+        return removed;
+    }
+    @Override public ItemStack removeItemNoUpdate(int slot) { return ContainerHelper.takeItem(components, slot); }
+    @Override public void clearContent() { components.clear(); machineSync.changed(); }
+    @Override public boolean stillValid(Player player) {
+        return level != null && level.getBlockEntity(worldPosition) == this
+            && player.distanceToSqr(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5) <= 64;
+    }
+
     @Override public Component getDisplayName() { return Component.translatable("block.crystalnexus.plasma_generator_controller"); }
     @Override public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
         return new PlasmaGeneratorMenu(id, inventory, this);
@@ -295,11 +360,21 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        components.clear();
+        ContainerHelper.loadAllItems(tag, components, registries);
+        for (int slot = 0; slot < PlasmaGrid.SIZE; slot++) {
+            ItemStack stack = components.get(slot);
+            if (!stack.isEmpty() && !canPlaceItem(slot, stack)) components.set(slot, ItemStack.EMPTY);
+            else stack.setCount(Math.min(1, stack.getCount()));
+            double value = tag.getDouble("heat" + slot);
+            heat[slot] = Double.isFinite(value) ? Math.max(0, Math.min(PlasmaGrid.HEAT_LIMIT, value)) : 0;
+        }
         if (tag.get("argon") instanceof CompoundTag fluid) argonTank.readFromNBT(registries, fluid);
 		if (tag.get("energy") instanceof IntTag stored) energy.deserializeNBT(registries, stored);
         formed = tag.getBoolean("formed");
         operating = tag.getBoolean("operating");
         outputPerTick = tag.getInt("outputPerTick");
+        argonRemainder = tag.getDouble("argonRemainder") == 0.5 ? 0.5 : 0;
         status = tag.contains("status", Tag.TAG_STRING) ? tag.getString("status") : "Incomplete Structure";
         formationCenter = tag.contains("formationX", Tag.TAG_DOUBLE)
             ? new Vec3(tag.getDouble("formationX"), tag.getDouble("formationY"), tag.getDouble("formationZ")) : null;
@@ -313,11 +388,14 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
+        ContainerHelper.saveAllItems(tag, components, registries);
+        for (int slot = 0; slot < heat.length; slot++) tag.putDouble("heat" + slot, heat[slot]);
         tag.put("argon", argonTank.writeToNBT(registries, new CompoundTag()));
 		tag.put("energy", energy.serializeNBT(registries));
         tag.putBoolean("formed", formed);
         tag.putBoolean("operating", operating);
         tag.putInt("outputPerTick", outputPerTick);
+        tag.putDouble("argonRemainder", argonRemainder);
         tag.putString("status", status);
         if (formationCenter != null) {
             tag.putDouble("formationX", formationCenter.x);

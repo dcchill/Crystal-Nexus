@@ -1,0 +1,6 @@
+﻿{
+    "textures":  {
+                     "layer0":  "crystalnexus:item/invertium_sheet"
+                 },
+    "parent":  "minecraft:item/generated"
+}

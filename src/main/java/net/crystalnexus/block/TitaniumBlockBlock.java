@@ -9,7 +9,7 @@ import net.minecraft.core.BlockPos;
 
 public class TitaniumBlockBlock extends Block {
 	public TitaniumBlockBlock() {
-		super(BlockBehaviour.Properties.of().sound(SoundType.BASALT).strength(1.5f, 11f).requiresCorrectToolForDrops());
+		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(1.5f, 11f).requiresCorrectToolForDrops());
 	}
 
 	@Override
