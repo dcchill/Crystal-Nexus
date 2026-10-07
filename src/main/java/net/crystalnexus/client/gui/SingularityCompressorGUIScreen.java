@@ -3,6 +3,7 @@ package net.crystalnexus.client.gui;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
@@ -51,6 +52,12 @@ public class SingularityCompressorGUIScreen extends AbstractContainerScreen<Sing
 	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
+		if (isHovering(6, 18, 32, 32, mouseX, mouseY)) {
+			BlockEntity compressor = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
+			if (compressor != null) guiGraphics.renderTooltip(font, Component.translatable(
+					"gui.crystalnexus.singularity_compressor_gui.items", (int) compressor.getPersistentData().getDouble("item"),
+					(int) compressor.getPersistentData().getDouble("maxItem")), mouseX, mouseY);
+		}
 	}
 
 	@Override

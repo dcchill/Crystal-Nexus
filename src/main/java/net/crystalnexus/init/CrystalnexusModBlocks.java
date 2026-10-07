@@ -162,6 +162,7 @@ import net.crystalnexus.block.ExtractinatorBlock;
 import net.crystalnexus.block.EnergyExtractorBlock;
 import net.crystalnexus.block.EnergyCableMk2Block;
 import net.crystalnexus.block.HyperEnergyCableBlock;
+import net.crystalnexus.block.ZeroCableBlock;
 import net.crystalnexus.block.ElectromagnetBlock;
 import net.crystalnexus.block.EEMatterBlockBlock;
 import net.crystalnexus.block.EEBatteryBlock;
@@ -424,6 +425,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> ENERGY_CABLE_MK_2 = REGISTRY.register("energy_cable_mk_2", EnergyCableMk2Block::new);
 	public static final DeferredBlock<Block> BASIC_ENERGY_CABLE = REGISTRY.register("basic_energy_cable", BasicEnergyCableBlock::new);
 	public static final DeferredBlock<Block> HYPER_ENERGY_CABLE = REGISTRY.register("hyper_energy_cable", HyperEnergyCableBlock::new);
+	public static final DeferredBlock<Block> ZERO_CABLE = REGISTRY.register("zero_cable", ZeroCableBlock::new);
 	public static final DeferredBlock<Block> OIL_NODE = REGISTRY.register("oil_node", OilNodeBlock::new);
 	public static final DeferredBlock<Block> LAVA_NODE = REGISTRY.register("lava_node", LavaNodeBlock::new);
 	public static final DeferredBlock<Block> NODE_EXTRACTOR = REGISTRY.register("node_extractor", NodeExtractorBlock::new);

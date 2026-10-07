@@ -115,6 +115,9 @@ public class BioMGuiMenu extends AbstractContainerMenu implements CrystalnexusMo
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 2;
 			private int x = BioMGuiMenu.this.x;
 			private int y = BioMGuiMenu.this.y;

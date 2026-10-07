@@ -3,8 +3,6 @@ package net.crystalnexus.world.inventory;
 import net.crystalnexus.block.entity.FluidChemicalReactionChamberBlockEntity;
 import net.crystalnexus.init.CrystalnexusModMenus;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -19,6 +17,7 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
     public final Player entity;
     public final int x, y, z;
     private final ContainerLevelAccess access;
+    private final int machineSlots;
     private final FluidChemicalReactionChamberBlockEntity chamber;
 
     public FluidChemicalReactionChamberGUIMenu(int id, Inventory inventory, FriendlyByteBuf data) {
@@ -28,16 +27,15 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         x = pos.getX(); y = pos.getY(); z = pos.getZ();
         access = ContainerLevelAccess.create(entity.level(), pos);
         chamber = entity.level().getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity be ? be : null;
-        InvWrapper items = new InvWrapper(chamber == null ? new net.minecraft.world.SimpleContainer(4) : chamber);
+        int upgradeCount = net.crystalnexus.util.MachineUpgradeHelper.upgradeSlots(entity.level().getBlockState(pos));
+        InvWrapper items = new InvWrapper(chamber == null ? new net.minecraft.world.SimpleContainer(3 + upgradeCount) : chamber);
 
         addSlot(new SlotItemHandler(items, 0, 37, 54));
         addSlot(new SlotItemHandler(items, 1, 61, 54));
         addSlot(new SlotItemHandler(items, 2, 124, 54));
-        addSlot(new SlotItemHandler(items, 3, 180, 8) {
-            @Override public boolean mayPlace(ItemStack stack) {
-                return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-            }
-        });
+        for (int i = 0; i < upgradeCount; i++)
+            addSlot(new MachineUpgradeSlot(items, 3 + i, entity.level().getBlockState(pos), i));
+        machineSlots = slots.size();
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));
         for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 142));
@@ -54,14 +52,17 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack original = slot.getItem();
         ItemStack copy = original.copy();
-        if (index < 4) {
-            if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
+        if (index < machineSlots) {
+            if (!moveItemStackTo(original, machineSlots, slots.size(), true)) return ItemStack.EMPTY;
         } else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(original)) {
-            if (!moveItemStackTo(original, 3, 4, false)) return ItemStack.EMPTY;
+            boolean moved = false;
+            for (int i = 3; i < machineSlots && !original.isEmpty(); i++)
+                moved |= moveItemStackTo(original, i, i + 1, false);
+            if (!moved) return ItemStack.EMPTY;
         } else if (!moveItemStackTo(original, 0, 3, false)) {
-            int inventoryEnd = 4 + 27;
+            int inventoryEnd = machineSlots + 27;
             if (index < inventoryEnd ? !moveItemStackTo(original, inventoryEnd, slots.size(), true)
-                                     : !moveItemStackTo(original, 4, inventoryEnd, false)) return ItemStack.EMPTY;
+                                     : !moveItemStackTo(original, machineSlots, inventoryEnd, false)) return ItemStack.EMPTY;
         }
         if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;

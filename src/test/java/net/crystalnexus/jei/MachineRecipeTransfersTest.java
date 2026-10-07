@@ -21,7 +21,7 @@ class MachineRecipeTransfersTest {
             String menuName = registrationsMatcher.group(1);
             String menu = Files.readString(sourceRoot.resolve("world/inventory/" + menuName + ".java"));
             // Read menu slot order, which can differ from the block inventory's slot IDs.
-            var slotMatcher = Pattern.compile("addSlot\\(new Slot(?:ItemHandler)?\\([^,]+,\\s*\\d+, ")
+            var slotMatcher = Pattern.compile("addSlot\\(new (?:Slot(?:ItemHandler)?|MachineItemSlot)\\([^,]+,\\s*\\d+, ")
                 .matcher(menu);
             var starts = new ArrayList<Integer>();
             while (slotMatcher.find()) starts.add(slotMatcher.start());

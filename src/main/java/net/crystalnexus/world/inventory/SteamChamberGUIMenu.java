@@ -127,6 +127,9 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 			}
 		}));
 		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 3;
 			private int x = SteamChamberGUIMenu.this.x;
 			private int y = SteamChamberGUIMenu.this.y;

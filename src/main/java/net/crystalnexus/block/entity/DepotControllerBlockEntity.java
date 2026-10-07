@@ -94,7 +94,7 @@ public class DepotControllerBlockEntity extends BlockEntity {
 
     private final class ControllerEnergyStorage extends EnergyStorage {
         private ControllerEnergyStorage() {
-            super(CAPACITY, MAX_RECEIVE, MAX_RECEIVE, 0);
+            super(CAPACITY, net.crystalnexus.config.CrystalnexusConfig.machineEnergyInput(MAX_RECEIVE), MAX_RECEIVE, 0);
         }
 
         @Override

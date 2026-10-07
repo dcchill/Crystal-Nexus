@@ -141,6 +141,10 @@ public class QuarryGUIMenu extends AbstractContainerMenu implements Crystalnexus
 			private int x = QuarryGUIMenu.this.x;
 			private int y = QuarryGUIMenu.this.y;
 
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
+
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));

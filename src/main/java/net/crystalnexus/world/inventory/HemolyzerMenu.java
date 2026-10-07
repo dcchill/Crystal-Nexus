@@ -51,7 +51,7 @@ public final class HemolyzerMenu extends AbstractContainerMenu {
         ItemStack stack = slot.getItem(), copy = stack.copy();
         if (index < 2) {
             if (!moveItemStackTo(stack, 2, slots.size(), true)) return ItemStack.EMPTY;
-        } else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack)) {
             if (!moveItemStackTo(stack, 1, 2, false)) return ItemStack.EMPTY;
         } else if (!moveItemStackTo(stack, 0, 1, false)) return ItemStack.EMPTY;
         if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();

@@ -54,7 +54,7 @@ public final class GravitationalArrayMenu extends AbstractContainerMenu {
 		ItemStack stack = slot.getItem(), copy = stack.copy();
 		if (index < 6) {
             if (!moveItemStackTo(stack, 6, slots.size(), true)) return ItemStack.EMPTY;
-        } else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack)) {
             if (!moveItemStackTo(stack, 5, 6, false)) return ItemStack.EMPTY;
         } else if (!moveItemStackTo(stack, 0, 4, false)) return ItemStack.EMPTY;
 		if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();

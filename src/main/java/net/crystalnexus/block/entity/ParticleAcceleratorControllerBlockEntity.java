@@ -30,7 +30,7 @@ import io.netty.buffer.Unpooled;
 public class ParticleAcceleratorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(8 + 4, ItemStack.EMPTY);
 
 	public ParticleAcceleratorControllerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.PARTICLE_ACCELERATOR_CONTROLLER.get(), position, state);
@@ -108,13 +108,15 @@ public class ParticleAcceleratorControllerBlockEntity extends RandomizableContai
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		if (index == 8) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack);
+        if (index >= 8 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
+		if (index >= 8) return index < getContainerSize() && net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack);
 		return !isOutputSlot(index);
 	}
 
 	@Override
 	public int[] getSlotsForFace(Direction side) {
-		return IntStream.concat(IntStream.of(INPUT_SLOTS), IntStream.of(8)).toArray();
+		return IntStream.concat(IntStream.of(INPUT_SLOTS), IntStream.range(8, getContainerSize())).toArray();
 	}
 
 	@Override

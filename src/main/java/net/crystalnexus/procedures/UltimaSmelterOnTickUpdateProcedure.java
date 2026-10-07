@@ -112,8 +112,8 @@ public final class UltimaSmelterOnTickUpdateProcedure {
 	}
 
 	private static boolean fits(ItemStack current, ItemStack result) {
-		return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
-				&& current.getCount() + result.getCount() <= current.getMaxStackSize();
+		return (current.isEmpty() || ItemStack.isSameItemSameComponents(current, result))
+            && current.getCount() + result.getCount() <= result.getMaxStackSize();
 	}
 
 	private static ItemStack merged(ItemStack current, ItemStack result) {

@@ -21,6 +21,10 @@ public final class CrystalnexusConfig {
 	private CrystalnexusConfig() {
 	}
 
+    public static int machineEnergyInput(int baseRate) {
+        return (int) Math.min(Integer.MAX_VALUE, (long) baseRate * 10);
+    }
+
 	private static boolean getOrDefault(ModConfigSpec.BooleanValue value, boolean fallback) {
 		if (SPEC == null || !SPEC.isLoaded()) return fallback;
 		try {
@@ -231,10 +235,10 @@ public final class CrystalnexusConfig {
 
 		private Items(ModConfigSpec.Builder builder) {
 			builder.push("items");
-			BATTERY_CELL = new EnergyValues(builder, "battery_cell", 50000, 2500, 2500);
-			DENSE_BATTERY_CELL = new EnergyValues(builder, "dense_battery_cell", 250000, 12500, 12500);
-			CARBON_BATTERY_CELL = new EnergyValues(builder, "carbon_battery_cell", 1000000, 50000, 50000);
-			DARK_BATTERY_CELL = new EnergyValues(builder, "dark_battery_cell", 5000000, 250000, 250000);
+			BATTERY_CELL = new EnergyValues(builder, "battery_cell", 50000, 2500, 2500, false);
+			DENSE_BATTERY_CELL = new EnergyValues(builder, "dense_battery_cell", 250000, 12500, 12500, false);
+			CARBON_BATTERY_CELL = new EnergyValues(builder, "carbon_battery_cell", 1000000, 50000, 50000, false);
+			DARK_BATTERY_CELL = new EnergyValues(builder, "dark_battery_cell", 5000000, 250000, 250000, false);
 			MINING_LASER = new MiningLaserValues(builder);
 			GRAVITY_GUN = new GravityGunValues(builder);
 			COMPOUND_PICKAXE = new CompoundToolValues(builder, "compound_pickaxe", 200, "FE drained from a carried battery for each block mined.");
@@ -251,14 +255,24 @@ public final class CrystalnexusConfig {
 		private final int defaultCapacity;
 		private final int defaultMaxReceive;
 		private final int defaultMaxExtract;
+		private final boolean machineInput;
 		private final ModConfigSpec.IntValue hyperBlocksPerTick;
 		private final int defaultHyperBlocksPerTick;
 
 		private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract) {
-			this(builder, path, defaultCapacity, defaultMaxReceive, defaultMaxExtract, 0, 0);
+			this(builder, path, defaultCapacity, defaultMaxReceive, defaultMaxExtract, 0, 0, true);
 		}
 
+        private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract, boolean machineInput) {
+            this(builder, path, defaultCapacity, defaultMaxReceive, defaultMaxExtract, 0, 0, machineInput);
+        }
+
 		private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract, int defaultHyperBlocksPerTick, int dummy) {
+            this(builder, path, defaultCapacity, defaultMaxReceive, defaultMaxExtract, defaultHyperBlocksPerTick, dummy, true);
+        }
+
+        private EnergyValues(ModConfigSpec.Builder builder, String path, int defaultCapacity, int defaultMaxReceive, int defaultMaxExtract, int defaultHyperBlocksPerTick, int dummy, boolean machineInput) {
+            this.machineInput = machineInput;
 			this.defaultCapacity = defaultCapacity;
 			this.defaultMaxReceive = defaultMaxReceive;
 			this.defaultMaxExtract = defaultMaxExtract;
@@ -266,7 +280,7 @@ public final class CrystalnexusConfig {
 			builder.push(path);
 			capacity = builder.comment("Maximum FE this block or item can store.")
 					.defineInRange("capacity", defaultCapacity, 1, Integer.MAX_VALUE);
-			maxReceive = builder.comment("Maximum FE this block or item can receive per operation.")
+			maxReceive = builder.comment(machineInput ? "Base FE input per operation; machine input is 10 times this value." : "Maximum FE this item can receive per operation.")
 					.defineInRange("maxReceive", defaultMaxReceive, 0, Integer.MAX_VALUE);
 			maxExtract = builder.comment("Maximum FE this block or item can extract per operation.")
 					.defineInRange("maxExtract", defaultMaxExtract, 0, Integer.MAX_VALUE);
@@ -284,7 +298,8 @@ public final class CrystalnexusConfig {
 		}
 
 		public int maxReceive() {
-			return getOrDefault(maxReceive, defaultMaxReceive);
+			int rate = getOrDefault(maxReceive, defaultMaxReceive);
+            return machineInput ? machineEnergyInput(rate) : rate;
 		}
 
 		public int maxExtract() {

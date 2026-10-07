@@ -44,8 +44,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
         BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
-        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 8
-                ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(8)) : 1;
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 8, 9));
         // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
         for (int step = 0; step < steps; step++) executeSingle(world, x, y, z);
     }
@@ -150,7 +149,7 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 					if (!matched) continue recipeLoop;
 				}
 
-				results = r.getOutputs();
+				results = r.getOutputs().stream().map(result -> (result).copy()).toList();
 				consumedSlots = matchedSlots;
 				break;
 			}
@@ -167,7 +166,8 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 			int outputSlot = -1;
 			for (int slot : OUTPUT_SLOTS) {
 				ItemStack out = inv.getStackInSlot(slot);
-				if (!outputSlots.contains(slot) && (out.isEmpty() || (out.getItem() == result.getItem() && out.getCount() + result.getCount() <= 64))) {
+				if (!outputSlots.contains(slot) && (out.isEmpty() || ItemStack.isSameItemSameComponents(out, result))
+                        && out.getCount() + result.getCount() <= result.getMaxStackSize()) {
 					outputSlot = slot; break;
 				}
 			}

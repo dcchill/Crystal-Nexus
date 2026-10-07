@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "C",
+    "Z",
+    "C"
+  ],
+  "key": {
+    "C": {
+      "item": "crystalnexus:rubber_block"
+    },
+    "Z": {
+      "item": "crystalnexus:zero_point_core"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:zero_cable",
+    "count": 8
+  }
+}

@@ -119,6 +119,8 @@ public class ChemicalReactionChamberBlockEntity extends RandomizableContainerBlo
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 4 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 3)
 			return false;
 		if (index == 4)

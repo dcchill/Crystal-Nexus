@@ -67,13 +67,14 @@ public final class ArcBlastFurnaceGameTests {
 
         controller.setItem(0, new ItemStack(copper, 3));
         controller.setItem(1, new ItemStack(tin));
-        controller.setItem(2, new ItemStack(bronze, 61));
+        int blockedCount = controller.getMaxStackSize() - 3;
+        controller.setItem(2, new ItemStack(bronze, blockedCount));
         refillEnergy(controller);
         int energyBefore = controller.availableEnergy();
         for (int tick = 0; tick < 100; tick++)
             ArcFurnaceOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
         helper.assertTrue(controller.getItem(0).getCount() == 3 && controller.getItem(1).getCount() == 1
-                && controller.getItem(2).getCount() == 61 && controller.availableEnergy() == energyBefore,
+                && controller.getItem(2).getCount() == blockedCount && controller.availableEnergy() == energyBefore,
             "External alloys must not consume inputs or energy when the output slot is full");
 
         BlockState azurineState = CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().defaultBlockState()

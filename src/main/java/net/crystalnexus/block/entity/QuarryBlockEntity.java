@@ -123,7 +123,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 			? CrystalnexusConfig.MACHINES.HYPER_LASER_QUARRY
 			: CrystalnexusConfig.MACHINES.QUARRY;
 		this.hyperBlocksPerTick = power.hyperBlocksPerTick();
-		this.energyStorage = new EnergyStorage(power.capacity(), power.maxReceive(), power.maxExtract(), 0) {
+		this.energyStorage = new EnergyStorage(power.capacity(), (isHyper() ? net.crystalnexus.processing.MachineTier.HYPER : net.crystalnexus.processing.MachineTier.CRYSTAL).energyInput(power.maxReceive()), power.maxExtract(), 0) {
 			@Override
 			public int receiveEnergy(int maxReceive, boolean simulate) {
 				int received = super.receiveEnergy(maxReceive, simulate);

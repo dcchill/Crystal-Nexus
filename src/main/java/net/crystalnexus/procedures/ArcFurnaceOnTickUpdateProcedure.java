@@ -37,10 +37,10 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 			/ furnace.heatingLayerCount()));
 		int energyCost = tier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
 		ArcFurnaceRecipe recipe = findRecipe(level, furnace);
-		ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.getResultItem(level.registryAccess());
+		ItemStack output = recipe == null ? ItemStack.EMPTY : (recipe.getResultItem(level.registryAccess())).copy();
 		furnace.getPersistentData().putDouble("maxProgress", cookTime);
 
-		if (recipe == null || furnace.availableEnergy() < energyCost || !canStack(furnace.getItem(2), output)) {
+		if (recipe == null || furnace.availableEnergy() < energyCost || !net.crystalnexus.util.MachineItemStorage.fits(furnace, 2, output)) {
 			furnace.getPersistentData().putDouble("progress", 0);
 			setActive(level, pos, furnace, false);
 			sync(level, pos, furnace);
@@ -101,10 +101,6 @@ public final class ArcFurnaceOnTickUpdateProcedure {
 		furnace.removeItem(1 - firstSlot, recipe.ingredientCount(1));
 	}
 
-	private static boolean canStack(ItemStack current, ItemStack output) {
-		return !output.isEmpty() && (current.isEmpty() || ItemStack.isSameItemSameComponents(current, output))
-			&& current.getCount() + output.getCount() <= output.getMaxStackSize();
-	}
 
 	private static void setActive(net.minecraft.server.level.ServerLevel level, BlockPos pos, ArcFurnaceBlockEntity furnace, boolean active) {
 		furnace.setHeatingCoresActive(active);

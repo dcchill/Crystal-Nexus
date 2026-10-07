@@ -124,6 +124,7 @@ public class FluidPackagerBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)) return false;
 		if (index == 1)
 			return false;
 		if (index == 2)

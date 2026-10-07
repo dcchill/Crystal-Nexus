@@ -103,10 +103,11 @@ public class AutoCrafterOnTickProcedure {
 
         
         ItemStack output = inv.getStackInSlot(9);
-		int maxStack = hyperFactory ? Math.min(result.getMaxStackSize(), 64) : Math.min(result.getMaxStackSize(), 127);
+		int maxStack = net.crystalnexus.util.MachineItemStorage.slotLimit((net.minecraft.world.Container) world.getBlockEntity(pos), 9, result);
 
+        if (result.getCount() > maxStack) return;
         if (!output.isEmpty()) {
-            if (!stacksMatch(output, result)) {
+            if (!ItemStack.isSameItemSameComponents(output, result)) {
                 updateBlockState(world, pos, crafting);
                 return; 
             }

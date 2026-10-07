@@ -113,6 +113,8 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 1 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 0)
 			return false;
 		if (index == 1)
@@ -137,7 +139,7 @@ public class ReactionChamberComputerBlockEntity extends RandomizableContainerBlo
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxReceive() * 4,
+	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.capacity(), (int) Math.min(Integer.MAX_VALUE, (long) CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxReceive() * 4),
 			CrystalnexusConfig.MACHINES.REACTION_CHAMBER_COMPUTER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {

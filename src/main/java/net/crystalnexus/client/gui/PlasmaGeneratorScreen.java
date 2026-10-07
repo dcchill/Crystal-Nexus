@@ -84,7 +84,7 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
             List<Component> lines = new ArrayList<>();
             lines.add(hoveredSlot.hasItem() ? hoveredSlot.getItem().getHoverName() : Component.literal("Component slot"));
             lines.add(Component.literal("Heat: " + number(controller.getHeat(slot)) + " / " + number(PlasmaGrid.HEAT_LIMIT)));
-            if (cell.component() == PlasmaGrid.INJECTOR) {
+            if (PlasmaGrid.isInjector(cell.component())) {
                 lines.add(Component.literal("Argon / plasma: " + number(cell.throughput()) + " per tick"));
                 lines.add(Component.literal("Coil extraction stack: " + number(cell.extractionMultiplier()) + "x"));
                 lines.add(Component.literal("Heat generated (incl. FE): " + number(cell.heatGenerated()) + "/t"));
@@ -94,7 +94,7 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
             } else if (cell.component() == PlasmaGrid.HEATSINK) {
                 int injectors = 0;
                 for (int neighbor : PlasmaGrid.affectedSlots(slot, PlasmaGrid.HEATSINK))
-                    if (grid.cells().get(neighbor).component() == PlasmaGrid.INJECTOR) injectors++;
+                    if (PlasmaGrid.isInjector(grid.cells().get(neighbor).component())) injectors++;
                 lines.add(Component.literal("Cooling: up to " + PlasmaGrid.HEATSINK_COOLING + " heat/t per adjacent Injector (" + injectors + ")"));
                 lines.add(Component.literal("Cooling stacks from multiple Heatsinks"));
                 lines.add(Component.literal("All 8 neighboring Coils lose 20% efficiency each (minimum 0%)"));
@@ -103,8 +103,8 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
                 lines.add(Component.literal("Processed: " + number(cell.plasmaProcessed()) + " / " + PlasmaGrid.COIL_CAPACITY + " per tick"));
                 lines.add(Component.literal("Efficiency: " + number(cell.efficiency() * 100) + "%"));
                 lines.add(Component.literal("Injector extraction stack: " + number(cell.extractionMultiplier()) + "x"));
-                lines.add(Component.literal("Each Coil reduces adjacent Injectors by 0.5 mB/t"));
-            } else lines.add(Component.literal("One Injector, Heatsink, or Coil; live editing allowed"));
+                lines.add(Component.literal("Each Coil reduces Injectors by 0.5 mB/t; High Flow Injectors by 1 mB/t"));
+            } else lines.add(Component.literal("One Injector, High Flow Injector, Heatsink, or Coil; live editing allowed"));
             graphics.renderComponentTooltip(font, lines, mouseX, mouseY);
         } else if (controller != null && isHovering(FLUID_X, FLUID_Y, FLUID_WIDTH, FLUID_HEIGHT, mouseX, mouseY)) {
             graphics.renderComponentTooltip(font, List.of(Component.literal("Argon"),

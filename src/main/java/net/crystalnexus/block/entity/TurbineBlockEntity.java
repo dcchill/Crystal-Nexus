@@ -118,6 +118,7 @@ public class TurbineBlockEntity extends RandomizableContainerBlockEntity impleme
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 0 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack) && !getItem(index).isEmpty()) return false;
 		return true;
 	}
 

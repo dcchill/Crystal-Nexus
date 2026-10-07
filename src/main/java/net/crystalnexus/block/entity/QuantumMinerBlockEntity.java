@@ -111,6 +111,8 @@ public class QuantumMinerBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 9 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 1)
 			return false;
 		if (index == 2)

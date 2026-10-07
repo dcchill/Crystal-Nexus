@@ -55,6 +55,10 @@ public final class HyperLaserQuarryMenu extends AbstractContainerMenu {
 			}
 		}
 		addSlot(new Slot(container, 9, 246, 113) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
+
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));

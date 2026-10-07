@@ -164,7 +164,8 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
                 if (capability != null) return capability;
             }
         }
-        if (entity instanceof Container c) return new InvWrapper(c);
+        if (entity instanceof Container c) return net.crystalnexus.util.MachineItemStorage.isTiered(c)
+            ? new net.crystalnexus.world.inventory.MachineItemHandler(c) : new InvWrapper(c);
         IItemHandler handler = entity.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, entity.getBlockPos(), null);
         if (handler != null) return handler;
         for (Direction side : itemOrder(profile)) {

@@ -16,7 +16,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.ContainerHelper;
+import net.crystalnexus.util.MachineItemStorage;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -60,7 +60,7 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
     @Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.loadAdditional(tag, provider);
         if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, stacks, provider);
+        MachineItemStorage.load(tag, stacks, provider, this);
         if (tag.get("energyStorage") instanceof IntTag energy) energyStorage.deserializeNBT(provider, energy);
         for (int i = 0; i < tanks.length; i++)
             if (tag.get("tank" + i) instanceof CompoundTag tank) tanks[i].readFromNBT(provider, tank);
@@ -68,7 +68,7 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
 
     @Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
         super.saveAdditional(tag, provider);
-        if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, provider);
+        if (!trySaveLootTable(tag)) MachineItemStorage.save(tag, stacks, provider);
         tag.put("energyStorage", energyStorage.serializeNBT(provider));
         for (int i = 0; i < tanks.length; i++) tag.put("tank" + i, tanks[i].writeToNBT(provider, new CompoundTag()));
     }
@@ -81,11 +81,13 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
     @Override public Component getDisplayName() { return Component.literal("Refinery"); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
-    @Override public int getMaxStackSize() { return 64; }
+    @Override public int getMaxStackSize() { return MachineTier.from(getBlockState()).itemSlotCapacity(); }
     @Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
         return new RefineryMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
     }
     @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if ((slot == 2 || slot >= 3) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
         if (slot == 2 || slot >= 3)
             return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot == 2 ? 0 : slot - 3 + 1, stack); return slot != 1; }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
@@ -95,7 +97,7 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
 
     private final EnergyStorage energyStorage = new EnergyStorage(
         MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.capacity(), 4096),
-        CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxReceive(),
+        MachineTier.from(getBlockState()).energyInput(CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxReceive()),
         CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract(), 0) {
         @Override public int receiveEnergy(int amount, boolean simulate) {
             int received = super.receiveEnergy(amount, simulate); if (!simulate && received > 0) changed(); return received;
@@ -128,4 +130,14 @@ public final class RefineryBlockEntity extends RandomizableContainerBlockEntity 
     public FluidTank getTank(int index) { return tanks[index]; }
     public IFluidHandler getFluidHandler() { return fluidHandler; }
     public void purge(int tank) { if (tank >= 0 && tank < tanks.length) tanks[tank].setFluid(FluidStack.EMPTY); }
+
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.capacity(this, stack); }
+
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        stacks.set(slot, stack);
+        setChanged();
+    }
+
 }

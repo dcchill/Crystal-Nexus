@@ -40,7 +40,7 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 	private static final int WORK_PER_RECIPE = 200;
 	private static final int ENERGY_PER_OPERATION = 4096;
 	private static final int VALIDATION_INTERVAL = 20;
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(2 + 1, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(2 + 3, ItemStack.EMPTY);
 	private final FluidTank inputTank = tank();
 	private final FluidTank outputTank = tank();
 	private CryogenicFreezerLayout layout = CryogenicFreezerLayout.invalid("Unvalidated");
@@ -78,7 +78,7 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 
 	public void serverTick() {
         // ponytail: serialized work steps; separate lanes only if simultaneous recipe selection is needed.
-        for (int craft = 0; craft < net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(getItem(2)); craft++)
+        for (int craft = 0; craft < net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(this, 2, 3)); craft++)
             processStep();
     }
 
@@ -111,8 +111,8 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 		recipe.fluidInput(0).ifPresent(input -> inputTank.drain(input.amount(), IFluidHandler.FluidAction.EXECUTE));
 		recipe.itemInput(0).ifPresent(input -> stacks.get(0).shrink(recipe.itemInputCount(0)));
 		recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack)
-			.ifPresent(output -> outputTank.fill(output, IFluidHandler.FluidAction.EXECUTE));
-		recipe.itemOutput().ifPresent(output -> {
+			.ifPresent(output -> outputTank.fill((output).copy(), IFluidHandler.FluidAction.EXECUTE));
+		recipe.itemOutput().map(output -> (output).copy()).ifPresent(output -> {
 			if (stacks.get(1).isEmpty()) stacks.set(1, output.copy()); else stacks.get(1).grow(output.getCount());
 		});
 		energyStorage.extractEnergy(ENERGY_PER_OPERATION, false);
@@ -133,11 +133,11 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 	}
 
 	private boolean canOutput(FluidChemicalReactionRecipe recipe) {
-		FluidStack fluid = recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY);
-		ItemStack item = recipe.itemOutput().orElse(ItemStack.EMPTY);
+		FluidStack fluid = (recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY)).copy();
+		ItemStack item = (recipe.itemOutput().orElse(ItemStack.EMPTY)).copy();
 		return (fluid.isEmpty() || outputTank.fill(fluid, IFluidHandler.FluidAction.SIMULATE) == fluid.getAmount())
-			&& (item.isEmpty() || stacks.get(1).isEmpty() || ItemStack.isSameItemSameComponents(stacks.get(1), item)
-				&& stacks.get(1).getCount() + item.getCount() <= item.getMaxStackSize());
+			&& (item.isEmpty() || (stacks.get(1).isEmpty() || ItemStack.isSameItemSameComponents(stacks.get(1), item))
+                && stacks.get(1).getCount() + item.getCount() <= item.getMaxStackSize());
 	}
 
 	private void validate(ServerLevel level) {
@@ -256,9 +256,11 @@ public final class CryogenicFlashFreezerBlockEntity extends RandomizableContaine
 		return new CryogenicFlashFreezerMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
 	}
 	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
-        if (slot == 2) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack); return slot == 0; }
-	@Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 2).toArray(); }
-	@Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
+        if (slot >= 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
+        if (slot >= 2) return slot < getContainerSize() && net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack); return slot == 0; }
+	@Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
+	@Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
 	@Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
 
 	private void sync() {

@@ -88,9 +88,11 @@ How it works:
 
 The Matter Transmutation Table works like an advanced powered crafting table. It handles special recipes and matter transmutations.
 
+The Comet Forge produces resource comets from raw-material and gem singularities. Iron, gold, and copper singularities produce raw-metal comets. Gem comets include diamond, emerald, quartz, amethyst, and tagged modded gems; ingot comets cannot be crafted.
+
 ### Singularity Compressor
 
-The Singularity Compressor creates singularities from large quantities of resources.
+The Singularity Compressor creates singularities from raw materials and gems at a cost of 10,240 items. Ingots, nuggets, and processed materials cannot be compressed. Existing coal, redstone, wood, stone, dirt, and EE Matter recipes remain available. Generated singularities accept the common raw-material and gem tags.
 
 Singularities include:
 

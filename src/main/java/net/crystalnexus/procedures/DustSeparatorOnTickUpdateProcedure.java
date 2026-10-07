@@ -60,8 +60,10 @@ public final class DustSeparatorOnTickUpdateProcedure {
             ? separator.getPersistentData().getBoolean("pendingSecondary")
             : match.secondaryChance() > 0 && level.random.nextFloat() < match.secondaryChance();
         separator.getPersistentData().putBoolean("pendingSecondary", pendingSecondary);
-        if (!fits(separator.getItem(1), match.primary())
-            || pendingSecondary && !fits(separator.getItem(3), match.secondary())) {
+        ItemStack primary = (match.primary()).copy();
+        ItemStack secondary = (match.secondary()).copy();
+        if (!net.crystalnexus.util.MachineItemStorage.fits(separator, 1, primary)
+            || pendingSecondary && !net.crystalnexus.util.MachineItemStorage.fits(separator, 3, secondary)) {
             setActive(level, pos, false);
             sync(level, pos, separator);
             return false;
@@ -75,9 +77,9 @@ public final class DustSeparatorOnTickUpdateProcedure {
             return false;
         }
 
-        separator.setItem(1, merged(separator.getItem(1), match.primary()));
+        separator.setItem(1, merged(separator.getItem(1), primary));
         if (pendingSecondary && !match.secondary().isEmpty())
-            separator.setItem(3, merged(separator.getItem(3), match.secondary()));
+            separator.setItem(3, merged(separator.getItem(3), secondary));
         separator.getItem(0).shrink(match.itemCount());
         separator.getEnergyStorage().extractEnergy(energyCost, false);
         separator.getPersistentData().putDouble("progress", 0);
@@ -121,10 +123,6 @@ public final class DustSeparatorOnTickUpdateProcedure {
         return output;
     }
 
-    static boolean fits(ItemStack current, ItemStack output) {
-        return output.isEmpty() || (current.isEmpty() || ItemStack.isSameItemSameComponents(current, output))
-            && current.getCount() + output.getCount() <= output.getMaxStackSize();
-    }
 
     private static ItemStack merged(ItemStack current, ItemStack output) {
         ItemStack result = output.copy();

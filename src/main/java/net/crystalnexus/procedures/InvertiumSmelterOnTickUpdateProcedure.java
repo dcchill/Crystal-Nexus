@@ -66,28 +66,28 @@ public class InvertiumSmelterOnTickUpdateProcedure {
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
 		double _cn_currentCount = outputStack.getCount();
-		double _cn_spaceLeft = 64 - _cn_currentCount; 
+		double _cn_spaceLeft = net.crystalnexus.util.MachineItemStorage.slotLimit(machine, 1, recipeResult) - _cn_currentCount; 
 		if (outputAmount > _cn_spaceLeft)
 			outputAmount = _cn_spaceLeft;
 		if (outputAmount < 0)
 			outputAmount = 0;
 		int perCraftOutput = (MachineUpgradeHelper.parallelCraftCount(upgrade) > 1)
 				? Math.max(1, recipeResult.getCount()) : 1;
-		int outputSpace = Math.min(64, recipeResult.getMaxStackSize()) - outputStack.getCount();
-		if (!outputStack.isEmpty() && outputStack.getItem() != recipeResult.getItem())
+
+		int outputSpace = net.crystalnexus.util.MachineItemStorage.slotLimit(machine, 1, recipeResult) - outputStack.getCount();
+		if (!outputStack.isEmpty() && !ItemStack.isSameItemSameComponents(outputStack, recipeResult))
 			outputSpace = 0;
 		int batchCrafts = Math.min(MachineUpgradeHelper.parallelCraftCount(upgrade), inputStack.getCount());
 		batchCrafts = Math.min(batchCrafts, Math.max(0, outputSpace) / perCraftOutput);
 		int energyPerCraft = Math.max(1, Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.INVERTIUM_SMELTER.maxExtract()));
 		batchCrafts = Math.min(batchCrafts, energy.getEnergyStored() / energyPerCraft);
-		if ((MachineUpgradeHelper.parallelCraftCount(upgrade) > 1))
-			outputAmount = batchCrafts * perCraftOutput;
+		outputAmount = batchCrafts * perCraftOutput;
 		if (cookTime < 1)
 			cookTime = 1;
 		machine.machineSync.setDouble("maxProgress", cookTime);
 		if (recipe.isPresent() && batchCrafts > 0) {
 			if (Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.INVERTIUM_SMELTER.maxExtract()) <= energy.getEnergyStored()) {
-				if (64 != outputStack.getCount() && (outputStack.getItem() == (recipeResult).getItem() || outputStack.getItem() == Blocks.AIR.asItem())) {
+				if (outputSpace > 0 && (outputStack.getItem() == (recipeResult).getItem() || outputStack.getItem() == Blocks.AIR.asItem())) {
 					if (machine.getPersistentData().getDouble("progress") < cookTime) {
 						machine.machineSync.setDouble("progress", (machine.getPersistentData().getDouble("progress") + 1));
 						machine.processing = true;

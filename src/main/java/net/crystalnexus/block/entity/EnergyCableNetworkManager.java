@@ -18,7 +18,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 /**
- * Level-scoped topology cache for MK2 energy cables. Cable block entities only
+ * Level-scoped topology cache for all energy cable tiers. Cable block entities only
  * register lifecycle changes; connected components and external endpoints are
  * rebuilt after topology changes and each component is serviced once per tick.
  */
@@ -131,6 +131,10 @@ public final class EnergyCableNetworkManager {
                 }
                 int componentLimit = component.stream().map(this::cable).filter(java.util.Objects::nonNull)
                     .mapToInt(EnergyCableMk2BlockEntity::maxTransfer).min().orElse(0);
+                endpoints.sort(java.util.Comparator
+                    .comparingLong((Endpoint endpoint) -> endpoint.externalPos.asLong())
+                    .thenComparingInt(endpoint -> endpoint.cableSide.ordinal())
+                    .thenComparingLong(endpoint -> endpoint.cablePos.asLong()));
                 Network network = new Network(List.copyOf(component), List.copyOf(endpoints), componentLimit);
                 networks.add(network);
                 component.forEach(pos -> byCable.put(pos, network));
@@ -150,7 +154,7 @@ public final class EnergyCableNetworkManager {
                 if (!(level.getBlockEntity(pos) instanceof EnergyCableMk2BlockEntity cable)) continue;
                 int stored = cable.legacyEnergy();
                 if (stored <= 0) continue;
-                int moved = route(network, pos, pos, null, stored, false, null);
+                int moved = route(network, pos, pos, stored, false, null);
                 if (moved > 0) cable.consumeLegacyEnergy(moved);
             }
         }
@@ -167,7 +171,7 @@ public final class EnergyCableNetworkManager {
                 if (storage == null || !storage.canExtract()) continue;
                 int offered = storage.extractEnergy(cable.maxTransfer(), true);
                 if (offered <= 0) continue;
-                route(network, source.cablePos, source.externalPos, source.cableSide, offered, false, source);
+                route(network, source.cablePos, source.externalPos, offered, false, source);
             }
         }
 
@@ -176,7 +180,7 @@ public final class EnergyCableNetworkManager {
             Network network = byCable.get(cablePos);
             if (network == null) return 0;
             BlockPos externalSource = ingress == null ? null : cablePos.relative(ingress);
-            int moved = route(network, cablePos, externalSource, ingress, amount, simulate, null);
+            int moved = route(network, cablePos, externalSource, amount, simulate, null);
             if (moved > 0 && !simulate && ingress != null) {
                 EnergyCableMk2BlockEntity cable = cable(cablePos);
                 if (cable != null) cable.markAutomaticInput(ingress);
@@ -184,47 +188,73 @@ public final class EnergyCableNetworkManager {
             return moved;
         }
 
-        private int route(Network network, BlockPos routeOrigin, @Nullable BlockPos sourcePos, @Nullable Direction ingress,
+        private int route(Network network, BlockPos routeOrigin, @Nullable BlockPos sourcePos,
                           int offered, boolean simulate, @Nullable Endpoint source) {
-            List<Endpoint> orderedEndpoints = network.endpointsFrom(routeOrigin);
-            int count = orderedEndpoints.size();
-            if (count == 0) return 0;
-            int start = Math.floorMod(network.sinkCursor, count);
-            for (int offset = 0; offset < count; offset++) {
-                Endpoint sink = orderedEndpoints.get((start + offset) % count);
+            EnergyCableMk2BlockEntity origin = cable(routeOrigin);
+            if (origin == null) return 0;
+            int budget = Math.min(offered, Math.min(origin.maxTransfer(), network.transferLimit));
+            IEnergyStorage sourceStorage = source == null ? null : energyAt(source.externalPos, source.externalSide());
+            if (source != null && (sourceStorage == null || !sourceStorage.canExtract())) return 0;
+            if (sourceStorage != null) budget = Math.min(budget, sourceStorage.extractEnergy(budget, true));
+            if (budget <= 0) return 0;
+
+            List<Endpoint> sinks = new ArrayList<>();
+            List<IEnergyStorage> targets = new ArrayList<>();
+            List<Integer> capacities = new ArrayList<>();
+            Set<BlockPos> machines = new HashSet<>();
+            for (Endpoint sink : network.endpoints) {
                 if (sink.externalPos.equals(sourcePos)) continue;
+                if (machines.contains(sink.externalPos)) continue;
                 EnergyCableMk2BlockEntity sinkCable = cable(sink.cablePos);
                 if (sinkCable == null || !sinkCable.canPushTo(sink.cableSide)) continue;
                 IEnergyStorage target = energyAt(sink.externalPos, sink.externalSide());
                 if (target == null || !target.canReceive()) continue;
-                int limit = Math.min(Math.min(offered, sinkCable.maxTransfer()), network.transferLimit);
-                if (source != null) {
-                    EnergyCableMk2BlockEntity sourceCable = cable(source.cablePos);
-                    if (sourceCable == null) continue;
-                    limit = Math.min(limit, sourceCable.maxTransfer());
-                }
-                int accepted = target.receiveEnergy(limit, true);
+                int accepted = target.receiveEnergy(Math.min(budget, sinkCable.maxTransfer()), true);
                 if (accepted <= 0) continue;
-                if (simulate) return accepted;
-
-                int moved = accepted;
-                if (source != null) {
-                    IEnergyStorage sourceStorage = energyAt(source.externalPos, source.externalSide());
-                    if (sourceStorage == null || !sourceStorage.canExtract()) continue;
-                    moved = sourceStorage.extractEnergy(accepted, false);
-                    if (moved <= 0) continue;
-                }
-                moved = target.receiveEnergy(moved, false);
-                if (moved <= 0) continue;
-                network.sinkCursor = (start + offset + 1) % count;
-                if (source != null) {
-                    EnergyCableMk2BlockEntity sourceCable = cable(source.cablePos);
-                    if (sourceCable != null) sourceCable.markAutomaticInput(source.cableSide);
-                }
-                sinkCable.markAutomaticOutput(sink.cableSide);
-                return moved;
+                machines.add(sink.externalPos);
+                sinks.add(sink);
+                targets.add(target);
+                capacities.add(accepted);
             }
-            return 0;
+            int count = sinks.size();
+            if (count == 0) return 0;
+            int start = Math.floorMod(network.sinkCursor, count);
+            int[] shares = new int[count];
+            int remaining = budget;
+            int active = count;
+            while (remaining > 0 && active > 0) {
+                int share = Math.max(1, remaining / active);
+                for (int offset = 0; offset < count && remaining > 0; offset++) {
+                    int index = (start + offset) % count;
+                    int capacity = capacities.get(index) - shares[index];
+                    if (capacity <= 0) continue;
+                    int allocation = Math.min(remaining, Math.min(share, capacity));
+                    shares[index] += allocation;
+                    remaining -= allocation;
+                    if (allocation == capacity) active--;
+                }
+            }
+            if (simulate) return budget - remaining;
+
+            int total = 0;
+            for (int offset = 0; offset < count; offset++) {
+                int index = (start + offset) % count;
+                int amount = shares[index];
+                if (amount <= 0) continue;
+                if (sourceStorage != null) amount = sourceStorage.extractEnergy(amount, false);
+                int moved = targets.get(index).receiveEnergy(amount, false);
+                if (moved > 0) {
+                    Endpoint sink = sinks.get(index);
+                    EnergyCableMk2BlockEntity sinkCable = cable(sink.cablePos);
+                    if (sinkCable != null) sinkCable.markAutomaticOutput(sink.cableSide);
+                    total += moved;
+                }
+            }
+            if (total > 0) {
+                network.sinkCursor = (start + 1) % count;
+                if (source != null) origin.markAutomaticInput(source.cableSide);
+            }
+            return total;
         }
 
         private @Nullable EnergyCableMk2BlockEntity cable(BlockPos pos) {
@@ -248,7 +278,6 @@ public final class EnergyCableNetworkManager {
         private final List<BlockPos> cables;
         private final List<Endpoint> endpoints;
         private final int transferLimit;
-        private final Map<BlockPos, List<Endpoint>> endpointsByOrigin;
         private int sourceCursor;
         private int sinkCursor;
 
@@ -256,19 +285,6 @@ public final class EnergyCableNetworkManager {
             this.cables = cables;
             this.endpoints = endpoints;
             this.transferLimit = transferLimit;
-            this.endpointsByOrigin = new HashMap<>();
-            for (BlockPos origin : cables) {
-                List<Endpoint> ordered = new ArrayList<>(endpoints);
-                ordered.sort(java.util.Comparator
-                    .comparingInt((Endpoint endpoint) -> endpoint.cablePos.distManhattan(origin))
-                    .thenComparingLong(endpoint -> endpoint.externalPos.asLong())
-                    .thenComparingInt(endpoint -> endpoint.cableSide.ordinal()));
-                endpointsByOrigin.put(origin, List.copyOf(ordered));
-            }
-        }
-
-        private List<Endpoint> endpointsFrom(BlockPos origin) {
-            return endpointsByOrigin.getOrDefault(origin, endpoints);
         }
     }
 

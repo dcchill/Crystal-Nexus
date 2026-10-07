@@ -116,6 +116,8 @@ public class OreProcessorBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 0 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 3)
 			return false;
 		if (index == 4)

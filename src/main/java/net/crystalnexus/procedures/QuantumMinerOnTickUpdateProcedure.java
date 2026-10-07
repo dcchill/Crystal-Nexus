@@ -47,10 +47,20 @@ public class QuantumMinerOnTickUpdateProcedure {
 	};
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return "";
+        ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9);
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(upgrade);
+        String result = "";
+        for (int step = 0; step < steps; step++) result = executeStep(world, x, y, z);
+        return result;
+    }
+
+    private static String executeStep(LevelAccessor world, double x, double y, double z) {
 		int outputAmount = 1;
 		int cookTime;
 		ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 9).copy();
-		int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_CYCLE);
+
+        int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_CYCLE);
 		if (energyCost > getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
 			{
 				int _value = 1;
@@ -101,7 +111,7 @@ public class QuantumMinerOnTickUpdateProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_entityStorage != null)
-						_entityStorage.extractEnergy(energyCost, false);
+						net.crystalnexus.assembly.AssemblyLineMachine.consumeAssignedEnergy(_entityStorage, energyCost);
 				}
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);

@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:ferrosteel_circuit_press",
+  "item_input_1": { "item": "crystalnexus:parallelization_chip" },
+  "item_input_2": { "item": "crystalnexus:zero_point_core" },
+  "fluid_input_1": { "fluid": "crystalnexus:temporal_essence", "amount": 500 },
+  "item_output": {
+    "id": "crystalnexus:zero_chip",
+    "count": 1
+  }
+}

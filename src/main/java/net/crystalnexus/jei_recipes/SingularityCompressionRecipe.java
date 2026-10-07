@@ -2,7 +2,6 @@ package net.crystalnexus.jei_recipes;
 
 import net.minecraft.world.level.Level;
 import net.crystalnexus.item.GeneratedSingularityItem;
-import net.crystalnexus.item.ResourceCometItem;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -24,13 +23,24 @@ import com.mojang.serialization.Codec;
 
 public class SingularityCompressionRecipe implements CrystalNexusRecipe {
 	public static ItemStack resultFor(Level level, ItemStack material) {
-		if (!ResourceCometItem.isMaterial(material)) return ItemStack.EMPTY;
+		if (material.isEmpty() || !material.is(net.minecraft.tags.ItemTags.create(net.minecraft.resources.ResourceLocation.parse("crystalnexus:singularity_materials")))
+            || !ItemStack.isSameItemSameComponents(material, material.getItem().getDefaultInstance())) return ItemStack.EMPTY;
 		return level.getRecipeManager().getAllRecipesFor(Type.INSTANCE).stream()
 			.map(holder -> holder.value())
-			.filter(recipe -> recipe.getInputCount(0) == GeneratedSingularityItem.COST
-				&& !recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(material))
+			.filter(recipe -> !recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(material))
 			.map(recipe -> recipe.getResultItem(level.registryAccess()))
 			.findFirst().orElseGet(() -> GeneratedSingularityItem.create(material));
+	}
+
+	public static int materialValue(ItemStack material) {
+		return 1;
+	}
+
+	public static ItemStack compressionMaterial(ItemStack material) {
+		if (material.is(Items.IRON_INGOT)) return new ItemStack(Items.RAW_IRON);
+		if (material.is(Items.GOLD_INGOT)) return new ItemStack(Items.RAW_GOLD);
+		if (material.is(Items.COPPER_INGOT)) return new ItemStack(Items.RAW_COPPER);
+		return material;
 	}
 	private final ItemStack output;
 	private final NonNullList<Ingredient> recipeItems;

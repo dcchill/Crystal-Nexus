@@ -4,7 +4,7 @@
   "pattern": ["h", "m", "h"],
   "key": {
     "h": { "item": "crystalnexus:synthetic_rubber" },
-    "m": { "item": "crystalnexus:dark_matter" }
+    "m": { "item": "crystalnexus:meteorite_sheet" }
   },
-  "result": { "id": "crystalnexus:hyper_energy_cable", "count": 8 }
+  "result": { "id": "crystalnexus:hyper_energy_cable", "count": 16 }
 }

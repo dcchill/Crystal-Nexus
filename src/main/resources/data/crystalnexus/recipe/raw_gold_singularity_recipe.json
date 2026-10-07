@@ -2,7 +2,7 @@
   "type": "crystalnexus:singularity_compression",
   "ingredients": [
     {
-      "item": "minecraft:gold_ingot"
+      "item": "minecraft:raw_gold"
     }
   ],
   "integers": [

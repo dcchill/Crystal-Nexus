@@ -111,6 +111,8 @@ public class ItemCollectorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 1 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 1)
 			return net.crystalnexus.util.MachineUpgradeHelper.isStackableUpgrade(stack);
 		if (index == 2)

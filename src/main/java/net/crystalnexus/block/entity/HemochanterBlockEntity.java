@@ -46,7 +46,7 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
         @Override public void set(int index, int value) { if (index == 0) progress = value; else operationTicks = value; }
         @Override public int getCount() { return 2; }
     };
-    private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0) { @Override public int receiveEnergy(int amount, boolean simulate) { int received = super.receiveEnergy(amount, simulate); if (received > 0 && !simulate) sync(); return received; } };
+    private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, net.crystalnexus.config.CrystalnexusConfig.machineEnergyInput(ENERGY_CAPACITY), 0) { @Override public int receiveEnergy(int amount, boolean simulate) { int received = super.receiveEnergy(amount, simulate); if (received > 0 && !simulate) sync(); return received; } };
     private final FluidTank bloodTank = new FluidTank(BLOOD_TANK_CAPACITY, fluid -> fluid.getFluid() == net.crystalnexus.init.CrystalnexusModFluids.BLOOD.get()) { @Override protected void onContentsChanged() { sync(); } };
 
     public HemochanterBlockEntity(BlockPos pos, BlockState state) { super(CrystalnexusModBlockEntities.HEMOCHANTER.get(), pos, state); book = new EnchantingTableBlockEntity(pos, Blocks.ENCHANTING_TABLE.defaultBlockState()); }

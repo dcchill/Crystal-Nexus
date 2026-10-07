@@ -123,8 +123,11 @@ public class EnergyExtractorBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 1 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		if (index == 1)
-			return stack.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+			return net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                    || stack.is(net.crystalnexus.init.CrystalnexusModItems.ACCELERATION_UPGRADE.get())
 					|| stack.is(net.crystalnexus.init.CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get());
 		if (index == 2)
 			return false;

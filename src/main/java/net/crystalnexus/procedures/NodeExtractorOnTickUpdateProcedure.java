@@ -30,6 +30,13 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 
 public class NodeExtractorOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
+        ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0);
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(upgrade);
+        for (int step = 0; step < steps; step++) executeStep(world, x, y, z);
+    }
+
+    private static void executeStep(LevelAccessor world, double x, double y, double z) {
 		String item = "";
 		double outputAmount = 0;
 		double cookTime = 0;
@@ -71,15 +78,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
 			cookTime = cookTime * _cn_cookMult;
 		}
-		double MACHINE_MAX_OUTPUT = 4000; 
-		if (outputAmount > MACHINE_MAX_OUTPUT)
-			outputAmount = MACHINE_MAX_OUTPUT;
-		double _cn_currentCount = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount();
-		double _cn_spaceLeft = 64 - _cn_currentCount; 
-		if (outputAmount > _cn_spaceLeft)
-			outputAmount = _cn_spaceLeft;
-		if (outputAmount < 0)
-			outputAmount = 0;
+		outputAmount = 100;
 		if (cookTime < 1)
 			cookTime = 1;
 		if (!world.isClientSide()) {
@@ -92,7 +91,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
 		slotnumbercheck = 0;
-		if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.OIL_NODE.get() && MachineUpgradeHelper.energyCost(_cn_upg, 1024) <= extractEnergySimulate(world, BlockPos.containing(x, y, z), MachineUpgradeHelper.energyCost(_cn_upg, 1024), null)) {
+		if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.OIL_NODE.get() && MachineUpgradeHelper.energyCost(_cn_upg, 2048) <= extractEnergySimulate(world, BlockPos.containing(x, y, z), MachineUpgradeHelper.energyCost(_cn_upg, 2048), null)) {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
@@ -107,11 +106,11 @@ public class NodeExtractorOnTickUpdateProcedure {
 					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) > getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
+				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) >= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
 					if (world instanceof ILevelExtension _ext) {
 						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_fluidHandler != null)
-							_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRUDE_OIL.get(), 100), IFluidHandler.FluidAction.EXECUTE);
+							_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRUDE_OIL.get(), (int) outputAmount), IFluidHandler.FluidAction.EXECUTE);
 					}
 					if (world instanceof ILevelExtension _ext) {
 						IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
@@ -129,7 +128,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 						_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 				}
 			}
-		} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.LAVA_NODE.get() && MachineUpgradeHelper.energyCost(_cn_upg, 1024) <= extractEnergySimulate(world, BlockPos.containing(x, y, z), MachineUpgradeHelper.energyCost(_cn_upg, 1024), null)) {
+		} else if ((world.getBlockState(BlockPos.containing(x, y - 1, z))).getBlock() == CrystalnexusModBlocks.LAVA_NODE.get() && MachineUpgradeHelper.energyCost(_cn_upg, 2048) <= extractEnergySimulate(world, BlockPos.containing(x, y, z), MachineUpgradeHelper.energyCost(_cn_upg, 2048), null)) {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 				if (!world.isClientSide()) {
 					BlockPos _bp = BlockPos.containing(x, y, z);
@@ -144,7 +143,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 					_level.sendParticles(ParticleTypes.DUST_PLUME, (x + 0.5), (y + 0.5), (z + 0.5), 1, 0.25, 0, 0.25, 0);
 			}
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) > getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
+				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) >= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
 					if (world instanceof ILevelExtension _ext) {
 						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 						if (_fluidHandler != null)
@@ -168,7 +167,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_entityStorage != null)
-						_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 1024), false);
+						_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 2048), false);
 				}
 			}
 		}

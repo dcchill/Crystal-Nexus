@@ -30,8 +30,25 @@ public final class MachineUpgradeHelper {
         return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
     }
 
+    public static int upgradeStackLimit(ItemStack stack) {
+        if (isZeroChip(stack) || stack.is(CrystalnexusModItems.RARE_SSD.get())
+                || stack.is(CrystalnexusModItems.EPIC_SSD.get())
+                || stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get())
+                || stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get())) return 1;
+        if (isParallelizationChip(stack)) return 4;
+        return isStackableUpgrade(stack) ? 16 : stack.getMaxStackSize();
+    }
+
+    public static int upgradeSlots(BlockState state) {
+        if (state.getBlock() instanceof net.crystalnexus.block.MegaChemicalReactionChamberBlock
+                || state.getBlock() instanceof net.crystalnexus.block.CryogenicFlashFreezerHatchBlock) return 3;
+        if (state.getBlock() instanceof net.crystalnexus.block.MatterTransmutationTableBlock
+                || state.getBlock() instanceof net.crystalnexus.block.ParticleAcceleratorControllerBlock) return 4;
+        return MachineTier.from(state).upgradeSlots();
+    }
+
     public static boolean acceptsUpgrade(BlockState state, int ordinal, ItemStack stack) {
-        return ordinal < MachineTier.from(state).upgradeSlots()
+        return ordinal >= 0 && ordinal < upgradeSlots(state)
             && isMachineUpgrade(stack);
     }
 
@@ -39,10 +56,15 @@ public final class MachineUpgradeHelper {
     public static List<ItemStack> upgrades(BlockEntity machine, int firstSlot, int extraStart) {
         List<ItemStack> upgrades = new ArrayList<>();
         if (machine instanceof Container inventory) {
-            int count = MachineTier.from(machine.getBlockState()).upgradeSlots();
+            int count = upgradeSlots(machine.getBlockState());
             for (int i = 0; i < count; i++) {
                 int slot = i == 0 ? firstSlot : extraStart + i - 1;
-                if (slot < inventory.getContainerSize()) upgrades.add(inventory.getItem(slot));
+                if (slot < inventory.getContainerSize()) {
+                    ItemStack upgrade = inventory.getItem(slot);
+                    if (isZeroChip(upgrade) && (machine.getBlockState().getBlock() instanceof net.crystalnexus.block.MatterTransmutationTableBlock
+                            || machine.getBlockState().getBlock() instanceof net.crystalnexus.block.CraftingFactoryBlock)) continue;
+                    upgrades.add(upgrade);
+                }
             }
         }
         return upgrades;
@@ -70,9 +92,27 @@ public final class MachineUpgradeHelper {
     }
 
     public static int parallelCraftCount(List<ItemStack> upgrades) {
-        int count = 0;
-        for (ItemStack upgrade : upgrades) if (isParallelizationChip(upgrade)) count += 2 * upgrade.getCount();
-        return Math.max(1, count);
+        long additive = 0, multiplier = 1;
+        for (ItemStack upgrade : upgrades) {
+            if (isParallelizationChip(upgrade)) additive = Math.min(Integer.MAX_VALUE, additive + 2L * upgrade.getCount());
+            if (isZeroChip(upgrade)) multiplier = Math.min(Integer.MAX_VALUE, multiplier * 2);
+        }
+        return (int) Math.min(Integer.MAX_VALUE, Math.max(1, additive) * multiplier);
+    }
+
+    public static int parallelEnergyCapacity(BlockState state, int configuredCapacity, int energyPerCraft) {
+        int slots = upgradeSlots(state);
+        // Four parallel chips give eight crafts; each remaining Zero Chip doubles the batch.
+        int maxCrafts = slots == 0 ? 1 : 8 << (slots - 1);
+        return (int) Math.min(Integer.MAX_VALUE, Math.max((long) configuredCapacity, (long) energyPerCraft * maxCrafts));
+    }
+
+    public static boolean isZeroChip(ItemStack stack) {
+        return stack.is(CrystalnexusModItems.ZERO_CHIP.get());
+    }
+
+    public static boolean isOutputUpgrade(ItemStack stack) {
+        return isParallelizationChip(stack) || isZeroChip(stack);
     }
 
     public static void processParallel(BlockEntity machine, int crafts, java.util.function.BooleanSupplier cycle) {
@@ -89,7 +129,7 @@ public final class MachineUpgradeHelper {
     }
 
 	public static boolean isStackableUpgrade(ItemStack stack) {
-		return stack.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+		return isZeroChip(stack) || stack.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())
 				|| stack.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())
 				|| stack.is(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get())
 				|| stack.is(CrystalnexusModItems.CARBON_FE_EFFICIENCY_UPGRADE.get())
@@ -102,8 +142,7 @@ public final class MachineUpgradeHelper {
 	}
 
 	public static int parallelCraftCount(ItemStack upgrade) {
-		return isParallelizationChip(upgrade)
-				? 2 * upgrade.getCount() : 1;
+		return parallelCraftCount(List.of(upgrade));
 	}
 
 	public static double stackWeight(ItemStack upgrade) {

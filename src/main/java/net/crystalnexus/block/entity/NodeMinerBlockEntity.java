@@ -114,6 +114,8 @@ public class NodeMinerBlockEntity extends RandomizableContainerBlockEntity imple
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 3 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
 		return true;
 	}
 

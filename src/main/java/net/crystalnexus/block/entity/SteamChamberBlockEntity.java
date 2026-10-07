@@ -106,6 +106,7 @@ public class SteamChamberBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if (index == 3 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack) && !getItem(index).isEmpty()) return false;
 		return true;
 	}
 

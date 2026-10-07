@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RangeUpgradeItem extends Item {
 	public RangeUpgradeItem() {
-		super(new Item.Properties().stacksTo(16));
+		super(new Item.Properties().stacksTo(64));
 	}
 
 	@Override

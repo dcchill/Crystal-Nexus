@@ -117,6 +117,9 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 			}
 		}));
 		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 4;
 			private int x = ChemicalReactionChamberGUIMenu.this.x;
 			private int y = ChemicalReactionChamberGUIMenu.this.y;

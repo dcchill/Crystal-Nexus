@@ -30,8 +30,12 @@ public class EnergyCableMk2BlockEntity extends BlockEntity implements WorldlyCon
 
     protected EnergyCableMk2BlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state,
                                         CrystalnexusConfig.EnergyValues values) {
+        this(type, pos, state, Math.min(values.maxReceive(), values.maxExtract()));
+    }
+
+    protected EnergyCableMk2BlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int maxTransfer) {
         super(type, pos, state);
-        maxTransfer = Math.min(values.maxReceive(), values.maxExtract());
+        this.maxTransfer = maxTransfer;
     }
 
     public IEnergyStorage getEnergyStorage() {

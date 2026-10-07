@@ -115,13 +115,16 @@ public class FluidPackagerGUIMenu extends AbstractContainerMenu implements Cryst
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 2;
 			private int x = FluidPackagerGUIMenu.this.x;
 			private int y = FluidPackagerGUIMenu.this.y;
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
+				return !net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack) && stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
 			}
 		}));
 		for (int si = 0; si < 3; ++si)

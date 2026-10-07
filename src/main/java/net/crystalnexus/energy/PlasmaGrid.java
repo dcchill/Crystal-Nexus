@@ -3,14 +3,18 @@ package net.crystalnexus.energy;
 /** Deterministic component interactions with eight-neighbor heatsinks; plasma is never stored. */
 public final class PlasmaGrid {
     public static final int ROWS = 5, COLUMNS = 9, SIZE = ROWS * COLUMNS;
-    public static final int EMPTY = 0, INJECTOR = 1, HEATSINK = 2, COIL = 3;
+    public static final int EMPTY = 0, INJECTOR = 1, HEATSINK = 2, COIL = 3, HIGH_FLOW_INJECTOR = 4;
     public static final int BASE_THROUGHPUT = 9, INJECTOR_BOOST = 3, COIL_BACKPRESSURE = 1;
-    public static final int HEATSINK_COOLING = 12, COIL_CAPACITY = 8, FE_PER_PLASMA = 80_000;
+    public static final int HEATSINK_COOLING = 12, COIL_CAPACITY = 16, FE_PER_PLASMA = 80_000;
     public static final int HEATSINK_INTERFERENCE_PERCENT = 20;
     public static final double PASSIVE_COOLING = 1, PASSIVE_COOLING_FRACTION = 0.01;
     public static final double HEAT_PER_FE = 0.0001, HEAT_LIMIT = 10_000;
 
     private PlasmaGrid() {}
+
+    public static boolean isInjector(int component) {
+        return component == INJECTOR || component == HIGH_FLOW_INJECTOR;
+    }
 
     public record Cell(int component, double throughput, double heatGenerated, double cooling,
                        double plasmaReceived, double plasmaProcessed, double efficiency,
@@ -40,7 +44,8 @@ public final class PlasmaGrid {
 
     private static int count(int[] grid, int[] neighbors, int component) {
         int count = 0;
-        for (int neighbor : neighbors) if (grid[neighbor] == component) count++;
+        for (int neighbor : neighbors)
+            if (component == INJECTOR ? isInjector(grid[neighbor]) : grid[neighbor] == component) count++;
         return count;
     }
 
@@ -51,11 +56,12 @@ public final class PlasmaGrid {
         double[] extractionWeight = new double[SIZE], injectorCoils = new double[SIZE];
         double argon = 0;
         for (int slot = 0; slot < SIZE; slot++) {
-            if (grid[slot] < EMPTY || grid[slot] > COIL) throw new IllegalArgumentException("Invalid component");
+            if (grid[slot] < EMPTY || grid[slot] > HIGH_FLOW_INJECTOR) throw new IllegalArgumentException("Invalid component");
             int[] neighbors = affectedSlots(slot, grid[slot]);
-            if (grid[slot] == INJECTOR) {
+            if (isInjector(grid[slot])) {
                 int injectors = count(grid, neighbors, INJECTOR), coils = count(grid, neighbors, COIL);
                 throughput[slot] = (BASE_THROUGHPUT + INJECTOR_BOOST * injectors - COIL_BACKPRESSURE * coils) / 2.0;
+                if (grid[slot] == HIGH_FLOW_INJECTOR) throughput[slot] *= 2;
                 injectorCoils[slot] = coils;
                 argon += throughput[slot];
                 heat[slot] = throughput[slot] * (1 + injectors);
@@ -65,9 +71,8 @@ public final class PlasmaGrid {
                     extractionWeight[neighbor] += share * coils;
                 }
             } else if (grid[slot] == HEATSINK) {
-                int injectors = count(grid, neighbors, INJECTOR);
                 for (int neighbor : neighbors)
-                    if (grid[neighbor] == INJECTOR) cooling[neighbor] += HEATSINK_COOLING;
+                    if (isInjector(grid[neighbor])) cooling[neighbor] += HEATSINK_COOLING;
             }
         }
         var cells = new java.util.ArrayList<Cell>(SIZE);
@@ -80,7 +85,7 @@ public final class PlasmaGrid {
             output += processed * extractionMultiplier * efficiency * FE_PER_PLASMA;
             if (grid[slot] == COIL && incoming[slot] > 0) {
                 double processedFraction = processed / incoming[slot];
-                for (int neighbor : neighbors(slot)) if (grid[neighbor] == INJECTOR) {
+                for (int neighbor : neighbors(slot)) if (isInjector(grid[neighbor])) {
                     heat[neighbor] += throughput[neighbor] * processedFraction * efficiency * FE_PER_PLASMA * HEAT_PER_FE;
                 }
             }

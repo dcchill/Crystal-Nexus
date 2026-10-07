@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReactorUpgradePermafrostItem extends Item {
 	public ReactorUpgradePermafrostItem() {
-		super(new Item.Properties().stacksTo(1));
+		super(new Item.Properties().stacksTo(64));
 	}
 
 	@Override

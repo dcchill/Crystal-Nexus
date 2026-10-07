@@ -46,7 +46,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         public FluidStack drain(FluidStack stack, FluidAction action) { return fluidBuffer.drain(stack, action); }
         public FluidStack drain(int amount, FluidAction action) { return fluidBuffer.drain(amount, action); }
     };
-    public final EnergyStorage energy = new EnergyStorage(16_000_000, 1_000_000, 1_000_000) {
+    public final EnergyStorage energy = new EnergyStorage(16_000_000, net.crystalnexus.config.CrystalnexusConfig.machineEnergyInput(1_000_000), 1_000_000) {
         @Override public int receiveEnergy(int amount, boolean simulate) { int n = super.receiveEnergy(amount, simulate); if (!simulate && n > 0) setChanged(); return n; }
         @Override public int extractEnergy(int amount, boolean simulate) { int n = super.extractEnergy(amount, simulate); if (!simulate && n > 0) setChanged(); return n; }
     };

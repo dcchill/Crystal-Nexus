@@ -41,7 +41,7 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
         @Override public void set(int index, int value) { if (index == 0) progress = value; }
         @Override public int getCount() { return 2; }
     };
-    private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, ENERGY_CAPACITY, 0) {
+    private final EnergyStorage energy = new EnergyStorage(ENERGY_CAPACITY, net.crystalnexus.config.CrystalnexusConfig.machineEnergyInput(ENERGY_CAPACITY), 0) {
         @Override public int receiveEnergy(int amount, boolean simulate) {
             int received = super.receiveEnergy(amount, simulate);
             if (received > 0 && !simulate) sync();
@@ -78,8 +78,9 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
         ItemStack input = blockEntity.getItem(0);
         HemolyzerRecipe recipe = level.getRecipeManager().getAllRecipesFor(HemolyzerRecipe.Type.INSTANCE).stream()
             .map(holder -> holder.value()).filter(candidate -> candidate.matches(input)).findFirst().orElse(null);
-        int yield = recipe == null ? 0 : recipe.blood().amount();
-        boolean hasRoom = yield > 0 && blockEntity.bloodTank.fill(recipe.blood().stack(), IFluidHandler.FluidAction.SIMULATE) == yield;
+        FluidStack result = recipe == null ? FluidStack.EMPTY : (recipe.blood().stack()).copy();
+        int yield = result.getAmount();
+        boolean hasRoom = yield > 0 && blockEntity.bloodTank.fill(result, IFluidHandler.FluidAction.SIMULATE) == yield;
         boolean processing = hasRoom && (blockEntity.progress > 0 || blockEntity.energy.getEnergyStored() >= FE_PER_ITEM);
         if (state.getValue(HemolyzerBlock.LIT) != processing) level.setBlock(pos, state.setValue(HemolyzerBlock.LIT, processing), 3);
         if (!processing) {
@@ -88,7 +89,7 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
         }
         if (blockEntity.progress == 0) blockEntity.energy.extractEnergy(FE_PER_ITEM, false);
         if (++blockEntity.progress >= PROCESSING_TICKS) {
-            blockEntity.bloodTank.fill(recipe.blood().stack(), IFluidHandler.FluidAction.EXECUTE);
+            blockEntity.bloodTank.fill(result, IFluidHandler.FluidAction.EXECUTE);
             input.shrink(1);
             blockEntity.progress = 0;
         }
@@ -118,7 +119,9 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
     @Override public int getContainerSize() { return stacks.size(); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == 1 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : level != null && slot == 0 && accepts(level, stack); }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 1 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false; return slot == 1 ? net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack) : level != null && slot == 0 && accepts(level, stack); }
     @Override public int[] getSlotsForFace(Direction side) { return new int[] { 0, 1 }; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return false; }

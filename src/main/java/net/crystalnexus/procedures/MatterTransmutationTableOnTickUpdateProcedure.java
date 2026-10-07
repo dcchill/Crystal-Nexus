@@ -30,8 +30,7 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
 
 	public static String execute(LevelAccessor world, double x, double y, double z) {
         BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
-        int steps = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 9
-                ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(9)) : 1;
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 9, 10));
 		String result = "";
         // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
         for (int step = 0; step < steps; step++) result = executeSingle(world, x, y, z);
@@ -41,8 +40,11 @@ public class MatterTransmutationTableOnTickUpdateProcedure {
     private static String executeSingle(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
-		final int cookTime = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.ticksPerCraft();
-		final int energyCost = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.energyPerCraft();
+		var upgrades = net.crystalnexus.util.MachineUpgradeHelper.upgrades(world.getBlockEntity(pos), 9, 10);
+        int baseTime = CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.ticksPerCraft();
+        final int cookTime = (int) Math.ceil(net.crystalnexus.util.MachineUpgradeHelper.cookTime(upgrades,
+            net.crystalnexus.util.MachineUpgradeHelper.processingTime(upgrades, baseTime, baseTime * .75, baseTime * .5)));
+		final int energyCost = net.crystalnexus.util.MachineUpgradeHelper.energyCost(upgrades, CrystalnexusConfig.MACHINES.MATTER_TRANSMUTATION_PROCESS.energyPerCraft());
 		final int inputSlots = 8;
 		final int outputSlot = 8;
 

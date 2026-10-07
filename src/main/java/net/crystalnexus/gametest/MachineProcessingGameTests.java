@@ -111,7 +111,7 @@ public final class MachineProcessingGameTests {
         fill(smelter.getEnergyStorage());
         smelter.setItem(0, new ItemStack(Items.RAW_IRON, 2));
         for (int i = 0; i < 31; i++) tick(smelter);
-        smelter.setItem(1, new ItemStack(Items.IRON_INGOT, 64));
+        smelter.setItem(1, new ItemStack(Items.IRON_INGOT, smelter.getMaxStackSize()));
         int energy = smelter.getEnergyStorage().getEnergyStored();
         for (int i = 0; i < 100; i++) tick(smelter);
         helper.assertTrue(smelter.getPersistentData().getDouble("progress") == 30

@@ -34,9 +34,9 @@ public final class MachineUpgradeStackGameTests {
                 CrystalnexusModItems.ACCELERATION_UPGRADE.get(), CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get(),
                 CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get(), CrystalnexusModItems.CARBON_FE_EFFICIENCY_UPGRADE.get(),
                 CrystalnexusModItems.RANGE_UPGRADE.get(), CrystalnexusModItems.CARBON_RANGE_UPGRADE.get() })
-            helper.assertTrue(new ItemStack(item).getMaxStackSize() == 16, "Machine upgrade must stack to 16: " + item);
-        helper.assertTrue(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get()).getMaxStackSize() == 4,
-                "Parallelization chips must stack to 4");
+            helper.assertTrue(new ItemStack(item).getMaxStackSize() == 64, "Machine upgrade inventory stack must hold 64: " + item);
+        helper.assertTrue(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get()).getMaxStackSize() == 64,
+                "Parallelization chip inventory stacks must hold 64");
         helper.assertTrue(MachineUpgradeHelper.parallelCraftCount(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get())) == 2
                 && MachineUpgradeHelper.parallelCraftCount(new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get(), 4)) == 8,
                 "Each parallelization chip must add two crafts");
@@ -72,7 +72,7 @@ public final class MachineUpgradeStackGameTests {
 
     @GameTest(template = "zero_point")
     public static void tierSlotsStackAndSurviveSaving(GameTestHelper helper) {
-        int[] slotCounts = {0, 1, 2, 3, 3, 4, 4, 5, 6};
+        int[] slotCounts = {0, 1, 2, 3, 3, 4, 4, 5, 5};
         for (int tier = 0; tier < slotCounts.length; tier++)
             helper.assertTrue(net.crystalnexus.processing.MachineTier.forLevel(tier).upgradeSlots() == slotCounts[tier],
                     "Incorrect upgrade slot count for tier " + tier);
@@ -81,36 +81,36 @@ public final class MachineUpgradeStackGameTests {
         CrystalCrusherBlockEntity crusher = helper.getBlockEntity(pos);
         InvWrapper automation = new InvWrapper(crusher);
         var speed = CrystalnexusModItems.ACCELERATION_UPGRADE.get();
-        for (int slot : new int[]{2, 3, 4, 5, 6, 7})
+        for (int slot : new int[]{2, 3, 4, 5, 6})
             helper.assertTrue(automation.insertItem(slot, new ItemStack(speed, 16), false).isEmpty(),
-                    "Hyper crusher must accept all six upgrade stacks");
+                    "Hyper crusher must accept all five upgrade stacks");
         var upgrades = MachineUpgradeHelper.upgrades(crusher, 2, 3);
         double oneSpeed = 100 / MachineUpgradeHelper.processingTime(new ItemStack(speed, 16), 100, 75, 50);
         helper.assertTrue(Math.abs(100 / MachineUpgradeHelper.processingTime(upgrades, 100, 75, 50)
-                - (1 + 6 * (oneSpeed - 1))) < 0.000001, "Acceleration bonuses must add across all slots");
+                - (1 + 5 * (oneSpeed - 1))) < 0.000001, "Acceleration bonuses must add across all slots");
         net.crystalnexus.procedures.CrystalCrusherOnTickUpdateProcedure.execute(helper.getLevel(),
                 crusher.getBlockPos().getX(), crusher.getBlockPos().getY(), crusher.getBlockPos().getZ());
         helper.assertTrue(crusher.getPersistentData().getDouble("maxProgress")
                 == net.crystalnexus.processing.MachineTier.HYPER.processingTime(
                     MachineUpgradeHelper.processingTime(upgrades, 100, 75, 50)),
                 "Machine processing must use all acceleration slots");
-        crusher.setItem(7, new ItemStack(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get(), 16));
+        crusher.setItem(6, new ItemStack(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get(), 16));
         helper.assertTrue(MachineUpgradeHelper.energyCost(MachineUpgradeHelper.upgrades(crusher, 2, 3), 4096) < 4096,
                 "Efficiency must work alongside acceleration");
         var saved = crusher.saveWithFullMetadata(helper.getLevel().registryAccess());
         var restored = new CrystalCrusherBlockEntity(crusher.getBlockPos(), crusher.getBlockState());
         restored.loadAdditional(saved, helper.getLevel().registryAccess());
-        for (int slot : new int[]{2, 3, 4, 5, 6, 7})
+        for (int slot : new int[]{2, 3, 4, 5, 6})
             helper.assertTrue(ItemStack.matches(crusher.getItem(slot), restored.getItem(slot)), "Upgrade stack must survive saving");
 
-        crusher.setItem(7, ItemStack.EMPTY);
+        crusher.setItem(6, ItemStack.EMPTY);
         ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
                 new GameProfile(UUID.randomUUID(), "tier-slots-test"), ClientInformation.createDefault());
         player.getInventory().setItem(9, new ItemStack(speed, 16));
         var menu = new CrusherGuiMenu(1, player.getInventory(),
                 new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(helper.absolutePos(pos)));
         menu.quickMoveStack(player, menu.slots.size() - 36);
-        helper.assertTrue(crusher.getItem(7).getCount() == 16 && crusher.getItem(0).isEmpty(),
+        helper.assertTrue(crusher.getItem(6).getCount() == 16 && crusher.getItem(0).isEmpty(),
                 "Shift-click must reach the last upgrade slot without entering the input");
         player.getInventory().setItem(9, new ItemStack(speed));
         menu.quickMoveStack(player, menu.slots.size() - 36);
@@ -274,8 +274,11 @@ public final class MachineUpgradeStackGameTests {
             var menu = machine.createMenu(1, player.getInventory(), player);
             helper.assertTrue(menu != null, "Machine must provide a menu");
             menu.quickMoveStack(player, menu.slots.size() - 36);
-            helper.assertTrue(machine.getItem(upgradeSlot).getCount() == 4 && player.getInventory().getItem(9).isEmpty(),
-                    "Shift-click must insert chips into specialized machine: " + block);
+            int installed = 0;
+            for (int i = machine.getContainerSize() - MachineUpgradeHelper.upgradeSlots(machine.getBlockState()); i < machine.getContainerSize(); i++)
+                installed += machine.getItem(i).getCount();
+            helper.assertTrue(installed == 4 && player.getInventory().getItem(9).isEmpty(),
+                    "Shift-click must insert chips into the available upgrade slots: " + block);
         }
         var compressor = (net.minecraft.world.Container) helper.getBlockEntity(new BlockPos(1, 1, 1));
         compressor.setItem(0, new ItemStack(net.minecraft.world.item.Items.IRON_INGOT, 32));

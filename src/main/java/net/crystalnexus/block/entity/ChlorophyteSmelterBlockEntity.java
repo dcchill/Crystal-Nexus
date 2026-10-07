@@ -13,7 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.ContainerHelper;
+import net.crystalnexus.util.MachineItemStorage;
+import net.crystalnexus.processing.MachineTier;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.FriendlyByteBuf;
@@ -55,7 +56,7 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 		super.loadAdditional(compound, lookupProvider);
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
+		MachineItemStorage.load(compound, this.stacks, lookupProvider, this);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
 	}
@@ -64,7 +65,7 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 	public void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.saveAdditional(compound, lookupProvider);
 		if (!this.trySaveLootTable(compound)) {
-			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
+			MachineItemStorage.save(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
 	}
@@ -98,9 +99,7 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 	}
 
 	@Override
-	public int getMaxStackSize() {
-		return 64;
-	}
+	public int getMaxStackSize() { return MachineTier.from(getBlockState()).itemSlotCapacity(); }
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory) {
@@ -124,6 +123,8 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if ((index == 2 || index >= 3) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
         if (index == 2 || index >= 3)
             return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 2 ? 0 : index - 3 + 1, stack);
 		if (index == 1)
@@ -151,7 +152,7 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 		return true;
 	}
 
-	private final EnergyStorage energyStorage = new EnergyStorage(CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.capacity(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxReceive(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract(), 0) {
+	private final EnergyStorage energyStorage = new EnergyStorage(net.crystalnexus.util.MachineUpgradeHelper.parallelEnergyCapacity(getBlockState(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.capacity(), Math.min(2048, CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract())), CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxReceive(), CrystalnexusConfig.MACHINES.CHLOROPHYTE_SMELTER.maxExtract(), 0) {
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate) {
 			int retval = super.receiveEnergy(maxReceive, simulate);
@@ -174,4 +175,14 @@ public class ChlorophyteSmelterBlockEntity extends RandomizableContainerBlockEnt
 	public EnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
+
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.capacity(this, stack); }
+
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        stacks.set(slot, stack);
+        setChanged();
+    }
+
 }

@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.WorldlyContainer;
-import net.minecraft.world.ContainerHelper;
+import net.crystalnexus.util.MachineItemStorage;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.FriendlyByteBuf;
@@ -65,7 +65,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 		super.loadAdditional(compound, lookupProvider);
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
+		MachineItemStorage.load(compound, this.stacks, lookupProvider, this);
 		if (compound.get("energyStorage") instanceof IntTag intTag)
 			energyStorage.deserializeNBT(lookupProvider, intTag);
 		if (compound.get("nitrogenTank") instanceof CompoundTag tank)
@@ -76,7 +76,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	public void saveAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.saveAdditional(compound, lookupProvider);
 		if (!this.trySaveLootTable(compound)) {
-			ContainerHelper.saveAllItems(compound, this.stacks, lookupProvider);
+			MachineItemStorage.save(compound, this.stacks, lookupProvider);
 		}
 		compound.put("energyStorage", energyStorage.serializeNBT(lookupProvider));
 		compound.put("nitrogenTank", nitrogenTank.writeToNBT(lookupProvider, new CompoundTag()));
@@ -111,9 +111,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 	}
 
 	@Override
-	public int getMaxStackSize() {
-		return 64;
-	}
+	public int getMaxStackSize() { return MachineTier.from(getBlockState()).itemSlotCapacity(); }
 
 	@Override
 	public AbstractContainerMenu createMenu(int id, Inventory inventory) {
@@ -137,6 +135,8 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
+        if ((index == 3 || index >= 4) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
         if (index == 3 || index >= 4)
             return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), index == 3 ? 0 : index - 4 + 1, stack);
 		if (index == 1)
@@ -201,4 +201,14 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
         if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);
         super.setRemoved();
     }
+
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.capacity(this, stack); }
+
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        stacks.set(slot, stack);
+        setChanged();
+    }
+
 }

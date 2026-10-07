@@ -55,6 +55,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
 		});
         Container safe = controller == null ? new SimpleContainer(3) : controller;
         addSlot(new Slot(safe, 1, 180, 8) {
+            @Override public int getMaxStackSize() { return 1; }
             @Override public boolean mayPlace(ItemStack stack) {
                 return stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get())
                     || stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());

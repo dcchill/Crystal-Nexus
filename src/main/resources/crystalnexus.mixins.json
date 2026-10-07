@@ -6,7 +6,9 @@
   "mixins": [
     "EnchantmentNameMixin",
     "ItemEnchantmentsCodecMixin",
-    "ItemEnchantmentsMutableMixin"
+    "ItemEnchantmentsMutableMixin",
+    "FlowingFluidMixin",
+    "BlockStateWaterProtectionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -93,7 +93,7 @@ public class ChemicalReactionChamberOnTickUpdateProcedure {
 		if (spaceLeft <= 0) {
 			return false;
 		}
-		if (addCount > spaceLeft) addCount = spaceLeft;
+		if (addCount > spaceLeft) return false;
 
 		outputAmount = addCount;
 

@@ -1,7 +1,6 @@
 package net.crystalnexus.procedures;
 
 import net.crystalnexus.item.GeneratedSingularityItem;
-import net.crystalnexus.item.ResourceCometItem;
 import net.crystalnexus.jei_recipes.SingularityCompressionRecipe;
 import net.crystalnexus.util.MachineAnimationHelper;
 import net.minecraft.core.BlockPos;
@@ -38,12 +37,17 @@ public class SingularityCompressorOnTickUpdateProcedure {
         data.putDouble("maxItem", GeneratedSingularityItem.COST);
         data.putDouble("maxProgress", TIME);
         ItemStack input = inventory.getStackInSlot(0);
-        if (data.getDouble("item") < GeneratedSingularityItem.COST && ResourceCometItem.isMaterial(input)
+        ItemStack material = SingularityCompressionRecipe.compressionMaterial(input);
+        if (data.getDouble("item") < GeneratedSingularityItem.COST && !SingularityCompressionRecipe.resultFor(level, input).isEmpty()
                 && MachineAnimationHelper.shouldIdle(level, pos, data.getDouble("progress"))) {
-            String id = BuiltInRegistries.ITEM.getKey(input.getItem()).toString();
+            String id = BuiltInRegistries.ITEM.getKey(material.getItem()).toString();
+            ResourceLocation previousId = ResourceLocation.tryParse(data.getString("setItem"));
+            if (previousId != null && BuiltInRegistries.ITEM.containsKey(previousId))
+                data.putString("setItem", BuiltInRegistries.ITEM.getKey(SingularityCompressionRecipe.compressionMaterial(
+                        BuiltInRegistries.ITEM.get(previousId).getDefaultInstance()).getItem()).toString());
             if (data.getDouble("item") == 0) data.putString("setItem", id);
             if (id.equals(data.getString("setItem"))) {
-                data.putDouble("item", data.getDouble("item") + 1);
+                data.putDouble("item", data.getDouble("item") + SingularityCompressionRecipe.materialValue(input));
                 ItemStack remaining = input.copy();
                 remaining.shrink(1);
                 inventory.setStackInSlot(0, remaining);
@@ -57,14 +61,15 @@ public class SingularityCompressorOnTickUpdateProcedure {
                 else {
                     ResourceLocation id = ResourceLocation.tryParse(data.getString("setItem"));
                     if (id != null && BuiltInRegistries.ITEM.containsKey(id)) {
-                        ItemStack material = BuiltInRegistries.ITEM.get(id).getDefaultInstance();
-                        ItemStack result = SingularityCompressionRecipe.resultFor(level, material);
-                        if (!result.isEmpty()) {
+                        ItemStack result = SingularityCompressionRecipe.resultFor(level,
+                                SingularityCompressionRecipe.compressionMaterial(BuiltInRegistries.ITEM.get(id).getDefaultInstance()));
+                        result = (result).copy();
+                        if (!result.isEmpty() && result.getCount() <= result.getMaxStackSize()) {
                             energy.extractEnergy(ENERGY, false);
                             inventory.setStackInSlot(1, result);
-                            data.putDouble("item", 0);
+                            data.putDouble("item", data.getDouble("item") - GeneratedSingularityItem.COST);
                             data.putDouble("progress", 0);
-                            data.remove("setItem");
+                            if (data.getDouble("item") == 0) data.remove("setItem");
                         }
                     }
                 }

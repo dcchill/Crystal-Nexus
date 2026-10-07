@@ -95,8 +95,9 @@ public class TooltipInfoHandler {
 
 	static {
         addTooltip("plasma_injector", "Consumes half the Argon of its original throughput and produces plasma for adjacent Coils.", "Adjacent Injectors boost throughput and heat; each adjacent Coil adds output heat and backpressure.");
+        addTooltip("high_flow_plasma_injector", "Consumes 2x the Argon and produces 2x the plasma and injection heat of a Plasma Injector.", "Shares Injector adjacency bonuses, Coil backpressure, and Heatsink cooling.", "Coil processing capacity still limits output and its associated heat.");
         addTooltip("ferrosteel_heatsink", "Provides up to 12 heat/t cooling to each Injector in all 8 neighboring slots.", "Cooling stacks from multiple Heatsinks.", "Reduces Induction Coil efficiency in all 8 neighboring slots by 20% (minimum 0%).");
-        addTooltip("induction_coil", "Processes up to 8 plasma/t from adjacent Injectors into FE.", "Each Coil adds an extraction multiplier and backpressure to adjacent Injectors.", "Adjacent Heatsinks reduce FE conversion efficiency.");
+        addTooltip("induction_coil", "Processes up to 16 plasma/t from adjacent Injectors into FE.", "Each Coil adds an extraction multiplier and backpressure to adjacent Injectors.", "Adjacent Heatsinks reduce FE conversion efficiency.");
 		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
 		addTooltip("meteor_sword", "Hold Shift + right-click to charge, then release when ready.", "Each second adds a charge level, up to 5; your next successful hit consumes it.", "Each level doubles damage and FE use, up to 32x.", "Base hit costs 500 FE; a full charge costs 16,000 FE.", "Grants +2 blocks of reach and a wide forward sweep.", "Supports standard sword enchantments, including Sweeping Edge.");
@@ -185,12 +186,13 @@ public class TooltipInfoHandler {
 				"Used to craft the Zero Point Block.");
 
 		addTooltip("basic_energy_cable",
-				"Basic energy transfer cable.",
-				"Transfers energy to machines.");
+                "Transfers up to 2,048 FE per transfer.");
 		addTooltip("energy_cable_mk_2",
-				"Advanced energy transfer cable.",
-				"Transfers energy with high throughput to machines.");
-
+                "Transfers up to 131,072 FE per transfer.");
+        addTooltip("hyper_energy_cable",
+                "Transfers up to 1,048,576 FE per transfer.");
+        addTooltip("zero_cable",
+				 "Transfers up to 2,147,483,647 FE per transfer.");
 
 		addTooltip("crystal_crusher",
 				"Crushes raw ores into dusts.");
@@ -517,31 +519,40 @@ public class TooltipInfoHandler {
 		addTooltip("acceleration_upgrade",
 				"Machine Acceleration Upgrade.",
 				"Increases processing speed.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
+		addTooltip("zero_chip", "Multiplies processing throughput, not recipe yields.",
+                "Multiplicative: one per slot gives 2x, 4x, 8x...",
+                "Multiplies the additive batch size from Parallelization Chips.",
+                "Each craft consumes its normal inputs and energy.",
+                "Limited by available inputs, energy, and output space.",
+                "Stacks to 64 in inventory; one per upgrade slot.",
+                "Unsupported: Crafting Factory, Matter Transmutation Table, Fluid Packager.");
 		addTooltip("parallelization_chip",
-				"Machine Parallelization Chip.",
-				"Runs two crafts per chip in recipe-processing machines.",
-				"Stack up to 4 in one slot.");
+                "Adds processing capacity; additive across chips and slots.",
+                "1 / 2 / 3 chips = 2 / 4 / 6 crafts per cycle.",
+                "Zero Chips multiply this additive batch size.",
+                "Each craft consumes its normal inputs and energy.",
+                "Stacks to 64 in inventory; up to 4 per upgrade slot.");
 		addTooltip("carbon_acceleration_upgrade",
 				"Carbon Acceleration Upgrade.",
 				"Advanced speed boost.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
 		addTooltip("fe_efficiency_upgrade",
 				"Machine FE Efficiency Upgrade.",
 				"Reduces power consumption.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
 		addTooltip("carbon_fe_efficiency_upgrade",
 				"Carbon FE Efficiency Upgrade.",
 				"Advanced power reduction.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
 		addTooltip("range_upgrade",
 				"Machine Range Upgrade.",
 				"Increases operational range.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
 		addTooltip("carbon_range_upgrade",
 				"Carbon Range Upgrade.",
 				"Advanced range boost.",
-				"Stack up to 16 in one slot; bonuses taper at higher counts.");
+				"Stacks to 64 in inventory; up to 16 per upgrade slot.");
 
 		addTooltip("iron_singularity",
 				"Compressed Iron Singularity.",
@@ -686,7 +697,8 @@ public class TooltipInfoHandler {
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
 		String path = itemId.getPath();
 		boolean tierX = itemId.getNamespace().equals(CrystalnexusMod.MODID)
-				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("zero_star") || path.equals("bear"));
+				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("zero_star") || path.equals("bear")
+                || path.equals("zero_chip") || path.equals("zero_cable"));
 		FrameColors colors = null;
 		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
 			if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
@@ -706,6 +718,7 @@ public class TooltipInfoHandler {
 		MachineTier tier = stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
 				? machine.machineTier() : null;
 		if (tier != null) {
+			event.getToolTip().add(Component.translatable("tooltip.crystalnexus.machine_slot_capacity", tier.itemSlotCapacity()));
 			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
 					colors == null ? tier.tierLabel() : colors.tierLabel(tier));
 		}

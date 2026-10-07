@@ -96,6 +96,10 @@ public class AOEChargerGuiMenu extends AbstractContainerMenu implements Crystaln
 			private int x = AOEChargerGuiMenu.this.x;
 			private int y = AOEChargerGuiMenu.this.y;
 
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
+
 			@Override
 			public boolean mayPlace(ItemStack stack) {
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));

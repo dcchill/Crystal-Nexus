@@ -81,7 +81,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private final List<BlockPos> energyOutputs = new ArrayList<>();
 	private final EnergyStorage energyStorage = new EnergyStorage(
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.capacity(), REQUIRED_ENERGY_TRANSFER),
-		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(), REQUIRED_ENERGY_TRANSFER),
+		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxReceive(), CrystalnexusConfig.machineEnergyInput(REQUIRED_ENERGY_TRANSFER)),
 		Math.max(CrystalnexusConfig.MACHINES.MACHINE_ENERGY_INPUT.maxExtract(), REQUIRED_ENERGY_TRANSFER)) {
 		@Override public int receiveEnergy(int amount, boolean simulate) {
             if (dysonMode) return 0;

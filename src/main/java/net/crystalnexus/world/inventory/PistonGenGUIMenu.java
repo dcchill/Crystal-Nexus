@@ -107,6 +107,9 @@ public class PistonGenGUIMenu extends AbstractContainerMenu implements Crystalne
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 9) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 2;
 			private int x = PistonGenGUIMenu.this.x;
 			private int y = PistonGenGUIMenu.this.y;

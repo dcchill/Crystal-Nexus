@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "  f",
+    " c ",
+    "r  "
+  ],
+  "key": {
+    "f": {
+      "item": "crystalnexus:pipe_straight"
+    },
+    "c": {
+      "item": "crystalnexus:meteorite_alloy"
+    },
+    "r": {
+      "item": "crystalnexus:obsidrax_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:high_flow_plasma_injector",
+    "count": 1
+  }
+}

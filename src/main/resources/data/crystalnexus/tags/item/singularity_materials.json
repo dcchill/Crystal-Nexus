@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    "#c:raw_materials",
+    "#c:gems",
+    "minecraft:coal",
+    "minecraft:redstone",
+    "crystalnexus:ee_matter",
+    "#crystalnexus:wood_singularity_items",
+    "#crystalnexus:stone_singularity_items",
+    "#crystalnexus:dirt_singularity_items"
+  ]
+}

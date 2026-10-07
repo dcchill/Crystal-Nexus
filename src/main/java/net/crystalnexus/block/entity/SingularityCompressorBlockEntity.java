@@ -119,7 +119,10 @@ public class SingularityCompressorBlockEntity extends RandomizableContainerBlock
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-		return index == 2 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : index == 0 && net.crystalnexus.item.ResourceCometItem.isMaterial(stack);
+        if (index == 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(index).isEmpty()) return false;
+		return index == 2 ? net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack)
+				: index == 0 && level != null && !net.crystalnexus.jei_recipes.SingularityCompressionRecipe.resultFor(level, stack).isEmpty();
 	}
 
 	@Override

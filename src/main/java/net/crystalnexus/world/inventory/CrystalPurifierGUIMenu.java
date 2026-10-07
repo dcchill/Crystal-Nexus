@@ -120,6 +120,9 @@ public class CrystalPurifierGUIMenu extends AbstractContainerMenu implements Cry
 			private int y = CrystalPurifierGUIMenu.this.y;
 		}));
 		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 3;
 			private int x = CrystalPurifierGUIMenu.this.x;
 			private int y = CrystalPurifierGUIMenu.this.y;

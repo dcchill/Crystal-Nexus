@@ -13,10 +13,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
-public final class ArcFurnaceMenu extends AbstractContainerMenu {
+public final class ArcFurnaceMenu extends TieredMachineMenu {
     private final int machineSlots;
 	public final Player entity;
 	public final int x, y, z;
@@ -30,10 +28,10 @@ public final class ArcFurnaceMenu extends AbstractContainerMenu {
 		x = pos.getX(); y = pos.getY(); z = pos.getZ();
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		furnace = entity.level().getBlockEntity(pos) instanceof ArcFurnaceBlockEntity be ? be : null;
-		InvWrapper items = new InvWrapper(furnace == null ? new SimpleContainer(9) : furnace);
-		addSlot(new SlotItemHandler(items, 0, 44, 35));
-		addSlot(new SlotItemHandler(items, 1, 26, 35));
-		addSlot(new SlotItemHandler(items, 2, 115, 35) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+		MachineItemHandler items = new MachineItemHandler(furnace == null ? new SimpleContainer(9) : furnace);
+		addSlot(new MachineItemSlot(items, 0, 44, 35));
+		addSlot(new MachineItemSlot(items, 1, 26, 35));
+		addSlot(new MachineItemSlot(items, 2, 115, 35) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
 		var upgradeState = entity.level().getBlockState(pos);
         addSlot(new MachineUpgradeSlot(items, 3, upgradeState, 0));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)

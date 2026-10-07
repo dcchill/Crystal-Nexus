@@ -53,7 +53,11 @@ public class SteamCollectionProcedure {
 				if (world instanceof ILevelExtension _ext) {
 					IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
 					if (_fluidHandler != null)
-						_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.STEAM.get(), 25), IFluidHandler.FluidAction.EXECUTE);
+						{
+                        FluidStack steam = new FluidStack(CrystalnexusModFluids.STEAM.get(), 25);
+                        if (_fluidHandler.fill(steam, IFluidHandler.FluidAction.SIMULATE) == steam.getAmount())
+                            _fluidHandler.fill(steam, IFluidHandler.FluidAction.EXECUTE);
+                    }
 				}
 			} else {
 				{

@@ -136,7 +136,7 @@ public class SingularityCompressorGUIMenu extends AbstractContainerMenu implemen
 				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(itemstack1)) {
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(itemstack1)) {
                 if (!this.moveItemStackTo(itemstack1, 2, 3, false)) return ItemStack.EMPTY;
             } else if (!this.moveItemStackTo(itemstack1, 0, 2, false)) {
 				if (index < 3 + 27) {

@@ -135,6 +135,9 @@ public class QuantumMinerGUIMenu extends AbstractContainerMenu implements Crysta
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
 		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 9;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;

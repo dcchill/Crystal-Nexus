@@ -16,8 +16,15 @@ public final class GeneratedSingularityItem extends Item {
         super(new Item.Properties().durability(COST).rarity(Rarity.RARE));
     }
 
+    public static boolean isMaterial(ItemStack material) {
+        return !material.isEmpty() && material.getMaxStackSize() > 1
+            && ItemStack.isSameItemSameComponents(material, material.getItem().getDefaultInstance())
+            && (material.is(net.minecraft.tags.ItemTags.create(ResourceLocation.parse("c:raw_materials")))
+                || material.is(net.minecraft.tags.ItemTags.create(ResourceLocation.parse("c:gems"))));
+    }
+
     public static ItemStack create(ItemStack material) {
-        if (!ResourceCometItem.isMaterial(material)) return ItemStack.EMPTY;
+        if (!isMaterial(material)) return ItemStack.EMPTY;
         ItemStack result = new ItemStack(CrystalnexusModItems.GENERATED_SINGULARITY.get());
         result.set(CrystalnexusModDataComponents.MATERIAL.get(), BuiltInRegistries.ITEM.getKey(material.getItem()));
         return result;

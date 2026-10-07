@@ -31,6 +31,7 @@ public enum MachineTier {
     }
 
     public int level() { return level; }
+    public int itemSlotCapacity() { return 64 << Math.max(0, upgradeSlots() - 1); }
     public int upgradeSlots() {
         return switch (level) {
             case 0 -> 0;
@@ -71,6 +72,9 @@ public enum MachineTier {
     public boolean supports(int requiredTier) { return level >= requiredTier; }
     public double processingTime(double baseTicks) { return Math.max(1, Math.ceil(baseTicks * processingTimeMultiplier)); }
     public int energyCost(int baseEnergy) { return Math.max(1, (int) Math.ceil(baseEnergy * energyMultiplier)); }
+    public int energyInput(int inputRate) {
+        return this == HYPER ? (int) Math.min(Integer.MAX_VALUE, (long) inputRate * 2) : inputRate;
+    }
     public int minimumCapacity(int configuredCapacity, int baseEnergy) { return Math.max(configuredCapacity, energyCost(baseEnergy)); }
 
     public static MachineTier forLevel(int level) {

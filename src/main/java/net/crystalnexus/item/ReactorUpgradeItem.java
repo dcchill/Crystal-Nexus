@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ReactorUpgradeItem extends Item {
 	public ReactorUpgradeItem() {
-		super(new Item.Properties().stacksTo(1));
+		super(new Item.Properties().stacksTo(64));
 	}
 
 	@Override

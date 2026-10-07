@@ -24,6 +24,13 @@ import net.crystalnexus.util.EeMatterEconomy;
 
 public class ReactionComputerOnTickUpdateProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return;
+        ItemStack upgrade = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1);
+        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(upgrade);
+        for (int step = 0; step < steps; step++) executeStep(world, x, y, z);
+    }
+
+    private static void executeStep(LevelAccessor world, double x, double y, double z) {
 		String registry_name_dust = "";
 		String registry_name_no_namespace = "";
 		String registry_name_ore = "";
@@ -37,6 +44,7 @@ public class ReactionComputerOnTickUpdateProcedure {
 		outputAmount = structure == null ? 1 : CenteredMultiblockDimensions.reactionOutputMultiplier(structure.minBounds, structure.maxBounds);
 		energy = EeMatterEconomy.creationCost(outputAmount);
 		ItemStack upgrade = itemFromBlockInventory(world, controllerPos, 1);
+
 		cookTime = net.crystalnexus.util.MachineUpgradeHelper.processingTime(upgrade, 50, 25, 5);
 		if (!world.isClientSide()) {
 			BlockEntity blockEntity = world.getBlockEntity(controllerPos);

@@ -90,6 +90,9 @@ public class NodeExtractorGUIMenu extends AbstractContainerMenu implements Cryst
 			}
 		}
 		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 0;
 			private int x = NodeExtractorGUIMenu.this.x;
 			private int y = NodeExtractorGUIMenu.this.y;

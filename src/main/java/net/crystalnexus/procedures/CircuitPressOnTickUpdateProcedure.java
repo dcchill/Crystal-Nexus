@@ -128,30 +128,22 @@ public class CircuitPressOnTickUpdateProcedure {
 		}
 
 		
-		int out = (int) Math.floor(outputAmount * _cn_result.getCount());
+		int resultCount = _cn_result.getCount();
+        int out = (int) Math.floor(outputAmount * resultCount);
 		if (out < 0)
 			out = 0;
 
-		int slotMax = 64; 
-		if (world instanceof ILevelExtension _ext) {
-			IItemHandler _ih = inventory;
-			if (_ih != null) {
-				slotMax = _ih.getSlotLimit(1);
-			}
-		}
-
-		int itemMax = Math.min(_cn_result.getMaxStackSize(), 64);
-		int realMax = Math.min(slotMax, itemMax);
+		int realMax = net.crystalnexus.util.MachineItemStorage.slotLimit(machine, 1, _cn_result);
 
 		int current = outputStack.getCount();
 		int spaceLeft = Math.max(0, realMax - current);
 
 		if (batchPress && advancedRecipe == null) {
 			batchSize = CircuitPressBatching.basicBatchSize(inputStack.getCount(),
-				materialStack.getCount(), spaceLeft, _cn_result.getCount());
-			out = batchSize * _cn_result.getCount();
+				materialStack.getCount(), spaceLeft, resultCount);
+			out = batchSize * resultCount;
 		} else if (out > spaceLeft)
-			out = spaceLeft;
+            return false;
 
 
 		if (!(Blocks.AIR.asItem() == _cn_result.getItem())) {
@@ -168,7 +160,7 @@ public class CircuitPressOnTickUpdateProcedure {
 						: Math.min(energyCost, net.crystalnexus.config.CrystalnexusConfig.MACHINES.CIRCUIT_PRESS.maxExtract())) <= energy.getEnergyStored()) {
 
 				if (out > 0) {
-					if (outputStack.getItem() == _cn_result.getItem()
+					if (ItemStack.isSameItemSameComponents(outputStack, _cn_result)
 							|| outputStack.getItem() == Blocks.AIR.asItem()) {
 
 						if (machine.getPersistentData().getDouble("progress") < cookTime) {
@@ -184,13 +176,7 @@ public class CircuitPressOnTickUpdateProcedure {
 							if (world instanceof ILevelExtension _ext && inventory instanceof IItemHandlerModifiable _itemHandlerModifiable) {
 								int current2 = outputStack.getCount();
 
-								int slotMax2 = 64;
-								int realMax2 = Math.min(_cn_result.getMaxStackSize(), 64);
-								IItemHandler _ih2 = inventory;
-								if (_ih2 != null) {
-									slotMax2 = _ih2.getSlotLimit(1);
-									realMax2 = Math.min(realMax2, slotMax2);
-								}
+								int realMax2 = net.crystalnexus.util.MachineItemStorage.slotLimit(machine, 1, _cn_result);
 
 								int newCount = Math.min(current2 + out, realMax2);
 

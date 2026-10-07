@@ -77,7 +77,7 @@ public final class CelestialGearForgeMenu extends AbstractContainerMenu {
 		int inventoryStart = CelestialGearForgeBlockEntity.OUTPUT_SLOT + 2;
 		if (index < inventoryStart) {
 			if (!moveItemStackTo(stack, inventoryStart, slots.size(), true)) return ItemStack.EMPTY;
-		} else if (net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack)) {
+		} else if (net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack)) {
             if (!moveItemStackTo(stack, inventoryStart - 1, inventoryStart, false)) return ItemStack.EMPTY;
         } else if (!moveItemStackTo(stack, 0, CelestialGearForgeBlockEntity.INPUT_COUNT, false)) return ItemStack.EMPTY;
 		if (stack.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();

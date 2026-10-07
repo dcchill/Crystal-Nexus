@@ -16,7 +16,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.ContainerHelper;
+import net.crystalnexus.util.MachineItemStorage;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -89,10 +89,11 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 				.map(holder -> holder.value())
 				.filter(candidate -> candidate.matches(blockEntity.bloodTank.getFluid(), input))
 				.findFirst().orElse(null);
-		ItemStack result = recipe == null ? ItemStack.EMPTY : recipe.getResultItem(level.registryAccess());
-		ItemStack egg = recipe == null ? ItemStack.EMPTY : recipe.spawnEgg();
+		var upgrades = net.crystalnexus.util.MachineUpgradeHelper.upgrades(blockEntity, 4, 5);
+        ItemStack result = recipe == null ? ItemStack.EMPTY : (recipe.getResultItem(level.registryAccess()).copyWithCount(Math.min(MAX_OUTPUT, recipe.getResultItem(level.registryAccess()).getCount()))).copy();
+		ItemStack egg = recipe == null ? ItemStack.EMPTY : (recipe.spawnEgg().copyWithCount(Math.min(MAX_OUTPUT, recipe.spawnEgg().getCount()))).copy();
 		boolean running = recipe != null && (!egg.isEmpty() || !result.isEmpty())
-				&& outputFits(blockEntity.getItem(2), egg) && outputFits(blockEntity.getItem(3), result);
+				&& MachineItemStorage.fits(blockEntity, 2, egg) && MachineItemStorage.fits(blockEntity, 3, result);
 
 		setRunning(level, pos, state, running);
 		if (!running) {
@@ -114,14 +115,10 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 		blockEntity.setChanged();
 	}
 
-	private static boolean outputFits(ItemStack output, ItemStack result) {
-		return result.isEmpty() || ((output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
-				&& output.getCount() + Math.min(MAX_OUTPUT, result.getCount()) <= result.getMaxStackSize());
-	}
 
 	private void addOutput(int slot, ItemStack result) {
 		if (result.isEmpty()) return;
-		int count = Math.min(MAX_OUTPUT, result.getCount());
+		int count = result.getCount();
 		if (getItem(slot).isEmpty()) setItem(slot, result.copyWithCount(count));
 		else getItem(slot).grow(count);
 	}
@@ -147,7 +144,7 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 	protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.loadAdditional(tag, registries);
 		stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, stacks, registries);
+		MachineItemStorage.load(tag, stacks, registries, this);
 		progress = tag.getInt("Progress");
 		if (tag.get("blood") instanceof CompoundTag blood) bloodTank.readFromNBT(registries, blood);
 	}
@@ -155,10 +152,12 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 	@Override
 	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
 		super.saveAdditional(tag, registries);
-		ContainerHelper.saveAllItems(tag, stacks, registries);
+		MachineItemStorage.save(tag, stacks, registries);
 		tag.putInt("Progress", progress);
 		tag.put("blood", bloodTank.writeToNBT(registries, new CompoundTag()));
 	}
+
+    @Override public int getMaxStackSize() { return MachineTier.from(getBlockState()).itemSlotCapacity(); }
 
 	@Override
 	public int getContainerSize() {
@@ -177,6 +176,8 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
 
 	@Override
 	public boolean canPlaceItem(int slot, ItemStack stack) {
+        if ((slot == 4 || slot >= 5) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
         if (slot >= 4) return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot - 4, stack);
 		return slot == 1 && stack.is(net.crystalnexus.init.CrystalnexusModItems.PRISON_CUBE.get());
 	}
@@ -196,4 +197,14 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
         if (slot >= 4) return false;
 		return slot == 0 || slot == 2 || slot == 3;
 	}
+
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.capacity(this, stack); }
+
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        stacks.set(slot, stack);
+        setChanged();
+    }
+
 }

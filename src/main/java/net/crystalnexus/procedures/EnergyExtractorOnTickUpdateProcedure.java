@@ -46,11 +46,12 @@ public class EnergyExtractorOnTickUpdateProcedure {
                 break;
             }
         }
+        int outputCount = 1;
         boolean particles = MachineSync.isUpdateTick(level.getGameTime(), pos);
         if (!result.isEmpty()) {
             ItemStack output = machine.getItem(2);
             if (energy.getMaxEnergyStored() - energy.getEnergyStored() < energyBase
-                    || output.getCount() >= result.getMaxStackSize()
+                    || output.getCount() + outputCount > result.getMaxStackSize()
                     || !(output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))) return false;
             double progress = data.getDouble("progress");
             if (progress < cookTime) {
@@ -60,7 +61,7 @@ public class EnergyExtractorOnTickUpdateProcedure {
             }
             if (progress >= cookTime) {
                 ItemStack produced = result.copy();
-                produced.setCount(output.getCount() + 1);
+                produced.setCount(output.getCount() + outputCount);
                 machine.setItem(2, produced);
                 ItemStack remaining = input.copy();
                 remaining.shrink(1);

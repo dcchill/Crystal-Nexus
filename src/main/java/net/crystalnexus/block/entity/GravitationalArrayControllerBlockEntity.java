@@ -217,9 +217,9 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
 
     private boolean canFinish(GravitationalArrayRecipe recipe) {
         ItemStack output = stacks.get(OUTPUT_SLOT);
-        ItemStack result = recipe.output();
-        return output.isEmpty() || ItemStack.isSameItemSameComponents(output, result)
-            && output.getCount() + result.getCount() <= output.getMaxStackSize();
+        ItemStack result = (recipe.output()).copy();
+        return (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
+            && output.getCount() + result.getCount() <= result.getMaxStackSize();
     }
 
     private long extractEnergy(long requested) {
@@ -232,7 +232,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
         int[] plan = recipe.consumptionPlan(inputStacks());
         if (plan.length == 0) return;
         for (int slot = 0; slot < plan.length; slot++) stacks.get(slot).shrink(plan[slot]);
-        ItemStack result = recipe.output();
+        ItemStack result = (recipe.output()).copy();
         if (stacks.get(OUTPUT_SLOT).isEmpty()) stacks.set(OUTPUT_SLOT, result);
         else stacks.get(OUTPUT_SLOT).grow(result.getCount());
         Vec3 center = getFormationRenderCenter();
@@ -307,7 +307,9 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
     @Override public boolean canPlaceItem(int slot, ItemStack stack) {
-        if (slot == 5) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack); return slot != OUTPUT_SLOT; }
+        if (slot == 5 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
+        if (slot == 5) return net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack); return slot != OUTPUT_SLOT; }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == OUTPUT_SLOT; }

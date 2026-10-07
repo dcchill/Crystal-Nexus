@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class MasticatorMenu extends AbstractContainerMenu {
+public class MasticatorMenu extends TieredMachineMenu {
 	private final Container container;
     private final int machineSlots;
 	private final ContainerLevelAccess access;
@@ -41,19 +41,19 @@ public class MasticatorMenu extends AbstractContainerMenu {
 				? ContainerLevelAccess.create(inventory.player.level(), blockEntity.getBlockPos()) : ContainerLevelAccess.NULL;
 		container.startOpen(inventory.player);
 
-		addSlot(new Slot(container, 1, 80, 35) {
+		addSlot(new MachineItemSlot(new MachineItemHandler(container), 1, 80, 35) {
 			@Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(1, stack); }
 		});
-		addSlot(new Slot(container, 2, 134, 26) {
+		addSlot(new MachineItemSlot(new MachineItemHandler(container), 2, 134, 26) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		});
 
-		addSlot(new Slot(container, 3, 134, 44) {
+		addSlot(new MachineItemSlot(new MachineItemHandler(container), 3, 134, 44) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		});
 
         var upgradeState = container instanceof BlockEntity machine ? machine.getBlockState() : CrystalnexusModBlocks.MASTICATOR.get().defaultBlockState();
-        var upgradeItems = new net.neoforged.neoforge.items.wrapper.InvWrapper(container);
+        var upgradeItems = new MachineItemHandler(container);
         for (int i = 0; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
             addSlot(new MachineUpgradeSlot(upgradeItems, 4 + i, upgradeState, i));
         machineSlots = slots.size();

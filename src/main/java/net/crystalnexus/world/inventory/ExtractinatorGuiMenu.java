@@ -1,8 +1,6 @@
 package net.crystalnexus.world.inventory;
 
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -33,7 +31,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
-public class ExtractinatorGuiMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+public class ExtractinatorGuiMenu extends TieredMachineMenu implements CrystalnexusModMenus.MenuAccessor {
     private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
@@ -90,12 +88,12 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 			} else { 
 				boundBlockEntity = this.world.getBlockEntity(pos);
 				if (boundBlockEntity instanceof BaseContainerBlockEntity baseContainerBlockEntity) {
-					this.internal = new InvWrapper(baseContainerBlockEntity);
+					this.internal = new MachineItemHandler(baseContainerBlockEntity);
 					this.bound = true;
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 17) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 79, 17) {
 			private final int slot = 0;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -106,7 +104,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 61, 44) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 61, 44) {
 			private final int slot = 1;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -118,7 +116,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 		}));
 		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
         this.customSlots.put(7, this.addSlot(new MachineUpgradeSlot(internal, 7, upgradeState, 0)));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 79, 44) {
+		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, 79, 44) {
 			private final int slot = 2;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -128,7 +126,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 97, 44) {
+		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, 97, 44) {
 			private final int slot = 3;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -138,7 +136,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 61, 62) {
+		this.customSlots.put(4, this.addSlot(new MachineItemSlot(internal, 4, 61, 62) {
 			private final int slot = 4;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -148,7 +146,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 79, 62) {
+		this.customSlots.put(5, this.addSlot(new MachineItemSlot(internal, 5, 79, 62) {
 			private final int slot = 5;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -158,7 +156,7 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 97, 62) {
+		this.customSlots.put(6, this.addSlot(new MachineItemSlot(internal, 6, 97, 62) {
 			private final int slot = 6;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -231,64 +229,6 @@ public class ExtractinatorGuiMenu extends AbstractContainerMenu implements Cryst
 		return itemstack;
 	}
 
-	@Override
-	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-		boolean flag = false;
-		int i = p_38905_;
-		if (p_38907_) {
-			i = p_38906_ - 1;
-		}
-		if (p_38904_.isStackable()) {
-			while (!p_38904_.isEmpty() && (p_38907_ ? i >= p_38905_ : i < p_38906_)) {
-				Slot slot = this.slots.get(i);
-				ItemStack itemstack = slot.getItem();
-				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameComponents(p_38904_, itemstack)) {
-					int j = itemstack.getCount() + p_38904_.getCount();
-					int k = slot.getMaxStackSize(itemstack);
-					if (j <= k) {
-						p_38904_.setCount(0);
-						itemstack.setCount(j);
-						slot.set(itemstack);
-						flag = true;
-					} else if (itemstack.getCount() < k) {
-						p_38904_.shrink(k - itemstack.getCount());
-						itemstack.setCount(k);
-						slot.set(itemstack);
-						flag = true;
-					}
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		if (!p_38904_.isEmpty()) {
-			if (p_38907_) {
-				i = p_38906_ - 1;
-			} else {
-				i = p_38905_;
-			}
-			while (p_38907_ ? i >= p_38905_ : i < p_38906_) {
-				Slot slot1 = this.slots.get(i);
-				ItemStack itemstack1 = slot1.getItem();
-				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-					int l = slot1.getMaxStackSize(p_38904_);
-					slot1.setByPlayer(p_38904_.split(Math.min(p_38904_.getCount(), l)));
-					slot1.setChanged();
-					flag = true;
-					break;
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		return flag;
-	}
 
 	@Override
 	public void removed(Player playerIn) {

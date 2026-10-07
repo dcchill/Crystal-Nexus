@@ -13,10 +13,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
-public final class RefineryMenu extends AbstractContainerMenu {
+public final class RefineryMenu extends TieredMachineMenu {
     private final int machineSlots;
     public final Player entity;
     public final int x, y, z;
@@ -30,9 +28,9 @@ public final class RefineryMenu extends AbstractContainerMenu {
         x = pos.getX(); y = pos.getY(); z = pos.getZ();
         access = ContainerLevelAccess.create(entity.level(), pos);
         refinery = entity.level().getBlockEntity(pos) instanceof RefineryBlockEntity be ? be : null;
-        InvWrapper items = new InvWrapper(refinery == null ? new SimpleContainer(8) : refinery);
-        addSlot(new SlotItemHandler(items, 0, 52, 64));
-        addSlot(new SlotItemHandler(items, 1, 115, 64) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        MachineItemHandler items = new MachineItemHandler(refinery == null ? new SimpleContainer(8) : refinery);
+        addSlot(new MachineItemSlot(items, 0, 52, 64));
+        addSlot(new MachineItemSlot(items, 1, 115, 64) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
         var upgradeState = entity.level().getBlockState(pos);
         addSlot(new MachineUpgradeSlot(items, 2, upgradeState, 0));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)

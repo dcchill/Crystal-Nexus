@@ -36,14 +36,9 @@ public class ExtractinatorOnTickUpdateProcedure {
 
     private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
         boolean completed = false;
+        var machine = world.getBlockEntity(BlockPos.containing(x, y, z));
         if (world.isClientSide()) return false;
-		String registry_name_no_namespace = "";
-		String registry_name_nugget = "";
-		String registry_name = "";
-		double crystalCount = 0;
-		double outputAmount = 0;
 		double cookTime = 0;
-		double slotnumbercheck = 0;
 		var upgrade = MachineUpgradeHelper.upgrades(world.getBlockEntity(BlockPos.containing(x, y, z)), 7, 8);
 		if (net.crystalnexus.util.MachineAnimationHelper.shouldIdle(world, BlockPos.containing(x, y, z), getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress"))) {
 			{
@@ -62,7 +57,6 @@ public class ExtractinatorOnTickUpdateProcedure {
 					world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 			}
 		}
-		outputAmount = 1;
 		cookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
 		cookTime = MachineUpgradeHelper.cookTime(upgrade, cookTime);
 		if (!world.isClientSide()) {
@@ -74,7 +68,6 @@ public class ExtractinatorOnTickUpdateProcedure {
 			if (world instanceof Level _level)
 				_level.sendBlockUpdated(_bp, _bs, _bs, 3);
 		}
-		slotnumbercheck = 1;
 		ItemStack input = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0);
 		int baseEnergy = input.is(ItemTags.create(ResourceLocation.parse("c:sands"))) || input.is(Blocks.GRAVEL.asItem()) ? 4096 : 1024;
 		int requiredEnergy = Math.min(energyCost(world, BlockPos.containing(x, y, z), upgrade, baseEnergy), net.crystalnexus.config.CrystalnexusConfig.MACHINES.EXTRACTINATOR.maxExtract());
@@ -94,415 +87,55 @@ public class ExtractinatorOnTickUpdateProcedure {
 						_level.sendParticles(ParticleTypes.WHITE_ASH, (x + 0.5), (y + 0.9), (z + 0.5), 1, 0.125, 0.25, 0.125, 0);
 				}
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).is(ItemTags.create(ResourceLocation.parse("c:sands")))) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index0 = 0; index0 < 6; index0++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.IRON_NUGGET) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.IRON_NUGGET).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.2));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
-							for (int index1 = 0; index1 < 6; index1++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.ANCIENT_CRYSTAL.get()) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get()).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.GRAVEL.asItem()) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 4096), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index2 = 0; index2 < 6; index2++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.RAW_COPPER) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.RAW_COPPER).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.7));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 3)) {
-							for (int index3 = 0; index3 < 6; index3++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.COAL) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.COAL).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.COBBLESTONE.asItem()) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index4 = 0; index4 < 6; index4++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.IRON_NUGGET) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.IRON_NUGGET).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.7));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
-							for (int index5 = 0; index5 < 6; index5++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.GOLD_NUGGET).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 125)) {
-							for (int index6 = 0; index6 < 6; index6++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.DIAMOND) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.DIAMOND).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.SOUL_SAND.asItem()) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index7 = 0; index7 < 6; index7++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.GOLD_NUGGET).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.7));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 300)) {
-							for (int index8 = 0; index8 < 6; index8++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.NETHERITE_SCRAP) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.NETHERITE_SCRAP).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == Blocks.COBBLED_DEEPSLATE.asItem()) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index9 = 0; index9 < 6; index9++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.IRON_NUGGET) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.IRON_NUGGET).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.7));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 8)) {
-							for (int index10 = 0; index10 < 6; index10++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(Items.GOLD_NUGGET).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-					if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModBlocks.TARROCK.get().asItem()) {
-						if (!world.isClientSide()) {
-							BlockPos _bp = BlockPos.containing(x, y, z);
-							BlockEntity _blockEntity = world.getBlockEntity(_bp);
-							BlockState _bs = world.getBlockState(_bp);
-							if (_blockEntity != null)
-								_blockEntity.getPersistentData().putDouble("progress", 0);
-        completed = true;
-							if (world instanceof Level _level)
-								_level.sendBlockUpdated(_bp, _bs, _bs, 3);
-						}
-						if (world instanceof ILevelExtension _ext) {
-							IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
-							if (_entityStorage != null)
-								_entityStorage.extractEnergy(energyCost(world, BlockPos.containing(x, y, z), upgrade, 1024), false);
-						}
-						if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-							int _slotid = 0;
-							ItemStack _stk = _itemHandlerModifiable.getStackInSlot(_slotid).copy();
-							_stk.shrink(1);
-							_itemHandlerModifiable.setStackInSlot(_slotid, _stk);
-						}
-						for (int index12 = 0; index12 < 6; index12++) {
-							if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-									|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Items.GOLD_NUGGET) {
-								if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-									if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-										ItemStack _setstack = new ItemStack(Items.GOLD_NUGGET).copy();
-										_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount * 1.7));
-										_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-									}
-									slotnumbercheck = 1;
-									break;
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							} else {
-								slotnumbercheck = 1 + slotnumbercheck;
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 4)) {
-							for (int index13 = 0; index13 < 6; index13++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.SILICON.get()) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(CrystalnexusModItems.SILICON.get()).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-						if (rareDrop(world, BlockPos.containing(x, y, z), 64)) {
-							for (int index14 = 0; index14 < 6; index14++) {
-								if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == Blocks.AIR.asItem()
-										|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).copy()).getItem() == CrystalnexusModItems.CARBON_COMPOSITE.get()) {
-									if (64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount()) {
-										if (world instanceof ILevelExtension _ext && _ext.getCapability(Capabilities.ItemHandler.BLOCK, BlockPos.containing(x, y, z), null) instanceof IItemHandlerModifiable _itemHandlerModifiable) {
-											ItemStack _setstack = new ItemStack(CrystalnexusModItems.CARBON_COMPOSITE.get()).copy();
-											_setstack.setCount((int) (itemFromBlockInventory(world, BlockPos.containing(x, y, z), (int) slotnumbercheck).getCount() + outputAmount));
-											_itemHandlerModifiable.setStackInSlot((int) slotnumbercheck, _setstack);
-										}
-										slotnumbercheck = 1;
-										break;
-									} else {
-										slotnumbercheck = 1 + slotnumbercheck;
-									}
-								} else {
-									slotnumbercheck = 1 + slotnumbercheck;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                    BlockPos _bp = BlockPos.containing(x, y, z);
+                    java.util.List<ItemStack> drops = new java.util.ArrayList<>();
+                    if (input.is(ItemTags.create(ResourceLocation.parse("c:sands")))) {
+                        drops.add(new ItemStack(Items.IRON_NUGGET));
+                        if (rareDrop(world, _bp, 8)) drops.add(new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get()));
+                    } else if (input.is(Blocks.GRAVEL.asItem())) {
+                        drops.add(new ItemStack(Items.RAW_COPPER));
+                        if (rareDrop(world, _bp, 3)) drops.add(new ItemStack(Items.COAL));
+                    } else if (input.is(Blocks.COBBLESTONE.asItem())) {
+                        drops.add(new ItemStack(Items.IRON_NUGGET));
+                        if (rareDrop(world, _bp, 8)) drops.add(new ItemStack(Items.GOLD_NUGGET));
+                        if (rareDrop(world, _bp, 125)) drops.add(new ItemStack(Items.DIAMOND));
+                    } else if (input.is(Blocks.SOUL_SAND.asItem())) {
+                        drops.add(new ItemStack(Items.GOLD_NUGGET));
+                        if (rareDrop(world, _bp, 300)) drops.add(new ItemStack(Items.NETHERITE_SCRAP));
+                    } else if (input.is(Blocks.COBBLED_DEEPSLATE.asItem())) {
+                        drops.add(new ItemStack(Items.IRON_NUGGET));
+                        if (rareDrop(world, _bp, 8)) drops.add(new ItemStack(Items.GOLD_NUGGET));
+                    } else if (input.is(CrystalnexusModBlocks.TARROCK.get().asItem())) {
+                        drops.add(new ItemStack(Items.GOLD_NUGGET));
+                        if (rareDrop(world, _bp, 4)) drops.add(new ItemStack(CrystalnexusModItems.SILICON.get()));
+                        if (rareDrop(world, _bp, 64)) drops.add(new ItemStack(CrystalnexusModItems.CARBON_COMPOSITE.get()));
+                    }
+                    if (drops.isEmpty() || !(world instanceof ILevelExtension ext)
+                        || !(ext.getCapability(Capabilities.ItemHandler.BLOCK, _bp, null) instanceof IItemHandlerModifiable inventory)) return false;
+                    ItemStack[] planned = new ItemStack[6];
+                    for (int i = 0; i < planned.length; i++) planned[i] = inventory.getStackInSlot(i + 1).copy();
+                    for (ItemStack drop : drops) {
+                        ItemStack remaining = (drop).copy();
+                        for (int i = 0; i < planned.length && !remaining.isEmpty(); i++) {
+                            if (!planned[i].isEmpty() && !ItemStack.isSameItemSameComponents(planned[i], remaining)) continue;
+                            int added = Math.min(remaining.getCount(), net.crystalnexus.util.MachineItemStorage.slotLimit((net.minecraft.world.Container) machine, i + 1, remaining) - planned[i].getCount());
+                            if (added <= 0) continue;
+                            if (planned[i].isEmpty()) planned[i] = remaining.copyWithCount(added);
+                            else planned[i].grow(added);
+                            remaining.shrink(added);
+                        }
+                        if (!remaining.isEmpty()) return false;
+                    }
+                    for (int i = 0; i < planned.length; i++) inventory.setStackInSlot(i + 1, planned[i]);
+                    inventory.setStackInSlot(0, input.copyWithCount(input.getCount() - 1));
+                    IEnergyStorage energy = ext.getCapability(Capabilities.EnergyStorage.BLOCK, _bp, null);
+                    if (energy != null) energy.extractEnergy(requiredEnergy, false);
+                    machine.getPersistentData().putDouble("progress", 0);
+                    machine.setChanged();
+                    completed = true;
+                }
+            }
+        }
 		return completed;
     }
 

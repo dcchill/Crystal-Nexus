@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BlankSSDItem extends Item {
 	public BlankSSDItem() {
-		super(new Item.Properties().stacksTo(1));
+		super(new Item.Properties().stacksTo(64));
 	}
 
 	@Override

@@ -4,6 +4,6 @@ import net.minecraft.world.item.Item;
 
 public class FEEfficiencyUpgradeItem extends Item {
 	public FEEfficiencyUpgradeItem() {
-		super(new Item.Properties().stacksTo(16));
+		super(new Item.Properties().stacksTo(64));
 	}
 }

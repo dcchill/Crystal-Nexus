@@ -61,7 +61,8 @@ public final class ResourceCometItem extends Item {
 
     public static ItemStack singularityMaterial(ItemStack stack) {
         if (stack.isEmpty() || stack.getDamageValue() != 0) return ItemStack.EMPTY;
-        ItemStack material = new ItemStack(SingularityBreakdownRecipe.outputFor(stack));
+        ItemStack material = net.crystalnexus.jei_recipes.SingularityCompressionRecipe.compressionMaterial(
+            new ItemStack(SingularityBreakdownRecipe.outputFor(stack)));
         return isMaterial(material) ? material : ItemStack.EMPTY;
     }
 

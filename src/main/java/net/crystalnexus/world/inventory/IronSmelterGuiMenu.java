@@ -1,8 +1,6 @@
 package net.crystalnexus.world.inventory;
 
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.items.wrapper.InvWrapper;
-import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -32,7 +30,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Collections;
 
-public class IronSmelterGuiMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+public class IronSmelterGuiMenu extends TieredMachineMenu implements CrystalnexusModMenus.MenuAccessor {
     private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
@@ -89,12 +87,12 @@ public class IronSmelterGuiMenu extends AbstractContainerMenu implements Crystal
 			} else { 
 				boundBlockEntity = this.world.getBlockEntity(pos);
 				if (boundBlockEntity instanceof BaseContainerBlockEntity baseContainerBlockEntity) {
-					this.internal = new InvWrapper(baseContainerBlockEntity);
+					this.internal = new MachineItemHandler(baseContainerBlockEntity);
 					this.bound = true;
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 43, 35) {
 			private final int slot = 0;
 			private int x = IronSmelterGuiMenu.this.x;
 			private int y = IronSmelterGuiMenu.this.y;
@@ -105,7 +103,7 @@ public class IronSmelterGuiMenu extends AbstractContainerMenu implements Crystal
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 35) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 115, 35) {
 			private final int slot = 1;
 			private int x = IronSmelterGuiMenu.this.x;
 			private int y = IronSmelterGuiMenu.this.y;
@@ -179,64 +177,6 @@ public class IronSmelterGuiMenu extends AbstractContainerMenu implements Crystal
 		return itemstack;
 	}
 
-	@Override
-	protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_) {
-		boolean flag = false;
-		int i = p_38905_;
-		if (p_38907_) {
-			i = p_38906_ - 1;
-		}
-		if (p_38904_.isStackable()) {
-			while (!p_38904_.isEmpty() && (p_38907_ ? i >= p_38905_ : i < p_38906_)) {
-				Slot slot = this.slots.get(i);
-				ItemStack itemstack = slot.getItem();
-				if (slot.mayPlace(itemstack) && !itemstack.isEmpty() && ItemStack.isSameItemSameComponents(p_38904_, itemstack)) {
-					int j = itemstack.getCount() + p_38904_.getCount();
-					int k = slot.getMaxStackSize(itemstack);
-					if (j <= k) {
-						p_38904_.setCount(0);
-						itemstack.setCount(j);
-						slot.set(itemstack);
-						flag = true;
-					} else if (itemstack.getCount() < k) {
-						p_38904_.shrink(k - itemstack.getCount());
-						itemstack.setCount(k);
-						slot.set(itemstack);
-						flag = true;
-					}
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		if (!p_38904_.isEmpty()) {
-			if (p_38907_) {
-				i = p_38906_ - 1;
-			} else {
-				i = p_38905_;
-			}
-			while (p_38907_ ? i >= p_38905_ : i < p_38906_) {
-				Slot slot1 = this.slots.get(i);
-				ItemStack itemstack1 = slot1.getItem();
-				if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_)) {
-					int l = slot1.getMaxStackSize(p_38904_);
-					slot1.setByPlayer(p_38904_.split(Math.min(p_38904_.getCount(), l)));
-					slot1.setChanged();
-					flag = true;
-					break;
-				}
-				if (p_38907_) {
-					i--;
-				} else {
-					i++;
-				}
-			}
-		}
-		return flag;
-	}
 
 	@Override
 	public void removed(Player playerIn) {

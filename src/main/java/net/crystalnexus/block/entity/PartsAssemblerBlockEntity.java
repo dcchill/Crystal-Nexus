@@ -48,7 +48,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     private ResourceLocation cachedAssignedRecipe;
     private int cachedRecipeMode = -1;
 
-    private final EnergyStorage energy = new EnergyStorage(CAPACITY, 2_048, 2_048) {
+    private final EnergyStorage energy = new EnergyStorage(CAPACITY, net.crystalnexus.config.CrystalnexusConfig.machineEnergyInput(2_048), 2_048) {
         @Override
         public int receiveEnergy(int amount, boolean simulate) {
             int received = super.receiveEnergy(amount, simulate);
@@ -100,7 +100,8 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
         ItemStack upgrade = items.get(2);
         int energyCost = recipe == null ? 0 : MachineUpgradeHelper.energyCost(upgrade, recipe.energyPerTick());
-        boolean working = recipe != null && canAccept(recipe.getResultItem(level.registryAccess()))
+        ItemStack result = recipe == null ? ItemStack.EMPTY : (recipe.getResultItem(level.registryAccess())).copy();
+        boolean working = recipe != null && canAccept(result)
             && energy.getEnergyStored() >= energyCost;
         if (working) {
             double cookTime = recipe.processingTime();
@@ -109,7 +110,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
             energy.extractEnergy(energyCost, false);
             progress++;
             if (progress >= maxProgress) {
-                craft(recipe.getResultItem(level.registryAccess()));
+                craft(result);
                 progress = 0;
             }
         } else if (progress != 0) {
@@ -147,8 +148,8 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     private boolean canAccept(ItemStack result) {
         if (result.isEmpty()) return false;
         ItemStack output = items.get(1);
-        return output.isEmpty() || ItemStack.isSameItemSameComponents(output, result)
-            && output.getCount() + result.getCount() <= output.getMaxStackSize();
+        return (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
+            && output.getCount() + result.getCount() <= result.getMaxStackSize();
     }
 
     private void craft(ItemStack result) {
@@ -211,6 +212,8 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
         return slot == 0 || slot == 2 && stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
     }
     @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2}; }

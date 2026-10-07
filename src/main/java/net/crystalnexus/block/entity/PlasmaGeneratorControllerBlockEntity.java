@@ -311,6 +311,7 @@ public final class PlasmaGeneratorControllerBlockEntity extends BlockEntity impl
 
     public static int componentType(ItemStack stack) {
         if (stack.is(CrystalnexusModItems.PLASMA_INJECTOR.get())) return PlasmaGrid.INJECTOR;
+        if (stack.is(CrystalnexusModItems.HIGH_FLOW_PLASMA_INJECTOR.get())) return PlasmaGrid.HIGH_FLOW_INJECTOR;
         if (stack.is(CrystalnexusModItems.FERROSTEEL_HEATSINK.get())) return PlasmaGrid.HEATSINK;
         if (stack.is(CrystalnexusModItems.INDUCTION_COIL.get())) return PlasmaGrid.COIL;
         return PlasmaGrid.EMPTY;

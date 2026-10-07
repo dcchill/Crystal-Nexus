@@ -17,7 +17,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
-@GameTestHolder("crystalnexus")
+@GameTestHolder("crystalnexus_singularity")
 @PrefixGameTestTemplate(false)
 public final class SingularityGameTests {
 	private SingularityGameTests() {
@@ -45,8 +45,9 @@ public final class SingularityGameTests {
 				"Generated singularity must retain its source item");
 		helper.assertTrue(GeneratedSingularityItem.create(new ItemStack(Items.DIAMOND_SWORD)).isEmpty()
 				&& GeneratedSingularityItem.create(new ItemStack(Items.DIRT)).isEmpty()
-				&& ResourceCometItem.isMaterial(new ItemStack(Items.IRON_INGOT)),
-				"Only tagged raw materials and ingots can be compressed");
+				&& GeneratedSingularityItem.create(new ItemStack(Items.IRON_INGOT)).isEmpty()
+                && !GeneratedSingularityItem.create(new ItemStack(Items.AMETHYST_SHARD)).isEmpty(),
+				"Generated singularities must accept raw materials and gems, and reject ingots");
 		NonNullList<ItemStack> generatedGrid = NonNullList.withSize(9, ItemStack.EMPTY);
 		generatedGrid.set(0, generated);
 		CraftingInput generatedInput = CraftingInput.of(3, 3, generatedGrid);
@@ -63,10 +64,11 @@ public final class SingularityGameTests {
 		SingularityCompressionRecipe compression = helper.getLevel().getRecipeManager()
 				.getAllRecipesFor(SingularityCompressionRecipe.Type.INSTANCE).stream()
 				.map(holder -> holder.value())
-				.filter(recipe -> recipe.getResultItem(helper.getLevel().registryAccess()).is(singularity))
+				.filter(recipe -> recipe.getResultItem(helper.getLevel().registryAccess()).is(singularity)
+						&& recipe.getIngredients().getFirst().test(SingularityCompressionRecipe.compressionMaterial(new ItemStack(resource))))
 				.findFirst().orElseThrow();
-		helper.assertTrue(compression.getInputCount(0) == GeneratedSingularityItem.COST
-				&& compression.getIngredients().getFirst().test(new ItemStack(resource)),
+		helper.assertTrue(compression.getInputCount(0) == GeneratedSingularityItem.COST / SingularityCompressionRecipe.materialValue(new ItemStack(resource))
+				&& compression.getIngredients().getFirst().test(SingularityCompressionRecipe.compressionMaterial(new ItemStack(resource))),
 				"Singularity compression must use its configured material and item count");
 		NonNullList<ItemStack> grid = NonNullList.withSize(9, ItemStack.EMPTY);
 		grid.set(0, new ItemStack(singularity));

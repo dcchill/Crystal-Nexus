@@ -35,7 +35,7 @@ import java.util.stream.IntStream;
 public class FluidChemicalReactionChamberBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int TANK_CAPACITY = 4000;
     private final int tankCapacity;
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+    private NonNullList<ItemStack> stacks;
     private final FluidTank[] tanks;
 
     private FluidTank createTank() {
@@ -54,6 +54,7 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
     protected FluidChemicalReactionChamberBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int tankCapacity) {
         super(type, pos, state);
         this.tankCapacity = tankCapacity;
+        stacks = NonNullList.withSize(3 + net.crystalnexus.util.MachineUpgradeHelper.upgradeSlots(state), ItemStack.EMPTY);
         tanks = new FluidTank[] { createTank(), createTank(), createTank() };
     }
 
@@ -97,7 +98,12 @@ public class FluidChemicalReactionChamberBlockEntity extends RandomizableContain
             new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
     }
 
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot != 2; }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot >= 3) return slot < getContainerSize()
+            && net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot - 3, stack)
+            && (!net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack) || getItem(slot).isEmpty());
+        return slot != 2;
+    }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 2; }

@@ -188,6 +188,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> CRYSTAL_PURIFIER = block(CrystalnexusModBlocks.CRYSTAL_PURIFIER);
 	public static final DeferredItem<Item> RANGE_UPGRADE = REGISTRY.register("range_upgrade", RangeUpgradeItem::new);
 	public static final DeferredItem<Item> PARALLELIZATION_CHIP = REGISTRY.register("parallelization_chip", ParallelizationChipItem::new);
+	public static final DeferredItem<Item> ZERO_CHIP = REGISTRY.register("zero_chip", () -> new Item(new Item.Properties().stacksTo(64)));
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY = REGISTRY.register("crystalized_alloy", CystalizedAlloyItem::new);
 	public static final DeferredItem<Item> CRYSTALIZED_ALLOY_BLOCK = block(CrystalnexusModBlocks.CRYSTALIZED_ALLOY_BLOCK);
 	public static final DeferredItem<Item> CRYSTAL_CRUSHER = block(CrystalnexusModBlocks.CRYSTAL_CRUSHER);
@@ -612,6 +613,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ENERGY_CABLE_MK_2 = block(CrystalnexusModBlocks.ENERGY_CABLE_MK_2);
 	public static final DeferredItem<Item> BASIC_ENERGY_CABLE = block(CrystalnexusModBlocks.BASIC_ENERGY_CABLE);
 	public static final DeferredItem<Item> HYPER_ENERGY_CABLE = block(CrystalnexusModBlocks.HYPER_ENERGY_CABLE);
+	public static final DeferredItem<Item> ZERO_CABLE = block(CrystalnexusModBlocks.ZERO_CABLE);
 	public static final DeferredItem<Item> ZERO_POINT_CORE = REGISTRY.register("zero_point_core", ZeroPointCoreItem::new);
 	public static final DeferredItem<Item> OIL_NODE = block(CrystalnexusModBlocks.OIL_NODE);
 	public static final DeferredItem<Item> LAVA_NODE = block(CrystalnexusModBlocks.LAVA_NODE);
@@ -638,6 +640,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> INVERTIUM_CRYSTAL_BLOCK = block(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK);
 	public static final DeferredItem<Item> PLASMA_BLOCK = block(CrystalnexusModBlocks.PLASMA_BLOCK);
 	public static final DeferredItem<Item> PLASMA_INJECTOR = REGISTRY.register("plasma_injector", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> HIGH_FLOW_PLASMA_INJECTOR = REGISTRY.register("high_flow_plasma_injector", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> INDUCTION_COIL = REGISTRY.register("induction_coil", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> RAW_INVERTIUM = REGISTRY.register("raw_invertium", RawInvertiumItem::new);
 	public static final DeferredItem<Item> INVERTIUM_DUST = REGISTRY.register("invertium_dust", () -> new Item(new Item.Properties()));

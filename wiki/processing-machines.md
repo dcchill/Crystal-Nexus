@@ -23,6 +23,20 @@ Machine frames follow one progression: Iron to Crystal to Chlorophyte to Inverti
 
 Custom material profiles and processing recipes use numeric minimum tiers: Crystal 1, Chlorophyte 2, Invertium 3, Titanium 4, Carbon 5, Titanium Carbide 6, Tungsten 7, and Hyper 8. Datapacks written for the former merged tiers must update levels 3 through 6 to preserve their intended gate.
 
+### Material Slot Capacity
+
+Normal input and output slots scale with the machine's available upgrade slots, without requiring installed upgrades:
+
+| Machine tier | Items per material slot |
+|---|---:|
+| Iron / Crystal | 64 |
+| Chlorophyte | 128 |
+| Invertium / Azurine | 256 |
+| Carbon / Ferrosteel | 512 |
+| Obsidrax / Hyper | 1024 |
+
+Upgrade slots, filter slots, and unstackable items retain their normal limits. Full material counts survive saving and loading; pickup and automation extract ordinary-sized stacks, while shift-click distributes items across available player slots. The capacity follows the physical machine's tier, including legacy variants mapped to another material tier.
+
 ### Crystal Ore Crusher
 
 The Crystal Ore Crusher converts raw ores into dusts.
@@ -35,7 +49,7 @@ The Crystal Ore Crusher converts raw ores into dusts.
 - Inventory: input, output, and upgrade slots.
 - Automation can insert raw ores and upgrades, and extract finished dust.
 - Crystal-tier energy capacity: 10,240 FE by default; upper-tier buffers expand when necessary to hold one operation's energy cost.
-- Max receive/extract: 2,048 FE.
+- Max input: 20,480 FE per operation; max extraction: 2,048 FE.
 
 ### Crystal Dust Separator
 
@@ -73,6 +87,8 @@ The Invertium Smelter is the Invertium-tier smelting machine and upgrades from t
 Build it once Invertium production is established.
 
 Smelter energy costs before FE-efficiency upgrades are 1,024 FE for Iron, 2,048 FE for Crystal, 4,096 FE for Chlorophyte, and 8,192 FE for Invertium.
+
+Powered tiered smelter buffers hold enough FE for their maximum parallel upgrade batch: 8 crafts for Crystal, 16 for Chlorophyte, and 32 for Invertium. Input count, output space, and available energy can reduce the actual batch. Each completed craft consumes energy.
 
 ### Ultima Smelter
 
@@ -255,3 +271,7 @@ How to use it:
 2. Put Empty Fuel Cells in the container input.
 3. Put an optional Acceleration Upgrade or Carbon Acceleration Upgrade in the upgrade slot.
 4. Supply FE.
+
+Machine FE input limits are 10 times their configured `maxReceive` base values, including existing configs. Actual input is limited by free buffer space and available power.
+
+Hyper-tier processing machines and the Hyper Laser Quarry receive an additional 2x input multiplier (20x the original base input), bounded by free buffer space.

@@ -43,6 +43,9 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
         addSlot(new Slot(container, 2, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
             @Override public boolean mayPlace(ItemStack stack) {
                 return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
             }

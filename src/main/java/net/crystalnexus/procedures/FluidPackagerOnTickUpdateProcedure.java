@@ -28,7 +28,7 @@ import net.crystalnexus.init.CrystalnexusModItems;
 public class FluidPackagerOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
         var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
-        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 && !MachineUpgradeHelper.isZeroChip(inventory.getItem(2)) ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
         net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
         return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
     }
@@ -88,7 +88,8 @@ public class FluidPackagerOnTickUpdateProcedure {
 		if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).copy()).getItem() == CrystalnexusModItems.EMPTY_FUEL_CELL.get()) {
 			if (!fluidItem.isEmpty()
 					&& 4096 <= getEnergyStored(world, BlockPos.containing(x, y, z), null)
-					&& 64 != itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount()
+					&& itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount <= fluidItem.getMaxStackSize()
+                    && (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).isEmpty() || ItemStack.isSameItemSameComponents(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1), fluidItem))
 					&& 250 <= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null)) {
 
 				if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {

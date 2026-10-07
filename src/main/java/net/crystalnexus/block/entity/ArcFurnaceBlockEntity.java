@@ -20,7 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.ContainerHelper;
+import net.crystalnexus.util.MachineItemStorage;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -64,13 +64,13 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	@Override protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
 		super.loadAdditional(tag, provider);
 		if (!tryLoadLootTable(tag)) stacks = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-		ContainerHelper.loadAllItems(tag, stacks, provider);
+		MachineItemStorage.load(tag, stacks, provider, this);
 		if (tag.get("energyStorage") instanceof IntTag energy) energyStorage.deserializeNBT(provider, energy);
 	}
 
 	@Override protected void saveAdditional(CompoundTag tag, HolderLookup.Provider provider) {
 		super.saveAdditional(tag, provider);
-		if (!trySaveLootTable(tag)) ContainerHelper.saveAllItems(tag, stacks, provider);
+		if (!trySaveLootTable(tag)) MachineItemStorage.save(tag, stacks, provider);
 		tag.put("energyStorage", energyStorage.serializeNBT(provider));
 	}
 
@@ -84,11 +84,13 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 	@Override public Component getDisplayName() { return getDefaultName(); }
 	@Override protected NonNullList<ItemStack> getItems() { return stacks; }
 	@Override protected void setItems(NonNullList<ItemStack> stacks) { this.stacks = stacks; }
-	@Override public int getMaxStackSize() { return 64; }
+	@Override public int getMaxStackSize() { return MachineTier.from(getBlockState()).itemSlotCapacity(); }
 	@Override public AbstractContainerMenu createMenu(int id, Inventory inventory) {
 		return new ArcFurnaceMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(worldPosition));
 	}
 	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if ((slot == 3 || slot >= 4) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
         if (slot == 3 || slot >= 4)
             return net.crystalnexus.util.MachineUpgradeHelper.acceptsUpgrade(getBlockState(), slot == 3 ? 0 : slot - 4 + 1, stack); return slot != 2; }
 	@Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
@@ -276,7 +278,7 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 				for (int targetSlot = 0; targetSlot < 2 && !source.isEmpty(); targetSlot++) {
 					ItemStack target = stacks.get(targetSlot);
 					if (!target.isEmpty() && !ItemStack.isSameItemSameComponents(target, source)) continue;
-					int room = target.isEmpty() ? source.getMaxStackSize() : target.getMaxStackSize() - target.getCount();
+					int room = MachineItemStorage.slotLimit(this, targetSlot, source) - target.getCount();
 					int moved = Math.min(room, source.getCount());
 					if (moved <= 0) continue;
 					if (target.isEmpty()) stacks.set(targetSlot, source.copyWithCount(moved)); else target.grow(moved);
@@ -314,4 +316,14 @@ public final class ArcFurnaceBlockEntity extends RandomizableContainerBlockEntit
 		setChanged();
 		if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 	}
+
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.capacity(this, stack); }
+
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        stacks.set(slot, stack);
+        setChanged();
+    }
+
 }

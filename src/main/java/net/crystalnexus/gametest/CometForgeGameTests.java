@@ -21,7 +21,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
-@GameTestHolder("crystalnexus")
+@GameTestHolder("crystalnexus_comet")
 @PrefixGameTestTemplate(false)
 public final class CometForgeGameTests {
     private static final BlockPos CONTROLLER = new BlockPos(3, 1, 0);
@@ -76,7 +76,7 @@ public final class CometForgeGameTests {
         forge.loadAdditional(saved, helper.getLevel().registryAccess());
         forge.validateStructureNow();
         tick(forge, 120);
-        helper.assertTrue(ResourceCometItem.material(forge.getItem(4)).is(Items.IRON_INGOT), "Correct comet after reload");
+        helper.assertTrue(ResourceCometItem.material(forge.getItem(4)).is(Items.RAW_IRON), "Correct comet after reload");
         helper.assertTrue(java.util.stream.IntStream.range(0, 4).allMatch(i -> forge.getItem(i).isEmpty()),
             "Three high-tier and one matching singularity consumed");
         helper.assertTrue(forge.getTemporalFluidTank().isEmpty() && forge.multiblockEnergyInput().getEnergyStored() == 0, "Exact costs charged");
@@ -110,10 +110,12 @@ public final class CometForgeGameTests {
             && !forge.canPlaceItem(4, new ItemStack(Items.DIRT)), "Automation obeys slot rules");
         helper.assertTrue(forge.canTakeItemThroughFace(4, ItemStack.EMPTY, Direction.DOWN)
             && !forge.canTakeItemThroughFace(0, ItemStack.EMPTY, Direction.DOWN), "Automation only extracts output");
-        helper.assertTrue(ResourceCometItem.isMaterial(new ItemStack(Items.IRON_INGOT))
-            && ResourceCometItem.isMaterial(new ItemStack(Items.RAW_IRON)), "Tag inherits ingots and raw materials");
+        helper.assertTrue(!ResourceCometItem.isMaterial(new ItemStack(Items.IRON_INGOT))
+            && ResourceCometItem.create(new ItemStack(Items.IRON_INGOT)).isEmpty()
+            && ResourceCometItem.isMaterial(new ItemStack(Items.RAW_IRON))
+            && ResourceCometItem.isMaterial(new ItemStack(Items.DIAMOND)), "Comets accept raw materials and gems, and reject ingots");
         helper.assertTrue(!forge.canPlaceItem(3, new ItemStack(Items.ENDER_PEARL))
-            && !forge.canPlaceItem(3, GeneratedSingularityItem.create(new ItemStack(Items.DIAMOND)))
+            && forge.canPlaceItem(3, GeneratedSingularityItem.create(new ItemStack(Items.DIAMOND)))
             && ResourceCometItem.create(new ItemStack(Items.DIRT)).isEmpty(), "Untagged materials cannot craft comets");
         ItemStack spent = new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get());
         spent.setDamageValue(1);
@@ -136,6 +138,31 @@ public final class CometForgeGameTests {
         helper.assertTrue(ResourceCometItem.material(legacy).is(Items.ENDER_PEARL), "Existing comets retain their material");
         helper.succeed();
     }
+    @GameTest(template = "comet_forge")
+    public static void craftsFixedAndGeneratedGemComets(GameTestHelper helper) {
+        var forge = setup(helper);
+        var gems = new net.minecraft.world.item.Item[]{Items.DIAMOND, Items.EMERALD, Items.QUARTZ, Items.AMETHYST_SHARD,
+            CrystalnexusModItems.INVERTIUM_CRYSTAL.get()};
+        for (var gem : gems) {
+            ItemStack material = new ItemStack(gem);
+            ItemStack singularity = net.crystalnexus.jei_recipes.SingularityCompressionRecipe.resultFor(helper.getLevel(), material);
+            helper.assertTrue(forge.canPlaceItem(3, singularity)
+                && ResourceCometItem.singularityMaterial(singularity).is(gem), "Gem singularities must work in the forge");
+            ingredients(forge, singularity);
+            forge.setItem(4, ItemStack.EMPTY);
+            forge.getTemporalFluidTank().fill(new FluidStack(CrystalnexusModFluids.TEMPORAL_ESSENCE.get(), 25_000), IFluidHandler.FluidAction.EXECUTE);
+            tick(forge, 200);
+            helper.assertTrue(ResourceCometItem.material(forge.getItem(4)).is(gem)
+                && java.util.stream.IntStream.range(0, 4).allMatch(i -> forge.getItem(i).isEmpty()),
+                "Forge must produce the matching gem comet and consume its singularities");
+        }
+        var materials = ResourceCometItem.materials();
+        helper.assertTrue(materials.stream().anyMatch(stack -> stack.is(Items.DIAMOND))
+            && materials.stream().noneMatch(stack -> stack.is(net.minecraft.tags.ItemTags.create(ResourceLocation.parse("c:ingots")))),
+            "JEI material enumeration must include gems and exclude ingots");
+        helper.succeed();
+    }
+
     @GameTest(template = "comet_forge")
     public static void pausesAndChangesInputs(GameTestHelper helper) {
         var forge = setup(helper);
@@ -165,7 +192,7 @@ public final class CometForgeGameTests {
         helper.assertTrue(ResourceCometItem.material(invalid).isEmpty(), "Recursive target rejected");
         helper.succeed();
     }
-    @GameTest(template = "solar_sim")
+    @GameTest(template = "solar_sim", templateNamespace = "crystalnexus")
     public static void simulatorDysonMode(GameTestHelper helper) {
         var size = helper.getLevel().getStructureManager().get(ResourceLocation.parse("crystalnexus:solar_sim")).orElseThrow().getSize();
         BlockPos controllerPos = null;
@@ -236,7 +263,7 @@ public final class CometForgeGameTests {
         helper.succeed();
     }
 
-    @GameTest(template = "solar_sim")
+    @GameTest(template = "solar_sim", templateNamespace = "crystalnexus")
     public static void simulatorCometsAndStars(GameTestHelper helper) {
         var size = helper.getLevel().getStructureManager().get(ResourceLocation.parse("crystalnexus:solar_sim")).orElseThrow().getSize();
         BlockPos controllerPos = null;
@@ -261,7 +288,7 @@ public final class CometForgeGameTests {
         for (int star = 0; star < stars.size(); star++) {
             output.clearContent();
             for (int slot = 0; slot < 4; slot++) {
-                var comet = ResourceCometItem.create(new ItemStack(Items.IRON_INGOT));
+                var comet = ResourceCometItem.create(new ItemStack(Items.DIAMOND));
                 helper.assertTrue(simulator.canPlaceItem(slot, comet), "All planet slots accept comets");
                 simulator.setItem(slot, comet);
             }
@@ -275,7 +302,7 @@ public final class CometForgeGameTests {
             int count = 0;
             for (int slot = 0; slot < output.getContainerSize(); slot++) {
                 ItemStack stack = output.getItem(slot);
-                helper.assertTrue(stack.isEmpty() || stack.is(Items.IRON_INGOT), "Output must be exact target");
+                helper.assertTrue(stack.isEmpty() || stack.is(Items.DIAMOND), "Output must be exact target");
                 count += stack.getCount();
             }
             helper.assertTrue(count == 4 * (1 << star), "Star multiplier applies to every comet");
@@ -292,7 +319,7 @@ public final class CometForgeGameTests {
         helper.assertTrue(!output.isEmpty(), "Existing planet still produces output");
         helper.setBlock(ports.get(1), CrystalnexusModBlocks.MULTIBLOCK_FLUID_OUTPUT.get());
         helper.assertTrue(simulator.validateStructureNow(), "Fluid mode forms");
-        simulator.setItem(0, ResourceCometItem.create(new ItemStack(Items.IRON_INGOT)));
+        simulator.setItem(0, ResourceCometItem.create(new ItemStack(Items.DIAMOND)));
         int before = simulator.multiblockEnergyInput().getEnergyStored();
         for (int i = 0; i < 6; i++) simulator.serverTick();
         helper.assertTrue(simulator.getProgress() == 0 && simulator.multiblockEnergyInput().getEnergyStored() == before,

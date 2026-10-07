@@ -31,7 +31,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
 
     public static void execute(ServerLevel level, BlockPos pos) {
         var machine = level.getBlockEntity(pos);
-        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 3 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(3)) : 1;
+        int crafts = MachineUpgradeHelper.parallelCraftCount(MachineUpgradeHelper.upgrades(machine, 3, 4));
         net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(level, pos));
     }
 
@@ -40,7 +40,7 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         if (!(level.getBlockEntity(pos) instanceof FluidChemicalReactionChamberBlockEntity chamber)) return false;
         transferContainers(chamber);
 
-        ItemStack upgrade = chamber.getItem(3);
+        var upgrade = MachineUpgradeHelper.upgrades(chamber, 3, 4);
         double baseCookTime = MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50);
         double cookTime = MachineUpgradeHelper.cookTime(upgrade, baseCookTime) / chamber.getSpeedMultiplier();
         int energyCost = MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_REACTION);
@@ -55,8 +55,8 @@ public final class FluidChemicalReactionChamberOnTickUpdateProcedure {
         }
         FluidChemicalReactionRecipe recipe = match.recipe();
 
-        FluidStack fluidOutput = recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY);
-        ItemStack itemOutput = recipe.itemOutput().orElse(ItemStack.EMPTY);
+        FluidStack fluidOutput = (recipe.fluidOutput().map(FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY)).copy();
+        ItemStack itemOutput = (recipe.itemOutput().orElse(ItemStack.EMPTY)).copy();
         if ((!fluidOutput.isEmpty() && chamber.getTank(2).fill(fluidOutput, IFluidHandler.FluidAction.SIMULATE) != fluidOutput.getAmount())
                 || (!itemOutput.isEmpty() && !canStackOutput(chamber.getItem(2), itemOutput))) {
             setActive(level, pos, false);

@@ -1,6 +1,5 @@
 package net.crystalnexus.world.inventory;
 
-import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,7 +16,10 @@ public final class MachineUpgradeSlot extends SlotItemHandler {
         this.ordinal = ordinal;
     }
 
-    @Override public boolean isActive() { return ordinal < MachineTier.from(state).upgradeSlots(); }
+    @Override public boolean isActive() { return ordinal < MachineUpgradeHelper.upgradeSlots(state); }
+    @Override public int getMaxStackSize(ItemStack stack) {
+        return Math.min(MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+    }
     @Override public boolean mayPlace(ItemStack stack) {
         return MachineUpgradeHelper.acceptsUpgrade(state, ordinal, stack) && super.mayPlace(stack);
     }

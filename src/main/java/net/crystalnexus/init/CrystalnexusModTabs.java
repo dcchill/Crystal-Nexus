@@ -102,6 +102,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_CRYSTAL_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PLASMA_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.PLASMA_INJECTOR.get());
+				tabData.accept(CrystalnexusModItems.HIGH_FLOW_PLASMA_INJECTOR.get());
 				tabData.accept(CrystalnexusModItems.INDUCTION_COIL.get());
 				tabData.accept(CrystalnexusModItems.INVERTIUM_CRYSTAL.get());
 				tabData.accept(CrystalnexusModItems.RAW_INVERTIUM.get());
@@ -242,6 +243,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
+				tabData.accept(CrystalnexusModItems.ZERO_CHIP.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
@@ -450,6 +452,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.BASIC_ENERGY_CABLE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ENERGY_CABLE_MK_2.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.HYPER_ENERGY_CABLE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.ZERO_CABLE.get().asItem());
 
 				tabData.accept(CrystalnexusModBlocks.TANK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_TANK.get().asItem());
@@ -702,6 +705,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.TUNGSTEN_MACHINE_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModItems.RANGE_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
+				tabData.accept(CrystalnexusModItems.ZERO_CHIP.get());
 				tabData.accept(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get());
 				tabData.accept(CrystalnexusModItems.CARBON_RANGE_UPGRADE.get());

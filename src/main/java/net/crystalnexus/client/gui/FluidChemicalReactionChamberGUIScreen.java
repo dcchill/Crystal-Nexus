@@ -61,7 +61,7 @@ public class FluidChemicalReactionChamberGUIScreen extends AbstractContainerScre
             FluidTankRenderer.draw(graphics, chamber.getTank(i).getFluid(), chamber.getTankCapacity(),
                 leftPos + TANK_X[i], topPos + TANK_Y, 16, TANK_HEIGHT);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), leftPos + 50, topPos - 15, 0, 0, 126, 18, 126, 18);
-        graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), leftPos + 173, topPos, 0, 0, 32, 32, 32, 32);
+        net.crystalnexus.client.gui.MachineUpgradeSlots.render(graphics, menu, leftPos, topPos);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), leftPos - 33, topPos - 1, 0, 0, 48, 48, 48, 48);
         graphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), leftPos + 85, topPos + 17, 0,
             Mth.clamp((int) ProgressDisplayProcedure.execute(menu.entity.level(), menu.x, menu.y, menu.z) * 32, 0, 320), 32, 32, 32, 352);

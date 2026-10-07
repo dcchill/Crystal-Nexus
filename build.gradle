@@ -48,7 +48,7 @@ neoForge {
         }
         gameTestServer {
             type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades,crystalnexus_plasma'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades,crystalnexus_plasma,crystalnexus_singularity,crystalnexus_zero,crystalnexus_water,crystalnexus_comet'
         }
 
         configureEach {
@@ -70,10 +70,23 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
+    classpath += sourceSets.main.compileClasspath
 }
 
 // Reuse the generator template in the namespace used by its focused GameTests.
 tasks.named('processResources') {
+    from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
+        into 'data/crystalnexus_water/structure'
+    }
+    from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
+        into 'data/crystalnexus_zero/structure'
+    }
+    from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
+        into 'data/crystalnexus_singularity/structure'
+    }
+    from('src/main/resources/data/crystalnexus/structure/comet_forge.nbt') {
+        into 'data/crystalnexus_comet/structure'
+    }
     from('src/main/resources/data/crystalnexus/structure/plasma_gen.nbt') {
         into 'data/crystalnexus_plasma/structure'
     }

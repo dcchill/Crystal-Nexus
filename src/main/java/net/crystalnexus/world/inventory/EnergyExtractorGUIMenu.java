@@ -104,13 +104,16 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 			}
 		}));
 		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 1;
 			private int x = EnergyExtractorGUIMenu.this.x;
 			private int y = EnergyExtractorGUIMenu.this.y;
 
 			@Override
 			public boolean mayPlace(ItemStack stack) {
-				return CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem()
+				return net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack) || CrystalnexusModItems.ACCELERATION_UPGRADE.get() == stack.getItem()
 						|| CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get() == stack.getItem();
 			}
 		}));
@@ -155,7 +158,7 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (itemstack1.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())
+			} else if (net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(itemstack1) || itemstack1.is(CrystalnexusModItems.ACCELERATION_UPGRADE.get())
 					|| itemstack1.is(CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get())) {
 				if (!this.moveItemStackTo(itemstack1, 1, 2, false)) return ItemStack.EMPTY;
 			} else if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {

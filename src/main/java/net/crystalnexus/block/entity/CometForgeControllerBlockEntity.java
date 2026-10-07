@@ -104,10 +104,10 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
         if (validationDelay-- <= 0) { validateStructure(serverLevel); validationDelay = VALIDATION_INTERVAL; }
         if (activeRecipe != null && !sameInputs()) resetProgress();
         if (!formed || !hasIngredients()) return;
-        ItemStack result = ResourceCometItem.create(ResourceCometItem.singularityMaterial(stacks.get(3)));
+        ItemStack result = (ResourceCometItem.create(ResourceCometItem.singularityMaterial(stacks.get(3)))).copy();
         ItemStack output = stacks.get(OUTPUT_SLOT);
-        if (!output.isEmpty() && (!ItemStack.isSameItemSameComponents(output, result)
-            || output.getCount() >= output.getMaxStackSize())) return;
+        if ((!output.isEmpty() && !ItemStack.isSameItemSameComponents(output, result))
+            || output.getCount() + result.getCount() > result.getMaxStackSize()) return;
         if (activeRecipe == null) {
             activeRecipe = result.get(net.crystalnexus.init.CrystalnexusModDataComponents.MATERIAL.get());
             for (int i = 0; i < 4; i++) activeInputs.set(i, stacks.get(i).copyWithCount(1));
@@ -125,7 +125,7 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
         progress++;
         if (progress == DURATION) {
             for (int i = 0; i < 4; i++) stacks.get(i).shrink(1);
-            if (output.isEmpty()) stacks.set(OUTPUT_SLOT, result); else output.grow(1);
+            if (output.isEmpty()) stacks.set(OUTPUT_SLOT, result); else output.grow(result.getCount());
             resetProgress();
         }
         sync();
@@ -228,7 +228,9 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     @Override public Component getDisplayName() { return getDefaultName(); }
     @Override protected NonNullList<ItemStack> getItems() { return stacks; }
     @Override protected void setItems(NonNullList<ItemStack> items) { stacks = items; }
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) { return slot == 5 ? net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack) : slot >= 0 && slot < 3 ? ResourceCometItem.isHighTierSingularity(stack)
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (slot == 5 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false; return slot == 5 ? net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack) : slot >= 0 && slot < 3 ? ResourceCometItem.isHighTierSingularity(stack)
         : slot == 3 && ResourceCometItem.isSingularity(stack); }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }

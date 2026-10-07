@@ -76,6 +76,7 @@ public final class OreProcessorOnTickUpdateProcedure {
 			int inputSlot, int outputSlot, String progressKey, double cookTime, ItemStack result,
 			int inputCount, int baseEnergy) {
 		BlockEntity blockEntity = level.getBlockEntity(pos);
+        result = (result).copy();
 		if (result.isEmpty() || inventory.getStackInSlot(inputSlot).getCount() < inputCount
 				|| !fits(inventory.getStackInSlot(outputSlot), result)) {
 			blockEntity.getPersistentData().putDouble(progressKey, 0);
@@ -156,8 +157,8 @@ public final class OreProcessorOnTickUpdateProcedure {
 	}
 
 	private static boolean fits(ItemStack current, ItemStack result) {
-		return current.isEmpty() || ItemStack.isSameItemSameComponents(current, result)
-				&& current.getCount() + result.getCount() <= current.getMaxStackSize();
+		return (current.isEmpty() || ItemStack.isSameItemSameComponents(current, result))
+            && current.getCount() + result.getCount() <= result.getMaxStackSize();
 	}
 
 	private static ItemStack merged(ItemStack current, ItemStack result) {

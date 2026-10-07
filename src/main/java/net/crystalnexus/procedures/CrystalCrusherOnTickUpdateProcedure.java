@@ -60,7 +60,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 		ItemStack currentOutput = crusher.getItem(1);
 		boolean outputFits = outputCount > 0
 				&& (currentOutput.isEmpty() || ItemStack.isSameItemSameComponents(currentOutput, result))
-				&& currentOutput.getCount() + outputCount <= result.getMaxStackSize();
+				&& currentOutput.getCount() + outputCount <= net.crystalnexus.util.MachineItemStorage.slotLimit(crusher, 1, result);
 
 		int requiredEnergy = assigned != null ? energyCost : Math.min(energyCost, CrystalnexusConfig.MACHINES.CRYSTAL_CRUSHER.maxExtract());
 		if (result.isEmpty() || energy.getEnergyStored() < requiredEnergy || !outputFits)
@@ -74,7 +74,7 @@ public class CrystalCrusherOnTickUpdateProcedure {
 
 		if (progress >= cookTime) {
             int crafts = Math.min(MachineUpgradeHelper.parallelCraftCount(upgrade), input.getCount());
-            crafts = Math.min(crafts, (result.getMaxStackSize() - currentOutput.getCount()) / outputCount);
+            crafts = Math.min(crafts, (net.crystalnexus.util.MachineItemStorage.slotLimit(crusher, 1, result) - currentOutput.getCount()) / outputCount);
             crafts = Math.min(crafts, energy.getEnergyStored() / requiredEnergy);
             var profiler = net.crystalnexus.commands.NexusDebugCommand.profiler(level);
             profiler.push("crystalnexus_inventory");

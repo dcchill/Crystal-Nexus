@@ -145,7 +145,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 			if (activeRecipe != null) resetProgress();
 			return;
 		}
-		if (!canAcceptOutput(recipe.value().output())) {
+		if (!canAcceptOutput((recipe.value().output()).copy())) {
 			energyPerTick = 0;
 			if (activeRecipe == null) return;
 			resetProgress();
@@ -162,7 +162,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 		progress++;
 		setChanged();
 		if (progress >= DURATION) {
-			ItemStack result = recipe.value().output();
+			ItemStack result = (recipe.value().output()).copy();
 			net.minecraft.world.item.Item star = getItem(STAR_SLOT).getItem();
 			for (int slot = 0; slot < INPUT_COUNT; slot++) getItem(slot).shrink(1);
 			ItemStack output = getItem(OUTPUT_SLOT);
@@ -229,7 +229,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 			if (isProcessing()) resetProgress();
 			return;
 		}
-		ItemStack result = operation.result();
+		ItemStack result = (operation.result()).copy();
 		if (!canAcceptOutput(result)) { energyPerTick = 0; if (isProcessing()) resetProgress(); return; }
 		energyPerTick = operation.energyPerTick();
 		if (energy.getEnergyStored() < energyPerTick) return;
@@ -243,7 +243,7 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 			var star = getItem(STAR_SLOT).getItem();
 			for (int slot = 0; slot < STAR_SLOT; slot++) getItem(slot).shrink(1);
 			if (getItem(OUTPUT_SLOT).isEmpty()) stacks.set(OUTPUT_SLOT, result);
-			else getItem(OUTPUT_SLOT).grow(1);
+			else getItem(OUTPUT_SLOT).grow(result.getCount());
 			burst(serverLevel, star);
 			resetProgress();
 		} else sync();
@@ -251,8 +251,8 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 
 	private boolean canAcceptOutput(ItemStack result) {
 		ItemStack output = getItem(OUTPUT_SLOT);
-		return output.isEmpty() || ItemStack.isSameItemSameComponents(output, result)
-			&& output.getCount() + result.getCount() <= output.getMaxStackSize();
+		return (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
+            && output.getCount() + result.getCount() <= result.getMaxStackSize();
 	}
 
 	private void validateStructure(ServerLevel serverLevel) {
@@ -334,7 +334,9 @@ public final class CelestialGearForgeBlockEntity extends RandomizableContainerBl
 		super.setItem(slot, stack);
 	}
 	@Override public boolean canPlaceItem(int slot, ItemStack stack) {
-        if (slot == OUTPUT_SLOT + 1) return net.crystalnexus.util.MachineUpgradeHelper.isParallelizationChip(stack);
+        if (slot == 10 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
+        if (slot == OUTPUT_SLOT + 1) return net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack);
 		if (slot < 0 || slot >= INPUT_COUNT || stack.isEmpty()) return false;
 		if (slot == STAR_SLOT) return isActiveStar(stack);
 		if (slot == 0 && (stack.is(Items.ENCHANTED_BOOK) || stack.getItem().getEnchantmentValue(stack) > 0 || !EnchantmentHelper.getEnchantmentsForCrafting(stack).isEmpty())) return true;

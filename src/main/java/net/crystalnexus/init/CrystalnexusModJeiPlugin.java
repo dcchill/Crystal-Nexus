@@ -239,15 +239,13 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(EnergyExtraction_Type, EnergyExtractionRecipes);
 		List<MatterTransmutationRecipe> MatterTransmutationRecipes = recipes(recipeManager, MatterTransmutationRecipe.class);
 		registration.addRecipes(MatterTransmutation_Type, MatterTransmutationRecipes);
-		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class).stream()
-			.filter(recipe -> !recipe.getIngredients().isEmpty() && java.util.Arrays.stream(recipe.getIngredients().getFirst().getItems())
-				.anyMatch(ResourceCometItem::isMaterial)).toList();
+		List<SingularityCompressionRecipe> SingularityCompressionRecipes = recipes(recipeManager, SingularityCompressionRecipe.class);
 		registration.addRecipes(SingularityCompression_Type, SingularityCompressionRecipes);
 		registration.addRecipes(SingularityCompression_Type, generatedSingularityMaterials().stream().map(material ->
 			new SingularityCompressionRecipe(GeneratedSingularityItem.create(material),
 				net.minecraft.core.NonNullList.of(net.minecraft.world.item.crafting.Ingredient.EMPTY,
 					net.minecraft.world.item.crafting.Ingredient.of(material.getItem())),
-				List.of(GeneratedSingularityItem.COST), List.of())).toList());
+				List.of(GeneratedSingularityItem.COST / SingularityCompressionRecipe.materialValue(material)), List.of())).toList());
 		registration.addRecipes(ArcFurnace_Type, recipes(recipeManager, ArcFurnaceRecipe.class));
 		registration.addRecipes(ArcFurnace_Type, ArcFurnaceRecipeSupport.externalRecipes(Minecraft.getInstance().level));
 		List<ChemicalReactionRecipe> ChemicalReactionRecipes = recipes(recipeManager, ChemicalReactionRecipe.class);
@@ -283,7 +281,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
             new SolarSimulatorJeiRecipe(ResourceCometItem.create(material), List.of(material), java.util.Optional.empty())).toList());
         registration.addRecipes(ReactorMultiblockGuide_Type, recipes(recipeManager, ReactorMultiblockGuideRecipe.class));
         registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()),
-            net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and one singularity of the tagged raw material or ingot for the comet."));
+            net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and one singularity of the tagged raw material or gem for the comet."));
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
@@ -298,9 +296,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				.map(RecipeHolder::value).toList();
 		return net.minecraft.core.registries.BuiltInRegistries.ITEM.stream()
 			.map(net.minecraft.world.item.Item::getDefaultInstance)
-			.filter(stack -> ResourceCometItem.isMaterial(stack) && fixed.stream().noneMatch(recipe ->
-				recipe.getInputCount(0) == GeneratedSingularityItem.COST
-					&& !recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(stack)))
+			.filter(stack -> GeneratedSingularityItem.isMaterial(stack) && fixed.stream().noneMatch(recipe ->
+				!recipe.getIngredients().isEmpty() && recipe.getIngredients().getFirst().test(stack)))
 			.toList();
 	}
 

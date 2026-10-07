@@ -115,6 +115,9 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 			}
 		}));
 		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+            @Override public int getMaxStackSize(ItemStack stack) {
+                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+            }
 			private final int slot = 2;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;

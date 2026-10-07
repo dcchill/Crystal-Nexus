@@ -36,11 +36,12 @@ public final class RefineryOnTickUpdateProcedure {
             MachineUpgradeHelper.processingTime(upgrade, 100, 75, 50)));
         int energyCost = machineTier.energyCost(MachineUpgradeHelper.energyCost(upgrade, ENERGY_PER_OPERATION));
         RefiningRecipe recipe = findRecipe(level, refinery, machineTier);
-        ItemStack output = recipe == null ? ItemStack.EMPTY : recipe.output();
-        boolean fluidReady = recipe != null && recipe.fluidOutput().map(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.SIMULATE) == outputFluid.amount()).orElse(true);
+        ItemStack output = recipe == null ? ItemStack.EMPTY : (recipe.output()).copy();
+        FluidStack fluidOutput = recipe == null ? FluidStack.EMPTY : (recipe.fluidOutput().map(net.crystalnexus.jei_recipes.FluidChemicalReactionRecipe.FluidAmount::stack).orElse(FluidStack.EMPTY)).copy();
+        boolean fluidReady = fluidOutput.isEmpty() || refinery.getTank(1).fill(fluidOutput, IFluidHandler.FluidAction.SIMULATE) == fluidOutput.getAmount();
         if (recipe == null || (output.isEmpty() && recipe.fluidOutput().isEmpty()) || !fluidReady
                 || refinery.getEnergyStorage().getEnergyStored() < Math.min(energyCost, CrystalnexusConfig.MACHINES.CHEMICAL_REACTION_CHAMBER.maxExtract())
-                || (!output.isEmpty() && !FluidChemicalReactionChamberOnTickUpdateProcedure.canStackOutput(refinery.getItem(1), output))) {
+                || (!output.isEmpty() && !net.crystalnexus.util.MachineItemStorage.fits(refinery, 1, output))) {
             setActive(level, pos, false);
             refinery.getPersistentData().putDouble("maxProgress", cookTime);
             sync(level, pos, refinery);
@@ -59,7 +60,7 @@ public final class RefineryOnTickUpdateProcedure {
             produced.setCount(refinery.getItem(1).getCount() + output.getCount());
             refinery.setItem(1, produced);
         }
-        recipe.fluidOutput().ifPresent(outputFluid -> refinery.getTank(1).fill(outputFluid.stack(), IFluidHandler.FluidAction.EXECUTE));
+        if (!fluidOutput.isEmpty()) refinery.getTank(1).fill(fluidOutput, IFluidHandler.FluidAction.EXECUTE);
         refinery.getEnergyStorage().extractEnergy(energyCost, false);
         refinery.getPersistentData().putDouble("progress", 0);
         completed = true;
