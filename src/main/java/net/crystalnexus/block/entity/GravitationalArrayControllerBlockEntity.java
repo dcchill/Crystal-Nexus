@@ -56,7 +56,7 @@ public final class GravitationalArrayControllerBlockEntity extends RandomizableC
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "gravitational_array_new");
     private NonNullList<ItemStack> stacks = NonNullList.withSize(5 + 1, ItemStack.EMPTY);
     private final FluidTank temporalFluid = new FluidTank(TANK_CAPACITY,
-        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
+        stack -> net.crystalnexus.util.FluidIngredientHelper.matches(stack, CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
         @Override protected void onContentsChanged() { sync(); }
     };
 	private final EnergyStorage energyStorage = new EnergyStorage(

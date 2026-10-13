@@ -100,7 +100,7 @@ public final class ZeroUpgradeGameTests {
             CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get(),
             CrystalnexusModBlocks.FLUID_PACKAGER.get()
         };
-        int[] first = {3, 2, 9, 8, 2}, count = {3, 3, 4, 4, 1};
+        int[] first = {3, 2, 9, 8, 2}, count = {3, 3, 4, 0, 1};
         for (int m = 0; m < blocks.length; m++) {
             BlockPos pos = new BlockPos(1 + m * 2, 1, 1);
             helper.setBlock(pos, blocks[m]);
@@ -117,6 +117,12 @@ public final class ZeroUpgradeGameTests {
                 default -> new net.crystalnexus.world.inventory.FluidPackagerGUIMenu(1, player.getInventory(), data);
             };
             helper.assertTrue(menu.slots.size() == inventory.getContainerSize() + 36, "GUI must expose the expanded inventory");
+            if (m == 3) {
+                helper.assertTrue(MachineUpgradeHelper.upgradeSlots(machine.getBlockState()) == 0
+                        && !inventory.canPlaceItem(8, chip(1)),
+                    "The particle accelerator must have no upgrade slots");
+                continue;
+            }
             boolean rejectsZero = m == 2 || m == 4;
             for (int i = 0; i < count[m]; i++) {
                 helper.assertTrue(menu.slots.get(first[m] + i).isActive(), "All upgrade slots must be active");

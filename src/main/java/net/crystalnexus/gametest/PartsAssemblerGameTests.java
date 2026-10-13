@@ -28,6 +28,48 @@ import java.util.Map;
 @PrefixGameTestTemplate(false)
 public final class PartsAssemblerGameTests {
     @GameTest(template = "empty")
+    public static void parallelCraftsCompleteTogetherAndUseBothUpgradeSlots(GameTestHelper helper) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        while (Math.floorMod(helper.getLevel().getGameTime() + helper.absolutePos(pos).asLong(), 5) != 0)
+            pos = pos.offset(1, 0, 0);
+        helper.setBlock(pos, CrystalnexusModBlocks.PARTS_ASSEMBLER.get());
+        PartsAssemblerBlockEntity machine = helper.getBlockEntity(pos);
+        machine.setItem(0, new ItemStack(Items.IRON_INGOT, 8));
+        machine.setItem(2, new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get()));
+        machine.setItem(3, new ItemStack(CrystalnexusModItems.ACCELERATION_UPGRADE.get()));
+        helper.assertTrue(machine.getContainerSize() == 4 && machine.canPlaceItem(3, machine.getItem(3)),
+            "The second upgrade slot must accept upgrades");
+        for (int i = 0; i < 74; i++) {
+            machine.getEnergyStorage().receiveEnergy(2048, false);
+            tick(machine);
+        }
+        helper.assertTrue(machine.getData().get(0) == 74 && machine.getItem(1).isEmpty(),
+            "Parallelization must not advance progress faster; acceleration sets a 75-tick cycle");
+        int energyBefore = machine.getEnergyStorage().getEnergyStored();
+        tick(machine);
+        helper.assertTrue(machine.getItem(1).getCount() == 2 && machine.getItem(0).getCount() == 6,
+            "One parallel chip must craft two plates from two ingots at cycle completion");
+        helper.assertTrue(machine.getEnergyStorage().getEnergyStored() == energyBefore - 20,
+            "Both crafts must pay the recipe's energy cost");
+        machine.setItem(1, new ItemStack(CrystalnexusModItems.IRON_SHEET.get(), 63));
+        for (int i = 0; i < 75; i++) {
+            machine.getEnergyStorage().receiveEnergy(2048, false);
+            tick(machine);
+        }
+        helper.assertTrue(machine.getItem(1).getCount() == 64 && machine.getItem(0).getCount() == 5,
+            "Parallel crafts must stop when output space runs out");
+        machine.setItem(0, new ItemStack(Items.IRON_INGOT));
+        machine.setItem(1, ItemStack.EMPTY);
+        for (int i = 0; i < 75; i++) {
+            machine.getEnergyStorage().receiveEnergy(2048, false);
+            tick(machine);
+        }
+        helper.assertTrue(machine.getItem(0).isEmpty() && machine.getItem(1).getCount() == 1,
+            "Parallel crafts must not create output without input");
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
     public static void taggedPartsRespectPriorityModesAndReload(GameTestHelper helper) {
         var registry = BuiltInRegistries.ITEM;
         Map<TagKey<Item>, List<Holder<Item>>> originalTags = new HashMap<>();

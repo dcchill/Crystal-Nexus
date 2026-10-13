@@ -99,4 +99,10 @@ public class OxygenCollectorBlockEntity extends RandomizableContainerBlockEntity
 	private void sync() { machineSync.dataChanged(); }
 	public EnergyStorage getEnergyStorage() { return energyStorage; }
 	public FluidTank getFluidTank() { return fluidTank; }
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.output(getFluidTank());
+        return automationFluidHandler;
+    }
 }

@@ -51,7 +51,7 @@ public final class CometForgeControllerBlockEntity extends RandomizableContainer
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "comet_forge");
     private NonNullList<ItemStack> stacks = NonNullList.withSize(6, ItemStack.EMPTY);
     private final FluidTank temporalFluid = new FluidTank(TANK_CAPACITY,
-        stack -> stack.is(CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
+        stack -> net.crystalnexus.util.FluidIngredientHelper.matches(stack, CrystalnexusModFluids.TEMPORAL_ESSENCE.get())) {
         @Override protected void onContentsChanged() { sync(); }
     };
 	private final EnergyStorage energyStorage = new EnergyStorage(

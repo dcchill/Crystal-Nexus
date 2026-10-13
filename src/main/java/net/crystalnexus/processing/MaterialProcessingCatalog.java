@@ -161,7 +161,7 @@ public final class MaterialProcessingCatalog {
     }
 
     public static Optional<ResourceLocation> slurryMaterial(FluidStack stack) {
-        return stack.is(CrystalnexusModFluids.MINERAL_SLURRY.get())
+        return net.crystalnexus.util.FluidIngredientHelper.matches(stack, CrystalnexusModFluids.MINERAL_SLURRY.get())
             ? Optional.ofNullable(stack.get(CrystalnexusModDataComponents.MATERIAL.get())) : Optional.empty();
     }
 

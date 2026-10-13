@@ -116,4 +116,10 @@ public final class HemochanterBlockEntity extends RandomizableContainerBlockEnti
     @Override public int[] getSlotsForFace(Direction side) { return new int[] { 0 }; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return true; }
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.input(getBloodTank());
+        return automationFluidHandler;
+    }
 }

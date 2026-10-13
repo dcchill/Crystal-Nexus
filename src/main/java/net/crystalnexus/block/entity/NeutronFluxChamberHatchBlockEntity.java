@@ -214,4 +214,10 @@ public final class NeutronFluxChamberHatchBlockEntity extends RandomizableContai
 		setChanged();
 		if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
 	}
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.output(getFluidOutputTank());
+        return automationFluidHandler;
+    }
 }

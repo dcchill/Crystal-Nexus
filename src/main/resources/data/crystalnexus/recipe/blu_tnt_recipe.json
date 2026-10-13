@@ -14,7 +14,7 @@
       "item": "minecraft:gunpowder"
     },
     "c": {
-      "item": "crystalnexus:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     },
     "d": {
       "item": "minecraft:tnt"

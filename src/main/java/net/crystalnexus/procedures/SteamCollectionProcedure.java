@@ -51,7 +51,7 @@ public class SteamCollectionProcedure {
 						world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 				}
 				if (world instanceof ILevelExtension _ext) {
-					IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+					IFluidHandler _fluidHandler = world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof net.crystalnexus.block.entity.SteamCollectorBlockEntity machine ? machine.getFluidTank() : null;
 					if (_fluidHandler != null)
 						{
                         FluidStack steam = new FluidStack(CrystalnexusModFluids.STEAM.get(), 25);
@@ -82,7 +82,7 @@ public class SteamCollectionProcedure {
 										world.setBlock(_pos, _bs.setValue(_integerProp, _value), 3);
 								}
 								if (world instanceof ILevelExtension _ext) {
-									IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+									IFluidHandler _fluidHandler = world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof net.crystalnexus.block.entity.SteamCollectorBlockEntity machine ? machine.getFluidTank() : null;
 									if (_fluidHandler != null)
 										_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.STEAM.get(), 25), IFluidHandler.FluidAction.EXECUTE);
 								}

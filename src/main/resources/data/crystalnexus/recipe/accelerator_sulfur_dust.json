@@ -2,16 +2,16 @@
   "type": "crystalnexus:accelerator_jei",
   "ingredients": [
     {
-      "item": "crystalnexus:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     },
     {
-      "item": "crystalnexus:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     },
     {
-      "item": "crystalnexus:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     },
     {
-      "item": "crystalnexus:sulfur_dust"
+      "tag": "c:dusts/sulfur"
     }
   ],
   "output": { "id": "crystalnexus:carbon_dust", "count": 1 },

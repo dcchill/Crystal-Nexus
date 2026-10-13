@@ -256,7 +256,7 @@ public final class MachineUpgradeStackGameTests {
         for (var block : new net.minecraft.world.level.block.Block[]{CrystalnexusModBlocks.HEMOLYZER.get(),
                 CrystalnexusModBlocks.CRYOGENIC_FLASH_FREEZER_HATCH.get(), CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get(),
                 CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get(), CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get(),
-                CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get(), CrystalnexusModBlocks.PARTICLE_ACCELERATOR_CONTROLLER.get(), CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get()}) {
+                CrystalnexusModBlocks.MATTER_TRANSMUTATION_TABLE.get(), CrystalnexusModBlocks.SINGULARITY_COMPRESSOR.get()}) {
             BlockPos pos = new BlockPos(1, 1, 1);
             helper.setBlock(pos, block);
             net.minecraft.world.level.block.entity.BaseContainerBlockEntity machine = helper.getBlockEntity(pos);

@@ -46,6 +46,7 @@ public class MachineUpgradeItemHandler extends SidedInvWrapper {
     }
 
     @Override public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        if (isUpgradeSlot(slot)) return ItemStack.EMPTY;
         return super.extractItem(slot, Math.min(Math.max(0, amount), getStackInSlot(slot).getMaxStackSize()), simulate);
     }
 }

@@ -132,8 +132,6 @@ public class ItemCollectorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
-		if (index == 2)
-			return false;
-		return true;
+		return index == 0;
 	}
 }

@@ -35,21 +35,23 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         this.container = container;
         this.data = data;
         this.pos = container instanceof BlockEntity blockEntity ? blockEntity.getBlockPos() : BlockPos.ZERO;
-        checkContainerSize(container, 3);
+        checkContainerSize(container, 4);
         container.startOpen(inventory.player);
 
         addSlot(new Slot(container, 0, 43, 35));
         addSlot(new Slot(container, 1, 115, 35) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
-        addSlot(new Slot(container, 2, 180, 8) {
-            @Override public int getMaxStackSize(ItemStack stack) {
-                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
-            }
-            @Override public boolean mayPlace(ItemStack stack) {
-                return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-            }
-        });
+        for (int upgrade = 0; upgrade < 2; upgrade++) {
+            addSlot(new Slot(container, 2 + upgrade, 180, 8 + upgrade * 32) {
+                @Override public int getMaxStackSize(ItemStack stack) {
+                    return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+                }
+                @Override public boolean mayPlace(ItemStack stack) {
+                    return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
+                }
+            });
+        }
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
@@ -61,7 +63,7 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
 
     private static Container findContainer(Inventory inventory, BlockPos pos) {
         BlockEntity blockEntity = inventory.player.level().getBlockEntity(pos);
-        return blockEntity instanceof PartsAssemblerBlockEntity assembler ? assembler : new SimpleContainer(3);
+        return blockEntity instanceof PartsAssemblerBlockEntity assembler ? assembler : new SimpleContainer(4);
     }
 
     public int progress() { return data.get(0); }
@@ -85,11 +87,11 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack original = slot.getItem();
         ItemStack copy = original.copy();
-        if (index < 3) {
-            if (!moveItemStackTo(original, 3, slots.size(), true)) return ItemStack.EMPTY;
+        if (index < 4) {
+            if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
         } else {
             boolean upgrade = original.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-            if (!moveItemStackTo(original, upgrade ? 2 : 0, upgrade ? 3 : 1, false)) return ItemStack.EMPTY;
+            if (!moveItemStackTo(original, upgrade ? 2 : 0, upgrade ? 4 : 1, false)) return ItemStack.EMPTY;
         }
         if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;

@@ -121,7 +121,7 @@ public class FluidPackagerOnTickUpdateProcedure {
 					}
 
 					if (world instanceof ILevelExtension _ext) {
-						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+						IFluidHandler _fluidHandler = world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof net.crystalnexus.block.entity.FluidPackagerBlockEntity machine ? machine.getFluidTank() : null;
 						if (_fluidHandler != null)
 							_fluidHandler.drain(250, IFluidHandler.FluidAction.EXECUTE);
 					}

@@ -60,7 +60,7 @@ public class FluidChemicalReactionRecipe implements CrystalNexusRecipe {
         public boolean matches(FluidStack stack) {
             if (stack.getAmount() < amount) return false;
             boolean fluidMatches = tag ? stack.is(TagKey.create(Registries.FLUID, fluid))
-                : stack.is(BuiltInRegistries.FLUID.get(fluid));
+                : net.crystalnexus.util.FluidIngredientHelper.matches(stack, BuiltInRegistries.FLUID.get(fluid));
             return fluidMatches && (material.isEmpty() || material.equals(Optional.ofNullable(
                 stack.get(CrystalnexusModDataComponents.MATERIAL.get()))));
         }

@@ -55,7 +55,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 		super(CrystalnexusModMenus.ACCELERATOR_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(12);
+		this.internal = new ItemStackHandler(8);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -142,8 +142,6 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
 		}));
-        for (int i = 0; i < 4; i++)
-            this.customSlots.put(8 + i, this.addSlot(new MachineUpgradeSlot(internal, 8 + i, world.getBlockState(BlockPos.containing(x, y, z)), i)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
@@ -176,12 +174,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 				if (!this.moveItemStackTo(itemstack1, machineSlots, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
-			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
-                boolean moved = false;
-            for (int i = 8; i < machineSlots && !itemstack1.isEmpty(); i++)
-                moved |= moveItemStackTo(itemstack1, i, i + 1, false);
-            if (!moved) return ItemStack.EMPTY;
-            } else if (!this.moveItemStackTo(itemstack1, 0, 8, false)) {
+			} else if (!this.moveItemStackTo(itemstack1, 0, machineSlots, false)) {
 				if (index < machineSlots + 27) {
 					if (!this.moveItemStackTo(itemstack1, machineSlots + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;

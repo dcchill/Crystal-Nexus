@@ -29,6 +29,38 @@ public final class FluidChemicalReactionChamberGameTests {
     private FluidChemicalReactionChamberGameTests() {}
 
     @GameTest(template = "zero_point")
+    public static void fluidReactionChambersExposeUpgradeSlots(GameTestHelper helper) {
+        for (var block : new net.minecraft.world.level.block.Block[] {
+                CrystalnexusModBlocks.FLUID_CHEMICAL_REACTION_CHAMBER.get(),
+                CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get() }) {
+            BlockPos pos = new BlockPos(1, 1, 1);
+            helper.setBlock(pos, block);
+            FluidChemicalReactionChamberBlockEntity chamber = (FluidChemicalReactionChamberBlockEntity) helper.getBlockEntity(pos);
+            helper.assertTrue(chamber.getContainerSize() == 6 && MachineUpgradeHelper.upgradeSlots(chamber.getBlockState()) == 3,
+                block + " must expose three upgrade slots");
+            ItemStack parallelization = new ItemStack(CrystalnexusModItems.PARALLELIZATION_CHIP.get());
+            helper.assertTrue(chamber.canPlaceItem(3, parallelization) && chamber.canPlaceItem(4, parallelization)
+                    && chamber.canPlaceItem(5, parallelization),
+                block + " must accept parallelization chips in every upgrade slot");
+            chamber.getTank(0).fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+            chamber.getTank(1).fill(new FluidStack(Fluids.LAVA, 1000), IFluidHandler.FluidAction.EXECUTE);
+            chamber.setItem(3, parallelization);
+            int energyBefore = chamber.getEnergyStorage().getEnergyStored();
+            for (int i = 0; i < 8; i++) chamber.getEnergyStorage().receiveEnergy(4096, false);
+            int expectedEnergy = chamber.getEnergyStorage().getEnergyStored() - 8192;
+            for (int tick = 0; tick < 101; tick++)
+                FluidChemicalReactionChamberOnTickUpdateProcedure.execute(helper.getLevel(), helper.absolutePos(pos));
+            chamber = helper.getBlockEntity(pos);
+            helper.assertTrue(chamber.getItem(2).is(Items.OBSIDIAN) && chamber.getItem(2).getCount() == 2
+                    && chamber.getTank(0).isEmpty() && chamber.getTank(1).isEmpty()
+                    && chamber.getEnergyStorage().getEnergyStored() == expectedEnergy,
+                block + " must complete two parallel fluid reactions with one chip; initial energy=" + energyBefore);
+            helper.setBlock(pos, net.minecraft.world.level.block.Blocks.AIR);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void feEfficiencyUpgradeCosts(GameTestHelper helper) {
         helper.assertTrue(MachineUpgradeHelper.energyCost(
                 new ItemStack(CrystalnexusModItems.FE_EFFICIENCY_UPGRADE.get()), 4096) == 2731,

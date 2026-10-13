@@ -23,14 +23,13 @@ import net.crystalnexus.procedures.ParticleAcceleratorControllerOnTickUpdateProc
 
 import javax.annotation.Nullable;
 
-import java.util.stream.IntStream;
 
 import io.netty.buffer.Unpooled;
 
 public class ParticleAcceleratorControllerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 	private static final int[] INPUT_SLOTS = new int[] {0, 2, 3, 4};
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(8 + 4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(8, ItemStack.EMPTY);
 
 	public ParticleAcceleratorControllerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.PARTICLE_ACCELERATOR_CONTROLLER.get(), position, state);
@@ -39,6 +38,7 @@ public class ParticleAcceleratorControllerBlockEntity extends RandomizableContai
 	public static void tick(Level level, BlockPos pos, BlockState state, ParticleAcceleratorControllerBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+		blockEntity.returnLegacyUpgrades();
 		ParticleAcceleratorControllerOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
 
@@ -46,7 +46,8 @@ public class ParticleAcceleratorControllerBlockEntity extends RandomizableContai
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
 		if (!this.tryLoadLootTable(compound))
-			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+			// Read the retired slots too, so existing upgrades can be returned to the world.
+			this.stacks = NonNullList.withSize(12, ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
 	}
 
@@ -70,7 +71,25 @@ public class ParticleAcceleratorControllerBlockEntity extends RandomizableContai
 
 	@Override
 	public int getContainerSize() {
-		return stacks.size();
+		return 8;
+	}
+
+	@Override
+	public void onLoad() {
+		super.onLoad();
+		returnLegacyUpgrades();
+	}
+
+	private void returnLegacyUpgrades() {
+		if (level == null || level.isClientSide() || stacks.size() <= 8) return;
+		for (int slot = 8; slot < stacks.size(); slot++) {
+			net.minecraft.world.Containers.dropItemStack(level, worldPosition.getX() + 0.5,
+				worldPosition.getY() + 1, worldPosition.getZ() + 0.5, stacks.get(slot));
+		}
+		NonNullList<ItemStack> retained = NonNullList.withSize(8, ItemStack.EMPTY);
+		for (int slot = 0; slot < 8; slot++) retained.set(slot, stacks.get(slot));
+		stacks = retained;
+		setChanged();
 	}
 
 	@Override
@@ -108,15 +127,12 @@ public class ParticleAcceleratorControllerBlockEntity extends RandomizableContai
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-        if (index >= 8 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
-                && !getItem(index).isEmpty()) return false;
-		if (index >= 8) return index < getContainerSize() && net.crystalnexus.util.MachineUpgradeHelper.isOutputUpgrade(stack);
-		return !isOutputSlot(index);
+		return index >= 0 && index < getContainerSize() && !isOutputSlot(index);
 	}
 
 	@Override
 	public int[] getSlotsForFace(Direction side) {
-		return IntStream.concat(IntStream.of(INPUT_SLOTS), IntStream.range(8, getContainerSize())).toArray();
+		return new int[] {0, 1, 2, 3, 4, 5, 6, 7};
 	}
 
 	@Override

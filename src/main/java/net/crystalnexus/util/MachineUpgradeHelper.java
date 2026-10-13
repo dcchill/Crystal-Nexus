@@ -40,10 +40,12 @@ public final class MachineUpgradeHelper {
     }
 
     public static int upgradeSlots(BlockState state) {
-        if (state.getBlock() instanceof net.crystalnexus.block.MegaChemicalReactionChamberBlock
+        if (state.getBlock() instanceof net.crystalnexus.block.ParticleAcceleratorControllerBlock) return 0;
+        if (state.getBlock() instanceof net.crystalnexus.block.PartsAssemblerBlock) return 2;
+        if (state.getBlock() instanceof net.crystalnexus.block.FluidChemicalReactionChamberBlock
+                || state.getBlock() instanceof net.crystalnexus.block.MegaChemicalReactionChamberBlock
                 || state.getBlock() instanceof net.crystalnexus.block.CryogenicFlashFreezerHatchBlock) return 3;
-        if (state.getBlock() instanceof net.crystalnexus.block.MatterTransmutationTableBlock
-                || state.getBlock() instanceof net.crystalnexus.block.ParticleAcceleratorControllerBlock) return 4;
+        if (state.getBlock() instanceof net.crystalnexus.block.MatterTransmutationTableBlock) return 4;
         return MachineTier.from(state).upgradeSlots();
     }
 

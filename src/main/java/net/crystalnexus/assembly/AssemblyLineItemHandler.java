@@ -11,7 +11,8 @@ public final class AssemblyLineItemHandler extends net.crystalnexus.world.invent
     public AssemblyLineItemHandler(BlockEntity be, Direction side) {
         super((WorldlyContainer) be, side, be instanceof net.crystalnexus.block.entity.CircuitPressBlockEntity ? 3 : 2,
             be instanceof net.crystalnexus.block.entity.CircuitPressBlockEntity ? 4
-                : be instanceof net.crystalnexus.block.entity.CrystalCrusherBlockEntity ? 3 : Integer.MAX_VALUE);
+                : be instanceof net.crystalnexus.block.entity.CrystalCrusherBlockEntity
+                    || be instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity ? 3 : Integer.MAX_VALUE);
         machine = be;
     }
     private boolean locked() { return machine.getPersistentData().contains(AssemblyLineMachine.OWNER); }

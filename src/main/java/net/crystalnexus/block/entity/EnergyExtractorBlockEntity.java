@@ -146,11 +146,7 @@ public class EnergyExtractorBlockEntity extends RandomizableContainerBlockEntity
 
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
-		if (index == 0)
-			return false;
-		if (index == 2)
-			return false;
-		return true;
+		return index == 2;
 	}
 
 	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.ENERGY_EXTRACTOR.capacity(), CrystalnexusConfig.MACHINES.ENERGY_EXTRACTOR.maxExtract(), this::syncEnergy);

@@ -42,7 +42,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
     public final MachineSync machineSync = new MachineSync(this);
 	public static final int TANK_CAPACITY = 4000;
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
-	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> stack.is(CrystalnexusModFluids.NITROGEN.get())) {
+	private final FluidTank nitrogenTank = new FluidTank(TANK_CAPACITY, stack -> net.crystalnexus.util.FluidIngredientHelper.matches(stack, CrystalnexusModFluids.NITROGEN.get())) {
 		@Override protected void onContentsChanged() {
 			machineSync.changed();
 		}
@@ -211,4 +211,10 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
         setChanged();
     }
 
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.input(getNitrogenTank());
+        return automationFluidHandler;
+    }
 }

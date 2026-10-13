@@ -108,7 +108,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) >= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
 					if (world instanceof ILevelExtension _ext) {
-						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+						IFluidHandler _fluidHandler = world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof net.crystalnexus.block.entity.NodeExtractorBlockEntity machine ? machine.getFluidTank() : null;
 						if (_fluidHandler != null)
 							_fluidHandler.fill(new FluidStack(CrystalnexusModFluids.CRUDE_OIL.get(), (int) outputAmount), IFluidHandler.FluidAction.EXECUTE);
 					}
@@ -145,7 +145,7 @@ public class NodeExtractorOnTickUpdateProcedure {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 				if (getFluidTankCapacity(world, BlockPos.containing(x, y, z), 1, null) >= getFluidTankLevel(world, BlockPos.containing(x, y, z), 1, null) + outputAmount) {
 					if (world instanceof ILevelExtension _ext) {
-						IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+						IFluidHandler _fluidHandler = world.getBlockEntity(BlockPos.containing(x, y, z)) instanceof net.crystalnexus.block.entity.NodeExtractorBlockEntity machine ? machine.getFluidTank() : null;
 						if (_fluidHandler != null)
 							_fluidHandler.fill(new FluidStack(Fluids.LAVA, 100), IFluidHandler.FluidAction.EXECUTE);
 					}

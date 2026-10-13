@@ -18,8 +18,8 @@ public final class MultiblockFluidOutputBlockEntity extends BlockEntity {
 		@Override public int getTanks() { IFluidHandler target = target(); return target == null ? 0 : target.getTanks(); }
 		@Override public FluidStack getFluidInTank(int index) { IFluidHandler target = target(); return target == null ? FluidStack.EMPTY : target.getFluidInTank(index); }
 		@Override public int getTankCapacity(int index) { IFluidHandler target = target(); return target == null ? 0 : target.getTankCapacity(index); }
-		@Override public boolean isFluidValid(int index, FluidStack stack) { IFluidHandler target = target(); return target != null && target.isFluidValid(index, stack); }
-		@Override public int fill(FluidStack resource, FluidAction action) { IFluidHandler target = target(); return target == null ? 0 : target.fill(resource, action); }
+		@Override public boolean isFluidValid(int index, FluidStack stack) { return false; }
+		@Override public int fill(FluidStack resource, FluidAction action) { return 0; }
 		@Override public FluidStack drain(FluidStack resource, FluidAction action) { IFluidHandler target = target(); return target == null ? FluidStack.EMPTY : target.drain(resource, action); }
 		@Override public FluidStack drain(int amount, FluidAction action) { IFluidHandler target = target(); return target == null ? FluidStack.EMPTY : target.drain(amount, action); }
 	};
@@ -34,8 +34,9 @@ public final class MultiblockFluidOutputBlockEntity extends BlockEntity {
 	public boolean isBoundTo(BlockPos pos) { return pos.equals(controller); }
 
 	@Nullable private IFluidHandler target() {
-		if (level == null || controller == null
-			|| !(level.getBlockEntity(controller) instanceof MultiblockPortTarget target)) return null;
+		if (level == null || controller == null || !level.hasChunkAt(controller)
+			|| !(level.getBlockEntity(controller) instanceof MultiblockPortTarget target)
+			|| !target.acceptsMultiblockPort(worldPosition)) return null;
 		return target.multiblockFluidOutput();
 	}
 

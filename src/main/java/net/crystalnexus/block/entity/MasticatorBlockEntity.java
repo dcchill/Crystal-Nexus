@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 public class MasticatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
 	public static final int BLOOD_TANK_CAPACITY = 4000;
 	private final FluidTank bloodTank = new FluidTank(BLOOD_TANK_CAPACITY,
-			fluid -> fluid.is(CrystalnexusModFluids.BLOOD.get())) {
+			fluid -> net.crystalnexus.util.FluidIngredientHelper.matches(fluid, CrystalnexusModFluids.BLOOD.get())) {
 		@Override protected void onContentsChanged() {
 			setChanged();
 			if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
@@ -207,4 +207,10 @@ public class MasticatorBlockEntity extends RandomizableContainerBlockEntity impl
         setChanged();
     }
 
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.input(getBloodTank());
+        return automationFluidHandler;
+    }
 }

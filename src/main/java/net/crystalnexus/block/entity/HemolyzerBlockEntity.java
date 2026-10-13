@@ -125,4 +125,10 @@ public final class HemolyzerBlockEntity extends RandomizableContainerBlockEntity
     @Override public int[] getSlotsForFace(Direction side) { return new int[] { 0, 1 }; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return canPlaceItem(slot, stack); }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return false; }
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.output(getBloodTank());
+        return automationFluidHandler;
+    }
 }

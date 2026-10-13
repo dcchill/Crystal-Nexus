@@ -61,7 +61,7 @@ public class SteamEngineOnTickUpdateProcedure {
 			if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") >= cookTime) {
 				machine.machineSync.setDouble("progress", 0);
 				if (world instanceof ILevelExtension _ext) {
-					IFluidHandler _fluidHandler = _ext.getCapability(Capabilities.FluidHandler.BLOCK, BlockPos.containing(x, y, z), null);
+					IFluidHandler _fluidHandler = machine.getFluidTank();
 					if (_fluidHandler != null)
 						_fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
 				}

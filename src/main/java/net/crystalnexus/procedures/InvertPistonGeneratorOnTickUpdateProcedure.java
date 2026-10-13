@@ -50,7 +50,7 @@ public class InvertPistonGeneratorOnTickUpdateProcedure {
 
         ItemStack fuelStack = getItemFromSlot(level, pos, 0);
 
-        IFluidHandler fluidHandler = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
+        IFluidHandler fluidHandler = generator.getFluidTank();
 		if (!fuelStack.isEmpty() && fluidHandler != null) {
 		
 		    FluidStack fluidToInsert = FluidStack.EMPTY;

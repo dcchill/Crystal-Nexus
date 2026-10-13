@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 
 	private static final int MIN_LEN = 5;
-	private static final int MAX_LEN = 64;
+	private static final int MAX_LEN = 256;
 
 	private static final int MIN_MAGNETS = 1;
 
@@ -43,13 +43,6 @@ public class ParticleAcceleratorControllerOnTickUpdateProcedure {
 	private static final int[] OUTPUT_SLOTS = new int[] {1, 5, 6, 7};
 
 	public static void execute(LevelAccessor world, double x, double y, double z) {
-        BlockEntity machine = world.getBlockEntity(BlockPos.containing(x, y, z));
-        int steps = net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(net.crystalnexus.util.MachineUpgradeHelper.upgrades(machine, 8, 9));
-        // ponytail: serialized work steps; separate lanes if simultaneous recipe selection is needed.
-        for (int step = 0; step < steps; step++) executeSingle(world, x, y, z);
-    }
-
-    private static void executeSingle(LevelAccessor world, double x, double y, double z) {
 		BlockPos pos = BlockPos.containing(x, y, z);
 
 		if (world.isClientSide()) return;

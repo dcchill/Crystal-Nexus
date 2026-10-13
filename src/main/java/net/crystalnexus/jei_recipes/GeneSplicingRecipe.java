@@ -54,7 +54,7 @@ public final class GeneSplicingRecipe implements CrystalNexusRecipe {
 	}
 
 	public boolean matches(FluidStack blood, ItemStack prisonCube) {
-		return blood.is(CrystalnexusModFluids.BLOOD.get()) && blood.getAmount() >= bloodAmount
+		return net.crystalnexus.util.FluidIngredientHelper.matches(blood, CrystalnexusModFluids.BLOOD.get()) && blood.getAmount() >= bloodAmount
 				&& prisonCube.getCount() >= prisonCubeCount && this.prisonCube.test(prisonCube)
 				&& PrisonCubeItem.hasStoredEntity(prisonCube, mob);
 	}

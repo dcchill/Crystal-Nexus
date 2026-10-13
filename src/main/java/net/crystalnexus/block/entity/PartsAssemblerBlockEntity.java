@@ -2,7 +2,6 @@ package net.crystalnexus.block.entity;
 
 import net.crystalnexus.block.PartsAssemblerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
-import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
 import net.crystalnexus.processing.PartsAssemblingDefaults;
 import net.crystalnexus.util.MachineUpgradeHelper;
@@ -16,7 +15,6 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,7 +35,7 @@ import java.util.Collection;
 
 public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
     public static final int CAPACITY = 10_000;
-    private NonNullList<ItemStack> items = NonNullList.withSize(3, ItemStack.EMPTY);
+    private NonNullList<ItemStack> items = NonNullList.withSize(4, ItemStack.EMPTY);
     private int progress;
     private int maxProgress = 100;
     private int selectedMode;
@@ -89,16 +87,11 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     private void tickServer(Level level, BlockPos pos, BlockState state) {
-        int steps = MachineUpgradeHelper.parallelCraftCount(items.get(2));
-        for (int step = 0; step < steps; step++) tickStep(level, pos, level.getBlockState(pos));
-    }
-
-    private void tickStep(Level level, BlockPos pos, BlockState state) {
         ItemStack input = items.get(0);
         ResourceLocation assigned = net.crystalnexus.assembly.AssemblyLineMachine.assignedRecipe(level, pos);
         PartsAssemblingRecipe recipe = findRecipe(level, input, assigned);
 
-        ItemStack upgrade = items.get(2);
+        var upgrade = MachineUpgradeHelper.upgrades(this, 2, 3);
         int energyCost = recipe == null ? 0 : MachineUpgradeHelper.energyCost(upgrade, recipe.energyPerTick());
         ItemStack result = recipe == null ? ItemStack.EMPTY : (recipe.getResultItem(level.registryAccess())).copy();
         boolean working = recipe != null && canAccept(result)
@@ -111,6 +104,13 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
             progress++;
             if (progress >= maxProgress) {
                 craft(result);
+                int crafts = MachineUpgradeHelper.parallelCraftCount(upgrade);
+                for (int craft = 1; craft < crafts; craft++) {
+                    if (!recipe.matches(new SingleRecipeInput(items.get(0)), level)
+                            || !canAccept(result) || energy.getEnergyStored() < energyCost) break;
+                    energy.extractEnergy(energyCost, false);
+                    craft(result);
+                }
                 progress = 0;
             }
         } else if (progress != 0) {
@@ -200,7 +200,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
     @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) { return saveWithFullMetadata(registries); }
-    @Override public int getContainerSize() { return 3; }
+    @Override public int getContainerSize() { return 4; }
     @Override protected NonNullList<ItemStack> getItems() { return items; }
     @Override protected void setItems(NonNullList<ItemStack> items) { this.items = items; }
     @Override protected Component getDefaultName() { return Component.translatable("block.crystalnexus.parts_assembler"); }
@@ -212,11 +212,11 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     @Override public boolean canPlaceItem(int slot, ItemStack stack) {
-        if (slot == 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+        if ((slot == 2 || slot == 3) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
                 && !getItem(slot).isEmpty()) return false;
-        return slot == 0 || slot == 2 && stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
+        return slot == 0 || (slot == 2 || slot == 3) && MachineUpgradeHelper.isMachineUpgrade(stack);
     }
-    @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2}; }
+    @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2, 3}; }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
     @Override public void onLoad() {

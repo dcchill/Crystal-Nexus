@@ -169,4 +169,10 @@ public class SteamEngineBlockEntity extends RandomizableContainerBlockEntity imp
 	public FluidTank getFluidTank() {
 		return fluidTank;
 	}
+
+    private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
+    public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.input(getFluidTank());
+        return automationFluidHandler;
+    }
 }
