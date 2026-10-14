@@ -163,6 +163,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.MULTIBLOCK_GUI_PAGE_6.get(), MultiblockGuiPage6Screen::new);
 		event.register(CrystalnexusModMenus.GRAVITATIONAL_ARRAY.get(), GravitationalArrayScreen::new);
 		event.register(CrystalnexusModMenus.COMET_FORGE.get(), CometForgeScreen::new);
+		event.register(CrystalnexusModMenus.HEAVENSHATTER.get(), net.crystalnexus.client.gui.HeavenshatterScreen::new);
 		event.register(CrystalnexusModMenus.SOLAR_SIMULATOR.get(), SolarSimulatorScreen::new);
 		event.register(CrystalnexusModMenus.SOLAR_ENGINE.get(), SolarEngineScreen::new);
 		event.register(CrystalnexusModMenus.PLASMA_GENERATOR.get(), PlasmaGeneratorScreen::new);

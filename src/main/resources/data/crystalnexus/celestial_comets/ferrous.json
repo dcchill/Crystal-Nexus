@@ -1,0 +1,14 @@
+{
+  "name": "Ferrous Comet",
+  "weight": 5,
+  "difficulty": 1,
+  "min_diameter": 7,
+  "max_diameter": 14,
+  "min_distance": 1000,
+  "max_distance": 10000,
+  "palette": [
+    "minecraft:stone",
+    "minecraft:iron_ore",
+    "minecraft:copper_ore"
+  ]
+}

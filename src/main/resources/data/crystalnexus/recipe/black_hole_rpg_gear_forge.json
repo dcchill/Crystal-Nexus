@@ -1,0 +1,36 @@
+{
+  "type": "crystalnexus:celestial_gear_forge",
+  "ingredients": [
+    {
+      "item": "crystalnexus:dark_battery_cell"
+    },
+    {
+      "item": "crystalnexus:dark_matter"
+    },
+    {
+      "item": "crystalnexus:dark_matter"
+    },
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:energy_singularity"
+    },
+    {
+      "item": "crystalnexus:compound_e"
+    },
+    {
+      "item": "crystalnexus:dark_matter"
+    },
+    {
+      "item": "crystalnexus:dark_matter"
+    },
+    {
+      "tag": "crystalnexus:celestial_gear_forge_stars"
+    }
+  ],
+  "output": {
+    "id": "crystalnexus:black_hole_rpg",
+    "count": 1
+  }
+}

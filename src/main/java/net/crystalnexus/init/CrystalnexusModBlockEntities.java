@@ -265,6 +265,8 @@ public class CrystalnexusModBlockEntities {
 			GravitationalArrayControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> COMET_FORGE_CONTROLLER = register("comet_forge_controller", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER,
 			CometForgeControllerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> HEAVENSHATTER_BEAM_CONTROLLER = register("heavenshatter_beam_controller", CrystalnexusModBlocks.HEAVENSHATTER_BEAM_CONTROLLER,
+			net.crystalnexus.block.entity.HeavenshatterBeamControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SOLAR_SIMULATOR_CONTROLLER = register("solar_simulator_controller", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER,
 			SolarSimulatorControllerBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SOLAR_ENGINE_CONTROLLER = register("solar_engine_controller", CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER,

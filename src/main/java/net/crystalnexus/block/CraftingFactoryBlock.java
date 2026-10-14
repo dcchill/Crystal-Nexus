@@ -67,7 +67,7 @@ public class CraftingFactoryBlock extends Block implements EntityBlock, TieredMa
 					return 0;
 				return 0;
 			}
-		}.getLightLevel())).dynamicShape());
+		}.getLightLevel())).requiresCorrectToolForDrops().dynamicShape());
 		this.machineTier = machineTier;
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
 	}

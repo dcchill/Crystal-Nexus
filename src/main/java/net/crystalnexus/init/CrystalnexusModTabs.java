@@ -180,6 +180,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.METEORITE_ALLOY_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.METEORITE_SCRAP_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.HEAVENSHATTER_BEAM_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.HOT_METEORITE_ALLOY.get());
 				tabData.accept(CrystalnexusModItems.METEORITE_SHEET.get());
 				tabData.accept(CrystalnexusModItems.OBSIDIAN_DUST.get());
@@ -352,6 +353,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.MULTIBLOCK_PLANS.get());
 				tabData.accept(CrystalnexusModItems.STRUCTURE_TRACKER.get());
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
+				tabData.accept(CrystalnexusModItems.BLACK_HOLE_RPG.get());
 				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());
 				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
 				tabData.accept(CrystalnexusModItems.ORGAN.get());
@@ -726,6 +728,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.BUILD_GUN.get());
 				tabData.accept(CrystalnexusModItems.STRUCTURE_TRACKER.get());
 				tabData.accept(CrystalnexusModItems.GRAVITY_GUN.get());
+				tabData.accept(CrystalnexusModItems.BLACK_HOLE_RPG.get());
 				tabData.accept(CrystalnexusModItems.PRISON_CUBE.get());
 				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
@@ -795,6 +798,7 @@ public class CrystalnexusModTabs {
 			tabData.accept(CrystalnexusModItems.INVERTIUM_HOE.get());
 			tabData.accept(CrystalnexusModItems.COMPOUND_PICKAXE.get());
 		} else if (tabData.getTabKey() == CreativeModeTabs.COMBAT) {
+			tabData.accept(CrystalnexusModItems.BLACK_HOLE_RPG.get());
 			tabData.accept(CrystalnexusModItems.CHLOROPHYTE_SWORD.get());
 			tabData.accept(CrystalnexusModItems.CYSTALIZED_SWORD.get());
 			tabData.accept(CrystalnexusModItems.TITANIUM_SWORD.get());

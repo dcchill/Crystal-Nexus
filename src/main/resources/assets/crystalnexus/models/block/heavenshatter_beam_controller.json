@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "crystalnexus:block/carbon_plate_block",
+    "up": "crystalnexus:block/carbon_plate_block",
+    "north": "crystalnexus:block/heavenshatter_beam_controller",
+    "east": "crystalnexus:block/carbon_plate_block",
+    "south": "crystalnexus:block/carbon_plate_block",
+    "west": "crystalnexus:block/carbon_plate_block",
+    "particle": "crystalnexus:block/carbon_plate_block"
+  }
+}

@@ -17,7 +17,7 @@ public final class AssemblyLineEvents {
     public static void changed(Level level, BlockPos pos, boolean force) {
         if (level.isClientSide) return;
         for (BlockPos controller : List.copyOf(CONTROLLERS.getOrDefault(level, Set.of())))
-            if (level.hasChunkAt(controller) && level.getBlockEntity(controller) instanceof AssemblyLineControllerBlockEntity be) be.changedAt(pos, force);
+            if (controllerAt(level, controller) instanceof AssemblyLineControllerBlockEntity be) be.changedAt(pos, force);
     }
     @SubscribeEvent public static void neighbors(BlockEvent.NeighborNotifyEvent e) { if (e.getLevel() instanceof Level l) changed(l, e.getPos(), false); }
     @SubscribeEvent public static void breaking(BlockEvent.BreakEvent e) { if (!e.isCanceled() && e.getLevel() instanceof Level l) changed(l, e.getPos(), true); }
@@ -29,7 +29,7 @@ public final class AssemblyLineEvents {
         if (!(e.getLevel() instanceof Level l) || l.isClientSide) return;
         for (BlockPos p : List.copyOf(CONTROLLERS.getOrDefault(l, Set.of()))) {
             if (Math.abs((p.getX() >> 4)-e.getChunk().getPos().x) <= 2 && Math.abs((p.getZ() >> 4)-e.getChunk().getPos().z) <= 2
-                && l.hasChunkAt(p) && l.getBlockEntity(p) instanceof AssemblyLineControllerBlockEntity be) be.invalidate();
+                && controllerAt(l, p) instanceof AssemblyLineControllerBlockEntity be) be.invalidate();
         }
     }
     @SubscribeEvent public static void interact(PlayerInteractEvent.RightClickBlock e) {
@@ -39,6 +39,12 @@ public final class AssemblyLineEvents {
     @SubscribeEvent public static void recipesReloaded(net.neoforged.neoforge.event.OnDatapackSyncEvent e) {
         if (e.getPlayer() != null) return;
         for (var entry : CONTROLLERS.entrySet()) for (BlockPos pos : List.copyOf(entry.getValue()))
-            if (entry.getKey().hasChunkAt(pos) && entry.getKey().getBlockEntity(pos) instanceof AssemblyLineControllerBlockEntity be) be.invalidate();
+            if (controllerAt(entry.getKey(), pos) instanceof AssemblyLineControllerBlockEntity be) be.invalidate();
+    }
+
+    private static net.minecraft.world.level.block.entity.BlockEntity controllerAt(Level level, BlockPos pos) {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel server)) return null;
+        var chunk = server.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
+        return chunk == null ? null : chunk.getBlockEntity(pos);
     }
 }

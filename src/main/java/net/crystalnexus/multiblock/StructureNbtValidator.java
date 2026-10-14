@@ -145,7 +145,10 @@ public final class StructureNbtValidator {
         for (TemplateBlock entry : parsed.rotated(rotation)) {
             BlockPos worldPos = origin.offset(entry.pos);
             templatePositions.computeIfAbsent(entry.state.getBlock(), ignored -> new ArrayList<>()).add(worldPos.immutable());
-            BlockState actual = level.getBlockState(worldPos);
+            // A chunk can have a FULL ticket before loading finishes; never wait for it from a machine tick.
+            var chunk = level.getChunkSource().getChunkNow(worldPos.getX() >> 4, worldPos.getZ() >> 4);
+            if (chunk == null) return failure("Structure chunks are not loaded");
+            BlockState actual = chunk.getBlockState(worldPos);
             Set<Block> replacementsForBlock = substitutions.get(entry.state.getBlock());
             if (replacementsForBlock != null) {
                 substitutionSlots++;
@@ -169,7 +172,12 @@ public final class StructureNbtValidator {
 
         Vec3 center = StructureTemplate.transform(parsed.center, Mirror.NONE, rotation, BlockPos.ZERO)
             .add(origin.getX(), origin.getY(), origin.getZ());
-        if (centerMustBeAir && !level.getBlockState(BlockPos.containing(center)).isAir()) return failure("Structure center must be air");
+        if (centerMustBeAir) {
+            BlockPos centerPos = BlockPos.containing(center);
+            var chunk = level.getChunkSource().getChunkNow(centerPos.getX() >> 4, centerPos.getZ() >> 4);
+            if (chunk == null) return failure("Structure chunks are not loaded");
+            if (!chunk.getBlockState(centerPos).isAir()) return failure("Structure center must be air");
+        }
         return new ValidationResult(Optional.of(new Match(origin, center, replacements, templatePositions)), "Structure complete");
     }
 

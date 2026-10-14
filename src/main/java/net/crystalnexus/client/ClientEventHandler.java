@@ -142,6 +142,11 @@ public class ClientEventHandler {
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
 
     event.registerBlockEntityRenderer(
+        (BlockEntityType<net.crystalnexus.block.entity.HeavenshatterBeamControllerBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.HEAVENSHATTER_BEAM_CONTROLLER.get(),
+        net.crystalnexus.client.renderer.HeavenshatterRenderer::new
+    );
+
+    event.registerBlockEntityRenderer(
         (BlockEntityType<CelestialGearForgeBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.CELESTIAL_GEAR_FORGE.get(),
         net.crystalnexus.client.renderer.CelestialGearForgeRenderer::new
     );

@@ -1,0 +1,14 @@
+{
+  "name": "Auriferous Comet",
+  "weight": 3,
+  "difficulty": 2,
+  "min_diameter": 7,
+  "max_diameter": 14,
+  "min_distance": 1000,
+  "max_distance": 10000,
+  "palette": [
+    "minecraft:deepslate",
+    "minecraft:gold_ore",
+    "minecraft:redstone_ore"
+  ]
+}

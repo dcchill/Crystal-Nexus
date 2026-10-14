@@ -282,6 +282,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
         registration.addRecipes(ReactorMultiblockGuide_Type, recipes(recipeManager, ReactorMultiblockGuideRecipe.class));
         registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()),
             net.minecraft.network.chat.Component.literal("Replace meteorite alloy casing with at least one Energy Input and one Fluid Input. Leave at least one casing block. Supply Temporal Essence. Insert three high-tier singularities and one singularity of the tagged raw material or gem for the comet."));
+        registration.addItemStackInfo(new ItemStack(CrystalnexusModItems.HEAVENSHATTER_BEAM_CONTROLLER.get()),
+            net.minecraft.network.chat.Component.translatable("jei.crystalnexus.heavenshatter.info"));
 	}
 
 	private static <T> List<T> recipes(RecipeManager manager, Class<T> recipeClass) {
@@ -346,9 +348,11 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 				multiblockStructure("mega_chem_reactor", CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("reactor", CrystalnexusModBlocks.REACTOR_COMPUTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("comet_forge", CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("heavenshatter_beam", CrystalnexusModBlocks.HEAVENSHATTER_BEAM_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_sim", CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("ultima_smelter", CrystalnexusModBlocks.ULTIMA_SMELTER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("plasma_gen", CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
+				multiblockStructure("diesel_generator", CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("solar_engine", CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("arc_blast_furnace", CrystalnexusModBlocks.ARC_FURNACE.get().asItem().getDefaultInstance(), access),
 				multiblockStructure("azurine_blast_furnace", CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem().getDefaultInstance(), access),
@@ -360,6 +364,10 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	private static MultiblockStructureRecipe multiblockStructure(String id, ItemStack icon, net.minecraft.core.RegistryAccess access) {
 		MultiblockStructurePreview preview = new MultiblockStructurePreview(id, net.minecraft.world.level.block.Block.byItem(icon.getItem()));
 		var ingredients = new java.util.ArrayList<>(preview.getRequiredBlocks(access));
+		if (id.equals("heavenshatter_beam")) {
+			for (ItemStack stack : ingredients) if (stack.is(CrystalnexusModBlocks.CARBON_BLOCK.get().asItem())) { stack.shrink(1); break; }
+			ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
+		}
 		if (id.equals("celestial_gear_forge")) ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
 		if (id.equals("neutron_flux_chamber")) {
 			ingredients.add(new ItemStack(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get()));
@@ -372,6 +380,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), CometForge_Type);
         registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), MultiblockStructure_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.HEAVENSHATTER_BEAM_CONTROLLER.get()), MultiblockStructure_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem()), RecipeTypes.SMELTING);

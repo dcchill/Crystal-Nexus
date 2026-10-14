@@ -60,8 +60,10 @@ public class BlackHoleWorldRenderer {
 	}
 
 	private static void renderBlackHole(VertexConsumer glow, Matrix4f matrix, Vec3 camera, BlackHoleVisualState.Visual visual, double renderTime) {
-		Vec3 centerWorld = visual.center();
-		Vec3 centerRel = centerWorld.subtract(camera);
+        drawHole(glow, matrix, visual.center().subtract(camera), (float) Math.max(2.4D, visual.radius() * 0.42D), fade(visual, renderTime), renderTime);
+    }
+
+    public static void drawHole(VertexConsumer glow, Matrix4f matrix, Vec3 centerRel, float coreRadius, float fade, double renderTime) {
 		Vector3f center = toVector(centerRel);
 
 		Vector3f toCamera = new Vector3f(-center.x, -center.y, -center.z);
@@ -78,8 +80,6 @@ public class BlackHoleWorldRenderer {
 		Vector3f right = new Vector3f(up).cross(toCamera).normalize();
 		up = new Vector3f(toCamera).cross(right).normalize();
 
-		float fade = fade(visual, renderTime);
-		float coreRadius = (float) Math.max(2.4D, visual.radius() * 0.42D);
 		float rimInner = coreRadius * 1.015F;
 		float rimOuter = coreRadius * 1.055F;
 
@@ -177,12 +177,15 @@ public class BlackHoleWorldRenderer {
 		}
 
 		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		RenderSystem.enableDepthTest();
+		RenderSystem.depthMask(false);
 		RenderSystem.disableCull();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		BufferUploader.drawWithShader(builder.buildOrThrow());
 		RenderSystem.disableBlend();
 		RenderSystem.enableCull();
+		RenderSystem.depthMask(true);
 	}
 
 	private static Vector3f spherePoint(Vector3f center, float radius, float phi, float theta) {

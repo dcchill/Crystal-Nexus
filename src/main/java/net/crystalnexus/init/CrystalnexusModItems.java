@@ -293,6 +293,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> METEORITE_SCRAP_BLOCK = block(CrystalnexusModBlocks.METEORITE_SCRAP_BLOCK);
 	public static final DeferredItem<Item> RESOURCE_COMET = REGISTRY.register("resource_comet", net.crystalnexus.item.ResourceCometItem::new);
 	public static final DeferredItem<Item> COMET_FORGE_CONTROLLER = block(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER);
+	public static final DeferredItem<Item> HEAVENSHATTER_BEAM_CONTROLLER = block(CrystalnexusModBlocks.HEAVENSHATTER_BEAM_CONTROLLER);
 	public static final DeferredItem<Item> METEORITE_SHEET = REGISTRY.register("meteorite_sheet", MeteoriteSheetItem::new);
 	public static final DeferredItem<Item> OBSIDIAN_DUST = REGISTRY.register("obsidian_dust", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> LAPIS_DUST = REGISTRY.register("lapis_dust", () -> new Item(new Item.Properties()));
@@ -705,6 +706,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> BLUEPRINT_BASE = block(CrystalnexusModBlocks.BLUEPRINT_BASE);
 	public static final DeferredItem<Item> BLUEPRINT_FRAME = block(CrystalnexusModBlocks.BLUEPRINT_FRAME);
 	public static final DeferredItem<Item> BLUEPRINT_CONTROLLER = block(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER);
+	public static final DeferredItem<Item> BLACK_HOLE_RPG = REGISTRY.register("black_hole_rpg", net.crystalnexus.item.BlackHoleRpgItem::new);
 	public static final DeferredItem<Item> GRAVITY_GUN = REGISTRY.register("gravity_gun", GravityGunItem::new);
 	public static final DeferredItem<Item> PRISON_CUBE = REGISTRY.register("prison_cube", PrisonCubeItem::new);
 	public static final DeferredItem<Item> SPATIAL_GLAND = REGISTRY.register("spatial_gland", () -> new Item(new Item.Properties()));

@@ -101,6 +101,7 @@ public class TooltipInfoHandler {
 		addTooltip("maw", "Damages mobs standing on top and eats them when they die.", "Collects their drops and creates 1 biomass per mob.", "Passive: requires no energy.");
 		addTooltip("hemochanter", "Holds 32 buckets (32,000 mB) of Blood.", "Each higher enchantment level costs more Blood and FE, and takes longer.", "Randomly raises an existing enchantment to level 32.");
 		addTooltip("meteor_sword", "Hold Shift + right-click to charge, then release when ready.", "Each second adds a charge level, up to 5; your next successful hit consumes it.", "Each level doubles damage and FE use, up to 32x.", "Base hit costs 500 FE; a full charge costs 16,000 FE.", "Grants +2 blocks of reach and a wide forward sweep.", "Supports standard sword enchantments, including Sweeping Edge.");
+		addTooltip("black_hole_rpg", "Hold right-click to charge; release to fire.", "Hold left-click for a 4x scope.", "Charge for 3 seconds: 100-400 damage and a larger energy burst.", "Up to 256 blocks; stops at solid blocks.", "Each shot costs 25,000 FE. 3-second cooldown.");
 
 
 		addTooltip("battery",

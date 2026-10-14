@@ -35,6 +35,7 @@ public final class AssemblyLineStructure {
             || state.is(CrystalnexusModBlocks.MACHINE_ENERGY_INPUT.get());
     }
     public static Result scan(Level level, BlockPos controller) {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel server)) return new Result(null, List.of(), "Server only");
         Set<BlockPos> visited = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         queue.add(controller); visited.add(controller);
@@ -47,8 +48,9 @@ public final class AssemblyLineStructure {
                 return new Result(null, List.of(), "Structure exceeds 32 blocks per axis");
             for (Direction d : Direction.values()) {
                 BlockPos next = p.relative(d);
-                if (!level.hasChunkAt(next)) continue;
-                if (shell(level.getBlockState(next)) && visited.add(next)) queue.add(next);
+                var chunk = server.getChunkSource().getChunkNow(next.getX() >> 4, next.getZ() >> 4);
+                if (chunk == null) continue;
+                if (shell(chunk.getBlockState(next)) && visited.add(next)) queue.add(next);
             }
         }
         Bounds bounds = new Bounds(min, max);
@@ -56,8 +58,9 @@ public final class AssemblyLineStructure {
             return new Result(bounds, List.of(), "Controller must be on a face of an enclosure at least 3x3x3");
         List<BlockPos> machines = new ArrayList<>();
         for (BlockPos p : BlockPos.betweenClosed(min, max)) {
-            if (!level.hasChunkAt(p)) return new Result(bounds, List.of(), "Structure chunk unloaded");
-            BlockState state = level.getBlockState(p);
+            var chunk = server.getChunkSource().getChunkNow(p.getX() >> 4, p.getZ() >> 4);
+            if (chunk == null) return new Result(bounds, List.of(), "Structure chunk unloaded");
+            BlockState state = chunk.getBlockState(p);
             if (bounds.faces(p) > 0) {
                 if (!p.equals(controller) && !shell(state))
                     return new Result(bounds, List.of(), "Invalid shell at " + p.toShortString());

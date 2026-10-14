@@ -152,9 +152,14 @@ public class MachineEnergyInputBlockEntity extends RandomizableContainerBlockEnt
 	}
 
 	@Nullable private IEnergyStorage target() {
-		if (level == null || machineController == null
-			|| !level.hasChunkAt(machineController)
-			|| !(level.getBlockEntity(machineController) instanceof MultiblockPortTarget target)
+		if (level == null || machineController == null) return null;
+		net.minecraft.world.level.block.entity.BlockEntity controller;
+		if (level instanceof net.minecraft.server.level.ServerLevel server) {
+			var chunk = server.getChunkSource().getChunkNow(machineController.getX() >> 4, machineController.getZ() >> 4);
+			if (chunk == null) return null;
+			controller = chunk.getBlockEntity(machineController);
+		} else controller = level.getBlockEntity(machineController);
+		if (!(controller instanceof MultiblockPortTarget target)
 			|| !target.acceptsMultiblockPort(worldPosition)) return null;
 		return target.multiblockEnergyInput();
 	}

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:heavenshatter_beam_controller",
     "crystalnexus:invertium_ore",
     "crystalnexus:node_extractor",
     "crystalnexus:reactor_waste_output",

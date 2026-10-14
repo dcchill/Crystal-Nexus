@@ -26,17 +26,18 @@ import java.util.Map;
 
 
 public final class MultiblockPlanTemplates {
-    private static final Map<Block, ResourceLocation> TEMPLATES = Map.of(
-        CrystalnexusModBlocks.ZERO_POINT.get(), id("zero_point"),
-        CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get(), id("comet_forge"),
-        CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get(), id("gravitational_array_new"),
-        CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get(), id("solar_sim"),
-        CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get(), id("solar_engine"),
-        CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get(), id("plasma_gen"),
-        CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER.get(), id("diesel_generator"),
-        CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get(), id("mega_chem_reactor"),
-        CrystalnexusModBlocks.REACTOR_COMPUTER.get(), id("reactor"),
-        CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get(), id("reaction")
+    private static final Map<Block, ResourceLocation> TEMPLATES = Map.ofEntries(
+        Map.entry(CrystalnexusModBlocks.ZERO_POINT.get(), id("zero_point")),
+        Map.entry(CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get(), id("comet_forge")),
+        Map.entry(CrystalnexusModBlocks.HEAVENSHATTER_BEAM_CONTROLLER.get(), id("heavenshatter_beam")),
+        Map.entry(CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get(), id("gravitational_array_new")),
+        Map.entry(CrystalnexusModBlocks.SOLAR_SIMULATOR_CONTROLLER.get(), id("solar_sim")),
+        Map.entry(CrystalnexusModBlocks.SOLAR_ENGINE_CONTROLLER.get(), id("solar_engine")),
+        Map.entry(CrystalnexusModBlocks.PLASMA_GENERATOR_CONTROLLER.get(), id("plasma_gen")),
+        Map.entry(CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER.get(), id("diesel_generator")),
+        Map.entry(CrystalnexusModBlocks.MEGA_CHEMICAL_REACTION_CHAMBER.get(), id("mega_chem_reactor")),
+        Map.entry(CrystalnexusModBlocks.REACTOR_COMPUTER.get(), id("reactor")),
+        Map.entry(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get(), id("reaction"))
     );
 
     private MultiblockPlanTemplates() {}

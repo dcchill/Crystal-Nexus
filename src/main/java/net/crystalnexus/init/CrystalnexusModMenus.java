@@ -172,6 +172,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<MultiblockGuiPage6Menu>> MULTIBLOCK_GUI_PAGE_6 = REGISTRY.register("multiblock_gui_page_6", () -> IMenuTypeExtension.create(MultiblockGuiPage6Menu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<GravitationalArrayMenu>> GRAVITATIONAL_ARRAY = REGISTRY.register("gravitational_array", () -> IMenuTypeExtension.create(GravitationalArrayMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CometForgeMenu>> COMET_FORGE = REGISTRY.register("comet_forge", () -> IMenuTypeExtension.create(CometForgeMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.HeavenshatterMenu>> HEAVENSHATTER = REGISTRY.register("heavenshatter", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.HeavenshatterMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SolarSimulatorMenu>> SOLAR_SIMULATOR = REGISTRY.register("solar_simulator", () -> IMenuTypeExtension.create(SolarSimulatorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<SolarEngineMenu>> SOLAR_ENGINE = REGISTRY.register("solar_engine", () -> IMenuTypeExtension.create(SolarEngineMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<PlasmaGeneratorMenu>> PLASMA_GENERATOR = REGISTRY.register("plasma_generator", () -> IMenuTypeExtension.create(PlasmaGeneratorMenu::new));

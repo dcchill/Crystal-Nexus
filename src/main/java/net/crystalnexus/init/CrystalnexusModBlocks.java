@@ -511,6 +511,7 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> METEORITE_SCRAP_BLOCK = REGISTRY.register("meteorite_scrap_block",
 			() -> new Block(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(5f, 6f).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> COMET_FORGE_CONTROLLER = REGISTRY.register("comet_forge_controller", CometForgeControllerBlock::new);
+	public static final DeferredBlock<Block> HEAVENSHATTER_BEAM_CONTROLLER = REGISTRY.register("heavenshatter_beam_controller", net.crystalnexus.block.HeavenshatterBeamControllerBlock::new);
 	public static final DeferredBlock<Block> TUNGSTEN_MACHINE_FRAME = REGISTRY.register("obsidrax_machine_frame", MachineFrameBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CASING = REGISTRY.register("assembly_line_casing", net.crystalnexus.block.AssemblyLineCasingBlock::new);
 	public static final DeferredBlock<Block> ASSEMBLY_LINE_CONTROLLER = REGISTRY.register("assembly_line_controller", net.crystalnexus.block.AssemblyLineControllerBlock::new);

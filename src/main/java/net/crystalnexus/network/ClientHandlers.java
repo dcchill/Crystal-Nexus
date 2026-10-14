@@ -2,6 +2,7 @@ package net.crystalnexus.network;
 
 import net.crystalnexus.network.payload.S2C_SendPage;
 import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
+import net.crystalnexus.network.payload.S2C_RailgunBeam;
 import net.crystalnexus.network.payload.S2C_OreScanResult;
 import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -89,6 +90,10 @@ public static void onZeroPointPreview(final S2C_ZeroPointPreview msg, final IPay
         }
 
     });
+}
+
+public static void onRailgunBeam(final S2C_RailgunBeam msg, final IPayloadContext ctx) {
+    ctx.enqueueWork(() -> net.crystalnexus.client.renderer.BlackHoleRailgunBeamRenderer.add(msg.shooterId(), msg.start(), msg.end(), msg.charge()));
 }
 
 public static void onBlackHoleVisual(final S2C_BlackHoleVisual msg, final IPayloadContext ctx) {

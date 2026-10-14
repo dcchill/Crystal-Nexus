@@ -79,7 +79,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (level != null && !level.isClientSide) {
             dirty = true; formed = false;
             AssemblyLineEvents.register(this);
-            rescan(); 
+            // Rescan on the next normal tick, after chunk loading callbacks have finished.
         }
     }
     @Override public void setRemoved() { AssemblyLineEvents.unregister(this); super.setRemoved(); }
@@ -249,7 +249,8 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
         if (nearby && (force || blocks.get(pos) != level.getBlockState(pos).getBlock())) invalidate();
     }
     public void invalidate() {
-        dirty = true; formed = false; planDirty = true; setStatus("Structure changed; validating");
+        // Chunk events must not send neighbor updates or synchronously request other chunks.
+        dirty = true; formed = false; planDirty = true; status = "Structure changed; validating";
     }
     public void rescan() {
         var result = AssemblyLineStructure.scan(level, worldPosition);

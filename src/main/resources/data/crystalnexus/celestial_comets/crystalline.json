@@ -1,0 +1,15 @@
+{
+  "name": "Crystalline Comet",
+  "weight": 2,
+  "difficulty": 3,
+  "min_diameter": 7,
+  "max_diameter": 14,
+  "min_distance": 1000,
+  "max_distance": 10000,
+  "palette": [
+    "minecraft:stone",
+    "minecraft:diamond_ore",
+    "minecraft:emerald_ore",
+    "minecraft:lapis_ore"
+  ]
+}

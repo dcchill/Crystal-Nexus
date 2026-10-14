@@ -12,6 +12,7 @@ import net.crystalnexus.network.payload.S2C_DepotCliResponse;
 import net.crystalnexus.network.payload.S2C_DepotCraftingResponse;
 import net.crystalnexus.network.payload.S2C_DepotProgramsResponse;
 import net.crystalnexus.network.payload.S2C_BlackHoleVisual;
+import net.crystalnexus.network.payload.S2C_RailgunBeam;
 import net.crystalnexus.network.payload.S2C_OreScanResult;
 import net.crystalnexus.network.payload.S2C_OrbitalStrikeBeam;
 import net.crystalnexus.network.payload.S2C_ZeroPointPreview;
@@ -28,6 +29,8 @@ public class ModNetworking {
 	@SubscribeEvent
 	public static void register(final RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar r = event.registrar(DepotNetIds.NETWORK_VERSION);
+        r.playToClient(net.crystalnexus.network.payload.S2C_CelestialTracking.TYPE, net.crystalnexus.network.payload.S2C_CelestialTracking.STREAM_CODEC, net.crystalnexus.network.payload.S2C_CelestialTracking::handle);
+		r.playToServer(net.crystalnexus.network.payload.C2S_HeavenshatterControls.TYPE, net.crystalnexus.network.payload.C2S_HeavenshatterControls.STREAM_CODEC, net.crystalnexus.network.payload.C2S_HeavenshatterControls::handle);
 		r.playToServer(AssemblyLineRequest.TYPE, AssemblyLineRequest.STREAM_CODEC, AssemblyLineRequest::handle);
 		r.playToServer(AssemblyLineGraphEdit.TYPE, AssemblyLineGraphEdit.STREAM_CODEC, AssemblyLineGraphEdit::handle);
 		r.playToServer(AssemblyLineRecipeSelect.TYPE, AssemblyLineRecipeSelect.STREAM_CODEC, AssemblyLineRecipeSelect::handle);
@@ -53,6 +56,7 @@ public class ModNetworking {
 		r.playToClient(S2C_OreScanResult.TYPE, S2C_OreScanResult.STREAM_CODEC, ClientHandlers::onOreScanResult);
 
 		r.playToClient(S2C_ZeroPointPreview.TYPE, S2C_ZeroPointPreview.STREAM_CODEC, ClientHandlers::onZeroPointPreview);
+		r.playToClient(S2C_RailgunBeam.TYPE, S2C_RailgunBeam.STREAM_CODEC, ClientHandlers::onRailgunBeam);
 		r.playToClient(S2C_BlackHoleVisual.TYPE, S2C_BlackHoleVisual.STREAM_CODEC, ClientHandlers::onBlackHoleVisual);
 		r.playToClient(S2C_OrbitalStrikeBeam.TYPE, S2C_OrbitalStrikeBeam.STREAM_CODEC, ClientHandlers::onOrbitalStrikeBeam);
 		r.playToClient(S2C_MaterialProfiles.TYPE, S2C_MaterialProfiles.STREAM_CODEC, ClientHandlers::onMaterialProfiles);

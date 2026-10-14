@@ -11,7 +11,11 @@ public final class MachineUpgradeSlot extends SlotItemHandler {
     private final int ordinal;
 
     public MachineUpgradeSlot(IItemHandler items, int index, BlockState state, int ordinal) {
-        super(items, index, 180 + ordinal / 5 * 32, 8 + ordinal % 5 * 32);
+        this(items, index, state, ordinal, 180 + ordinal / 5 * 32, 8 + ordinal % 5 * 32);
+    }
+
+    public MachineUpgradeSlot(IItemHandler items, int index, BlockState state, int ordinal, int x, int y) {
+        super(items, index, x, y);
         this.state = state;
         this.ordinal = ordinal;
     }

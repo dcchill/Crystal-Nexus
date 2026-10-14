@@ -15,6 +15,24 @@ import java.util.*;
 @GameTestHolder("crystalnexus_assembly")
 @PrefixGameTestTemplate(false)
 public final class AssemblyLineGameTests {
+    @GameTest(template="empty", timeoutTicks=100)
+    public static void chunkCallbacksDeferRescanAndNeverNotifyNeighbors(GameTestHelper h) {
+        var controller = build(h, 5, 5, 5);
+        h.assertTrue(controller.formed(), "Baseline enclosure forms");
+        var chunk = h.getLevel().getChunkSource().getChunkNow(controller.getBlockPos().getX() >> 4, controller.getBlockPos().getZ() >> 4);
+        chunk.setUnsaved(false);
+        controller.onLoad();
+        h.assertTrue(!controller.formed(), "onLoad defers formation to a normal tick");
+        h.assertTrue(!chunk.isUnsaved(), "onLoad must not rescan or issue setChanged neighbor notifications");
+        AssemblyLineEvents.load(new net.neoforged.neoforge.event.level.ChunkEvent.Load(chunk, false));
+        h.assertTrue(!chunk.isUnsaved(), "Chunk event invalidation is memory only");
+        AssemblyLineControllerBlockEntity.tick(h.getLevel(), controller.getBlockPos(), controller.getBlockState(), controller);
+        h.assertTrue(controller.formed(), "Normal tick resumes validation after loading callbacks");
+        int loaded = h.getLevel().getChunkSource().getLoadedChunksCount();
+        AssemblyLineStructure.scan(h.getLevel(), new BlockPos(13_000_000, 100, 13_000_000));
+        h.assertTrue(h.getLevel().getChunkSource().getLoadedChunksCount() == loaded, "Scanning an unloaded location does not load chunks");
+        h.succeed();
+    }
     private static AssemblyLineControllerBlockEntity build(GameTestHelper h, int x, int y, int z) {
         for (BlockPos p : BlockPos.betweenClosed(1, 1, 1, x, y, z)) {
             boolean shell = p.getX()==1 || p.getY()==1 || p.getZ()==1 || p.getX()==x || p.getY()==y || p.getZ()==z;

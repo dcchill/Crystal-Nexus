@@ -34,7 +34,9 @@ public final class CometForgeMenu extends AbstractContainerMenu {
 		addSlot(new Slot(container, 2, 80, 9) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(2, stack); } });
 		addSlot(new Slot(container, 3, 80, 63) { @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(3, stack); } });
 		addSlot(new Slot(container, 4, 80, 37) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
-        addSlot(new MachineUpgradeSlot(new net.neoforged.neoforge.items.wrapper.InvWrapper(container), 5, controller == null ? CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().defaultBlockState() : controller.getBlockState(), 0));
+		MachineUpgradeSlot upgradeSlot = new MachineUpgradeSlot(new net.neoforged.neoforge.items.wrapper.InvWrapper(container), 5,
+			controller == null ? CrystalnexusModBlocks.COMET_FORGE_CONTROLLER.get().defaultBlockState() : controller.getBlockState(), 0, 143, 9);
+		addSlot(upgradeSlot);
 		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 99 + row * 18));
 		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 157));
 	}
