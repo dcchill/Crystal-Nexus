@@ -38,7 +38,7 @@ public final class HeavenshatterRenderer implements BlockEntityRenderer<Heavensh
         }
         var level = controller.getLevel();
         if (level == null) return;
-        double fraction = controller.visualProgress(partialTick) / HeavenshatterMeteor.DURATION;
+        double fraction = controller.visualProgress(partialTick) / controller.duration();
         double start = Math.max(level.getMaxBuildHeight() + 16, controller.arrival().getY() + 128);
         double bottom = start + (controller.arrival().getY() - start) * fraction;
         double escape = escaping ? controller.visualEscape(partialTick) : 0;
@@ -68,14 +68,19 @@ public final class HeavenshatterRenderer implements BlockEntityRenderer<Heavensh
         int count = controller.emitters().size();
         for (int i = 0; i < count; i++) {
             Vec3 from = Vec3.atCenterOf(controller.emitters().get(i)).subtract(Vec3.atLowerCornerOf(controller.getBlockPos()));
-            double angle = Math.PI * 2 * i / count;
-            double radius = controller.diameter() * 0.3;
-            Vec3 to = base.add(controller.diameter() / 2.0 + Math.cos(angle) * radius,
-                controller.diameter() * 0.3, controller.diameter() / 2.0 + Math.sin(angle) * radius);
+            Vec3 to = tractorTarget(from, base, controller.diameter());
             double pulse = 0.85 + 0.15 * Math.sin(time * 0.1 + i);
             beam(glow, pose.last().pose(), from, to, camera, 0.75 * pulse, 135, 40, 245, 36);
             beam(glow, pose.last().pose(), from, to, camera, 0.17 * pulse, 225, 155, 255, 210);
         }
+    }
+
+    static Vec3 tractorTarget(Vec3 from, Vec3 base, int diameter) {
+        double centerX = base.x + diameter / 2.0, centerZ = base.z + diameter / 2.0;
+        double dx = from.x - centerX, dz = from.z - centerZ;
+        // Keep each beam on its emitter's side, vertical whenever it is already below the target area.
+        double scale = Math.min(1, diameter * 0.3 / Math.max(0.0001, Math.hypot(dx, dz)));
+        return new Vec3(centerX + dx * scale, base.y + diameter * 0.3, centerZ + dz * scale);
     }
 
     private static List<HeavenshatterMeteor.Cell> surface(List<HeavenshatterMeteor.Cell> cells) {

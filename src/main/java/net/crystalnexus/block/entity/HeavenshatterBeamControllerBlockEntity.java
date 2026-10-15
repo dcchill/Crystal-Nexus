@@ -3,6 +3,7 @@ package net.crystalnexus.block.entity;
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.init.CrystalnexusModBlocks;
+import net.crystalnexus.item.MeteorDataDiskItem;
 import net.crystalnexus.multiblock.HeavenshatterMaterials;
 import net.crystalnexus.multiblock.HeavenshatterMeteor;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
@@ -25,11 +26,13 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.neoforge.energy.EnergyStorage;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity implements MenuProvider, MultiblockPortTarget {
-    public static final int CAPACITY = 1_000_000, LOCK_TICKS = 60, ESCAPE_TICKS = 100;
+    public static final int CAPACITY = 2_000_000, LOCK_TICKS = 60, ESCAPE_TICKS = 100;
     private static final ResourceLocation TEMPLATE = ResourceLocation.parse("crystalnexus:heavenshatter_beam");
     public enum Stage { LOCATING, LOCKED, RETRIEVING, ARRIVED, ESCAPING }
     public enum Status { INCOMPLETE, TUNING, LOCKED, PULLING, ESCAPING, BLOCKED, UNLOADED, HEIGHT_LIMIT, AWAITING_CLEAR, INVALID_MATERIAL, NO_POWER, NO_SIGNALS, PAUSED }
@@ -51,6 +54,15 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
         }
     };
     private final List<BlockPos> inputs = new ArrayList<>();
+    private final ItemStackHandler meteorFilter = new ItemStackHandler(1) {
+        @Override public int getSlotLimit(int slot) { return 1; }
+        @Override public boolean isItemValid(int slot, ItemStack stack) { return MeteorDataDiskItem.read(stack).isPresent(); }
+        @Override protected void onContentsChanged(int slot) {
+            if (level instanceof ServerLevel server && (stage == Stage.LOCATING || stage == Stage.LOCKED)) resetLocator(server);
+            else setChanged();
+        }
+    };
+    public ItemStackHandler meteorFilter() { return meteorFilter; }
     private List<BlockPos> emitters = List.of();
     private List<BlockState> palette = List.of();
     private List<HeavenshatterMeteor.Cell> cells = List.of();
@@ -60,6 +72,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
     private boolean structureUnloaded;
     private int frequency = 50, bearing = 180;
     private int frequencySignal, bearingSignal, lockProgress, diameter, progress, escapeTicks;
+    private int duration = HeavenshatterMeteor.DURATION;
     private long seed;
     private BlockPos arrival = BlockPos.ZERO;
     private int validationDelay;
@@ -67,6 +80,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
     private long clientUpdateTick;
     private final net.crystalnexus.celestial.CelestialScanner scanner = new net.crystalnexus.celestial.CelestialScanner();
     private long lastScanTick = Long.MIN_VALUE;
+    private boolean arrivedMeteorIndexed;
     public net.crystalnexus.celestial.Comet lockedComet() { return scanner.lockedComet(); }
     public boolean trackingIdentified() { return scanner.identified(); }
     public boolean trackingStable() { return scanner.alignmentTicks >= 60; }
@@ -91,6 +105,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
     public int lockProgress() { return lockProgress; }
     public int diameter() { return diameter; }
     public int progress() { return progress; }
+    public int duration() { return duration; }
     public int escapeTicks() { return escapeTicks; }
     public long cost() { return diameter == 0 ? 0 : HeavenshatterMeteor.energyCost(diameter); }
     public BlockPos arrival() { return arrival; }
@@ -101,7 +116,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     public double visualProgress(float partialTick) {
         double elapsed = level == null ? 0 : level.getGameTime() - clientUpdateTick + partialTick;
-        return Math.min(HeavenshatterMeteor.DURATION, progress + (status == Status.PULLING ? Math.min(5, Math.max(0, elapsed)) : 0));
+        return Math.min(duration, progress + (status == Status.PULLING ? Math.min(5, Math.max(0, elapsed)) : 0));
     }
 
     public double visualEscape(float partialTick) {
@@ -157,8 +172,9 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     private Status checkClearance() {
         if (!(level instanceof ServerLevel server)) return Status.UNLOADED;
-        if (arrival.getY() < level.getMinBuildHeight() || arrival.getY() + 14 > level.getMaxBuildHeight()) return Status.HEIGHT_LIMIT;
-        for (int x = 0; x < 14; x++) for (int z = 0; z < 14; z++) {
+        if (arrival.getY() < level.getMinBuildHeight() || arrival.getY() + HeavenshatterMeteor.MAX_DIAMETER > level.getMaxBuildHeight()) return Status.HEIGHT_LIMIT;
+        int minOffset = (15 - HeavenshatterMeteor.MAX_DIAMETER) / 2;
+        for (int x = minOffset; x < minOffset + HeavenshatterMeteor.MAX_DIAMETER; x++) for (int z = minOffset; z < minOffset + HeavenshatterMeteor.MAX_DIAMETER; z++) {
             BlockPos pos = arrival.offset(x, 0, z);
             var chunk = server.getChunkSource().getChunkNow(pos.getX() >> 4, pos.getZ() >> 4);
             if (chunk == null) return Status.UNLOADED;
@@ -169,19 +185,35 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     public void serverTick() {
         if (!(level instanceof ServerLevel server)) return;
+        if (stage == Stage.ARRIVED && !arrivedMeteorIndexed && diameter >= HeavenshatterMeteor.MIN_DIAMETER && palette.size() >= 2) {
+            if (palette.stream().allMatch(state -> HeavenshatterMaterials.eligible(state, server, meteorBase())))
+                net.crystalnexus.data.SummonedMeteorSavedData.get(server).register(meteorBase(), diameter, seed, palette);
+            arrivedMeteorIndexed = true;
+        }
         Status previous = status;
         if (validationDelay-- <= 0) validateStructureNow();
         if (stage == Stage.ESCAPING) {
             status = Status.ESCAPING;
             escapeTicks++;
             setChanged();
-            if (escapeTicks >= ESCAPE_TICKS) resetLocator();
+            if (escapeTicks >= ESCAPE_TICKS) resetLocator(server);
         } else if (!formed) status = structureUnloaded ? Status.UNLOADED : Status.INCOMPLETE;
         else if (stage == Stage.ARRIVED) {
             status = Status.AWAITING_CLEAR;
-            if (clearance == null) resetLocator();
+            BlockPos base = meteorBase();
+            if (cells.stream().allMatch(cell -> level.getBlockState(base.offset(cell.x(), cell.y(), cell.z())).isAir())) resetLocator(server);
         } else if (stage == Stage.LOCATING) {
-            if (lastScanTick != server.getGameTime()) {
+            if (!meteorFilter.getStackInSlot(0).isEmpty()) {
+                var record = MeteorDataDiskItem.read(meteorFilter.getStackInSlot(0));
+                if (record.isEmpty() || record.orElseThrow().palette().stream().anyMatch(state -> !HeavenshatterMaterials.eligible(state, server, worldPosition)))
+                    status = Status.INVALID_MATERIAL;
+                else if (energy.getEnergyStored() < 1000) status = Status.NO_POWER;
+                else {
+                    energy.extractEnergy(1000, false);
+                    scanner.lockRecorded(record.orElseThrow());
+                    locateMeteor(server);
+                }
+            } else if (lastScanTick != server.getGameTime()) {
                 lastScanTick = server.getGameTime();
                 if (scanner.candidates.isEmpty() && (status != Status.NO_SIGNALS || server.getGameTime() % 20 == 0)) scanner.generate(server, worldPosition);
                 boolean viewer = false;
@@ -189,7 +221,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
                     && menu.controller() == this && menu.stillValid(player)) { viewer = true; break; }
                 boolean powered = viewer && !scanner.candidates.isEmpty() && energy.getEnergyStored() >= 1000;
                 if (powered) energy.extractEnergy(1000, false);
-                scanner.tick(powered);
+                if (viewer) scanner.tick(powered);
                 frequency = scanner.frequency; bearing = scanner.azimuth;
                 frequencySignal = scanner.frequencySignal; bearingSignal = scanner.strength; lockProgress = scanner.alignmentTicks;
                 status = scanner.candidates.isEmpty() ? Status.NO_SIGNALS : !viewer ? Status.PAUSED : powered ? Status.TUNING : Status.NO_POWER;
@@ -205,8 +237,10 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
     private void locateMeteor(ServerLevel server) {
         var comet = scanner.lockedComet();
         if (comet == null) return;
-        diameter = comet.diameter(); seed = comet.seed(); palette = comet.palette();
+        diameter = comet.diameter(); seed = comet.seed(); palette = comet.palette(); duration = HeavenshatterMeteor.duration(comet.distance());
         cells = HeavenshatterMeteor.cells(diameter, seed, palette.size());
+        frequency = scanner.frequency; bearing = scanner.azimuth;
+        frequencySignal = scanner.frequencySignal; bearingSignal = scanner.strength; lockProgress = scanner.alignmentTicks;
         stage = Stage.LOCKED; status = Status.LOCKED; sync();
     }
 
@@ -215,8 +249,8 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
             status = Status.INVALID_MATERIAL;
             return;
         }
-        if (progress < HeavenshatterMeteor.DURATION) {
-            int needed = Math.toIntExact(GravitationalArrayCostSchedule.next(cost(), progress, HeavenshatterMeteor.DURATION));
+        if (progress < duration) {
+            int needed = Math.toIntExact(GravitationalArrayCostSchedule.next(cost(), progress, duration));
             if (energy.getEnergyStored() < needed) {
                 stage = Stage.ESCAPING;
                 status = Status.ESCAPING;
@@ -229,7 +263,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
             status = Status.PULLING;
             setChanged();
         }
-        if (progress == HeavenshatterMeteor.DURATION) materialize();
+        if (progress == duration) materialize();
     }
 
     private void materialize() {
@@ -243,6 +277,8 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
             }
         }
         for (var cell : cells) level.setBlock(base.offset(cell.x(), cell.y(), cell.z()), palette.get(cell.material()), 3);
+        net.crystalnexus.data.SummonedMeteorSavedData.get((ServerLevel) level).register(base, diameter, seed, palette);
+        arrivedMeteorIndexed = true;
         stage = Stage.ARRIVED;
         status = Status.AWAITING_CLEAR;
         clearance = Status.BLOCKED;
@@ -251,11 +287,15 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     public BlockPos meteorBase() { return arrival.offset((15 - diameter) / 2, 0, (15 - diameter) / 2); }
 
-    private void resetLocator() {
+    private void resetLocator(ServerLevel server) {
+        arrivedMeteorIndexed = false;
         stage = Stage.LOCATING;
         status = Status.TUNING;
         scanner.reset();
+        scanner.generate(server, worldPosition);
         lockProgress = progress = diameter = frequencySignal = bearingSignal = escapeTicks = 0;
+        duration = HeavenshatterMeteor.DURATION;
+        seed = 0;
         palette = List.of();
         cells = List.of();
         sync();
@@ -318,11 +358,12 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = new CompoundTag();
-        writePublic(tag);
+        writePublic(tag, registries);
         return tag;
     }
 
-    private void writePublic(CompoundTag tag) {
+    private void writePublic(CompoundTag tag, HolderLookup.Provider registries) {
+        tag.put("meteorFilter", meteorFilter.serializeNBT(registries));
         tag.putInt("energy", energy.getEnergyStored());
         tag.putBoolean("formed", formed);
         tag.putInt("stage", stage.ordinal());
@@ -334,6 +375,7 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
         tag.putInt("lock", lockProgress);
         tag.putInt("diameter", diameter);
         tag.putInt("progress", progress);
+        tag.putInt("duration", duration);
         tag.putInt("escapeTicks", escapeTicks);
         tag.putLong("seed", seed);
         tag.putLong("arrival", arrival.asLong());
@@ -345,13 +387,15 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
 
     @Override public void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        writePublic(tag);
+        writePublic(tag, registries);
         // Puzzle answers stay in the world save, never in block entity update packets.
         tag.put("celestial", scanner.save());
     }
 
     @Override public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
+        meteorFilter.deserializeNBT(registries, tag.getCompound("meteorFilter"));
+        arrivedMeteorIndexed = false;
         if (tag.contains("celestial")) scanner.load(tag.getCompound("celestial"), registries);
         int oldDiameter = diameter;
         long oldSeed = seed;
@@ -365,8 +409,10 @@ public final class HeavenshatterBeamControllerBlockEntity extends BlockEntity im
         bearingSignal = tag.getInt("bearingSignal");
         lockProgress = Math.clamp(tag.getInt("lock"), 0, LOCK_TICKS);
         diameter = tag.getInt("diameter");
-        if (diameter != 0) diameter = Math.clamp(diameter, 7, 14);
-        progress = Math.clamp(tag.getInt("progress"), 0, HeavenshatterMeteor.DURATION);
+        if (diameter != 0) diameter = Math.clamp(diameter, 7, HeavenshatterMeteor.MAX_DIAMETER);
+        duration = tag.contains("duration") ? Math.clamp(tag.getInt("duration"), HeavenshatterMeteor.DURATION, HeavenshatterMeteor.MAX_DURATION)
+            : scanner.lockedComet() == null ? HeavenshatterMeteor.DURATION : HeavenshatterMeteor.duration(scanner.lockedComet().distance());
+        progress = Math.clamp(tag.getInt("progress"), 0, duration);
         escapeTicks = Math.clamp(tag.getInt("escapeTicks"), 0, ESCAPE_TICKS);
         seed = tag.getLong("seed");
         arrival = BlockPos.of(tag.getLong("arrival"));

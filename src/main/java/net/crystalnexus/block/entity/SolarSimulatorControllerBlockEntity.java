@@ -22,6 +22,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
@@ -63,7 +65,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private static final int ENERGY_PER_ITEM = 600_000;
     private static final int STAR_SLOT = 4;
     private static final int REQUIRED_ENERGY_TRANSFER = GravitationalArrayCostSchedule.maximumStep(
-        (long) STAR_SLOT * 8 * ENERGY_PER_ITEM, DURATION);
+        (long) STAR_SLOT * 16 * ENERGY_PER_ITEM, DURATION);
     private static final int VALIDATION_INTERVAL = 20;
     private static final ResourceLocation STRUCTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "solar_sim");
     private static final List<TagKey<Item>> TERRA = tags("raw_materials/iron", "raw_materials/copper", "raw_materials/coal", "raw_materials/tin", "raw_materials/silver");
@@ -124,6 +126,9 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     private int inactiveRenderTicks;
     private int progress;
     private long consumedEnergy;
+    private NonNullList<ItemStack> cycleInputs = NonNullList.withSize(5, ItemStack.EMPTY);
+    @Nullable private List<ItemStack> pendingResults;
+    private List<FluidStack> pendingFluids = List.of();
     private int validationDelay;
 
     public SolarSimulatorControllerBlockEntity(BlockPos pos, BlockState state) {
@@ -159,8 +164,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         if (next == dysonMode) return true;
         for (int slot = 0; slot < STAR_SLOT; slot++) if (!stacks.get(slot).isEmpty() || slot < dysonCounts.length && dysonCounts[slot] != 0) return false;
         dysonMode = next;
-        progress = 0;
-        consumedEnergy = 0;
+        resetSimulation();
         renderActive = false;
         inactiveRenderTicks = 0;
         validateStructure(serverLevel);
@@ -245,20 +249,34 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             if (produced > 0) markRenderActive(); else markRenderInactive();
             return;
         }
+        if (!sameCycleInputs()) {
+            resetSimulation();
+            for (int slot = 0; slot < stacks.size(); slot++) cycleInputs.set(slot, stacks.get(slot).copy());
+            machineSync.changed();
+        }
         int multiplier = starMultiplier(stacks.get(STAR_SLOT));
         int planets = planetCount();
-        if (!formed || multiplier == 0 || planets == 0) {
+        if (!formed) { markRenderInactive(); return; }
+        if (multiplier == 0 || planets == 0) {
             if (progress != 0 || consumedEnergy != 0 || renderActive) {
-                progress = 0; consumedEnergy = 0; renderActive = false; inactiveRenderTicks = 0; sync();
+                resetSimulation(); renderActive = false; inactiveRenderTicks = 0; sync();
             }
             return;
         }
 
         
         progress = Math.min(progress, DURATION - 1);
-        List<ItemStack> results = progress == DURATION - 1 && !outputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
-        List<FluidStack> fluidResults = progress == DURATION - 1 && !fluidOutputs.isEmpty() ? createFluidResults(multiplier) : List.of();
-        if (progress == DURATION - 1 && (results.isEmpty() && fluidResults.isEmpty() || !canFit(results, fluidResults))) { markRenderInactive(); return; }
+        if (progress == DURATION - 1) {
+            if (pendingResults == null) {
+                pendingResults = !outputs.isEmpty() ? createResults(serverLevel, multiplier) : List.of();
+                pendingFluids = !fluidOutputs.isEmpty() ? createFluidResults(multiplier) : List.of();
+                machineSync.changed();
+            }
+            if (pendingResults.isEmpty() && pendingFluids.isEmpty()) {
+                markRenderInactive(); return;
+            }
+            if (!canFit(pendingResults, pendingFluids)) { markRenderInactive(); return; }
+        }
 
         long totalEnergy = (long) planets * multiplier * ENERGY_PER_ITEM;
         long nextEnergy = GravitationalArrayCostSchedule.cumulative(totalEnergy, progress + 1, DURATION);
@@ -269,11 +287,23 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
 
         progress++;
         if (progress >= DURATION) {
-            insert(results, fluidResults);
-            progress = 0;
-            consumedEnergy = 0;
+            insert(pendingResults, pendingFluids);
+            resetSimulation();
             sync();
         } else machineSync.changed();
+    }
+
+    private boolean sameCycleInputs() {
+        for (int slot = 0; slot < stacks.size(); slot++)
+            if (!ItemStack.matches(stacks.get(slot), cycleInputs.get(slot))) return false;
+        return true;
+    }
+
+    private void resetSimulation() {
+        progress = 0;
+        consumedEnergy = 0;
+        pendingResults = null;
+        pendingFluids = List.of();
     }
 
     private void validateStructure(ServerLevel level) {
@@ -516,10 +546,14 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
     }
     @Override public int getMaxStackSize() { return dysonMode ? DYSON_SLOT_LIMIT : super.getMaxStackSize(); }
     @Override public ItemStack removeItem(int slot, int amount) {
-        return dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS ? extractDyson(slot, amount, false) : super.removeItem(slot, amount);
+        ItemStack result = dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS ? extractDyson(slot, amount, false) : super.removeItem(slot, amount);
+        if (!dysonMode && !result.isEmpty()) resetSimulation();
+        return result;
     }
     @Override public ItemStack removeItemNoUpdate(int slot) {
-        return dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS ? extractDyson(slot, DYSON_SLOT_LIMIT, false) : super.removeItemNoUpdate(slot);
+        ItemStack result = dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS ? extractDyson(slot, DYSON_SLOT_LIMIT, false) : super.removeItemNoUpdate(slot);
+        if (!dysonMode && !result.isEmpty()) resetSimulation();
+        return result;
     }
     @Override public void setItem(int slot, ItemStack stack) {
         if (dysonMode && slot >= 0 && slot < DYSON_SUPPLY_SLOTS) {
@@ -532,6 +566,7 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
             }
             return;
         }
+        if (!dysonMode && !ItemStack.matches(getItem(slot), stack)) resetSimulation();
         super.setItem(slot, stack);
     }
     @Override public int[] getSlotsForFace(Direction side) { return IntStream.range(0, 5).toArray(); }
@@ -569,6 +604,25 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         for (int i = 0; i < fluidOutputTanks.length; i++)
             if (tag.get("fluidOutput" + i) instanceof CompoundTag fluid) fluidOutputTanks[i].readFromNBT(registries, fluid);
         formed = tag.getBoolean("formed"); progress = tag.getInt("progress"); consumedEnergy = tag.getLong("consumedEnergy");
+        cycleInputs = NonNullList.withSize(5, ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag.getCompound("cycleInputs"), cycleInputs, registries);
+        pendingResults = null;
+        pendingFluids = List.of();
+        if (!dysonMode && sameCycleInputs() && tag.contains("pendingResults", Tag.TAG_LIST)) {
+            ListTag items = tag.getList("pendingResults", Tag.TAG_COMPOUND);
+            pendingResults = new ArrayList<>();
+            for (int i = 0; i < items.size(); i++) {
+                ItemStack item = ItemStack.parseOptional(registries, items.getCompound(i));
+                if (!item.isEmpty()) pendingResults.add(item);
+            }
+            ListTag fluids = tag.getList("pendingFluids", Tag.TAG_COMPOUND);
+            pendingFluids = new ArrayList<>();
+            for (int i = 0; i < fluids.size(); i++) {
+                FluidStack fluid = FluidStack.parseOptional(registries, fluids.getCompound(i));
+                if (!fluid.isEmpty()) pendingFluids.add(fluid);
+            }
+        }
+        if (!dysonMode && !sameCycleInputs()) resetSimulation();
         renderActive = tag.getBoolean("renderActive");
         formationCenter = tag.contains("formationX")
             ? new Vec3(tag.getDouble("formationX"), tag.getDouble("formationY"), tag.getDouble("formationZ")) : null;
@@ -585,6 +639,17 @@ public final class SolarSimulatorControllerBlockEntity extends RandomizableConta
         for (int i = 0; i < fluidOutputTanks.length; i++)
             tag.put("fluidOutput" + i, fluidOutputTanks[i].writeToNBT(registries, new CompoundTag()));
         tag.putBoolean("formed", formed); tag.putInt("progress", progress); tag.putLong("consumedEnergy", consumedEnergy);
+        CompoundTag inputs = new CompoundTag();
+        ContainerHelper.saveAllItems(inputs, cycleInputs, registries);
+        tag.put("cycleInputs", inputs);
+        if (pendingResults != null) {
+            ListTag items = new ListTag();
+            for (ItemStack result : pendingResults) items.add(result.saveOptional(registries));
+            tag.put("pendingResults", items);
+            ListTag fluids = new ListTag();
+            for (FluidStack result : pendingFluids) fluids.add(result.saveOptional(registries));
+            tag.put("pendingFluids", fluids);
+        }
         tag.putBoolean("renderActive", renderActive);
         if (formationCenter != null) {
             tag.putDouble("formationX", formationCenter.x); tag.putDouble("formationY", formationCenter.y); tag.putDouble("formationZ", formationCenter.z);

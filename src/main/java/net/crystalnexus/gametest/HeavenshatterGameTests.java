@@ -48,6 +48,117 @@ public final class HeavenshatterGameTests {
     }
 
     @GameTest(template = "heavenshatter_beam")
+    public static void recordedDiskFiltersExactMeteorAndSurvivesReload(GameTestHelper helper) {
+        var machine = setup(helper);
+        var controller = machine.controller();
+        var level = helper.getLevel();
+        var registries = level.registryAccess();
+        var meteor = net.crystalnexus.multiblock.RecordedMeteor.create(BlockPos.ZERO, 7, 8765,
+            java.util.List.of(Blocks.STONE.defaultBlockState(), Blocks.DIAMOND_ORE.defaultBlockState()));
+        var disk = new net.minecraft.world.item.ItemStack(net.crystalnexus.init.CrystalnexusModItems.METEOR_DATA_DISK.get());
+        net.crystalnexus.item.MeteorDataDiskItem.write(disk, meteor);
+        var filter = controller.meteorFilter();
+        helper.assertTrue(!filter.isItemValid(0, new net.minecraft.world.item.ItemStack(net.crystalnexus.init.CrystalnexusModItems.METEOR_DATA_DISK.get()))
+            && !filter.isItemValid(0, new net.minecraft.world.item.ItemStack(Blocks.DIRT)), "Filter rejects blank disks and ordinary items");
+        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.get(level,
+            new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "meteor-filter"));
+        player.setPos(controller.getBlockPos().getCenter());
+        var menu = new HeavenshatterMenu(1, player.getInventory(), controller);
+        player.containerMenu = menu;
+        player.getInventory().setItem(9, disk.copy());
+        helper.assertTrue(!menu.quickMoveStack(player, 1).isEmpty() && !filter.getStackInSlot(0).isEmpty(), "Shift-click inserts a recorded disk");
+        controller.serverTick();
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.LOCATING
+            && controller.status() == HeavenshatterBeamControllerBlockEntity.Status.NO_POWER, "Filter still needs acquisition power");
+        supply(machine, 1000);
+        player.containerMenu = player.inventoryMenu;
+        controller.serverTick();
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.LOCKED && controller.trackingIdentified(), "Disk bypasses tuning even with the menu closed");
+        helper.assertTrue(controller.diameter() == meteor.diameter() && controller.palette().equals(meteor.palette())
+            && controller.cells().equals(HeavenshatterMeteor.cells(meteor.diameter(), meteor.seed(), meteor.palette().size())), "Filter reproduces exact recorded geometry and composition");
+        helper.assertTrue(controller.duration() == HeavenshatterMeteor.DURATION && controller.multiblockEnergyInput().getEnergyStored() == 0, "Filter costs 1000 FE once and uses the base retrieval duration");
+        helper.assertTrue(net.minecraft.world.item.ItemStack.matches(filter.getStackInSlot(0), disk), "Filtering does not consume or alter the disk");
+        var saved = controller.saveWithoutMetadata(registries);
+        controller.loadAdditional(saved, registries);
+        helper.assertTrue(net.minecraft.world.item.ItemStack.matches(filter.getStackInSlot(0), disk)
+            && controller.lockedComet().seed() == meteor.seed(), "Filter and exact lock survive reload");
+        filter.extractItem(0, 1, false);
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.LOCATING && controller.lockedComet() == null, "Removing filter before pulling restores the normal minigame");
+        filter.insertItem(0, disk.copy(), false);
+        supply(machine, 1000);
+        controller.serverTick();
+        var target = controller.lockedComet();
+        player.containerMenu = menu;
+        int firstCost = Math.toIntExact(GravitationalArrayCostSchedule.next(controller.cost(), 0, controller.duration()));
+        supply(machine, firstCost);
+        controller.controls(player, controller.frequency(), controller.bearing(), true);
+        controller.serverTick();
+        helper.assertTrue(controller.progress() == 1, "Filtered meteor still uses normal explicit retrieval and power");
+        filter.extractItem(0, 1, false);
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.RETRIEVING
+            && controller.lockedComet().equals(target), "Removing the disk during retrieval cannot change the target");
+        filter.insertItem(0, disk.copy(), false);
+        controller.serverTick();
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.ESCAPING, "Filtered pulls still escape when power fails");
+        for (int tick = 0; tick < HeavenshatterBeamControllerBlockEntity.ESCAPE_TICKS; tick++) controller.serverTick();
+        supply(machine, 1000);
+        controller.serverTick();
+        helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.LOCKED
+            && controller.lockedComet().seed() == meteor.seed(), "Reusable filter finds the same recorded meteor on the next cycle");
+        player.containerMenu = player.inventoryMenu;
+        helper.setBlock(CONTROLLER, Blocks.AIR);
+        var drops = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+            new net.minecraft.world.phys.AABB(controller.getBlockPos()).inflate(2));
+        helper.assertTrue(drops.stream().filter(item -> net.minecraft.world.item.ItemStack.matches(item.getItem(), disk)).count() == 1,
+            "Breaking the controller drops its recorded disk exactly once");
+        helper.succeed();
+    }
+
+    @GameTest(template = "heavenshatter_beam")
+    public static void menuResendsInitialSnapshotAfterReloadAndReopen(GameTestHelper helper) {
+        var controller = setup(helper).controller();
+        var level = helper.getLevel();
+        controller.serverTick();
+        var saved = controller.saveWithoutMetadata(level.registryAccess());
+        controller.loadAdditional(saved, level.registryAccess());
+        var packets = new java.util.ArrayList<net.minecraft.network.protocol.Packet<?>>();
+        var player = new net.minecraft.server.level.ServerPlayer(level.getServer(), level,
+            new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "menu-reload"),
+            net.minecraft.server.level.ClientInformation.createDefault());
+        new net.minecraft.server.network.ServerGamePacketListenerImpl(level.getServer(),
+            new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND), player,
+            net.minecraft.server.network.CommonListenerCookie.createInitial(player.getGameProfile(), false)) {
+            @Override public void send(net.minecraft.network.protocol.Packet<?> packet) { packets.add(packet); }
+        };
+        player.setPos(controller.getBlockPos().getCenter());
+        level.players().add(player);
+        try {
+            for (int reopen = 0; reopen < 2; reopen++) {
+                player.openMenu(controller, controller.getBlockPos());
+                var menu = (HeavenshatterMenu) player.containerMenu;
+                packets.clear();
+                // Controller state is deliberately unchanged since the early initialization broadcast.
+                menu.broadcastChanges();
+                var snapshots = packets.stream()
+                    .filter(packet -> packet instanceof net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket)
+                    .map(packet -> ((net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket) packet).payload())
+                    .filter(payload -> payload instanceof net.crystalnexus.network.payload.S2C_CelestialTracking)
+                    .map(payload -> (net.crystalnexus.network.payload.S2C_CelestialTracking) payload).toList();
+                helper.assertTrue(snapshots.size() == 1 && snapshots.getFirst().menuId() == menu.containerId,
+                    "First attached broadcast delivers tracking even when initial state did not change");
+                helper.assertTrue(snapshots.getFirst().state().equals(controller.trackingState())
+                    && snapshots.getFirst().state().getList("markers", net.minecraft.nbt.Tag.TAG_COMPOUND).size() == 5,
+                    "Reopened menu receives complete restored radar state");
+                player.closeContainer();
+            }
+        } finally {
+            player.containerMenu = player.inventoryMenu;
+            level.players().remove(player);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "heavenshatter_beam")
     public static void formationAndPortLifecycle(GameTestHelper helper) { formation(helper); }
     @GameTest(template = "heavenshatter_beam", rotationSteps = 1)
     public static void formationEast(GameTestHelper helper) { formation(helper); }
@@ -114,7 +225,7 @@ public final class HeavenshatterGameTests {
             controller.loadAdditional(lockedSave, registries);
             helper.assertTrue(controller.lockedComet() != null && controller.lockedComet().seed() == answer.getLong("seed"), "Lock survives reload");
             controller.multiblockEnergyInput().extractEnergy(Integer.MAX_VALUE, false);
-            int firstCost = (int) GravitationalArrayCostSchedule.next(controller.cost(), 0, HeavenshatterMeteor.DURATION);
+            int firstCost = (int) GravitationalArrayCostSchedule.next(controller.cost(), 0, controller.duration());
             supply(machine, firstCost);
             controller.controls(player, answerFrequency, answerBearing, true);
             player.containerMenu = player.inventoryMenu;
@@ -135,14 +246,21 @@ public final class HeavenshatterGameTests {
                 && helper.getLevel().getBlockState(obstacle).is(Blocks.STONE), "Pause consumes no FE and preserves the obstacle");
             helper.getLevel().setBlock(obstacle, Blocks.AIR.defaultBlockState(), 3);
             controller.validateStructureNow();
-            long charged = GravitationalArrayCostSchedule.cumulative(controller.cost(), 1, HeavenshatterMeteor.DURATION);
-            for (int i = 1; i < HeavenshatterMeteor.DURATION; i++) charged += poweredTick(machine);
+            long charged = GravitationalArrayCostSchedule.cumulative(controller.cost(), 1, controller.duration());
+            for (int i = 1; i < controller.duration(); i++) charged += poweredTick(machine);
             helper.assertTrue(charged == controller.cost() && controller.multiblockEnergyInput().getEnergyStored() == 0, "Exactly the quoted FE is charged");
             helper.assertTrue(controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.ARRIVED, "Meteor materializes at completion");
             BlockPos base = controller.meteorBase();
             for (var cell : expectedCells) helper.assertTrue(helper.getLevel().getBlockState(base.offset(cell.x(), cell.y(), cell.z())).equals(controller.palette().get(cell.material())), "Placed meteor matches descending visual");
             var first = expectedCells.getFirst();
             BlockPos mined = base.offset(first.x(), first.y(), first.z());
+            var recorded = net.crystalnexus.data.SummonedMeteorSavedData.get(helper.getLevel()).at(helper.getLevel(), mined);
+            helper.assertTrue(recorded != null && recorded.palette().equals(controller.palette())
+                && recorded.totalWeight() == expectedCells.size(), "Beam registers the original meteor for scanning on arrival");
+            controller.loadAdditional(controller.saveWithoutMetadata(registries), registries);
+            controller.serverTick();
+            helper.assertTrue(net.crystalnexus.data.SummonedMeteorSavedData.get(helper.getLevel()).at(helper.getLevel(), mined).id().equals(recorded.id()),
+                "Reloading an arrived controller preserves meteor identity");
             helper.getLevel().setBlock(mined, Blocks.AIR.defaultBlockState(), 3);
             for (int i = 0; i < 25; i++) controller.serverTick();
             helper.assertTrue(helper.getLevel().getBlockState(mined).isAir() && controller.stage() == HeavenshatterBeamControllerBlockEntity.Stage.ARRIVED, "Mined blocks are never recreated; remaining meteor blocks new pulls");
@@ -169,7 +287,7 @@ public final class HeavenshatterGameTests {
 
     private static long poweredTick(Machine machine) {
         var controller = machine.controller();
-        int needed = (int) GravitationalArrayCostSchedule.next(controller.cost(), controller.progress(), HeavenshatterMeteor.DURATION);
+        int needed = (int) GravitationalArrayCostSchedule.next(controller.cost(), controller.progress(), controller.duration());
         supply(machine, needed);
         controller.serverTick();
         return needed;
@@ -284,7 +402,7 @@ public final class HeavenshatterGameTests {
         var loaded = new net.crystalnexus.celestial.CelestialScanner();
         loaded.load(saved, helper.getLevel().registryAccess());
         helper.assertTrue(loaded.target().equals(target) && loaded.identified(), "Candidate and identified signature survive reload");
-        helper.assertTrue(loaded.alignmentTicks == 0, "Reload resets unfinished stability");
+        helper.assertTrue(loaded.alignmentTicks == 40, "Reload preserves unfinished stability");
         for (int i = 0; i < 60; i++) loaded.tick(true);
         helper.assertTrue(loaded.lock() && loaded.lockedComet().equals(target), "Lock retains exactly the identified comet");
         int count = net.crystalnexus.multiblock.HeavenshatterMeteor.cells(target.diameter(), target.seed(), target.palette().size()).size();

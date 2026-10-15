@@ -3,6 +3,7 @@ package net.crystalnexus.events;
 import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.item.GradientItemName;
 import net.crystalnexus.item.GradientItemName.Palette;
+import net.crystalnexus.item.MeteorScannerItem;
 import net.crystalnexus.processing.MachineTier;
 import net.crystalnexus.processing.TieredMachineBlock;
 
@@ -702,7 +703,9 @@ public class TooltipInfoHandler {
                 || path.equals("zero_chip") || path.equals("zero_cable"));
 		FrameColors colors = null;
 		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
-			if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
+			if (path.equals("meteor_data_disk")) {
+				colors = new FrameColors(Palette.FERROSTEEL);
+			} else if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
 					|| path.equals("hemochanter") || path.equals("hemolyzer") || path.equals("gene_splicer")) {
 				colors = new FrameColors(Palette.ENGINEERED_FLESH);
 			} else if (path.equals("singularity_compressor") || path.equals("matter_transmutation_table")
@@ -743,9 +746,13 @@ public class TooltipInfoHandler {
 			}
 		}
 		String[] tooltipLines = TOOLTIP_DATA.get(path);
-		if (tooltipLines == null) return;
+		boolean meteorScanner = stack.getItem() instanceof MeteorScannerItem;
+		if (tooltipLines == null && !meteorScanner) return;
 		if (Screen.hasShiftDown()) {
-			for (String line : tooltipLines) {
+			if (meteorScanner) {
+				event.getToolTip().add(Component.translatable("tooltip.crystalnexus.meteor_scanner",
+						MeteorScannerItem.RANGE, MeteorScannerItem.SCAN_COST).withStyle(ChatFormatting.GRAY));
+			} else for (String line : tooltipLines) {
 				event.getToolTip().add(Component.literal(line).withStyle(ChatFormatting.GRAY));
 			}
 		} else {

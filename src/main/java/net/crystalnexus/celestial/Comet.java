@@ -9,19 +9,23 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.*;
 
 public record Comet(UUID id, ResourceLocation classification, String name, int difficulty, int azimuth, int elevation,
-                    int frequency, int distance, int diameter, long seed, List<BlockState> palette, List<Integer> counts) {
+                    int frequency, int distance, int diameter, long seed, List<BlockState> palette, List<Integer> counts, boolean hasStone) {
     public Comet { palette = List.copyOf(palette); counts = List.copyOf(counts); }
     public static Comet create(UUID id, CometDefinitions.Definition d, int azimuth, int elevation, int frequency, int distance, int diameter, long seed) {
-        int[] counts = new int[d.palette().size()];
+        return create(id, d, azimuth, elevation, frequency, distance, diameter, seed, d.palette(), true);
+    }
+    public static Comet create(UUID id, CometDefinitions.Definition d, int azimuth, int elevation, int frequency, int distance, int diameter, long seed, List<BlockState> palette, boolean hasStone) {
+        int[] counts = new int[palette.size()];
         for (var cell : HeavenshatterMeteor.cells(diameter, seed, counts.length)) counts[cell.material()]++;
         return new Comet(id, d.id(), d.name(), d.difficulty(), azimuth, elevation, frequency, distance, diameter, seed,
-            d.palette(), Arrays.stream(counts).boxed().toList());
+            palette, Arrays.stream(counts).boxed().toList(), hasStone);
     }
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putUUID("id", id); tag.putString("type", classification.toString()); tag.putString("name", name);
         tag.putInt("difficulty", difficulty); tag.putInt("azimuth", azimuth); tag.putInt("elevation", elevation);
         tag.putInt("frequency", frequency); tag.putInt("distance", distance); tag.putInt("diameter", diameter); tag.putLong("seed", seed);
+        tag.putBoolean("hasStone", hasStone);
         ListTag blocks = new ListTag();
         palette.forEach(s -> blocks.add(NbtUtils.writeBlockState(s))); tag.put("palette", blocks);
         return tag;
@@ -31,17 +35,18 @@ public record Comet(UUID id, ResourceLocation classification, String name, int d
         ListTag blocks = tag.getList("palette", Tag.TAG_COMPOUND);
         if (blocks.size() < 2 || blocks.size() > 5) throw new IllegalArgumentException("Invalid saved palette");
         for (int i = 0; i < blocks.size(); i++) palette.add(NbtUtils.readBlockState(registries.lookupOrThrow(Registries.BLOCK), blocks.getCompound(i)));
-        int diameter = Math.clamp(tag.getInt("diameter"), 7, 14);
+        int diameter = Math.clamp(tag.getInt("diameter"), 7, 20);
         var definition = new CometDefinitions.Definition(ResourceLocation.parse(tag.getString("type")), tag.getString("name"), 1,
             Math.clamp(tag.getInt("difficulty"), 1, 3), diameter, diameter, 1, 10000, palette);
         return create(tag.getUUID("id"), definition, Math.floorMod(tag.getInt("azimuth"), 360), Math.clamp(tag.getInt("elevation"), 0, 90),
-            Math.clamp(tag.getInt("frequency"), 0, 100), Math.clamp(tag.getInt("distance"), 1, 10000), diameter, tag.getLong("seed"));
+            Math.clamp(tag.getInt("frequency"), 0, 100), Math.clamp(tag.getInt("distance"), 1, 10000), diameter, tag.getLong("seed"), palette,
+            !tag.contains("hasStone") || tag.getBoolean("hasStone"));
     }
     public CompoundTag information() {
         CompoundTag tag = new CompoundTag();
         tag.putString("name", name); tag.putString("type", classification.toString()); tag.putInt("distance", distance);
         tag.putInt("mass", counts.stream().mapToInt(Integer::intValue).sum());
-        tag.putInt("yield", counts.stream().skip(1).mapToInt(Integer::intValue).sum());
+        tag.putInt("yield", counts.stream().skip(hasStone ? 1 : 0).mapToInt(Integer::intValue).sum());
         ListTag materials = new ListTag();
         for (int i = 0; i < palette.size(); i++) {
             CompoundTag material = new CompoundTag();

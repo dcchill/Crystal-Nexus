@@ -168,7 +168,12 @@ public class OreScannerRightclickedProcedure {
 	private static boolean isOreBlock(BlockState state) {
 		if (state.is(OreTags.C_ORES)) return true;
 		var key = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-		return key != null && key.getPath().contains("ore");
+		return key != null && isOrePath(key.getPath());
+	}
+
+	static boolean isOrePath(String path) {
+		return path.equals("ore") || path.startsWith("ore_")
+				|| path.endsWith("_ore") || path.contains("_ore_");
 	}
 
 	private static boolean matchesFilter(BlockState state, String filter) {
@@ -185,7 +190,7 @@ public class OreScannerRightclickedProcedure {
 		if (key == null) return "";
 
 		String path = key.getPath(); 
-		if (!path.contains("ore")) return "";
+		if (!isOrePath(path)) return "";
 
 		path = path.replace("deepslate_", "");
 		path = path.replace("nether_", "");

@@ -27,7 +27,7 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
     private long lastCost = -1;
 
     public HeavenshatterScreen(HeavenshatterMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title); imageWidth = 316; imageHeight = 236;
+        super(menu, inventory, title); imageWidth = 316; imageHeight = 348;
     }
     private static Component text(String key, Object... args) { return Component.translatable("gui.crystalnexus.celestial." + key, args); }
     @Override protected void init() {
@@ -50,7 +50,8 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
         super.containerTick();
         long tick = minecraft.level.getGameTime();
         var state = menu.tracking;
-        boolean scanning = state.getInt("stage") == 0 && state.getBoolean("formed") && state.getString("status").equals("tuning");
+        boolean scanning = state.getInt("stage") == 0 && state.getBoolean("formed") && state.getInt("energy") >= 1000
+            && menu.getSlot(0).getItem().isEmpty() && !state.getList("markers", Tag.TAG_COMPOUND).isEmpty();
         if (dirty && tick - lastSent >= 2) send(0);
         if (!dirty && tick - lastSent > 6) {
             if (!azimuth.isHoveredOrFocused()) azimuth.sync(state.getInt("azimuth"));
@@ -89,6 +90,10 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
     @Override protected void renderBg(GuiGraphics g, float partial, int mouseX, int mouseY) {
         g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff181b20);
         g.renderOutline(leftPos, topPos, imageWidth, imageHeight, 0xffae7742);
+        for (var slot : menu.slots) {
+            g.fill(leftPos + slot.x - 1, topPos + slot.y - 1, leftPos + slot.x + 17, topPos + slot.y + 17, 0xff081317);
+            g.renderOutline(leftPos + slot.x - 1, topPos + slot.y - 1, 18, 18, 0xff627078);
+        }
         g.fill(leftPos + 7, topPos + 20, leftPos + 133, topPos + 122, 0xff081317);
         double time = minecraft.level.getGameTime() + partial;
         circle(g, 70, 72, 17, 0xff25434a); circle(g, 70, 72, 34, 0xff25434a); circle(g, 70, 72, 49, 0xff25434a);
@@ -179,8 +184,14 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
         g.drawString(font, text("power", state.getInt("energy"), state.getInt("discoveries")), 12, 213, TEXT, false);
         Component status = Component.translatable("gui.crystalnexus.heavenshatter.status." + state.getString("status"));
         var controller = menu.controller();
-        if (state.getInt("stage") == 2 && controller != null) status = Component.translatable("gui.crystalnexus.heavenshatter.retrieval", controller.progress() * 100 / 600);
+        if (state.getInt("stage") == 2 && controller != null) status = Component.translatable("gui.crystalnexus.heavenshatter.retrieval", controller.progress() * 100 / controller.duration());
         g.drawString(font, font.plainSubstrByWidth(status.getString(), 292), 12, 224, AMBER, false);
+        g.drawString(font, text("meteor_filter"), 34, 244, TEXT, false);
+        g.drawString(font, playerInventoryTitle, 77, 256, TEXT, false);
+    }
+    @Override public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
+        super.render(g, mouseX, mouseY, partialTick);
+        renderTooltip(g, mouseX, mouseY);
     }
     private void bar(GuiGraphics g, int x, int y, int width, int value, int max) {
         g.fill(leftPos+x, topPos+y, leftPos+x+width, topPos+y+4, 0xff354249);

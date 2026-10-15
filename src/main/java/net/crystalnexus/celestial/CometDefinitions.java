@@ -41,7 +41,7 @@ public final class CometDefinitions extends SimpleJsonResourceReloadListener {
         int min = json.get("min_diameter").getAsInt(), max = json.get("max_diameter").getAsInt();
         int near = json.get("min_distance").getAsInt(), far = json.get("max_distance").getAsInt();
         if (name.isBlank() || name.length() > 80 || weight < 1 || weight > 1000 || difficulty < 1 || difficulty > 3
-            || min < 7 || max > 14 || min > max || near < 1 || far > ScannerMath.BASE.range() || near > far)
+            || min < 7 || max > 20 || min > max || near < 1 || far > ScannerMath.BASE.range() || near > far)
             throw new IllegalArgumentException("Invalid comet ranges");
         List<BlockState> palette = new ArrayList<>();
         for (JsonElement element : json.getAsJsonArray("palette")) {

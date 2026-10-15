@@ -24,6 +24,7 @@ public class ModCapabilities {
             CrystalnexusModItems.SOLARIS.get(),
             CrystalnexusModItems.MINING_LASER.get(),
             CrystalnexusModItems.ORE_SCANNER.get(),
+            CrystalnexusModItems.METEOR_SCANNER.get(),
             CrystalnexusModItems.GEIGER_COUNTER.get(),
             CrystalnexusModItems.GRAVITY_GUN.get(),
             CrystalnexusModItems.BLACK_HOLE_RPG.get(),

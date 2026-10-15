@@ -24,7 +24,7 @@ public final class ToolEnergyGameTests {
         ServerPlayer player = new ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
             new GameProfile(java.util.UUID.randomUUID(), "tool-energy-test"), ClientInformation.createDefault());
         Item[] tools = {CrystalnexusModItems.BLACK_HOLE_RPG.get(), CrystalnexusModItems.COMPOUND_PICKAXE.get(), CrystalnexusModItems.COMPOUND_SWORD.get(),
-            CrystalnexusModItems.MINING_LASER.get(), CrystalnexusModItems.ORE_SCANNER.get(),
+            CrystalnexusModItems.MINING_LASER.get(), CrystalnexusModItems.ORE_SCANNER.get(), CrystalnexusModItems.METEOR_SCANNER.get(),
             CrystalnexusModItems.GEIGER_COUNTER.get(), CrystalnexusModItems.GRAVITY_GUN.get(),
             CrystalnexusModItems.BUILD_GUN.get(), CrystalnexusModItems.HOVER_PACK_CHESTPLATE.get(),
             CrystalnexusModItems.LASER_SABER.get(), CrystalnexusModItems.FLORATHANE_WAND.get()};

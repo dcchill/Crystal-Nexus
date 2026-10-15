@@ -649,6 +649,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DARK_MATTER = REGISTRY.register("dark_matter", DarkMatterItem::new);
 	public static final DeferredItem<Item> DARK_BATTERY_CELL = REGISTRY.register("dark_battery_cell", DarkBatteryCellItem::new);
 	public static final DeferredItem<Item> ORE_SCANNER = REGISTRY.register("ore_scanner", OreScannerItem::new);
+	public static final DeferredItem<Item> METEOR_SCANNER = REGISTRY.register("meteor_scanner", net.crystalnexus.item.MeteorScannerItem::new);
+	public static final DeferredItem<Item> METEOR_DATA_DISK = REGISTRY.register("meteor_data_disk", net.crystalnexus.item.MeteorDataDiskItem::new);
 	public static final DeferredItem<Item> QUARRY = block(CrystalnexusModBlocks.QUARRY);
 	public static final DeferredItem<Item> HYPER_LASER_QUARRY = block(CrystalnexusModBlocks.HYPER_LASER_QUARRY);
 	public static final DeferredItem<Item> LASER_DIODE = REGISTRY.register("laser_diode", LaserDiodeItem::new);

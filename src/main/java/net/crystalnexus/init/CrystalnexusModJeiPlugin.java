@@ -5,6 +5,7 @@ import net.crystalnexus.item.DemonCoreItem;
 import net.crystalnexus.item.GeneratedSingularityItem;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipe;
 import net.crystalnexus.jei_recipes.CometForgeJeiRecipeCategory;
+import net.crystalnexus.jei_recipes.HeavenshatterJeiRecipeCategory;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.Items;
@@ -103,6 +104,8 @@ import java.util.List;
 
 @JeiPlugin
 public class CrystalnexusModJeiPlugin implements IModPlugin {
+    public static final mezz.jei.api.recipe.RecipeType<HeavenshatterJeiRecipeCategory.Guide> Heavenshatter_Type =
+        new mezz.jei.api.recipe.RecipeType<>(HeavenshatterJeiRecipeCategory.UID, HeavenshatterJeiRecipeCategory.Guide.class);
     public static final mezz.jei.api.recipe.RecipeType<CometForgeJeiRecipe> CometForge_Type =
         new mezz.jei.api.recipe.RecipeType<>(CometForgeJeiRecipeCategory.UID, CometForgeJeiRecipe.class);
 
@@ -200,6 +203,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new AcceleratorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new GravitationalArrayRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CometForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new HeavenshatterJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new SolarSimulatorJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new NeutronFluxChamberJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactorMultiblockGuideRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -207,6 +211,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 
 	@Override
 	public void registerRecipes(IRecipeRegistration registration) {
+		registration.addRecipes(Heavenshatter_Type, List.of(HeavenshatterJeiRecipeCategory.Guide.INSTANCE));
 		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 		registration.addRecipes(CelestialGearForgeEnchanting_Type, CelestialGearForgeEnchantingCategory.examples(Minecraft.getInstance().level.registryAccess()));
 		List<PurificationRecipe> PurificationRecipes = recipes(recipeManager, PurificationRecipe.class);
@@ -381,6 +386,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), CometForge_Type);
         registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.COMET_FORGE_CONTROLLER.get()), MultiblockStructure_Type);
         registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.HEAVENSHATTER_BEAM_CONTROLLER.get()), MultiblockStructure_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModItems.HEAVENSHATTER_BEAM_CONTROLLER.get()), Heavenshatter_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.IRON_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem()), RecipeTypes.SMELTING);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem()), RecipeTypes.SMELTING);

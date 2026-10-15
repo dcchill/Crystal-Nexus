@@ -21,7 +21,7 @@ public final class ToolEnergy {
     public static boolean isTool(ItemStack stack) {
         var item = stack.getItem();
         return item instanceof CompoundPickaxeItem || item instanceof CompoundSwordItem || item instanceof MeteorSwordItem
-            || item instanceof MiningLaserItem || item instanceof OreScannerItem
+            || item instanceof MiningLaserItem || item instanceof OreScannerItem || item instanceof MeteorScannerItem
             || item instanceof SolarisItem
             || item instanceof GeigerCounterItem || item instanceof GravityGunItem
             || item instanceof BuildGunItem || item instanceof HoverPackItem

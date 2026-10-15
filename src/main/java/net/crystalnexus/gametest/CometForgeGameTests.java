@@ -306,7 +306,7 @@ public final class CometForgeGameTests {
                 count += stack.getCount();
             }
             helper.assertTrue(count == 4 * (1 << star), "Star multiplier applies to every comet");
-            helper.assertTrue(before + added - simulator.multiblockEnergyInput().getEnergyStored() == count * 200_000L, "Existing energy per item retained");
+            helper.assertTrue(before + added - simulator.multiblockEnergyInput().getEnergyStored() == count * 600_000L, "Existing energy per item retained");
             for (int slot = 0; slot < 4; slot++) helper.assertTrue(simulator.getItem(slot).getCount() == 1, "Comets are reusable");
         }
         output.clearContent();

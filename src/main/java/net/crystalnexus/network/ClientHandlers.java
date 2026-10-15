@@ -16,6 +16,10 @@ import net.crystalnexus.processing.MaterialProcessingCatalog;
 
 public class ClientHandlers {
 
+    public static void onMeteorScannerTarget(net.crystalnexus.network.payload.S2C_MeteorScannerTarget msg, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> net.crystalnexus.client.renderer.MeteorScannerRenderer.update(msg));
+    }
+
     public static void onDepotProgramsResponse(final S2C_DepotProgramsResponse msg, final IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             try {

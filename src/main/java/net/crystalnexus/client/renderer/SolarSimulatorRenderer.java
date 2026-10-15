@@ -261,6 +261,8 @@ public final class SolarSimulatorRenderer implements BlockEntityRenderer<SolarSi
     private void renderBody(ItemStack stack, PoseStack poseStack, MultiBufferSource buffers, float rotation,
                             float scale, SolarSimulatorControllerBlockEntity controller) {
         if (stack.isEmpty()) return;
+        if (stack.getItem() instanceof net.crystalnexus.item.MeteorDataDiskItem)
+            stack = new ItemStack(CrystalnexusModItems.METEOR.get());
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         poseStack.scale(scale, scale, scale);

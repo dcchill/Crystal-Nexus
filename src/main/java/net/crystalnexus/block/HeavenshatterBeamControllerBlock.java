@@ -55,8 +55,10 @@ public final class HeavenshatterBeamControllerBlock extends Block implements Ent
 	}
 
 	@Override public void onRemove(BlockState state, Level level, BlockPos pos, BlockState next, boolean moving) {
-		if (state.getBlock() != next.getBlock() && level.getBlockEntity(pos) instanceof HeavenshatterBeamControllerBlockEntity controller)
+		if (state.getBlock() != next.getBlock() && level.getBlockEntity(pos) instanceof HeavenshatterBeamControllerBlockEntity controller) {
+			if (!level.isClientSide) net.minecraft.world.Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), controller.meteorFilter().getStackInSlot(0));
 			controller.onControllerRemoved();
+		}
 		super.onRemove(state, level, pos, next, moving);
 	}
 }

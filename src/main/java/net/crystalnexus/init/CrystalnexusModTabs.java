@@ -359,6 +359,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ORGAN.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
+				tabData.accept(CrystalnexusModItems.METEOR_SCANNER.get());
+				tabData.accept(CrystalnexusModItems.METEOR_DATA_DISK.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
 				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());
@@ -733,6 +735,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.SPATIAL_GLAND.get());
 				tabData.accept(CrystalnexusModItems.GEIGER_COUNTER.get());
 				tabData.accept(CrystalnexusModItems.ORE_SCANNER.get());
+				tabData.accept(CrystalnexusModItems.METEOR_SCANNER.get());
+				tabData.accept(CrystalnexusModItems.METEOR_DATA_DISK.get());
 				tabData.accept(CrystalnexusModItems.FLAMETHROWER.get());
 				tabData.accept(CrystalnexusModItems.MINING_LASER.get());
 				tabData.accept(CrystalnexusModItems.PAINT_GUN.get());

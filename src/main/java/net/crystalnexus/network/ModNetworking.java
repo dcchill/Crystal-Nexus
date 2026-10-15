@@ -29,6 +29,8 @@ public class ModNetworking {
 	@SubscribeEvent
 	public static void register(final RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar r = event.registrar(DepotNetIds.NETWORK_VERSION);
+        r.playToClient(net.crystalnexus.network.payload.S2C_MeteorScannerTarget.TYPE,
+            net.crystalnexus.network.payload.S2C_MeteorScannerTarget.STREAM_CODEC, ClientHandlers::onMeteorScannerTarget);
         r.playToClient(net.crystalnexus.network.payload.S2C_CelestialTracking.TYPE, net.crystalnexus.network.payload.S2C_CelestialTracking.STREAM_CODEC, net.crystalnexus.network.payload.S2C_CelestialTracking::handle);
 		r.playToServer(net.crystalnexus.network.payload.C2S_HeavenshatterControls.TYPE, net.crystalnexus.network.payload.C2S_HeavenshatterControls.STREAM_CODEC, net.crystalnexus.network.payload.C2S_HeavenshatterControls::handle);
 		r.playToServer(AssemblyLineRequest.TYPE, AssemblyLineRequest.STREAM_CODEC, AssemblyLineRequest::handle);

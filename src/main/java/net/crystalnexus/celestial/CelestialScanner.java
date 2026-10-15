@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.*;
 import net.minecraft.server.level.ServerLevel;
+import net.crystalnexus.multiblock.HeavenshatterMaterials;
 import java.util.*;
 
 /** Server-owned puzzle. Public observations deliberately exclude the hidden target settings. */
@@ -30,9 +31,13 @@ public final class CelestialScanner {
             var definition = definitions.getFirst();
             for (var d : definitions) { roll -= d.weight(); if (roll < 0) { definition = d; break; } }
             int diameter = definition.minDiameter() + level.random.nextInt(definition.maxDiameter() - definition.minDiameter() + 1);
+            int azimuth = ((offset + i * 72 + level.random.nextInt(21)) / 15 * 15 + 7) % 360;
+            int elevation = (10 + level.random.nextInt(66)) / 15 * 15 + 7;
+            boolean hasStone = level.random.nextInt(4) != 0;
             candidates.add(Comet.create(new UUID(level.random.nextLong(), level.random.nextLong()), definition,
-                (offset + i * 72 + level.random.nextInt(21)) % 360, 10 + level.random.nextInt(66), level.random.nextInt(101),
-                definition.minDistance() + level.random.nextInt(definition.maxDistance() - definition.minDistance() + 1), diameter, level.random.nextLong()));
+                azimuth, elevation, level.random.nextInt(101),
+                definition.minDistance() + level.random.nextInt(definition.maxDistance() - definition.minDistance() + 1), diameter, level.random.nextLong(),
+                HeavenshatterMaterials.select(level, pos, level.random, definition.palette(), hasStone), hasStone));
         }
         observe();
     }
@@ -72,6 +77,18 @@ public final class CelestialScanner {
         if (!identified() || alignmentTicks < 60) return false;
         locked = target(); return true;
     }
+    public void lockRecorded(net.crystalnexus.multiblock.RecordedMeteor meteor) {
+        reset();
+        locked = new Comet(UUID.randomUUID(), net.minecraft.resources.ResourceLocation.parse("crystalnexus:recorded_meteor"),
+            net.minecraft.network.chat.Component.translatable("gui.crystalnexus.celestial.recorded_meteor").getString(),
+            1, azimuth, elevation, frequency, net.crystalnexus.multiblock.HeavenshatterMeteor.MIN_DISTANCE,
+            meteor.diameter(), meteor.seed(), meteor.palette(), meteor.weights(), false);
+        candidates.add(locked);
+        identified.add(locked.id());
+        alignmentTicks = 60;
+        strength = frequencySignal = 100;
+        angularAligned = true;
+    }
     public void reset() {
         candidates.clear(); identified.clear(); locked = null; selected = alignmentTicks = strength = frequencySignal = 0; angularAligned = false;
     }
@@ -84,8 +101,8 @@ public final class CelestialScanner {
         ListTag markers = new ListTag();
         for (Comet c : candidates) {
             CompoundTag marker = new CompoundTag();
-            marker.putInt("azimuth", ((c.azimuth() + 7) / 15 * 15) % 360);
-            marker.putInt("elevation", (c.elevation() + 7) / 15 * 15);
+            marker.putInt("azimuth", (c.azimuth() / 15 * 15 + 7) % 360);
+            marker.putInt("elevation", Math.min(90, c.elevation() / 15 * 15 + 7));
             marker.putBoolean("known", discoveries.contains(c.classification().toString())); markers.add(marker);
         }
         tag.put("markers", markers);
@@ -95,6 +112,7 @@ public final class CelestialScanner {
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag(); tag.putInt("version", 1);
         tag.putInt("selected", selected); tag.putInt("azimuth", azimuth); tag.putInt("elevation", elevation); tag.putInt("frequency", frequency);
+        tag.putInt("alignmentTicks", alignmentTicks);
         ListTag comets = new ListTag(); candidates.forEach(c -> comets.add(c.save())); tag.put("candidates", comets);
         ListTag signatures = new ListTag(); discoveries.stream().sorted().forEach(s -> signatures.add(StringTag.valueOf(s))); tag.put("discoveries", signatures);
         ListTag ids = new ListTag(); identified.forEach(id -> ids.add(StringTag.valueOf(id.toString()))); tag.put("identified", ids);
@@ -110,6 +128,7 @@ public final class CelestialScanner {
         }
         selected = Math.clamp(tag.getInt("selected"), 0, Math.max(0, candidates.size() - 1));
         azimuth = Math.floorMod(tag.getInt("azimuth"), 360); elevation = Math.clamp(tag.getInt("elevation"), 0, 90); frequency = Math.clamp(tag.getInt("frequency"), 0, 100);
+        alignmentTicks = Math.clamp(tag.getInt("alignmentTicks"), 0, 60);
         for (Tag entry : tag.getList("discoveries", Tag.TAG_STRING)) discoveries.add(entry.getAsString());
         for (Tag entry : tag.getList("identified", Tag.TAG_STRING)) {
             try { identified.add(UUID.fromString(entry.getAsString())); } catch (IllegalArgumentException ignored) { }
