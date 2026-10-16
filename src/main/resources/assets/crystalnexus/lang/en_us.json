@@ -1102,5 +1102,8 @@
   "message.crystalnexus.meteor_scanner.no_energy": "Scanner requires %s FE. Charge it and try again.",
   "message.crystalnexus.meteor_scanner.progress": "Scanning meteor: %s%%",
   "message.crystalnexus.meteor_scanner.interrupted": "Scan interrupted. Keep aiming at the same meteor with the disk in your offhand.",
-  "message.crystalnexus.meteor_scanner.complete": "Meteor recorded to offhand data disk."
+  "message.crystalnexus.meteor_scanner.complete": "Meteor recorded to offhand data disk.",
+  "item.crystalnexus.universal_drone": "Universal Drone",
+  "item.crystalnexus.drone_controller": "Drone Controller",
+  "entity.crystalnexus.universal_drone": "Universal Drone"
 }

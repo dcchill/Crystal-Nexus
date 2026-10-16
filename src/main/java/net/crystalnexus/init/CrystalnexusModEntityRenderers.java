@@ -18,6 +18,7 @@ public class CrystalnexusModEntityRenderers {
 	public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(CrystalnexusModEntities.BLACK_HOLE_PROJECTILE.get(), net.crystalnexus.client.renderer.BlackHoleProjectileRenderer::new);
 		event.registerEntityRenderer(CrystalnexusModEntities.PAINTBALL.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(CrystalnexusModEntities.UNIVERSAL_DRONE.get(), net.crystalnexus.client.renderer.LUNADroneRenderer::new);
 		event.registerEntityRenderer(CrystalnexusModEntities.LASER_BEAM.get(), LaserBeamRenderer::new);
 	}
 }

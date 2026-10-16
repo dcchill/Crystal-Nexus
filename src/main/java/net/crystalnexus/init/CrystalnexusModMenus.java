@@ -113,6 +113,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<ControlRodGuiMenu>> CONTROL_ROD_GUI = REGISTRY.register("control_rod_gui", () -> IMenuTypeExtension.create(ControlRodGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<IronSmelterGuiMenu>> IRON_SMELTER_GUI = REGISTRY.register("iron_smelter_gui", () -> IMenuTypeExtension.create(IronSmelterGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<ArcFurnaceMenu>> ARC_FURNACE = REGISTRY.register("arc_furnace", () -> IMenuTypeExtension.create(ArcFurnaceMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.DroneMenu>> DRONE = REGISTRY.register("drone", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.DroneMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.AssemblyLineMenu>> ASSEMBLY_LINE = REGISTRY.register("assembly_line", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.AssemblyLineMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<PartsAssemblerMenu>> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", () -> IMenuTypeExtension.create(PartsAssemblerMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TesseractGuiMenu>> TESSERACT_GUI = REGISTRY.register("tesseract_gui", () -> IMenuTypeExtension.create(TesseractGuiMenu::new));

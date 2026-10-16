@@ -22,7 +22,9 @@ public class CrystalnexusModTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CrystalnexusMod.MODID);
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CRYSTAL_NEXUS_TAB = REGISTRY.register("crystal_nexus_tab",
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_tab")).icon(() -> new ItemStack(CrystalnexusModItems.ANCIENT_CRYSTAL.get())).displayItems((parameters, tabData) -> {
-				 tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING.get().asItem());
+				 tabData.accept(CrystalnexusModItems.UNIVERSAL_DRONE.get());
+                 tabData.accept(CrystalnexusModItems.DRONE_CONTROLLER.get());
+                 tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CASING.get().asItem());
 				 tabData.accept(CrystalnexusModBlocks.ASSEMBLY_LINE_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DIESEL_GENERATOR_DRIVESHAFT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.DIESEL_GENERATOR_CONTROLLER.get().asItem());

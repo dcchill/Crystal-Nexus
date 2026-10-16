@@ -206,6 +206,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> TITANIUM_HAMMER = REGISTRY.register("azurine_hammer", TitaniumHammerItem::new);
 
 	public static final DeferredItem<Item> CRYSTALALLOY_HAMMER = REGISTRY.register("crystalalloy_hammer", CrystalAlloyHammerItem::new);
+	public static final DeferredItem<Item> UNIVERSAL_DRONE = REGISTRY.register("universal_drone", net.crystalnexus.item.UniversalDroneItem::new);
+	public static final DeferredItem<Item> DRONE_CONTROLLER = REGISTRY.register("drone_controller", net.crystalnexus.item.DroneControllerItem::new);
 	public static final DeferredItem<Item> CRYSTAL_WRENCH = REGISTRY.register("crystal_wrench", CrystalWrenchItem::new);
 	public static final DeferredItem<Item> DUST_SEPARATOR = block(CrystalnexusModBlocks.DUST_SEPARATOR);
 	public static final DeferredItem<Item> CHLOROPHYTE_DUST_SEPARATOR = block(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR);

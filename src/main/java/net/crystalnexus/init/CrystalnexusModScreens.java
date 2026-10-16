@@ -90,6 +90,7 @@ public class CrystalnexusModScreens {
 	@SubscribeEvent
 	public static void clientLoad(RegisterMenuScreensEvent event) {
 		event.register(CrystalnexusModMenus.ASSEMBLY_LINE.get(), net.crystalnexus.client.gui.AssemblyLineScreen::new);
+        event.register(CrystalnexusModMenus.DRONE.get(), net.crystalnexus.client.gui.DroneScreen::new);
 		event.register(CrystalnexusModMenus.CRYSTAL_PURIFIER_GUI.get(), CrystalPurifierGUIScreen::new);
 		event.register(CrystalnexusModMenus.CRUSHER_GUI.get(), CrusherGuiScreen::new);
 		event.register(CrystalnexusModMenus.MASTICATOR.get(), MasticatorScreen::new);

@@ -16,7 +16,10 @@ import net.crystalnexus.entity.LaserBeamEntity;
 import net.crystalnexus.CrystalnexusMod;
 
 public class CrystalnexusModEntities {
+
 	public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(Registries.ENTITY_TYPE, CrystalnexusMod.MODID);
+	public static final DeferredHolder<EntityType<?>, EntityType<net.crystalnexus.entity.LUNADroneEntity>> UNIVERSAL_DRONE = register("universal_drone",
+        EntityType.Builder.<net.crystalnexus.entity.LUNADroneEntity>of(net.crystalnexus.entity.LUNADroneEntity::new, MobCategory.MISC).sized(.8F,.6F).clientTrackingRange(10).updateInterval(2));
 	public static final DeferredHolder<EntityType<?>, EntityType<net.crystalnexus.entity.BlackHoleProjectileEntity>> BLACK_HOLE_PROJECTILE = register("black_hole_projectile",
             EntityType.Builder.<net.crystalnexus.entity.BlackHoleProjectileEntity>of(net.crystalnexus.entity.BlackHoleProjectileEntity::new, MobCategory.MISC)
                 .setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.6f, 0.6f));

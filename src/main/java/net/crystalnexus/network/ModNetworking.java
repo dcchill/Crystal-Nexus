@@ -29,6 +29,9 @@ public class ModNetworking {
 	@SubscribeEvent
 	public static void register(final RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar r = event.registrar(DepotNetIds.NETWORK_VERSION);
+        PayloadRegistrar drones = event.registrar("2");
+        drones.playToServer(DroneControl.TYPE, DroneControl.STREAM_CODEC, DroneControl::handle);
+        drones.playToClient(DroneState.TYPE, DroneState.STREAM_CODEC, DroneState::handle);
         r.playToClient(net.crystalnexus.network.payload.S2C_MeteorScannerTarget.TYPE,
             net.crystalnexus.network.payload.S2C_MeteorScannerTarget.STREAM_CODEC, ClientHandlers::onMeteorScannerTarget);
         r.playToClient(net.crystalnexus.network.payload.S2C_CelestialTracking.TYPE, net.crystalnexus.network.payload.S2C_CelestialTracking.STREAM_CODEC, net.crystalnexus.network.payload.S2C_CelestialTracking::handle);

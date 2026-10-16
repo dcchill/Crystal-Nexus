@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.HierarchicalModel;
 
-import net.crystalnexus.procedures.LUNADroneOnEntityTickUpdateProcedure;
+
 import net.crystalnexus.entity.LUNADroneEntity;
 import net.crystalnexus.client.model.animations.droneAnimation;
 import net.crystalnexus.client.model.Modeldrone;
@@ -20,6 +20,14 @@ public class LUNADroneRenderer extends MobRenderer<LUNADroneEntity, Modeldrone<L
 	public ResourceLocation getTextureLocation(LUNADroneEntity entity) {
 		return ResourceLocation.parse("crystalnexus:textures/entities/drone_texture.png");
 	}
+
+    @Override protected boolean shouldShowName(LUNADroneEntity entity) {
+        return net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == entity || super.shouldShowName(entity);
+    }
+    @Override protected void renderNameTag(LUNADroneEntity entity, net.minecraft.network.chat.Component name,
+            com.mojang.blaze3d.vertex.PoseStack pose, net.minecraft.client.renderer.MultiBufferSource buffers, int light, float partial) {
+        super.renderNameTag(entity, net.minecraft.network.chat.Component.literal(entity.displayStatus()), pose, buffers, light, partial);
+    }
 
 	private static final class AnimatedModel extends Modeldrone<LUNADroneEntity> {
 		private final ModelPart root;
@@ -35,7 +43,7 @@ public class LUNADroneRenderer extends MobRenderer<LUNADroneEntity, Modeldrone<L
 				this.animate(entity.animationState0, droneAnimation.idle, ageInTicks, 1f);
 				this.animateWalk(droneAnimation.forward, limbSwing, limbSwingAmount, 1f, 1f);
 				this.animate(entity.animationState2, droneAnimation.power_up, ageInTicks, 1f);
-				if (LUNADroneOnEntityTickUpdateProcedure.execute(entity.level(), entity))
+				if (entity.getDeltaMovement().lengthSqr() > .001)
 					this.animateWalk(droneAnimation.forward_w_box, limbSwing, limbSwingAmount, 1f, 1f);
 				this.animate(entity.animationState4, droneAnimation.idle, ageInTicks, 1f);
 			}
