@@ -173,8 +173,8 @@ final class DroneWork {
         memory().putInt("scan",cursor);
         if (cursor < total) return -1;
         memory().remove("scanBest");
-        if (best == null) return 1;
-        memory().putLong("position",best.asLong()); return 0;
+        if (best == null) return a.condition(false);
+        memory().putLong("position",best.asLong()); return a.condition(true);
     }
     BlockPos end(CompoundTag p) {
         if (p.contains("end")) { int[] v=p.getIntArray("end"); if(v.length!=3) throw new IllegalArgumentException("end requires three coordinates"); return new BlockPos(v[0],v[1],v[2]); }

@@ -60,7 +60,7 @@ final class DroneCombat {
     int select(CompoundTag p, boolean wait) {
         double radius=Math.max(1,Math.min(32,a.range(p)));ListTag filters=filters();LivingEntity nearest=null;double best=Double.MAX_VALUE;
         for(LivingEntity entity:a.r.level().getEntitiesOfClass(LivingEntity.class,d.getBoundingBox().inflate(radius))) {
-            if(!safe(entity,p)) continue;
+            if(!safe(entity,p) || d.distanceToSqr(entity)>radius*radius) continue;
             boolean match=filters.isEmpty()?(d.mode!=DroneMode.COMBAT || entity instanceof Enemy):true;
             if(!p.getString("filter").isEmpty()) {
                 String id=p.getString("filter");
@@ -69,8 +69,8 @@ final class DroneCombat {
             for(Tag raw:filters) match &= test((CompoundTag)raw,entity,0);
             if(!match)continue;double distance=d.distanceToSqr(entity);if(distance<best){best=distance;nearest=entity;}
         }
-        if(nearest!=null){a.memory().putUUID("target",nearest.getUUID());return 0;}
-        a.memory().remove("target");return wait?a.waitFor(false):1;
+        if(nearest!=null){a.memory().putUUID("target",nearest.getUUID());return a.condition(true);}
+        a.memory().remove("target");int output=a.condition(false);return wait?a.waitFor(false):output;
     }
     int attack(CompoundTag p, boolean untilDead) {
         LivingEntity entity=a.target();if(entity==null) return untilDead?0:a.failure("No living target selected");

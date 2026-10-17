@@ -121,8 +121,9 @@ public final class DroneActions {
                 if (!d.permitted(id)) yield failure("Recipient is unauthorized"); memory().putString("recipient", value); yield 0;
             }
             case FIND_PLAYER -> {
-                ServerPlayer player = r.player(recipient(p)); if (player == null || player.level() != d.level()) yield 1;
-                memory().putUUID("target", player.getUUID()); yield 0;
+                ServerPlayer player = r.player(recipient(p));
+                if (player == null || player.level() != d.level()) { memory().remove("target"); yield condition(false); }
+                memory().putUUID("target", player.getUUID()); yield condition(true);
             }
             case WAIT_FOR_RECIPIENT -> { ServerPlayer player = r.player(recipient(p)); yield waitFor(player != null && player.level() == d.level()); }
             case DELIVER_ITEMS -> work.deliver(p);

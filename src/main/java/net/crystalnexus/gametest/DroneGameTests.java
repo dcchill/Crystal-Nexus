@@ -30,6 +30,40 @@ public final class DroneGameTests {
         var g=d.graph();g.nodes.add(DroneNode.WAIT.create(1,160,24));g.node(1).parameters.putInt("ticks",500);g.edges.add(new AssemblyGraph.Edge(0,0,1,0));d.program.start(g);d.program.node=1;d.program.elapsed=37;d.program.memory.putInt("checkpoint",123);
     }
     @GameTest(template=EMPTY,timeoutTicks=40)
+    public static void entitySearchUpdatesResultOnSuccessAndFailure(GameTestHelper h){
+        var d=drone(h);var pig=h.spawn(EntityType.PIG,new BlockPos(4,4,3));
+        var detect=DroneNodeSettings.create(DroneNode.DETECT_ENTITY,1,0,0);detect.parameters.putString("filter","minecraft:pig");
+        d.program.memory.put("vars",new CompoundTag());d.program.memory.getCompound("vars").putDouble("result",7);
+        h.assertTrue(d.runtime.actions.step(DroneNode.DETECT_ENTITY,detect)==0&&d.program.memory.getCompound("vars").getDouble("result")==1,"Successful detection publishes result=1 for downstream logic");
+        pig.discard();h.assertTrue(d.runtime.actions.step(DroneNode.DETECT_ENTITY,detect)==1&&d.program.memory.getCompound("vars").getDouble("result")==0,"Failed detection clears result to zero");h.succeed();
+    }
+    @GameTest(template=EMPTY,timeoutTicks=40)
+    public static void blockSearchUpdatesResultOnSuccessAndFailure(GameTestHelper h){
+        var d=drone(h);BlockPos center=h.absolutePos(new BlockPos(5,4,3));h.getLevel().setBlockAndUpdate(center,Blocks.DIAMOND_BLOCK.defaultBlockState());
+        var find=DroneNode.FIND_MATCHING_BLOCK.create(1,0,0);find.parameters.putIntArray("pos",new int[]{center.getX(),center.getY(),center.getZ()});find.parameters.putDouble("range",1);find.parameters.putString("filter","minecraft:diamond_block");
+        h.assertTrue(d.runtime.actions.step(DroneNode.FIND_MATCHING_BLOCK,find)==0&&d.program.memory.getCompound("vars").getDouble("result")==1,"Successful block search publishes result=1");
+        d.program.enter(1);h.getLevel().setBlockAndUpdate(center,Blocks.AIR.defaultBlockState());
+        h.assertTrue(d.runtime.actions.step(DroneNode.FIND_MATCHING_BLOCK,find)==1&&d.program.memory.getCompound("vars").getDouble("result")==0,"Failed block search publishes result=0");h.succeed();
+    }
+    @GameTest(template=EMPTY,timeoutTicks=40)
+    public static void entitySearchHonorsSphericalRange(GameTestHelper h){
+        var d=drone(h);var pig=h.spawn(EntityType.PIG,new BlockPos(5,4,5));pig.setPos(d.position().add(2,0,2));
+        var detect=DroneNodeSettings.create(DroneNode.DETECT_ENTITY,1,0,0);detect.parameters.putString("filter","minecraft:pig");detect.parameters.putDouble("range",2.5);
+        h.assertTrue(d.runtime.actions.step(DroneNode.DETECT_ENTITY,detect)==1,"A target in the search box but outside the radius is excluded");
+        pig.setPos(d.position().add(2,0,0));h.assertTrue(d.runtime.actions.step(DroneNode.DETECT_ENTITY,detect)==0,"A target inside the radius is detected");pig.discard();h.succeed();
+    }
+    @GameTest(template=EMPTY,timeoutTicks=40)
+    public static void playerSearchUpdatesResultAndClearsUnavailableTarget(GameTestHelper h){
+        var d=drone(h);var player=net.neoforged.neoforge.common.util.FakePlayerFactory.get(h.getLevel(),new com.mojang.authlib.GameProfile(d.owner,"sensor-owner"));
+        var online=onlinePlayers(h);online.put(player.getUUID(),player);
+        try{
+            var find=DroneNodeSettings.create(DroneNode.FIND_PLAYER,1,0,0);
+            h.assertTrue(d.runtime.actions.step(DroneNode.FIND_PLAYER,find)==0&&d.program.memory.getCompound("vars").getDouble("result")==1&&d.program.memory.getUUID("target").equals(d.owner),"Player search publishes its target and result");
+            online.remove(player.getUUID());
+            h.assertTrue(d.runtime.actions.step(DroneNode.FIND_PLAYER,find)==1&&d.program.memory.getCompound("vars").getDouble("result")==0&&!d.program.memory.hasUUID("target"),"Unavailable players clear the result and stale target");h.succeed();
+        }finally{online.remove(player.getUUID());}
+    }
+    @GameTest(template=EMPTY,timeoutTicks=40)
     public static void miningIsInstantAndUsesASufficientCargoPickaxe(GameTestHelper h){
         var d=drone(h);BlockPos pos=h.absolutePos(new BlockPos(4,4,3));h.getLevel().setBlockAndUpdate(pos,Blocks.OBSIDIAN.defaultBlockState());
         d.inventory.setStackInSlot(0,new ItemStack(Items.DIAMOND_AXE));d.inventory.setStackInSlot(1,new ItemStack(Items.WOODEN_PICKAXE));d.inventory.setStackInSlot(2,new ItemStack(Items.DIAMOND_PICKAXE));
