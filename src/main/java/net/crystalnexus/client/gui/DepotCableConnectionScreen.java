@@ -3,14 +3,11 @@
 import net.crystalnexus.world.inventory.DepotCableConnectionMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public final class DepotCableConnectionScreen extends AbstractContainerScreen<DepotCableConnectionMenu> {
-    private static final ResourceLocation BACKGROUND = ResourceLocation.parse(
-            "crystalnexus:textures/screens/depot_cable_gui.png");
+public final class DepotCableConnectionScreen extends HolographicMachineScreen<DepotCableConnectionMenu> {
     private Button filterButton;
 
     public DepotCableConnectionScreen(DepotCableConnectionMenu menu, Inventory inventory, Component title) {
@@ -39,7 +36,7 @@ public final class DepotCableConnectionScreen extends AbstractContainerScreen<De
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(BACKGROUND, leftPos, topPos, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);
+        machineBackground(graphics);
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
@@ -60,13 +57,15 @@ public final class DepotCableConnectionScreen extends AbstractContainerScreen<De
                 ? "Allow Listed" : "Block Listed";
     }
 
-    @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    @Override protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (filterButton != null) {
             filterButton.setMessage(Component.literal(filterButtonText()));
             filterButton.active = !menu.connectionMode().equals("EXPORT");
         }
         renderBackground(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.renderMachine(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
     }
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.cablePos(); }
+    @Override protected String machineFallbackId() { return "depot_cable"; }
 }

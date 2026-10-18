@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.NodeMinerGUIMenu;
@@ -16,7 +15,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class NodeMinerGUIScreen extends AbstractContainerScreen<NodeMinerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class NodeMinerGUIScreen extends HolographicMachineScreen<NodeMinerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -39,11 +38,10 @@ public class NodeMinerGUIScreen extends AbstractContainerScreen<NodeMinerGUIMenu
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/node_miner_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -52,11 +50,10 @@ public class NodeMinerGUIScreen extends AbstractContainerScreen<NodeMinerGUIMenu
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 7, this.topPos + 11, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 78, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+		machineBackground(guiGraphics);
+
+		MachineGuiTheme.bar(guiGraphics, this.leftPos + 7 + 4, this.topPos + 11 + 12, 64 - 8, 10, (Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640)) / 640.0, MachineGuiTheme.accent(machineTier()));
+		machineProgress(guiGraphics, (Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320)) / 320.0);
 		RenderSystem.disableBlend();
 	}
 
@@ -71,11 +68,12 @@ public class NodeMinerGUIScreen extends AbstractContainerScreen<NodeMinerGUIMenu
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.node_miner_gui.label_quantum_miner"), 75, -10, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "node_miner"; }
 }

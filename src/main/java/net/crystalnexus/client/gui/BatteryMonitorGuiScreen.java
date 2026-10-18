@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.BatteryMonitorGuiMenu;
@@ -15,7 +14,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class BatteryMonitorGuiScreen extends AbstractContainerScreen<BatteryMonitorGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class BatteryMonitorGuiScreen extends HolographicMachineScreen<BatteryMonitorGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -39,8 +38,8 @@ public class BatteryMonitorGuiScreen extends AbstractContainerScreen<BatteryMoni
 	}
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -49,8 +48,8 @@ public class BatteryMonitorGuiScreen extends AbstractContainerScreen<BatteryMoni
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_monitor_gui_screen.png"), this.leftPos + 0, this.topPos + 0, 0, 0, 176, 100, 176, 100);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		machineBackground(guiGraphics);
+
 		RenderSystem.disableBlend();
 	}
 
@@ -65,13 +64,14 @@ public class BatteryMonitorGuiScreen extends AbstractContainerScreen<BatteryMoni
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, BatteryMonitorOnTickUpdateProcedure.displayText(world, x, y, z), 8, 52, -12829636, false);
-		guiGraphics.drawString(this.font, BatteryMonitorOnBlockRightClickedProcedure.execute(world, x, y, z), 8, 10, -12829636, false);
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.battery_monitor_gui.label_battery_monitor"), 71, -10, -12829636, false);
+		guiGraphics.drawString(this.font, BatteryMonitorOnTickUpdateProcedure.displayText(world, x, y, z), 8, 52, 0xE3F3FF, false);
+		guiGraphics.drawString(this.font, BatteryMonitorOnBlockRightClickedProcedure.execute(world, x, y, z), 8, 10, 0xE3F3FF, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "battery_monitor"; }
 }

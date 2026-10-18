@@ -261,4 +261,5 @@ public class DepotMenu extends AbstractContainerMenu {
     private void refreshDepot(DepotSavedData depot) {
         setDepotPage(search, page, depot.page(search, page, PAGE_SIZE));
     }
+    public BlockPos guiPosition() { return sourcePos; }
 }

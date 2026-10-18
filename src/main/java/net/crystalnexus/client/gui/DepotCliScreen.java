@@ -17,7 +17,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +38,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
+public class DepotCliScreen extends HolographicMachineScreen<DepotCliMenu> {
     private enum Tab { CRAFTING, PROGRAMS }
 
     private final Set<Integer> collapsed = new HashSet<>();
@@ -115,7 +114,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     @Override
     protected void init() {
         imageWidth = Math.min(500, width - 16);
-        imageHeight = Math.min(300, height - 16);
+        imageHeight = Math.min(300, height - net.crystalnexus.world.inventory.MachineGuiLayout.HEADER_HEIGHT - 12);
         super.init();
         int editorFieldX = leftPos + 70;
         int editorTypeWidth = Math.min(150, Math.max(90, (imageWidth - 86) / 2));
@@ -360,7 +359,7 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+    protected boolean machineMouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         if (mouseX >= leftPos + 140 && mouseX < leftPos + imageWidth - 145) {
             treeScroll = Mth.clamp(treeScroll + (deltaY < 0 ? 1 : -1), 0,
                     Math.max(0, visibleNodes().size() - treeRows()));
@@ -372,11 +371,11 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                     Math.max(0, node.alternatives().size() - routeRows(node)));
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return super.machineMouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    protected boolean machineMouseClicked(double mouseX, double mouseY, int button) {
         if (tab == Tab.CRAFTING && button == 0) {
             int catalogIndex = (int) ((mouseY - topPos - 51) / 18);
             if (mouseX >= leftPos + 8 && mouseX < leftPos + 134 && mouseY >= topPos + 51
@@ -417,23 +416,22 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.machineMouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         hoveredStack = ItemStack.EMPTY;
         hoveredRecipe = List.of();
         renderBackground(graphics, mouseX, mouseY, partialTick);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.renderMachine(graphics, mouseX, mouseY, partialTick);
         if (!hoveredRecipe.isEmpty()) graphics.renderComponentTooltip(font, hoveredRecipe, mouseX, mouseY);
         else if (!hoveredStack.isEmpty()) graphics.renderTooltip(font, hoveredStack, mouseX, mouseY);
     }
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xFF080D0D);
-        graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + 2, 0xFF3FCFC5);
+        machineBackground(graphics);
         if (tab == Tab.PROGRAMS) {
             if (programEditorOpen) renderProgramEditor(graphics, mouseX, mouseY);
             else renderPrograms(graphics);
@@ -1071,4 +1069,6 @@ public class DepotCliScreen extends AbstractContainerScreen<DepotCliMenu> {
         ResourceLocation output = ResourceLocation.tryParse(tokens.get(3));
         if (output != null) net.crystalnexus.client.DepotCliJeiTransferHandler.markProgrammed(output);
     }
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.getBlockPos(); }
+    @Override protected String machineFallbackId() { return "depot_cli"; }
 }

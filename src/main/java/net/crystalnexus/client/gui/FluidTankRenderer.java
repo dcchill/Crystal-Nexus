@@ -30,6 +30,18 @@ public final class FluidTankRenderer {
 			int x, int y, int width, int height) {
 		if (fluid.isEmpty() || capacity <= 0) return;
 		int fill = Math.max(1, fluid.getAmount() * height / capacity);
+		drawFill(graphics, fluid, x, y, width, height, fill);
+	}
+
+	/** Opt-in bounded renderer for holographic tanks; legacy/custom screens keep their existing rendering. */
+	public static void drawClamped(GuiGraphics graphics, FluidStack fluid, int capacity,
+			int x, int y, int width, int height) {
+		if (fluid.isEmpty() || capacity <= 0 || width <= 0 || height <= 0) return;
+		int fill = (int) Math.clamp((long) fluid.getAmount() * height / capacity, 1, height);
+		drawFill(graphics, fluid, x, y, width, height, fill);
+	}
+
+	private static void drawFill(GuiGraphics graphics, FluidStack fluid, int x, int y, int width, int height, int fill) {
 		IClientFluidTypeExtensions extension = IClientFluidTypeExtensions.of(fluid.getFluid());
 		ResourceLocation still = extension.getStillTexture(fluid);
 		if (still == null) return;

@@ -100,4 +100,5 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
     }
 
     @Override public void removed(Player player) { super.removed(player); container.stopOpen(player); }
+    public BlockPos guiPosition() { return pos; }
 }

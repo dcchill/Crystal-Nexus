@@ -29,8 +29,8 @@ public final class CryogenicFlashFreezerMenu extends AbstractContainerMenu {
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		freezer = entity.level().getBlockEntity(pos) instanceof CryogenicFlashFreezerBlockEntity be ? be : null;
 		InvWrapper items = new InvWrapper(freezer == null ? new SimpleContainer(2 + 3) : freezer);
-		addSlot(new SlotItemHandler(items, 0, 50, 54));
-		addSlot(new SlotItemHandler(items, 1, 113, 54) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+		addSlot(new SlotItemHandler(items, 0, MachineGuiLayout.TWO_TANK_X[0], MachineGuiLayout.TANK_SLOT_Y));
+		addSlot(new SlotItemHandler(items, 1, MachineGuiLayout.TWO_TANK_X[1], MachineGuiLayout.TANK_SLOT_Y) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
         for (int i = 0; i < 3; i++)
             addSlot(new MachineUpgradeSlot(items, 2 + i, entity.level().getBlockState(pos), i));
         machineSlots = slots.size();

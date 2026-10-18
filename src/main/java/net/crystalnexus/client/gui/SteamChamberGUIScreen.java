@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 
@@ -16,7 +15,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class SteamChamberGUIScreen extends HolographicMachineScreen<SteamChamberGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -39,12 +38,11 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/steam_chamber_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
-		boolean customTooltipShown = false;
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+        boolean customTooltipShown = false;
 		if (mouseX > leftPos + 22 && mouseX < leftPos + 46 && mouseY > topPos + 36 && mouseY < topPos + 60) {
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.steam_chamber_gui.tooltip_water_bucket"), mouseX, mouseY);
 			customTooltipShown = true;
@@ -53,8 +51,7 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.steam_chamber_gui.tooltip_input_coal_or_charcoal_for_fuel"), mouseX, mouseY);
 			customTooltipShown = true;
 		}
-		if (!customTooltipShown)
-			this.renderTooltip(guiGraphics, mouseX, mouseY);
+			if (!customTooltipShown) this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -62,13 +59,11 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
+		machineBackground(guiGraphics);
+
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png"), this.leftPos + 4, this.topPos + 4, 0, 0, 16, 16, 16, 16);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarinvert.png"), this.leftPos + 72, this.topPos + 39, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/steam_fluidlevels.png"), leftPos + 106, topPos + 10, 0, 0, 64, 64, 64, 704);
-		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z).above(), 0,
+		machineProgress(guiGraphics, (Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320)) / 320.0);
+		machineBlockTank(guiGraphics, world, BlockPos.containing(x, y, z).above(), 0,
 			leftPos + 122, topPos + 14, 32, 56);
 		RenderSystem.disableBlend();
 	}
@@ -84,11 +79,12 @@ public class SteamChamberGUIScreen extends AbstractContainerScreen<SteamChamberG
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.steam_chamber_gui.label_proc_get_block_name_for_gui"), 73, -9, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "steam_chamber"; }
 }

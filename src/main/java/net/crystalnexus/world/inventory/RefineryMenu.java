@@ -29,8 +29,8 @@ public final class RefineryMenu extends TieredMachineMenu {
         access = ContainerLevelAccess.create(entity.level(), pos);
         refinery = entity.level().getBlockEntity(pos) instanceof RefineryBlockEntity be ? be : null;
         MachineItemHandler items = new MachineItemHandler(refinery == null ? new SimpleContainer(8) : refinery);
-        addSlot(new MachineItemSlot(items, 0, 52, 64));
-        addSlot(new MachineItemSlot(items, 1, 115, 64) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        addSlot(new MachineItemSlot(items, 0, MachineGuiLayout.TWO_TANK_X[0], MachineGuiLayout.TANK_SLOT_Y));
+        addSlot(new MachineItemSlot(items, 1, MachineGuiLayout.TWO_TANK_X[1], MachineGuiLayout.TANK_SLOT_Y) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
         var upgradeState = entity.level().getBlockState(pos);
         addSlot(new MachineUpgradeSlot(items, 2, upgradeState, 0));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)

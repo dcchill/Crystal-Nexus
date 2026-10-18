@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.WasteOutputGuiMenu;
@@ -14,7 +13,7 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class WasteOutputGuiScreen extends AbstractContainerScreen<WasteOutputGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class WasteOutputGuiScreen extends HolographicMachineScreen<WasteOutputGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -37,11 +36,10 @@ public class WasteOutputGuiScreen extends AbstractContainerScreen<WasteOutputGui
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/waste_output_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -50,8 +48,8 @@ public class WasteOutputGuiScreen extends AbstractContainerScreen<WasteOutputGui
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		machineBackground(guiGraphics);
+
 		RenderSystem.disableBlend();
 	}
 
@@ -69,11 +67,12 @@ public class WasteOutputGuiScreen extends AbstractContainerScreen<WasteOutputGui
 		String key = world.getBlockState(new net.minecraft.core.BlockPos(x, y, z)).is(CrystalnexusModBlocks.MULTIBLOCK_ITEM_INPUT.get())
 			? "gui.crystalnexus.waste_output_gui.label_item_input"
 			: "gui.crystalnexus.waste_output_gui.label_waste_output";
-		guiGraphics.drawString(this.font, Component.translatable(key), 77, -10, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "reactor_waste_output"; }
 }

@@ -7,7 +7,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -17,7 +16,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class ItemElevatorGuiDownScreen extends AbstractContainerScreen<ItemElevatorGuiDownMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class ItemElevatorGuiDownScreen extends HolographicMachineScreen<ItemElevatorGuiDownMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -41,11 +40,10 @@ public class ItemElevatorGuiDownScreen extends AbstractContainerScreen<ItemEleva
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/item_elevator_gui_down.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -54,9 +52,9 @@ public class ItemElevatorGuiDownScreen extends AbstractContainerScreen<ItemEleva
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow_down.png"), this.leftPos + 53, this.topPos + -13, 0, 0, 16, 16, 16, 16);
+		machineBackground(guiGraphics);
+
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow_down.png"), this.leftPos + 53, this.topPos + 16, 0, 0, 16, 16, 16, 16);
 		RenderSystem.disableBlend();
 	}
 
@@ -71,7 +69,7 @@ public class ItemElevatorGuiDownScreen extends AbstractContainerScreen<ItemEleva
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.item_elevator_gui_down.label_item_elevator"), 74, -9, -12829636, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.item_elevator_gui_down.label_item_elevator"), 74, -9, 0xE3F3FF, false);
 	}
 
 	@Override
@@ -87,4 +85,6 @@ public class ItemElevatorGuiDownScreen extends AbstractContainerScreen<ItemEleva
 		}).bounds(this.leftPos + 33, this.topPos + 35, 108, 20).build();
 		this.addRenderableWidget(button_toggle_direction);
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "item_elevator_down"; }
 }

@@ -4,7 +4,6 @@ import net.crystalnexus.block.entity.PlasmaGeneratorControllerBlockEntity;
 import net.crystalnexus.energy.PlasmaGrid;
 import net.crystalnexus.world.inventory.PlasmaGeneratorMenu;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaGeneratorMenu> {
+public final class PlasmaGeneratorScreen extends HolographicMachineScreen<PlasmaGeneratorMenu> {
     private static final int FLUID_X = 185, FLUID_Y = 126, FLUID_WIDTH = 18, FLUID_HEIGHT = 82;
 
     public PlasmaGeneratorScreen(PlasmaGeneratorMenu menu, Inventory inventory, Component title) {
@@ -24,10 +23,10 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        ControllerGuiStyle.panel(graphics, leftPos, topPos, imageWidth, imageHeight);
+        machineBackground(graphics);
         PlasmaGeneratorControllerBlockEntity controller = menu.controller();
         for (var slot : menu.slots) {
-            ControllerGuiStyle.inset(graphics, leftPos + slot.x - 1, topPos + slot.y - 1, 18, 18);
+            MachineGuiTheme.inset(graphics, leftPos + slot.x - 1, topPos + slot.y - 1, 18, 18);
             if (controller != null && slot.index < PlasmaGrid.SIZE) {
                 double fraction = controller.getHeat(slot.index) / PlasmaGrid.HEAT_LIMIT;
                 if (fraction > 0) graphics.fill(leftPos + slot.x, topPos + slot.y + 14,
@@ -37,33 +36,32 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
         }
         if (controller != null) {
             int x = leftPos + FLUID_X, y = topPos + FLUID_Y;
-            ControllerGuiStyle.inset(graphics, x - 1, y - 1, FLUID_WIDTH + 2, FLUID_HEIGHT + 2);
-            FluidTankRenderer.draw(graphics, controller.getArgonTank().getFluid(),
+            MachineGuiTheme.inset(graphics, x - 1, y - 1, FLUID_WIDTH + 2, FLUID_HEIGHT + 2);
+            machineTank(graphics, controller.getArgonTank().getFluid(),
                 PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY, x, y, FLUID_WIDTH, FLUID_HEIGHT);
         }
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, title, 8, 9, 0xff404040, false);
-        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xff404040, false);
+        graphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 0xE3F3FF, false);
         PlasmaGeneratorControllerBlockEntity controller = menu.controller();
         if (controller == null) return;
         PlasmaGrid.Result grid = controller.getGrid();
-        int color = controller.isOperating() ? 0xff216b35 : controller.isFormed() ? 0xff805500 : 0xffa02020;
+        int color = controller.isOperating() ? 0xFF6EECA1 : controller.isFormed() ? 0xFFFFCE79 : 0xFFFF8080;
         graphics.drawWordWrap(font, Component.literal(controller.getStatus()), 181, 29, 166, color);
-        graphics.drawString(font, "Output: " + controller.getOutputPerTick() + " FE/t", 181, 60, 0xff205b78, false);
-        graphics.drawString(font, "Demand: " + grid.argonPerTick() + " mB/t", 181, 76, 0xff713c8e, false);
-        graphics.drawString(font, "Hottest #" + (controller.getHottestSlot() + 1) + ": " + number(controller.getHottestHeat()) + " / " + number(PlasmaGrid.HEAT_LIMIT), 181, 92, 0xffa02020, false);
+        graphics.drawString(font, "Output: " + controller.getOutputPerTick() + " FE/t", 181, 60, 0xFF8BD8FF, false);
+        graphics.drawString(font, "Demand: " + grid.argonPerTick() + " mB/t", 181, 76, 0xFFD4ABFF, false);
+        graphics.drawString(font, "Hottest #" + (controller.getHottestSlot() + 1) + ": " + number(controller.getHottestHeat()) + " / " + number(PlasmaGrid.HEAT_LIMIT), 181, 92, 0xFFFF8080, false);
         graphics.drawWordWrap(font, Component.literal("Argon: " + controller.getArgonTank().getFluidAmount()
-            + " / " + PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY + " mB"), 212, 128, 133, 0xff713c8e);
+            + " / " + PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY + " mB"), 212, 128, 133, 0xFFD4ABFF);
         graphics.drawWordWrap(font, Component.literal("Heatsinks reach 8 neighbors; other components reach 4. Hover to see affected slots."),
-            212, 158, 133, 0xff404040);
+            212, 158, 133, 0xE3F3FF);
     }
 
     private static String number(double value) { return String.format(Locale.ROOT, "%.1f", value); }
 
-    @Override public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+    @Override protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderMachine(graphics, mouseX, mouseY, partialTick);
         if (hoveredSlot != null && hoveredSlot.index < PlasmaGrid.SIZE) {
             var stack = menu.getCarried().isEmpty() ? hoveredSlot.getItem() : menu.getCarried();
             int component = PlasmaGeneratorControllerBlockEntity.componentType(stack);
@@ -112,4 +110,6 @@ public final class PlasmaGeneratorScreen extends AbstractContainerScreen<PlasmaG
                     + PlasmaGeneratorControllerBlockEntity.TANK_CAPACITY + " mB")), mouseX, mouseY);
         } else renderTooltip(graphics, mouseX, mouseY);
     }
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.controller() == null ? null : menu.controller().getBlockPos(); }
+    @Override protected String machineFallbackId() { return "plasma_generator_controller"; }
 }

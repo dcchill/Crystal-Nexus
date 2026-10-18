@@ -3,12 +3,11 @@ package net.crystalnexus.client.gui;
 import net.crystalnexus.world.inventory.ControlRodGuiMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 
-public final class ControlRodGuiScreen extends AbstractContainerScreen<ControlRodGuiMenu> {
+public final class ControlRodGuiScreen extends HolographicMachineScreen<ControlRodGuiMenu> {
 	private InsertionSlider insertionSlider;
 	private int lastMenuInsertion;
 
@@ -37,22 +36,20 @@ public final class ControlRodGuiScreen extends AbstractContainerScreen<ControlRo
 
 	@Override
 	protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-		graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff373737);
-		graphics.fill(leftPos + 2, topPos + 2, leftPos + imageWidth - 2, topPos + imageHeight - 2, 0xffc6c6c6);
-		graphics.fill(leftPos + 4, topPos + 4, leftPos + imageWidth - 4, topPos + 5, 0xffffffff);
-	}
+        machineBackground(graphics);
+        }
 
 	@Override
 	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
 		Component heading = Component.translatable("gui.crystalnexus.control_rod_gui.title");
-		graphics.drawString(font, heading, (imageWidth - font.width(heading)) / 2, 10, 0x404040, false);
+		graphics.drawString(font, heading, (imageWidth - font.width(heading)) / 2, 10, 0xE3F3FF, false);
 		String reactivity = Component.translatable("gui.crystalnexus.control_rod_gui.reactivity", 100 - insertionSlider.getInsertion()).getString();
-		graphics.drawString(font, reactivity, (imageWidth - font.width(reactivity)) / 2, 62, 0x404040, false);
+		graphics.drawString(font, reactivity, (imageWidth - font.width(reactivity)) / 2, 62, 0xE3F3FF, false);
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-		super.render(graphics, mouseX, mouseY, partialTick);
+	protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		super.renderMachine(graphics, mouseX, mouseY, partialTick);
 		renderTooltip(graphics, mouseX, mouseY);
 	}
 
@@ -87,4 +84,6 @@ public final class ControlRodGuiScreen extends AbstractContainerScreen<ControlRo
 			minecraft.gameMode.handleInventoryButtonClick(menu.containerId, insertion);
 		}
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.pos; }
+    @Override protected String machineFallbackId() { return "reactor_control_rod"; }
 }
