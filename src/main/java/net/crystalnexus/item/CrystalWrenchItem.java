@@ -725,6 +725,7 @@ public class CrystalWrenchItem extends Item {
             List<Component> tooltip,
             TooltipFlag flag
     ) {
+        tooltip.add(Component.translatable("tooltip.crystalnexus.wrench.scanner").withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE));
         super.appendHoverText(
                 stack,
                 context,

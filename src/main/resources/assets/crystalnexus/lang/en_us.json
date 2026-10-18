@@ -1105,5 +1105,16 @@
   "message.crystalnexus.meteor_scanner.complete": "Meteor recorded to offhand data disk.",
   "item.crystalnexus.universal_drone": "Universal Drone",
   "item.crystalnexus.drone_controller": "Drone Controller",
-  "entity.crystalnexus.universal_drone": "Universal Drone"
+  "entity.crystalnexus.universal_drone": "Universal Drone",
+  "tooltip.crystalnexus.wrench.scanner": "Hold and aim at a machine to project its stats",
+  "gui.crystalnexus.machine.material_tier": "TIER %s / %s",
+  "gui.crystalnexus.scanner.local": "LOCAL MACHINE TELEMETRY",
+  "gui.crystalnexus.scanner.empty": "Empty",
+  "gui.crystalnexus.scanner.energy": "%s / %s FE",
+  "gui.crystalnexus.scanner.progress": "Processing: %s%%",
+  "gui.crystalnexus.scanner.items": "ITEM STORAGE",
+  "gui.crystalnexus.scanner.fluids": "FLUID STORAGE",
+  "gui.crystalnexus.scanner.tank": "%s / %s mB",
+  "gui.crystalnexus.scanner.more_items": "+%s occupied slots",
+  "gui.crystalnexus.scanner.more_tanks": "+%s tanks"
 }
