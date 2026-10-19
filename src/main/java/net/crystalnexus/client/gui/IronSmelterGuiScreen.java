@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.IronSmelterGuiMenu;
@@ -15,7 +16,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class IronSmelterGuiScreen extends HolographicMachineScreen<IronSmelterGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class IronSmelterGuiScreen extends AbstractContainerScreen<IronSmelterGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -38,10 +39,11 @@ public class IronSmelterGuiScreen extends HolographicMachineScreen<IronSmelterGu
 		menuStateUpdateActive = false;
 	}
 
+	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/iron_smelter_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -50,9 +52,13 @@ public class IronSmelterGuiScreen extends HolographicMachineScreen<IronSmelterGu
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
-		machineProgress(guiGraphics, (Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320)) / 320.0);
+        MachineUpgradeSlots.render(guiGraphics, menu, leftPos, topPos);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/battery_addon.png"), this.leftPos + -33, this.topPos + -1, 0, 0, 48, 48, 48, 48);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + -25, this.topPos + 5, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbarsmelt.png"), this.leftPos + 72, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		RenderSystem.disableBlend();
 	}
 
@@ -67,12 +73,11 @@ public class IronSmelterGuiScreen extends HolographicMachineScreen<IronSmelterGu
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.iron_smelter_gui.label_proc_get_block_name_for_gui"), 89, -11, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "iron_smelter"; }
 }

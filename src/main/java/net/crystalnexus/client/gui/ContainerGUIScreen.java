@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.ContainerGUIMenu;
@@ -12,7 +13,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class ContainerGUIScreen extends HolographicMachineScreen<ContainerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class ContainerGUIScreen extends AbstractContainerScreen<ContainerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -35,10 +36,11 @@ public class ContainerGUIScreen extends HolographicMachineScreen<ContainerGUIMen
 		menuStateUpdateActive = false;
 	}
 
+	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/container_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -47,8 +49,8 @@ public class ContainerGUIScreen extends HolographicMachineScreen<ContainerGUIMen
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
-
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		RenderSystem.disableBlend();
 	}
 
@@ -63,12 +65,11 @@ public class ContainerGUIScreen extends HolographicMachineScreen<ContainerGUIMen
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.container_gui.label_container"), 65, -11, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "container"; }
 }

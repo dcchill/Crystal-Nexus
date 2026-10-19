@@ -30,9 +30,9 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         int upgradeCount = net.crystalnexus.util.MachineUpgradeHelper.upgradeSlots(entity.level().getBlockState(pos));
         InvWrapper items = new InvWrapper(chamber == null ? new net.minecraft.world.SimpleContainer(3 + upgradeCount) : chamber);
 
-        addSlot(new SlotItemHandler(items, 0, MachineGuiLayout.THREE_TANK_X[0], MachineGuiLayout.TANK_SLOT_Y));
-        addSlot(new SlotItemHandler(items, 1, MachineGuiLayout.THREE_TANK_X[1], MachineGuiLayout.TANK_SLOT_Y));
-        addSlot(new SlotItemHandler(items, 2, MachineGuiLayout.THREE_TANK_X[2], MachineGuiLayout.TANK_SLOT_Y));
+        addSlot(new SlotItemHandler(items, 0, 37, 54));
+        addSlot(new SlotItemHandler(items, 1, 61, 54));
+        addSlot(new SlotItemHandler(items, 2, 124, 54));
         for (int i = 0; i < upgradeCount; i++)
             addSlot(new MachineUpgradeSlot(items, 3 + i, entity.level().getBlockState(pos), i));
         machineSlots = slots.size();

@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
@@ -35,7 +36,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private static final int PREVIEW_X = 8;
 	private static final int PREVIEW_Y = 18;
 	private static final int PREVIEW_SIZE = 60;
@@ -78,8 +79,8 @@ public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMen
 	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/blueprint_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		name.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
@@ -89,8 +90,8 @@ public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMen
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
-
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		renderBlueprintPreview(guiGraphics, partialTicks);
 		RenderSystem.disableBlend();
 	}
@@ -115,6 +116,7 @@ public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMen
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.blueprint_gui.label_blueprint_controller"), 55, -11, -12829636, false);
 		guiGraphics.drawString(this.font, Component.literal("Preview"), 10, 8, 0x7FE7FF, false);
 	}
 
@@ -317,6 +319,4 @@ public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMen
 			return new BlueprintPreviewData(List.of(), 1, 1, 1, 0.5f, 0.5f, 0.5f, message);
 		}
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "blueprint_controller"; }
 }

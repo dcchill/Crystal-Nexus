@@ -19,11 +19,7 @@ class FluidTankRendererAuditTest {
 				"GravitationalArrayScreen", "NodeExtractorGUIScreen", "PistonGenGUIScreen",
 				"PlasmaGeneratorScreen", "ReactorGUIScreen", "RefineryScreen", "SolarEngineScreen",
 				"SteamChamberGUIScreen", "SteamEngineGUIScreen", "TemporalExploiterScreen"))
-		{
-			String source = Files.readString(GUI.resolve(screen + ".java"));
-			assertTrue(source.contains("FluidTankRenderer.draw") || source.contains("machineTank(") || source.contains("machineBlockTank("), screen);
-		}
-		assertTrue(Files.readString(GUI.resolve("HolographicMachineScreen.java")).contains("FluidTankRenderer.drawClamped"));
+			assertTrue(Files.readString(GUI.resolve(screen + ".java")).contains("FluidTankRenderer.draw"), screen);
 
 		try (var files = Files.list(GUI)) {
 			for (Path file : files.filter(path -> path.toString().endsWith(".java")).toList()) {

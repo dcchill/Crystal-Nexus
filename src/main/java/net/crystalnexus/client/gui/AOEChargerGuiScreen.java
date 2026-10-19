@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.AOEChargerGuiMenu;
@@ -15,7 +16,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class AOEChargerGuiScreen extends HolographicMachineScreen<AOEChargerGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class AOEChargerGuiScreen extends AbstractContainerScreen<AOEChargerGuiMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -38,10 +39,11 @@ public class AOEChargerGuiScreen extends HolographicMachineScreen<AOEChargerGuiM
 		menuStateUpdateActive = false;
 	}
 
+	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/aoe_charger_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -50,9 +52,10 @@ public class AOEChargerGuiScreen extends HolographicMachineScreen<AOEChargerGuiM
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
-
-		MachineGuiTheme.bar(guiGraphics, this.leftPos + 107 + 4, this.topPos + 27 + 12, 32 - 8, 10, (Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320)) / 320.0, MachineGuiTheme.accent(machineTier()));
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslotingui.png"), this.leftPos + 42, this.topPos + 34, 0, 0, 18, 18, 18, 18);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevelsmall.png"), this.leftPos + 107, this.topPos + 27, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
 		RenderSystem.disableBlend();
 	}
 
@@ -67,13 +70,12 @@ public class AOEChargerGuiScreen extends HolographicMachineScreen<AOEChargerGuiM
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, AOEChargerOnTickUpdateProcedure.displayText(world, x, y, z), 8, 68, 0xE3F3FF, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.aoe_charger_gui.label_item_charger"), 80, -10, -12829636, false);
+		guiGraphics.drawString(this.font, AOEChargerOnTickUpdateProcedure.displayText(world, x, y, z), 8, 68, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "aoe_charger"; }
 }

@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.TurbineGUIMenu;
@@ -14,7 +15,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class TurbineGUIScreen extends HolographicMachineScreen<TurbineGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class TurbineGUIScreen extends AbstractContainerScreen<TurbineGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -37,10 +38,11 @@ public class TurbineGUIScreen extends HolographicMachineScreen<TurbineGUIMenu> i
 		menuStateUpdateActive = false;
 	}
 
+	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/turbine_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -49,9 +51,10 @@ public class TurbineGUIScreen extends HolographicMachineScreen<TurbineGUIMenu> i
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
-
-		MachineGuiTheme.bar(guiGraphics, this.leftPos + 56 + 4, this.topPos + 11 + 12, 64 - 8, 10, (Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640)) / 640.0, MachineGuiTheme.accent(machineTier()));
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 56, this.topPos + 11, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
 		RenderSystem.disableBlend();
 	}
 
@@ -66,13 +69,11 @@ public class TurbineGUIScreen extends HolographicMachineScreen<TurbineGUIMenu> i
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.turbine_gui.label_quantum_miner"), 88, -9, 0xE3F3FF, false);
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.turbine_gui.label_quantum_miner"), 88, -9, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "turbine"; }
 }

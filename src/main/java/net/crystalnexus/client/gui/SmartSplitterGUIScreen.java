@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.SmartSplitterGUIMenu;
@@ -12,7 +13,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitterGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class SmartSplitterGUIScreen extends AbstractContainerScreen<SmartSplitterGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -35,11 +36,12 @@ public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitt
 		menuStateUpdateActive = false;
 	}
 
+	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/smart_splitter_gui.png");
 
 	@Override
-	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
-        boolean customTooltipShown = false;
+	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+		boolean customTooltipShown = false;
 		if (mouseX > leftPos + 0 && mouseX < leftPos + 24 && mouseY > topPos + 0 && mouseY < topPos + 24) {
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.smart_splitter_gui.tooltip_empty_slots_no_filter"), mouseX, mouseY);
 			customTooltipShown = true;
@@ -52,7 +54,8 @@ public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitt
 			guiGraphics.renderTooltip(font, Component.translatable("gui.crystalnexus.smart_splitter_gui.tooltip_input"), mouseX, mouseY);
 			customTooltipShown = true;
 		}
-			if (!customTooltipShown) this.renderTooltip(guiGraphics, mouseX, mouseY);
+		if (!customTooltipShown)
+			this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
 	@Override
@@ -60,7 +63,7 @@ public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitt
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		machineBackground(guiGraphics);
+		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/blue.png"), this.leftPos + 78, this.topPos + 25, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/red.png"), this.leftPos + 24, this.topPos + 25, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/yellow.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 18, 18, 18, 18);
@@ -68,7 +71,7 @@ public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitt
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow_left.png"), this.leftPos + 24, this.topPos + 25, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow_right.png"), this.leftPos + 132, this.topPos + 25, 0, 0, 18, 18, 18, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/arrow_forward.png"), this.leftPos + 78, this.topPos + 25, 0, 0, 18, 18, 18, 18);
-
+		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
 		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/tooltip.png"), this.leftPos + 4, this.topPos + 4, 0, 0, 16, 16, 16, 16);
 		RenderSystem.disableBlend();
 	}
@@ -84,12 +87,11 @@ public class SmartSplitterGUIScreen extends HolographicMachineScreen<SmartSplitt
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.smart_splitter_gui.label_smart_splitte"), 72, -11, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
-    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
-    @Override protected String machineFallbackId() { return "smart_splitter"; }
 }

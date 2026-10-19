@@ -146,5 +146,4 @@ public class CraftingProcessorMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int slot) {
         return ItemStack.EMPTY;
     }
-    public BlockPos guiPosition() { return blockPos; }
 }
