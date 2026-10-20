@@ -40,7 +40,7 @@ public enum DroneNode {
     public final DroneMode mode;
     DroneNode() { mode = null; }
     DroneNode(DroneMode mode) { this.mode = mode; }
-    public boolean available(DroneMode current) { return mode == null || mode == current || current == DroneMode.BUILDER && this == EXTRACT_ITEMS; }
+    public boolean available(DroneMode current) { return mode == null || mode == current || current == DroneMode.BUILDER && this == EXTRACT_ITEMS || current == DroneMode.TRANSPORT && mode == DroneMode.COURIER; }
     public String id() { return "crystalnexus:drone/" + name().toLowerCase(Locale.ROOT); }
     public String label() {
         StringBuilder s = new StringBuilder();

@@ -49,8 +49,8 @@ public final class ConveyerBeltMode {
 
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         switchTo(level, pos, modeFor(
-                hasItemStorage(level, pos.relative(facing), facing.getOpposite()),
-                hasItemStorage(level, pos.relative(facing.getOpposite()), facing)
+                hasItemStorage(level, ConveyorGeometry.port(pos, state, true), facing.getOpposite()),
+                hasItemStorage(level, ConveyorGeometry.port(pos, state, false), ConveyorGeometry.input(state).getOpposite())
         ));
     }
 
@@ -68,6 +68,7 @@ public final class ConveyerBeltMode {
     }
 
     private static boolean hasItemStorage(Level level, BlockPos pos, Direction side) {
+        if (!level.hasChunkAt(pos)) return false;
         BlockEntity blockEntity = level.getBlockEntity(pos);
         return blockEntity != null
                 && !(blockEntity instanceof ConveyerBeltBaseBlockEntity)
@@ -109,7 +110,9 @@ public final class ConveyerBeltMode {
             case INPUT -> CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().defaultBlockState();
             case OUTPUT -> CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().defaultBlockState();
         }).setValue(BlockStateProperties.HORIZONTAL_FACING, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
-        replacement = ConveyerBeltTierState.applyTier(replacement, tier);
+        replacement = ConveyerBeltTierState.applyTier(replacement, tier)
+                .setValue(ConveyerBeltBlock.CURVE, state.getValue(ConveyerBeltBlock.CURVE))
+                .setValue(ConveyorGeometry.SLOPE, state.getValue(ConveyorGeometry.SLOPE));
         BlockPos key = pos.immutable();
         SWITCHING.add(key);
         try {

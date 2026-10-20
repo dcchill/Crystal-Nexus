@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.crystalnexus.item.CrystalWrenchItem;
 import net.crystalnexus.util.WrenchLinePlacement;
+import net.crystalnexus.util.ConveyorPlacement;
+import net.crystalnexus.block.ConveyorGeometry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -59,6 +61,10 @@ public final class WrenchLinePreviewRenderer {
             || !(minecraft.hitResult instanceof BlockHitResult hit)
             || hit.getType() == HitResult.Type.MISS) return;
 
+        if (ConveyorPlacement.eligible(offhand)) {
+            renderConveyor(event, minecraft, level, wrench, offhand, hit);
+            return;
+        }
         CompoundTag preview = wrench.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY)
             .copyTag().getCompound(WrenchLinePlacement.PREVIEW_KEY);
         if (preview.isEmpty()
@@ -73,6 +79,46 @@ public final class WrenchLinePreviewRenderer {
             Direction.from3DDataValue(preview.getInt("direction")));
         int available = minecraft.player.isCreative() ? Integer.MAX_VALUE : available(minecraft.player.getInventory().items, offhand);
         renderPath(event, minecraft, level, blockItem, offhand, path, available);
+    }
+
+    private static void renderConveyor(RenderLevelStageEvent event, Minecraft mc, Level level,
+                                       ItemStack wrench, ItemStack belts, BlockHitResult hit) {
+        CompoundTag data = ConveyorPlacement.preview(wrench);
+        if (data.isEmpty() || !data.getString("dimension").equals(level.dimension().location().toString())) return;
+        var poses = event.getPoseStack();
+        var buffers = mc.renderBuffers().bufferSource();
+        Vec3 camera = event.getCamera().getPosition();
+        try {
+            var route = ConveyorPlacement.plan(level, BlockPos.of(data.getLong("start")),
+                ConveyorPlacement.endpoint(level,mc.player,belts,hit),data.getBoolean("xFirst"));
+            String problem = ConveyorPlacement.validate(level,mc.player,belts,route);
+            int needed = (int) route.stream().filter(s -> !ConveyorGeometry.isBelt(level.getBlockState(s.pos()))).count();
+            boolean invalid = problem != null || !mc.player.isCreative() && ConveyorPlacement.available(mc.player,belts)<needed;
+            mc.gui.setOverlayMessage(net.minecraft.network.chat.Component.literal(problem != null ? problem :
+                "Conveyor: " + needed + " belts" + (invalid ? " (not enough)" : " - click to build; sneak-use changes bend")), false);
+            RenderSystem.enableBlend(); RenderSystem.depthMask(false);
+            for (var segment : route) {
+                if (!level.hasChunkAt(segment.pos())) continue;
+                var existing = level.getBlockState(segment.pos());
+                var state = ConveyorGeometry.isBelt(existing) ? existing : segment.state(((BlockItem)belts.getItem()).getBlock().defaultBlockState());
+                poses.pushPose();
+                poses.translate(segment.pos().getX()-camera.x,segment.pos().getY()-camera.y,segment.pos().getZ()-camera.z);
+                mc.getBlockRenderer().getModelRenderer().renderModel(poses.last(),new TintedAlphaVertexConsumer(
+                    buffers.getBuffer(Sheets.translucentCullBlockSheet()),invalid),state,mc.getBlockRenderer().getBlockModel(state),
+                    1,1,1,LevelRenderer.getLightColor(level,segment.pos()),OverlayTexture.NO_OVERLAY);
+                Vec3 tip = ConveyorGeometry.point(state,.85).add(0,.06,0);
+                Vec3 tail = ConveyorGeometry.point(state,.5).add(0,.06,0);
+                LevelRenderer.renderLineBox(poses,buffers.getBuffer(RenderType.lines()),
+                    new AABB(tail,tip).inflate(.025),invalid?1:.2f,invalid?.1f:1,.2f,1);
+                LevelRenderer.renderLineBox(poses,buffers.getBuffer(RenderType.lines()),
+                    new AABB(tip,tip).inflate(.07),invalid?1:.2f,invalid?.1f:1,.2f,1);
+                poses.popPose();
+            }
+        } catch (IllegalArgumentException ex) {
+            mc.gui.setOverlayMessage(net.minecraft.network.chat.Component.literal(ex.getMessage()),false);
+        } finally {
+            RenderSystem.depthMask(true); RenderSystem.disableBlend(); buffers.endBatch();
+        }
     }
 
     private static void renderPath(RenderLevelStageEvent event, Minecraft minecraft, Level level,

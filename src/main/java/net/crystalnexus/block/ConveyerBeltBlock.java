@@ -47,6 +47,7 @@ import net.crystalnexus.procedures.ConveyerBeltNeighbourBlockChangesProcedure;
 import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
 
 public class ConveyerBeltBlock extends Block implements EntityBlock {
+    private static final java.util.Map<BlockState, VoxelShape> SHAPES = new java.util.concurrent.ConcurrentHashMap<>();
 	public static final IntegerProperty BLOCKSTATE = IntegerProperty.create("blockstate", 0, 2);
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	public static final EnumProperty<CurveShape> CURVE = EnumProperty.create("curve", CurveShape.class);
@@ -61,7 +62,7 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 				return 0;
 			}
 		}.getLightLevel())).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).dynamicShape());
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(BLOCKSTATE, 0).setValue(CURVE, CurveShape.STRAIGHT));
+		this.registerDefaultState(this.stateDefinition.any().setValue(ConveyorGeometry.SLOPE, ConveyorGeometry.Slope.FLAT).setValue(ConveyerBeltBlock.CURVE, ConveyerBeltBlock.CurveShape.STRAIGHT).setValue(FACING, Direction.NORTH).setValue(BLOCKSTATE, 0).setValue(CURVE, CurveShape.STRAIGHT));
 	}
 
 	@Override
@@ -89,6 +90,11 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return SHAPES.computeIfAbsent(state, this::createShape);
+    }
+
+    private VoxelShape createShape(BlockState state) {
+        if (state.getValue(ConveyorGeometry.SLOPE) != ConveyorGeometry.Slope.FLAT || state.getValue(ConveyerBeltBlock.CURVE) != ConveyerBeltBlock.CurveShape.STRAIGHT) return ConveyorGeometry.shape(state);
 		if (state.getValue(BLOCKSTATE) == 1) {
 			return switch (state.getValue(FACING)) {
 				default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10));
@@ -120,7 +126,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING, BLOCKSTATE, CURVE);
+		builder.add(FACING, BLOCKSTATE, CURVE, ConveyorGeometry.SLOPE);
 	}
 public net.minecraft.world.InteractionResult useWithoutItem(
         BlockState state,
@@ -158,6 +164,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 
 	@Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
+    if (context instanceof net.crystalnexus.util.ConveyorPlacement.Context route) return route.state(defaultBlockState());
     return this.defaultBlockState()
         .setValue(FACING, context.getHorizontalDirection())
         .setValue(CURVE, CurveShape.STRAIGHT);
@@ -200,9 +207,19 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 			return;
 		}
 
-		if (state.getValue(CURVE) != CurveShape.STRAIGHT) {
-			world.setBlock(pos, state.setValue(CURVE, CurveShape.STRAIGHT), 3);
-		}
+        // Explicit routes keep their geometry; loose belts prefer a straight feeder.
+        if (net.crystalnexus.util.ConveyorPlacement.placing || world.isClientSide || world.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt
+                && (belt.getSplinePrevPos() != null || belt.getSplineNextPos() != null)) return;
+        if (state.getValue(ConveyorGeometry.SLOPE) != ConveyorGeometry.Slope.FLAT) return;
+        for (CurveShape curve : CurveShape.values()) {
+            BlockState candidate = state.setValue(CURVE, curve);
+            BlockPos prev = ConveyorGeometry.neighbor(world, pos, candidate, false);
+            if (ConveyorGeometry.connects(prev, world.getBlockState(prev), pos, candidate)) {
+                if (candidate != state) world.setBlock(pos, candidate, 3);
+                return;
+            }
+        }
+
 	}
 
 	public enum CurveShape implements StringRepresentable {

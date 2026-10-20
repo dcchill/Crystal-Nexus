@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 
 public class ConveyerBeltNeighbourBlockChangesProcedure {
 	public static void execute(LevelAccessor world, double x, double y, double z) {
+        if (!(world.getBlockState(BlockPos.containing(x, y, z)).getBlock() instanceof net.crystalnexus.block.ConveyerBeltBlock)) return;
 		if ((world.getBlockState(BlockPos.containing(x, y + 1, z))).getBlock() == Blocks.AIR) {
 			{
 				int _value = 1;

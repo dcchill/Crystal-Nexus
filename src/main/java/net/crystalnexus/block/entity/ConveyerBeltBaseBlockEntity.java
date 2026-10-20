@@ -18,6 +18,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 import net.crystalnexus.block.ConveyerBeltInputBlock;
+import net.crystalnexus.block.ConveyorGeometry;
 import net.crystalnexus.block.ConveyerBeltMovement;
 import net.crystalnexus.block.ConveyerBeltMode;
 import net.crystalnexus.block.ConveyerBeltOutputBlock;
@@ -68,10 +69,12 @@ public boolean canAdvanceForRender(int segment) {
     if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
 
     Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-    BlockEntity front = level.getBlockEntity(worldPosition.relative(facing));
+    BlockPos frontPos = ConveyorGeometry.neighbor(level, worldPosition, getBlockState(), true);
+    if (!level.hasChunkAt(frontPos)) return false;
+    BlockEntity front = level.getBlockEntity(frontPos);
     boolean tailCanAdvance;
     if (front instanceof ConveyerBeltBaseBlockEntity nextBelt) {
-        tailCanAdvance = nextBelt.belt[0].isEmpty();
+        tailCanAdvance = ConveyorGeometry.connects(worldPosition, state, nextBelt.getBlockPos(), nextBelt.getBlockState()) && nextBelt.belt[0].isEmpty();
     } else {
         IItemHandler frontInventory = isInputBelt() ? findFrontInventory(facing, facing.getOpposite()) : null;
         tailCanAdvance = frontInventory == null
@@ -92,12 +95,14 @@ public boolean canAdvanceForRender(int segment) {
 
     @Nullable
     public BlockPos getSplinePrevPos() {
-        return splinePrevPos;
+        return splinePrevPos != null && level != null && level.hasChunkAt(splinePrevPos)
+            && ConveyorGeometry.connects(splinePrevPos, level.getBlockState(splinePrevPos), worldPosition, getBlockState()) ? splinePrevPos : null;
     }
 
     @Nullable
     public BlockPos getSplineNextPos() {
-        return splineNextPos;
+        return splineNextPos != null && level != null && level.hasChunkAt(splineNextPos)
+            && ConveyorGeometry.connects(worldPosition, getBlockState(), splineNextPos, level.getBlockState(splineNextPos)) ? splineNextPos : null;
     }
 
     public void setSplineConnections(@Nullable BlockPos prevPos, @Nullable BlockPos nextPos) {
@@ -129,7 +134,7 @@ public void serverTick() {
         if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return;
 
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
-        Direction back = facing.getOpposite();
+        Direction back = ConveyorGeometry.input(state);
 
         boolean changed = false;
 
@@ -159,8 +164,8 @@ public void serverTick() {
 
         IItemHandler frontInventory = null;
         if (isInputBelt()) {
-            BlockPos frontPos = worldPosition.relative(facing);
-            if (!(level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity)) {
+            BlockPos frontPos = ConveyorGeometry.neighbor(level, worldPosition, getBlockState(), true);
+            if (level.hasChunkAt(frontPos) && !(level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity)) {
                 frontInventory = findFrontInventory(facing, back);
                 if (frontInventory != null) changed |= tryPushToFront(frontInventory);
             }
@@ -213,9 +218,11 @@ private boolean hasGapAtHead() {
     private boolean tryMoveToNextBelt(Direction facing) {
         if (level == null) return false;
 
-        BlockPos frontPos = worldPosition.relative(facing);
+        BlockPos frontPos = ConveyorGeometry.neighbor(level, worldPosition, getBlockState(), true);
+        if (!level.hasChunkAt(frontPos)) return false;
         BlockEntity front = level.getBlockEntity(frontPos);
-        if (!(front instanceof ConveyerBeltBaseBlockEntity nextBelt)) return false;
+        if (!(front instanceof ConveyerBeltBaseBlockEntity nextBelt)
+            || !ConveyorGeometry.connects(worldPosition, getBlockState(), frontPos, nextBelt.getBlockState())) return false;
 
         ItemStack tail = belt[SEGMENTS - 1];
         if (tail.isEmpty()) return false;
@@ -246,12 +253,13 @@ private boolean tryPullFromAbove() {
 }
 
 private boolean tryPullFromBehind(Direction back, Direction facing) {
-    return tryPullFrom(worldPosition.relative(back), facing, back);
+    return tryPullFrom(ConveyorGeometry.port(worldPosition, getBlockState(), false), back.getOpposite(), back);
 }
 
 private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction fallbackSide) {
     if (level == null) return false;
 
+    if (!level.hasChunkAt(inputPos) || level.getBlockEntity(inputPos) instanceof ConveyerBeltBaseBlockEntity) return false;
     if (!hasGapAtHead()) return false;
 
     ItemStack head = belt[0];
@@ -316,10 +324,11 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         ItemStack tail = belt[SEGMENTS - 1];
         if (level == null || tail.isEmpty()) return null;
 
-        BlockPos outPos = worldPosition.relative(facing);
+        BlockPos outPos = ConveyorGeometry.neighbor(level, worldPosition, getBlockState(), true);
+        if (!level.hasChunkAt(outPos) || level.getBlockEntity(outPos) instanceof ConveyerBeltBaseBlockEntity) return null;
 
         
-        IItemHandler out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, back);
+        IItemHandler out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, facing.getOpposite());
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, null);
         if (out == null) out = level.getCapability(Capabilities.ItemHandler.BLOCK, outPos, facing);
         return out;
@@ -342,8 +351,8 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
     private boolean tryDropOffFront(Direction facing) {
         if (level == null) return false;
 
-        BlockPos frontPos = worldPosition.relative(facing);
-        if (level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity) return false;
+        BlockPos frontPos = ConveyorGeometry.neighbor(level, worldPosition, getBlockState(), true);
+        if (!level.hasChunkAt(frontPos) || level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity) return false;
 
         ItemStack tail = belt[SEGMENTS - 1];
         if (tail.isEmpty()) return false;
@@ -352,7 +361,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         belt[SEGMENTS - 1] = ItemStack.EMPTY;
 
         double spawnX = worldPosition.getX() + 0.5D + facing.getStepX() * 0.55D;
-        double spawnY = worldPosition.getY() + 0.65D;
+        double spawnY = worldPosition.getY() + 0.65D + ConveyorGeometry.outputHeight(getBlockState());
         double spawnZ = worldPosition.getZ() + 0.5D + facing.getStepZ() * 0.55D;
         ItemEntity entity = new ItemEntity(level, spawnX, spawnY, spawnZ, dropped);
         entity.setDeltaMovement(facing.getStepX() * 0.08D, 0.02D, facing.getStepZ() * 0.08D);

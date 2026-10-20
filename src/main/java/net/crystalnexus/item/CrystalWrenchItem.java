@@ -48,6 +48,9 @@ public class CrystalWrenchItem extends Item {
             return InteractionResult.PASS;
         }
 
+        InteractionResult conveyorPlacement = net.crystalnexus.util.ConveyorPlacement.use(context);
+        if (conveyorPlacement != InteractionResult.PASS) return conveyorPlacement;
+
         Block block = level.getBlockState(pos).getBlock();
         if (!player.isShiftKeyDown() && (block instanceof ConveyerBeltBlock
                 || block instanceof ConveyerBeltInputBlock
@@ -750,5 +753,7 @@ public class CrystalWrenchItem extends Item {
                         "§7Block offhand: Select two points; sneak-use cycles direction"
                 )
         );
+        tooltip.add(Component.literal("Belts offhand: Snap endpoints; sneak-use switches the bend")
+                .withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 }

@@ -2,6 +2,9 @@ package net.crystalnexus.gametest;
 
 import net.crystalnexus.CrystalnexusMod;
 import net.crystalnexus.block.ConveyerBeltBlock;
+import net.crystalnexus.block.ConveyorGeometry;
+import net.crystalnexus.block.ConveyerBeltMode;
+import net.crystalnexus.util.ConveyorPlacement;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.procedures.ConveyerBeltNeighbourBlockChangesProcedure;
@@ -100,4 +103,106 @@ public final class ConveyerBeltGameTests {
         helper.assertTrue(level.getBlockState(pos).getValue(ConveyerBeltBlock.BLOCKSTATE) == 1, "Removing the cover must remove supports");
         helper.succeed();
     }
+    @GameTest(template = "zero_point", timeoutTicks = 220)
+    public static void mixedTiersCarryItemsAroundCornerAndUpRamp(GameTestHelper helper) {
+        var level=helper.getLevel();
+        var start=helper.absolutePos(new BlockPos(1,3,1));
+        var route=ConveyorGeometry.plan(start,start.offset(4,1,3),true);
+        ConveyorPlacement.placing=true;
+        try {
+            for(int i=0;i<route.size();i++) {
+                var segment=route.get(i);
+                level.setBlockAndUpdate(segment.pos().above(),Blocks.AIR.defaultBlockState());
+                var block=i%2==0?CrystalnexusModBlocks.CONVEYER_BELT.get():CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get();
+                level.setBlockAndUpdate(segment.pos(),segment.state(block.defaultBlockState()));
+            }
+            for(int i=0;i<route.size();i++) {
+                var belt=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(route.get(i).pos());
+                belt.setSplineConnections(i==0?null:route.get(i-1).pos(),i+1==route.size()?null:route.get(i+1).pos());
+            }
+        } finally {ConveyorPlacement.placing=false;}
+        var end=route.getLast();
+        var chest=end.pos().relative(end.facing());
+        level.setBlockAndUpdate(chest,Blocks.CHEST.defaultBlockState());
+        ((ConveyerBeltBaseBlockEntity)level.getBlockEntity(start)).setItem(0,new ItemStack(Items.DIAMOND,7));
+        helper.runAfterDelay(180,()->{
+            var inventory=(net.minecraft.world.Container)level.getBlockEntity(chest);
+            int total=0;
+            for(int i=0;i<inventory.getContainerSize();i++) if(inventory.getItem(i).is(Items.DIAMOND)) total+=inventory.getItem(i).getCount();
+            helper.assertTrue(total==7,"Curves, ramps and tier transitions must deliver every item exactly once");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point")
+    public static void geometryPortsSaveAndModeChangesPreserveRamp(GameTestHelper helper) {
+        var level=helper.getLevel();var pos=helper.absolutePos(new BlockPos(2,3,2));
+        var state=CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState()
+            .setValue(ConveyerBeltBlock.FACING,Direction.EAST).setValue(ConveyorGeometry.SLOPE,ConveyorGeometry.Slope.DOWN);
+        level.setBlockAndUpdate(pos,state);
+        var next=pos.east();level.setBlockAndUpdate(next,CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING,Direction.EAST));
+        var belt=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(pos);
+        belt.setSplineConnections(pos.west().above(),next);belt.setItem(2,new ItemStack(Items.EMERALD,9));
+        var saved=belt.saveWithFullMetadata(level.registryAccess());
+        belt.loadWithComponents(saved,level.registryAccess());
+        helper.assertTrue(next.equals(belt.getSplineNextPos()),"Valid links must survive reload");
+        for(int i=0;i<3;i++) {
+            ConveyerBeltMode.cycle(level,pos);
+            belt=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(pos);
+            helper.assertTrue(belt.getItem(2).getCount()==9 && level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE)==ConveyorGeometry.Slope.DOWN,
+                "Mode changes must preserve slope and contents");
+        }
+        level.removeBlock(next,false);
+        helper.assertTrue(belt.getSplineNextPos()==null,"Removed links must be ignored");
+        var flat=state.setValue(ConveyorGeometry.SLOPE,ConveyorGeometry.Slope.FLAT);
+        helper.assertTrue(!ConveyorGeometry.connects(pos,flat,pos.north(),flat),"Parallel adjacent lanes must not connect sideways");
+        helper.assertTrue(!ConveyorGeometry.connects(pos,flat,pos.east(),flat.setValue(ConveyerBeltBlock.FACING,Direction.WEST)),"Opposing belts must not connect");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 100)
+    public static void downhillTransferWaitsForJamAndDoesNotLeakToParallelLane(GameTestHelper helper) {
+        var level=helper.getLevel();var pos=helper.absolutePos(new BlockPos(2,3,2));
+        var flat=CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING,Direction.EAST);
+        level.setBlockAndUpdate(pos,flat.setValue(ConveyorGeometry.SLOPE,ConveyorGeometry.Slope.DOWN));
+        level.setBlockAndUpdate(pos.east(),flat);
+        level.setBlockAndUpdate(pos.east(2),flat.setValue(ConveyerBeltBlock.FACING,Direction.WEST));
+        level.setBlockAndUpdate(pos.north(),flat);
+        var source=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(pos);
+        var jam=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(pos.east());
+        for(int slot=0;slot<4;slot++) jam.setItem(slot,new ItemStack(Items.EMERALD,1));
+        source.setItem(3,new ItemStack(Items.DIAMOND,5));
+        helper.runAfterDelay(12,()->{
+            helper.assertTrue(source.getItem(3).getCount()==5,"A jam must hold the upstream tail");
+            var parallel=(ConveyerBeltBaseBlockEntity)level.getBlockEntity(pos.north());
+            helper.assertTrue(parallel.isEmpty(),"Parallel belt must remain empty");
+            jam.clearContent();
+        });
+        helper.runAfterDelay(32,()->{
+            helper.assertTrue(source.isEmpty() && jam.getItem(3).is(Items.DIAMOND) && jam.getItem(3).getCount()==5,
+                "Downhill transfer must resume after the jam clears");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point")
+    public static void surfacePointsMeetAndKeepUniformArcSpacing(GameTestHelper helper) {
+        var base=CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState();
+        for(Direction facing:Direction.Plane.HORIZONTAL) {
+            for(var curve:ConveyerBeltBlock.CurveShape.values()) {
+                var state=base.setValue(ConveyerBeltBlock.FACING,facing).setValue(ConveyerBeltBlock.CURVE,curve);
+                var first=ConveyorGeometry.point(state,0);var last=ConveyorGeometry.point(state,1);
+                var in=ConveyorGeometry.input(state);
+                helper.assertTrue(first.distanceTo(new net.minecraft.world.phys.Vec3(.5+in.getStepX()*.5,.5,.5+in.getStepZ()*.5))<1e-8,
+                    "Curve input must meet the adjacent block edge");
+                helper.assertTrue(last.distanceTo(new net.minecraft.world.phys.Vec3(.5+facing.getStepX()*.5,.5,.5+facing.getStepZ()*.5))<1e-8,
+                    "Curve output must meet the adjacent block edge");
+                double spacing=first.distanceTo(ConveyorGeometry.point(state,.25));
+                for(int n=1;n<4;n++) helper.assertTrue(Math.abs(spacing-ConveyorGeometry.point(state,n*.25).distanceTo(ConveyorGeometry.point(state,(n+1)*.25)))<1e-8,
+                    "Each transport slot must occupy the same arc length");
+            }
+        }
+        helper.succeed();
+    }
+
 }

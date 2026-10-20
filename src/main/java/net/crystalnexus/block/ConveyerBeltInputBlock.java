@@ -42,12 +42,13 @@ import net.crystalnexus.procedures.ConveyerBeltOnTickUpdateProcedure;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
 
 public class ConveyerBeltInputBlock extends Block implements EntityBlock {
+    private static final java.util.Map<BlockState, VoxelShape> SHAPES = new java.util.concurrent.ConcurrentHashMap<>();
 	public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
 	public static final IntegerProperty TIER = IntegerProperty.create("tier", 0, 2);
 
 	public ConveyerBeltInputBlock() {
 		super(BlockBehaviour.Properties.of().sound(SoundType.METAL).strength(0.9f, 8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(TIER, ConveyerBeltTier.BASIC.index()));
+		this.registerDefaultState(this.stateDefinition.any().setValue(ConveyorGeometry.SLOPE, ConveyorGeometry.Slope.FLAT).setValue(ConveyerBeltBlock.CURVE, ConveyerBeltBlock.CurveShape.STRAIGHT).setValue(FACING, Direction.NORTH).setValue(TIER, ConveyerBeltTier.BASIC.index()));
 	}
 
 	@Override
@@ -75,6 +76,11 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        return SHAPES.computeIfAbsent(state, this::createShape);
+    }
+
+    private VoxelShape createShape(BlockState state) {
+        if (state.getValue(ConveyorGeometry.SLOPE) != ConveyorGeometry.Slope.FLAT || state.getValue(ConveyerBeltBlock.CURVE) != ConveyerBeltBlock.CurveShape.STRAIGHT) return ConveyorGeometry.shape(state);
 		return switch (state.getValue(FACING)) {
 			default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 13, 9, 5, 15), box(4, 0, 12, 12, 3, 16), box(7, 2, 1, 9, 5, 3), box(4, 0, 0, 12, 3, 4), box(0, 8, 14, 2, 18, 16), box(14, 8, 14, 16, 18, 16), box(2, 16, 14, 14, 18, 16),
 					box(2, 8, 15, 14, 16, 17));
@@ -123,11 +129,12 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		super.createBlockStateDefinition(builder);
-		builder.add(FACING, TIER);
+		builder.add(FACING, TIER, ConveyerBeltBlock.CURVE, ConveyorGeometry.SLOPE);
 	}
 
 @Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
+    if (context instanceof net.crystalnexus.util.ConveyorPlacement.Context route) return route.state(defaultBlockState());
     return this.defaultBlockState()
         .setValue(FACING, context.getHorizontalDirection());
 }

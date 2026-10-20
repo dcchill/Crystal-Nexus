@@ -44,6 +44,7 @@ public final class MachineScanner {
         for (var stack : new net.minecraft.world.item.ItemStack[]{mc.player.getMainHandItem(), mc.player.getOffhandItem()}) {
             if (!(stack.getItem() instanceof CrystalWrenchItem)) continue;
             wrench = true;
+            if (!net.crystalnexus.util.ConveyorPlacement.preview(stack).isEmpty()) return null;
             var preview = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()
                 .getCompound(WrenchLinePlacement.PREVIEW_KEY);
             if (stack == mc.player.getMainHandItem() && mc.player.getOffhandItem().getItem() instanceof net.minecraft.world.item.BlockItem item
