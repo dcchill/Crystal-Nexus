@@ -68,7 +68,5 @@ public class DustSeperationRecipeCategory implements IRecipeCategory<DustSeperat
 		if (!recipe.getIngredients().isEmpty())
 			builder.addSlot(RecipeIngredientRole.INPUT, 52, 34).addIngredients(recipe.getIngredients().get(0));
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 115, 34).addItemStack(recipe.getResultItem(null));
-		ItemStack secondary = recipe.secondaryOutput();
-		if (!secondary.isEmpty()) builder.addSlot(RecipeIngredientRole.OUTPUT, 143, 34).addItemStack(secondary);
 	}
 }

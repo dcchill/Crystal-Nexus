@@ -409,7 +409,7 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BIOMATIC_COMPOSTER.get(), (blockEntity, side) -> ((BiomaticComposterBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BIOMATIC_CONSTRUCTOR.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 2, Integer.MAX_VALUE));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BIOMATIC_CONSTRUCTOR.get(), (blockEntity, side) -> ((BiomaticConstructorBlockEntity) blockEntity).getEnergyStorage());
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BIOMATIC_SIMULATOR.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 2, Integer.MAX_VALUE));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BIOMATIC_SIMULATOR.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 2, 3));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BIOMATIC_SIMULATOR.get(), (blockEntity, side) -> ((BiomaticSimulatorBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BATTERY_MONITOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MULTIBLOCK_RESEARCH_STATION.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));

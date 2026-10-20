@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class SteamChamberGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -94,7 +95,7 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 26, 39) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(39, 84)) {
 			private final int slot = 0;
 			private int x = SteamChamberGUIMenu.this.x;
 			private int y = SteamChamberGUIMenu.this.y;
@@ -110,7 +111,7 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 				return Items.WATER_BUCKET == stack.getItem();
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 80, 21) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(21, 84)) {
 			private final int slot = 2;
 			private int x = SteamChamberGUIMenu.this.x;
 			private int y = SteamChamberGUIMenu.this.y;
@@ -126,7 +127,7 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:steam_fuel")));
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -141,9 +142,9 @@ public class SteamChamberGUIMenu extends AbstractContainerMenu implements Crysta
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 	}
 
 	@Override

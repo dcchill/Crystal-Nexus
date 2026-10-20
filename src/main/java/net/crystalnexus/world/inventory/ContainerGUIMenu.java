@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class ContainerGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(104, 103);
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -91,236 +92,236 @@ public class ContainerGUIMenu extends AbstractContainerMenu implements Crystalne
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 8, 9) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 0;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 26, 9) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 1;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 44, 9) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 2;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 62, 9) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(62, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 3;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 80, 9) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 4;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 98, 9) {
+		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, MachineGuiLayout.grid(98, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 5;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 116, 9) {
+		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 6;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 134, 9) {
+		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, MachineGuiLayout.grid(134, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 7;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 152, 9) {
+		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(9, 104)) {
 			private final int slot = 8;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 8, 27) {
+		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 9;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, 26, 27) {
+		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 10;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, 44, 27) {
+		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 11;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, 62, 27) {
+		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, MachineGuiLayout.grid(62, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 12;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, 80, 27) {
+		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 13;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(14, this.addSlot(new SlotItemHandler(internal, 14, 98, 27) {
+		this.customSlots.put(14, this.addSlot(new SlotItemHandler(internal, 14, MachineGuiLayout.grid(98, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 14;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(15, this.addSlot(new SlotItemHandler(internal, 15, 116, 27) {
+		this.customSlots.put(15, this.addSlot(new SlotItemHandler(internal, 15, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 15;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(16, this.addSlot(new SlotItemHandler(internal, 16, 134, 27) {
+		this.customSlots.put(16, this.addSlot(new SlotItemHandler(internal, 16, MachineGuiLayout.grid(134, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 16;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(17, this.addSlot(new SlotItemHandler(internal, 17, 152, 27) {
+		this.customSlots.put(17, this.addSlot(new SlotItemHandler(internal, 17, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(27, 104)) {
 			private final int slot = 17;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(18, this.addSlot(new SlotItemHandler(internal, 18, 8, 45) {
+		this.customSlots.put(18, this.addSlot(new SlotItemHandler(internal, 18, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 18;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(19, this.addSlot(new SlotItemHandler(internal, 19, 26, 45) {
+		this.customSlots.put(19, this.addSlot(new SlotItemHandler(internal, 19, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 19;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(20, this.addSlot(new SlotItemHandler(internal, 20, 44, 45) {
+		this.customSlots.put(20, this.addSlot(new SlotItemHandler(internal, 20, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 20;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(21, this.addSlot(new SlotItemHandler(internal, 21, 62, 45) {
+		this.customSlots.put(21, this.addSlot(new SlotItemHandler(internal, 21, MachineGuiLayout.grid(62, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 21;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(22, this.addSlot(new SlotItemHandler(internal, 22, 80, 45) {
+		this.customSlots.put(22, this.addSlot(new SlotItemHandler(internal, 22, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 22;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(23, this.addSlot(new SlotItemHandler(internal, 23, 98, 45) {
+		this.customSlots.put(23, this.addSlot(new SlotItemHandler(internal, 23, MachineGuiLayout.grid(98, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 23;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(24, this.addSlot(new SlotItemHandler(internal, 24, 116, 45) {
+		this.customSlots.put(24, this.addSlot(new SlotItemHandler(internal, 24, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 24;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(25, this.addSlot(new SlotItemHandler(internal, 25, 134, 45) {
+		this.customSlots.put(25, this.addSlot(new SlotItemHandler(internal, 25, MachineGuiLayout.grid(134, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 25;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(26, this.addSlot(new SlotItemHandler(internal, 26, 152, 45) {
+		this.customSlots.put(26, this.addSlot(new SlotItemHandler(internal, 26, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(45, 104)) {
 			private final int slot = 26;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(27, this.addSlot(new SlotItemHandler(internal, 27, 8, 63) {
+		this.customSlots.put(27, this.addSlot(new SlotItemHandler(internal, 27, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 27;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(28, this.addSlot(new SlotItemHandler(internal, 28, 26, 63) {
+		this.customSlots.put(28, this.addSlot(new SlotItemHandler(internal, 28, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 28;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(29, this.addSlot(new SlotItemHandler(internal, 29, 44, 63) {
+		this.customSlots.put(29, this.addSlot(new SlotItemHandler(internal, 29, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 29;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(30, this.addSlot(new SlotItemHandler(internal, 30, 62, 63) {
+		this.customSlots.put(30, this.addSlot(new SlotItemHandler(internal, 30, MachineGuiLayout.grid(62, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 30;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(31, this.addSlot(new SlotItemHandler(internal, 31, 80, 63) {
+		this.customSlots.put(31, this.addSlot(new SlotItemHandler(internal, 31, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 31;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(32, this.addSlot(new SlotItemHandler(internal, 32, 98, 63) {
+		this.customSlots.put(32, this.addSlot(new SlotItemHandler(internal, 32, MachineGuiLayout.grid(98, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 32;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(33, this.addSlot(new SlotItemHandler(internal, 33, 116, 63) {
+		this.customSlots.put(33, this.addSlot(new SlotItemHandler(internal, 33, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 33;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(34, this.addSlot(new SlotItemHandler(internal, 34, 134, 63) {
+		this.customSlots.put(34, this.addSlot(new SlotItemHandler(internal, 34, MachineGuiLayout.grid(134, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 34;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(35, this.addSlot(new SlotItemHandler(internal, 35, 152, 63) {
+		this.customSlots.put(35, this.addSlot(new SlotItemHandler(internal, 35, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(63, 104)) {
 			private final int slot = 35;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(36, this.addSlot(new SlotItemHandler(internal, 36, 8, 81) {
+		this.customSlots.put(36, this.addSlot(new SlotItemHandler(internal, 36, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 36;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(37, this.addSlot(new SlotItemHandler(internal, 37, 26, 81) {
+		this.customSlots.put(37, this.addSlot(new SlotItemHandler(internal, 37, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 37;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(38, this.addSlot(new SlotItemHandler(internal, 38, 44, 81) {
+		this.customSlots.put(38, this.addSlot(new SlotItemHandler(internal, 38, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 38;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(39, this.addSlot(new SlotItemHandler(internal, 39, 62, 81) {
+		this.customSlots.put(39, this.addSlot(new SlotItemHandler(internal, 39, MachineGuiLayout.grid(62, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 39;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(40, this.addSlot(new SlotItemHandler(internal, 40, 80, 81) {
+		this.customSlots.put(40, this.addSlot(new SlotItemHandler(internal, 40, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 40;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(41, this.addSlot(new SlotItemHandler(internal, 41, 98, 81) {
+		this.customSlots.put(41, this.addSlot(new SlotItemHandler(internal, 41, MachineGuiLayout.grid(98, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 41;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(42, this.addSlot(new SlotItemHandler(internal, 42, 116, 81) {
+		this.customSlots.put(42, this.addSlot(new SlotItemHandler(internal, 42, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 42;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(43, this.addSlot(new SlotItemHandler(internal, 43, 134, 81) {
+		this.customSlots.put(43, this.addSlot(new SlotItemHandler(internal, 43, MachineGuiLayout.grid(134, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 43;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
-		this.customSlots.put(44, this.addSlot(new SlotItemHandler(internal, 44, 152, 81) {
+		this.customSlots.put(44, this.addSlot(new SlotItemHandler(internal, 44, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(81, 104)) {
 			private final int slot = 44;
 			private int x = ContainerGUIMenu.this.x;
 			private int y = ContainerGUIMenu.this.y;
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 20 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 20 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 		ContainerGUIThisGUIIsOpenedProcedure.execute(world, x, y, z);
 	}
 

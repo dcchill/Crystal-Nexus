@@ -90,7 +90,7 @@ public class OreGenGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 180, 8) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

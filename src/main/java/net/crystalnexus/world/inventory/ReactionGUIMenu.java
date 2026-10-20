@@ -91,12 +91,12 @@ public class ReactionGUIMenu extends AbstractContainerMenu implements Crystalnex
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 106, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(106, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = ReactionGUIMenu.this.x;
 			private int y = ReactionGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 180, 8) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

@@ -64,7 +64,7 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 			access = ContainerLevelAccess.create(world, pos);
 		}
 		if (pos != null) {
-			if (extraData.readableBytes() == 1) { 
+			if (extraData.readableBytes() == 1) {
 				byte hand = extraData.readByte();
 				ItemStack itemstack = hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem();
 				this.boundItemMatcher = () -> itemstack == (hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem());
@@ -73,8 +73,8 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 					this.internal = cap;
 					this.bound = true;
 				}
-			} else if (extraData.readableBytes() > 1) { 
-				extraData.readByte(); 
+			} else if (extraData.readableBytes() > 1) {
+				extraData.readByte();
 				boundEntity = world.getEntity(extraData.readVarInt());
 				if (boundEntity != null) {
 					IItemHandler cap = boundEntity.getCapability(Capabilities.ItemHandler.ENTITY);
@@ -83,7 +83,7 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 						this.bound = true;
 					}
 				}
-			} else { 
+			} else {
 				boundBlockEntity = this.world.getBlockEntity(pos);
 				if (boundBlockEntity instanceof BaseContainerBlockEntity baseContainerBlockEntity) {
 					this.internal = new InvWrapper(baseContainerBlockEntity);
@@ -91,22 +91,22 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 34, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 44, 12) {
 			private final int slot = 0;
 			private int x = ChemicalReactionChamberGUIMenu.this.x;
 			private int y = ChemicalReactionChamberGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 52, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 44, 30) {
 			private final int slot = 1;
 			private int x = ChemicalReactionChamberGUIMenu.this.x;
 			private int y = ChemicalReactionChamberGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 52, 44) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 44, 48) {
 			private final int slot = 2;
 			private int x = ChemicalReactionChamberGUIMenu.this.x;
 			private int y = ChemicalReactionChamberGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 115, 35) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 116, 30) {
 			private final int slot = 3;
 			private int x = ChemicalReactionChamberGUIMenu.this.x;
 			private int y = ChemicalReactionChamberGUIMenu.this.y;
@@ -116,7 +116,7 @@ public class ChemicalReactionChamberGUIMenu extends AbstractContainerMenu implem
 				return false;
 			}
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 180, 8) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

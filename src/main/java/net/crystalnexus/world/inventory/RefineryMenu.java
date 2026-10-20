@@ -29,12 +29,12 @@ public final class RefineryMenu extends TieredMachineMenu {
         access = ContainerLevelAccess.create(entity.level(), pos);
         refinery = entity.level().getBlockEntity(pos) instanceof RefineryBlockEntity be ? be : null;
         MachineItemHandler items = new MachineItemHandler(refinery == null ? new SimpleContainer(8) : refinery);
-        addSlot(new MachineItemSlot(items, 0, 52, 64));
-        addSlot(new MachineItemSlot(items, 1, 115, 64) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+        addSlot(new MachineItemSlot(items, 0, MachineGuiLayout.grid(MachineGuiLayout.TWO_TANK_X[0], 8), MachineGuiLayout.grid(MachineGuiLayout.TWO_TANK_SLOT_Y, 84)));
+        addSlot(new MachineItemSlot(items, 1, MachineGuiLayout.grid(MachineGuiLayout.TWO_TANK_X[1], 8), MachineGuiLayout.grid(MachineGuiLayout.TWO_TANK_SLOT_Y, 84)) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
         var upgradeState = entity.level().getBlockState(pos);
-        addSlot(new MachineUpgradeSlot(items, 2, upgradeState, 0));
+        addSlot(new MachineUpgradeSlot(items, 2, upgradeState, 0, 84));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            addSlot(new MachineUpgradeSlot(items, 3 + i - 1, upgradeState, i));
+            addSlot(new MachineUpgradeSlot(items, 3 + i - 1, upgradeState, i, 84));
         machineSlots = slots.size();
         for (int row = 0; row < 3; row++)
             for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));

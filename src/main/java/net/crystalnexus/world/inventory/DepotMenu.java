@@ -57,7 +57,7 @@ public class DepotMenu extends AbstractContainerMenu {
         for (int row = 0; row < 6; row++) {
             for (int col = 0; col < 9; col++) {
                 int index = col + row * 9;
-                addSlot(new Slot(depotView, index, 8 + col * 18, 18 + row * 18));
+                addSlot(new Slot(depotView, index, MachineGuiLayout.grid(8 + col * 18, 8), MachineGuiLayout.grid(18 + row * 18, 140)));
             }
         }
         for (int row = 0; row < 3; row++) {
@@ -261,4 +261,5 @@ public class DepotMenu extends AbstractContainerMenu {
     private void refreshDepot(DepotSavedData depot) {
         setDepotPage(search, page, depot.page(search, page, PAGE_SIZE));
     }
+    public BlockPos guiPosition() { return sourcePos; }
 }

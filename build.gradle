@@ -78,6 +78,9 @@ sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
 // Reuse the generator template in the namespace used by its focused GameTests.
 tasks.named('processResources') {
     from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
+        into 'data/crystalnexus_gui/structure'
+    }
+    from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
         into 'data/crystalnexus_water/structure'
     }
     from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {

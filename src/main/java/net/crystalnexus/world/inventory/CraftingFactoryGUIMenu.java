@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class CraftingFactoryGUIMenu extends TieredMachineMenu implements CrystalnexusModMenus.MenuAccessor {
+	/** Inventory index of the crafting filter; the screen's red overlay and hover follow this slot. */
+	public static final int FILTER_SLOT = 10;
     private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
@@ -88,52 +90,52 @@ public class CraftingFactoryGUIMenu extends TieredMachineMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 16, 17) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, MachineGuiLayout.grid(16, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 34, 17) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, MachineGuiLayout.grid(34, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 1;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, 52, 17) {
+		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, MachineGuiLayout.grid(52, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 2;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, 16, 35) {
+		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, MachineGuiLayout.grid(16, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 3;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(4, this.addSlot(new MachineItemSlot(internal, 4, 34, 35) {
+		this.customSlots.put(4, this.addSlot(new MachineItemSlot(internal, 4, MachineGuiLayout.grid(34, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 4;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(5, this.addSlot(new MachineItemSlot(internal, 5, 52, 35) {
+		this.customSlots.put(5, this.addSlot(new MachineItemSlot(internal, 5, MachineGuiLayout.grid(52, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 5;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(6, this.addSlot(new MachineItemSlot(internal, 6, 16, 53) {
+		this.customSlots.put(6, this.addSlot(new MachineItemSlot(internal, 6, MachineGuiLayout.grid(16, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 6;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(7, this.addSlot(new MachineItemSlot(internal, 7, 34, 53) {
+		this.customSlots.put(7, this.addSlot(new MachineItemSlot(internal, 7, MachineGuiLayout.grid(34, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 7;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(8, this.addSlot(new MachineItemSlot(internal, 8, 52, 53) {
+		this.customSlots.put(8, this.addSlot(new MachineItemSlot(internal, 8, MachineGuiLayout.grid(52, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 8;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
-		this.customSlots.put(9, this.addSlot(new MachineItemSlot(internal, 9, 97, 35) {
+		this.customSlots.put(9, this.addSlot(new MachineItemSlot(internal, 9, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 9;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
@@ -143,14 +145,14 @@ public class CraftingFactoryGUIMenu extends TieredMachineMenu implements Crystal
 				return false;
 			}
 		}));
-		this.customSlots.put(10, this.addSlot(new MachineItemSlot(internal, 10, 133, 35) {
+		this.customSlots.put(10, this.addSlot(new MachineItemSlot(internal, 10, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 10;
 			private int x = CraftingFactoryGUIMenu.this.x;
 			private int y = CraftingFactoryGUIMenu.this.y;
 		}));
         var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
         for (int i = 0; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            customSlots.put(11 + i, addSlot(new MachineUpgradeSlot(internal, 11 + i, upgradeState, i)));
+            customSlots.put(11 + i, addSlot(new MachineUpgradeSlot(internal, 11 + i, upgradeState, i, 84)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)

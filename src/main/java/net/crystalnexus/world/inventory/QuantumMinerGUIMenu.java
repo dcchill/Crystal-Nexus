@@ -89,52 +89,52 @@ public class QuantumMinerGUIMenu extends AbstractContainerMenu implements Crysta
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 97, 17) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 17) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 1;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 133, 17) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 2;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 97, 35) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 3;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 115, 35) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 4;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 133, 35) {
+		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 5;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 97, 53) {
+		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 6;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 115, 53) {
+		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 7;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 133, 53) {
+		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 8;
 			private int x = QuantumMinerGUIMenu.this.x;
 			private int y = QuantumMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 180, 8) {
+		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

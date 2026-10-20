@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class ExtractinatorGuiMenu extends TieredMachineMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
     private final int machineSlots;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
@@ -93,7 +94,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 79, 17) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -104,7 +105,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 61, 44) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, MachineGuiLayout.grid(61, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 1;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -115,8 +116,8 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 			}
 		}));
 		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
-        this.customSlots.put(7, this.addSlot(new MachineUpgradeSlot(internal, 7, upgradeState, 0)));
-		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, 79, 44) {
+        this.customSlots.put(7, this.addSlot(new MachineUpgradeSlot(internal, 7, upgradeState, 0, 84)));
+		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 2;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -126,7 +127,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				return false;
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, 97, 44) {
+		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 3;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -136,7 +137,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				return false;
 			}
 		}));
-		this.customSlots.put(4, this.addSlot(new MachineItemSlot(internal, 4, 61, 62) {
+		this.customSlots.put(4, this.addSlot(new MachineItemSlot(internal, 4, MachineGuiLayout.grid(61, 8), MachineGuiLayout.grid(62, 84)) {
 			private final int slot = 4;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -146,7 +147,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				return false;
 			}
 		}));
-		this.customSlots.put(5, this.addSlot(new MachineItemSlot(internal, 5, 79, 62) {
+		this.customSlots.put(5, this.addSlot(new MachineItemSlot(internal, 5, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(62, 84)) {
 			private final int slot = 5;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -156,7 +157,7 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 				return false;
 			}
 		}));
-		this.customSlots.put(6, this.addSlot(new MachineItemSlot(internal, 6, 97, 62) {
+		this.customSlots.put(6, this.addSlot(new MachineItemSlot(internal, 6, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(62, 84)) {
 			private final int slot = 6;
 			private int x = ExtractinatorGuiMenu.this.x;
 			private int y = ExtractinatorGuiMenu.this.y;
@@ -167,13 +168,13 @@ public class ExtractinatorGuiMenu extends TieredMachineMenu implements Crystalne
 			}
 		}));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            this.customSlots.put(8 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 8 + i - 1, upgradeState, i)));
+            this.customSlots.put(8 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 8 + i - 1, upgradeState, i, 84)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 		ExtractinatorGuiThisGUIIsOpenedProcedure.execute(world, x, y, z);
 	}
 

@@ -91,22 +91,22 @@ public class NodeMinerGUIMenu extends AbstractContainerMenu implements Crystalne
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 133, 17) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = NodeMinerGUIMenu.this.x;
 			private int y = NodeMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 133, 35) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = NodeMinerGUIMenu.this.x;
 			private int y = NodeMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 133, 53) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 2;
 			private int x = NodeMinerGUIMenu.this.x;
 			private int y = NodeMinerGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

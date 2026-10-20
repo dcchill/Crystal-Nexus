@@ -49,12 +49,12 @@ public final class HyperLaserQuarryMenu extends AbstractContainerMenu {
 
 		for (int row = 0; row < 3; row++) {
 			for (int column = 0; column < 3; column++) {
-				addSlot(new Slot(container, column + row * 3, 226 + column * 18, 154 + row * 18) {
+				addSlot(new Slot(container, column + row * 3, MachineGuiLayout.grid(226 + column * 18, 16), MachineGuiLayout.grid(154 + row * 18, 154)) {
 					@Override public boolean mayPlace(ItemStack stack) { return false; }
 				});
 			}
 		}
-		addSlot(new Slot(container, 9, 246, 113) {
+		addSlot(new Slot(container, 9, MachineGuiLayout.grid(246, 16), MachineGuiLayout.grid(113, 154)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

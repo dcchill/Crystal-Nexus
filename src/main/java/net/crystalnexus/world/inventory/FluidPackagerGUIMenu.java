@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class FluidPackagerGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -93,7 +94,7 @@ public class FluidPackagerGUIMenu extends AbstractContainerMenu implements Cryst
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 61, 26) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(61, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 0;
 			private int x = FluidPackagerGUIMenu.this.x;
 			private int y = FluidPackagerGUIMenu.this.y;
@@ -104,7 +105,7 @@ public class FluidPackagerGUIMenu extends AbstractContainerMenu implements Cryst
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 1;
 			private int x = FluidPackagerGUIMenu.this.x;
 			private int y = FluidPackagerGUIMenu.this.y;
@@ -114,7 +115,7 @@ public class FluidPackagerGUIMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -129,9 +130,9 @@ public class FluidPackagerGUIMenu extends AbstractContainerMenu implements Cryst
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 	}
 
 	@Override

@@ -93,7 +93,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 180, 9) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -106,7 +106,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 25, 35) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(25, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = OreProGUIMenu.this.x;
 			private int y = OreProGUIMenu.this.y;
@@ -117,7 +117,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				slotChanged(1, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 79, 35) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 2;
 			private int x = OreProGUIMenu.this.x;
 			private int y = OreProGUIMenu.this.y;
@@ -128,7 +128,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				slotChanged(2, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 133, 26) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 3;
 			private int x = OreProGUIMenu.this.x;
 			private int y = OreProGUIMenu.this.y;
@@ -138,7 +138,7 @@ public class OreProGUIMenu extends AbstractContainerMenu implements Crystalnexus
 				return false;
 			}
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 133, 44) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 4;
 			private int x = OreProGUIMenu.this.x;
 			private int y = OreProGUIMenu.this.y;

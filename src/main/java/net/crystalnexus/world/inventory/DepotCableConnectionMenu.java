@@ -49,7 +49,7 @@ public final class DepotCableConnectionMenu extends AbstractContainerMenu {
         Direction initial = cable == null ? Direction.NORTH : cable.openingSide();
         sideOrdinal = initial.ordinal();
 
-        for (int i = 0; i < FILTER_SLOTS; i++) addSlot(new Slot(filters, i, SLOT_X + i * 18, FILTER_Y) {
+        for (int i = 0; i < FILTER_SLOTS; i++) addSlot(new Slot(filters, i, MachineGuiLayout.grid(SLOT_X + i * 18, 26), MachineGuiLayout.grid(FILTER_Y, 154)) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
             @Override public boolean mayPickup(Player player) { return false; }
         });

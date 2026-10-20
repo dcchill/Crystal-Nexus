@@ -34,6 +34,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class NodeExtractorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+    public final net.crystalnexus.util.MachineSync machineSync = new net.crystalnexus.util.MachineSync(this);
 	private NonNullList<ItemStack> stacks = NonNullList.withSize(1, ItemStack.EMPTY);
 
 	public NodeExtractorBlockEntity(BlockPos position, BlockState state) {
@@ -43,6 +44,7 @@ public class NodeExtractorBlockEntity extends RandomizableContainerBlockEntity i
 	public static void tick(Level level, BlockPos pos, BlockState state, NodeExtractorBlockEntity blockEntity) {
 		if (level.isClientSide())
 			return;
+        blockEntity.machineSync.tick();
 		if (!net.crystalnexus.util.MachineTickPolicy.shouldTick(level, pos, blockEntity)) return;
 		NodeExtractorOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
 	}
@@ -173,9 +175,7 @@ public class NodeExtractorBlockEntity extends RandomizableContainerBlockEntity i
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
-			setChanged();
-			if (level != null && level.getGameTime() % 5 == 0)
-				level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            machineSync.changed();
 		}
 	};
 

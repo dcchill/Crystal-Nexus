@@ -89,12 +89,12 @@ public class ComputationClusterGUIMenu extends AbstractContainerMenu implements 
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 26) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 0;
 			private int x = ComputationClusterGUIMenu.this.x;
 			private int y = ComputationClusterGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 1;
 			private int x = ComputationClusterGUIMenu.this.x;
 			private int y = ComputationClusterGUIMenu.this.y;

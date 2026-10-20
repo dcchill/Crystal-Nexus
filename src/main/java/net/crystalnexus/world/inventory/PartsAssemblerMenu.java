@@ -38,12 +38,12 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         checkContainerSize(container, 4);
         container.startOpen(inventory.player);
 
-        addSlot(new Slot(container, 0, 43, 35));
-        addSlot(new Slot(container, 1, 115, 35) {
+        addSlot(new Slot(container, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y));
+        addSlot(new Slot(container, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
         for (int upgrade = 0; upgrade < 2; upgrade++) {
-            addSlot(new Slot(container, 2 + upgrade, 180, 8 + upgrade * 32) {
+            addSlot(new Slot(container, 2 + upgrade, MachineGuiLayout.sideX(upgrade), MachineGuiLayout.sideY(upgrade)) {
                 @Override public int getMaxStackSize(ItemStack stack) {
                     return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
                 }
@@ -100,4 +100,5 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
     }
 
     @Override public void removed(Player player) { super.removed(player); container.stopOpen(player); }
+    public BlockPos guiPosition() { return pos; }
 }

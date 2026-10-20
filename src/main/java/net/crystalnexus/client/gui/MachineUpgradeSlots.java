@@ -11,7 +11,9 @@ public final class MachineUpgradeSlots {
 
     public static void render(GuiGraphics graphics, AbstractContainerMenu menu, int left, int top) {
         for (var slot : menu.slots)
-            if (slot instanceof MachineUpgradeSlot && slot.isActive())
+            if (slot instanceof MachineUpgradeSlot && slot.isActive()) {
+                if (slot.x >= 176) graphics.fill(left + 175, top + slot.y - 8, left + slot.x + 25, top + slot.y + 24, 0xFF171224);
                 graphics.blit(TEXTURE, left + slot.x - 7, top + slot.y - 8, 0, 0, 32, 32, 32, 32);
+            }
     }
 }

@@ -89,7 +89,7 @@ public class TesseractGuiMenu extends AbstractContainerMenu implements Crystalne
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 22) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(22, 59)) {
 			private final int slot = 0;
 			private int x = TesseractGuiMenu.this.x;
 			private int y = TesseractGuiMenu.this.y;

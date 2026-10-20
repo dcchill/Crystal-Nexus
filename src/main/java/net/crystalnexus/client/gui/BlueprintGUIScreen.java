@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class BlueprintGUIScreen extends HolographicMachineScreen<BlueprintGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private static final int PREVIEW_X = 8;
 	private static final int PREVIEW_Y = 18;
 	private static final int PREVIEW_SIZE = 60;
@@ -79,8 +78,8 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/blueprint_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		name.render(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
@@ -90,11 +89,13 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
+		machineBackground(guiGraphics);
+
 		renderBlueprintPreview(guiGraphics, partialTicks);
 		RenderSystem.disableBlend();
-	}
+
+        MachineGuiWidgets.finishBackground(guiGraphics);
+    }
 
 	@Override
 	public boolean keyPressed(int key, int b, int c) {
@@ -116,14 +117,14 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.blueprint_gui.label_blueprint_controller"), 55, -11, -12829636, false);
-		guiGraphics.drawString(this.font, Component.literal("Preview"), 10, 8, 0x7FE7FF, false);
+		MachineGuiWidgets.label(guiGraphics, this.font, Component.literal("Preview"), 10, 8, 0x7FE7FF, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		name = new EditBox(this.font, this.leftPos + 78, this.topPos + 30, 92, 18, Component.translatable("gui.crystalnexus.blueprint_gui.name"));
+		var nameBounds = net.crystalnexus.world.inventory.MachineGuiLayout.blueprintName();
+		name = new EditBox(this.font, leftPos + nameBounds.x(), topPos + nameBounds.y(), nameBounds.width(), nameBounds.height(), Component.translatable("gui.crystalnexus.blueprint_gui.name"));
 		name.setMaxLength(8192);
 		name.setResponder(content -> {
 			if (!menuStateUpdateActive)
@@ -131,13 +132,15 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 		});
 		name.setHint(Component.translatable("gui.crystalnexus.blueprint_gui.name"));
 		this.addWidget(this.name);
+		var saveBounds = net.crystalnexus.world.inventory.MachineGuiLayout.blueprintButton(false);
+		var clearBounds = net.crystalnexus.world.inventory.MachineGuiLayout.blueprintButton(true);
 		button_save = Button.builder(Component.translatable("gui.crystalnexus.blueprint_gui.button_save"), e -> {
 			PacketDistributor.sendToServer(new BlueprintSaveMessage(new BlockPos(this.x, this.y, this.z), name.getValue()));
-		}).bounds(this.leftPos + 79, this.topPos + 55, 40, 20).build();
+		}).bounds(leftPos + saveBounds.x(), topPos + saveBounds.y(), saveBounds.width(), saveBounds.height()).build();
 		this.addRenderableWidget(button_save);
 		button_clear = Button.builder(Component.translatable("gui.crystalnexus.blueprint_gui.button_clear"), e -> {
 			PacketDistributor.sendToServer(new BlueprintClearMessage(new BlockPos(this.x, this.y, this.z)));
-		}).bounds(this.leftPos + 124, this.topPos + 55, 46, 20).build();
+		}).bounds(leftPos + clearBounds.x(), topPos + clearBounds.y(), clearBounds.width(), clearBounds.height()).build();
 		this.addRenderableWidget(button_clear);
 	}
 
@@ -148,13 +151,15 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 		guiGraphics.fill(panelX, panelY, panelX + PREVIEW_SIZE, panelY + PREVIEW_SIZE, 0xCC0A1117);
 
 		refreshPreviewData();
-		if (!previewData.valid()) {
-			guiGraphics.drawCenteredString(this.font, Component.literal("Preview unavailable"), panelX + PREVIEW_SIZE / 2, panelY + 24, 0xE46A6A);
-			guiGraphics.drawCenteredString(this.font, Component.literal(previewData.error()), panelX + PREVIEW_SIZE / 2, panelY + 36, 0xA0A0A0);
-			return;
-		}
-		if (previewData.blocks().isEmpty()) {
-			guiGraphics.drawCenteredString(this.font, Component.literal("Interior empty"), panelX + PREVIEW_SIZE / 2, panelY + 30, 0xB8B8B8);
+		if (!previewData.valid() || previewData.blocks().isEmpty()) {
+			Component status = Component.literal(previewData.valid() ? "Interior empty" : "Unavailable");
+			guiGraphics.enableScissor(panelX, panelY, panelX + PREVIEW_SIZE, panelY + PREVIEW_SIZE);
+			guiGraphics.drawWordWrap(font, status, panelX + 3, panelY + 4, PREVIEW_SIZE - 6, 0xE46A6A);
+			if (!previewData.valid()) guiGraphics.drawWordWrap(font, Component.literal(previewData.error()),
+				panelX + 3, panelY + 26, PREVIEW_SIZE - 6, 0xA0A0A0);
+			guiGraphics.disableScissor();
+			MachineGuiWidgets.value(new net.crystalnexus.world.inventory.MachineGuiLayout.Rect(panelX, panelY, PREVIEW_SIZE, PREVIEW_SIZE),
+				status, Component.literal(previewData.valid() ? "Interior empty" : previewData.error()));
 			return;
 		}
 
@@ -319,4 +324,6 @@ public class BlueprintGUIScreen extends AbstractContainerScreen<BlueprintGUIMenu
 			return new BlueprintPreviewData(List.of(), 1, 1, 1, 0.5f, 0.5f, 0.5f, message);
 		}
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "blueprint_controller"; }
 }

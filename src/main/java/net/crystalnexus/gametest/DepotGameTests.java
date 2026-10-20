@@ -27,6 +27,7 @@ import net.crystalnexus.jei_recipes.PurificationRecipe;
 import net.crystalnexus.world.inventory.DepotCliMenu;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.crystalnexus.world.inventory.CraftingProcessorMenu;
+import net.crystalnexus.world.inventory.MachineGuiLayout;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTest;
@@ -36,6 +37,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ClientInformation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -49,6 +52,7 @@ import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -56,6 +60,38 @@ import java.util.UUID;
 @PrefixGameTestTemplate(false)
 public final class DepotGameTests {
     private DepotGameTests() {
+    }
+
+    @GameTest(template = "zero_point")
+    public static void guiLayout(GameTestHelper helper) {
+        Inventory inventory = new Inventory(null);
+        inventory.setItem(12, new ItemStack(Items.IRON_INGOT));
+        DepotCliMenu menu = new DepotCliMenu(1, inventory, BlockPos.ZERO);
+        helper.assertTrue(menu.slots.size() == inventory.items.size(), "CLI must retain all inventory slots");
+        var bounds = new MachineGuiLayout.Rect(0, -44, 500, 344);
+        for (int i = 0; i < menu.slots.size(); i++) {
+            var slot = menu.slots.get(i);
+            helper.assertTrue(slot.container == inventory && slot.getSlotIndex() == i && slot.index == i,
+                    "Hidden CLI slots must retain their inventory and indices");
+            helper.assertTrue(!slot.isActive(), "Hidden CLI slots must not participate in GUI fitting or rendering");
+            if (slot.isActive()) bounds = bounds.union(new MachineGuiLayout.Rect(slot.x - 4, slot.y - 4, 24, 24));
+        }
+        helper.assertTrue(menu.slots.get(12).getItem().is(Items.IRON_INGOT), "Hidden slots must still expose inventory items");
+        helper.assertTrue(MachineGuiLayout.fitScale(640, 360, bounds) == 1, "CLI must fit at its intended size");
+        helper.assertTrue(MachineGuiLayout.energy(menu.slots, 300).bottom() == 296,
+                "Screens without visible inventory must use the panel bottom padding");
+        for (int y : new int[]{57, 84, 142}) {
+            List<Slot> slots = new ArrayList<>(menu.slots);
+            for (int row = 0; row < 3; row++) for (int col = 0; col < 9; col++)
+                slots.add(new Slot(inventory, 9 + row * 9 + col, 8 + col * 18, y + row * 18));
+            for (int col = 0; col < 9; col++) slots.add(new Slot(inventory, col, 8 + col * 18, y + 58));
+            slots.add(new Slot(inventory, 12, 8, 1000) {
+                @Override public boolean isActive() { return false; }
+            });
+            helper.assertTrue(MachineGuiLayout.energy(slots, y + 82).bottom() == y + 53,
+                    "FE panel must end at visible inventory rows, excluding hotbar and inactive slots");
+        }
+        helper.succeed();
     }
 
     @GameTest(template = "zero_point")

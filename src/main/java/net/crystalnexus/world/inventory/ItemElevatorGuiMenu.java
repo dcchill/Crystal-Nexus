@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class ItemElevatorGuiMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(63, 62);
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -89,16 +90,16 @@ public class ItemElevatorGuiMenu extends AbstractContainerMenu implements Crysta
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 15) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(15, 63)) {
 			private final int slot = 0;
 			private int x = ItemElevatorGuiMenu.this.x;
 			private int y = ItemElevatorGuiMenu.this.y;
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, -21 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, -21 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 	}
 
 	@Override

@@ -15,6 +15,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
 public final class HeavenshatterMenu extends AbstractContainerMenu {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(266, 265);
     private final HeavenshatterBeamControllerBlockEntity controller;
     private final ContainerLevelAccess access;
     private long lastControls = Long.MIN_VALUE, lastSnapshot = Long.MIN_VALUE;
@@ -54,12 +55,12 @@ public final class HeavenshatterMenu extends AbstractContainerMenu {
         this.controller = controller;
         access = ContainerLevelAccess.create(inventory.player.level(), controller == null ? BlockPos.ZERO : controller.getBlockPos());
         // The client receives the filter through normal menu slot synchronization.
-        addSlot(new SlotItemHandler(inventory.player.level().isClientSide || controller == null ? new ItemStackHandler(1) : controller.meteorFilter(), 0, 12, 240) {
+        addSlot(new SlotItemHandler(inventory.player.level().isClientSide || controller == null ? new ItemStackHandler(1) : controller.meteorFilter(), 0, MachineGuiLayout.grid(12, 77), MachineGuiLayout.grid(240, 266)) {
             @Override public boolean mayPlace(ItemStack stack) { return net.crystalnexus.item.MeteorDataDiskItem.read(stack).isPresent(); }
         });
         for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++)
-            addSlot(new Slot(inventory, column + (row + 1) * 9, 77 + column * 18, 266 + row * 18));
-        for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 77 + column * 18, 324));
+            addSlot(new Slot(inventory, column + (row + 1) * 9, 77 + column * 18, INVENTORY_Y + row * 18));
+        for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 77 + column * 18, INVENTORY_Y + 58));
     }
 
     private static HeavenshatterBeamControllerBlockEntity controllerAt(Inventory inventory, BlockPos pos) {

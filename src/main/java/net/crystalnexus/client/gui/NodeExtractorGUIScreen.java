@@ -6,19 +6,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.world.inventory.NodeExtractorGUIMenu;
-import net.crystalnexus.procedures.ProgressDisplayProcedure;
 import net.crystalnexus.procedures.EnergyDisplayProcedure;
 import net.crystalnexus.init.CrystalnexusModScreens;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtractorGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class NodeExtractorGUIScreen extends HolographicMachineScreen<NodeExtractorGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -41,11 +39,10 @@ public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtracto
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/node_extractor_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -54,16 +51,15 @@ public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtracto
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 6, this.topPos + 12, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png"), this.leftPos + 72, this.topPos + 27, 0, Mth.clamp((int) ProgressDisplayProcedure.execute(world, x, y, z) * 32, 0, 320), 32, 32, 32, 352);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/fluidlevels.png"), leftPos + 105, topPos + 12, 0, 0, 64, 64, 64, 704);
-		FluidTankRenderer.drawBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
+		machineBackground(guiGraphics);
+
+		machineProgress(guiGraphics, MachineGuiWidgets.progress(world, new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z)));
+		machineBlockTank(guiGraphics, world, BlockPos.containing(x, y, z), 0,
 			leftPos + 121, topPos + 16, 32, 56);
 		RenderSystem.disableBlend();
-	}
+
+        MachineGuiWidgets.finishBackground(guiGraphics);
+    }
 
 	@Override
 	public boolean keyPressed(int key, int b, int c) {
@@ -77,11 +73,12 @@ public class NodeExtractorGUIScreen extends AbstractContainerScreen<NodeExtracto
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 		boolean oxygenCollector = world.getBlockState(BlockPos.containing(x, y, z)).is(CrystalnexusModBlocks.OXYGEN_COLLECTOR.get());
-		guiGraphics.drawString(this.font, Component.translatable(oxygenCollector ? "gui.crystalnexus.atmosphere_collector.label" : "gui.crystalnexus.node_extractor_gui.label_quantum_miner"), 72, -10, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "node_extractor"; }
 }

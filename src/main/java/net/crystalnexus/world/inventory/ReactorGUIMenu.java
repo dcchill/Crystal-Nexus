@@ -54,14 +54,14 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
 			@Override public void set(int value) { masterInsertion = net.minecraft.util.Mth.clamp(value, 0, 100); }
 		});
         Container safe = controller == null ? new SimpleContainer(3) : controller;
-        addSlot(new Slot(safe, 1, 180, 8) {
+        addSlot(new Slot(safe, 1, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize() { return 1; }
             @Override public boolean mayPlace(ItemStack stack) {
                 return stack.is(CrystalnexusModItems.REACTOR_UPGRADE.get())
                     || stack.is(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get());
             }
         });
-        addSlot(new Slot(safe, 2, 180, 42) {
+        addSlot(new Slot(safe, 2, MachineGuiLayout.sideX(1), MachineGuiLayout.sideY(1)) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
         for (int row = 0; row < 9; row++) {
@@ -74,8 +74,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
                 @Override public void setItem(int slot, ItemStack stack) { if (core() != null) core().setItem(slot, stack); }
                 @Override public void setChanged() { if (core() != null) core().setChanged(); }
             };
-            for (int cell = 0; cell < 3; cell++) addSlot(new Slot(binding, cell,
-                    8 + (row % 3) * 54 + cell * 18, 32 + (row / 3) * 18) {
+            for (int cell = 0; cell < 3; cell++) addSlot(new Slot(binding, cell, MachineGuiLayout.grid(8 + (row % 3) * 54 + cell * 18, 8), MachineGuiLayout.grid(32 + (row / 3) * 18, 140)) {
                 @Override public boolean mayPlace(ItemStack stack) { return coreAt(rodRow) != null && stack.getItem() instanceof ReactorFuelCellItem; }
                 @Override public int getMaxStackSize() { return 1; }
             });

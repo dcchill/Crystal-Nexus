@@ -5,6 +5,7 @@ import net.crystalnexus.block.entity.CelestialGearForgeBlockEntity;
 import net.crystalnexus.recipe.CelestialGearForgeEnchanting;
 import net.crystalnexus.item.GradientItemName;
 import net.crystalnexus.init.CrystalnexusModItems;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -17,7 +18,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 public final class CelestialGearForgeScreen extends AbstractContainerScreen<CelestialGearForgeMenu> {
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("crystalnexus", "textures/screens/gear_forge.png");
-	private static final ResourceLocation PROGRESS = ResourceLocation.fromNamespaceAndPath("crystalnexus", "textures/screens/progressbar.png");
 	private Button previous, next;
 	public CelestialGearForgeScreen(CelestialGearForgeMenu menu, Inventory inventory, Component title) {
 		super(menu, inventory, title);
@@ -55,7 +55,7 @@ public final class CelestialGearForgeScreen extends AbstractContainerScreen<Cele
 		graphics.fill(leftPos, topPos + 92, leftPos + imageWidth, topPos + 104, 0xff0b0031);
 		graphics.blit(TEXTURE, leftPos, topPos + 104, 0, 92, imageWidth, 89, imageWidth, 181);
 		int frame = Mth.clamp(Mth.ceil(menu.progress() * 10.0F / Math.max(1, menu.duration())), 0, 10);
-		graphics.blit(PROGRESS, leftPos + 100, topPos + 29, 0, frame * 32, 32, 32, 32, 352);
+		MachineProgressBar.render(graphics, minecraft.level, CrystalnexusModBlocks.CELESTIAL_GEAR_FORGE.get().asItem(), leftPos + 100, topPos + 29, frame * 32, false, false);
 	}
 
 	@Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {

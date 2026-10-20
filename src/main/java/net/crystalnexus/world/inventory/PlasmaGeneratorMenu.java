@@ -30,7 +30,7 @@ public final class PlasmaGeneratorMenu extends AbstractContainerMenu {
             controller == null ? BlockPos.ZERO : controller.getBlockPos());
         Container container = controller == null ? new SimpleContainer(PlasmaGrid.SIZE) : controller;
         for (int row = 0; row < PlasmaGrid.ROWS; row++) for (int column = 0; column < PlasmaGrid.COLUMNS; column++)
-            addSlot(new Slot(container, row * PlasmaGrid.COLUMNS + column, 8 + column * 18, 29 + row * 18) {
+            addSlot(new Slot(container, row * PlasmaGrid.COLUMNS + column, MachineGuiLayout.grid(8 + column * 18, 8), MachineGuiLayout.grid(29 + row * 18, 143)) {
                 @Override public boolean mayPlace(ItemStack stack) {
                     return PlasmaGeneratorControllerBlockEntity.componentType(stack) != PlasmaGrid.EMPTY;
                 }

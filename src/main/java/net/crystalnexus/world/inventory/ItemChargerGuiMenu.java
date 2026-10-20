@@ -89,12 +89,12 @@ public class ItemChargerGuiMenu extends AbstractContainerMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = ItemChargerGuiMenu.this.x;
 			private int y = ItemChargerGuiMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 124, 35) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(124, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = ItemChargerGuiMenu.this.x;
 			private int y = ItemChargerGuiMenu.this.y;
@@ -104,7 +104,7 @@ public class ItemChargerGuiMenu extends AbstractContainerMenu implements Crystal
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

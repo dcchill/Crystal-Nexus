@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class SmartSplitterGUIMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+	/** Inventory indices used by the screen's colored overlays: 0 input, 1-3 left/forward/right filters, 4 overflow. */
+	public static final int INPUT_SLOT = 0, OVERFLOW_SLOT = 4;
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -89,27 +91,27 @@ public class SmartSplitterGUIMenu extends AbstractContainerMenu implements Cryst
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 52, 53) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(52, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 0;
 			private int x = SmartSplitterGUIMenu.this.x;
 			private int y = SmartSplitterGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 25, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(25, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 1;
 			private int x = SmartSplitterGUIMenu.this.x;
 			private int y = SmartSplitterGUIMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 79, 26) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 2;
 			private int x = SmartSplitterGUIMenu.this.x;
 			private int y = SmartSplitterGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 133, 26) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 3;
 			private int x = SmartSplitterGUIMenu.this.x;
 			private int y = SmartSplitterGUIMenu.this.y;
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 106, 53) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.grid(106, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 4;
 			private int x = SmartSplitterGUIMenu.this.x;
 			private int y = SmartSplitterGUIMenu.this.y;

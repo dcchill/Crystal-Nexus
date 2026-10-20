@@ -89,22 +89,22 @@ public class WasteOutputGuiMenu extends AbstractContainerMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 70, 26) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(70, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 0;
 			private int x = WasteOutputGuiMenu.this.x;
 			private int y = WasteOutputGuiMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 88, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(88, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 1;
 			private int x = WasteOutputGuiMenu.this.x;
 			private int y = WasteOutputGuiMenu.this.y;
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 70, 44) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(70, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 2;
 			private int x = WasteOutputGuiMenu.this.x;
 			private int y = WasteOutputGuiMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 88, 44) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(88, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 3;
 			private int x = WasteOutputGuiMenu.this.x;
 			private int y = WasteOutputGuiMenu.this.y;

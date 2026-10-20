@@ -27,7 +27,7 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
     private long lastCost = -1;
 
     public HeavenshatterScreen(HeavenshatterMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title); imageWidth = 316; imageHeight = 348;
+        super(menu, inventory, title); imageWidth = 316; imageHeight = 366;
     }
     private static Component text(String key, Object... args) { return Component.translatable("gui.crystalnexus.celestial." + key, args); }
     @Override protected void init() {
@@ -45,7 +45,8 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
         composition = addRenderableWidget(Button.builder(text("composition"), b -> {}).bounds(leftPos + 12, topPos + 168, 292, 12).build());
         lock = addRenderableWidget(Button.builder(text("lock"), b -> send(1)).bounds(leftPos + 12, topPos + 190, 142, 20).build());
         pull = addRenderableWidget(Button.builder(text("pull"), b -> send(2)).bounds(leftPos + 162, topPos + 190, 142, 20).build());
-    }
+        MachineGuiWidgets.alignControls(this);
+	}
     @Override protected void containerTick() {
         super.containerTick();
         long tick = minecraft.level.getGameTime();
@@ -88,6 +89,8 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
         lastSent = minecraft.level.getGameTime(); dirty = false;
     }
     @Override protected void renderBg(GuiGraphics g, float partial, int mouseX, int mouseY) {
+        MachineGuiWidgets.begin(menu, leftPos, topPos, imageWidth, imageHeight, 0xAA8AE8);
+
         g.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xff181b20);
         g.renderOutline(leftPos, topPos, imageWidth, imageHeight, 0xffae7742);
         for (var slot : menu.slots) {
@@ -126,6 +129,8 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
             g.fill(leftPos + 140 + i, topPos + tuned, leftPos + 141 + i, topPos + tuned + 1, AMBER);
         }
         bar(g, 12, 182, 292, state.getInt("stability"), 60);
+
+        MachineGuiWidgets.finishBackground(g);
     }
     private int markerX(CompoundTag m) { return 70 + (int)(Math.sin(Math.toRadians(m.getInt("azimuth"))) * 49 * (1 - m.getInt("elevation") / 100.0)); }
     private int markerY(CompoundTag m) { return 72 - (int)(Math.cos(Math.toRadians(m.getInt("azimuth"))) * 49 * (1 - m.getInt("elevation") / 100.0)); }
@@ -181,13 +186,13 @@ public final class HeavenshatterScreen extends AbstractContainerScreen<Heavensha
             g.drawWordWrap(font, text(state.getBoolean("angularAligned") ? "tune_help" : "scan_help"), 12, 148, 290, TEXT);
             g.drawString(font, text("stability", state.getInt("stability") * 100 / 60), 12, 172, AMBER, false);
         }
-        g.drawString(font, text("power", state.getInt("energy"), state.getInt("discoveries")), 12, 213, TEXT, false);
+        MachineGuiWidgets.label(g, font, text("power", state.getInt("energy"), state.getInt("discoveries")), 12, 213, TEXT, false);
         Component status = Component.translatable("gui.crystalnexus.heavenshatter.status." + state.getString("status"));
         var controller = menu.controller();
         if (state.getInt("stage") == 2 && controller != null) status = Component.translatable("gui.crystalnexus.heavenshatter.retrieval", controller.progress() * 100 / controller.duration());
         g.drawString(font, font.plainSubstrByWidth(status.getString(), 292), 12, 224, AMBER, false);
         g.drawString(font, text("meteor_filter"), 34, 244, TEXT, false);
-        g.drawString(font, playerInventoryTitle, 77, 256, TEXT, false);
+        g.drawString(font, playerInventoryTitle, 77, net.crystalnexus.world.inventory.MachineGuiLayout.grid(menu.slots).y() - 10, TEXT, false);
     }
     @Override public void render(GuiGraphics g, int mouseX, int mouseY, float partialTick) {
         super.render(g, mouseX, mouseY, partialTick);

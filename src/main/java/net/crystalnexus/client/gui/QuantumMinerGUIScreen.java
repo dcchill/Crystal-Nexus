@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.util.Mth;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.GuiGraphics;
 
 import net.crystalnexus.world.inventory.QuantumMinerGUIMenu;
@@ -15,7 +14,7 @@ import net.crystalnexus.init.CrystalnexusModScreens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-public class QuantumMinerGUIScreen extends AbstractContainerScreen<QuantumMinerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
+public class QuantumMinerGUIScreen extends HolographicMachineScreen<QuantumMinerGUIMenu> implements CrystalnexusModScreens.ScreenAccessor {
 	private final Level world;
 	private final int x, y, z;
 	private final Player entity;
@@ -38,11 +37,10 @@ public class QuantumMinerGUIScreen extends AbstractContainerScreen<QuantumMinerG
 		menuStateUpdateActive = false;
 	}
 
-	private static final ResourceLocation texture = ResourceLocation.parse("crystalnexus:textures/screens/quantum_miner_gui.png");
 
 	@Override
-	public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-		super.render(guiGraphics, mouseX, mouseY, partialTicks);
+	protected void renderMachine(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+		super.renderMachine(guiGraphics, mouseX, mouseY, partialTicks);
 		this.renderTooltip(guiGraphics, mouseX, mouseY);
 	}
 
@@ -51,12 +49,12 @@ public class QuantumMinerGUIScreen extends AbstractContainerScreen<QuantumMinerG
 		RenderSystem.setShaderColor(1, 1, 1, 1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/upgradeslot.png"), this.leftPos + 173, this.topPos + 0, 0, 0, 32, 32, 32, 32);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/nameaddon.png"), this.leftPos + 50, this.topPos + -15, 0, 0, 126, 18, 126, 18);
-		guiGraphics.blit(ResourceLocation.parse("crystalnexus:textures/screens/batterylevels.png"), this.leftPos + 7, this.topPos + 11, 0, Mth.clamp((int) EnergyDisplayProcedure.execute(world, x, y, z) * 64, 0, 640), 64, 64, 64, 704);
+		machineBackground(guiGraphics);
+
 		RenderSystem.disableBlend();
-	}
+
+        MachineGuiWidgets.finishBackground(guiGraphics);
+    }
 
 	@Override
 	public boolean keyPressed(int key, int b, int c) {
@@ -69,11 +67,12 @@ public class QuantumMinerGUIScreen extends AbstractContainerScreen<QuantumMinerG
 
 	@Override
 	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-		guiGraphics.drawString(this.font, Component.translatable("gui.crystalnexus.quantum_miner_gui.label_quantum_miner"), 75, -10, -12829636, false);
 	}
 
 	@Override
 	public void init() {
 		super.init();
 	}
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return new net.minecraft.core.BlockPos(menu.x, menu.y, menu.z); }
+    @Override protected String machineFallbackId() { return "quantum_miner"; }
 }

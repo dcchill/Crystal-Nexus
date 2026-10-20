@@ -92,7 +92,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 25, 26) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(25, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 0;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
@@ -103,7 +103,7 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 26) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 1;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
@@ -118,26 +118,26 @@ public class AcceleratorGuiMenu extends AbstractContainerMenu implements Crystal
 				return true;
 			}
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 133, 26) {
+		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(26, 84)) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 115, 44) {
+		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(44, 84)) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 133, 44) {
+		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(44, 84)) {
 			@Override public boolean mayPlace(ItemStack stack) { return false; }
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 43, 26) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(26, 84)) {
 			private final int slot = 2;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 25, 44) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(25, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 3;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 43, 44) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(44, 84)) {
 			private final int slot = 4;
 			private int x = AcceleratorGuiMenu.this.x;
 			private int y = AcceleratorGuiMenu.this.y;

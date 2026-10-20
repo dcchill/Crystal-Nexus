@@ -90,7 +90,7 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				}
 			}
 		}
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 26, 17) {
+		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 9;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
@@ -100,7 +100,7 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, 53, 17) {
+		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 10;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
@@ -110,7 +110,7 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, 80, 17) {
+		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 11;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
@@ -120,7 +120,7 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, 107, 17) {
+		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 12;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
@@ -130,7 +130,7 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, 134, 17) {
+		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 13;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
@@ -140,27 +140,27 @@ public class FactoryItemControllerGuiMenu extends AbstractContainerMenu implemen
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(14, this.addSlot(new SlotItemHandler(internal, 14, 26, 53) {
+		this.customSlots.put(14, this.addSlot(new SlotItemHandler(internal, 14, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 14;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
 		}));
-		this.customSlots.put(15, this.addSlot(new SlotItemHandler(internal, 15, 53, 53) {
+		this.customSlots.put(15, this.addSlot(new SlotItemHandler(internal, 15, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 15;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
 		}));
-		this.customSlots.put(16, this.addSlot(new SlotItemHandler(internal, 16, 80, 53) {
+		this.customSlots.put(16, this.addSlot(new SlotItemHandler(internal, 16, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 16;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
 		}));
-		this.customSlots.put(17, this.addSlot(new SlotItemHandler(internal, 17, 107, 53) {
+		this.customSlots.put(17, this.addSlot(new SlotItemHandler(internal, 17, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 17;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;
 		}));
-		this.customSlots.put(18, this.addSlot(new SlotItemHandler(internal, 18, 134, 53) {
+		this.customSlots.put(18, this.addSlot(new SlotItemHandler(internal, 18, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 18;
 			private int x = FactoryItemControllerGuiMenu.this.x;
 			private int y = FactoryItemControllerGuiMenu.this.y;

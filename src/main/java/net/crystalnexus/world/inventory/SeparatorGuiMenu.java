@@ -65,7 +65,7 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 			access = ContainerLevelAccess.create(world, pos);
 		}
 		if (pos != null) {
-			if (extraData.readableBytes() == 1) { 
+			if (extraData.readableBytes() == 1) {
 				byte hand = extraData.readByte();
 				ItemStack itemstack = hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem();
 				this.boundItemMatcher = () -> itemstack == (hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem());
@@ -74,8 +74,8 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 					this.internal = cap;
 					this.bound = true;
 				}
-			} else if (extraData.readableBytes() > 1) { 
-				extraData.readByte(); 
+			} else if (extraData.readableBytes() > 1) {
+				extraData.readByte();
 				boundEntity = world.getEntity(extraData.readVarInt());
 				if (boundEntity != null) {
 					IItemHandler cap = boundEntity.getCapability(Capabilities.ItemHandler.ENTITY);
@@ -84,7 +84,7 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 						this.bound = true;
 					}
 				}
-			} else { 
+			} else {
 				boundBlockEntity = this.world.getBlockEntity(pos);
 				if (boundBlockEntity instanceof BaseContainerBlockEntity baseContainerBlockEntity) {
 					this.internal = new MachineItemHandler(baseContainerBlockEntity);
@@ -92,7 +92,7 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = SeparatorGuiMenu.this.x;
 			private int y = SeparatorGuiMenu.this.y;
@@ -103,7 +103,7 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 115, 35) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = SeparatorGuiMenu.this.x;
 			private int y = SeparatorGuiMenu.this.y;
@@ -114,12 +114,17 @@ public class SeparatorGuiMenu extends TieredMachineMenu implements CrystalnexusM
 			}
 		}));
 		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
-        this.customSlots.put(2, this.addSlot(new MachineUpgradeSlot(internal, 2, upgradeState, 0)));
-		this.customSlots.put(3, this.addSlot(new MachineItemSlot(internal, 3, 143, 55) {
-			@Override public boolean mayPlace(ItemStack stack) { return false; }
-		}));
+        this.customSlots.put(2, this.addSlot(new MachineUpgradeSlot(internal, 2, upgradeState, 0, 84)));
+        // Keep the saved slot index reserved so old byproducts and upgrades never change places.
+        if (!world.isClientSide() && boundBlockEntity instanceof net.crystalnexus.block.entity.DustSeparatorBlockEntity separator) {
+            ItemStack retired = separator.removeItemNoUpdate(3);
+            if (!retired.isEmpty()) {
+                separator.setChanged();
+                inv.placeItemBackInInventory(retired);
+            }
+        }
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            this.customSlots.put(4 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 4 + i - 1, upgradeState, i)));
+            this.customSlots.put(4 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 4 + i - 1, upgradeState, i, 84)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)

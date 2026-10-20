@@ -87,6 +87,7 @@ public final class DroneNodeSettings {
             PLACE_BLOCK,BUILD_AREA,DELIVER_ITEMS,FOLLOW_PLAYER,EXTRACT_FLUID,INSERT_FLUID,DEFEND_PLAYER,DEFEND_AREA -> true;default -> false;};
     }
     public static String label(DroneNode kind,String key) {
+        if(key.equals("waitUntilComplete"))return "Wait until node completes";
         return switch(key){case "destinationSlot" -> fields(kind).contains("endDestinationSlot")?"First corner":"Destination";
             case "endDestinationSlot"->"Second corner";case "waypointSlots"->"Patrol destinations";case "player"->"Player";
             case "ticks"->"Wait (seconds)";case "count"->"Repeats (0 = forever)";case "node"->"Repeat from node";

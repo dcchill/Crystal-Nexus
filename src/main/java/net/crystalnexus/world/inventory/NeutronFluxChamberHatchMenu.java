@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.wrapper.InvWrapper;
 
 public final class NeutronFluxChamberHatchMenu extends AbstractContainerMenu {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
 	public final Player entity;
 	public final int x, y, z;
 	private final ContainerLevelAccess access;
@@ -33,12 +34,12 @@ public final class NeutronFluxChamberHatchMenu extends AbstractContainerMenu {
 		this.x = pos.getX(); this.y = pos.getY(); this.z = pos.getZ();
 		this.access = ContainerLevelAccess.create(entity.level(), pos);
 		InvWrapper items = new InvWrapper(hatch == null ? new SimpleContainer(1) : hatch);
-		addSlot(new net.neoforged.neoforge.items.SlotItemHandler(items, 0, 43, 35) {
+		addSlot(new net.neoforged.neoforge.items.SlotItemHandler(items, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			@Override public boolean mayPlace(ItemStack stack) { return DemonCoreItem.isClosed(stack); }
 		});
 		for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++)
-			addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, 84 + row * 18));
-		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 142));
+			addSlot(new Slot(inventory, column + (row + 1) * 9, 8 + column * 18, INVENTORY_Y + row * 18));
+		for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, INVENTORY_Y + 58));
 	}
 
 	private static NeutronFluxChamberHatchBlockEntity findHatch(Inventory inventory, BlockPos pos) {

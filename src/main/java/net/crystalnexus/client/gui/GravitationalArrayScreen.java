@@ -3,6 +3,7 @@ package net.crystalnexus.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.crystalnexus.world.inventory.GravitationalArrayMenu;
 import net.crystalnexus.block.entity.GravitationalArrayControllerBlockEntity;
+import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -15,7 +16,6 @@ import java.util.List;
 
 public final class GravitationalArrayScreen extends AbstractContainerScreen<GravitationalArrayMenu> {
 	private static final ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/gravitational_array.png");
-	private static final ResourceLocation PROGRESS = ResourceLocation.parse("crystalnexus:textures/screens/progressbar.png");
 	private static final int FLUID_X = 7, FLUID_Y = 29, FLUID_WIDTH = 16, FLUID_HEIGHT = 34;
 	public GravitationalArrayScreen(GravitationalArrayMenu menu, Inventory inventory, Component title) { super(menu, inventory, title); imageWidth = 176; imageHeight = 181; }
 	@Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
@@ -26,7 +26,7 @@ public final class GravitationalArrayScreen extends AbstractContainerScreen<Grav
 		if (controller == null) return;
 		int duration = controller.getActiveDuration();
 		int frame = duration == 0 ? 0 : Mth.clamp(Mth.ceil(controller.getProgress() * 10.0F / duration), 0, 10);
-		graphics.blit(PROGRESS, leftPos + 72, topPos + 30, 0, frame * 32, 32, 32, 32, 352);
+		MachineProgressBar.render(graphics, minecraft.level, CrystalnexusModBlocks.GRAVITATIONAL_ARRAY_CONTROLLER.get().asItem(), leftPos + 72, topPos + 30, frame * 32, false, false);
 		graphics.fill(leftPos + FLUID_X - 1, topPos + FLUID_Y - 1,
 			leftPos + FLUID_X + FLUID_WIDTH + 1, topPos + FLUID_Y + FLUID_HEIGHT + 1, 0xff161022);
 		FluidTankRenderer.draw(graphics, controller.getTemporalFluidTank().getFluid(),

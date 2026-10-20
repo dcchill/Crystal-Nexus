@@ -85,6 +85,7 @@ public final class DroneRuntime {
                 }
                 drone.status=kind.label();node.status="Running";drone.program.elapsed++;
                 int output=actions.step(kind,node);
+                if(output==2&&node.parameters.getBoolean("waitUntilComplete")&&drone.program.elapsed<1200){output=-1;node.status="Waiting";drone.status="Waiting for "+kind.label();}
                 if(output>=0){
                     node.status=output==2?"Failure":"Success";
                     drone.program.advance(drone.graph(),output);

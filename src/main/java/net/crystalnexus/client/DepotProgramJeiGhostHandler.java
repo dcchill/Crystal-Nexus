@@ -28,7 +28,11 @@ public final class DepotProgramJeiGhostHandler implements IGhostIngredientHandle
         return new Target<>() {
             @Override
             public Rect2i getArea() {
-                return new Rect2i(input.getX(), input.getY(), input.getWidth(), input.getHeight());
+                float scale = screen.getGuiScale();
+                int left = Math.round(input.getX() * scale);
+                int top = Math.round(input.getY() * scale);
+                return new Rect2i(left, top, Math.round(input.getRight() * scale) - left,
+                        Math.round(input.getBottom() * scale) - top);
             }
 
             @Override

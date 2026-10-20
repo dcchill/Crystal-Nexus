@@ -41,11 +41,11 @@ public class DepotCliMenu extends AbstractContainerMenu {
         this.data = data;
         checkContainerDataCount(data, DATA_COUNT);
         addDataSlots(data);
-        
-        
-        
+        // Keep inventory slots for recipe integration without including them in the visible GUI.
         for (int index = 0; index < inventory.items.size(); index++) {
-            addSlot(new Slot(inventory, index, -9999, -9999));
+            addSlot(new Slot(inventory, index, -9999, -9999) {
+                @Override public boolean isActive() { return false; }
+            });
         }
     }
 

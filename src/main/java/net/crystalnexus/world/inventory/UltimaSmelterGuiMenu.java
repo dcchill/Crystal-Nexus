@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Collections;
 
 public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements CrystalnexusModMenus.MenuAccessor {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
 	public final Map<String, Object> menuState = new HashMap<>() {
 		@Override
 		public Object put(String key, Object value) {
@@ -93,7 +94,7 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 25, 26) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(25, 8), 12) {
 			private final int slot = 0;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
@@ -104,7 +105,7 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 25, 53) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(25, 8), 66) {
 			private final int slot = 1;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
@@ -114,7 +115,7 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -127,22 +128,22 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 52, 26) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(52, 8), 12) {
 			private final int slot = 3;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 106, 26) {
+		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, MachineGuiLayout.grid(106, 8), 12) {
 			private final int slot = 5;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 133, 26) {
+		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, MachineGuiLayout.grid(133, 8), 12) {
 			private final int slot = 6;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 52, 53) {
+		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, MachineGuiLayout.grid(52, 8), 66) {
 			private final int slot = 7;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
@@ -152,7 +153,7 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 106, 53) {
+		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, MachineGuiLayout.grid(106, 8), 66) {
 			private final int slot = 9;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
@@ -162,7 +163,7 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 				return false;
 			}
 		}));
-		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, 133, 53) {
+		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, MachineGuiLayout.grid(133, 8), 66) {
 			private final int slot = 10;
 			private int x = UltimaSmelterGuiMenu.this.x;
 			private int y = UltimaSmelterGuiMenu.this.y;
@@ -174,9 +175,9 @@ public class UltimaSmelterGuiMenu extends AbstractContainerMenu implements Cryst
 		}));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 0 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, INVENTORY_Y + 58));
 	}
 
 	@Override

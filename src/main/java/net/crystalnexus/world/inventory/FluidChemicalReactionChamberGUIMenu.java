@@ -14,6 +14,7 @@ import net.neoforged.neoforge.items.wrapper.InvWrapper;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
+    private static final int INVENTORY_Y = MachineGuiLayout.inventoryY(84, 83);
     public final Player entity;
     public final int x, y, z;
     private final ContainerLevelAccess access;
@@ -30,15 +31,15 @@ public class FluidChemicalReactionChamberGUIMenu extends AbstractContainerMenu {
         int upgradeCount = net.crystalnexus.util.MachineUpgradeHelper.upgradeSlots(entity.level().getBlockState(pos));
         InvWrapper items = new InvWrapper(chamber == null ? new net.minecraft.world.SimpleContainer(3 + upgradeCount) : chamber);
 
-        addSlot(new SlotItemHandler(items, 0, 37, 54));
-        addSlot(new SlotItemHandler(items, 1, 61, 54));
-        addSlot(new SlotItemHandler(items, 2, 124, 54));
+        addSlot(new SlotItemHandler(items, 0, MachineGuiLayout.grid(MachineGuiLayout.THREE_TANK_X[0], 8), MachineGuiLayout.grid(MachineGuiLayout.TANK_SLOT_Y, 84)));
+        addSlot(new SlotItemHandler(items, 1, MachineGuiLayout.grid(MachineGuiLayout.THREE_TANK_X[1], 8), MachineGuiLayout.grid(MachineGuiLayout.TANK_SLOT_Y, 84)));
+        addSlot(new SlotItemHandler(items, 2, MachineGuiLayout.grid(MachineGuiLayout.THREE_TANK_X[2], 8), MachineGuiLayout.grid(MachineGuiLayout.TANK_SLOT_Y, 84)));
         for (int i = 0; i < upgradeCount; i++)
-            addSlot(new MachineUpgradeSlot(items, 3 + i, entity.level().getBlockState(pos), i));
+            addSlot(new MachineUpgradeSlot(items, 3 + i, entity.level().getBlockState(pos), i, 84));
         machineSlots = slots.size();
         for (int row = 0; row < 3; row++)
-            for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));
-        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, 142));
+            for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, INVENTORY_Y + row * 18));
+        for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col, 8 + col * 18, INVENTORY_Y + 58));
     }
 
     public FluidChemicalReactionChamberBlockEntity chamber() { return chamber; }

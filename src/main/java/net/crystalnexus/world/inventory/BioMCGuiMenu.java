@@ -93,7 +93,7 @@ public class BioMCGuiMenu extends AbstractContainerMenu implements CrystalnexusM
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = BioMCGuiMenu.this.x;
 			private int y = BioMCGuiMenu.this.y;
@@ -104,7 +104,7 @@ public class BioMCGuiMenu extends AbstractContainerMenu implements CrystalnexusM
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 35) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = BioMCGuiMenu.this.x;
 			private int y = BioMCGuiMenu.this.y;
@@ -114,7 +114,7 @@ public class BioMCGuiMenu extends AbstractContainerMenu implements CrystalnexusM
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -127,7 +127,7 @@ public class BioMCGuiMenu extends AbstractContainerMenu implements CrystalnexusM
 				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 79, 17) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 3;
 			private int x = BioMCGuiMenu.this.x;
 			private int y = BioMCGuiMenu.this.y;

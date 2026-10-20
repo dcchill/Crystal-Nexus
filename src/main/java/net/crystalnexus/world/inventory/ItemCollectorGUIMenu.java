@@ -91,12 +91,12 @@ public class ItemCollectorGUIMenu extends AbstractContainerMenu implements Cryst
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 88, 22) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(88, 8), MachineGuiLayout.grid(22, 57)) {
 			private final int slot = 0;
 			private int x = ItemCollectorGUIMenu.this.x;
 			private int y = ItemCollectorGUIMenu.this.y;
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 179, 8) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
 			private final int slot = 1;
 			private int x = ItemCollectorGUIMenu.this.x;
 			private int y = ItemCollectorGUIMenu.this.y;

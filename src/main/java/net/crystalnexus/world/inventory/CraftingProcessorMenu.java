@@ -133,6 +133,10 @@ public class CraftingProcessorMenu extends AbstractContainerMenu {
         return data.get(9) != 0;
     }
 
+    public BlockPos guiPosition() {
+        return blockPos;
+    }
+
     @Override
     public boolean stillValid(Player player) {
         if (!(player.level() instanceof ServerLevel level)) return true;

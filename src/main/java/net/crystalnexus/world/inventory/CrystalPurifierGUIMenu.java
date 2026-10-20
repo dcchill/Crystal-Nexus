@@ -93,7 +93,7 @@ public class CrystalPurifierGUIMenu extends AbstractContainerMenu implements Cry
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 61, 17) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(61, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = CrystalPurifierGUIMenu.this.x;
 			private int y = CrystalPurifierGUIMenu.this.y;
@@ -104,7 +104,7 @@ public class CrystalPurifierGUIMenu extends AbstractContainerMenu implements Cry
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 79, 53) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 1;
 			private int x = CrystalPurifierGUIMenu.this.x;
 			private int y = CrystalPurifierGUIMenu.this.y;
@@ -114,12 +114,12 @@ public class CrystalPurifierGUIMenu extends AbstractContainerMenu implements Cry
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 97, 17) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 2;
 			private int x = CrystalPurifierGUIMenu.this.x;
 			private int y = CrystalPurifierGUIMenu.this.y;
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 180, 8) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }

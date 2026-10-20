@@ -701,24 +701,7 @@ public class TooltipInfoHandler {
 		boolean tierX = itemId.getNamespace().equals(CrystalnexusMod.MODID)
 				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("zero_star") || path.equals("bear")
                 || path.equals("zero_chip") || path.equals("zero_cable"));
-		FrameColors colors = null;
-		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
-			if (path.equals("meteor_data_disk")) {
-				colors = new FrameColors(Palette.FERROSTEEL);
-			} else if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
-					|| path.equals("hemochanter") || path.equals("hemolyzer") || path.equals("gene_splicer")) {
-				colors = new FrameColors(Palette.ENGINEERED_FLESH);
-			} else if (path.equals("singularity_compressor") || path.equals("matter_transmutation_table")
-					|| path.equals("ee_matter") || path.equals("ee_matter_block")
-					|| path.equals("compound_e") || path.equals("compound_pickaxe")
-					|| path.equals("compound_sword") || path.equals("carbon_battery_cell")) {
-				colors = new FrameColors(Palette.EE_MATTER);
-			} else if (!tierX) {
-				colors = frameColors(stack.getItem());
-				Level level = Minecraft.getInstance().level;
-				if (colors == null && level != null) colors = frameRecipeColors(level).get(stack.getItem());
-			}
-		}
+		FrameColors colors = tierX ? null : nameColors(stack.getItem(), Minecraft.getInstance().level);
 		MachineTier tier = stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
 				? machine.machineTier() : null;
 		if (tier != null) {
@@ -761,6 +744,36 @@ public class TooltipInfoHandler {
 							.append(Component.literal("[SHIFT]").withStyle(ChatFormatting.YELLOW))
 							.append(Component.literal(" for info").withStyle(ChatFormatting.DARK_GRAY)));
 		}
+	}
+
+	private static FrameColors nameColors(Item item, Level level) {
+		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item);
+		String path = itemId.getPath();
+		FrameColors colors = null;
+		if (itemId.getNamespace().equals(CrystalnexusMod.MODID)) {
+			if (path.equals("meteor_data_disk")) {
+				colors = new FrameColors(Palette.FERROSTEEL);
+			} else if (path.equals("flesh_block") || path.equals("flesh_machine_frame") || path.equals("maw")
+					|| path.equals("hemochanter") || path.equals("hemolyzer") || path.equals("gene_splicer")) {
+				colors = new FrameColors(Palette.ENGINEERED_FLESH);
+			} else if (path.equals("singularity_compressor") || path.equals("matter_transmutation_table")
+					|| path.equals("ee_matter") || path.equals("ee_matter_block")
+					|| path.equals("compound_e") || path.equals("compound_pickaxe")
+					|| path.equals("compound_sword") || path.equals("carbon_battery_cell")) {
+				colors = new FrameColors(Palette.EE_MATTER);
+			} else {
+				colors = frameColors(item);
+				if (colors == null && level != null) colors = frameRecipeColors(level).get(item);
+			}
+		}
+		return colors;
+	}
+
+	public static Palette namePalette(Item item, Level level) {
+		FrameColors colors = nameColors(item, level);
+		if (colors != null) return colors.palette();
+		return item instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
+				? machine.machineTier().primaryPalette() : materialPalette(BuiltInRegistries.ITEM.getKey(item).getPath());
 	}
 
 	private static Palette materialPalette(String path) {

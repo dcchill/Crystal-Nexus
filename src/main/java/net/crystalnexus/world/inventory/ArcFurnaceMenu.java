@@ -29,13 +29,13 @@ public final class ArcFurnaceMenu extends TieredMachineMenu {
 		access = ContainerLevelAccess.create(entity.level(), pos);
 		furnace = entity.level().getBlockEntity(pos) instanceof ArcFurnaceBlockEntity be ? be : null;
 		MachineItemHandler items = new MachineItemHandler(furnace == null ? new SimpleContainer(9) : furnace);
-		addSlot(new MachineItemSlot(items, 0, 44, 35));
-		addSlot(new MachineItemSlot(items, 1, 26, 35));
-		addSlot(new MachineItemSlot(items, 2, 115, 35) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
+		addSlot(new MachineItemSlot(items, 0, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(35, 84)));
+		addSlot(new MachineItemSlot(items, 1, MachineGuiLayout.grid(26, 8), MachineGuiLayout.grid(35, 84)));
+		addSlot(new MachineItemSlot(items, 2, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) { @Override public boolean mayPlace(ItemStack stack) { return false; } });
 		var upgradeState = entity.level().getBlockState(pos);
-        addSlot(new MachineUpgradeSlot(items, 3, upgradeState, 0));
+        addSlot(new MachineUpgradeSlot(items, 3, upgradeState, 0, 84));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            addSlot(new MachineUpgradeSlot(items, 4 + i - 1, upgradeState, i));
+            addSlot(new MachineUpgradeSlot(items, 4 + i - 1, upgradeState, i, 84));
         machineSlots = slots.size();
 		for (int row = 0; row < 3; row++)
 			for (int col = 0; col < 9; col++) addSlot(new Slot(inventory, col + (row + 1) * 9, 8 + col * 18, 84 + row * 18));

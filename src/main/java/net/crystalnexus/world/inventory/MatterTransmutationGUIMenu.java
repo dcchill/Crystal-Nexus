@@ -92,7 +92,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 11) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.transmutationSlot(0)[0], MachineGuiLayout.transmutationSlot(0)[1]) {
 			private final int slot = 0;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -109,7 +109,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(0, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 106, 20) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.transmutationSlot(1)[0], MachineGuiLayout.transmutationSlot(1)[1]) {
 			private final int slot = 1;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -126,7 +126,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(1, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 115, 47) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.transmutationSlot(2)[0], MachineGuiLayout.transmutationSlot(2)[1]) {
 			private final int slot = 2;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -143,7 +143,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(2, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 106, 74) {
+		this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, MachineGuiLayout.transmutationSlot(3)[0], MachineGuiLayout.transmutationSlot(3)[1]) {
 			private final int slot = 3;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -160,7 +160,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(3, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, 79, 83) {
+		this.customSlots.put(4, this.addSlot(new SlotItemHandler(internal, 4, MachineGuiLayout.transmutationSlot(4)[0], MachineGuiLayout.transmutationSlot(4)[1]) {
 			private final int slot = 4;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -177,7 +177,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(4, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, 52, 74) {
+		this.customSlots.put(5, this.addSlot(new SlotItemHandler(internal, 5, MachineGuiLayout.transmutationSlot(5)[0], MachineGuiLayout.transmutationSlot(5)[1]) {
 			private final int slot = 5;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -194,7 +194,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(5, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, 43, 47) {
+		this.customSlots.put(6, this.addSlot(new SlotItemHandler(internal, 6, MachineGuiLayout.transmutationSlot(6)[0], MachineGuiLayout.transmutationSlot(6)[1]) {
 			private final int slot = 6;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -211,7 +211,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(6, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, 52, 20) {
+		this.customSlots.put(7, this.addSlot(new SlotItemHandler(internal, 7, MachineGuiLayout.transmutationSlot(7)[0], MachineGuiLayout.transmutationSlot(7)[1]) {
 			private final int slot = 7;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -228,7 +228,7 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 				slotChanged(7, 2, b.getCount() - a.getCount());
 			}
 		}));
-		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, 79, 47) {
+		this.customSlots.put(8, this.addSlot(new SlotItemHandler(internal, 8, MachineGuiLayout.transmutationSlot(8)[0], MachineGuiLayout.transmutationSlot(8)[1]) {
 			private final int slot = 8;
 			private int x = MatterTransmutationGUIMenu.this.x;
 			private int y = MatterTransmutationGUIMenu.this.y;
@@ -251,13 +251,13 @@ public class MatterTransmutationGUIMenu extends AbstractContainerMenu implements
 			}
 		}));
         for (int i = 0; i < 4; i++)
-            this.customSlots.put(9 + i, this.addSlot(new MachineUpgradeSlot(internal, 9 + i, world.getBlockState(BlockPos.containing(x, y, z)), i)));
+			this.customSlots.put(9 + i, this.addSlot(new MachineUpgradeSlot(internal, 9 + i, world.getBlockState(BlockPos.containing(x, y, z)), i, MachineGuiLayout.TRANSMUTATION_INVENTORY_Y)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
-				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 24 + 84 + si * 18));
+				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, MachineGuiLayout.TRANSMUTATION_INVENTORY_Y + si * 18));
 		for (int si = 0; si < 9; ++si)
-			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, 24 + 142));
+			this.addSlot(new Slot(inv, si, 0 + 8 + si * 18, MachineGuiLayout.TRANSMUTATION_INVENTORY_Y + 58));
 	}
 
 	@Override

@@ -90,7 +90,7 @@ public class FactoryControllerGuiMenu extends AbstractContainerMenu implements C
 				}
 			}
 		}
-		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, 26, 35) {
+		this.customSlots.put(9, this.addSlot(new SlotItemHandler(internal, 9, MachineGuiLayout.grid(8, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 9;
 			private int x = FactoryControllerGuiMenu.this.x;
 			private int y = FactoryControllerGuiMenu.this.y;
@@ -100,7 +100,7 @@ public class FactoryControllerGuiMenu extends AbstractContainerMenu implements C
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, 53, 35) {
+		this.customSlots.put(10, this.addSlot(new SlotItemHandler(internal, 10, MachineGuiLayout.grid(44, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 10;
 			private int x = FactoryControllerGuiMenu.this.x;
 			private int y = FactoryControllerGuiMenu.this.y;
@@ -110,7 +110,7 @@ public class FactoryControllerGuiMenu extends AbstractContainerMenu implements C
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, 80, 35) {
+		this.customSlots.put(11, this.addSlot(new SlotItemHandler(internal, 11, MachineGuiLayout.grid(80, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 11;
 			private int x = FactoryControllerGuiMenu.this.x;
 			private int y = FactoryControllerGuiMenu.this.y;
@@ -120,7 +120,7 @@ public class FactoryControllerGuiMenu extends AbstractContainerMenu implements C
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, 107, 35) {
+		this.customSlots.put(12, this.addSlot(new SlotItemHandler(internal, 12, MachineGuiLayout.grid(116, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 12;
 			private int x = FactoryControllerGuiMenu.this.x;
 			private int y = FactoryControllerGuiMenu.this.y;
@@ -130,7 +130,7 @@ public class FactoryControllerGuiMenu extends AbstractContainerMenu implements C
 				return CrystalnexusModItems.LINK_CARD.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, 134, 35) {
+		this.customSlots.put(13, this.addSlot(new SlotItemHandler(internal, 13, MachineGuiLayout.grid(152, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 13;
 			private int x = FactoryControllerGuiMenu.this.x;
 			private int y = FactoryControllerGuiMenu.this.y;

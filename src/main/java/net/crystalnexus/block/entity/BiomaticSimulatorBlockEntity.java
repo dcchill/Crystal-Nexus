@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 import io.netty.buffer.Unpooled;
 
 public class BiomaticSimulatorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-	private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+	private NonNullList<ItemStack> stacks = NonNullList.withSize(5, ItemStack.EMPTY);
 
 	public BiomaticSimulatorBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.BIOMATIC_SIMULATOR.get(), position, state);
@@ -119,11 +119,11 @@ public class BiomaticSimulatorBlockEntity extends RandomizableContainerBlockEnti
 
 	@Override
 	public boolean canPlaceItem(int index, ItemStack stack) {
-        if (index == 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+        if (index >= 2 && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
                 && !getItem(index).isEmpty()) return false;
 		if (index == 1)
 			return false;
-		if (index == 2)
+		if (index >= 2)
 			return net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(stack);
 		return true;
 	}
@@ -142,9 +142,7 @@ public class BiomaticSimulatorBlockEntity extends RandomizableContainerBlockEnti
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
 		if (index == 0)
 			return false;
-		if (index == 2)
-			return false;
-		if (index == 3)
+		if (index >= 2)
 			return false;
 		return true;
 	}

@@ -128,6 +128,7 @@ public class LUNADroneEntity extends PathfinderMob {
     }
     @Override public void tick() {
         super.tick(); setNoGravity(true);
+        setBoundingBox(getType().getDimensions().makeBoundingBox(getX(), getY(), getZ()).move(0, 0.4, 0));
         if (level().isClientSide) { animationState0.animateWhen(true, tickCount); animationState4.animateWhen(true, tickCount); return; }
         runtime.tick();
         if (tickCount % 20 == 0) {

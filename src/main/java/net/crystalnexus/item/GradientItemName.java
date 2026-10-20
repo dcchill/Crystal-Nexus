@@ -31,6 +31,7 @@ public final class GradientItemName {
         }
 
         public int midpoint() { return blend(light, dark, 0.5F); }
+        public int colorAt(float progress) { return blend(light, dark, progress); }
     }
 
     static Component yellowToOrange(Component name) {

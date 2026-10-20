@@ -16,17 +16,13 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 
 import net.crystalnexus.jei_recipes.BiomaticSimulationRecipe;
-import net.crystalnexus.init.CrystalnexusModItems;
 
 import java.util.stream.Collectors;
 import java.util.List;
@@ -34,12 +30,13 @@ import java.util.List;
 public class BiomaticSimulatorOnTickUpdateProcedure {
 	public static String execute(LevelAccessor world, double x, double y, double z) {
         var machine = world.getBlockEntity(net.minecraft.core.BlockPos.containing(x, y, z));
-        int crafts = machine instanceof net.minecraft.world.Container inventory && inventory.getContainerSize() > 2 ? net.crystalnexus.util.MachineUpgradeHelper.parallelCraftCount(inventory.getItem(2)) : 1;
+        int crafts = MachineUpgradeHelper.parallelCraftCount(MachineUpgradeHelper.upgrades(machine, 2, 3));
         net.crystalnexus.util.MachineUpgradeHelper.processParallel(machine, crafts, () -> executeSingle(world, x, y, z));
         return new java.text.DecimalFormat("FE: ##.##").format(getEnergyStored(world, BlockPos.containing(x, y, z), null));
     }
 
     private static boolean executeSingle(LevelAccessor world, double x, double y, double z) {
+        if (world.isClientSide()) return false;
         boolean completed = false;
 		double outputAmount = 0;
 		double cookTime = 0;
@@ -61,25 +58,8 @@ public class BiomaticSimulatorOnTickUpdateProcedure {
 			}
 		}
 		outputAmount = 6;
-		cookTime = MachineUpgradeHelper.processingTime(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2), 400, 300, 150);
-		double _cn_cookMult = 1.0;
-		boolean _cn_hasKeys = false;
-		ItemStack _cn_upg = itemFromBlockInventory(world, BlockPos.containing(x, y, z), 2).copy();
-		CompoundTag _cn_data = null;
-		if (!_cn_upg.isEmpty() && _cn_upg.has(DataComponents.CUSTOM_DATA)) {
-			CustomData _cn_cd = _cn_upg.get(DataComponents.CUSTOM_DATA);
-			if (_cn_cd != null)
-				_cn_data = _cn_cd.copyTag();
-		}
-		if (_cn_data != null && _cn_data.contains("cook_mult")) {
-			_cn_hasKeys = true;
-			if (_cn_data.contains("cook_mult"))
-				_cn_cookMult = _cn_data.getDouble("cook_mult");
-		}
-		if (_cn_hasKeys) {
-			_cn_cookMult = Math.max(0.05, Math.min(_cn_cookMult, 10.0));
-			cookTime = cookTime * _cn_cookMult;
-		}
+        var upgrades = MachineUpgradeHelper.upgrades(world.getBlockEntity(BlockPos.containing(x, y, z)), 2, 3);
+        cookTime = MachineUpgradeHelper.cookTime(upgrades, MachineUpgradeHelper.processingTime(upgrades, 400, 300, 150));
 		double MACHINE_MAX_OUTPUT = 16; 
 		if (outputAmount > MACHINE_MAX_OUTPUT)
 			outputAmount = MACHINE_MAX_OUTPUT;
@@ -107,11 +87,11 @@ public class BiomaticSimulatorOnTickUpdateProcedure {
 						continue;
 					ItemStack reciperesult = recipe.getResultItem(null);
 					if (!(Blocks.AIR.asItem() == reciperesult.getItem())) {
-						if (MachineUpgradeHelper.energyCost(_cn_upg, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
-							if (64 >= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).getCount() + outputAmount) {
+						if (MachineUpgradeHelper.energyCost(upgrades, 8192) <= getEnergyStored(world, BlockPos.containing(x, y, z), null)) {
+							if (canFitOutput(world, BlockPos.containing(x, y, z), reciperesult, (int) outputAmount)) {
 								if (1 <= itemFromBlockInventory(world, BlockPos.containing(x, y, z), 0).getCount()) {
-									if ((itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == reciperesult.getItem()
-											|| (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).copy()).getItem() == Blocks.AIR.asItem()) {
+									if (itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1).isEmpty()
+											|| ItemStack.isSameItemSameComponents(itemFromBlockInventory(world, BlockPos.containing(x, y, z), 1), reciperesult)) {
 										if (getBlockNBTNumber(world, BlockPos.containing(x, y, z), "progress") < cookTime) {
 											if (!world.isClientSide()) {
 												BlockPos _bp = BlockPos.containing(x, y, z);
@@ -150,7 +130,7 @@ public class BiomaticSimulatorOnTickUpdateProcedure {
 											if (world instanceof ILevelExtension _ext) {
 												IEnergyStorage _entityStorage = _ext.getCapability(Capabilities.EnergyStorage.BLOCK, BlockPos.containing(x, y, z), null);
 												if (_entityStorage != null)
-													_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(_cn_upg, 8192), false);
+													_entityStorage.extractEnergy(MachineUpgradeHelper.energyCost(upgrades, 8192), false);
 											}
 										}
 									}
@@ -164,6 +144,15 @@ public class BiomaticSimulatorOnTickUpdateProcedure {
 		}
 		return completed;
 	}
+
+	private static boolean canFitOutput(LevelAccessor world, BlockPos pos, ItemStack result, int amount) {
+        if (!(world instanceof ILevelExtension ext)) return false;
+        IItemHandler inventory = ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+        if (inventory == null) return false;
+        ItemStack stored = inventory.getStackInSlot(1);
+        return (stored.isEmpty() || ItemStack.isSameItemSameComponents(stored, result))
+            && stored.getCount() + amount <= Math.min(inventory.getSlotLimit(1), result.getMaxStackSize());
+    }
 
 	private static double getBlockNBTNumber(LevelAccessor world, BlockPos pos, String tag) {
 		BlockEntity blockEntity = world.getBlockEntity(pos);

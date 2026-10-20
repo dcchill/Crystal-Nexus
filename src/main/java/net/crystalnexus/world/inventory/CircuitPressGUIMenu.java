@@ -93,7 +93,7 @@ public class CircuitPressGUIMenu extends TieredMachineMenu implements Crystalnex
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 61, 17) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, MachineGuiLayout.grid(61, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 0;
 			private int x = CircuitPressGUIMenu.this.x;
 			private int y = CircuitPressGUIMenu.this.y;
@@ -104,7 +104,7 @@ public class CircuitPressGUIMenu extends TieredMachineMenu implements Crystalnex
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 79, 53) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 1;
 			private int x = CircuitPressGUIMenu.this.x;
 			private int y = CircuitPressGUIMenu.this.y;
@@ -114,7 +114,7 @@ public class CircuitPressGUIMenu extends TieredMachineMenu implements Crystalnex
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, 97, 17) {
+		this.customSlots.put(2, this.addSlot(new MachineItemSlot(internal, 2, MachineGuiLayout.grid(97, 8), MachineGuiLayout.grid(17, 84)) {
 			private final int slot = 2;
 			private int x = CircuitPressGUIMenu.this.x;
 			private int y = CircuitPressGUIMenu.this.y;
@@ -126,9 +126,9 @@ public class CircuitPressGUIMenu extends TieredMachineMenu implements Crystalnex
 			}
 		}));
 		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
-        this.customSlots.put(3, this.addSlot(new MachineUpgradeSlot(internal, 3, upgradeState, 0)));
+        this.customSlots.put(3, this.addSlot(new MachineUpgradeSlot(internal, 3, upgradeState, 0, 84)));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            this.customSlots.put(4 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 4 + i - 1, upgradeState, i)));
+            this.customSlots.put(4 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 4 + i - 1, upgradeState, i, 84)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)

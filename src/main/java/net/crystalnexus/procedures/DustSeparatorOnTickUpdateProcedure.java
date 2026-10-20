@@ -56,14 +56,8 @@ public final class DustSeparatorOnTickUpdateProcedure {
             return false;
         }
 
-        boolean pendingSecondary = separator.getPersistentData().contains("pendingSecondary")
-            ? separator.getPersistentData().getBoolean("pendingSecondary")
-            : match.secondaryChance() > 0 && level.random.nextFloat() < match.secondaryChance();
-        separator.getPersistentData().putBoolean("pendingSecondary", pendingSecondary);
         ItemStack primary = (match.primary()).copy();
-        ItemStack secondary = (match.secondary()).copy();
-        if (!net.crystalnexus.util.MachineItemStorage.fits(separator, 1, primary)
-            || pendingSecondary && !net.crystalnexus.util.MachineItemStorage.fits(separator, 3, secondary)) {
+        if (!net.crystalnexus.util.MachineItemStorage.fits(separator, 1, primary)) {
             setActive(level, pos, false);
             sync(level, pos, separator);
             return false;
@@ -78,8 +72,6 @@ public final class DustSeparatorOnTickUpdateProcedure {
         }
 
         separator.setItem(1, merged(separator.getItem(1), primary));
-        if (pendingSecondary && !match.secondary().isEmpty())
-            separator.setItem(3, merged(separator.getItem(3), secondary));
         separator.getItem(0).shrink(match.itemCount());
         separator.getEnergyStorage().extractEnergy(energyCost, false);
         separator.getPersistentData().putDouble("progress", 0);
@@ -99,8 +91,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
             if (itemMatches) {
                 if (!machineTier.supports(recipe.minimumMachineTier())) return null;
                 ItemStack output = tieredOutput(recipe.getResultItem(level.registryAccess()), machineTier);
-                if (!output.isEmpty()) return new Match(output, recipe.secondaryOutput(), recipe.secondaryChance(),
-                    recipe.inputCount());
+                if (!output.isEmpty()) return new Match(output, recipe.inputCount());
             }
         }
 
@@ -111,7 +102,7 @@ public final class DustSeparatorOnTickUpdateProcedure {
                 .map(material -> material.nugget(BuiltInRegistries.ITEM.getKey(input.getItem()).getNamespace(),
                 MaterialProcessingCatalog.nuggetsPerDust(machineTier)))
             .filter(output -> !output.isEmpty())
-            .map(output -> new Match(output, ItemStack.EMPTY, 0, 1)).orElse(null);
+            .map(output -> new Match(output, 1)).orElse(null);
     }
 
     private static ItemStack tieredOutput(ItemStack output, MachineTier tier) {
@@ -150,6 +141,5 @@ public final class DustSeparatorOnTickUpdateProcedure {
             ? separator.getEnergyStorage().getEnergyStored() : 0;
     }
 
-    private record Match(ItemStack primary, ItemStack secondary, float secondaryChance,
-                         int itemCount) {}
+    private record Match(ItemStack primary, int itemCount) {}
 }

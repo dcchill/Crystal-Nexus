@@ -91,7 +91,7 @@ public class AOEChargerGuiMenu extends AbstractContainerMenu implements Crystaln
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = AOEChargerGuiMenu.this.x;
 			private int y = AOEChargerGuiMenu.this.y;

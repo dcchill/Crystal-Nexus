@@ -89,7 +89,7 @@ public class BlockPlacerGuiMenu extends AbstractContainerMenu implements Crystal
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 20) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(20, 55)) {
 			private final int slot = 0;
 			private int x = BlockPlacerGuiMenu.this.x;
 			private int y = BlockPlacerGuiMenu.this.y;

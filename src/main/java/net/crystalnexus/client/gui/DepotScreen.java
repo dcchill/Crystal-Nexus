@@ -6,7 +6,6 @@ import net.crystalnexus.data.DepotSavedData;
 import net.crystalnexus.world.inventory.DepotMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -24,12 +23,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.parse("crystalnexus:textures/screens/depot_gui_54.png");
-    private static final int BAR_X = 178;
-    private static final int BAR_Y = 18;
+public class DepotScreen extends HolographicMachineScreen<DepotMenu> {
+    private static final int BAR_X = 176;
+    private static final int BAR_Y = 13;
     private static final int BAR_HEIGHT = 108;
     private static final int THUMB_HEIGHT = 15;
+    private static final int THUMB_TRAVEL = BAR_HEIGHT - 2 - THUMB_HEIGHT;
     private static final float DEPOT_COUNT_SCALE = 0.65F;
 
     private EditBox searchBox;
@@ -54,7 +53,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     protected void init() {
         super.init();
         clearWidgets();
-        searchBox = new EditBox(font, leftPos + 72, topPos + 4, 96, 12, Component.literal("Search"));
+        searchBox = new EditBox(font, leftPos + 72, topPos, 96, 12, Component.literal("Search"));
         searchBox.setMaxLength(64);
         searchBox.setHint(Component.literal("Search"));
         searchBox.setResponder(value -> {
@@ -91,8 +90,8 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
-        if (mouseX >= leftPos && mouseX < leftPos + 190 && mouseY >= topPos && mouseY < topPos + 126) {
+    protected boolean machineMouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        if (mouseX >= leftPos && mouseX < leftPos + imageWidth && mouseY >= topPos && mouseY < topPos + BAR_Y + BAR_HEIGHT) {
             int next = Mth.clamp(page + (deltaY < 0 ? 9 : -9), 0, maxPage());
             if (next != page) {
                 page = next;
@@ -100,62 +99,64 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
             }
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+        return super.machineMouseScrolled(mouseX, mouseY, deltaX, deltaY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    protected boolean machineMouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0 && overScrollbar(mouseX, mouseY)) {
             scrolling = true;
             scrollTo(mouseY);
             return true;
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.machineMouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    protected boolean machineMouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (scrolling) {
             scrollTo(mouseY);
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.machineMouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    protected boolean machineMouseReleased(double mouseX, double mouseY, int button) {
         scrolling = false;
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.machineMouseReleased(mouseX, mouseY, button);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        super.render(graphics, mouseX, mouseY, partialTick);
+    protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderMachine(graphics, mouseX, mouseY, partialTick);
         renderFluidEntries(graphics);
         renderTooltip(graphics, mouseX, mouseY);
     }
 
     @Override
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        graphics.blit(TEXTURE, leftPos, topPos, 0, 0, 176, imageHeight, 256, 256);
+        machineBackground(graphics);
         int x = leftPos + BAR_X;
         int y = topPos + BAR_Y;
         graphics.fill(x, y, x + 10, y + BAR_HEIGHT, 0xFF8B8B8B);
         graphics.fill(x + 1, y + 1, x + 9, y + BAR_HEIGHT - 1, 0xFF373737);
 
-        float target = maxPage() == 0 ? 0 : (float) page / maxPage() * (BAR_HEIGHT - THUMB_HEIGHT);
-        scrollVisual += (target - scrollVisual) * 0.35F;
-        int thumbY = y + Math.round(scrollVisual);
+        float target = maxPage() == 0 ? 0 : (float) page / maxPage() * THUMB_TRAVEL;
+        scrollVisual = Mth.clamp(scrollVisual + (target - scrollVisual) * 0.35F, 0, THUMB_TRAVEL);
+        int thumbY = y + 1 + Math.round(scrollVisual);
         graphics.fill(x + 1, thumbY, x + 9, thumbY + THUMB_HEIGHT, 0xFFC6C6C6);
         graphics.fill(x + 2, thumbY + 1, x + 8, thumbY + THUMB_HEIGHT - 1, 0xFFFFFFFF);
+
+        MachineGuiWidgets.finishBackground(graphics);
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, Component.literal("Depot " + (page / 9 + 1) + "/" + (maxPage() / 9 + 1)), 8, 6, 0x404040, false);
-        graphics.drawString(font, playerInventoryTitle, 8, 128, 0x404040, false);
+        graphics.drawString(font, Component.literal("Depot " + (page / 9 + 1) + "/" + (maxPage() / 9 + 1)), 8, 1, 0xE3F3FF, false);
+        graphics.drawString(font, playerInventoryTitle, 8, 128, 0xE3F3FF, false);
         String stats = "U" + uiUpgradeLevel + " " + compact(uiUsed) + "/" + compact(uiCapacity);
-        graphics.drawString(font, stats, 168 - font.width(stats), 128, 0x404040, false);
+        graphics.drawString(font, stats, 168 - font.width(stats), 128, 0xE3F3FF, false);
     }
 
     @Override
@@ -216,7 +217,7 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
             ResourceLocation fluidId = DepotSavedData.fluidId(depotEntryIds.get(slot.getSlotIndex()));
             if (fluidId == null) continue;
             FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(fluidId), 1);
-            FluidTankRenderer.draw(graphics, fluid, 1, leftPos + slot.x, topPos + slot.y, 16, 16);
+            machineTank(graphics, fluid, 1, leftPos + slot.x, topPos + slot.y, 16, 16);
             renderDepotCount(graphics, compact(depotCounts.getOrDefault(slot.getSlotIndex(), 0L)),
                 leftPos + slot.x, topPos + slot.y);
         }
@@ -245,8 +246,8 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
 
     private void scrollTo(double mouseY) {
         if (maxPage() == 0) return;
-        float position = Mth.clamp((float) (mouseY - topPos - BAR_Y - THUMB_HEIGHT / 2.0)
-                / (BAR_HEIGHT - THUMB_HEIGHT), 0, 1);
+        float position = Mth.clamp((float) (mouseY - topPos - BAR_Y - 1 - THUMB_HEIGHT / 2.0)
+                / THUMB_TRAVEL, 0, 1);
         int next = Math.round(position * (maxPage() / 9.0F)) * 9;
         if (next != page) {
             page = next;
@@ -268,4 +269,6 @@ public class DepotScreen extends AbstractContainerScreen<DepotMenu> {
         long tenths = value / (scale / 10);
         return tenths % 10 == 0 ? (tenths / 10) + suffix : (tenths / 10) + "." + (tenths % 10) + suffix;
     }
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.guiPosition(); }
+    @Override protected String machineFallbackId() { return "depot_downloader"; }
 }

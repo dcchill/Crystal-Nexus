@@ -90,7 +90,7 @@ public class WarpPadGuiMenu extends AbstractContainerMenu implements Crystalnexu
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 79, 53) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(79, 8), MachineGuiLayout.grid(53, 84)) {
 			private final int slot = 0;
 			private int x = WarpPadGuiMenu.this.x;
 			private int y = WarpPadGuiMenu.this.y;

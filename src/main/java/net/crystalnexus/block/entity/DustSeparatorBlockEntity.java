@@ -130,7 +130,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 
 	@Override
 	public int[] getSlotsForFace(Direction side) {
-		return IntStream.range(0, this.getContainerSize()).toArray();
+		return IntStream.range(0, this.getContainerSize()).filter(slot -> slot != 3).toArray();
 	}
 
 	@Override
@@ -141,7 +141,7 @@ public class DustSeparatorBlockEntity extends RandomizableContainerBlockEntity i
 	@Override
 	public boolean canTakeItemThroughFace(int index, ItemStack itemstack, Direction direction) {
         if (index == 2 || index >= 4) return false;
-		return index == 1 || index == 3;
+		return index == 1;
 	}
 
 	private final EnergyStorage energyStorage = new EnergyStorage(MachineTier.from(getBlockState()).minimumCapacity(CrystalnexusConfig.MACHINES.DUST_SEPARATOR.capacity(), 4096), MachineTier.from(getBlockState()).energyInput(CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxReceive()), CrystalnexusConfig.MACHINES.DUST_SEPARATOR.maxExtract(), 0) {

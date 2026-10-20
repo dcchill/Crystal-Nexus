@@ -92,7 +92,7 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 70, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(70, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = EnergyExtractorGUIMenu.this.x;
 			private int y = EnergyExtractorGUIMenu.this.y;
@@ -103,7 +103,7 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 180, 8) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.sideX(0), MachineGuiLayout.sideY(0)) {
             @Override public int getMaxStackSize(ItemStack stack) {
                 return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
             }
@@ -117,7 +117,7 @@ public class EnergyExtractorGUIMenu extends AbstractContainerMenu implements Cry
 						|| CrystalnexusModItems.CARBON_ACCELERATION_UPGRADE.get() == stack.getItem();
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 133, 35) {
+		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, MachineGuiLayout.grid(133, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 2;
 			private int x = EnergyExtractorGUIMenu.this.x;
 			private int y = EnergyExtractorGUIMenu.this.y;

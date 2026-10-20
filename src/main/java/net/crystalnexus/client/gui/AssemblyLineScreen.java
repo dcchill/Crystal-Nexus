@@ -8,7 +8,6 @@ import net.crystalnexus.network.AssemblyLineRequest;
 import net.crystalnexus.world.inventory.AssemblyLineMenu;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -25,10 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-
-public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLineMenu> {
+public final class AssemblyLineScreen extends HolographicMachineScreen<AssemblyLineMenu> {
     private static final int NODE_W = 190, HEADER_H = 25, ROW_H = 18, OUTPUT_ROW_H = 30, SOCKET_TOP_GAP = 28;
-    
+
     private static final int JEI_STRIP = 190;
     private int canvasLeft, canvasTop, canvasRight, canvasBottom;
     private double panX = 24, panY = 24;
@@ -58,7 +56,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             return TRANSFER_SELECTIONS.getOrDefault(menu, -1);
         }
     }
-    
+
     public int transferTargetNode() {
         int remembered = rememberedSelection(menu);
         if (menu.controller.graph().node(remembered) != null) return remembered;
@@ -90,12 +88,9 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
 
     @Override protected void init() {
         imageWidth = Math.max(320, width - JEI_STRIP);
-        imageHeight = Math.max(300, height - 28);
+        imageHeight = Math.max(180, height - net.crystalnexus.world.inventory.MachineGuiLayout.HEADER_HEIGHT - 12);
         super.init();
-        
-        
-        leftPos = 8;
-        topPos = Math.max(8, (height - imageHeight) / 2);
+
         canvasLeft = leftPos + 8;
         canvasTop = topPos + 42;
         canvasRight = leftPos + imageWidth - 8;
@@ -113,9 +108,11 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
 
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        ControllerGuiStyle.panel(graphics, leftPos, topPos, imageWidth, imageHeight);
-        ControllerGuiStyle.inset(graphics, canvasLeft - 1, canvasTop - 1, canvasRight - canvasLeft + 2, canvasBottom - canvasTop + 2);
+        machineBackground(graphics);
+        MachineGuiTheme.inset(graphics, canvasLeft - 1, canvasTop - 1, canvasRight - canvasLeft + 2, canvasBottom - canvasTop + 2);
         drawGrid(graphics);
+
+        MachineGuiWidgets.finishBackground(graphics);
     }
 
     private void drawGrid(GuiGraphics graphics) {
@@ -126,9 +123,9 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        graphics.drawString(font, shortName(title.getString(), 24), 282, 19, 0xff404040, false);
+        graphics.drawString(font, shortName(title.getString(), 24), 282, 19, 0xE3F3FF, false);
         String state = menu.controller.formed() ? menu.controller.graph().enabled ? "RUNNING" : "PAUSED" : "INVALID STRUCTURE";
-        int color = menu.controller.graph().enabled ? 0xff216b35 : menu.controller.formed() ? 0xff805500 : 0xffa02020;
+        int color = menu.controller.graph().enabled ? 0xFF6EECA1 : menu.controller.formed() ? 0xFFFFCE79 : 0xFFFF8080;
         graphics.drawString(font, state, imageWidth - 105, 19, color, false);
         graphics.enableScissor(canvasLeft, canvasTop, canvasRight, canvasBottom);
         renderEdges(graphics);
@@ -140,8 +137,8 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         }
         graphics.disableScissor();
         if (menu.controller.graph().nodes.isEmpty()) graphics.drawCenteredString(font,
-            "No compatible machines detected inside the multiblock. Press Rescan after completing the enclosure.", imageWidth / 2, 82, 0xff404040);
-        graphics.drawString(font, "Drag headers • connect sockets • use JEI + to fill slots • drop JEI items on individual slots", 12, imageHeight - 15, 0xff404040, false);
+            "No compatible machines detected inside the multiblock. Press Rescan after completing the enclosure.", imageWidth / 2, 82, 0xE3F3FF);
+        graphics.drawString(font, "Drag headers Ã¢â‚¬Â¢ connect sockets Ã¢â‚¬Â¢ use JEI + to fill slots Ã¢â‚¬Â¢ drop JEI items on individual slots", 12, imageHeight - 15, 0xE3F3FF, false);
     }
 
     private void renderEdges(GuiGraphics graphics) {
@@ -168,7 +165,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         graphics.drawString(font, shortName(name, 24), x + 25, y + 8, 0xff303030, false);
         AssemblyLineMachine worker = node.machine == 0 ? null : menu.controller.machineAt(BlockPos.of(node.machine));
         if (worker != null && worker.energy() != null)
-            graphics.drawString(font, worker.energy().getEnergyStored() + " / " + worker.energy().getMaxEnergyStored() + " FE", x + 8, y + h - 23, 0xff205b78, false);
+            graphics.drawString(font, worker.energy().getEnergyStored() + " / " + worker.energy().getMaxEnergyStored() + " FE", x + 8, y + h - 23, 0xFF8BD8FF, false);
         graphics.drawString(font, shortName(node.status, 20), x + 8, y + h - 13, statusColor(node.status), false);
         for (int socket = 0; socket < node.inputSockets; socket++) {
             int sy = logicalSocketY(node, socket, true);
@@ -201,7 +198,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             boolean export = node.outputExport != null && socket < node.outputExport.length && node.outputExport[socket];
             int ex = x + NODE_W - 41, ey = sy + 6;
             graphics.fill(ex, ey, x + NODE_W - 3, ey + 10, export ? 0xffa57b12 : 0xffaaaaaa);
-            graphics.drawString(font, export ? "OUTPUT" : "HOLD", ex + 3, ey + 1, export ? 0xffffdc73 : 0xff404040, false);
+            graphics.drawString(font, export ? "OUTPUT" : "HOLD", ex + 3, ey + 1, export ? 0xffffdc73 : 0xE3F3FF, false);
         }
         if (node.recipe.isEmpty()) graphics.drawString(font, "Drop a JEI item or choose recipe", x + (NODE_W - font.width("Drop a JEI item or choose recipe")) / 2, y + HEADER_H + 5, 0xff505050, false);
         graphics.pose().popPose();
@@ -209,7 +206,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
 
     private int statusColor(String status) {
         String s = status.toLowerCase();
-        return s.contains("missing") || s.contains("error") ? 0xffa02020 : s.contains("running") ? 0xff216b35 : 0xff404040;
+        return s.contains("missing") || s.contains("error") ? 0xFFFF8080 : s.contains("running") ? 0xFF6EECA1 : 0xE3F3FF;
     }
 
     private int nodeX(AssemblyGraph.Node node) { return (int) Math.round(8 + panX + node.x * zoom); }
@@ -259,14 +256,12 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     }
     private void drawRemoveButton(GuiGraphics graphics, int x, int y) {
         ControllerGuiStyle.panel(graphics, x, y, 14, 16);
-        graphics.drawString(font, "-", x + (14 - font.width("-")) / 2, y + 3, 0xffa02020, false);
+        graphics.drawString(font, "-", x + (14 - font.width("-")) / 2, y + 3, 0xFFFF8080, false);
     }
 
-    @Override public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        
-        
-        
-        if (!insideCanvas(mouseX, mouseY)) return super.mouseClicked(mouseX, mouseY, button);
+    @Override protected boolean machineMouseClicked(double mouseX, double mouseY, int button) {
+
+        if (!insideCanvas(mouseX, mouseY)) return super.machineMouseClicked(mouseX, mouseY, button);
         double lx = mouseX - leftPos, ly = mouseY - topPos;
         if (openInputNode >= 0 && clickInputDropdown(lx, ly)) return true;
         openInputNode = openInputSocket = -1;
@@ -314,17 +309,17 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         selectedNode=-1; panning=true; lastMouseX=mouseX; lastMouseY=mouseY; return true;
     }
 
-    @Override public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    @Override protected boolean machineMouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (draggingNode>=0) {
             AssemblyGraph.Node node=menu.controller.graph().node(draggingNode);
             if(node!=null){ node.x=(float)((mouseX-leftPos-8-panX-dragOffsetX)/zoom); node.y=(float)((mouseY-topPos-42-panY-dragOffsetY)/zoom); }
             return true;
         }
         if(panning){ panX+=mouseX-lastMouseX; panY+=mouseY-lastMouseY; lastMouseX=mouseX; lastMouseY=mouseY; return true; }
-        return super.mouseDragged(mouseX,mouseY,button,dragX,dragY);
+        return super.machineMouseDragged(mouseX,mouseY,button,dragX,dragY);
     }
 
-    @Override public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    @Override protected boolean machineMouseReleased(double mouseX, double mouseY, int button) {
         double lx=mouseX-leftPos, ly=mouseY-topPos;
         if(connectingNode>=0){
             for(AssemblyGraph.Node node:reversedNodes()) for(int socket=0;socket<node.inputSockets;socket++) if(distance(lx,ly,inputX(node),socketY(node,socket,true))<=10){
@@ -335,11 +330,11 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
         }
         if(draggingNode>=0){ AssemblyGraph.Node node=menu.controller.graph().node(draggingNode); if(node!=null) PacketDistributor.sendToServer(new AssemblyLineGraphEdit(menu.containerId,"move",node.id,0,0,0,node.x,node.y)); draggingNode=-1; return true; }
         if(panning){ panning=false; return true; }
-        return super.mouseReleased(mouseX,mouseY,button);
+        return super.machineMouseReleased(mouseX,mouseY,button);
     }
 
-    @Override public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
-        if (!insideCanvas(mouseX, mouseY) || overNode(mouseX - leftPos, mouseY - topPos)) return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    @Override protected boolean machineMouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!insideCanvas(mouseX, mouseY) || overNode(mouseX - leftPos, mouseY - topPos)) return super.machineMouseScrolled(mouseX, mouseY, scrollX, scrollY);
         double old = zoom;
         zoom = Math.max(0.5, Math.min(2.0, zoom + Math.signum(scrollY) * 0.1));
         double lx = mouseX - leftPos - 8, ly = mouseY - topPos - 42;
@@ -355,7 +350,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     public List<GhostTarget> ghostTargets(Object ingredient) {
         return ghostTargets(ItemStack.EMPTY, ingredient);
     }
-    
+
     public List<GhostTarget> ghostFluidTargets(FluidStack fluid) {
         List<GhostTarget> result = new ArrayList<>();
         for (AssemblyGraph.Node node : menu.controller.graph().nodes) {
@@ -427,7 +422,7 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
             int yy=y+i*h;
             graphics.fill(x, yy, x+w, yy+h, 0xffaaaaaa);
             graphics.renderItem(options.get(i), x+2, yy+1);
-            graphics.drawString(font, shortName(options.get(i).getHoverName().getString(), 15), x+21, yy+5, 0xff404040, false);
+            graphics.drawString(font, shortName(options.get(i).getHoverName().getString(), 15), x+21, yy+5, 0xE3F3FF, false);
         }
     }
     private boolean clickInputDropdown(double lx,double ly) {
@@ -449,9 +444,11 @@ public final class AssemblyLineScreen extends AbstractContainerScreen<AssemblyLi
     private List<AssemblyGraph.Node> reversedNodes(){ List<AssemblyGraph.Node> result=new ArrayList<>(menu.controller.graph().nodes); return result.reversed(); }
     private boolean insideCanvas(double x,double y){return x>=canvasLeft&&x<canvasRight&&y>=canvasTop&&y<canvasBottom;}
     private static double distance(double x1,double y1,double x2,double y2){return Math.hypot(x2-x1,y2-y1);}
-    private static String shortName(String value,int max){return value.length()<=max?value:value.substring(0,Math.max(1,max-1))+"…";}
+    private static String shortName(String value,int max){return value.length()<=max?value:value.substring(0,Math.max(1,max-1))+"Ã¢â‚¬Â¦";}
     public record GhostTarget(Rect2i area,int nodeId,int socket,boolean output){}
 
-    @Override public void render(GuiGraphics graphics,int mouseX,int mouseY,float partialTick){super.render(graphics,mouseX,mouseY,partialTick);renderTooltip(graphics,mouseX,mouseY);}
+    @Override protected void renderMachine(GuiGraphics graphics,int mouseX,int mouseY,float partialTick){super.renderMachine(graphics,mouseX,mouseY,partialTick);renderTooltip(graphics,mouseX,mouseY);}
     @Override protected void renderSlot(GuiGraphics graphics, net.minecraft.world.inventory.Slot slot) { }
+    @Override protected net.minecraft.core.BlockPos machinePosition() { return menu.controller == null ? null : menu.controller.getBlockPos(); }
+    @Override protected String machineFallbackId() { return "assembly_line_controller"; }
 }

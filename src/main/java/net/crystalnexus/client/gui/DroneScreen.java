@@ -157,6 +157,7 @@ public final class DroneScreen extends AbstractContainerScreen<DroneMenu> {
     private List<String> fieldKeys(){
         if(selected()==null)return List.of();var kind=DroneNode.of(selected());List<String> keys=new ArrayList<>(DroneNodeSettings.fields(kind));
         if(advanced){
+            keys.add("waitUntilComplete");
             if(keys.contains("destinationSlot")&&!selected().parameters.contains("destinationSlot")&&selected().parameters.contains("pos"))keys.add("pos");
             if(keys.contains("endDestinationSlot")&&!selected().parameters.contains("endDestinationSlot")&&selected().parameters.contains("end"))keys.add("end");
             if(kind==DroneNode.FILTER_ITEMS)keys.add("components");
@@ -176,7 +177,7 @@ public final class DroneScreen extends AbstractContainerScreen<DroneMenu> {
                 case "player"->button(fit(playerName(node.parameters.getString(key)),w-12),x,y+12,w,this::playerPicker);
                 case "operator"->button(node.parameters.getString(key),x,y+12,w,()->open("Comparison",Arrays.stream(new String[]{">=",">","=","!=","<","<="}).map(op->new Choice(op,"Compare the sensor or variable with the value.",()->set(key,StringTag.valueOf(op)))).toList()));
                 case "node"->button(node.parameters.getInt(key)+": "+(graph.node(node.parameters.getInt(key))==null?"Choose a node":DroneNodeSettings.title(DroneNode.of(graph.node(node.parameters.getInt(key))))),x,y+12,w,()->open("Repeat From",graph.nodes.stream().filter(n->n.id!=node.id).map(n->new Choice(n.id+": "+DroneNodeSettings.title(DroneNode.of(n)),"Continue execution from this node.",()->set(key,IntTag.valueOf(n.id)))).toList()));
-                case "resume","enabled"->button(node.parameters.getBoolean(key)?"On":"Off",x,y+12,w,()->{set(key,ByteTag.valueOf(!node.parameters.getBoolean(key)));rebuild();});
+                case "resume","enabled","waitUntilComplete"->button(node.parameters.getBoolean(key)?"On":"Off",x,y+12,w,()->{set(key,ByteTag.valueOf(!node.parameters.getBoolean(key)));rebuild();});
                 case "side"->button(node.parameters.contains(key)?node.parameters.getString(key):"From Link Card",x,y+12,w,()->{
                     List<Choice> list=new ArrayList<>();list.add(new Choice("From Link Card","Use the face recorded when the card was linked.",()->set(key,null)));for(Direction side:Direction.values())list.add(new Choice(side.getName(),"Access this face of the container or tank.",()->set(key,StringTag.valueOf(side.getName()))));open("Access Face",list);
                 });

@@ -92,7 +92,7 @@ public class CrusherGuiMenu extends TieredMachineMenu implements CrystalnexusMod
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new MachineItemSlot(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = CrusherGuiMenu.this.x;
 			private int y = CrusherGuiMenu.this.y;
@@ -103,7 +103,7 @@ public class CrusherGuiMenu extends TieredMachineMenu implements CrystalnexusMod
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, 115, 35) {
+		this.customSlots.put(1, this.addSlot(new MachineItemSlot(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = CrusherGuiMenu.this.x;
 			private int y = CrusherGuiMenu.this.y;
@@ -114,9 +114,9 @@ public class CrusherGuiMenu extends TieredMachineMenu implements CrystalnexusMod
 			}
 		}));
 		var upgradeState = world.getBlockState(net.minecraft.core.BlockPos.containing(x, y, z));
-        this.customSlots.put(2, this.addSlot(new MachineUpgradeSlot(internal, 2, upgradeState, 0)));
+        this.customSlots.put(2, this.addSlot(new MachineUpgradeSlot(internal, 2, upgradeState, 0, 84)));
         for (int i = 1; i < net.crystalnexus.processing.MachineTier.from(upgradeState).upgradeSlots(); i++)
-            this.customSlots.put(3 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 3 + i - 1, upgradeState, i)));
+            this.customSlots.put(3 + i - 1, this.addSlot(new MachineUpgradeSlot(internal, 3 + i - 1, upgradeState, i, 84)));
         machineSlots = slots.size();
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)

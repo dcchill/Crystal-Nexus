@@ -56,7 +56,7 @@ public class BioSIMGuiMenu extends AbstractContainerMenu implements Crystalnexus
 		super(CrystalnexusModMenus.BIO_SIM_GUI.get(), id);
 		this.entity = inv.player;
 		this.world = inv.player.level();
-		this.internal = new ItemStackHandler(3);
+		this.internal = new ItemStackHandler(5);
 		BlockPos pos = null;
 		if (extraData != null) {
 			pos = extraData.readBlockPos();
@@ -93,7 +93,7 @@ public class BioSIMGuiMenu extends AbstractContainerMenu implements Crystalnexus
 				}
 			}
 		}
-		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 43, 35) {
+		this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 0;
 			private int x = BioSIMGuiMenu.this.x;
 			private int y = BioSIMGuiMenu.this.y;
@@ -104,7 +104,7 @@ public class BioSIMGuiMenu extends AbstractContainerMenu implements Crystalnexus
 				slotChanged(0, 1, stack.getCount());
 			}
 		}));
-		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 115, 35) {
+		this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.grid(35, 84)) {
 			private final int slot = 1;
 			private int x = BioSIMGuiMenu.this.x;
 			private int y = BioSIMGuiMenu.this.y;
@@ -114,19 +114,9 @@ public class BioSIMGuiMenu extends AbstractContainerMenu implements Crystalnexus
 				return false;
 			}
 		}));
-		this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 180, 8) {
-            @Override public int getMaxStackSize(ItemStack stack) {
-                return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
-            }
-			private final int slot = 2;
-			private int x = BioSIMGuiMenu.this.x;
-			private int y = BioSIMGuiMenu.this.y;
-
-			@Override
-			public boolean mayPlace(ItemStack stack) {
-				return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-			}
-		}));
+		var upgradeState = world.getBlockState(BlockPos.containing(x, y, z));
+        for (int i = 0; i < 3; i++)
+            this.customSlots.put(2 + i, this.addSlot(new MachineUpgradeSlot(internal, 2 + i, upgradeState, i)));
 		for (int si = 0; si < 3; ++si)
 			for (int sj = 0; sj < 9; ++sj)
 				this.addSlot(new Slot(inv, sj + (si + 1) * 9, 0 + 8 + sj * 18, 0 + 84 + si * 18));
@@ -154,18 +144,18 @@ public class BioSIMGuiMenu extends AbstractContainerMenu implements Crystalnexus
 		if (slot != null && slot.hasItem()) {
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			if (index < 3) {
-				if (!this.moveItemStackTo(itemstack1, 3, this.slots.size(), true))
+			if (index < 5) {
+				if (!this.moveItemStackTo(itemstack1, 5, this.slots.size(), true))
 					return ItemStack.EMPTY;
 				slot.onQuickCraft(itemstack1, itemstack);
 			} else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(itemstack1)) {
-				if (!this.moveItemStackTo(itemstack1, 2, 3, false)) return ItemStack.EMPTY;
-			} else if (!this.moveItemStackTo(itemstack1, 0, 3, false)) {
-				if (index < 3 + 27) {
-					if (!this.moveItemStackTo(itemstack1, 3 + 27, this.slots.size(), true))
+				if (!this.moveItemStackTo(itemstack1, 2, 5, false)) return ItemStack.EMPTY;
+			} else if (!this.moveItemStackTo(itemstack1, 0, 2, false)) {
+				if (index < 5 + 27) {
+					if (!this.moveItemStackTo(itemstack1, 5 + 27, this.slots.size(), true))
 						return ItemStack.EMPTY;
 				} else {
-					if (!this.moveItemStackTo(itemstack1, 3, 3 + 27, false))
+					if (!this.moveItemStackTo(itemstack1, 5, 5 + 27, false))
 						return ItemStack.EMPTY;
 				}
 				return ItemStack.EMPTY;

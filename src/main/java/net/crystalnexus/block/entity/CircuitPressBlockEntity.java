@@ -214,6 +214,7 @@ public class CircuitPressBlockEntity extends RandomizableContainerBlockEntity im
 
     private net.neoforged.neoforge.fluids.capability.IFluidHandler automationFluidHandler;
     public net.neoforged.neoforge.fluids.capability.IFluidHandler getAutomationFluidHandler() {
+        if (!getBlockState().is(net.crystalnexus.init.CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get())) return null;
         if (automationFluidHandler == null) automationFluidHandler = net.crystalnexus.util.DirectionalFluidHandler.input(getNitrogenTank());
         return automationFluidHandler;
     }
