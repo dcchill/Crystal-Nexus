@@ -28,6 +28,137 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class ConveyerBeltGameTests {
     private ConveyerBeltGameTests() {}
 
+    @GameTest(template = "zero_point", timeoutTicks = 100)
+    public static void entitiesEnterAndClimbRampFromFlatBelt(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var start = helper.absolutePos(new BlockPos(1, 3, 1));
+        var passengers = new java.util.ArrayList<net.minecraft.world.entity.Entity>();
+        var flat = CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        ConveyorPlacement.placing = true;
+        try {
+            for (int track = 0; track < 2; track++) {
+                var base = start.south(track * 3);
+                var positions = new java.util.ArrayList<BlockPos>();
+                for (int i = 0; i < 8; i++) {
+                    var pos = base.east(i).above(i >= 2 ? 1 : 0);
+                    positions.add(pos);
+                    for (int dy = 1; dy <= 3; dy++) level.setBlockAndUpdate(pos.above(dy), Blocks.AIR.defaultBlockState());
+                    level.setBlockAndUpdate(pos, flat.setValue(ConveyorGeometry.SLOPE,
+                        i == 1 ? ConveyorGeometry.Slope.UP : ConveyorGeometry.Slope.FLAT));
+                }
+                for (int i = 0; i < positions.size(); i++) {
+                    var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(positions.get(i));
+                    belt.setSplineConnections(i == 0 ? null : positions.get(i - 1),
+                        i + 1 == positions.size() ? null : positions.get(i + 1));
+                }
+                net.minecraft.world.entity.Entity entity;
+                if (track == 0) {
+                    var pig = net.minecraft.world.entity.EntityType.PIG.create(level);
+                    pig.setNoAi(true);
+                    entity = pig;
+                } else {
+                    entity = new net.minecraft.world.entity.decoration.ArmorStand(level, 0, 0, 0);
+                }
+                entity.setPos(base.getX() + .5, base.getY() + .5, base.getZ() + .5);
+                level.addFreshEntity(entity);
+                passengers.add(entity);
+            }
+        } finally { ConveyorPlacement.placing = false; }
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        var rampPos = start.east();
+        var ramp = level.getBlockState(rampPos);
+        player.setPos(rampPos.getX() + .5, rampPos.getY() + 1, rampPos.getZ() + .5);
+        double support = ConveyorGeometry.supportHeight(ramp, player.getBoundingBox().move(-rampPos.getX(), -rampPos.getY(), -rampPos.getZ()));
+        player.setPos(player.getX(), rampPos.getY() + support, player.getZ());
+        level.addFreshEntity(player);
+        ((ConveyerBeltBaseBlockEntity) level.getBlockEntity(rampPos)).serverTick();
+        helper.assertTrue(player.getDeltaMovement().x > 0 && player.getDeltaMovement().y > .08,
+            "Uphill player velocity must lift against gravity");
+        player.discard();
+        helper.runAfterDelay(45, () -> {
+            for (var entity : passengers) {
+                helper.assertTrue(entity.getX() > start.getX() + 2.3 && entity.getY() >= start.getY() + 1.45,
+                    "Entity must travel from flat belt to the raised landing: " + entity.getType() + " at " + entity.position());
+                entity.discard();
+            }
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point")
+    public static void nonItemEntitiesFollowEveryBeltSurface(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+        for (Block block : new Block[]{CrystalnexusModBlocks.CONVEYER_BELT.get(),
+                CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get(), CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get(),
+                CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get(), CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get()}) {
+            for (Direction facing : Direction.Plane.HORIZONTAL) for (var slope : ConveyorGeometry.Slope.values())
+                    for (var curve : ConveyerBeltBlock.CurveShape.values()) {
+                if (slope != ConveyorGeometry.Slope.FLAT && curve != ConveyerBeltBlock.CurveShape.STRAIGHT) continue;
+                var state = block.defaultBlockState().setValue(ConveyerBeltBlock.FACING, facing)
+                    .setValue(ConveyorGeometry.SLOPE, slope).setValue(ConveyerBeltBlock.CURVE, curve);
+                level.setBlockAndUpdate(pos, state);
+                var surface = ConveyorGeometry.point(state, .5).add(pos.getX(), pos.getY(), pos.getZ());
+                var stand = new net.minecraft.world.entity.decoration.ArmorStand(level, surface.x, surface.y, surface.z);
+                double support = ConveyorGeometry.supportHeight(state, stand.getBoundingBox().move(-pos.getX(), -pos.getY(), -pos.getZ()));
+                stand.setPos(surface.x, pos.getY() + support, surface.z);
+                double startY = stand.getY();
+                stand.setNoGravity(true);
+                level.addFreshEntity(stand);
+                var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+                belt.serverTick();
+                double t = ConveyorGeometry.progress(state, stand.getX() - pos.getX(), stand.getZ() - pos.getZ());
+                helper.assertTrue(t > .5, "Non-item entities must move along " + block + " " + facing + " " + slope + " " + curve);
+                if (slope == ConveyorGeometry.Slope.UP) helper.assertTrue(stand.getY() > startY, "Entities must climb ramps");
+                if (slope == ConveyorGeometry.Slope.DOWN) helper.assertTrue(stand.getY() < startY, "Entities must descend ramps");
+                var moved = stand.position();
+                belt.serverTick();
+                helper.assertTrue(stand.position().equals(moved), "Overlapping belt ticks must not move an entity twice");
+                stand.discard();
+            }
+        }
+        var flat = CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        level.setBlockAndUpdate(pos, flat);
+        var pig = helper.spawn(net.minecraft.world.entity.EntityType.PIG, new BlockPos(2, 3, 2));
+        pig.setNoAi(true);
+        pig.setPos(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5);
+        ((ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos)).serverTick();
+        helper.assertTrue(pig.getX() > pos.getX() + .5, "Conveyors must also carry living mobs");
+        pig.discard();
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setPos(pos.getX() + .5, pos.getY() + .5, pos.getZ() + .5);
+        level.addFreshEntity(player);
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        belt.serverTick();
+        helper.assertTrue(player.getDeltaMovement().x > 0 && player.hurtMarked,
+            "Player belt velocity must be synchronized to the client");
+        player.getPersistentData().remove("crystalnexusConveyorMoveTick");
+        player.setDeltaMovement(0, .42, 0);
+        belt.serverTick();
+        helper.assertTrue(player.getDeltaMovement().y == .42 && player.getDeltaMovement().x == 0,
+            "Jumping players must be able to leave the conveyor");
+        player.setDeltaMovement(0, 0, 0);
+        player.getAbilities().flying = true;
+        belt.serverTick();
+        helper.assertTrue(player.getDeltaMovement().lengthSqr() == 0, "Flying players must not be pulled onto conveyors");
+        player.discard();
+        var ramp = flat.setValue(ConveyorGeometry.SLOPE, ConveyorGeometry.Slope.UP);
+        level.setBlockAndUpdate(pos, ramp);
+        level.setBlockAndUpdate(pos.east().above(), ramp);
+        var crossing = new net.minecraft.world.entity.decoration.ArmorStand(level, pos.getX() + .95, pos.getY() + 1, pos.getZ() + .5);
+        var bounds = crossing.getBoundingBox().move(-pos.getX(), -pos.getY(), -pos.getZ());
+        double support = Math.max(ConveyorGeometry.supportHeight(ramp, bounds),
+            1 + ConveyorGeometry.supportHeight(ramp, bounds.move(-1, -1, 0)));
+        crossing.setPos(crossing.getX(), pos.getY() + support, crossing.getZ());
+        level.addFreshEntity(crossing);
+        ((ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos)).serverTick();
+        helper.assertTrue(crossing.getX() > pos.getX() + 1 && crossing.getY() > pos.getY() + support,
+            "Wide entities must cross smoothly between consecutive ramps");
+        crossing.discard();
+        helper.succeed();
+    }
+
     @GameTest(template = "zero_point")
     public static void collisionShapesAreReused(GameTestHelper helper) {
         BlockPos pos = helper.absolutePos(new BlockPos(2, 2, 2));
@@ -200,6 +331,11 @@ public final class ConveyerBeltGameTests {
                 double spacing=first.distanceTo(ConveyorGeometry.point(state,.25));
                 for(int n=1;n<4;n++) helper.assertTrue(Math.abs(spacing-ConveyorGeometry.point(state,n*.25).distanceTo(ConveyorGeometry.point(state,(n+1)*.25)))<1e-8,
                     "Each transport slot must occupy the same arc length");
+                for (double t : new double[]{0, .25, .5, .75, 1}) {
+                    var point = ConveyorGeometry.point(state, t);
+                    helper.assertTrue(Math.abs(t - ConveyorGeometry.progress(state, point.x, point.z)) < 1e-8,
+                        "Entity progress must match the belt surface in every direction");
+                }
             }
         }
         helper.succeed();

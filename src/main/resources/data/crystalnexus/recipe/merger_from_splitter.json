@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "crystalnexus:splitter"
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:merger",
+    "count": 1
+  }
+}

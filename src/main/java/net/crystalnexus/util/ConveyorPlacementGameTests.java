@@ -1,6 +1,8 @@
 package net.crystalnexus.util;
 
 import com.mojang.authlib.GameProfile;
+import net.crystalnexus.block.ConveyorGeometry;
+import net.crystalnexus.block.ConveyerBeltBlock;
 import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.minecraft.core.BlockPos;
@@ -26,6 +28,77 @@ import java.util.UUID;
 @GameTestHolder("crystalnexus_conveyors")
 @PrefixGameTestTemplate(false)
 public final class ConveyorPlacementGameTests {
+    @GameTest(template = "zero_point")
+    public static void individualBeltsAutomaticallySlopeAndRequireClearance(GameTestHelper helper) {
+        var player = equippedPlayer(helper, "conveyor-slopes", 1);
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(pos.below(), Blocks.STONE.defaultBlockState());
+        for (var block : List.of(CrystalnexusModBlocks.CONVEYER_BELT.get(),
+                CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get(), CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get(),
+                CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get(), CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get())) {
+            for (Direction facing : Direction.Plane.HORIZONTAL) for (var slope : List.of(ConveyorGeometry.Slope.UP, ConveyorGeometry.Slope.DOWN)) {
+                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                player.setYRot(facing.toYRot());
+                var flat = block.defaultBlockState().setValue(ConveyerBeltBlock.FACING, facing);
+                var high = pos.relative(slope == ConveyorGeometry.Slope.UP ? facing : facing.getOpposite()).above();
+                level.setBlockAndUpdate(high, flat);
+                var hit = new BlockHitResult(Vec3.atCenterOf(pos.below()).add(0, .5, 0), Direction.UP, pos.below(), false);
+                var context = new net.minecraft.world.item.context.BlockPlaceContext(level, player, InteractionHand.MAIN_HAND, new ItemStack(block), hit);
+                helper.assertTrue(block.getStateForPlacement(context).getValue(ConveyorGeometry.SLOPE) == slope,
+                    "Placement must find the raised connection for " + block + " " + facing + " " + slope);
+                level.setBlockAndUpdate(pos, flat);
+                ConveyorGeometry.updateAutomatic(level, pos);
+                helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == slope,
+                    "Neighbor updates must select the slope");
+                level.setBlockAndUpdate(pos.above(), Blocks.STONE.defaultBlockState());
+                ConveyorGeometry.updateAutomatic(level, pos);
+                helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.FLAT,
+                    "Blocked clearance must prevent ramps");
+                level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+                level.setBlockAndUpdate(high, flat.setValue(ConveyerBeltBlock.FACING, facing.getOpposite()));
+                ConveyorGeometry.updateAutomatic(level, pos);
+                helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.FLAT,
+                    "Opposing belts must not create ramps");
+                level.removeBlock(high, false);
+                ConveyorGeometry.updateAutomatic(level, pos);
+                helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.FLAT,
+                    "Removing raised belts must flatten the conveyor");
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void diagonalPlacementAndRemovalUpdateExistingBelts(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        var flat = CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        level.setBlockAndUpdate(pos.above(), Blocks.AIR.defaultBlockState());
+        level.setBlockAndUpdate(pos, flat);
+        helper.runAfterDelay(3, () -> level.setBlockAndUpdate(pos.east().above(), flat));
+        helper.runAfterDelay(6, () -> {
+            helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.UP,
+                "Placing a diagonal upper belt must update the lower belt");
+            level.removeBlock(pos.east().above(), false);
+        });
+        helper.runAfterDelay(9, () -> {
+            helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.FLAT,
+                "Removing the upper belt must flatten the lower belt");
+            level.setBlockAndUpdate(pos.west().above(), flat);
+        });
+        helper.runAfterDelay(12, () -> {
+            helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.DOWN,
+                "A raised feeder must create a downward slope");
+            level.removeBlock(pos.west().above(), false);
+        });
+        helper.runAfterDelay(15, () -> {
+            helper.assertTrue(level.getBlockState(pos).getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.FLAT,
+                "Removing a raised feeder must flatten the belt");
+            helper.succeed();
+        });
+    }
     @GameTest(template = "zero_point")
     public static void conveyorRoutePlacesCurvesAndRejectsObstructions(GameTestHelper helper) {
         var player=equippedPlayer(helper,"conveyor-route",20);

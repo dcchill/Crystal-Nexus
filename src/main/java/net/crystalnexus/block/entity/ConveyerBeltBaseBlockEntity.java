@@ -124,6 +124,7 @@ public void serverTick() {
     if (level == null) return;
     if (level.isClientSide) return;
 
+    moveEntities();
     long gameTime = level.getGameTime();
     if (gameTime - lastMoveGameTime < ticksPerMove()) return;
 
@@ -176,6 +177,71 @@ public void serverTick() {
         }
 
         if (changed) sync();
+    }
+
+    private void moveEntities() {
+        BlockState state = getBlockState();
+        double speed = .25 / ticksPerMove();
+        double length = state.getValue(net.crystalnexus.block.ConveyerBeltBlock.CURVE)
+            == net.crystalnexus.block.ConveyerBeltBlock.CurveShape.STRAIGHT ? 1 : Math.PI / 4;
+        var area = new net.minecraft.world.phys.AABB(worldPosition).expandTowards(0, 1.5, 0);
+        for (var entity : level.getEntities((net.minecraft.world.entity.Entity) null, area,
+                e -> !(e instanceof ItemEntity) && e.isAlive() && !e.isSpectator() && !e.isPassenger())) {
+            var data = entity.getPersistentData();
+            if (data.contains("crystalnexusConveyorMoveTick") && data.getLong("crystalnexusConveyorMoveTick") == level.getGameTime()) continue;
+            double x = entity.getX() - worldPosition.getX(), z = entity.getZ() - worldPosition.getZ();
+            if (x < 0 || x >= 1 || z < 0 || z >= 1 || entity.getDeltaMovement().y > .3
+                    || entity instanceof Player player && player.getAbilities().flying) continue;
+            double t = ConveyorGeometry.progress(state, x, z);
+            double feet = entity.getY() - worldPosition.getY();
+            var bounds = entity.getBoundingBox().move(-worldPosition.getX(), -worldPosition.getY(), -worldPosition.getZ());
+            double support = entitySupportHeight(state, bounds);
+            if (Double.isNaN(support) || feet > support + .13
+                    || feet < ConveyorGeometry.point(state, t).y - speed - .13) continue;
+            double next = t + speed / length;
+            var target = ConveyorGeometry.point(state, Math.min(1, next));
+            if (next > 1) target = target.add(net.minecraft.world.phys.Vec3.atLowerCornerOf(ConveyorGeometry.output(state).getNormal())
+                .scale((next - 1) * length));
+            var horizontal = new net.minecraft.world.phys.Vec3(target.x - x, 0, target.z - z);
+            if (horizontal.length() > speed) horizontal = horizontal.normalize().scale(speed);
+            double nextSupport = entitySupportHeight(state, bounds.move(horizontal));
+            double lift = (Double.isNaN(nextSupport) ? target.y : nextSupport) - feet + .035;
+            if (entity instanceof Player) {
+                double y = entity.getDeltaMovement().y;
+                // Counter gravity while entering or climbing a ramp; stepping alone can stall at its foot.
+                if (nextSupport > support || state.getValue(ConveyorGeometry.SLOPE) == ConveyorGeometry.Slope.UP)
+                    y = Math.max(y, lift + .08);
+                entity.setDeltaMovement(horizontal.x, y, horizontal.z);
+                // Players simulate movement on their client, so send the belt velocity to them.
+                entity.hurtMarked = true;
+            } else {
+                // Descend after moving off the higher step; collision movement resolves Y first.
+                if (lift < 0) {
+                    entity.move(net.minecraft.world.entity.MoverType.SELF, horizontal);
+                    entity.move(net.minecraft.world.entity.MoverType.SELF, new net.minecraft.world.phys.Vec3(0, lift, 0));
+                } else {
+                    entity.move(net.minecraft.world.entity.MoverType.SELF,
+                        new net.minecraft.world.phys.Vec3(horizontal.x, lift, horizontal.z));
+                }
+            }
+            data.putLong("crystalnexusConveyorMoveTick", level.getGameTime());
+            entity.hasImpulse = true;
+        }
+    }
+
+    private double entitySupportHeight(BlockState state, net.minecraft.world.phys.AABB bounds) {
+        double height = ConveyorGeometry.supportHeight(state, bounds);
+        for (boolean out : new boolean[]{false, true}) {
+            BlockPos pos = ConveyorGeometry.neighbor(level, worldPosition, state, out);
+            if (!level.hasChunkAt(pos)) continue;
+            BlockState other = level.getBlockState(pos);
+            if (!(out ? ConveyorGeometry.connects(worldPosition, state, pos, other)
+                    : ConveyorGeometry.connects(pos, other, worldPosition, state))) continue;
+            BlockPos offset = pos.subtract(worldPosition);
+            double adjacent = ConveyorGeometry.supportHeight(other, bounds.move(-offset.getX(), -offset.getY(), -offset.getZ())) + offset.getY();
+            if (!Double.isNaN(adjacent)) height = Double.isNaN(height) ? adjacent : Math.max(height, adjacent);
+        }
+        return height;
     }
 
     protected boolean isOutputBelt() {

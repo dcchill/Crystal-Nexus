@@ -434,6 +434,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> CRYSTAL_TANK = REGISTRY.register("crystal_tank", CrystalTankBlock::new);
 	public static final DeferredBlock<Block> FLUID_PACKAGER = REGISTRY.register("fluid_packager", FluidPackagerBlock::new);
 	public static final DeferredBlock<Block> SULFUR_ORE = REGISTRY.register("sulfur_ore", SulfurOreBlock::new);
+	public static final DeferredBlock<Block> SPLITTER = REGISTRY.register("splitter", () -> new net.crystalnexus.block.ItemRouterBlock(false));
+	public static final DeferredBlock<Block> MERGER = REGISTRY.register("merger", () -> new net.crystalnexus.block.ItemRouterBlock(true));
 	public static final DeferredBlock<Block> SMART_SPLITTER = REGISTRY.register("smart_splitter", SmartSplitterBlock::new);
 	public static final DeferredBlock<Block> COMPUTATION_CLUSTER = REGISTRY.register("computation_cluster", ComputationClusterBlock::new);
 	public static final DeferredBlock<Block> PARTICLE_ACCELERATOR_TUBE = REGISTRY.register("particle_accelerator_tube", ParticleAcceleratorTubeBlock::new);

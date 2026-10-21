@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bcb",
+    " m "
+  ],
+  "key": {
+    "b": {
+      "tag": "c:plates/gold"
+    },
+    "c": {
+      "item": "minecraft:chest"
+    },
+    "m": {
+      "item": "crystalnexus:iron_machine_frame"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:splitter",
+    "count": 1
+  }
+}

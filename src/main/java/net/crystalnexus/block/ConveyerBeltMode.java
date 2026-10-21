@@ -31,6 +31,15 @@ public final class ConveyerBeltMode {
             };
         }
 
+        Mode next(boolean outputFirst) {
+            if (!outputFirst) return next();
+            return switch (this) {
+                case NORMAL -> OUTPUT;
+                case OUTPUT -> INPUT;
+                case INPUT -> NORMAL;
+            };
+        }
+
         static Mode forStorage(boolean hasFrontStorage, boolean hasBackStorage) {
             return hasFrontStorage ? INPUT : hasBackStorage ? OUTPUT : NORMAL;
         }
@@ -58,7 +67,11 @@ public final class ConveyerBeltMode {
         if (level.getBlockEntity(pos) instanceof ConveyerBeltBaseBlockEntity belt) {
             belt.setManualMode(true);
         }
-        Mode next = modeAt(level.getBlockState(pos)).next();
+        BlockState state = level.getBlockState(pos);
+        Mode attachedMode = modeFor(
+                hasItemStorage(level, ConveyorGeometry.port(pos, state, true), ConveyorGeometry.output(state).getOpposite()),
+                hasItemStorage(level, ConveyorGeometry.port(pos, state, false), ConveyorGeometry.input(state).getOpposite()));
+        Mode next = modeAt(state).next(attachedMode == Mode.OUTPUT);
         switchTo(level, pos, next);
         return next;
     }
@@ -75,7 +88,7 @@ public final class ConveyerBeltMode {
                 && level.getCapability(Capabilities.ItemHandler.BLOCK, pos, side) != null;
     }
 
-    private static Mode modeAt(BlockState state) {
+    public static Mode modeAt(BlockState state) {
         if (state.getBlock() instanceof ConveyerBeltInputBlock) return Mode.INPUT;
         if (state.getBlock() instanceof ConveyerBeltOutputBlock) return Mode.OUTPUT;
         return Mode.NORMAL;

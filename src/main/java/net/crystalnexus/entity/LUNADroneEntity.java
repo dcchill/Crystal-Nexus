@@ -113,7 +113,7 @@ public class LUNADroneEntity extends PathfinderMob {
         if (owner == null) setOwner(player);
         if (!ownedBy(player)) { server.sendSystemMessage(Component.literal("You do not own this drone.")); return InteractionResult.FAIL; }
         ItemStack held = player.getItemInHand(hand);
-        if (held.is(CrystalnexusModItems.CRYSTAL_WRENCH.get()) && player.isShiftKeyDown()) { cycleMode(); server.sendSystemMessage(Component.literal(status)); }
+        if (held.is(CrystalnexusModItems.CRYSTAL_WRENCH.get()) && player.isShiftKeyDown()) { cycleMode(); }
         else if (held.is(CrystalnexusModItems.DRONE_CONTROLLER.get())) {
             net.crystalnexus.item.DroneControllerItem.bind(held, getUUID()); open(server);
         } else {

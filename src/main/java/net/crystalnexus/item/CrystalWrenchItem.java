@@ -52,12 +52,18 @@ public class CrystalWrenchItem extends Item {
         if (conveyorPlacement != InteractionResult.PASS) return conveyorPlacement;
 
         Block block = level.getBlockState(pos).getBlock();
+        if (!player.isShiftKeyDown() && block instanceof ItemRouterBlock routerBlock && !routerBlock.isMerger()) {
+            if (!level.isClientSide && level.getBlockEntity(pos) instanceof ItemRouterBlockEntity router) {
+                router.cycleMode();
+                playWrenchSound(level, pos);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (!player.isShiftKeyDown() && (block instanceof ConveyerBeltBlock
                 || block instanceof ConveyerBeltInputBlock
                 || block instanceof ConveyerBeltOutputBlock)) {
             if (!level.isClientSide) {
-                ConveyerBeltMode.Mode mode = ConveyerBeltMode.cycle(level, pos);
-                player.displayClientMessage(Component.literal("Conveyor Belt: " + mode), true);
+                ConveyerBeltMode.cycle(level, pos);
                 playWrenchSound(level, pos);
             }
             return InteractionResult.SUCCESS;
@@ -72,13 +78,7 @@ public class CrystalWrenchItem extends Item {
             if (!level.isClientSide && level.getBlockEntity(pos) instanceof PipeStraightBlockEntity pipe) {
                 Direction side = PipeStraightBlock.connectionAt(
                     level.getBlockState(pos), pos, context.getClickLocation(), context.getClickedFace());
-                int mode = pipe.cycleSideMode(side);
-                player.displayClientMessage(Component.literal("Fluid pipe " + side.getName() + ": "
-                    + switch (mode) {
-                        case 1 -> "INPUT";
-                        case 2 -> "OUTPUT";
-                        default -> "DEFAULT";
-                    }), true);
+                pipe.cycleSideMode(side);
                 playWrenchSound(level, pos);
             }
             return InteractionResult.SUCCESS;
@@ -151,46 +151,6 @@ public class CrystalWrenchItem extends Item {
                 );
             }
 
-
-            Player player = context.getPlayer();
-
-            if (player != null) {
-                Component modeMessage = switch (nextMode) {
-                    case DEFAULT -> Component.literal(
-                                    "Depot Cable Mode: Default"
-                            )
-                            .withStyle(
-                                    net.minecraft.ChatFormatting.GRAY
-                            );
-
-                    case IMPORT -> Component.literal(
-                                    "Depot Cable Mode: Import"
-                            )
-                            .withStyle(
-                                    net.minecraft.ChatFormatting.GREEN
-                            );
-
-                    case EXPORT -> Component.literal(
-                                    "Depot Cable Mode: Export (Whitelist Only)"
-                            )
-                            .withStyle(
-                                    net.minecraft.ChatFormatting.AQUA
-                            );
-
-                    default -> Component.literal(
-                                    "Depot Cable Mode: "
-                                            + formatModeName(nextMode)
-                            )
-                            .withStyle(
-                                    net.minecraft.ChatFormatting.YELLOW
-                            );
-                };
-
-                player.displayClientMessage(
-                        modeMessage,
-                        true
-                );
-            }
 
             playWrenchSound(
                     level,
@@ -447,7 +407,7 @@ public class CrystalWrenchItem extends Item {
     /**
      * Attempts to rotate a DirectionProperty called "facing".
      */
-    private BlockState rotateDirectional(BlockState state) {
+    private static BlockState rotateDirectional(BlockState state) {
         for (Property<?> property : state.getProperties()) {
             if (property instanceof DirectionProperty directionProperty
                     && directionProperty.getName().equals("facing")) {
@@ -457,6 +417,10 @@ public class CrystalWrenchItem extends Item {
 
                 Direction newDirection =
                         rotateDirection(currentDirection);
+
+                if (!directionProperty.getPossibleValues().contains(newDirection)) {
+                    return null;
+                }
 
                 return state.setValue(
                         directionProperty,
@@ -558,6 +522,9 @@ public class CrystalWrenchItem extends Item {
             belt.clearContent();
         }
 
+        // Router contents are already packed in the item; onRemove must not drop them again.
+        if (blockEntity instanceof ItemRouterBlockEntity router) router.clearContent();
+
         level.removeBlock(
                 pos,
                 false
@@ -585,7 +552,7 @@ public class CrystalWrenchItem extends Item {
     /**
      * Checks whether shift-right-click pickup should be handled.
      */
-    private boolean canPickup(
+    public static boolean canPickup(
             Level level,
             BlockPos pos
     ) {
@@ -607,32 +574,13 @@ public class CrystalWrenchItem extends Item {
         boolean isCable =
                 isCableBlock(state);
 
-        boolean isMachineFrame =
-                block instanceof MachineFrameBlock
-                || block instanceof CrystalMachineFrameBlock
-                || block instanceof ChlorophyteMachineFrameBlock
-                || block instanceof InvertiumMachineFrameBlock
-                || block instanceof CarbonMachineFrameBlock
-                || block instanceof HyperMachineFrameBlock;
-
-        boolean isBlueprint =
-                block instanceof BlueprintBaseBlock
-                || block instanceof BlueprintFrameBlock
-                || block instanceof BlueprintControllerBlock;
-
-        boolean isStorage = block instanceof TankBlock;
-
-        return hasBlockEntity
-                || isCable
-                || isMachineFrame
-                || isBlueprint
-                || isStorage;
+        return hasBlockEntity || isCable;
     }
 
     /**
      * Checks whether the wrench should consume the interaction.
      */
-    private boolean canRotate(
+    public static boolean canRotate(
             Level level,
             BlockPos pos
     ) {
@@ -666,24 +614,10 @@ public class CrystalWrenchItem extends Item {
     }
 
     /**
-     * Converts enum names like IMPORT -> Import.
-     */
-    private String formatModeName(
-            DepotCableMode mode
-    ) {
-        String name =
-                mode.name().toLowerCase();
-
-        return Character.toUpperCase(
-                name.charAt(0)
-        ) + name.substring(1);
-    }
-
-    /**
      * Detect cable-like blocks through directional connection
      * properties.
      */
-    private boolean isCableBlock(
+    private static boolean isCableBlock(
             BlockState state
     ) {
         for (Property<?> property : state.getProperties()) {
@@ -753,7 +687,7 @@ public class CrystalWrenchItem extends Item {
                         "§7Block offhand: Select two points; sneak-use cycles direction"
                 )
         );
-        tooltip.add(Component.literal("Belts offhand: Snap endpoints; sneak-use switches the bend")
+        tooltip.add(Component.literal("Belts offhand: Click nodes to continue; sneak-use switches bend; left-click cancels")
                 .withStyle(net.minecraft.ChatFormatting.GRAY));
     }
 }

@@ -22,7 +22,8 @@ public class LUNADroneRenderer extends MobRenderer<LUNADroneEntity, Modeldrone<L
 	}
 
     @Override protected boolean shouldShowName(LUNADroneEntity entity) {
-        return net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == entity || super.shouldShowName(entity);
+        return !net.crystalnexus.client.MachineScanner.showingDrone(entity)
+            && (net.minecraft.client.Minecraft.getInstance().crosshairPickEntity == entity || super.shouldShowName(entity));
     }
     @Override protected void renderNameTag(LUNADroneEntity entity, net.minecraft.network.chat.Component name,
             com.mojang.blaze3d.vertex.PoseStack pose, net.minecraft.client.renderer.MultiBufferSource buffers, int light, float partial) {

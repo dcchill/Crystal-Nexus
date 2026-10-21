@@ -219,6 +219,8 @@
     "crystalnexus:pipe_junction",
     "crystalnexus:singularity_matrix",
     "crystalnexus:smart_splitter",
+    "crystalnexus:splitter",
+    "crystalnexus:merger",
     "crystalnexus:solar_simulator_controller",
     "crystalnexus:steam_engine",
     "crystalnexus:steam_engine_upgrade",

@@ -24,7 +24,7 @@ public class ItemElevatorOnTickUpdateProcedure {
 		BlockPos upPos = pos.above();
 		BlockPos downPos = pos.below();
 		ItemStack here = itemFromBlockInventory(world, pos, 0).copy();
-		if (!here.isEmpty()
+		if (!here.isEmpty() && world.getBlockState(pos).getBlock() == CrystalnexusModBlocks.ITEM_ELEVATOR.get()
 				&& world.getBlockState(pos).getBlock() == world.getBlockState(upPos).getBlock()) {
 
 			ItemStack above = itemFromBlockInventory(world, upPos, 0).copy();
@@ -39,11 +39,12 @@ public class ItemElevatorOnTickUpdateProcedure {
 						&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
 					ItemStack newAbove = above.isEmpty() ? here.copy() : above.copy();
-					newAbove.setCount(aboveCount + 1);
+					int amount = Math.min(32, Math.min(here.getCount(), max - aboveCount));
+					newAbove.setCount(aboveCount + amount);
 					upInv.setStackInSlot(0, newAbove);
 
 					ItemStack newHere = inv.getStackInSlot(0).copy();
-					newHere.shrink(1);
+					newHere.shrink(amount);
 					inv.setStackInSlot(0, newHere);
 				}
 			}
@@ -66,11 +67,12 @@ public class ItemElevatorOnTickUpdateProcedure {
 							&& ext.getCapability(Capabilities.ItemHandler.BLOCK, pos, null) instanceof IItemHandlerModifiable inv) {
 
 						ItemStack newBelow = below.isEmpty() ? here2.copy() : below.copy();
-						newBelow.setCount(belowCount + 1);
+						int amount = Math.min(32, Math.min(here2.getCount(), max - belowCount));
+						newBelow.setCount(belowCount + amount);
 						downInv.setStackInSlot(0, newBelow);
 
 						ItemStack newHere = inv.getStackInSlot(0).copy();
-						newHere.shrink(1);
+						newHere.shrink(amount);
 						inv.setStackInSlot(0, newHere);
 					}
 				}

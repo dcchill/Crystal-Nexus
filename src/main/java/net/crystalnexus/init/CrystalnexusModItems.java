@@ -630,6 +630,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> DENSE_BATTERY_CELL = REGISTRY.register("dense_battery_cell", DenseBatteryCellItem::new);
 	public static final DeferredItem<Item> CARBON_BATTERY_CELL = REGISTRY.register("carbon_battery_cell", CarbonBatteryCellItem::new);
 	public static final DeferredItem<Item> BATTERY_PART = REGISTRY.register("battery_part", BatteryPartItem::new);
+	public static final DeferredItem<Item> SPLITTER = block(CrystalnexusModBlocks.SPLITTER);
+	public static final DeferredItem<Item> MERGER = block(CrystalnexusModBlocks.MERGER);
 	public static final DeferredItem<Item> SMART_SPLITTER = block(CrystalnexusModBlocks.SMART_SPLITTER);
 	public static final DeferredItem<Item> COMPUTATION_NODE = REGISTRY.register("computation_node", ComputationNodeItem::new);
 	public static final DeferredItem<Item> COMPUTATION_CLUSTER = block(CrystalnexusModBlocks.COMPUTATION_CLUSTER);

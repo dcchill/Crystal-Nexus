@@ -37,6 +37,13 @@ public final class ConveyorPlacement {
     public static void clear(ItemStack wrench) {
         CustomData.update(DataComponents.CUSTOM_DATA,wrench,tag -> tag.remove(KEY));
     }
+    public static boolean cancel(Player player) {
+        ItemStack wrench = player.getMainHandItem();
+        if (!(wrench.getItem() instanceof net.crystalnexus.item.CrystalWrenchItem) || preview(wrench).isEmpty()) return false;
+        clear(wrench);
+        message(player, "Conveyor placement cancelled");
+        return true;
+    }
     public static InteractionResult use(UseOnContext ctx) {
         Player player=ctx.getPlayer();
         if(player==null || !eligible(player.getOffhandItem())) return InteractionResult.PASS;
@@ -53,7 +60,7 @@ public final class ConveyorPlacement {
         if(data.isEmpty()) {
             data.putLong("start",end.asLong()); data.putBoolean("xFirst",player.getDirection().getAxis()==Direction.Axis.X);
             data.putString("dimension",dimension); data.putString("item",item);
-            write(wrench,data); message(player,"Conveyor start set. Click end to build; sneak-use switches bend; click start to cancel");
+            write(wrench,data); message(player,"Conveyor node set. Click next node to build; sneak-use switches bend; left-click cancels");
             return InteractionResult.SUCCESS;
         }
         if(player.isShiftKeyDown()) {
@@ -99,7 +106,8 @@ public final class ConveyorPlacement {
                 throw error;
             } finally { placing=false; }
             if(!player.isCreative()) consume(player,belts,needed);
-            clear(wrench);message(player,"Placed "+needed+" conveyor belts");return InteractionResult.SUCCESS;
+            data.putLong("start",end.asLong());write(wrench,data);
+            message(player,"Placed "+needed+" conveyor belts. Click next node to continue; left-click cancels");return InteractionResult.SUCCESS;
         } catch(IllegalArgumentException error) { message(player,error.getMessage());return InteractionResult.FAIL; }
     }
     public static List<ConveyorGeometry.Segment> plan(Level level, BlockPos start, BlockPos end, boolean xFirst) {

@@ -20,6 +20,51 @@ public final class ConveyorGeometry {
     }
     public static final EnumProperty<Slope> SLOPE = EnumProperty.create("slope", Slope.class);
     private ConveyorGeometry() {}
+    public static BlockState placementState(BlockState base, net.minecraft.world.item.context.BlockPlaceContext context) {
+        if (context instanceof net.crystalnexus.util.ConveyorPlacement.Context route) return route.state(base);
+        return automaticState(context.getLevel(), context.getClickedPos(),
+            base.setValue(ConveyerBeltBlock.FACING, context.getHorizontalDirection()));
+    }
+    private static BlockState automaticState(Level level, BlockPos pos, BlockState state) {
+        BlockState flat = state.setValue(SLOPE, Slope.FLAT).setValue(ConveyerBeltBlock.CURVE, ConveyerBeltBlock.CurveShape.STRAIGHT);
+        if (!level.isOutsideBuildHeight(pos.above()) && level.getBlockState(pos.above()).canBeReplaced()) {
+            for (Slope slope : List.of(Slope.UP, Slope.DOWN)) {
+                BlockState ramp = flat.setValue(SLOPE, slope);
+                boolean out = slope == Slope.UP;
+                BlockPos high = port(pos, ramp, out);
+                if (!level.hasChunkAt(high)) continue;
+                BlockState other = level.getBlockState(high);
+                if (out ? connects(pos, ramp, high, other) : connects(high, other, pos, ramp)) return ramp;
+            }
+        }
+        for (ConveyerBeltBlock.CurveShape curve : ConveyerBeltBlock.CurveShape.values()) {
+            BlockState candidate = flat.setValue(ConveyerBeltBlock.CURVE, curve);
+            BlockPos prev = neighbor(level, pos, candidate, false);
+            if (level.hasChunkAt(prev) && connects(prev, level.getBlockState(prev), pos, candidate)) return candidate;
+        }
+        return flat;
+    }
+    public static void updateAutomatic(Level level, BlockPos pos) {
+        if (level.isClientSide || net.crystalnexus.util.ConveyorPlacement.placing) return;
+        BlockState state = level.getBlockState(pos);
+        if (!isBelt(state)) return;
+        // Wrench routes retain their explicitly planned corners and ramps.
+        if (level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt
+                && (belt.getSplinePrevPos() != null || belt.getSplineNextPos() != null)) return;
+        BlockState next = automaticState(level, pos, state);
+        if (next != state) level.setBlock(pos, next, Block.UPDATE_ALL);
+    }
+    public static void scheduleUpdates(Level level, BlockPos pos) {
+        if (level.isClientSide) return;
+        level.scheduleTick(pos, level.getBlockState(pos).getBlock(), 1);
+        // Raised neighbors are diagonal, outside vanilla's six direct neighbor notifications.
+        for (Direction side : Direction.Plane.HORIZONTAL) for (int dy = -1; dy <= 1; dy++) {
+            BlockPos neighbor = pos.relative(side).offset(0, dy, 0);
+            if (!level.hasChunkAt(neighbor)) continue;
+            BlockState state = level.getBlockState(neighbor);
+            if (isBelt(state)) level.scheduleTick(neighbor, state.getBlock(), 1);
+        }
+    }
     public static boolean isBelt(BlockState s) {
         return s.getBlock() instanceof ConveyerBeltBlock || s.getBlock() instanceof ConveyerBeltInputBlock
             || s.getBlock() instanceof ConveyerBeltOutputBlock;
@@ -63,6 +108,24 @@ public final class ConveyorGeometry {
             - .5*out.getStepX()*Math.cos(angle)-.5*in.getStepX()*Math.sin(angle), y,
             .5 + .5*(in.getStepZ()+out.getStepZ())
             - .5*out.getStepZ()*Math.cos(angle)-.5*in.getStepZ()*Math.sin(angle));
+    }
+    public static double progress(BlockState state, double x, double z) {
+        Direction out = output(state), in = input(state);
+        double t;
+        if (state.getValue(ConveyerBeltBlock.CURVE) == ConveyerBeltBlock.CurveShape.STRAIGHT) {
+            t = .5 + (x - .5) * out.getStepX() + (z - .5) * out.getStepZ();
+        } else {
+            double dx = x - .5 - .5 * (in.getStepX() + out.getStepX());
+            double dz = z - .5 - .5 * (in.getStepZ() + out.getStepZ());
+            t = Math.atan2(-(dx * in.getStepX() + dz * in.getStepZ()),
+                -(dx * out.getStepX() + dz * out.getStepZ())) / (Math.PI / 2);
+        }
+        return Math.clamp(t, 0, 1);
+    }
+    public static double supportHeight(BlockState state, net.minecraft.world.phys.AABB bounds) {
+        return shape(state).toAabbs().stream().filter(box ->
+            bounds.maxX > box.minX && bounds.minX < box.maxX && bounds.maxZ > box.minZ && bounds.minZ < box.maxZ)
+            .mapToDouble(box -> box.maxY).max().orElse(Double.NaN);
     }
     private static final Map<BlockState,VoxelShape> SHAPES = new java.util.concurrent.ConcurrentHashMap<>();
     static int curveEdgePixels(int row, boolean mirror) {

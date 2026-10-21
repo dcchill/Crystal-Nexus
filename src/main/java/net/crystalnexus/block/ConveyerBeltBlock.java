@@ -164,10 +164,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 
 	@Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
-    if (context instanceof net.crystalnexus.util.ConveyorPlacement.Context route) return route.state(defaultBlockState());
-    return this.defaultBlockState()
-        .setValue(FACING, context.getHorizontalDirection())
-        .setValue(CURVE, CurveShape.STRAIGHT);
+    return ConveyorGeometry.placementState(defaultBlockState(), context);
 }
 
 
@@ -182,8 +179,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	@Override
 	public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
 		super.onPlace(blockstate, world, pos, oldState, moving);
-		updateCurveState(world, pos);
-		world.scheduleTick(pos, this, 1);
+		ConveyorGeometry.scheduleUpdates(world, pos);
 	}
 
 	@Override
@@ -193,33 +189,13 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 		if (!world.isClientSide) {
 			ConveyerBeltMode.updateAutomatic(world, pos);
 		}
-		updateCurveState(world, pos);
+		ConveyorGeometry.scheduleUpdates(world, pos);
 	}
 
 	@Override
 	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+		ConveyorGeometry.updateAutomatic(world, pos);
 		ConveyerBeltMode.updateAutomatic(world, pos);
-	}
-
-	private void updateCurveState(Level world, BlockPos pos) {
-		BlockState state = world.getBlockState(pos);
-		if (state.getBlock() != this || !state.hasProperty(FACING) || !state.hasProperty(CURVE)) {
-			return;
-		}
-
-        // Explicit routes keep their geometry; loose belts prefer a straight feeder.
-        if (net.crystalnexus.util.ConveyorPlacement.placing || world.isClientSide || world.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt
-                && (belt.getSplinePrevPos() != null || belt.getSplineNextPos() != null)) return;
-        if (state.getValue(ConveyorGeometry.SLOPE) != ConveyorGeometry.Slope.FLAT) return;
-        for (CurveShape curve : CurveShape.values()) {
-            BlockState candidate = state.setValue(CURVE, curve);
-            BlockPos prev = ConveyorGeometry.neighbor(world, pos, candidate, false);
-            if (ConveyorGeometry.connects(prev, world.getBlockState(prev), pos, candidate)) {
-                if (candidate != state) world.setBlock(pos, candidate, 3);
-                return;
-            }
-        }
-
 	}
 
 	public enum CurveShape implements StringRepresentable {
@@ -260,6 +236,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
+			ConveyorGeometry.scheduleUpdates(world, pos);
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof ConveyerBeltBlockEntity be) {
 				Containers.dropContents(world, pos, be);

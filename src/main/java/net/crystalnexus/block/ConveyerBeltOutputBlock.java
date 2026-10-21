@@ -133,9 +133,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 
 @Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
-    if (context instanceof net.crystalnexus.util.ConveyorPlacement.Context route) return route.state(defaultBlockState());
-    return this.defaultBlockState()
-        .setValue(FACING, context.getHorizontalDirection());
+    return ConveyorGeometry.placementState(defaultBlockState(), context);
 }
 
 
@@ -150,8 +148,19 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	@Override
 	public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
 		super.onPlace(blockstate, world, pos, oldState, moving);
-		world.scheduleTick(pos, this, 1);
+		ConveyorGeometry.scheduleUpdates(world, pos);
 	}
+
+    @Override
+    public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean moving) {
+        super.neighborChanged(state, world, pos, block, fromPos, moving);
+        ConveyorGeometry.scheduleUpdates(world, pos);
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+        ConveyorGeometry.updateAutomatic(world, pos);
+    }
 
 	@Override
 	public MenuProvider getMenuProvider(BlockState state, Level worldIn, BlockPos pos) {
@@ -174,6 +183,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 	@Override
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
 		if (state.getBlock() != newState.getBlock()) {
+			ConveyorGeometry.scheduleUpdates(world, pos);
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof ConveyerBeltOutputBlockEntity be) {
 				Containers.dropContents(world, pos, be);

@@ -87,6 +87,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 	private List<QuarryChunkSelection.BlockOffset> hyperSliceOrder;
 	private int hyperBlocksPerTick = 1;
 	private int status = STATUS_IDLE;
+	private boolean syncPending;
 	private final Set<ChunkPos> ticketedChunks = new HashSet<>();
 
 	@Nullable private BlockPos targetPos;
@@ -142,7 +143,13 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 
 	public static void tick(Level level, BlockPos pos, BlockState state, QuarryBlockEntity quarry) {
 		if (level.isClientSide) return;
-		if (quarry.isHyper()) quarry.tickHyper((ServerLevel) level);
+		if (quarry.isHyper()) {
+			quarry.tickHyper((ServerLevel) level);
+			if (quarry.syncPending) {
+				quarry.syncPending = false;
+				level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+			}
+		}
 		else quarry.tickNormal(level, pos);
 	}
 
@@ -191,16 +198,15 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		drainHiddenBuffer(level);
 		if (layerY == Integer.MIN_VALUE) layerY = worldPosition.getY() - 1;
 		if (level.hasNeighborSignal(worldPosition)) {
-			status = STATUS_REDSTONE_STOPPED;
+			setHyperStatus(STATUS_REDSTONE_STOPPED);
 			releaseTickets(level);
 			tickBeamIdle();
-			sync();
 			return;
 		}
 		ensureTickets(level);
 		if (cooldown > 0) {
 			cooldown--;
-			status = STATUS_IDLE;
+			setHyperStatus(STATUS_IDLE);
 			tickBeamIdle();
 			return;
 		}
@@ -208,35 +214,38 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		List<SliceEntry> slice = collectHyperSlice(level);
 		if (slice.isEmpty()) {
 			advanceHyperLayer(level);
-			status = STATUS_IDLE;
+			setHyperStatus(STATUS_IDLE);
 			tickBeamIdle();
 			sync();
 			return;
 		}
 
-		int blocksToMine = hyperBlocksPerTick > 0 ? Math.min(hyperBlocksPerTick, slice.size()) : slice.size();
-		List<SliceEntry> toMine = slice.subList(0, blocksToMine);
-		BlockPos beamTarget = toMine.getLast().pos();
+		BlockPos beamTarget = slice.getLast().pos();
 		setTargetPos(beamTarget);
 		markBeamActive();
-		int energyCost = Math.multiplyExact(toMine.size(), FE_PER_BLOCK);
+		int energyCost = Math.multiplyExact(slice.size(), FE_PER_BLOCK);
 		if (energyStorage.getEnergyStored() < energyCost) {
-			status = STATUS_NO_POWER;
-			sync();
+			setHyperStatus(STATUS_NO_POWER);
 			return;
 		}
-		List<ItemStack> drops = toMine.stream().flatMap(entry -> entry.drops().stream()).toList();
+		List<ItemStack> drops = new ArrayList<>();
+		for (SliceEntry entry : slice) {
+			LootParams.Builder loot = new LootParams.Builder(level)
+				.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(entry.pos()))
+				.withParameter(LootContextParams.TOOL, VIRTUAL_TOOL.copy());
+			drops.addAll(entry.state().getDrops(loot));
+		}
 		if (!bufferCanAccept(drops)) {
-			status = STATUS_BUFFER_FULL;
-			sync();
+			setHyperStatus(STATUS_BUFFER_FULL);
 			return;
 		}
 
 		energyStorage.extractEnergy(energyCost, false);
-		for (SliceEntry entry : toMine)
+		for (SliceEntry entry : slice)
 			level.setBlock(entry.pos(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 		for (ItemStack drop : drops) insertIntoHandler(hiddenBuffer, drop.copy());
-		status = STATUS_MINING;
+		orderIndex = slice.getLast().nextIndex();
+		setHyperStatus(STATUS_MINING);
 		cooldown = upgradedCooldown();
 		sync();
 	}
@@ -246,20 +255,25 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 			hyperSliceOrder = QuarryChunkSelection.blockOffsetsOuterToInner(selectionWidth, selectionDepth);
 		ChunkPos center = new ChunkPos(worldPosition);
 		List<SliceEntry> slice = new ArrayList<>();
-		for (QuarryChunkSelection.BlockOffset offset : hyperSliceOrder) {
+		for (int index = orderIndex; index < hyperSliceOrder.size(); index++) {
+			QuarryChunkSelection.BlockOffset offset = hyperSliceOrder.get(index);
 			BlockPos pos = new BlockPos(center.getMinBlockX() + offset.x(), layerY,
 				center.getMinBlockZ() + offset.z());
 			if (!isMineable(level, pos)) continue;
 			BlockState state = level.getBlockState(pos);
-			LootParams.Builder loot = new LootParams.Builder(level)
-				.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-				.withParameter(LootContextParams.TOOL, VIRTUAL_TOOL.copy());
-			slice.add(new SliceEntry(pos, state.getDrops(loot)));
+			slice.add(new SliceEntry(pos, state, index + 1));
+			if (hyperBlocksPerTick > 0 && slice.size() >= hyperBlocksPerTick) break;
 		}
 		return slice;
 	}
 
-	private record SliceEntry(BlockPos pos, List<ItemStack> drops) {}
+	private record SliceEntry(BlockPos pos, BlockState state, int nextIndex) {}
+
+	private void setHyperStatus(int value) {
+		if (status == value) return;
+		status = value;
+		sync();
+	}
 
 	private boolean bufferCanAccept(List<ItemStack> drops) {
 		ItemStackHandler scratch = new ItemStackHandler(HYPER_BUFFER_SLOTS);
@@ -280,11 +294,15 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 			if (buffered.isEmpty()) continue;
 			ItemStack remaining = insertIntoOutput(buffered.copy(), false);
 			remaining = insertToTopInventory(level, remaining, false);
-			hiddenBuffer.setStackInSlot(slot, remaining);
+			if (remaining.getCount() != buffered.getCount()) {
+				hiddenBuffer.setStackInSlot(slot, remaining);
+				sync();
+			}
 		}
 	}
 
 	private void advanceHyperLayer(Level level) {
+		orderIndex = 0;
 		layerY--;
 		if (layerY < level.getMinBuildHeight()) layerY = worldPosition.getY() - 1;
 	}
@@ -324,6 +342,7 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		selectionWidth = width;
 		selectionDepth = depth;
 		layerY = worldPosition.getY() - 1;
+		orderIndex = 0;
 		hyperSliceOrder = null;
 		status = STATUS_IDLE;
 		sync();
@@ -509,7 +528,8 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 
 	private void sync() {
 		setChanged();
-		if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+		if (isHyper()) syncPending = true;
+		else if (level != null) level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
 	}
 
 	public boolean isHyper() { return getBlockState().is(CrystalnexusModBlocks.HYPER_LASER_QUARRY.get()); }
@@ -567,8 +587,11 @@ public class QuarryBlockEntity extends RandomizableContainerBlockEntity implemen
 		beamIdleTimer = tag.getInt("beamIdleTimer");
 		selectionWidth = tag.contains("selectionWidth") ? QuarryChunkSelection.clampSize(tag.getInt("selectionWidth")) : 1;
 		selectionDepth = tag.contains("selectionDepth") ? QuarryChunkSelection.clampSize(tag.getInt("selectionDepth")) : 1;
+		if (isHyper()) orderIndex = Mth.clamp(orderIndex, 0, selectionWidth * selectionDepth * 256);
+		hyperSliceOrder = null;
 		status = tag.getInt("hyperStatus");
 		targetPos = tag.getBoolean("hasTargetPos") && tag.contains("targetPos") ? BlockPos.of(tag.getLong("targetPos")) : null;
+		if (targetPos == null) clientCacheRemove(); else clientCacheSet(targetPos);
 	}
 
 	@Override

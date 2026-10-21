@@ -473,6 +473,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.FACTORY_OUTPUT_CONTROLLER.get().asItem());
 				tabData.accept(CrystalnexusModItems.LINK_CARD.get());
 				tabData.accept(CrystalnexusModBlocks.SMART_SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.SPLITTER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.MERGER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_BASE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_FRAME.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.BLUEPRINT_CONTROLLER.get().asItem());

@@ -47,6 +47,17 @@ public final class WrenchLinePreviewRenderer {
     }
 
     @SubscribeEvent
+    public static void onInteractionInput(net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (!event.isAttack() || mc.player == null || mc.screen != null) return;
+        ItemStack wrench = mc.player.getMainHandItem();
+        if (!(wrench.getItem() instanceof CrystalWrenchItem) || ConveyorPlacement.preview(wrench).isEmpty()) return;
+        net.neoforged.neoforge.network.PacketDistributor.sendToServer(new net.crystalnexus.network.CancelConveyorPlacementMessage());
+        event.setSwingHand(false);
+        event.setCanceled(true);
+    }
+
+    @SubscribeEvent
     public static void render(RenderLevelStageEvent event) {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) return;
 
@@ -85,17 +96,22 @@ public final class WrenchLinePreviewRenderer {
                                        ItemStack wrench, ItemStack belts, BlockHitResult hit) {
         CompoundTag data = ConveyorPlacement.preview(wrench);
         if (data.isEmpty() || !data.getString("dimension").equals(level.dimension().location().toString())) return;
+        BlockPos start = BlockPos.of(data.getLong("start"));
+        BlockPos end = ConveyorPlacement.endpoint(level,mc.player,belts,hit);
+        if (start.equals(end)) {
+            mc.gui.setOverlayMessage(net.minecraft.network.chat.Component.literal("Conveyor: left-click to cancel"), false);
+            return;
+        }
         var poses = event.getPoseStack();
         var buffers = mc.renderBuffers().bufferSource();
         Vec3 camera = event.getCamera().getPosition();
         try {
-            var route = ConveyorPlacement.plan(level, BlockPos.of(data.getLong("start")),
-                ConveyorPlacement.endpoint(level,mc.player,belts,hit),data.getBoolean("xFirst"));
+            var route = ConveyorPlacement.plan(level, start, end, data.getBoolean("xFirst"));
             String problem = ConveyorPlacement.validate(level,mc.player,belts,route);
             int needed = (int) route.stream().filter(s -> !ConveyorGeometry.isBelt(level.getBlockState(s.pos()))).count();
             boolean invalid = problem != null || !mc.player.isCreative() && ConveyorPlacement.available(mc.player,belts)<needed;
             mc.gui.setOverlayMessage(net.minecraft.network.chat.Component.literal(problem != null ? problem :
-                "Conveyor: " + needed + " belts" + (invalid ? " (not enough)" : " - click to build; sneak-use changes bend")), false);
+                "Conveyor: " + needed + " belts" + (invalid ? " (not enough)" : " - click to build; sneak-use changes bend; left-click cancels")), false);
             RenderSystem.enableBlend(); RenderSystem.depthMask(false);
             for (var segment : route) {
                 if (!level.hasChunkAt(segment.pos())) continue;

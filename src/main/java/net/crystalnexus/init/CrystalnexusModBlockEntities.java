@@ -243,6 +243,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> TANK = register("tank", CrystalnexusModBlocks.TANK, TankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_TANK = register("crystal_tank", CrystalnexusModBlocks.CRYSTAL_TANK, CrystalTankBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> FLUID_PACKAGER = register("fluid_packager", CrystalnexusModBlocks.FLUID_PACKAGER, FluidPackagerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SPLITTER = register("splitter", CrystalnexusModBlocks.SPLITTER, net.crystalnexus.block.entity.ItemRouterBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> MERGER = register("merger", CrystalnexusModBlocks.MERGER, net.crystalnexus.block.entity.ItemRouterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> SMART_SPLITTER = register("smart_splitter", CrystalnexusModBlocks.SMART_SPLITTER, SmartSplitterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> COMPUTATION_CLUSTER = register("computation_cluster", CrystalnexusModBlocks.COMPUTATION_CLUSTER, ComputationClusterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTICLE_ACCELERATOR_TUBE = register("particle_accelerator_tube", CrystalnexusModBlocks.PARTICLE_ACCELERATOR_TUBE, ParticleAcceleratorTubeBlockEntity::new);
@@ -467,6 +469,8 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 2, Integer.MAX_VALUE));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> ((FluidPackagerBlockEntity) blockEntity).getEnergyStorage());
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, FLUID_PACKAGER.get(), (blockEntity, side) -> ((FluidPackagerBlockEntity) blockEntity).getAutomationFluidHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SPLITTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, MERGER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, SMART_SPLITTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, COMPUTATION_CLUSTER.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, COMPUTATION_CLUSTER.get(), (blockEntity, side) -> ((ComputationClusterBlockEntity) blockEntity).getEnergyStorage());
