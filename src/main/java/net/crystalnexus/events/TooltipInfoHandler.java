@@ -95,6 +95,11 @@ public class TooltipInfoHandler {
 	}
 
 	static {
+        addTooltip("crystal_wrench",
+                "Right-click: Rotate blocks / Cycle depot cable modes.",
+                "Shift+Right-click: Dismantle machines, frames, blueprints, storage, and cables.",
+                "Block offhand: Select two points; sneak-use cycles direction.",
+                "Belts offhand: Click nodes to continue; sneak-use switches bend; left-click cancels.");
         addTooltip("plasma_injector", "Consumes half the Argon of its original throughput and produces plasma for adjacent Coils.", "Adjacent Injectors boost throughput and heat; each adjacent Coil adds output heat and backpressure.");
         addTooltip("high_flow_plasma_injector", "Consumes 2x the Argon and produces 2x the plasma and injection heat of a Plasma Injector.", "Shares Injector adjacency bonuses, Coil backpressure, and Heatsink cooling.", "Coil processing capacity still limits output and its associated heat.");
         addTooltip("ferrosteel_heatsink", "Provides up to 12 heat/t cooling to each Injector in all 8 neighboring slots.", "Cooling stacks from multiple Heatsinks.", "Reduces Induction Coil efficiency in all 8 neighboring slots by 20% (minimum 0%).");
@@ -207,6 +212,14 @@ public class TooltipInfoHandler {
 		addTooltip("ore_processor",
 				"Advanced ore processing plant.",
 				"Processes raw ores.");
+		addTooltip("azurine_press", "Presses one material block into 12 matching plates.");
+		addTooltip("ferrosteel_press", "Presses one material block into 12 matching plates.");
+		addTooltip("ferrosteel_lathe",
+				"Lathes ingots into rods and rods into bolts, with a 33% chance of matching dust.",
+				"Ferrosteel-tier speed, power, storage, and upgrade slots.");
+		addTooltip("azurine_lathe",
+				"Lathes ingots into rods and rods into bolts, with a 33% chance of matching dust.",
+				"Cycles take 25% longer than the Parts Assembler. Requires a matching dust.");
 		addTooltip("parts_assembler",
 				"Forms ingots into plates, rods, or bolts.",
 				"Select the output shape from its GUI.");
@@ -705,7 +718,6 @@ public class TooltipInfoHandler {
 		MachineTier tier = stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
 				? machine.machineTier() : null;
 		if (tier != null) {
-			event.getToolTip().add(Component.translatable("tooltip.crystalnexus.machine_slot_capacity", tier.itemSlotCapacity()));
 			event.getToolTip().add(Math.min(1, event.getToolTip().size()),
 					colors == null ? tier.tierLabel() : colors.tierLabel(tier));
 		}
@@ -732,6 +744,10 @@ public class TooltipInfoHandler {
 		boolean meteorScanner = stack.getItem() instanceof MeteorScannerItem;
 		if (tooltipLines == null && !meteorScanner) return;
 		if (Screen.hasShiftDown()) {
+            if (path.equals("crystal_wrench")) {
+                event.getToolTip().add(Component.translatable("tooltip.crystalnexus.wrench.conveyor_filters").withStyle(ChatFormatting.GRAY));
+                event.getToolTip().add(Component.translatable("tooltip.crystalnexus.wrench.scanner").withStyle(ChatFormatting.LIGHT_PURPLE));
+            }
 			if (meteorScanner) {
 				event.getToolTip().add(Component.translatable("tooltip.crystalnexus.meteor_scanner",
 						MeteorScannerItem.RANGE, MeteorScannerItem.SCAN_COST).withStyle(ChatFormatting.GRAY));

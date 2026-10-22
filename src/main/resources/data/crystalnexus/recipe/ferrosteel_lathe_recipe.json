@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["pbp", "rmr", "pep"],
+  "key": {
+    "p": { "tag": "c:plates/ferrosteel" },
+    "b": { "item": "crystalnexus:ferrosteel_bearing" },
+    "r": { "tag": "c:rods/ferrosteel" },
+    "m": { "item": "crystalnexus:azurine_lathe" },
+    "e": { "item": "crystalnexus:ferrosteel_electric_motor" }
+  },
+  "result": { "id": "crystalnexus:ferrosteel_lathe", "count": 1 }
+}

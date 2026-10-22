@@ -25,7 +25,7 @@ public final class PartsAssemblerScreen extends HolographicMachineScreen<PartsAs
     @Override protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         machineBackground(graphics);
         machineProgress(graphics, (double) menu.progress() / menu.maxProgress());
-        for (int mode = 0; mode < MODE_TEXTURES.length; mode++) {
+        for (int mode = menu.isLathe() ? 1 : 0; !menu.isPress() && mode < MODE_TEXTURES.length; mode++) {
             var r = MachineGuiLayout.assemblerMode(mode);
             MachineGuiTheme.frame(graphics, leftPos + r.x(), topPos + r.y(), r.width(), r.height(),
                 menu.selectedMode() == mode ? MachineGuiTheme.accent(machineTier()) : 0x52788F);
@@ -36,7 +36,7 @@ public final class PartsAssemblerScreen extends HolographicMachineScreen<PartsAs
     }
 
     @Override protected boolean machineMouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0) for (int mode = 0; mode < MODE_TEXTURES.length; mode++) {
+        if (button == 0) for (int mode = menu.isLathe() ? 1 : 0; !menu.isPress() && mode < MODE_TEXTURES.length; mode++) {
             if (MachineGuiLayout.assemblerMode(mode).contains(mouseX - leftPos, mouseY - topPos)) {
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, mode);
                 return true;
@@ -48,7 +48,7 @@ public final class PartsAssemblerScreen extends HolographicMachineScreen<PartsAs
     @Override protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         super.renderMachine(graphics, mouseX, mouseY, partialTick);
         renderTooltip(graphics, mouseX, mouseY);
-        for (int mode = 0; mode < MODE_TEXTURES.length; mode++) if (MachineGuiLayout.assemblerMode(mode).contains(mouseX - leftPos, mouseY - topPos)) {
+        for (int mode = menu.isLathe() ? 1 : 0; !menu.isPress() && mode < MODE_TEXTURES.length; mode++) if (MachineGuiLayout.assemblerMode(mode).contains(mouseX - leftPos, mouseY - topPos)) {
             var selected = PartsAssemblingRecipe.Mode.fromId(mode);
             graphics.renderTooltip(font, Component.translatable("gui.crystalnexus.parts_assembler.mode." + selected.serializedName()), mouseX, mouseY);
         }
@@ -56,5 +56,5 @@ public final class PartsAssemblerScreen extends HolographicMachineScreen<PartsAs
 
     @Override protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {}
     @Override protected BlockPos machinePosition() { return menu.guiPosition(); }
-    @Override protected String machineFallbackId() { return "parts_assembler"; }
+    @Override protected String machineFallbackId() { return menu.machineId(); }
 }

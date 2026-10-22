@@ -34,6 +34,8 @@ public final class MachineRecipeTransfers {
         add(registration, MasticatorMenu.class, CrystalnexusModMenus.MASTICATOR.get(), GeneSplicing_Type, 0);
         add(registration, HemolyzerMenu.class, CrystalnexusModMenus.HEMOLYZER.get(), Hemolyzer_Type, 0);
         add(registration, PartsAssemblerMenu.class, CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PartsAssembling_Type, 0);
+        add(registration, PartsAssemblerMenu.class, CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PlatePressing_Type, 0);
+        add(registration, PartsAssemblerMenu.class, CrystalnexusModMenus.PARTS_ASSEMBLER.get(), net.crystalnexus.init.CrystalnexusModJeiPlugin.AzurineLathing_Type, 0);
         add(registration, SeparatorGuiMenu.class, CrystalnexusModMenus.SEPARATOR_GUI.get(), DustSeperation_Type, 0);
         add(registration, CircuitPressGUIMenu.class, CrystalnexusModMenus.CIRCUIT_PRESS_GUI.get(), CircuitPressing_Type, 0, 2);
         add(registration, CircuitPressGUIMenu.class, CrystalnexusModMenus.CIRCUIT_PRESS_GUI.get(), TitaniumCarbideCircuitPress_Type,

@@ -38,6 +38,16 @@ class ConveyerBeltMovementTest {
     }
 
     @Test
+    void fastTiersAnimateAcrossTheWholeTick() {
+        assertEquals(1.5F, ConveyerBeltMovement.renderPosition(1, 0.5F, 1));
+        assertEquals(1.0F, ConveyerBeltMovement.renderPosition(1, 0.5F, 2));
+        assertEquals(0.0F, ConveyerBeltMovement.renderPosition(3, 0, 4));
+        assertEquals(2.0F, ConveyerBeltMovement.renderPosition(3, 0.5F, 4));
+        assertEquals(4.0F, ConveyerBeltMovement.renderPosition(3, 1, 4));
+        assertEquals(0.0F, ConveyerBeltMovement.renderPosition(0, 0, 4));
+    }
+
+    @Test
     void itemWaitsWhenFrontInventoryCannotAcceptIt() {
         assertFalse(ConveyerBeltMovement.shouldDropOffFront(false, true));
         assertTrue(ConveyerBeltMovement.shouldDropOffFront(false, false));

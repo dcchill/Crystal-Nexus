@@ -28,6 +28,13 @@ class MachineGuiCleanupTest {
         }
     }
 
+    @Test void lathesUseTheirMaterialGuiTier() {
+        assertEquals(4, MachineGuiTheme.tier(null, null, "azurine_lathe"));
+        assertEquals(6, MachineGuiTheme.tier(null, null, "ferrosteel_lathe"));
+        assertEquals(4, MachineGuiTheme.tier(null, null, "azurine_press"));
+        assertEquals(6, MachineGuiTheme.tier(null, null, "ferrosteel_press"));
+    }
+
     @Test void machinesKeepOneHeaderReading() {
         for (String menu : List.of("IronSmelterGuiMenu", "CrusherGuiMenu", "CircuitPressGUIMenu", "CrystalPurifierGUIMenu",
                 "FluidChemicalReactionChamberGUIMenu", "MatterTransmutationGUIMenu", "CraftingFactoryGUIMenu",

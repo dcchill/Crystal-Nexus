@@ -162,6 +162,19 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
     return net.minecraft.world.InteractionResult.PASS;
 }
 
+    @Override
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, net.minecraft.world.entity.LivingEntity placer, ItemStack stack) {
+        super.setPlacedBy(level, pos, state, placer, stack);
+        var data = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+            net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+        if (!level.isClientSide && data.contains("BlockEntityTag")
+                && level.getBlockEntity(pos) instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt) {
+            belt.loadWithComponents(data.getCompound("BlockEntityTag"), level.registryAccess());
+            belt.setChanged();
+            level.sendBlockUpdated(pos, state, state, 3);
+        }
+    }
+
 	@Override
 public BlockState getStateForPlacement(BlockPlaceContext context) {
     return ConveyorGeometry.placementState(defaultBlockState(), context);

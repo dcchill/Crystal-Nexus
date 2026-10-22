@@ -293,7 +293,11 @@
     "PartsAssemblerScreen": {
       "menu": "PartsAssemblerMenu",
       "machines": [
-        "parts_assembler"
+        "parts_assembler",
+        "azurine_press",
+        "ferrosteel_press",
+        "azurine_lathe",
+        "ferrosteel_lathe"
       ]
     },
     "PistonGenGUIScreen": {
@@ -952,6 +956,26 @@
         "particle_accelerator_controller_recipe.json",
         "crystalnexus:ferrosteel_bearing"
       ]
+    },
+    "azurine_press": {
+      "tier": 4,
+      "recipe": "azurine_press_recipe.json",
+      "evidence": ["azurine_press_recipe.json", "crystalnexus:azurine_machine_frame"]
+    },
+    "ferrosteel_press": {
+      "tier": 6,
+      "recipe": "ferrosteel_press_recipe.json",
+      "evidence": ["ferrosteel_press_recipe.json", "crystalnexus:ferrosteel_electric_motor"]
+    },
+    "azurine_lathe": {
+      "tier": 4,
+      "recipe": "azurine_lathe_recipe.json",
+      "evidence": ["azurine_lathe_recipe.json", "crystalnexus:azurine_machine_frame"]
+    },
+    "ferrosteel_lathe": {
+      "tier": 6,
+      "recipe": "ferrosteel_lathe_recipe.json",
+      "evidence": ["ferrosteel_lathe_recipe.json", "crystalnexus:ferrosteel_electric_motor"]
     },
     "parts_assembler": {
       "tier": 1,

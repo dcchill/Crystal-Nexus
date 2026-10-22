@@ -28,6 +28,180 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class ConveyerBeltGameTests {
     private ConveyerBeltGameTests() {}
 
+    @GameTest(template = "zero_point")
+    public static void tagFiltersMatchPersistAndValidateMenuActions(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        var planks = net.minecraft.tags.ItemTags.PLANKS.location();
+        belt.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        belt.setFilter(1, new ItemStack(Items.DIAMOND));
+        helper.assertTrue(!belt.matchesFilter(new ItemStack(Items.BIRCH_PLANKS)), "Exact filters must remain exact");
+        helper.assertTrue(belt.setFilterTag(0, planks), "Sample item's tags must be selectable");
+        helper.assertTrue(belt.matchesFilter(new ItemStack(Items.BIRCH_PLANKS)) && belt.matchesFilter(new ItemStack(Items.DIAMOND))
+            && !belt.matchesFilter(new ItemStack(Items.EMERALD)), "Tag and exact filters must match with OR semantics");
+        belt.setFilterBlacklist(true);
+        helper.assertTrue(!belt.matchesFilter(new ItemStack(Items.BIRCH_PLANKS)) && !belt.matchesFilter(new ItemStack(Items.DIAMOND))
+            && belt.matchesFilter(new ItemStack(Items.EMERALD)), "Blacklist must invert item and tag matches");
+        for (int mode = 0; mode < 3; mode++) {
+            ConveyerBeltMode.cycle(level, pos);
+            belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+            helper.assertTrue(planks.equals(belt.getFilterTag(0)), "Mode changes must preserve tag filters");
+        }
+        var saved = belt.saveWithFullMetadata(level.registryAccess());
+        belt.loadWithComponents(saved, level.registryAccess());
+        helper.assertTrue(planks.equals(belt.getFilterTag(0)), "Save/load must preserve tag filters");
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setPos(pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5);
+        var menu = new net.crystalnexus.world.inventory.ConveyorFilterMenu(7, player.getInventory(), pos);
+        player.containerMenu = menu;
+        helper.assertTrue(planks.equals(menu.getFilterTag(0)), "Ghost slots must synchronize tag identity");
+        helper.assertTrue(!menu.selectTag(player, 8, 0, null) && !menu.selectTag(player, 7, -1, planks)
+            && !menu.selectTag(player, 7, 9, planks) && !menu.selectTag(player, 7, 2, planks)
+            && !menu.selectTag(player, 7, 1, planks), "Stale IDs, invalid slots and nonmember tags must be rejected");
+        helper.assertTrue(menu.selectTag(player, 7, 0, null) && belt.getFilterTag(0) == null,
+            "Exact item selection must clear the tag");
+        helper.assertTrue(menu.selectTag(player, 7, 0, planks), "Valid menu actions must set the tag");
+        player.setPos(pos.getX() + 20, pos.getY(), pos.getZ());
+        helper.assertTrue(!menu.selectTag(player, 7, 0, null), "Distant tag changes must be rejected");
+        player.setPos(pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5);
+        player.containerMenu = player.inventoryMenu;
+        helper.assertTrue(!menu.selectTag(player, 7, 0, null), "Closed menu actions must be rejected");
+        var unknown = net.minecraft.resources.ResourceLocation.parse("crystalnexus:missing_filter_test_tag");
+        saved.getCompound("InventoryFilterTags").putString("s0", unknown.toString());
+        belt.loadWithComponents(saved, level.registryAccess());
+        belt.setFilterBlacklist(false);
+        helper.assertTrue(unknown.equals(belt.getFilterTag(0)) && !belt.matchesFilter(new ItemStack(Items.OAK_PLANKS)),
+            "Missing tags must remain configured and match nothing");
+        saved.remove("InventoryFilterTags");
+        belt.loadWithComponents(saved, level.registryAccess());
+        helper.assertTrue(belt.getFilterTag(0) == null, "Old saves must load exact filters");
+        belt.setFilterTag(0, planks);
+        belt.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        helper.assertTrue(belt.getFilterTag(0) == null, "Replacing a sample must clear its tag");
+        belt.setFilterTag(0, planks);
+        belt.setFilter(0, ItemStack.EMPTY);
+        belt.setFilter(1, ItemStack.EMPTY);
+        helper.assertTrue(belt.getFilterTag(0) == null && belt.matchesFilter(new ItemStack(Items.EMERALD)),
+            "Clearing all slots must restore unrestricted transfers");
+        for (var tag : new net.minecraft.resources.ResourceLocation[]{null, planks}) {
+            var buffer = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), level.registryAccess());
+            try {
+                var request = new net.crystalnexus.network.ConveyorFilterTagSelect(7, 0, tag);
+                net.crystalnexus.network.ConveyorFilterTagSelect.STREAM_CODEC.encode(buffer, request);
+                helper.assertTrue(request.equals(net.crystalnexus.network.ConveyorFilterTagSelect.STREAM_CODEC.decode(buffer)),
+                    "Tag selection payload must round-trip exact and tag choices");
+            } finally { buffer.release(); }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 80)
+    public static void tagFiltersControlInventoryTransfers(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().defaultBlockState()
+            .setValue(ConveyerBeltBlock.FACING, Direction.EAST));
+        level.setBlockAndUpdate(pos.above(), Blocks.CHEST.defaultBlockState());
+        level.setBlockAndUpdate(pos.east(), Blocks.CHEST.defaultBlockState());
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        belt.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        belt.setFilterTag(0, net.minecraft.tags.ItemTags.PLANKS.location());
+        var source = (net.minecraft.world.Container) level.getBlockEntity(pos.above());
+        var destination = (net.minecraft.world.Container) level.getBlockEntity(pos.east());
+        source.setItem(0, new ItemStack(Items.EMERALD, 5));
+        source.setItem(1, new ItemStack(Items.BIRCH_PLANKS, 7));
+        helper.runAfterDelay(30, () -> {
+            int delivered = 0;
+            for (int slot = 0; slot < destination.getContainerSize(); slot++) delivered += destination.getItem(slot).getCount();
+            helper.assertTrue(source.getItem(0).getCount() == 5 && source.getItem(1).isEmpty() && delivered == 7,
+                "Tag filters must pull and push different items sharing the selected tag");
+            belt.setItem(3, new ItemStack(Items.EMERALD, 4));
+            helper.assertTrue(!belt.canAdvanceForRender(3), "Rejected items must not animate inventory advancement");
+        });
+        helper.runAfterDelay(50, () -> {
+            helper.assertTrue(belt.getItem(3).getCount() == 4, "Tag-rejected items must wait without dropping");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point")
+    public static void outputBatchesFollowTierAndItemStackLimit(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        ConveyorPlacement.placing = true;
+        try {
+            for (int tier = 0; tier < 3; tier++) for (var item : new net.minecraft.world.item.Item[]{Items.DIAMOND, Items.EGG}) {
+                level.removeBlock(pos, false);
+                level.removeBlock(pos.west(), false);
+                level.setBlockAndUpdate(pos.west(), Blocks.CHEST.defaultBlockState());
+                level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().defaultBlockState()
+                    .setValue(ConveyerBeltBlock.FACING, Direction.EAST)
+                    .setValue(net.crystalnexus.block.ConveyerBeltOutputBlock.TIER, tier));
+                var source = (net.minecraft.world.Container) level.getBlockEntity(pos.west());
+                int stackLimit = new ItemStack(item).getMaxStackSize();
+                for (int slot = 0; slot < 64 / stackLimit; slot++) source.setItem(slot, new ItemStack(item, stackLimit));
+                var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+                var saved = belt.saveWithFullMetadata(level.registryAccess());
+                saved.putLong("LastMove", level.getGameTime() - (tier == 0 ? 2 : 1));
+                belt.loadWithComponents(saved, level.registryAccess());
+                belt.serverTick();
+                int expected = Math.min(16 << tier, stackLimit);
+                int carried = 0;
+                for (int slot = 0; slot < 4; slot++) carried += belt.getItem(slot).getCount();
+                int remaining = 0;
+                for (int slot = 0; slot < source.getContainerSize(); slot++) remaining += source.getItem(slot).getCount();
+                helper.assertTrue(carried == expected && remaining == 64 - expected,
+                    "Output must extract the tier batch while respecting the item's stack limit: tier " + tier + " " + item);
+            }
+        } finally { ConveyorPlacement.placing = false; }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void everyTierAndModeMovesTwiceAsFast(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        var tiers = new Block[]{CrystalnexusModBlocks.CONVEYER_BELT.get(),
+            CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get(), CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get()};
+        ConveyorPlacement.placing = true;
+        try {
+            for (int tier = 0; tier < tiers.length; tier++) {
+                for (Block block : new Block[]{tiers[tier], CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get(),
+                        CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get()}) {
+                    level.removeBlock(pos, false);
+                    level.removeBlock(pos.east(), false);
+                    var state = block.defaultBlockState().setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+                    if (state.hasProperty(net.crystalnexus.block.ConveyerBeltInputBlock.TIER))
+                        state = state.setValue(net.crystalnexus.block.ConveyerBeltInputBlock.TIER, tier);
+                    level.setBlockAndUpdate(pos, state);
+                    level.setBlockAndUpdate(pos.east(), tiers[tier].defaultBlockState()
+                        .setValue(ConveyerBeltBlock.FACING, Direction.EAST));
+                    var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+                    var next = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos.east());
+                    belt.setItem(0, new ItemStack(Items.DIAMOND, 7));
+                    var saved = belt.saveWithFullMetadata(level.registryAccess());
+                    // Old saves used integer timestamps; they must still load correctly.
+                    saved.putLong("LastMove", level.getGameTime() - (tier == 0 ? 2 : 1));
+                    saved.putLong("IncomingHeadTime", level.getGameTime() - (tier == 0 ? 2 : 1));
+                    belt.loadWithComponents(saved, level.registryAccess());
+                    belt.serverTick();
+                    var destination = belt.getItem(tier == 2 ? 2 : 1);
+                    helper.assertTrue(destination.is(Items.DIAMOND) && destination.getCount() == 7,
+                        "Movement must take 2, 1 or 0.5 ticks per segment for tier " + tier + " and " + block);
+                    belt.serverTick();
+                    helper.assertTrue(destination.getCount() == 7,
+                        "Repeating a tick must not duplicate or lose items");
+                    int total = 0;
+                    for (int i = 0; i < 4; i++) total += belt.getItem(i).getCount() + next.getItem(i).getCount();
+                    helper.assertTrue(total == 7, "Sub-tick movement must conserve every item");
+                }
+            }
+        } finally { ConveyorPlacement.placing = false; }
+        helper.succeed();
+    }
+
     @GameTest(template = "zero_point", timeoutTicks = 100)
     public static void entitiesEnterAndClimbRampFromFlatBelt(GameTestHelper helper) {
         var level = helper.getLevel();
@@ -341,4 +515,149 @@ public final class ConveyerBeltGameTests {
         helper.succeed();
     }
 
+
+    @GameTest(template = "zero_point")
+    public static void filterMenuPersistsAcrossModesAndPickup(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        var state = CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState();
+        level.setBlockAndUpdate(pos, state);
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setPos(pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5);
+        var menu = new net.crystalnexus.world.inventory.ConveyorFilterMenu(1, player.getInventory(), pos);
+        var carried = new ItemStack(Items.DIAMOND, 17);
+        carried.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("Sample"));
+        menu.setCarried(carried);
+        menu.clicked(0, 0, net.minecraft.world.inventory.ClickType.PICKUP, player);
+        menu.clicked(8, 0, net.minecraft.world.inventory.ClickType.PICKUP, player);
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        helper.assertTrue(carried.getCount() == 17 && belt.getFilter(0).getCount() == 1
+            && belt.matchesFilter(new ItemStack(Items.DIAMOND)) && !belt.matchesFilter(new ItemStack(Items.EMERALD)),
+            "Ghost filters must copy item identity without consuming items");
+        menu.clicked(0, 0, net.minecraft.world.inventory.ClickType.QUICK_MOVE, player);
+        helper.assertTrue(belt.getFilter(0).is(Items.DIAMOND), "Unsupported ghost clicks must not alter filters");
+        menu.clicked(0, 1, net.minecraft.world.inventory.ClickType.PICKUP, player);
+        helper.assertTrue(belt.getFilter(0).isEmpty() && belt.getFilter(8).is(Items.DIAMOND), "Right-click clears only one slot");
+        helper.assertTrue(!menu.clickMenuButton(player, 99), "Invalid buttons must be rejected");
+        for (int n = 0; n < 3; n++) {
+            helper.assertTrue(menu.clickMenuButton(player, 0) && menu.stillValid(player), "Menu must survive filter mode changes");
+            helper.assertTrue(level.getBlockState(pos).equals(state), "Filter button must not change block mode");
+            helper.assertTrue(belt.isFilterBlacklist() == (n % 2 == 0)
+                && belt.matchesFilter(new ItemStack(Items.DIAMOND)) == (n % 2 != 0)
+                && belt.matchesFilter(new ItemStack(Items.EMERALD)) == (n % 2 == 0),
+                "Whitelist accepts listed items; blacklist accepts unlisted items");
+            belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+            helper.assertTrue(belt.getFilter(8).is(Items.DIAMOND), "Mode changes must preserve filters");
+        }
+        var saved = belt.saveWithFullMetadata(level.registryAccess());
+        belt.loadWithComponents(saved, level.registryAccess());
+        helper.assertTrue(belt.getFilter(8).is(Items.DIAMOND), "Save/load must preserve filters");
+        helper.assertTrue(belt.isFilterBlacklist(), "Save/load must preserve blacklist mode");
+        belt.setFilter(7, new ItemStack(Items.OAK_PLANKS));
+        belt.setFilterTag(7, net.minecraft.tags.ItemTags.PLANKS.location());
+        var wrench = new ItemStack(net.crystalnexus.init.CrystalnexusModItems.CRYSTAL_WRENCH.get());
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, wrench);
+        player.setShiftKeyDown(true);
+        wrench.getItem().onItemUseFirst(wrench, new net.minecraft.world.item.context.UseOnContext(player,
+            net.minecraft.world.InteractionHand.MAIN_HAND, new net.minecraft.world.phys.BlockHitResult(
+                net.minecraft.world.phys.Vec3.atCenterOf(pos), Direction.UP, pos, false)));
+        helper.assertTrue(!menu.stillValid(player), "Removed conveyor must invalidate menu");
+        ItemStack packed = level.getEntitiesOfClass(ItemEntity.class, new AABB(pos).inflate(1)).stream()
+            .map(ItemEntity::getItem).filter(item -> item.is(state.getBlock().asItem())).findFirst().orElse(ItemStack.EMPTY);
+        helper.assertTrue(!packed.isEmpty(), "Wrench pickup must return the conveyor");
+        level.setBlockAndUpdate(pos, state);
+        state.getBlock().setPlacedBy(level, pos, state, player, packed);
+        belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        helper.assertTrue(belt.isEmpty() && belt.getFilter(8).is(Items.DIAMOND) && belt.isFilterBlacklist(), "Empty filtered belt must survive pickup and placement");
+        helper.assertTrue(net.minecraft.tags.ItemTags.PLANKS.location().equals(belt.getFilterTag(7)), "Tag filters must survive wrench pickup and placement");
+        belt.loadWithComponents(new net.minecraft.nbt.CompoundTag(), level.registryAccess());
+        helper.assertTrue(belt.matchesFilter(new ItemStack(Items.EMERALD)), "Older saves must allow all items");
+        player.setPos(pos.getX() + 20, pos.getY(), pos.getZ());
+        helper.assertTrue(!menu.clickMenuButton(player, 0), "Distant menu actions must be rejected");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 100)
+    public static void filtersSelectInventoryPullsAndHoldRejectedPushes(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        var state = CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().defaultBlockState()
+            .setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        level.setBlockAndUpdate(pos, state);
+        level.setBlockAndUpdate(pos.above(), Blocks.CHEST.defaultBlockState());
+        level.setBlockAndUpdate(pos.east(), Blocks.CHEST.defaultBlockState());
+        var source = (net.minecraft.world.Container) level.getBlockEntity(pos.above());
+        var destination = (net.minecraft.world.Container) level.getBlockEntity(pos.east());
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        belt.setFilter(0, new ItemStack(Items.DIAMOND));
+        belt.setFilter(8, new ItemStack(Items.GOLD_INGOT));
+        source.setItem(0, new ItemStack(Items.EMERALD, 5));
+        source.setItem(1, new ItemStack(Items.DIAMOND, 3));
+        source.setItem(2, new ItemStack(Items.GOLD_INGOT, 2));
+        helper.runAfterDelay(40, () -> {
+            helper.assertTrue(source.getItem(0).getCount() == 5 && source.getItem(1).isEmpty() && source.getItem(2).isEmpty(),
+                "Pulls must skip rejected inventory slots and accept every listed type");
+            int delivered = 0;
+            for (int slot = 0; slot < destination.getContainerSize(); slot++) delivered += destination.getItem(slot).getCount();
+            helper.assertTrue(delivered == 5, "Allowed items must reach the inventory");
+            belt.setItem(3, new ItemStack(Items.EMERALD, 4));
+            helper.assertTrue(!belt.canAdvanceForRender(3), "Rejected push must not animate advancement");
+        });
+        helper.runAfterDelay(60, () -> {
+            helper.assertTrue(belt.getItem(3).getCount() == 4, "Rejected push must hold items without dropping");
+            belt.setFilter(0, ItemStack.EMPTY);
+            belt.setFilter(8, ItemStack.EMPTY);
+            source.clearContent();
+        });
+        helper.runAfterDelay(80, () -> {
+            helper.assertTrue(belt.isEmpty(), "Empty filters must restore unrestricted transfers");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 60)
+    public static void filtersDoNotRestrictBeltTransfers(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        var state = CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState().setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        level.setBlockAndUpdate(pos, state);
+        level.setBlockAndUpdate(pos.east(), state);
+        level.setBlockAndUpdate(pos.east(2), state.setValue(ConveyerBeltBlock.FACING, Direction.WEST));
+        var source = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        var target = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos.east());
+        source.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        target.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        source.setFilterTag(0, net.minecraft.tags.ItemTags.PLANKS.location());
+        target.setFilterTag(0, net.minecraft.tags.ItemTags.PLANKS.location());
+        source.setItem(3, new ItemStack(Items.DIAMOND, 7));
+        helper.runAfterDelay(25, () -> {
+            helper.assertTrue(source.isEmpty() && target.getItem(3).is(Items.DIAMOND) && target.getItem(3).getCount() == 7,
+                "Filters must not restrict belt-to-belt transport");
+            helper.succeed();
+        });
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 60)
+    public static void filtersRestrictBehindInventoryPulls(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(3, 3, 3));
+        var state = CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get().defaultBlockState()
+            .setValue(ConveyerBeltBlock.FACING, Direction.EAST);
+        level.setBlockAndUpdate(pos, state);
+        level.setBlockAndUpdate(pos.west(), Blocks.CHEST.defaultBlockState());
+        level.setBlockAndUpdate(pos.east(), CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState()
+            .setValue(ConveyerBeltBlock.FACING, Direction.WEST));
+        var source = (net.minecraft.world.Container) level.getBlockEntity(pos.west());
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        belt.setFilter(0, new ItemStack(Items.OAK_PLANKS));
+        belt.setFilterTag(0, net.minecraft.tags.ItemTags.PLANKS.location());
+        source.setItem(0, new ItemStack(Items.EMERALD, 5));
+        source.setItem(1, new ItemStack(Items.BIRCH_PLANKS, 3));
+        helper.runAfterDelay(25, () -> {
+            helper.assertTrue(source.getItem(0).getCount() == 5 && source.getItem(1).isEmpty()
+                && belt.getItem(3).is(Items.BIRCH_PLANKS) && belt.getItem(3).getCount() == 3,
+                "Behind inventory pulls must skip rejected items and preserve every matching item");
+            helper.succeed();
+        });
+    }
 }

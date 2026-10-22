@@ -160,7 +160,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> IRON_SMELTER = register("iron_smelter", CrystalnexusModBlocks.IRON_SMELTER, IronSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ARC_FURNACE = registerMany("arc_furnace", ArcFurnaceBlockEntity::new,
 		CrystalnexusModBlocks.ARC_FURNACE, CrystalnexusModBlocks.AZURINE_BLAST_FURNACE);
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTS_ASSEMBLER = register("parts_assembler", CrystalnexusModBlocks.PARTS_ASSEMBLER, PartsAssemblerBlockEntity::new);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", () -> BlockEntityType.Builder.of(PartsAssemblerBlockEntity::new, CrystalnexusModBlocks.PARTS_ASSEMBLER.get(), CrystalnexusModBlocks.AZURINE_LATHE.get(), CrystalnexusModBlocks.FERROSTEEL_LATHE.get(), CrystalnexusModBlocks.AZURINE_PRESS.get(), CrystalnexusModBlocks.FERROSTEEL_PRESS.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CRYSTAL_SMELTER = register("crystal_smelter", CrystalnexusModBlocks.CRYSTAL_SMELTER, CrystalSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> INVERTIUM_SMELTER = register("invertium_smelter", CrystalnexusModBlocks.INVERTIUM_SMELTER, InvertiumSmelterBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CHLOROPHYTE_SMELTER = register("chlorophyte_smelter", CrystalnexusModBlocks.CHLOROPHYTE_SMELTER, ChlorophyteSmelterBlockEntity::new);

@@ -14,9 +14,16 @@ class ConveyerBeltModeTest {
     }
 
     @Test
+    void tiersIncreaseBatchSize() {
+        assertEquals(16, ConveyerBeltTier.BASIC.batchSize());
+        assertEquals(32, ConveyerBeltTier.TITANIUM.batchSize());
+        assertEquals(64, ConveyerBeltTier.METEORITE.batchSize());
+    }
+
+    @Test
     void tiersDoubleInSpeed() {
-        assertEquals(4, ConveyerBeltTier.BASIC.ticksPerMove());
-        assertEquals(2, ConveyerBeltTier.TITANIUM.ticksPerMove());
-        assertEquals(1, ConveyerBeltTier.METEORITE.ticksPerMove());
+        assertEquals(2.0, ConveyerBeltTier.BASIC.ticksPerMove());
+        assertEquals(1.0, ConveyerBeltTier.TITANIUM.ticksPerMove());
+        assertEquals(0.5, ConveyerBeltTier.METEORITE.ticksPerMove());
     }
 }

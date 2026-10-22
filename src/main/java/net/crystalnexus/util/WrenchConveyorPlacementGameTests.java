@@ -30,8 +30,15 @@ public final class WrenchConveyorPlacementGameTests {
     public static void wrenchChoosesGateFacingAttachedInventoryFirst(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = helper.absolutePos(new BlockPos(3, 4, 3));
-        var player = net.neoforged.neoforge.common.util.FakePlayerFactory.get(level,
-            new GameProfile(UUID.randomUUID(), "wrench-gates"));
+        var player = new ServerPlayer(level.getServer(), level,
+            new GameProfile(UUID.randomUUID(), "wrench-gates"), ClientInformation.createDefault());
+        new net.minecraft.server.network.ServerGamePacketListenerImpl(level.getServer(),
+            new net.minecraft.network.Connection(net.minecraft.network.protocol.PacketFlow.SERVERBOUND), player,
+            net.minecraft.server.network.CommonListenerCookie.createInitial(player.getGameProfile(), false)) {
+            @Override public void send(net.minecraft.network.protocol.Packet<?> packet) {}
+            @Override public boolean hasChannel(net.minecraft.resources.ResourceLocation id) { return false; }
+        };
+        player.setPos(pos.getX() + .5, pos.getY() + 1, pos.getZ() + .5);
         player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CrystalnexusModItems.CRYSTAL_WRENCH.get()));
         for (Direction facing : Direction.Plane.HORIZONTAL) for (boolean behind : new boolean[] {false, true}) {
             for (Direction side : Direction.Plane.HORIZONTAL)
@@ -44,21 +51,29 @@ public final class WrenchConveyorPlacementGameTests {
             belt.setItem(2, new ItemStack(net.minecraft.world.item.Items.DIAMOND, 3));
             level.setBlockAndUpdate(pos.relative(behind ? facing.getOpposite() : facing), Blocks.BARREL.defaultBlockState());
             use(player, pos);
+            helper.assertTrue(player.containerMenu instanceof net.crystalnexus.world.inventory.ConveyorFilterMenu,
+                "Wrench right-click must open conveyor filters");
+            var menu = (net.crystalnexus.world.inventory.ConveyorFilterMenu) player.containerMenu;
+            var before = level.getBlockState(pos);
+            menu.clickMenuButton(player, 0);
+            helper.assertTrue(level.getBlockState(pos).equals(before) && menu.isBlacklist(),
+                "Filter toggle must change list mode without changing conveyor block mode");
+            net.crystalnexus.block.ConveyerBeltMode.cycle(level, pos);
             var state = level.getBlockState(pos);
             helper.assertTrue(state.is(behind ? CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get()
-                    : CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get()), "First wrench click must put the gate next to storage");
+                    : CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get()), "First mode button click must put the gate next to storage");
             helper.assertTrue(state.getValue(ConveyerBeltBlock.FACING) == facing,
                 "Choosing the gate must preserve travel direction");
             belt = (net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
             helper.assertTrue(belt.getItem(2).getCount() == 3
                     && net.crystalnexus.block.ConveyerBeltMode.tierAt(state) == net.crystalnexus.block.ConveyerBeltTier.METEORITE,
                 "Choosing the gate must preserve contents and tier");
-            use(player, pos);
+            net.crystalnexus.block.ConveyerBeltMode.cycle(level, pos);
             helper.assertTrue(level.getBlockState(pos).is(behind ? CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get()
                     : CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT.get()), "The alternate mode must remain reachable");
-            use(player, pos);
+            net.crystalnexus.block.ConveyerBeltMode.cycle(level, pos);
             helper.assertTrue(level.getBlockState(pos).is(CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get()),
-                "The third click must return to normal mode");
+                "The third mode button click must return to normal mode");
         }
         helper.succeed();
     }

@@ -56,6 +56,37 @@ public final class WrenchInspectionGameTests {
         } finally { buffer.release(); }
     }
     @GameTest(template = "empty")
+    public static void doubleChestInspectionIncludesBothHalvesAndBoundsPreview(GameTestHelper h) {
+        var level = h.getLevel();
+        var leftPos = h.absolutePos(new BlockPos(2, 2, 2));
+        var rightPos = leftPos.east();
+        var state = Blocks.CHEST.defaultBlockState().setValue(net.minecraft.world.level.block.ChestBlock.FACING,
+            net.minecraft.core.Direction.NORTH);
+        level.setBlockAndUpdate(leftPos, state.setValue(net.minecraft.world.level.block.ChestBlock.TYPE,
+            net.minecraft.world.level.block.state.properties.ChestType.LEFT));
+        level.setBlockAndUpdate(rightPos, state.setValue(net.minecraft.world.level.block.ChestBlock.TYPE,
+            net.minecraft.world.level.block.state.properties.ChestType.RIGHT));
+        var left = (net.minecraft.world.Container) level.getBlockEntity(leftPos);
+        var right = (net.minecraft.world.Container) level.getBlockEntity(rightPos);
+        left.setItem(0, new ItemStack(Items.DIAMOND, 32));
+        right.setItem(0, new ItemStack(Items.EMERALD, 16));
+        for (var pos : List.of(leftPos, rightPos)) {
+            var snapshot = MachineInspection.read(level, pos);
+            h.assertTrue(snapshot.inventory() && snapshot.items().size() == 2
+                && snapshot.items().stream().anyMatch(item -> item.icon().is(Items.DIAMOND) && item.count() == 32)
+                && snapshot.items().stream().anyMatch(item -> item.icon().is(Items.EMERALD) && item.count() == 16),
+                "Either half of a double chest must show all contents");
+        }
+        for (int slot = 1; slot < 10; slot++) right.setItem(slot, new ItemStack(Items.IRON_INGOT, slot));
+        var snapshot = MachineInspection.read(level, leftPos);
+        h.assertTrue(snapshot.items().size() == MachineInspection.MAX_ITEMS && snapshot.extraItems() == 3,
+            "Large inventories must keep the bounded preview and overflow count");
+        h.assertTrue(left.getItem(0).getCount() == 32 && right.getItem(0).getCount() == 16,
+            "Reading both halves must not change their contents");
+        h.succeed();
+    }
+
+    @GameTest(template = "empty")
     public static void droneSnapshotsKeepPrivateFieldsOwnerOnly(GameTestHelper h) {
         var owner = player(h);
         var stranger = player(h);
@@ -187,15 +218,38 @@ public final class WrenchInspectionGameTests {
     }
 
     @GameTest(template = "empty")
-    public static void vanillaTargetsShowHintsWithoutStorage(GameTestHelper h) {
+    public static void vanillaContainersShowContentsAndWrenchHints(GameTestHelper h) {
         var pos = h.absolutePos(new BlockPos(2, 2, 2));
         var level = h.getLevel();
         level.setBlockAndUpdate(pos, Blocks.CHEST.defaultBlockState());
         ((net.minecraft.world.Container)level.getBlockEntity(pos)).setItem(0, new ItemStack(Items.DIAMOND, 32));
         var chest = MachineInspection.read(level, pos);
-        h.assertTrue(MachineInspection.canInspect(level, pos) && !chest.inventory() && chest.items().isEmpty()
+        h.assertTrue(MachineInspection.canInspect(level, pos) && chest.inventory() && chest.items().size() == 1
+            && chest.items().getFirst().icon().is(Items.DIAMOND) && chest.items().getFirst().count() == 32
             && chest.wrenchStatus().contains(Component.translatable("gui.crystalnexus.wrench.rotate"))
-            && chest.wrenchStatus().contains(Component.translatable("gui.crystalnexus.wrench.dismantle")), "Chest exposes wrench hints only");
+            && chest.wrenchStatus().contains(Component.translatable("gui.crystalnexus.wrench.dismantle")), "Chest exposes its items and wrench hints");
+        var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), level.registryAccess());
+        try {
+            var response = new MachineInspectionNetwork.Response(level.dimension().location(), pos, 1,
+                net.minecraft.resources.ResourceLocation.parse("minecraft:chest"), chest);
+            MachineInspectionNetwork.Response.CODEC.encode(buffer, response);
+            var received = MachineInspectionNetwork.Response.CODEC.decode(buffer).snapshot();
+            h.assertTrue(received.inventory() && received.items().getFirst().icon().is(Items.DIAMOND)
+                && received.items().getFirst().count() == 32, "Container contents must reach the client unchanged");
+        } finally { buffer.release(); }
+        for (var block : List.of(Blocks.BARREL, Blocks.HOPPER, Blocks.FURNACE, Blocks.SHULKER_BOX)) {
+            level.setBlockAndUpdate(pos, block.defaultBlockState());
+            var inventory = (net.minecraft.world.Container) level.getBlockEntity(pos);
+            h.assertTrue(MachineInspection.read(level, pos).inventory() && MachineInspection.read(level, pos).items().isEmpty(),
+                "Empty containers must still display their inventory section");
+            inventory.setItem(0, new ItemStack(Items.IRON_INGOT, 12));
+            var contents = MachineInspection.read(level, pos);
+            h.assertTrue(contents.inventory() && contents.items().getFirst().icon().is(Items.IRON_INGOT)
+                && contents.items().getFirst().count() == 12 && inventory.getItem(0).getCount() == 12,
+                "Container inspection must report contents without extracting items");
+            inventory.setItem(0, ItemStack.EMPTY);
+            h.assertTrue(MachineInspection.read(level, pos).items().isEmpty(), "Fresh snapshots must reflect emptied slots");
+        }
         level.setBlockAndUpdate(pos, Blocks.OAK_STAIRS.defaultBlockState());
         h.assertTrue(MachineInspection.canInspect(level, pos) && !CrystalWrenchItem.canPickup(level, pos)
             && MachineInspection.read(level, pos).wrenchStatus().size() == 1, "Rotatable block without entity exposes only rotation");

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "php",
+    "bmb",
+    "pep"
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/ferrosteel"
+    },
+    "h": {
+      "item": "minecraft:piston"
+    },
+    "b": {
+      "item": "crystalnexus:ferrosteel_bearing"
+    },
+    "m": {
+      "item": "crystalnexus:azurine_press"
+    },
+    "e": {
+      "item": "crystalnexus:ferrosteel_electric_motor"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ferrosteel_press",
+    "count": 1
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "php",
+    "bmb",
+    "pep"
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/azurine"
+    },
+    "h": {
+      "item": "minecraft:piston"
+    },
+    "b": {
+      "item": "crystalnexus:azurine_bearing"
+    },
+    "m": {
+      "item": "crystalnexus:azurine_machine_frame"
+    },
+    "e": {
+      "item": "crystalnexus:azurine_electric_motor"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:azurine_press",
+    "count": 1
+  }
+}

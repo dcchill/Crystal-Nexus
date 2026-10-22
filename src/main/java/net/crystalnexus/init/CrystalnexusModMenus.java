@@ -179,6 +179,8 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<PlasmaGeneratorMenu>> PLASMA_GENERATOR = REGISTRY.register("plasma_generator", () -> IMenuTypeExtension.create(PlasmaGeneratorMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<GasolineGeneratorMenu>> DIESEL_GENERATOR = REGISTRY.register("diesel_generator", () -> IMenuTypeExtension.create(GasolineGeneratorMenu::new));
 
+	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.ConveyorFilterMenu>> CONVEYOR_FILTER = REGISTRY.register("conveyor_filter", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.ConveyorFilterMenu::new));
+
 	public interface MenuAccessor {
 		Map<String, Object> getMenuState();
 

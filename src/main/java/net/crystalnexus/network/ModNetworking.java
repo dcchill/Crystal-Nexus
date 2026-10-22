@@ -29,6 +29,7 @@ public class ModNetworking {
 	@SubscribeEvent
 	public static void register(final RegisterPayloadHandlersEvent event) {
 		PayloadRegistrar r = event.registrar(DepotNetIds.NETWORK_VERSION);
+        r.playToServer(ConveyorFilterTagSelect.TYPE, ConveyorFilterTagSelect.STREAM_CODEC, ConveyorFilterTagSelect::handle);
         PayloadRegistrar drones = event.registrar("2");
         drones.playToServer(DroneControl.TYPE, DroneControl.STREAM_CODEC, DroneControl::handle);
         drones.playToClient(DroneState.TYPE, DroneState.STREAM_CODEC, DroneState::handle);

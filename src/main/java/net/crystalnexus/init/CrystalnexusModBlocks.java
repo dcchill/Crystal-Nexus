@@ -284,6 +284,10 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> REACTOR_COOLANT_CHANNEL = REGISTRY.register("reactor_coolant_channel", () -> new ReactorInternalComponentBlock(Component.literal("Coolant Channel: Circulates coolant to remove heat from the reactor")));
 	public static final DeferredBlock<Block> REACTOR_HEAT_CONDUCTOR = REGISTRY.register("reactor_heat_conductor", () -> new ReactorInternalComponentBlock(Component.literal("Heat Conductor: Relays reactor core heat to connected coolant channel networks")));
 	public static final DeferredBlock<Block> IRON_SMELTER = REGISTRY.register("iron_smelter", IronSmelterBlock::new);
+	public static final DeferredBlock<Block> AZURINE_PRESS = REGISTRY.register("azurine_press", () -> new net.crystalnexus.block.PlatePressBlock(net.crystalnexus.processing.MachineTier.TITANIUM));
+	public static final DeferredBlock<Block> FERROSTEEL_PRESS = REGISTRY.register("ferrosteel_press", () -> new net.crystalnexus.block.PlatePressBlock(net.crystalnexus.processing.MachineTier.TITANIUM_CARBIDE));
+	public static final DeferredBlock<Block> FERROSTEEL_LATHE = REGISTRY.register("ferrosteel_lathe", net.crystalnexus.block.FerrosteelLatheBlock::new);
+	public static final DeferredBlock<Block> AZURINE_LATHE = REGISTRY.register("azurine_lathe", PartsAssemblerBlock::new);
 	public static final DeferredBlock<Block> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", PartsAssemblerBlock::new);
 	public static final DeferredBlock<Block> CRYSTAL_SMELTER = REGISTRY.register("crystal_smelter", CrystalSmelterBlock::new);
 	public static final DeferredBlock<Block> INVERTIUM_SMELTER = REGISTRY.register("invertium_smelter", InvertiumSmelterBlock::new);

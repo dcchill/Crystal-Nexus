@@ -53,7 +53,64 @@ public final class PartsAssemblingDefaults {
                     mode, 100, 10)));
             }
         }
+        var rods = family("rods", "rod");
+        var ids = recipes.stream().map(RecipeHolder::id).collect(java.util.stream.Collectors.toSet());
+        for (var holder : List.copyOf(recipes)) {
+            if (!(holder.value() instanceof PartsAssemblingRecipe recipe) || recipe.mode() != PartsAssemblingRecipe.Mode.BOLT
+                    || isLatheOnly(holder.id()) || isLatheRecipe(recipe)) continue;
+            var inputs = java.util.Arrays.stream(recipe.ingredient().getItems()).flatMap(input -> materials(input).stream())
+                .distinct().flatMap(material -> rods.getOrDefault(material, List.of()).stream()).toList();
+            var id = ResourceLocation.fromNamespaceAndPath("crystalnexus",
+                "generated_lathing/" + holder.id().getNamespace() + "/" + holder.id().getPath());
+            if (inputs.isEmpty() || !ids.add(id)) continue;
+            recipes.add(new RecipeHolder<>(id, new PartsAssemblingRecipe(Ingredient.of(inputs.stream()),
+                recipe.getResultItem(event.getPlayerList().getServer().registryAccess()), recipe.mode(),
+                recipe.processingTime(), recipe.energyPerTick())));
+        }
+        var plates = family("plates", "plate");
+        for (var entry : family("storage_blocks", "storage_block").entrySet()) {
+            var output = plates.getOrDefault(entry.getKey(), List.of()).stream().min(OUTPUT_ORDER).orElse(ItemStack.EMPTY);
+            var id = ResourceLocation.fromNamespaceAndPath("crystalnexus", "generated_pressing/" + entry.getKey());
+            if (output.isEmpty() || !ids.add(id)) continue;
+            recipes.add(new RecipeHolder<>(id, new PartsAssemblingRecipe(Ingredient.of(entry.getValue().stream()),
+                output.copyWithCount(12), PartsAssemblingRecipe.Mode.PLATE, 100, 10)));
+        }
         if (recipes.size() != manager.getRecipes().size()) manager.replaceRecipes(recipes);
+    }
+
+    public static boolean isPressOnly(ResourceLocation id) {
+        return id.getNamespace().equals("crystalnexus") && id.getPath().startsWith("generated_pressing/");
+    }
+
+    public static boolean isLatheOnly(ResourceLocation id) {
+        return id.getNamespace().equals("crystalnexus") && id.getPath().startsWith("generated_lathing/");
+    }
+
+    public static boolean isLatheRecipe(PartsAssemblingRecipe recipe) {
+        return recipe.mode() == PartsAssemblingRecipe.Mode.ROD || recipe.mode() == PartsAssemblingRecipe.Mode.BOLT
+            && recipe.ingredient().getItems().length > 0
+            && java.util.Arrays.stream(recipe.ingredient().getItems()).allMatch(PartsAssemblingDefaults::isRod);
+    }
+
+    public static boolean isRod(ItemStack input) {
+        return input.getTags().map(tag -> tag.location()).anyMatch(id ->
+            (id.getNamespace().equals("c") || id.getNamespace().equals("forge"))
+                && (id.getPath().startsWith("rods/") || id.getPath().startsWith("rod/")));
+    }
+
+    private static List<String> materials(ItemStack input) {
+        return input.getTags().map(tag -> tag.location())
+            .filter(id -> id.getNamespace().equals("c") || id.getNamespace().equals("forge"))
+            .map(ResourceLocation::getPath)
+            .filter(path -> path.startsWith("ingots/") || path.startsWith("ingot/")
+                || path.startsWith("rods/") || path.startsWith("rod/"))
+            .map(path -> path.substring(path.indexOf('/') + 1)).distinct().sorted().toList();
+    }
+
+    public static ItemStack associatedDust(ItemStack input) {
+        var dusts = family("dusts", "dust");
+        return materials(input).stream().flatMap(material -> dusts.getOrDefault(material, List.of()).stream())
+            .min(OUTPUT_ORDER).map(stack -> stack.copyWithCount(1)).orElse(ItemStack.EMPTY);
     }
 
     private static Map<String, List<ItemStack>> family(String plural, String singular) {

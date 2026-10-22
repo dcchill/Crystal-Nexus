@@ -121,6 +121,8 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
             ItemStack result = holder.get().value().getResultItem(level.registryAccess());
             node.outputItems = new String[node.outputSockets];
             Arrays.fill(node.outputItems, result.isEmpty() ? "" : net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(result.getItem()).toString());
+            if (machine != null && machine.entity() instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity p && p.isLathe()
+                    && node.outputItems.length > 1) node.outputItems[1] = "";
             node.outputFluids = new String[0];
             node.outputExport = new boolean[node.outputSockets];
             Arrays.fill(node.outputExport, true);
@@ -153,6 +155,7 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
     }
     private int[] discoverOutputSlots(AssemblyLineMachine machine) {
         if (machine == null) return new int[] {1};
+        if (machine.entity() instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity p && p.isLathe()) return new int[]{1, 4};
         if (machine.kind() == AssemblyLineMachine.Kind.CHEMICAL_REACTION) return new int[] {machine.outputSlot()};
         var handler = machine.itemHandler();
         if (handler != null && machine.kind() == AssemblyLineMachine.Kind.GENERIC) {
@@ -695,8 +698,13 @@ public final class AssemblyLineControllerBlockEntity extends BlockEntity impleme
                 int outputSlot = worker.outputSlot();
                 ItemStack output = worker.inventory().getItem(outputSlot);
                 if (consumed && ItemStack.matches(output, task.output)) {
-                    if (!put(copy(reserved), output, 0, reserved.getSlots()).isEmpty()) { problem = "Intermediate storage full"; continue; }
+                    ItemStack dust = worker.entity() instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity p && p.isLathe()
+                        ? worker.inventory().getItem(4) : ItemStack.EMPTY;
+                    ItemStackHandler trialOutput = copy(reserved);
+                    if (!put(trialOutput, output.copy(), 0, reserved.getSlots()).isEmpty()
+                            || !put(trialOutput, dust.copy(), 0, reserved.getSlots()).isEmpty()) { problem = "Intermediate storage full"; continue; }
                     put(reserved, output.copy(), 0, reserved.getSlots()); worker.inventory().setItem(outputSlot, ItemStack.EMPTY);
+                    if (!dust.isEmpty()) { put(reserved, dust.copy(), 0, reserved.getSlots()); worker.inventory().setItem(4, ItemStack.EMPTY); }
                     task.complete = true; worker.release(); worker.entity().setChanged(); setChanged();
 
                 } else if (inputsMatch(worker, task)) {

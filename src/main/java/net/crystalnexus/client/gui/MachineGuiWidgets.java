@@ -197,6 +197,14 @@ public final class MachineGuiWidgets {
         return bounds;
     }
 
+    static String slotTooltipKey(String role, boolean craftingFilter) {
+        if (craftingFilter) return "gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter";
+        return switch (role) {
+            case "storage", "input", "output", "slot" -> null;
+            default -> "gui.crystalnexus.machine." + role;
+        };
+    }
+
     @SubscribeEvent public static void after(ScreenEvent.Render.Post event) {
         if (frame == null) return;
         Frame current = frame; frame = null;
@@ -212,10 +220,10 @@ public final class MachineGuiWidgets {
                     : MachineGuiRoutes.role(current.menu.getClass().getSimpleName(), slot.getSlotIndex());
             if (current.menu.getClass().getSimpleName().equals("ReactorGUIMenu"))
                 role = slot.index == 0 ? "upgrade" : slot.index == 1 ? "output" : "fuel";
-            tooltip = List.of(current.menu instanceof net.crystalnexus.world.inventory.CraftingFactoryGUIMenu
-                    && slot.getSlotIndex() == net.crystalnexus.world.inventory.CraftingFactoryGUIMenu.FILTER_SLOT
-                    ? Component.translatable("gui.crystalnexus.crafting_factory_gui.tooltip_crafting_filter")
-                    : Component.translatable("gui.crystalnexus.machine." + role)); break;
+            String key = slotTooltipKey(role, current.menu instanceof net.crystalnexus.world.inventory.CraftingFactoryGUIMenu
+                    && slot.getSlotIndex() == net.crystalnexus.world.inventory.CraftingFactoryGUIMenu.FILTER_SLOT);
+            if (key != null) tooltip = List.of(Component.translatable(key));
+            break;
         }
         if (tooltip == null) for (var child : current.screen.children()) if (child instanceof AbstractWidget widget
                 && widget.visible && widget.isMouseOver(mx, my) && widget.getTooltip() == null && !widget.getMessage().getString().isBlank()) {

@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": ["pbp", "rmr", "pep"],
+  "key": {
+    "p": { "tag": "c:plates/azurine" },
+    "b": { "item": "crystalnexus:azurine_bearing" },
+    "r": { "tag": "c:rods/gold" },
+    "m": { "item": "crystalnexus:azurine_machine_frame" },
+    "e": { "item": "crystalnexus:azurine_electric_motor" }
+  },
+  "result": { "id": "crystalnexus:azurine_lathe", "count": 1 }
+}

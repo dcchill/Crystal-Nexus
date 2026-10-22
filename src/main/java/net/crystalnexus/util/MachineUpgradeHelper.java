@@ -41,7 +41,8 @@ public final class MachineUpgradeHelper {
 
     public static int upgradeSlots(BlockState state) {
         if (state.getBlock() instanceof net.crystalnexus.block.ParticleAcceleratorControllerBlock) return 0;
-        if (state.getBlock() instanceof net.crystalnexus.block.PartsAssemblerBlock) return 2;
+        if (state.getBlock() instanceof net.crystalnexus.block.PartsAssemblerBlock)
+            return state.getBlock() instanceof net.crystalnexus.processing.TieredMachineBlock ? MachineTier.from(state).upgradeSlots() : 2;
         if (state.getBlock() instanceof net.crystalnexus.block.BiomaticSimulatorBlock
                 || state.getBlock() instanceof net.crystalnexus.block.FluidChemicalReactionChamberBlock
                 || state.getBlock() instanceof net.crystalnexus.block.MegaChemicalReactionChamberBlock
@@ -61,7 +62,8 @@ public final class MachineUpgradeHelper {
         if (machine instanceof Container inventory) {
             int count = upgradeSlots(machine.getBlockState());
             for (int i = 0; i < count; i++) {
-                int slot = i == 0 ? firstSlot : extraStart + i - 1;
+                int slot = machine instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity assembler && assembler.isLathe() && i >= 2
+                        ? i + 3 : i == 0 ? firstSlot : extraStart + i - 1;
                 if (slot < inventory.getContainerSize()) {
                     ItemStack upgrade = inventory.getItem(slot);
                     if (isZeroChip(upgrade) && (machine.getBlockState().getBlock() instanceof net.crystalnexus.block.MatterTransmutationTableBlock

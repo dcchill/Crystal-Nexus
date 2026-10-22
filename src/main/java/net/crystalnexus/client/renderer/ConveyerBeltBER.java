@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity;
 import net.crystalnexus.block.ConveyorGeometry;
+import net.crystalnexus.block.ConveyerBeltMovement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -44,8 +45,11 @@ public class ConveyerBeltBER implements BlockEntityRenderer<ConveyerBeltBaseBloc
                 continue;
             }
 
-            float progress = be.canAdvanceForRender(i) ? be.getRenderProgress(i, partialTick) : 0.0F;
-            float segPos = i + progress;
+            boolean advancing = be.canAdvanceForRender(i);
+            float progress = advancing ? be.getRenderProgress(i, partialTick) : 0.0F;
+            // Interpolate the whole tick, including tiers that cross several segments per tick.
+            float segPos = advancing
+                    ? ConveyerBeltMovement.renderPosition(i, progress, be.getRenderDistance()) : i;
             double t = Math.max(0.0D, Math.min(1.0D, segPos / (double) ConveyerBeltBaseBlockEntity.SEGMENTS));
             Vec3 point = ConveyorGeometry.point(curve, t);
             Vec3 tangent = ConveyorGeometry.point(curve, Math.min(1,t+.001)).subtract(ConveyorGeometry.point(curve, Math.max(0,t-.001)));

@@ -34,16 +34,23 @@ public record MachineInspection(Component name, int tier, boolean inventory, Lis
         var be = level.getBlockEntity(pos);
         var state = level.getBlockState(pos);
         var wrenchStatus = wrenchStatus(level, pos);
-        if (!BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace().equals("crystalnexus"))
-            return wrenchStatus.isEmpty() ? null : statusOnly(state.getBlock().getName(), wrenchStatus);
         boolean networkInventory = be instanceof net.crystalnexus.block.entity.DepotControllerBlockEntity
             || be instanceof net.crystalnexus.block.entity.DepotCliBlockEntity
             || be instanceof net.crystalnexus.block.entity.DepotCableBlockEntity;
         var itemHandler = networkInventory ? null : level.getCapability(Capabilities.ItemHandler.BLOCK, pos, null);
+        if (!BuiltInRegistries.BLOCK.getKey(state.getBlock()).getNamespace().equals("crystalnexus")
+                && !(be instanceof Container) && itemHandler == null)
+            return wrenchStatus.isEmpty() ? null : statusOnly(state.getBlock().getName(), wrenchStatus);
         var energy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, null);
         var fluid = level.getCapability(Capabilities.FluidHandler.BLOCK, pos, null);
         // Container is the local inventory; capabilities may expose a network view.
         Container container = be instanceof Container c ? c : null;
+        if (state.getBlock() instanceof net.minecraft.world.level.block.ChestBlock chest
+                && (state.getValue(net.minecraft.world.level.block.ChestBlock.TYPE)
+                    == net.minecraft.world.level.block.state.properties.ChestType.SINGLE
+                    || level.hasChunkAt(pos.relative(net.minecraft.world.level.block.ChestBlock.getConnectedDirection(state))))) {
+            container = net.minecraft.world.level.block.ChestBlock.getContainer(chest, state, level, pos, true);
+        }
         boolean hasInventory = container != null || itemHandler != null;
         var tag = be == null ? new net.minecraft.nbt.CompoundTag() : be.getPersistentData();
         double progress = tag.contains("progress") && tag.contains("maxProgress")
@@ -135,7 +142,8 @@ public record MachineInspection(Component name, int tier, boolean inventory, Lis
             mode = Component.translatable("gui.crystalnexus.wrench.mode." + state.getValue(DepotCableBlock.MODE).getSerializedName());
         if (mode != null) {
             lines.add(Component.translatable("gui.crystalnexus.router.mode", mode));
-            lines.add(Component.translatable("gui.crystalnexus.router.cycle"));
+            lines.add(Component.translatable(be instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity
+                ? "tooltip.crystalnexus.wrench.conveyor_filters" : "gui.crystalnexus.router.cycle"));
         } else if (be instanceof PipeStraightBlockEntity pipe) {
             for (Direction side : Direction.values()) {
                 String sideMode = pipe.isInputSide(side) ? "input" : pipe.isOutputSide(side) ? "output" : "default";

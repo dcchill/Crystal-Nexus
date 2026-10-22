@@ -18,7 +18,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -31,7 +30,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import java.util.List;
 
 public class CrystalWrenchItem extends Item {
 
@@ -63,7 +61,11 @@ public class CrystalWrenchItem extends Item {
                 || block instanceof ConveyerBeltInputBlock
                 || block instanceof ConveyerBeltOutputBlock)) {
             if (!level.isClientSide) {
-                ConveyerBeltMode.cycle(level, pos);
+                if (player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                    serverPlayer.openMenu(new net.minecraft.world.SimpleMenuProvider(
+                        (id, inventory, owner) -> new net.crystalnexus.world.inventory.ConveyorFilterMenu(id, inventory, pos),
+                        Component.translatable("gui.crystalnexus.conveyor_filters.title")), pos);
+                }
                 playWrenchSound(level, pos);
             }
             return InteractionResult.SUCCESS;
@@ -496,7 +498,8 @@ public class CrystalWrenchItem extends Item {
         boolean isConveyor = block instanceof ConveyerBeltBlock
                 || block instanceof ConveyerBeltInputBlock
                 || block instanceof ConveyerBeltOutputBlock;
-        boolean preserveBeltContents = blockEntity instanceof ConveyerBeltBaseBlockEntity belt && !belt.isEmpty();
+        boolean preserveBeltContents = blockEntity instanceof ConveyerBeltBaseBlockEntity belt
+            && (!belt.isEmpty() || belt.hasFilters() || belt.isFilterBlacklist());
         ItemStack blockItem = new ItemStack(isConveyor ? ConveyerBeltMode.normalBlock(state) : block.asItem());
 
         if (blockEntity != null && (!isConveyor || preserveBeltContents)) {
@@ -655,39 +658,4 @@ public class CrystalWrenchItem extends Item {
         );
     }
 
-    @Override
-    public void appendHoverText(
-            ItemStack stack,
-            Item.TooltipContext context,
-            List<Component> tooltip,
-            TooltipFlag flag
-    ) {
-        tooltip.add(Component.translatable("tooltip.crystalnexus.wrench.scanner").withStyle(net.minecraft.ChatFormatting.LIGHT_PURPLE));
-        super.appendHoverText(
-                stack,
-                context,
-                tooltip,
-                flag
-        );
-
-        tooltip.add(
-                Component.literal(
-                        "§7Right-click: Rotate blocks / Cycle depot cable modes"
-                )
-        );
-
-        tooltip.add(
-                Component.literal(
-                        "§7Shift+Right-click: Dismantle machines, frames, blueprints, storage, and cables"
-                )
-        );
-
-        tooltip.add(
-                Component.literal(
-                        "§7Block offhand: Select two points; sneak-use cycles direction"
-                )
-        );
-        tooltip.add(Component.literal("Belts offhand: Click nodes to continue; sneak-use switches bend; left-click cancels")
-                .withStyle(net.minecraft.ChatFormatting.GRAY));
-    }
 }

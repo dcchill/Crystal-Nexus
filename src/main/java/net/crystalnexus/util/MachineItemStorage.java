@@ -27,6 +27,7 @@ public final class MachineItemStorage {
         if (inventory instanceof ExtractinatorBlockEntity) return slot < 7;
         // Slot 3 keeps its legacy capacity until SeparatorGuiMenu returns the saved byproducts.
         if (inventory instanceof DustSeparatorBlockEntity) return slot == 0 || slot == 1 || slot == 3;
+        if (inventory instanceof PartsAssemblerBlockEntity assembler) return slot < 2 || assembler.isLathe() && slot == 4;
         if (inventory instanceof CircuitPressBlockEntity || inventory instanceof ArcFurnaceBlockEntity) return slot < 3;
         return slot < 2;
     }

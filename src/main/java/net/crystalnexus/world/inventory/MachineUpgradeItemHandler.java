@@ -20,6 +20,7 @@ public class MachineUpgradeItemHandler extends SidedInvWrapper {
 
     private boolean isUpgradeSlot(int slot) {
         int index = getSlot(inv, slot, side);
+        if (inv instanceof net.crystalnexus.block.entity.PartsAssemblerBlockEntity assembler) return assembler.isUpgradeSlot(index);
         return index >= 0 && (index == firstUpgrade || index >= extraStart);
     }
 

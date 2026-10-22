@@ -48,6 +48,7 @@ public final class MachineGuiRoutes {
         };
     }
     public static String role(String menu, int slot) {
+        if (menu.equals("PartsAssemblerMenu") && slot == 4) return "output";
         if (menu.equals("BioMCGuiMenu") && slot == 3) return "set_plant";
         if (menu.equals("AcceleratorGuiMenu") && slot >= 0 && slot < 8)
             return slot == 0 || slot == 2 || slot == 3 || slot == 4 ? "input" : "output";
@@ -63,7 +64,7 @@ public final class MachineGuiRoutes {
         for (int[] route : connections(menu)) if (route[1] == slot) return "output";
         for (int[] route : connections(menu)) if (route[0] == slot) return "input";
         return switch (menu) {
-            case "DepotCableConnectionMenu", "SmartSplitterGUIMenu" -> "filter";
+            case "DepotCableConnectionMenu", "SmartSplitterGUIMenu", "ConveyorFilterMenu" -> "filter";
             case "ControlRodGuiMenu" -> "fuel";
             case "GasolineGeneratorMenu" -> slot == 0 ? "fuel" : "output";
             case "BlockPlacerGuiMenu", "FactoryItemControllerGuiMenu" -> "input";

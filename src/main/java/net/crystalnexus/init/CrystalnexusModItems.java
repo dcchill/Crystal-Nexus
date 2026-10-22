@@ -314,6 +314,10 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> REACTOR_COOLANT_CHANNEL = block(CrystalnexusModBlocks.REACTOR_COOLANT_CHANNEL);
 	public static final DeferredItem<Item> REACTOR_HEAT_CONDUCTOR = block(CrystalnexusModBlocks.REACTOR_HEAT_CONDUCTOR);
 	public static final DeferredItem<Item> IRON_SMELTER = block(CrystalnexusModBlocks.IRON_SMELTER);
+	public static final DeferredItem<Item> AZURINE_PRESS = block(CrystalnexusModBlocks.AZURINE_PRESS);
+	public static final DeferredItem<Item> FERROSTEEL_PRESS = block(CrystalnexusModBlocks.FERROSTEEL_PRESS);
+	public static final DeferredItem<Item> FERROSTEEL_LATHE = block(CrystalnexusModBlocks.FERROSTEEL_LATHE);
+	public static final DeferredItem<Item> AZURINE_LATHE = block(CrystalnexusModBlocks.AZURINE_LATHE);
 	public static final DeferredItem<Item> PARTS_ASSEMBLER = block(CrystalnexusModBlocks.PARTS_ASSEMBLER);
 	public static final DeferredItem<Item> CRYSTAL_SMELTER = block(CrystalnexusModBlocks.CRYSTAL_SMELTER);
 	public static final DeferredItem<Item> INVERTIUM_SMELTER = block(CrystalnexusModBlocks.INVERTIUM_SMELTER);

@@ -125,7 +125,9 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
     }
     public int outputSlot() { return kind == Kind.CHEMICAL_REACTION ? 3 : 1; }
     public boolean supports(RecipeHolder<?> recipe) {
-        return kind != Kind.GENERIC && kind(recipe) == kind && (!(recipe.value() instanceof OreCrushingJeiRecipe r)
+        return !(entity instanceof PartsAssemblerBlockEntity p && recipe.value() instanceof PartsAssemblingRecipe parts
+            && !p.supportsRecipe(recipe.id(), parts))
+            && kind != Kind.GENERIC && kind(recipe) == kind && (!(recipe.value() instanceof OreCrushingJeiRecipe r)
             || MachineTier.from(entity.getBlockState()).supports(r.minimumMachineTier()));
     }
     public boolean empty() {
@@ -136,7 +138,9 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
             || p.containerMenu instanceof net.crystalnexus.world.inventory.CircuitPressGUIMenu m2 && m2.x == entity.getBlockPos().getX() && m2.y == entity.getBlockPos().getY() && m2.z == entity.getBlockPos().getZ()
             || p.containerMenu.slots.stream().anyMatch(s -> s.container == inventory))) return false;
         for (int i : inputs()) if (!inventory.getItem(i).isEmpty()) return false;
-        return inventory.getItem(outputSlot()).isEmpty() && progress() == 0;
+        return inventory.getItem(outputSlot()).isEmpty()
+            && (!(entity instanceof PartsAssemblerBlockEntity p) || !p.isLathe() || inventory.getItem(4).isEmpty())
+            && progress() == 0;
     }
     public int progress() {
         return entity instanceof PartsAssemblerBlockEntity p ? p.getData().get(0) : (int) entity.getPersistentData().getDouble("progress");
@@ -148,7 +152,7 @@ public record AssemblyLineMachine(BlockEntity entity, Container inventory, Kind 
         var upgrade = entity.getBlockState().getBlock() instanceof net.crystalnexus.processing.TieredMachineBlock
             ? MachineUpgradeHelper.upgrades(entity, kind == Kind.CIRCUIT_PRESS ? 3 : 2, kind == Kind.CIRCUIT_PRESS ? 4 : 3)
             : java.util.List.of(inventory.getItem(2));
-        if (recipe.value() instanceof PartsAssemblingRecipe p) return MachineUpgradeHelper.energyCost(upgrade, p.energyPerTick());
+        if (recipe.value() instanceof PartsAssemblingRecipe p) return MachineUpgradeHelper.energyCost(entity.getBlockState(), upgrade, p.energyPerTick());
         return MachineUpgradeHelper.energyCost(entity.getBlockState(), upgrade, kind == Kind.CRUSHER ? 4096 : 2048);
     }
     public IItemHandler itemHandler() {

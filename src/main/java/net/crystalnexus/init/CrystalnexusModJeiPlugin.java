@@ -140,6 +140,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 	public static mezz.jei.api.recipe.RecipeType<OreCrushingJeiRecipe> OreCrushingJei_Type = new mezz.jei.api.recipe.RecipeType<>(OreCrushingJeiRecipeCategory.UID, OreCrushingJeiRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<GeneSplicingRecipe> GeneSplicing_Type = new mezz.jei.api.recipe.RecipeType<>(GeneSplicingRecipeCategory.UID, GeneSplicingRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<HemolyzerRecipe> Hemolyzer_Type = new mezz.jei.api.recipe.RecipeType<>(HemolyzerJeiRecipeCategory.UID, HemolyzerRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PlatePressing_Type = new mezz.jei.api.recipe.RecipeType<>(ResourceLocation.parse("crystalnexus:plate_pressing"), PartsAssemblingRecipe.class);
+	public static final mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> AzurineLathing_Type = new mezz.jei.api.recipe.RecipeType<>(ResourceLocation.parse("crystalnexus:azurine_lathing"), PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<PartsAssemblingRecipe> PartsAssembling_Type = new mezz.jei.api.recipe.RecipeType<>(PartsAssemblingRecipeCategory.UID, PartsAssemblingRecipe.class);
 	public static mezz.jei.api.recipe.RecipeType<DustSeperationRecipe> DustSeperation_Type = new mezz.jei.api.recipe.RecipeType<>(DustSeperationRecipeCategory.UID, DustSeperationRecipe.class);
 	public static final mezz.jei.api.recipe.RecipeType<MultiblockStructureRecipe> MultiblockStructure_Type = new mezz.jei.api.recipe.RecipeType<>(MultiblockStructureRecipeCategory.UID, MultiblockStructureRecipe.class);
@@ -181,6 +183,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new GeneSplicingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new HemolyzerJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper(), PartsAssemblingRecipeCategory.Kind.PRESS));
+        registration.addRecipeCategories(new PartsAssemblingRecipeCategory(registration.getJeiHelpers().getGuiHelper(), PartsAssemblingRecipeCategory.Kind.LATHE));
 		registration.addRecipeCategories(new DustSeperationRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new MultiblockStructureRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CelestialGearForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -225,7 +229,17 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(OreCrushingJei_Type, generatedCrushing);
 		registration.addRecipes(GeneSplicing_Type, recipes(recipeManager, GeneSplicingRecipe.class));
 		registration.addRecipes(Hemolyzer_Type, recipeManager.getAllRecipesFor(HemolyzerRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
-		registration.addRecipes(PartsAssembling_Type, recipes(recipeManager, PartsAssemblingRecipe.class));
+		registration.addRecipes(PartsAssembling_Type, recipeManager.getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
+            .filter(holder -> !net.crystalnexus.processing.PartsAssemblingDefaults.isLatheOnly(holder.id())
+                && !net.crystalnexus.processing.PartsAssemblingDefaults.isPressOnly(holder.id()))
+            .map(holder -> holder.value()).toList());
+        registration.addRecipes(PlatePressing_Type, recipeManager.getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
+            .filter(holder -> net.crystalnexus.processing.PartsAssemblingDefaults.isPressOnly(holder.id()))
+            .map(holder -> holder.value()).toList());
+        registration.addRecipes(AzurineLathing_Type, recipes(recipeManager, PartsAssemblingRecipe.class).stream()
+            .filter(net.crystalnexus.processing.PartsAssemblingDefaults::isLatheRecipe)
+            .filter(recipe -> java.util.Arrays.stream(recipe.ingredient().getItems())
+                .anyMatch(stack -> !net.crystalnexus.processing.PartsAssemblingDefaults.associatedDust(stack).isEmpty())).toList());
 		List<DustSeperationRecipe> DustSeperationRecipes = recipes(recipeManager, DustSeperationRecipe.class);
 		registration.addRecipes(DustSeperation_Type, DustSeperationRecipes);
 		List<DustSeperationRecipe> generatedSeparation = MaterialProcessingCatalog.generatedSeparatorRecipes(Minecraft.getInstance().level);
@@ -404,6 +418,10 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.MASTICATOR.get().asItem()), GeneSplicing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.HEMOLYZER.get().asItem()), Hemolyzer_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem()), PartsAssembling_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AZURINE_PRESS.get()), PlatePressing_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FERROSTEEL_PRESS.get()), PlatePressing_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AZURINE_LATHE.get()), AzurineLathing_Type);
+        registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FERROSTEEL_LATHE.get()), AzurineLathing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CHLOROPHYTE_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTIUM_DUST_SEPARATOR.get().asItem()), DustSeperation_Type);

@@ -13,8 +13,12 @@ public final class ConveyerBeltMovement {
         return tailCanAdvance;
     }
 
-    public static long renderStartTime(int segment, long beltMoveTime, long incomingHeadTime) {
+    public static double renderStartTime(int segment, double beltMoveTime, double incomingHeadTime) {
         return segment == 0 && incomingHeadTime != Long.MIN_VALUE ? incomingHeadTime : beltMoveTime;
+    }
+
+    public static float renderPosition(int segment, float progress, float distance) {
+        return Math.max(0.0F, segment + 1 - distance * (1 - progress));
     }
 
     public static boolean shouldDropOffFront(boolean movedToNextBelt, boolean hasFrontInventory) {

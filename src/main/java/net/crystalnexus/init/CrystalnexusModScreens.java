@@ -149,6 +149,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.DEPOT.get(), DepotScreen::new);
 		event.register(CrystalnexusModMenus.DEPOT_CLI.get(), DepotCliScreen::new);
 		event.register(CrystalnexusModMenus.DEPOT_CABLE_CONNECTION.get(), DepotCableConnectionScreen::new);
+		event.register(CrystalnexusModMenus.CONVEYOR_FILTER.get(), net.crystalnexus.client.gui.ConveyorFilterScreen::new);
 		event.register(CrystalnexusModMenus.CRAFTING_PROCESSOR.get(), CraftingProcessorScreen::new);
 		event.register(CrystalnexusModMenus.WASTE_OUTPUT_GUI.get(), WasteOutputGuiScreen::new);
 		event.register(CrystalnexusModMenus.NODE_EXTRACTOR_GUI.get(), NodeExtractorGUIScreen::new);

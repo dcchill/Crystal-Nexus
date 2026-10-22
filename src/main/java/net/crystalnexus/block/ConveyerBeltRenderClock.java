@@ -1,23 +1,12 @@
 package net.crystalnexus.block;
 
 public final class ConveyerBeltRenderClock {
-    private long observedMoveTime = Long.MIN_VALUE;
-    private long moveStartTime = Long.MIN_VALUE;
-    private long observedIncomingTime = Long.MIN_VALUE;
-    private long incomingStartTime = Long.MIN_VALUE;
+    private double serverOffset = Double.NaN;
 
-    public long startTime(int segment, long serverMoveTime, long serverIncomingTime, long clientTime) {
-        if (observedMoveTime != serverMoveTime) {
-            observedMoveTime = serverMoveTime;
-            moveStartTime = clientTime;
-        }
-        if (segment == 0 && serverIncomingTime != Long.MIN_VALUE) {
-            if (observedIncomingTime != serverIncomingTime) {
-                observedIncomingTime = serverIncomingTime;
-                incomingStartTime = clientTime;
-            }
-            return incomingStartTime;
-        }
-        return moveStartTime;
+    public double startTime(int segment, double serverMoveTime, double serverIncomingTime, long clientTime) {
+        // Keep one clock offset so packet jitter does not restart each movement.
+        double offset = clientTime - serverMoveTime;
+        serverOffset = Double.isNaN(serverOffset) ? offset : Math.min(serverOffset, offset);
+        return ConveyerBeltMovement.renderStartTime(segment, serverMoveTime, serverIncomingTime) + serverOffset;
     }
 }

@@ -4,6 +4,8 @@ import net.crystalnexus.block.PartsAssemblerBlock;
 import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import net.crystalnexus.jei_recipes.PartsAssemblingRecipe;
 import net.crystalnexus.processing.PartsAssemblingDefaults;
+import net.crystalnexus.processing.MachineTier;
+import net.crystalnexus.util.MachineItemStorage;
 import net.crystalnexus.util.MachineUpgradeHelper;
 import net.crystalnexus.world.inventory.PartsAssemblerMenu;
 import net.minecraft.core.BlockPos;
@@ -15,7 +17,6 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -39,8 +40,18 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     private int progress;
     private int maxProgress = 100;
     private int selectedMode;
+
+    public boolean isLathe() { return getBlockState().is(net.crystalnexus.init.CrystalnexusModBlocks.AZURINE_LATHE.get())
+        || getBlockState().getBlock() instanceof net.crystalnexus.block.FerrosteelLatheBlock; }
+    public boolean isPress() { return getBlockState().getBlock() instanceof net.crystalnexus.block.PlatePressBlock; }
+    public boolean supportsRecipe(ResourceLocation id, PartsAssemblingRecipe recipe) {
+        if (isPress()) return PartsAssemblingDefaults.isPressOnly(id);
+        if (PartsAssemblingDefaults.isPressOnly(id)) return false;
+        return isLathe() ? PartsAssemblingDefaults.isLatheRecipe(recipe) : !PartsAssemblingDefaults.isLatheOnly(id);
+    }
     private ItemStack cachedRecipeInput = ItemStack.EMPTY;
     private PartsAssemblingRecipe cachedRecipe;
+    private ItemStack cachedDust = ItemStack.EMPTY;
     private RecipeManager cachedRecipeManager;
     private Collection<RecipeHolder<?>> cachedRecipes;
     private ResourceLocation cachedAssignedRecipe;
@@ -78,6 +89,8 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
     public PartsAssemblerBlockEntity(BlockPos pos, BlockState state) {
         super(CrystalnexusModBlockEntities.PARTS_ASSEMBLER.get(), pos, state);
+        if (isLathe() || isPress()) items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
+        if (isLathe()) selectedMode = 1;
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, PartsAssemblerBlockEntity blockEntity) {
@@ -92,24 +105,25 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
         PartsAssemblingRecipe recipe = findRecipe(level, input, assigned);
 
         var upgrade = MachineUpgradeHelper.upgrades(this, 2, 3);
-        int energyCost = recipe == null ? 0 : MachineUpgradeHelper.energyCost(upgrade, recipe.energyPerTick());
+        int energyCost = recipe == null ? 0 : MachineUpgradeHelper.energyCost(state, upgrade, recipe.energyPerTick());
         ItemStack result = recipe == null ? ItemStack.EMPTY : (recipe.getResultItem(level.registryAccess())).copy();
-        boolean working = recipe != null && canAccept(result)
+        ItemStack dust = cachedDust;
+        boolean working = recipe != null && canAccept(result) && (!isLathe() || canAcceptAt(4, dust))
             && energy.getEnergyStored() >= energyCost;
         if (working) {
-            double cookTime = recipe.processingTime();
+            double cookTime = MachineTier.from(state).processingTime(recipe.processingTime() * (isLathe() ? 1.25 : 1));
             cookTime = MachineUpgradeHelper.processingTime(upgrade, cookTime, cookTime * 0.75, cookTime * 0.5);
             maxProgress = (int) Math.ceil(MachineUpgradeHelper.cookTime(upgrade, cookTime));
             energy.extractEnergy(energyCost, false);
             progress++;
             if (progress >= maxProgress) {
-                craft(result);
+                craft(result, dust);
                 int crafts = MachineUpgradeHelper.parallelCraftCount(upgrade);
                 for (int craft = 1; craft < crafts; craft++) {
                     if (!recipe.matches(new SingleRecipeInput(items.get(0)), level)
-                            || !canAccept(result) || energy.getEnergyStored() < energyCost) break;
+                            || !canAccept(result) || (isLathe() && !canAcceptAt(4, dust)) || energy.getEnergyStored() < energyCost) break;
                     energy.extractEnergy(energyCost, false);
-                    craft(result);
+                    craft(result, dust);
                 }
                 progress = 0;
             }
@@ -132,11 +146,15 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
         cachedRecipe = manager.getAllRecipesFor(PartsAssemblingRecipe.Type.INSTANCE).stream()
             .filter(holder -> assigned == null || holder.id().equals(assigned))
+            .filter(holder -> supportsRecipe(holder.id(), holder.value()))
             .map(holder -> holder.value())
             .filter(candidate -> candidate.mode().ordinal() == selectedMode)
+            .filter(candidate -> !isLathe() || PartsAssemblingDefaults.isLatheRecipe(candidate))
+            .filter(candidate -> !isLathe() || candidate.mode() != PartsAssemblingRecipe.Mode.BOLT || PartsAssemblingDefaults.isRod(input))
             .filter(candidate -> candidate.matches(new SingleRecipeInput(input), level))
             .min(java.util.Comparator.comparing(candidate -> candidate.getResultItem(level.registryAccess()),
                 PartsAssemblingDefaults.OUTPUT_ORDER)).orElse(null);
+        cachedDust = isLathe() ? PartsAssemblingDefaults.associatedDust(input) : ItemStack.EMPTY;
         cachedRecipeManager = manager;
         cachedRecipes = recipes;
         cachedRecipeMode = selectedMode;
@@ -146,13 +164,21 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     }
 
     private boolean canAccept(ItemStack result) {
-        if (result.isEmpty()) return false;
-        ItemStack output = items.get(1);
-        return (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
-            && output.getCount() + result.getCount() <= result.getMaxStackSize();
+        return canAcceptAt(1, result);
     }
 
-    private void craft(ItemStack result) {
+    private boolean canAcceptAt(int slot, ItemStack result) {
+        if (result.isEmpty()) return false;
+        ItemStack output = items.get(slot);
+        return (output.isEmpty() || ItemStack.isSameItemSameComponents(output, result))
+            && (long) output.getCount() + result.getCount() <= MachineItemStorage.slotLimit(this, slot, result);
+    }
+
+    private void craft(ItemStack result, ItemStack dust) {
+        if (isLathe() && level.random.nextInt(100) < 33) {
+            if (items.get(4).isEmpty()) items.set(4, dust.copy());
+            else items.get(4).grow(dust.getCount());
+        }
         items.get(0).shrink(1);
         ItemStack output = items.get(1);
         if (output.isEmpty()) items.set(1, result.copy());
@@ -162,6 +188,7 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
     public void setSelectedMode(int mode) {
         int clamped = PartsAssemblingRecipe.Mode.fromId(mode).ordinal();
+        if (isLathe() && clamped == 0 || isPress() && clamped != 0) return;
         if (selectedMode != clamped) {
             selectedMode = clamped;
             progress = 0;
@@ -181,17 +208,19 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(tag, items, registries);
+        MachineItemStorage.load(tag, items, registries, this);
         if (tag.get("energy") instanceof IntTag energyTag) energy.deserializeNBT(registries, energyTag);
         progress = tag.getInt("progress");
         maxProgress = Math.max(1, tag.getInt("max_progress"));
         selectedMode = PartsAssemblingRecipe.Mode.fromId(tag.getInt("mode")).ordinal();
+        if (isLathe() && selectedMode == 0) selectedMode = 1;
+        if (isPress()) selectedMode = 0;
     }
 
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, items, registries);
+        MachineItemStorage.save(tag, items, registries);
         tag.put("energy", energy.serializeNBT(registries));
         tag.putInt("progress", progress);
         tag.putInt("max_progress", maxProgress);
@@ -200,10 +229,11 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
 
     @Override public ClientboundBlockEntityDataPacket getUpdatePacket() { return ClientboundBlockEntityDataPacket.create(this); }
     @Override public CompoundTag getUpdateTag(HolderLookup.Provider registries) { return saveWithFullMetadata(registries); }
-    @Override public int getContainerSize() { return 4; }
+    @Override public int getContainerSize() { return isPress() ? 2 + MachineUpgradeHelper.upgradeSlots(getBlockState())
+        : isLathe() ? 3 + MachineUpgradeHelper.upgradeSlots(getBlockState()) : 4; }
     @Override protected NonNullList<ItemStack> getItems() { return items; }
     @Override protected void setItems(NonNullList<ItemStack> items) { this.items = items; }
-    @Override protected Component getDefaultName() { return Component.translatable("block.crystalnexus.parts_assembler"); }
+    @Override protected Component getDefaultName() { return getBlockState().getBlock().getName(); }
     @Override public Component getDisplayName() { return getDefaultName(); }
 
     @Override
@@ -211,14 +241,23 @@ public final class PartsAssemblerBlockEntity extends RandomizableContainerBlockE
         return new PartsAssemblerMenu(id, inventory, this, data);
     }
 
-    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
-        if ((slot == 2 || slot == 3) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
-                && !getItem(slot).isEmpty()) return false;
-        return slot == 0 || (slot == 2 || slot == 3) && MachineUpgradeHelper.isMachineUpgrade(stack);
+    public boolean isUpgradeSlot(int slot) { return slot >= 2 && slot < getContainerSize() && (!isLathe() || slot != 4); }
+    @Override public int getMaxStackSize() { return MachineItemStorage.isTiered(this) ? MachineTier.from(getBlockState()).itemSlotCapacity() : 64; }
+    @Override public int getMaxStackSize(ItemStack stack) { return MachineItemStorage.isTiered(this) ? MachineItemStorage.capacity(this, stack) : super.getMaxStackSize(stack); }
+    @Override public void setItem(int slot, ItemStack stack) {
+        unpackLootTable(null);
+        stack.limitSize(MachineItemStorage.slotLimit(this, slot, stack));
+        items.set(slot, stack);
+        setChanged();
     }
-    @Override public int[] getSlotsForFace(Direction side) { return new int[]{0, 1, 2, 3}; }
+    @Override public boolean canPlaceItem(int slot, ItemStack stack) {
+        if (isUpgradeSlot(slot) && net.crystalnexus.util.MachineUpgradeHelper.isZeroChip(stack)
+                && !getItem(slot).isEmpty()) return false;
+        return slot == 0 || isUpgradeSlot(slot) && MachineUpgradeHelper.isMachineUpgrade(stack);
+    }
+    @Override public int[] getSlotsForFace(Direction side) { return java.util.stream.IntStream.range(0, getContainerSize()).toArray(); }
     @Override public boolean canPlaceItemThroughFace(int slot, ItemStack stack, @Nullable Direction side) { return slot == 0; }
-    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1; }
+    @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return slot == 1 || isLathe() && slot == 4; }
     @Override public void onLoad() {
         super.onLoad();
         if (level != null) net.crystalnexus.assembly.AssemblyLineEvents.changed(level, worldPosition, true);

@@ -37,6 +37,10 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.AZURINE_BLAST_FURNACE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.ARC_FURNACE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AZURINE_LATHE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FERROSTEEL_LATHE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AZURINE_PRESS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FERROSTEEL_PRESS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRAFTING_FACTORY.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_MINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NODE_EXTRACTOR.get().asItem());
@@ -530,6 +534,10 @@ public class CrystalnexusModTabs {
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_machines")).icon(() -> new ItemStack(CrystalnexusModBlocks.PARTS_ASSEMBLER.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(CrystalnexusModBlocks.IRON_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PARTS_ASSEMBLER.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AZURINE_LATHE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FERROSTEEL_LATHE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AZURINE_PRESS.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FERROSTEEL_PRESS.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CRYSTAL_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CHLOROPHYTE_SMELTER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.INVERTIUM_SMELTER.get().asItem());

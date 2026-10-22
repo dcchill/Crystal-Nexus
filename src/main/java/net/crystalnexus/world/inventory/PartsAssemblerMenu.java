@@ -10,14 +10,13 @@ import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public final class PartsAssemblerMenu extends AbstractContainerMenu {
+public final class PartsAssemblerMenu extends TieredMachineMenu {
     private final Container container;
     private final ContainerData data;
     private final BlockPos pos;
@@ -35,22 +34,29 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         this.container = container;
         this.data = data;
         this.pos = container instanceof BlockEntity blockEntity ? blockEntity.getBlockPos() : BlockPos.ZERO;
-        checkContainerSize(container, 4);
+        checkContainerSize(container, machineSlots());
         container.startOpen(inventory.player);
 
-        addSlot(new Slot(container, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y));
-        addSlot(new Slot(container, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y) {
+        var items = new MachineItemHandler(container);
+        addSlot(new MachineItemSlot(items, 0, MachineGuiLayout.grid(43, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y));
+        addSlot(new MachineItemSlot(items, 1, MachineGuiLayout.grid(115, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y) {
             @Override public boolean mayPlace(ItemStack stack) { return false; }
         });
-        for (int upgrade = 0; upgrade < 2; upgrade++) {
-            addSlot(new Slot(container, 2 + upgrade, MachineGuiLayout.sideX(upgrade), MachineGuiLayout.sideY(upgrade)) {
-                @Override public int getMaxStackSize(ItemStack stack) {
-                    return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
-                }
-                @Override public boolean mayPlace(ItemStack stack) {
-                    return stack.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-                }
-            });
+        for (int index = 2; index < machineSlots(); index++) {
+            if (isLathe() && index == 4) {
+                addSlot(new MachineItemSlot(items, 4, MachineGuiLayout.grid(133, 8), MachineGuiLayout.ASSEMBLER_SLOT_Y) {
+                    @Override public boolean mayPlace(ItemStack stack) { return false; }
+                });
+            } else {
+                int ordinal = isLathe() && index >= 5 ? index - 3 : index - 2;
+                final int physicalSlot = index;
+                addSlot(new Slot(container, index, MachineGuiLayout.sideX(ordinal), MachineGuiLayout.sideY(ordinal)) {
+                    @Override public int getMaxStackSize(ItemStack stack) {
+                        return Math.min(net.crystalnexus.util.MachineUpgradeHelper.upgradeStackLimit(stack), super.getMaxStackSize(stack));
+                    }
+                    @Override public boolean mayPlace(ItemStack stack) { return container.canPlaceItem(physicalSlot, stack); }
+                });
+            }
         }
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
@@ -66,6 +72,15 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         return blockEntity instanceof PartsAssemblerBlockEntity assembler ? assembler : new SimpleContainer(4);
     }
 
+    public boolean isLathe() { return container instanceof PartsAssemblerBlockEntity assembler && assembler.isLathe(); }
+    public boolean isPress() { return container instanceof PartsAssemblerBlockEntity assembler && assembler.isPress(); }
+    private int machineSlots() { return container.getContainerSize(); }
+
+    public String machineId() {
+        return container instanceof BlockEntity entity
+            ? net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(entity.getBlockState().getBlock()).getPath() : "parts_assembler";
+    }
+
     public int progress() { return data.get(0); }
     public int maxProgress() { return Math.max(1, data.get(1)); }
     public int energy() { return data.get(2); }
@@ -74,7 +89,7 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id < 0 || id > 2) return false;
+        if (isPress() || id < (isLathe() ? 1 : 0) || id > 2) return false;
         if (container instanceof PartsAssemblerBlockEntity assembler) assembler.setSelectedMode(id);
         return true;
     }
@@ -87,11 +102,11 @@ public final class PartsAssemblerMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack original = slot.getItem();
         ItemStack copy = original.copy();
-        if (index < 4) {
-            if (!moveItemStackTo(original, 4, slots.size(), true)) return ItemStack.EMPTY;
+        if (index < machineSlots()) {
+            if (!moveItemStackTo(original, machineSlots(), slots.size(), true)) return ItemStack.EMPTY;
         } else {
             boolean upgrade = original.is(ItemTags.create(ResourceLocation.parse("crystalnexus:machine_upgrades")));
-            if (!moveItemStackTo(original, upgrade ? 2 : 0, upgrade ? 4 : 1, false)) return ItemStack.EMPTY;
+            if (!moveItemStackTo(original, upgrade ? 2 : 0, upgrade ? machineSlots() : 1, false)) return ItemStack.EMPTY;
         }
         if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;

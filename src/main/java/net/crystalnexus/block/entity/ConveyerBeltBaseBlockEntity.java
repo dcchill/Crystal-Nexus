@@ -33,11 +33,66 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     private static final String INCOMING_HEAD_TIME_TAG = "IncomingHeadTime";
     private static final String MANUAL_MODE_TAG = "ManualMode";
 
+    public static final int FILTER_SLOTS = 9;
+    private final net.minecraft.core.NonNullList<ItemStack> filters = net.minecraft.core.NonNullList.withSize(FILTER_SLOTS, ItemStack.EMPTY);
+
+    private final net.minecraft.resources.ResourceLocation[] filterTags = new net.minecraft.resources.ResourceLocation[FILTER_SLOTS];
+
+    public ItemStack getFilter(int slot) {
+        return filters.get(slot).copy();
+    }
+
+    public void setFilter(int slot, ItemStack stack) {
+        if (slot < 0 || slot >= FILTER_SLOTS) return;
+        filterTags[slot] = null;
+        filters.set(slot, stack.isEmpty() ? ItemStack.EMPTY : new ItemStack(stack.getItem()));
+        sync();
+    }
+
+    @Nullable
+    public net.minecraft.resources.ResourceLocation getFilterTag(int slot) {
+        return slot >= 0 && slot < FILTER_SLOTS ? filterTags[slot] : null;
+    }
+
+    public boolean setFilterTag(int slot, @Nullable net.minecraft.resources.ResourceLocation tag) {
+        if (slot < 0 || slot >= FILTER_SLOTS || filters.get(slot).isEmpty()) return false;
+        if (tag != null && !filters.get(slot).is(net.minecraft.tags.ItemTags.create(tag))) return false;
+        filterTags[slot] = tag;
+        sync();
+        return true;
+    }
+
+    private boolean filterBlacklist;
+
+    public boolean isFilterBlacklist() { return filterBlacklist; }
+
+    public void setFilterBlacklist(boolean blacklist) {
+        filterBlacklist = blacklist;
+        sync();
+    }
+
+    public boolean hasFilters() {
+        return filters.stream().anyMatch(filter -> !filter.isEmpty());
+    }
+
+    public boolean matchesFilter(ItemStack stack) {
+        boolean configured = false;
+        for (int slot = 0; slot < FILTER_SLOTS; slot++) {
+            ItemStack filter = filters.get(slot);
+            if (filter.isEmpty()) continue;
+            configured = true;
+            boolean matches = filterTags[slot] == null ? stack.is(filter.getItem())
+                : stack.is(net.minecraft.tags.ItemTags.create(filterTags[slot]));
+            if (matches) return !filterBlacklist;
+        }
+        return !configured || filterBlacklist;
+    }
+
     public static final int SEGMENTS = 4;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
 	private static final int GAP_SEGMENTS = 1; 
-    private long lastMoveGameTime = 0L;
-    private long incomingHeadGameTime = Long.MIN_VALUE;
+    private double lastMoveGameTime = 0L;
+    private double incomingHeadGameTime = Long.MIN_VALUE;
     private final ConveyerBeltRenderClock clientRenderClock = new ConveyerBeltRenderClock();
     private boolean manualMode;
     @Nullable
@@ -47,14 +102,18 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
 
 public float getRenderProgress(int segment, float partialTick) {
     if (level == null) return 0f;
-    long startTime = level.isClientSide
+    double startTime = level.isClientSide
             ? clientRenderClock.startTime(segment, lastMoveGameTime, incomingHeadGameTime, level.getGameTime())
             : ConveyerBeltMovement.renderStartTime(segment, lastMoveGameTime, incomingHeadGameTime);
     float dt = (float)((level.getGameTime() - startTime) + partialTick);
-    float p = dt / (float) ticksPerMove();
+    float p = dt / (float) Math.max(1.0, ticksPerMove());
     if (p < 0f) p = 0f;
     if (p > 1f) p = 1f;
     return p;
+}
+
+public float getRenderDistance() {
+    return (float) Math.max(1.0, 1.0 / ticksPerMove());
 }
 
 public boolean canAdvanceForRender(int segment) {
@@ -78,7 +137,7 @@ public boolean canAdvanceForRender(int segment) {
     } else {
         IItemHandler frontInventory = isInputBelt() ? findFrontInventory(facing, facing.getOpposite()) : null;
         tailCanAdvance = frontInventory == null
-                || ItemHandlerHelper.insertItem(frontInventory, belt[SEGMENTS - 1], true).getCount() < belt[SEGMENTS - 1].getCount();
+                || matchesFilter(belt[SEGMENTS - 1]) && ItemHandlerHelper.insertItem(frontInventory, belt[SEGMENTS - 1], true).getCount() < belt[SEGMENTS - 1].getCount();
     }
     return ConveyerBeltMovement.canAdvance(occupiedSegments, segment, tailCanAdvance);
 }
@@ -125,14 +184,21 @@ public void serverTick() {
     if (level.isClientSide) return;
 
     moveEntities();
-    long gameTime = level.getGameTime();
-    if (gameTime - lastMoveGameTime < ticksPerMove()) return;
+    double gameTime = level.getGameTime();
+    // Process sub-tick moves, but never replay time spent unloaded.
+    lastMoveGameTime = Math.max(lastMoveGameTime, gameTime - Math.max(1.0, ticksPerMove()));
+    boolean changed = false;
+    while (gameTime - lastMoveGameTime >= ticksPerMove()) {
+        lastMoveGameTime += ticksPerMove();
+        changed |= moveItems(lastMoveGameTime);
+    }
+    if (changed) sync();
+}
 
-    
-    lastMoveGameTime = gameTime;
+private boolean moveItems(double gameTime) {
 
     BlockState state = getBlockState();
-        if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return;
+        if (!state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) return false;
 
         Direction facing = state.getValue(BlockStateProperties.HORIZONTAL_FACING);
         Direction back = ConveyorGeometry.input(state);
@@ -176,7 +242,7 @@ public void serverTick() {
             changed |= tryDropOffFront(facing);
         }
 
-        if (changed) sync();
+        return changed;
     }
 
     private void moveEntities() {
@@ -252,7 +318,7 @@ public void serverTick() {
         return getBlockState().getBlock() instanceof ConveyerBeltInputBlock;
     }
 
-    private int ticksPerMove() {
+    private double ticksPerMove() {
         return ConveyerBeltMode.tierAt(getBlockState()).ticksPerMove();
     }
 private boolean hasGapAtHead() {
@@ -303,12 +369,13 @@ private boolean hasGapAtHead() {
         tail.shrink(moved);
         if (tail.isEmpty()) belt[SEGMENTS - 1] = ItemStack.EMPTY;
 
+        nextBelt.incomingHeadGameTime = lastMoveGameTime;
         nextBelt.sync();
         return true;
     }
 
 
-private static final int PULL_MAX = 32;
+
 
 private boolean tryPullFromAbove() {
     if (level == null) return false;
@@ -332,7 +399,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
     int headSpace = head.isEmpty() ? 64 : (head.getMaxStackSize() - head.getCount());
     if (headSpace <= 0) return false;
 
-    int toPullMax = Math.min(PULL_MAX, headSpace);
+    int toPullMax = Math.min(ConveyerBeltMode.tierAt(getBlockState()).batchSize(), headSpace);
     if (toPullMax <= 0) return false;
 
     
@@ -345,17 +412,17 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
         
         ItemStack peek = input.extractItem(slot, 1, true);
-        if (peek.isEmpty()) continue;
+        if (peek.isEmpty() || !matchesFilter(peek)) continue;
 
         if (!head.isEmpty() && !ItemStack.isSameItemSameComponents(head, peek)) continue;
 
-        int remaining = toPullMax;
+        int remaining = Math.min(toPullMax, peek.getMaxStackSize());
         ItemStack pulledTotal = ItemStack.EMPTY;
 
         while (remaining > 0) {
             
             ItemStack sim = input.extractItem(slot, remaining, true);
-            if (sim.isEmpty()) break;
+            if (sim.isEmpty() || !matchesFilter(sim)) break;
 
             if (!head.isEmpty() && !ItemStack.isSameItemSameComponents(head, sim)) break;
             if (!pulledTotal.isEmpty() && !ItemStack.isSameItemSameComponents(pulledTotal, sim)) break;
@@ -378,6 +445,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         if (pulledTotal.isEmpty()) continue;
 
         belt[0] = insertIntoSegment(belt[0], pulledTotal);
+        incomingHeadGameTime = lastMoveGameTime;
         return true; 
     }
 
@@ -402,6 +470,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
     private boolean tryPushToFront(IItemHandler out) {
         ItemStack tail = belt[SEGMENTS - 1];
+        if (!matchesFilter(tail)) return false;
         ItemStack remainder = ItemHandlerHelper.insertItem(out, tail, false);
         if (remainder.isEmpty()) {
             belt[SEGMENTS - 1] = ItemStack.EMPTY;
@@ -542,10 +611,21 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
         if (!belt[i].isEmpty()) beltTag.put("s" + i, belt[i].save(lookup));
     }
     tag.put("Belt", beltTag);
+    CompoundTag filterTag = new CompoundTag();
+    for (int i = 0; i < FILTER_SLOTS; i++) {
+        if (!filters.get(i).isEmpty()) filterTag.put("s" + i, filters.get(i).save(lookup));
+    }
+    tag.put("InventoryFilters", filterTag);
+    CompoundTag tagFilters = new CompoundTag();
+    for (int i = 0; i < FILTER_SLOTS; i++) {
+        if (filterTags[i] != null) tagFilters.putString("s" + i, filterTags[i].toString());
+    }
+    tag.put("InventoryFilterTags", tagFilters);
+    tag.putBoolean("FilterBlacklist", filterBlacklist);
 
-    tag.putLong("LastMove", lastMoveGameTime);
+    tag.putDouble("LastMove", lastMoveGameTime);
     if (incomingHeadGameTime != Long.MIN_VALUE) {
-        tag.putLong(INCOMING_HEAD_TIME_TAG, incomingHeadGameTime);
+        tag.putDouble(INCOMING_HEAD_TIME_TAG, incomingHeadGameTime);
     }
     if (splinePrevPos != null) {
         tag.putLong(PREV_POS_TAG, splinePrevPos.asLong());
@@ -563,6 +643,15 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
         super.loadAdditional(tag, lookup);
         for (int i = 0; i < SEGMENTS; i++) belt[i] = ItemStack.EMPTY;
+        filterBlacklist = tag.getBoolean("FilterBlacklist");
+        CompoundTag filterTag = tag.getCompound("InventoryFilters");
+        CompoundTag tagFilters = tag.getCompound("InventoryFilterTags");
+        for (int i = 0; i < FILTER_SLOTS; i++) {
+            ItemStack filter = ItemStack.parseOptional(lookup, filterTag.getCompound("s" + i));
+            filters.set(i, filter.isEmpty() ? ItemStack.EMPTY : new ItemStack(filter.getItem()));
+            String tagId = tagFilters.getString("s" + i);
+            filterTags[i] = filter.isEmpty() || tagId.isEmpty() ? null : net.minecraft.resources.ResourceLocation.tryParse(tagId);
+        }
 
         if (tag.contains("Belt")) {
             CompoundTag beltTag = tag.getCompound("Belt");
@@ -574,8 +663,8 @@ protected void saveAdditional(CompoundTag tag, HolderLookup.Provider lookup) {
             }
         }
     if (tag.contains("LastMove"))
-        lastMoveGameTime = tag.getLong("LastMove");
-    incomingHeadGameTime = tag.contains(INCOMING_HEAD_TIME_TAG) ? tag.getLong(INCOMING_HEAD_TIME_TAG) : Long.MIN_VALUE;
+        lastMoveGameTime = tag.getDouble("LastMove");
+    incomingHeadGameTime = tag.contains(INCOMING_HEAD_TIME_TAG) ? tag.getDouble(INCOMING_HEAD_TIME_TAG) : Long.MIN_VALUE;
     splinePrevPos = tag.contains(PREV_POS_TAG) ? BlockPos.of(tag.getLong(PREV_POS_TAG)) : null;
     splineNextPos = tag.contains(NEXT_POS_TAG) ? BlockPos.of(tag.getLong(NEXT_POS_TAG)) : null;
     manualMode = tag.getBoolean(MANUAL_MODE_TAG);
