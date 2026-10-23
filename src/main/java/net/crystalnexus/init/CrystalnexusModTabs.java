@@ -148,6 +148,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.AZURINE_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.CHLOROPHYTE_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get());
+				tabData.accept(CrystalnexusModItems.NEUTRONIC_REDSTONE.get());
+				tabData.accept(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get());
 				tabData.accept(CrystalnexusModItems.SPENT_REACTOR_CELL.get());
 				tabData.accept(CrystalnexusModItems.PURE_BLUTONIUM.get());
 				tabData.accept(CrystalnexusModBlocks.BLU_TNT.get().asItem());

@@ -5,6 +5,8 @@ import net.crystalnexus.util.MachineSync;
 
 import net.crystalnexus.config.CrystalnexusConfig;
 import net.crystalnexus.reactor.ReactorLayout;
+import net.crystalnexus.reactor.ReactorGraphHistory;
+import net.crystalnexus.reactor.ReactorBalance;
 import net.crystalnexus.reactor.ReactorSimulation;
 import net.crystalnexus.reactor.ReactorLayoutInvalidation;
 import net.crystalnexus.multiblock.MultiblockPortTarget;
@@ -46,6 +48,9 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 	private ReactorLayout cachedLayout = ReactorLayout.invalid("Offline");
 	private int layoutCheckDelay = 0;
 	private int masterControlRodInsertion;
+	private long extractedEnergy;
+	private final ReactorGraphHistory graphHistory = new ReactorGraphHistory();
+	private final ReactorSimulation.Scratch simulationScratch = new ReactorSimulation.Scratch();
 
 	public ReactorComputerBlockEntity(BlockPos position, BlockState state) {
 		super(CrystalnexusModBlockEntities.REACTOR_COMPUTER.get(), position, state);
@@ -56,11 +61,19 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 			return;
         blockEntity.machineSync.tick();
 		ReactorComputerOnTickUpdateProcedure.execute(level, pos.getX(), pos.getY(), pos.getZ());
+		var data = blockEntity.getPersistentData();
+		boolean valid = data.getBoolean("canOpenInventory") && data.getInt("multiblockRadius") > 0 && blockEntity.cachedLayout.valid;
+		blockEntity.graphHistory.tick(valid ? data.getDouble("heatGenerated") : 0, valid ? data.getDouble("maxCooling") : 0,
+				Math.max(ReactorBalance.AMBIENT_TEMPERATURE, data.getDouble("heat")), data.getDouble("lastFEOutput"), data.getDouble("maxFEt"));
 	}
+
+	public ReactorGraphHistory graphHistory() { return graphHistory; }
+	public ReactorSimulation.Scratch simulationScratch() { return simulationScratch; }
 
 	@Override
 	public void loadAdditional(CompoundTag compound, HolderLookup.Provider lookupProvider) {
 		super.loadAdditional(compound, lookupProvider);
+		extractedEnergy = 0;
 		if (!this.tryLoadLootTable(compound))
 			this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(compound, this.stacks, lookupProvider);
@@ -151,22 +164,35 @@ public class ReactorComputerBlockEntity extends RandomizableContainerBlockEntity
 		return true;
 	}
 
-	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.maxExtract(), this::syncEnergy);
+	private final GeneratorEnergyStorage energyStorage = new GeneratorEnergyStorage(CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.capacity(), CrystalnexusConfig.MACHINES.REACTOR_COMPUTER.maxExtract(), this::syncEnergy) {
+		@Override
+		public int extractEnergy(int amount, boolean simulate) {
+			int extracted = super.extractEnergy(amount, simulate);
+			if (!simulate && extracted > 0) extractedEnergy += extracted;
+			return extracted;
+		}
+	};
+
+	public long consumeExtractedEnergy() {
+		long extracted = extractedEnergy;
+		extractedEnergy = 0;
+		return extracted;
+	}
 
 	private void syncEnergy() {
-		machineSync.changed();
+		machineSync.dataChanged();
 	}
 
 	public GeneratorEnergyStorage getEnergyStorage() {
 		return energyStorage;
 	}
 
-	private final FluidTank fluidTank = new FluidTank(16000, fs -> fs.is(Fluids.WATER)
+	private final FluidTank fluidTank = new FluidTank(64000, fs -> fs.is(Fluids.WATER)
 			|| fs.is(Fluids.FLOWING_WATER) || fs.is(CrystalnexusModFluids.NITROGEN.get())) {
 		@Override
 		protected void onContentsChanged() {
 			super.onContentsChanged();
-			machineSync.changed();
+			machineSync.dataChanged();
 		}
 	};
 

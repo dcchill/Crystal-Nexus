@@ -476,6 +476,8 @@ public class TooltipInfoHandler {
 		addTooltip("dark_matter_fuel_cell",
 				"Weak alone; resonates with every Dark Matter Fuel Cell in the reactor.",
 				"Total FE output from these cells grows with the square of their count.");
+		addTooltip("neutronic_redstone_fuel_cell",
+				"Doubles its energy and heat output when neither adjacent slot in its fuel rod contains another Neutronic Redstone Fuel Cell.");
 		addTooltip("biomass",
 				"Processed organic biomass.",
 				"Fuel source from composting.");

@@ -18,41 +18,90 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-
 public final class ReactorSimulation {
+	/** Layout-sized storage; block entities and reactivity are refreshed on every simulation call. */
+	public static final class Scratch {
+		private ReactorLayout layout;
+		private ReactorCoreBlockEntity[] cores = new ReactorCoreBlockEntity[0];
+		private BlockPos[] controlPositions = new BlockPos[0];
+		private double[] reactivities = new double[0];
+		private int[] controlIndices = new int[0];
+
+		private void refresh(LevelAccessor world, ReactorLayout current) {
+			if (layout != current) {
+				layout = current;
+				int size = current.fuelRods().size();
+				cores = new ReactorCoreBlockEntity[size];
+				controlIndices = new int[size];
+				var columns = new java.util.LinkedHashMap<BlockPos, Integer>();
+				for (int i = 0; i < size; i++) {
+					controlIndices[i] = columns.computeIfAbsent(current.fuelRods().get(i).controlRodPos(), key -> columns.size());
+				}
+				controlPositions = columns.keySet().toArray(BlockPos[]::new);
+				reactivities = new double[controlPositions.length];
+			}
+			for (int i = 0; i < cores.length; i++) {
+				cores[i] = world.getBlockEntity(current.fuelRods().get(i).pos()) instanceof ReactorCoreBlockEntity core ? core : null;
+			}
+			for (int i = 0; i < controlPositions.length; i++) {
+				reactivities[i] = world.getBlockEntity(controlPositions[i]) instanceof ReactorControlRodBlockEntity control
+						? control.getReactivity() : 1.0;
+			}
+		}
+	}
+
 	private ReactorSimulation() {
 	}
 
 	public static void tick(LevelAccessor world, BlockPos pos, ReactorComputerBlockEntity computer) {
 		CompoundTag data = computer.getPersistentData();
+		long extractedEnergy = computer.consumeExtractedEnergy();
+		double demandHeatFactor = ReactorBalance.demandHeatFactor(extractedEnergy, data.getDouble("lastFEt"));
+		data.putDouble("lastFEOutput", extractedEnergy);
+		data.putDouble("maxFEt", 0);
 		ReactorLayout layout = computer.getCachedLayout();
 		int radius = data.getInt("multiblockRadius");
 		if (!data.getBoolean("canOpenInventory") || radius <= 0 || layout == null || !layout.valid) {
+			data.putDouble("maxCooling", 0);
 			setStatus(world, pos, computer, layout == null ? "Offline" : layout.reason, 1);
 			return;
 		}
 		double temperature = Math.max(ReactorBalance.AMBIENT_TEMPERATURE, data.getDouble("heat"));
+		double coolantEfficiency = coolantEfficiency(computer);
+		double maxCooling = Math.min(layout.coolantCapacityMbT, computer.getFluidTank().getFluidAmount())
+				* ReactorBalance.HEAT_PER_MB_COOLANT * coolantEfficiency + passiveHeatLoss(temperature);
+		data.putDouble("maxCooling", maxCooling);
+		Scratch scratch = computer.simulationScratch();
+		scratch.refresh(world, layout);
 		int darkMatterCells = 0;
-		for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
-			if (world.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core) {
+		for (ReactorCoreBlockEntity core : scratch.cores) {
+			if (core != null) {
 				for (int slot = 0; slot < 3; slot++) {
 					if (core.getItem(slot).is(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get())) darkMatterCells++;
 				}
 			}
 		}
 		double output = 0, heat = 0, activeRods = 0;
-		for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
-			if (!(world.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
-			double insertion = world.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control
-					? control.getReactivity() : 1.0;
+		for (int i = 0; i < scratch.cores.length; i++) {
+			ReactorCoreBlockEntity core = scratch.cores[i];
+			if (core == null) continue;
+			ReactorLayout.FuelRod rod = layout.fuelRods().get(i);
+			double insertion = scratch.reactivities[scratch.controlIndices[i]];
 			for (int slot = 0; slot < 3; slot++) {
 				if (!(core.getItem(slot).getItem() instanceof ReactorFuelCellItem cell)) continue;
 				double feMultiplier = cell.feMultiplier();
+				double heatMultiplier = cell.heatMultiplier();
+				if (core.getItem(slot).is(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get())
+						&& (slot == 0 || !core.getItem(slot - 1).is(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get()))
+						&& (slot == 2 || !core.getItem(slot + 1).is(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get()))) {
+						feMultiplier *= 2;
+						heatMultiplier *= 2;
+				}
 				if (core.getItem(slot).is(CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get())) {
 					feMultiplier *= ReactorBalance.darkMatterResonanceMultiplier(darkMatterCells);
 				}
 				output += rod.output() * insertion * feMultiplier / 3.0;
-				heat += rod.heat() * insertion * cell.heatMultiplier() / 3.0;
+				heat += rod.heat() * insertion * heatMultiplier / 3.0;
 				activeRods += insertion / 3.0;
 			}
 		}
@@ -69,10 +118,11 @@ public final class ReactorSimulation {
 		int unthrottledFe = (int) Math.round(ReactorBalance.BASE_FE_PER_ROD_T * output * layout.fuelEfficiency * fuelPower * tempEfficiency);
 		double unthrottledHeat = ReactorBalance.BASE_HEAT_PER_ROD_T * heat * fuelPower;
 		unthrottledHeat *= 1.0 + Math.max(0, layout.fuelRods - layout.fuelColumns) * 0.08;
-		double coolantEfficiency = coolantEfficiency(computer);
+		unthrottledHeat *= demandHeatFactor;
 		int coolantDemand = runningCoolantDemand(temperature, unthrottledHeat, coolantEfficiency);
 		int coolantCapacity = layout.coolantCapacityMbT;
 		int coolantOffset = permafrost ? (int) Math.floor(coolantDemand * ReactorBalance.PERMAFROST_COOLANT_OFFSET) : 0;
+		data.putDouble("maxCooling", maxCooling + coolantOffset * ReactorBalance.HEAT_PER_MB_COOLANT * coolantEfficiency);
 		int actualDemand = Math.max(0, coolantDemand - coolantOffset);
 		int coolantUsed = 0;
 		if (actualDemand > 0 && coolantCapacity > 0) {
@@ -89,7 +139,7 @@ public final class ReactorSimulation {
 		data.putDouble("maxHeat", ReactorBalance.MAX_TEMPERATURE);
 		data.putDouble("lastFEt", fe);
 		data.putDouble("heatGenerated", heatGenerated);
-		data.putDouble("heatRemoved", heatRemoved);
+		data.putDouble("heatRemoved", heatRemoved + passiveHeatLoss);
 		data.putDouble("coolantDemand", coolantDemand);
 		data.putDouble("coolantCapacity", coolantCapacity);
 		data.putDouble("coolantUsed", coolantUsed);
@@ -101,7 +151,8 @@ public final class ReactorSimulation {
 			return;
 		}
 		computer.getEnergyStorage().generateEnergy(fe, false);
-		progressFuelCycle(world, computer, layout, operatingFactor, activeRods);
+		data.putDouble("maxFEt", fe);
+		progressFuelCycle(computer, layout, scratch, operatingFactor, activeRods);
 		String status = coolantCapacity < actualDemand ? "Cooling Capacity Limited"
 				: coolantUsed < actualDemand ? "Coolant Limited" : "Stable";
 		setStatus(world, pos, computer, status, 2);
@@ -145,7 +196,7 @@ public final class ReactorSimulation {
 	}
 
 	private static double coolantEfficiency(ReactorComputerBlockEntity computer) {
-		return computer.getFluidTank().getFluid().is(CrystalnexusModFluids.NITROGEN.get()) ? 2.0 : 1.0;
+		return computer.getFluidTank().getFluid().is(CrystalnexusModFluids.NITROGEN.get()) ? 2.5 : 1.0;
 	}
 
 	static int runningCoolantDemand(double temperature, double heatGenerated, double coolantEfficiency) {
@@ -167,15 +218,15 @@ public final class ReactorSimulation {
 		return fuel.getItem() instanceof ReactorFuelCellItem;
 	}
 
-	private static void progressFuelCycle(LevelAccessor world, ReactorComputerBlockEntity computer, ReactorLayout layout,
+	private static void progressFuelCycle(ReactorComputerBlockEntity computer, ReactorLayout layout, Scratch scratch,
 			double operatingFactor, double activeRods) {
 		CompoundTag data = computer.getPersistentData();
 		double burn = activeRods * operatingFactor / Math.max(0.25, layout.fuelEfficiency)
 				* ReactorBalance.FUEL_BURN_RATE_MULTIPLIER;
-		for (ReactorLayout.FuelRod rod : layout.fuelRods()) {
-			if (!(world.getBlockEntity(rod.pos()) instanceof ReactorCoreBlockEntity core)) continue;
-			double insertion = world.getBlockEntity(rod.controlRodPos()) instanceof ReactorControlRodBlockEntity control
-					? control.getReactivity() : 1.0;
+		for (int i = 0; i < scratch.cores.length; i++) {
+			ReactorCoreBlockEntity core = scratch.cores[i];
+			if (core == null) continue;
+			double insertion = scratch.reactivities[scratch.controlIndices[i]];
 			for (int slot = 0; slot < 3; slot++) {
 				if (isFuel(core.getItem(slot))) core.addWear(slot, insertion * operatingFactor
 						/ Math.max(0.25, layout.fuelEfficiency) * ReactorBalance.FUEL_BURN_RATE_MULTIPLIER);
@@ -208,7 +259,7 @@ public final class ReactorSimulation {
 		CompoundTag data = computer.getPersistentData();
 		boolean statusChanged = !status.equals(data.getString("reactorStatus"));
 		data.putString("reactorStatus", status);
-		computer.machineSync.changed();
+		computer.machineSync.dataChanged();
 		if (world instanceof Level level) {
 			var state = level.getBlockState(pos);
 			boolean blockChanged = state.getBlock().getStateDefinition().getProperty("blockstate") instanceof net.minecraft.world.level.block.state.properties.IntegerProperty prop

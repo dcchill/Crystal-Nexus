@@ -81,7 +81,10 @@ public final class ZeroUpgradeGameTests {
         helper.setBlock(reactorPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
         var reactor = helper.getLevel().getBlockEntity(helper.absolutePos(reactorPos));
         var reactorItems = helper.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, reactor.getBlockPos(), Direction.UP);
-        var reactorMenu = new net.crystalnexus.world.inventory.ReactorGUIMenu(1, player.getInventory(), new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(reactor.getBlockPos()).writeVarInt(0));
+        var reactorMenuData = new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(reactor.getBlockPos()).writeVarInt(0);
+        ((ReactorComputerBlockEntity) reactor).graphHistory().write(reactorMenuData);
+        var reactorMenu = new net.crystalnexus.world.inventory.ReactorGUIMenu(1, player.getInventory(), reactorMenuData);
+        reactorMenuData.release();
         for (var item : new net.minecraft.world.item.Item[]{CrystalnexusModItems.REACTOR_UPGRADE.get(), CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()}) {
             ItemStack stack = new ItemStack(item, 64);
             helper.assertTrue(stack.getMaxStackSize() == 64 && reactorMenu.slots.get(0).getMaxStackSize(stack) == 1, "Reactor upgrades must stack to 64 in inventory and one in the reactor slot");

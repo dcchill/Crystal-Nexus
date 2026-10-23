@@ -40,6 +40,7 @@ public final class ReactorCoreBlockEntity extends RandomizableContainerBlockEnti
     @Override public boolean canTakeItemThroughFace(int slot, ItemStack stack, Direction side) { return true; }
 
     public void addWear(int slot, double amount) {
+        if (amount == 0) return;
         ItemStack stack = getItem(slot);
         if (!(stack.getItem() instanceof ReactorFuelCellItem)) return;
         wearProgress[slot] += amount;
@@ -53,8 +54,9 @@ public final class ReactorCoreBlockEntity extends RandomizableContainerBlockEnti
                 stack.setDamageValue(stack.getDamageValue() + damage);
                 setChanged();
             }
+        } else if (level != null) {
+            level.blockEntityChanged(worldPosition);
         }
-        setChanged();
     }
 
     @Override public void setItem(int slot, ItemStack stack) {

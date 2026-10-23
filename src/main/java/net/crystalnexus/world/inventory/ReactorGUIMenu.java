@@ -6,6 +6,7 @@ import net.crystalnexus.init.CrystalnexusModBlocks;
 import net.crystalnexus.init.CrystalnexusModItems;
 import net.crystalnexus.init.CrystalnexusModMenus;
 import net.crystalnexus.item.ReactorFuelCellItem;
+import net.crystalnexus.reactor.ReactorGraphHistory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
@@ -30,6 +31,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
     private final List<BlockPos> rods;
     private int page;
 	private int masterInsertion;
+	private final ReactorGraphHistory graphHistory;
 
     public ReactorGUIMenu(int id, Inventory inventory, FriendlyByteBuf data) {
         super(CrystalnexusModMenus.REACTOR_GUI.get(), id);
@@ -40,6 +42,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
         int count = Math.min(3375, Math.max(0, data.readVarInt()));
         rods = new ArrayList<>(count);
         for (int i = 0; i < count; i++) rods.add(data.readBlockPos());
+		graphHistory = ReactorGraphHistory.read(data);
         if (!level.isClientSide && controller != null && !controller.getItem(0).isEmpty()) {
             ItemStack legacyFuel = controller.removeItemNoUpdate(0);
             controller.setChanged();
@@ -85,6 +88,7 @@ public final class ReactorGUIMenu extends AbstractContainerMenu {
     }
 
     public ReactorComputerBlockEntity controller() { return controller; }
+	public ReactorGraphHistory graphHistory() { return graphHistory; }
     public int page() { return page; }
     public int pageCount() { return Math.max(1, (rods.size() + 8) / 9); }
     public int rodCount() { return rods.size(); }

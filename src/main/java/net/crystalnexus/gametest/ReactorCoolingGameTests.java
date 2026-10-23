@@ -36,6 +36,352 @@ public final class ReactorCoolingGameTests {
 	private ReactorCoolingGameTests() {
 	}
 
+	private static final class NotificationCountingComputer extends ReactorComputerBlockEntity {
+		private int inventoryNotifications;
+		private NotificationCountingComputer(BlockPos pos, net.minecraft.world.level.block.state.BlockState state) {
+			super(pos, state);
+		}
+		@Override public void setChanged() {
+			inventoryNotifications++;
+			super.setChanged();
+		}
+	}
+
+	@GameTest(template = "zero_point")
+	public static void routineControllerUpdatesPreserveInventoryNotifications(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity original = preparedComputer(helper, pos);
+		var computer = new NotificationCountingComputer(helper.absolutePos(pos), original.getBlockState());
+		helper.getLevel().setBlockEntity(computer);
+		computer.updateLayoutCache(original.getCachedLayout());
+		computer.getPersistentData().putBoolean("canOpenInventory", true);
+		computer.getPersistentData().putInt("multiblockRadius", 1);
+		computer.inventoryNotifications = 0;
+		computer.getEnergyStorage().generateEnergy(100, false);
+		computer.getEnergyStorage().extractEnergy(50, false);
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 10000), IFluidHandler.FluidAction.EXECUTE);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.inventoryNotifications == 0,
+				"Routine energy, coolant and telemetry must avoid inventory notifications");
+		var restored = new ReactorComputerBlockEntity(helper.absolutePos(pos), computer.getBlockState());
+		restored.loadAdditional(computer.saveWithFullMetadata(helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
+		helper.assertTrue(restored.getEnergyStorage().getEnergyStored() == computer.getEnergyStorage().getEnergyStored()
+				&& restored.getFluidTank().getFluidAmount() == computer.getFluidTank().getFluidAmount()
+				&& restored.getPersistentData().getDouble("heat") == computer.getPersistentData().getDouble("heat"),
+				"Routine updates must still save and reload energy, coolant and telemetry");
+		computer.setItem(1, new ItemStack(CrystalnexusModItems.REACTOR_UPGRADE.get()));
+		helper.assertTrue(computer.inventoryNotifications > 0, "Inventory changes must retain normal notifications");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void fractionalWearPersistsWithoutDirtyingOnZero(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(2, 1, 2);
+		helper.setBlock(pos, CrystalnexusModBlocks.REACTOR_CORE.get());
+		ReactorCoreBlockEntity core = helper.getBlockEntity(pos);
+		core.setItem(0, new ItemStack(CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get()));
+		var chunk = helper.getLevel().getChunkAt(helper.absolutePos(pos));
+		try {
+			chunk.setUnsaved(false);
+			core.addWear(0, 0);
+			helper.assertTrue(!chunk.isUnsaved(), "Zero wear must not dirty the chunk");
+			core.addWear(0, 0.4);
+			helper.assertTrue(chunk.isUnsaved() && core.getItem(0).getDamageValue() == 0,
+					"Fractional wear must dirty the chunk without damaging the cell yet");
+			var saved = core.saveWithFullMetadata(helper.getLevel().registryAccess());
+			var restored = new ReactorCoreBlockEntity(helper.absolutePos(pos), core.getBlockState());
+			restored.loadAdditional(saved, helper.getLevel().registryAccess());
+			restored.addWear(0, 0.6);
+			helper.assertTrue(restored.getItem(0).getDamageValue() == 1,
+					"Saved fractional wear must contribute to damage after reload");
+			restored.getItem(0).setDamageValue(restored.getItem(0).getMaxDamage() - 1);
+			restored.addWear(0, 1);
+			helper.assertTrue(restored.getItem(0).is(CrystalnexusModItems.SPENT_REACTOR_CELL.get()),
+					"Exhaustion must still replace fuel with a spent cell");
+		} finally {
+			chunk.setUnsaved(true);
+		}
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void simulationRefreshesCoreAndRodReferencesEveryCall(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		var world = helper.getLevel();
+		var rod = computer.getCachedLayout().fuelRods().get(0);
+		ReactorSimulation.tick(world, helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") > 0, "Initial core must generate energy");
+		world.setBlock(rod.pos(), Blocks.AIR.defaultBlockState(), 3);
+		ReactorSimulation.tick(world, helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") == 0, "Removed cores must be forgotten immediately");
+		world.setBlock(rod.pos(), CrystalnexusModBlocks.REACTOR_CORE.get().defaultBlockState(), 3);
+		ReactorCoreBlockEntity replacement = (ReactorCoreBlockEntity) world.getBlockEntity(rod.pos());
+		replacement.setItem(0, new ItemStack(CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get()));
+		((ReactorControlRodBlockEntity) world.getBlockEntity(rod.controlRodPos())).setInsertion(100);
+		ReactorSimulation.tick(world, helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") == 0, "Rod changes must apply on the next call");
+		world.setBlock(rod.controlRodPos(), Blocks.AIR.defaultBlockState(), 3);
+		ReactorSimulation.tick(world, helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") > 0, "Replaced core and removed control must use fresh references");
+		ReactorLayout changed = layout(helper, 0, 1, "FC");
+		computer.updateLayoutCache(changed);
+		loadFuel(helper, changed, 3);
+		ReactorSimulation.tick(world, helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("lastFEt") > 0, "Changed layouts must rebuild simulation storage");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void periodicValidationDetectsNonPlayerStructureBreaks(GameTestHelper helper) {
+		byte[] columns = new byte[9];
+		java.util.Arrays.fill(columns, (byte) 4);
+		columns[4] = 0;
+		var build = ReactorPlanner.fromColumns(5, columns);
+		for (BlockPos cursor : BlockPos.betweenClosed(-1, -1, -1, 5, 5, 5)) helper.setBlock(cursor, Blocks.AIR);
+		for (var entry : build.blocks().entrySet()) helper.setBlock(entry.getKey(), entry.getValue());
+		BlockPos pos = new BlockPos(1, 1, 0);
+		ReactorComputerBlockEntity computer = helper.getBlockEntity(pos);
+		ReactorComputerBlockEntity.tick(helper.getLevel(), helper.absolutePos(pos), computer.getBlockState(), computer);
+		helper.assertTrue(computer.getCachedLayout().valid, "Initial structure must validate");
+		helper.setBlock(new BlockPos(0, 3, 3), Blocks.AIR);
+		for (int i = 0; i < 21; i++)
+			ReactorComputerBlockEntity.tick(helper.getLevel(), helper.absolutePos(pos), computer.getBlockState(), computer);
+		helper.assertTrue(!computer.getCachedLayout().valid && !computer.getPersistentData().getBoolean("canOpenInventory"),
+				"Periodic validation must detect structure changes without a player break event");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void feGraphTracksRealDrawAndAvailableGeneration(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		var data = computer.getPersistentData();
+		data.putDouble("heat", 700);
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 10000), IFluidHandler.FluidAction.EXECUTE);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		double fullCapacity = data.getDouble("maxFEt");
+		helper.assertTrue(fullCapacity > 0 && data.getDouble("lastFEOutput") == 0,
+				"An unloaded energy grid must show zero delivered FE and positive generation capacity");
+		computer.getEnergyStorage().extractEnergy(900, true);
+		computer.getEnergyStorage().extractEnergy(100, false);
+		computer.getEnergyStorage().extractEnergy(200, false);
+		data.putDouble("heat", 700);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(data.getDouble("lastFEOutput") == 300 && data.getDouble("maxFEt") == fullCapacity,
+				"FE output must count real deliveries while maximum generation stays independent of draw");
+		computer.getFluidTank().drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+		data.putDouble("heat", 700);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(data.getDouble("lastFEOutput") == 0 && data.getDouble("maxFEt") > 0
+				&& data.getDouble("maxFEt") < fullCapacity && data.getDouble("maxFEt") == data.getDouble("lastFEt"),
+				"Generation ceiling must reflect coolant throttling and output must reset after draw stops");
+		data.putBoolean("canOpenInventory", false);
+		computer.getEnergyStorage().extractEnergy(50, false);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(data.getDouble("maxFEt") == 0 && data.getDouble("lastFEOutput") == 50,
+				"Offline reactors can deliver stored FE but have no generation capacity");
+		data.putBoolean("canOpenInventory", true);
+		data.putDouble("heat", 1200);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(data.getDouble("maxFEt") == 0, "SCRAM must clear the generation ceiling");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void graphRecordsWithoutAnOpenMenuAndRestoresOnReopen(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		computer.shouldRecheckLayout(Integer.MAX_VALUE);
+		var player = new net.minecraft.server.level.ServerPlayer(helper.getLevel().getServer(), helper.getLevel(),
+				new com.mojang.authlib.GameProfile(java.util.UUID.randomUUID(), "reactor-history"),
+				net.minecraft.server.level.ClientInformation.createDefault());
+		for (int opening = 0; opening < 2; opening++) {
+			for (int tick = 0; tick < 10; tick++)
+				ReactorComputerBlockEntity.tick(helper.getLevel(), computer.getBlockPos(), computer.getBlockState(), computer);
+			var buffer = new net.minecraft.network.FriendlyByteBuf(io.netty.buffer.Unpooled.buffer());
+			try {
+				buffer.writeBlockPos(computer.getBlockPos());
+				var rods = computer.getCachedLayout().fuelRods();
+				buffer.writeVarInt(rods.size());
+				for (var rod : rods) buffer.writeBlockPos(rod.pos());
+				computer.graphHistory().write(buffer);
+				var menu = new net.crystalnexus.world.inventory.ReactorGUIMenu(1, player.getInventory(), buffer);
+				helper.assertTrue(menu.graphHistory().size() == opening + 1,
+						"Opening the GUI must restore samples recorded while no menu was open");
+				helper.assertTrue(menu.graphHistory().heat(opening) == computer.getPersistentData().getDouble("heatGenerated")
+						&& menu.graphHistory().coolingCapacity(opening) == computer.getPersistentData().getDouble("maxCooling")
+						&& menu.graphHistory().temperature(opening) == computer.getPersistentData().getDouble("heat")
+						&& menu.graphHistory().feOutput(opening) == computer.getPersistentData().getDouble("lastFEOutput")
+						&& menu.graphHistory().maxFe(opening) == computer.getPersistentData().getDouble("maxFEt"),
+						"Reopened history must retain heat, cooling, temperature, actual FE output and maximum FE/t");
+				menu.removed(player);
+			} finally {
+				buffer.release();
+			}
+		}
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void coolingCeilingTracksThroughputSupplyAndCoolantType(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		int[] amounts = {1000, 1, 0};
+		double[] waterCeilings = {900.34, 15.34, 0.34};
+		for (var fluid : java.util.List.of(Fluids.WATER, CrystalnexusModFluids.NITROGEN.get())) {
+			for (int i = 0; i < amounts.length; i++) {
+				computer.getFluidTank().drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+				if (amounts[i] > 0) computer.getFluidTank().fill(new FluidStack(fluid, amounts[i]), IFluidHandler.FluidAction.EXECUTE);
+				computer.getPersistentData().putDouble("heat", 700);
+				tickAtFullLoad(helper, computer, pos);
+				var data = computer.getPersistentData();
+				double expected = fluid == Fluids.WATER ? waterCeilings[i] : (waterCeilings[i] - 0.34) * 2.5 + 0.34;
+				helper.assertTrue(Math.abs(data.getDouble("maxCooling") - expected) < 1e-9,
+						"Cooling ceiling must reflect throughput and coolant available before consumption: " + fluid + ", " + amounts[i]);
+				helper.assertTrue(data.getDouble("heatRemoved") <= data.getDouble("maxCooling") + 1e-9,
+						"Actual cooling must not exceed the available ceiling");
+			}
+		}
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+		computer.getPersistentData().putDouble("heat", 700);
+		computer.setAllControlRodInsertion(100);
+		tickAtFullLoad(helper, computer, pos);
+		helper.assertTrue(Math.abs(computer.getPersistentData().getDouble("maxCooling") - 900.34) < 1e-9,
+				"Idle reactors must retain their available cooling ceiling");
+		computer.getPersistentData().putBoolean("canOpenInventory", false);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.getPersistentData().getDouble("maxCooling") == 0, "Invalid reactors must clear their cooling ceiling");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void coolingCeilingIncludesPermafrostContribution(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		ReactorCoreBlockEntity core = helper.getBlockEntity(CORE_POS);
+		for (int slot = 0; slot < 3; slot++) core.setItem(slot, new ItemStack(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get()));
+		computer.setItem(1, new ItemStack(CrystalnexusModItems.REACTOR_UPGRADE_PERMAFROST.get()));
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 1), IFluidHandler.FluidAction.EXECUTE);
+		computer.getPersistentData().putDouble("heat", 1000);
+		tickAtFullLoad(helper, computer, pos);
+		helper.assertTrue(Math.abs(computer.getPersistentData().getDouble("maxCooling") - 30.49) < 1e-9,
+				"Ceiling must include available water, permafrost cooling and passive heat loss");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void thermalReadingsIncludePassiveLossAndExplainTemperatureChange(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		for (int mode = 0; mode < 3; mode++) {
+			computer.getPersistentData().putDouble("heat", 700);
+			computer.getFluidTank().drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
+			if (mode != 1) computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+			if (mode == 2) computer.setAllControlRodInsertion(100);
+			tickAtFullLoad(helper, computer, pos);
+			var data = computer.getPersistentData();
+			double heating = data.getDouble("heatGenerated"), cooling = data.getDouble("heatRemoved");
+			double expectedCooling = data.getDouble("coolantUsed") * ReactorBalance.HEAT_PER_MB_COOLANT
+					+ (700 - ReactorBalance.AMBIENT_TEMPERATURE) * ReactorBalance.PASSIVE_HEAT_LOSS_PER_DEGREE;
+			helper.assertTrue(Math.abs(cooling - expectedCooling) < 1e-9, "Cooling readings must include passive heat loss in mode " + mode);
+			helper.assertTrue(Math.abs(data.getDouble("heat") - 700 - (heating - cooling)) < 1e-9,
+					"Actual heat rates must explain temperature change in mode " + mode);
+			helper.assertTrue(mode == 1 ? heating > cooling : cooling > heating,
+					"Actual rates must distinguish dry heating from supplied or idle cooling in mode " + mode);
+		}
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void demandCountsOnlyRealExtractionAndResets(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		var energy = computer.getEnergyStorage();
+		energy.generateEnergy(1000, false);
+		energy.extractEnergy(100, true);
+		helper.assertTrue(computer.consumeExtractedEnergy() == 0, "Simulation must not count as grid demand");
+		energy.extractEnergy(200, false);
+		energy.extractEnergy(300, false);
+		helper.assertTrue(computer.consumeExtractedEnergy() == 500, "Real transfers must accumulate");
+		helper.assertTrue(computer.consumeExtractedEnergy() == 0, "Reading demand must reset it");
+		energy.extractEnergy(1000, false);
+		energy.extractEnergy(1000, false);
+		helper.assertTrue(computer.consumeExtractedEnergy() == 500, "Unfulfilled extraction must not count");
+		energy.generateEnergy(1000, false);
+		energy.extractEnergy(1000, false);
+		computer.getPersistentData().putBoolean("canOpenInventory", false);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(computer.consumeExtractedEnergy() == 0, "Offline ticks must discard demand");
+		energy.generateEnergy(1000, false);
+		energy.extractEnergy(1000, false);
+		computer.loadAdditional(computer.saveWithFullMetadata(helper.getLevel().registryAccess()), helper.getLevel().registryAccess());
+		helper.assertTrue(computer.consumeExtractedEnergy() == 0, "Loading must clear transient demand");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void outputPortDrawRaisesHeatAndStoppingDrawRestoresIdleHeat(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		BlockPos outputPos = pos.east();
+		helper.setBlock(outputPos, CrystalnexusModBlocks.MACHINE_ENERGY_OUTPUT.get());
+		helper.setBlock(outputPos.east(), CrystalnexusModBlocks.BATTERY.get());
+		MachineEnergyOutputBlockEntity output = helper.getBlockEntity(outputPos);
+		computer.getPersistentData().putLong("multiblockMinBounds", helper.absolutePos(pos).asLong());
+		computer.getPersistentData().putLong("multiblockMaxBounds", helper.absolutePos(outputPos.east()).asLong());
+		output.bindController(helper.absolutePos(pos));
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		double idleHeat = computer.getPersistentData().getDouble("heatGenerated");
+		output.pushEnergy();
+		computer.getPersistentData().putDouble("heat", ReactorBalance.AMBIENT_TEMPERATURE);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(Math.abs(computer.getPersistentData().getDouble("heatGenerated") - idleHeat * 5) < 1e-9,
+				"Delivering full output through a port must produce five times idle heat");
+		computer.getPersistentData().putDouble("heat", ReactorBalance.AMBIENT_TEMPERATURE);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+		helper.assertTrue(Math.abs(computer.getPersistentData().getDouble("heatGenerated") - idleHeat) < 1e-9,
+				"Stopping draw must restore idle heat on the next tick");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void loadRaisesCoolantDemandWithoutChangingGenerationOrFuelRules(GameTestHelper helper) {
+		BlockPos pos = new BlockPos(15, 1, 15);
+		ReactorComputerBlockEntity computer = preparedComputer(helper, pos);
+		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 10000), IFluidHandler.FluidAction.EXECUTE);
+		ReactorCoreBlockEntity core = (ReactorCoreBlockEntity) helper.getLevel().getBlockEntity(computer.getCachedLayout().fuelRods().get(0).pos());
+		for (int slot = 0; slot < 3; slot++) core.setItem(slot, new ItemStack(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get()));
+		double idleHeat = 0, idleCoolant = 0, idleFe = 0, idleBurn = 0, idleWear = 0, idleMaxCooling = 0;
+		for (int load = 0; load <= 1; load++) {
+			computer.getPersistentData().putDouble("heat", 1000);
+			computer.getPersistentData().putDouble("progress", 1999.999);
+			computer.setItem(2, ItemStack.EMPTY);
+			double wearBefore = core.getUpdateTag(helper.getLevel().registryAccess()).getDouble("Wear0");
+			if (load == 1) computer.getEnergyStorage().extractEnergy((int) idleFe, false);
+			ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
+			var data = computer.getPersistentData();
+			double wear = core.getUpdateTag(helper.getLevel().registryAccess()).getDouble("Wear0") - wearBefore;
+			if (load == 0) {
+				idleHeat = data.getDouble("heatGenerated");
+				idleCoolant = data.getDouble("coolantDemand");
+				idleFe = data.getDouble("lastFEt");
+				idleBurn = data.getDouble("progress");
+				idleWear = wear;
+				idleMaxCooling = data.getDouble("maxCooling");
+			} else {
+				helper.assertTrue(Math.abs(data.getDouble("heatGenerated") - idleHeat * 5) < 1e-9
+						&& data.getDouble("coolantDemand") > idleCoolant, "Full load must raise heat and coolant demand");
+				helper.assertTrue(data.getDouble("maxCooling") == idleMaxCooling,
+						"Cooling ceiling must be independent of energy draw when coolant throughput and supply are unchanged");
+				helper.assertTrue(data.getDouble("lastFEt") == idleFe && data.getDouble("progress") == idleBurn
+						&& Math.abs(wear - idleWear) < 1e-9, "Load alone must preserve FE generation, fuel wear and cycle progress");
+			}
+			helper.assertTrue(computer.getItem(2).getCount() == 1, "Each completed cycle must produce the same waste");
+		}
+		helper.succeed();
+	}
+
 	@GameTest(template = "zero_point")
 	public static void plannerIncludesReflectorsInBuildsAndEstimates(GameTestHelper helper) {
 		var candidates = ReactorPlanner.candidates(5);
@@ -98,6 +444,58 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
+	public static void spacedNeutronicRedstoneFuelCellsProduceMoreEnergyAndHeat(GameTestHelper helper) {
+		var manager = helper.getLevel().getRecipeManager();
+		var redstoneRecipe = manager.byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:fluid_chemical_reaction_neutronic_redstone"));
+		var fuelCellRecipe = manager.byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:neutronic_redstone_fuel_cell"));
+		helper.assertTrue(redstoneRecipe.isPresent() && fuelCellRecipe.isPresent(),
+				"Neutronic Redstone and fuel cell recipes must load");
+		if (fuelCellRecipe.isPresent()) {
+			var recipe = fuelCellRecipe.get().value();
+			helper.assertTrue(recipe.getIngredients().size() == 5
+					&& recipe.getIngredients().stream().filter(ingredient -> ingredient.test(new ItemStack(CrystalnexusModItems.REACTOR_FUEL_CELL.get()))).count() == 4
+					&& recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.test(new ItemStack(CrystalnexusModItems.NEUTRONIC_REDSTONE.get())))
+					&& recipe.getResultItem(helper.getLevel().registryAccess()).is(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get())
+					&& recipe.getResultItem(helper.getLevel().registryAccess()).getCount() == 4,
+					"Fuel-cell recipe must use one Neutronic Redstone and four reactor fuel cells to make four neutronic cells");
+		}
+		ReactorLayout layout = layout(helper, 0, 0, "F");
+		helper.assertTrue(layout.valid, "Fuel rod test layout must be valid: " + layout.reason);
+		BlockPos computerPos = new BlockPos(15, 1, 15);
+		helper.setBlock(computerPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		ReactorComputerBlockEntity computer = helper.getBlockEntity(computerPos);
+		computer.updateLayoutCache(layout);
+		computer.getPersistentData().putBoolean("canOpenInventory", true);
+		computer.getPersistentData().putInt("multiblockRadius", 1);
+		computer.getPersistentData().putDouble("heat", 740);
+		ReactorCoreBlockEntity first = (ReactorCoreBlockEntity) helper.getLevel().getBlockEntity(layout.fuelRods().get(0).pos());
+		((ReactorControlRodBlockEntity) helper.getLevel().getBlockEntity(layout.fuelRods().get(0).controlRodPos())).setInsertion(0);
+		ItemStack neutronic = new ItemStack(CrystalnexusModItems.NEUTRONIC_REDSTONE_FUEL_CELL.get());
+		first.setItem(0, neutronic);
+		first.setItem(2, neutronic.copy());
+		helper.assertTrue(ReactorSimulation.isFuel(neutronic)
+				&& ((ReactorFuelCellItem) neutronic.getItem()).heatMultiplier()
+						== ((ReactorFuelCellItem) CrystalnexusModItems.BLUTONIUM_FUEL_CELL.get()).heatMultiplier(),
+				"Neutronic Redstone Fuel Cells must be accepted as fuel without changing base heat");
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+		double spacedOutput = computer.getPersistentData().getDouble("lastFEt");
+		double spacedHeat = computer.getPersistentData().getDouble("heatGenerated");
+		helper.assertTrue(spacedOutput > 0 && spacedHeat > 0 && computer.getPersistentData().getDouble("progress") > 0,
+				"Spaced fuel cells must generate energy and advance the burn cycle");
+		first.setItem(1, neutronic.copy());
+		first.setItem(2, ItemStack.EMPTY);
+		computer.getPersistentData().putDouble("heat", 740);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+		double adjacentOutput = computer.getPersistentData().getDouble("lastFEt");
+		double adjacentHeat = computer.getPersistentData().getDouble("heatGenerated");
+		helper.assertTrue(Math.abs(spacedOutput - adjacentOutput * 2) < 4,
+				"Two spaced neutronic cells must produce twice the energy of consecutive cells");
+		helper.assertTrue(Math.abs(spacedHeat - adjacentHeat * 2) < 4,
+				"Two spaced neutronic cells must produce twice the heat of consecutive cells");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
 	public static void fissileFuelCellsHaveDistinctHeatAndLifetimes(GameTestHelper helper) {
 		ItemStack overtonium = new ItemStack(CrystalnexusModItems.OVERTONIUM_FUEL_CELL.get());
 		ItemStack azurine = new ItemStack(CrystalnexusModItems.AZURINE_FUEL_CELL.get());
@@ -105,16 +503,56 @@ public final class ReactorCoolingGameTests {
 		ReactorFuelCellItem overtoniumFuel = (ReactorFuelCellItem) overtonium.getItem();
 		ReactorFuelCellItem azurineFuel = (ReactorFuelCellItem) azurine.getItem();
 		ReactorFuelCellItem chlorophyteFuel = (ReactorFuelCellItem) chlorophyte.getItem();
-		helper.assertTrue(azurineFuel.heatMultiplier() == overtoniumFuel.heatMultiplier() * 0.9
+		helper.assertTrue(azurineFuel.heatMultiplier() == 1670.0
 				&& azurineFuel.feMultiplier() == overtoniumFuel.feMultiplier(),
-				"Fissile Azurine must run ten percent cooler than Overtonium at the same output");
+				"Fissile Azurine must retain its output and require nitrogen cooling");
 		helper.assertTrue(azurine.getMaxDamage() == overtonium.getMaxDamage() * 3 / 2,
 				"Fissile Azurine must last fifty percent longer at the same reactor wear rate");
-		helper.assertTrue(chlorophyteFuel.heatMultiplier() == overtoniumFuel.heatMultiplier() * 1.2
-				&& chlorophyte.getMaxDamage() == overtonium.getMaxDamage(),
-				"Fissile Chlorophyte must run hot with the standard medium burn duration");
+		helper.assertTrue(chlorophyteFuel.heatMultiplier() == 1670.0
+				&& chlorophyte.getMaxDamage() == azurine.getMaxDamage(),
+				"Fissile Chlorophyte must require nitrogen cooling and retain the standard medium burn duration");
 		helper.assertTrue(ReactorSimulation.isFuel(azurine) && ReactorSimulation.isFuel(chlorophyte),
 				"Both fissile cells must be accepted as reactor fuel");
+		helper.succeed();
+	}
+
+	@GameTest(template = "zero_point")
+	public static void highHeatFuelRequiresNitrogenForSafeOperation(GameTestHelper helper) {
+		ReactorLayout layout = layout(helper, 0, 0,
+				"CCC",
+				"CFC",
+				"CCC");
+		BlockPos waterPos = new BlockPos(15, 1, 15);
+		BlockPos nitrogenPos = new BlockPos(20, 1, 15);
+		helper.setBlock(waterPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		helper.setBlock(nitrogenPos, CrystalnexusModBlocks.REACTOR_COMPUTER.get());
+		ReactorComputerBlockEntity water = helper.getBlockEntity(waterPos);
+		ReactorComputerBlockEntity nitrogen = helper.getBlockEntity(nitrogenPos);
+		ReactorCoreBlockEntity core = helper.getLevel().getBlockEntity(layout.fuelRods().get(0).pos()) instanceof ReactorCoreBlockEntity reactorCore
+				? reactorCore : null;
+		helper.assertTrue(core != null, "The reference reactor must have a fuel core");
+		for (ReactorComputerBlockEntity computer : java.util.List.of(water, nitrogen)) {
+			computer.updateLayoutCache(layout);
+			computer.getPersistentData().putBoolean("canOpenInventory", true);
+			computer.getPersistentData().putInt("multiblockRadius", 1);
+			computer.getPersistentData().putDouble("heat", 1000);
+		}
+		water.getFluidTank().fill(new FluidStack(Fluids.WATER, 16000), IFluidHandler.FluidAction.EXECUTE);
+		nitrogen.getFluidTank().fill(new FluidStack(CrystalnexusModFluids.NITROGEN.get(), 16000), IFluidHandler.FluidAction.EXECUTE);
+		for (var fuel : java.util.List.of(CrystalnexusModItems.AZURINE_FUEL_CELL.get(),
+				CrystalnexusModItems.CHLOROPHYTE_FUEL_CELL.get(), CrystalnexusModItems.DARK_MATTER_FUEL_CELL.get())) {
+			for (int slot = 0; slot < 3; slot++) core.setItem(slot, new ItemStack(fuel));
+			water.getPersistentData().putDouble("heat", 1000);
+			nitrogen.getPersistentData().putDouble("heat", 1000);
+			for (int tick = 0; tick < 10; tick++) {
+				tickAtFullLoad(helper, water, waterPos);
+				tickAtFullLoad(helper, nitrogen, nitrogenPos);
+			}
+			helper.assertTrue("SCRAM".equals(water.getPersistentData().getString("reactorStatus")),
+					fuel + " must exceed water's safe cooling capacity");
+			helper.assertTrue(!"SCRAM".equals(nitrogen.getPersistentData().getString("reactorStatus")),
+					fuel + " must remain safe with nitrogen cooling");
+		}
 		helper.succeed();
 	}
 
@@ -334,7 +772,7 @@ public final class ReactorCoolingGameTests {
 	}
 
 	@GameTest(template = "zero_point")
-	public static void nitrogenRemovesTwiceTheHeatOfWater(GameTestHelper helper) {
+	public static void nitrogenRemovesTwoAndAHalfTimesTheHeatOfWater(GameTestHelper helper) {
 		ReactorLayout layout = layout(helper, 0, 0,
 				"CCC",
 				"CFC",
@@ -357,8 +795,8 @@ public final class ReactorCoolingGameTests {
 		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(waterPos), water);
 		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(nitrogenPos), nitrogen);
 
-		helper.assertTrue(nitrogen.getPersistentData().getDouble("heatRemoved") > water.getPersistentData().getDouble("heatRemoved") * 1.9,
-				"Nitrogen must remove twice as much reactor heat per mB as water");
+		helper.assertTrue(nitrogen.getPersistentData().getDouble("heatRemoved") > water.getPersistentData().getDouble("heatRemoved") * 2.4,
+				"Nitrogen must remove 2.5 times as much reactor heat per mB as water");
 		helper.succeed();
 	}
 
@@ -381,7 +819,7 @@ public final class ReactorCoolingGameTests {
 		computer.getPersistentData().putDouble("heat", 700);
 		computer.getFluidTank().fill(new FluidStack(Fluids.WATER, 1), IFluidHandler.FluidAction.EXECUTE);
 
-		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+		tickAtFullLoad(helper, computer, computerPos);
 
 		helper.assertTrue("Coolant Limited".equals(computer.getPersistentData().getString("reactorStatus")),
 				"Restricted coolant should report a limited reactor");
@@ -396,7 +834,7 @@ public final class ReactorCoolingGameTests {
 		ReactorComputerBlockEntity computer = preparedComputer(helper, computerPos);
 		computer.getPersistentData().putDouble("heat", 1199.9);
 
-		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+		tickAtFullLoad(helper, computer, computerPos);
 
 		helper.assertTrue("SCRAM".equals(computer.getPersistentData().getString("reactorStatus")),
 				"A dry reactor must retain enough minimum fission heat to eventually SCRAM");
@@ -639,8 +1077,16 @@ public final class ReactorCoolingGameTests {
 
 	private static void tick(GameTestHelper helper, ReactorComputerBlockEntity computer, BlockPos computerPos, int ticks) {
 		for (int tick = 0; tick < ticks; tick++) {
-			ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(computerPos), computer);
+			tickAtFullLoad(helper, computer, computerPos);
 		}
+	}
+
+	private static void tickAtFullLoad(GameTestHelper helper, ReactorComputerBlockEntity computer, BlockPos pos) {
+		int previousFe = Math.max(1, (int) computer.getPersistentData().getDouble("lastFEt"));
+		computer.getPersistentData().putDouble("lastFEt", previousFe);
+		computer.getEnergyStorage().generateEnergy(previousFe, false);
+		computer.getEnergyStorage().extractEnergy(previousFe, false);
+		ReactorSimulation.tick(helper.getLevel(), helper.absolutePos(pos), computer);
 	}
 
 	private static Block blockFor(char symbol) {

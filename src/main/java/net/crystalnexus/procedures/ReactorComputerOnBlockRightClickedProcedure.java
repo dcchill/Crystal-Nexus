@@ -76,7 +76,11 @@ public class ReactorComputerOnBlockRightClickedProcedure {
 			var rods = computer.getCachedLayout().fuelRods();
 			buffer.writeVarInt(rods.size());
 			for (var rod : rods) buffer.writeBlockPos(rod.pos());
-		} else buffer.writeVarInt(0);
+			computer.graphHistory().write(buffer);
+		} else {
+			buffer.writeVarInt(0);
+			new net.crystalnexus.reactor.ReactorGraphHistory().write(buffer);
+		}
 		return buffer;
 	}
 

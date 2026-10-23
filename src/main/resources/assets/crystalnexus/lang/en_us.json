@@ -856,6 +856,8 @@
   "block.crystalnexus.hyper_refinery": "Hyper Refinery",
   "item.crystalnexus.dark_matter": "Dark Matter",
 	"item.crystalnexus.dark_matter_fuel_cell": "Dark Matter Fuel Cell",
+  "item.crystalnexus.neutronic_redstone": "Neutronic Redstone",
+  "item.crystalnexus.neutronic_redstone_fuel_cell": "Neutronic Redstone Fuel Cell",
   "jei.crystalnexus.crystal_formation": "If exploded in The End, the exothermic reaction of Blutonium TNT causes a reaction with the Endstone, creating Invertium Crystals to form.",
   "item.crystalnexus.dark_battery_cell": "Dark Matter Battery Cell",
   "item.crystalnexus.ore_scanner": "Ore Scanner",

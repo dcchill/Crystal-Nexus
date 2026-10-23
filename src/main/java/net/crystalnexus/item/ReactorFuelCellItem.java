@@ -22,6 +22,8 @@ public class ReactorFuelCellItem extends Item {
     public double feMultiplier() { return feMultiplier; }
     public double heatMultiplier() { return heatMultiplier; }
 
+    @Override public int getMaxStackSize(ItemStack stack) { return 64; }
+
     @Override public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> lines, TooltipFlag flag) {
         lines.add(Component.literal("Base output: " + Math.round(ReactorBalance.BASE_FE_PER_ROD_T * feMultiplier / 3) + " FE/t per cell"));
         lines.add(Component.literal("Base heat: " + ReactorBalance.BASE_HEAT_PER_ROD_T * heatMultiplier / 3 + " per tick"));

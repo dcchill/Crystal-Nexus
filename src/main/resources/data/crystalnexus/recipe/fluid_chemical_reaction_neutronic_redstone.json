@@ -1,0 +1,6 @@
+{
+  "type": "crystalnexus:fluid_chemical_reaction",
+  "fluid_input_1": { "fluid": "crystalnexus:neutron_flux", "amount": 250 },
+  "item_input_1": { "item": "minecraft:redstone" },
+  "item_output": { "id": "crystalnexus:neutronic_redstone", "count": 1 }
+}
