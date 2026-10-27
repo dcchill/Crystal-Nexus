@@ -502,6 +502,10 @@ public class CrystalWrenchItem extends Item {
             && (!belt.isEmpty() || belt.hasFilters() || belt.isFilterBlacklist());
         ItemStack blockItem = new ItemStack(isConveyor ? ConveyerBeltMode.normalBlock(state) : block.asItem());
 
+        if (isConveyor && blockEntity instanceof ConveyerBeltBaseBlockEntity belt) {
+            belt.clearProcessingData();
+        }
+
         if (blockEntity != null && (!isConveyor || preserveBeltContents)) {
             CustomData.update(
                     DataComponents.CUSTOM_DATA,

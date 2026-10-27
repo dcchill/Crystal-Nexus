@@ -108,6 +108,7 @@ import net.crystalnexus.block.entity.CraftingFactoryBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltOutputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltInputBlockEntity;
 import net.crystalnexus.block.entity.ConveyerBeltBlockEntity;
+import net.crystalnexus.block.entity.ProcessingModuleBlockEntity;
 import net.crystalnexus.block.entity.ContainerBlockEntity;
 import net.crystalnexus.block.entity.ComputationClusterBlockEntity;
 import net.crystalnexus.block.entity.CircuitPressBlockEntity;
@@ -215,6 +216,8 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> STEAM_CHAMBER = register("steam_chamber", CrystalnexusModBlocks.STEAM_CHAMBER, SteamChamberBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT = registerMany("conveyer_belt", ConveyerBeltBlockEntity::new,
 		CrystalnexusModBlocks.CONVEYER_BELT, CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT, CrystalnexusModBlocks.METEORITE_CONVEYER_BELT);
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PROCESSING_MODULE = registerMany("processing_module", ProcessingModuleBlockEntity::new,
+		CrystalnexusModBlocks.PROCESSING_PRESS_MODULE, CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE, CrystalnexusModBlocks.PROCESSING_DRILL_MODULE, CrystalnexusModBlocks.NANOFABRICATOR, CrystalnexusModBlocks.PROCESSING_WELDER_MODULE);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_INPUT = register("conveyer_belt_input", CrystalnexusModBlocks.CONVEYER_BELT_INPUT, ConveyerBeltInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_OUTPUT = register("conveyer_belt_output", CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT, ConveyerBeltOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_ELEVATOR = register("item_elevator", CrystalnexusModBlocks.ITEM_ELEVATOR, ItemElevatorBlockEntity::new);
@@ -299,6 +302,9 @@ public class CrystalnexusModBlockEntities {
 
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PROCESSING_MODULE.get(), (be, side) -> ((ProcessingModuleBlockEntity) be).energy());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PROCESSING_MODULE.get(), (be, side) ->
+			be instanceof ProcessingModuleBlockEntity module && module.hasMaterialSlot() ? new SidedInvWrapper(module, side) : null);
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MASTICATOR.get(), (blockEntity, side) -> ((MasticatorBlockEntity) blockEntity).getAutomationFluidHandler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ASSEMBLY_LINE_CONTROLLER.get(), (be, side) -> ((net.crystalnexus.block.entity.AssemblyLineControllerBlockEntity) be).ports);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, ASSEMBLY_LINE_CONTROLLER.get(), (be, side) -> ((net.crystalnexus.block.entity.AssemblyLineControllerBlockEntity) be).energy);
@@ -429,9 +435,9 @@ public class CrystalnexusModBlockEntities {
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_COLLECTOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, STEAM_COLLECTOR.get(), (blockEntity, side) -> ((SteamCollectorBlockEntity) blockEntity).getAutomationFluidHandler());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, STEAM_CHAMBER.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 3, Integer.MAX_VALUE));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_INPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_OUTPUT.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity) blockEntity).itemHandler(side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_INPUT.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity) blockEntity).itemHandler(side));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CONVEYER_BELT_OUTPUT.get(), (blockEntity, side) -> ((net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity) blockEntity).itemHandler(side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ITEM_ELEVATOR_DOWN.get(), (blockEntity, side) -> new SidedInvWrapper((WorldlyContainer) blockEntity, side));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CRAFTING_FACTORY.get(), (blockEntity, side) -> new net.crystalnexus.world.inventory.MachineUpgradeItemHandler((WorldlyContainer) blockEntity, side, 11, 11));

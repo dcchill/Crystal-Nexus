@@ -89,6 +89,7 @@ public abstract class ConveyerBeltBaseBlockEntity extends BlockEntity implements
     }
 
     public static final int SEGMENTS = 4;
+    public static final int PROCESSING_SEGMENT = SEGMENTS / 2;
     protected final ItemStack[] belt = new ItemStack[SEGMENTS];
 	private static final int GAP_SEGMENTS = 1; 
     private double lastMoveGameTime = 0L;
@@ -118,6 +119,11 @@ public float getRenderDistance() {
 
 public boolean canAdvanceForRender(int segment) {
     if (level == null || segment < 0 || segment >= SEGMENTS || belt[segment].isEmpty()) return false;
+    if (isHeldForProcessing(belt[segment])) return false;
+    for (int next = segment + 1; next < SEGMENTS; next++) {
+        if (belt[next].isEmpty()) break;
+        if (isHeldForProcessing(belt[next])) return false;
+    }
 
     int occupiedSegments = 0;
     for (int i = 0; i < SEGMENTS; i++) {
@@ -136,8 +142,10 @@ public boolean canAdvanceForRender(int segment) {
         tailCanAdvance = ConveyorGeometry.connects(worldPosition, state, nextBelt.getBlockPos(), nextBelt.getBlockState()) && nextBelt.belt[0].isEmpty();
     } else {
         IItemHandler frontInventory = isInputBelt() ? findFrontInventory(facing, facing.getOpposite()) : null;
+        ItemStack outgoing = belt[SEGMENTS - 1].copy();
+        clearProcessingData(outgoing);
         tailCanAdvance = frontInventory == null
-                || matchesFilter(belt[SEGMENTS - 1]) && ItemHandlerHelper.insertItem(frontInventory, belt[SEGMENTS - 1], true).getCount() < belt[SEGMENTS - 1].getCount();
+                || matchesFilter(belt[SEGMENTS - 1]) && ItemHandlerHelper.insertItem(frontInventory, outgoing, true).getCount() < belt[SEGMENTS - 1].getCount();
     }
     return ConveyerBeltMovement.canAdvance(occupiedSegments, segment, tailCanAdvance);
 }
@@ -184,16 +192,149 @@ public void serverTick() {
     if (level.isClientSide) return;
 
     moveEntities();
+    boolean processed = processProcessingModules();
     double gameTime = level.getGameTime();
     // Process sub-tick moves, but never replay time spent unloaded.
     lastMoveGameTime = Math.max(lastMoveGameTime, gameTime - Math.max(1.0, ticksPerMove()));
-    boolean changed = false;
+    boolean changed = processed;
     while (gameTime - lastMoveGameTime >= ticksPerMove()) {
         lastMoveGameTime += ticksPerMove();
         changed |= moveItems(lastMoveGameTime);
+        changed |= processProcessingModules();
     }
     if (changed) sync();
 }
+
+boolean processProcessingModules() {
+    if (level == null || level.isClientSide) return false;
+    if (!(level.getBlockEntity(worldPosition.above()) instanceof ProcessingModuleBlockEntity module)) return false;
+    var operation = module.operation();
+
+    boolean changed = false;
+    // Bring saved, active jobs from older versions under the module's working head.
+    for (int i = 0; i < SEGMENTS; i++) {
+        if (i != PROCESSING_SEGMENT && belt[PROCESSING_SEGMENT].isEmpty() && isHeldForProcessing(belt[i])) {
+            belt[PROCESSING_SEGMENT] = belt[i];
+            belt[i] = ItemStack.EMPTY;
+            changed = true;
+        }
+    }
+    boolean hasWork = false;
+    for (int i = 0; i < SEGMENTS; i++) {
+        if (i != PROCESSING_SEGMENT) continue;
+        ItemStack stack = belt[i];
+        if (stack.isEmpty()) continue;
+
+        net.minecraft.nbt.CompoundTag data = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+            net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+        String recipeId = data.getString("CrystalNexusProcessingRecipe");
+        net.crystalnexus.recipe.ProcessingLineRecipe recipe = null;
+        boolean dataChanged = false;
+        if (!recipeId.isEmpty()) {
+            var id = net.minecraft.resources.ResourceLocation.tryParse(recipeId);
+            if (id != null) recipe = level.getRecipeManager().byKey(id).map(net.minecraft.world.item.crafting.RecipeHolder::value)
+                .filter(net.crystalnexus.recipe.ProcessingLineRecipe.class::isInstance)
+                .map(net.crystalnexus.recipe.ProcessingLineRecipe.class::cast).orElse(null);
+        } else {
+            if (operation == null) continue;
+            var match = level.getRecipeManager().getAllRecipesFor(net.crystalnexus.recipe.ProcessingLineRecipe.Type.INSTANCE).stream()
+                .filter(holder -> holder.value().matches(stack) && holder.value().steps().get(0).operation() == operation)
+                .findFirst().orElse(null);
+            recipe = match == null ? null : match.value();
+            if (match != null) {
+                recipeId = match.id().toString();
+                data.putString("CrystalNexusProcessingRecipe", recipeId);
+                data.putInt("CrystalNexusProcessingStep", 0);
+                data.putInt("CrystalNexusProcessingTime", 0);
+                dataChanged = true;
+            }
+        }
+        if (recipe == null) continue;
+
+        int stepIndex = data.getInt("CrystalNexusProcessingStep");
+        if (stepIndex < 0 || stepIndex >= recipe.steps().size()) continue;
+        var step = recipe.steps().get(stepIndex);
+        if (operation != step.operation()) continue;
+        hasWork = true;
+        changed = true;
+        if (stepIndex == recipe.steps().size() - 1
+                && stack.getCount() > recipe.getResultItem(level.registryAccess()).getMaxStackSize()) continue;
+        if (!data.getBoolean("CrystalNexusProcessingActive")) data.putBoolean("CrystalNexusProcessingActive", true);
+        dataChanged = true;
+
+        long gameTime = level.getGameTime();
+        if (data.contains("CrystalNexusProcessingLastTick") && data.getLong("CrystalNexusProcessingLastTick") == gameTime) {
+            if (dataChanged) stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
+            continue;
+        }
+        int count = data.contains("CrystalNexusProcessingCount")
+            ? Math.clamp(data.getInt("CrystalNexusProcessingCount"), 1, stack.getCount())
+            : !step.ingredient().isEmpty() && module.material().getMaxStackSize() == 1 ? 1 : stack.getCount();
+        boolean partialBatch = count < stack.getCount();
+        int energyCost = step.energyPerTick() * count;
+        if (!module.canSupply(step, count) || partialBatch && !belt[i + 1].isEmpty() || !module.consumeEnergy(energyCost)) {
+            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), data.getInt("CrystalNexusProcessingTime"), step.time(), false);
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
+            setChanged();
+            continue;
+        }
+        data.putInt("CrystalNexusProcessingCount", count);
+        data.putLong("CrystalNexusProcessingLastTick", gameTime);
+        int progress = data.getInt("CrystalNexusProcessingTime") + 1;
+        if (progress < step.time()) {
+            data.putInt("CrystalNexusProcessingTime", progress);
+            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), progress, step.time(), true);
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
+            setChanged();
+            continue;
+        }
+
+        if (!module.consumeMaterial(step, count)) continue;
+        var remainingData = data.copy();
+        remainingData.putInt("CrystalNexusProcessingTime", 0);
+        remainingData.remove("CrystalNexusProcessingCount");
+        data.remove("CrystalNexusProcessingCount");
+        ItemStack processed;
+        if (++stepIndex == recipe.steps().size()) {
+            processed = recipe.getResultItem(level.registryAccess()).copyWithCount(count);
+        } else {
+            data.putInt("CrystalNexusProcessingStep", stepIndex);
+            data.putInt("CrystalNexusProcessingTime", 0);
+            data.remove("CrystalNexusProcessingActive");
+            processed = stack.copyWithCount(count);
+            processed.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
+        }
+        if (partialBatch) {
+            // Unstackable press materials apply to one carried item per cycle; keep the rest on the belt.
+            stack.shrink(count);
+            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(remainingData));
+            belt[i + 1] = processed;
+        } else belt[i] = processed;
+        module.setProcessing(null, 0, 1, false);
+        setChanged();
+    }
+    if (!hasWork) module.setProcessing(null, 0, 1, false);
+    return changed;
+}
+
+public boolean isProcessingSegment(int segment) {
+    return segment >= 0 && segment < SEGMENTS && isHeldForProcessing(belt[segment]);
+}
+
+private boolean isHeldForProcessing(ItemStack stack) {
+    if (level == null || stack.isEmpty() || !(level.getBlockEntity(worldPosition.above()) instanceof ProcessingModuleBlockEntity module)) return false;
+    var data = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+        net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+    if (!data.getBoolean("CrystalNexusProcessingActive")) return false;
+    var id = net.minecraft.resources.ResourceLocation.tryParse(data.getString("CrystalNexusProcessingRecipe"));
+    if (id == null) return false;
+    var recipe = level.getRecipeManager().byKey(id).map(net.minecraft.world.item.crafting.RecipeHolder::value)
+        .filter(net.crystalnexus.recipe.ProcessingLineRecipe.class::isInstance)
+        .map(net.crystalnexus.recipe.ProcessingLineRecipe.class::cast).orElse(null);
+    int step = data.getInt("CrystalNexusProcessingStep");
+    return recipe != null && step >= 0 && step < recipe.steps().size() && recipe.steps().get(step).operation() == module.operation();
+}
+
 
 private boolean moveItems(double gameTime) {
 
@@ -212,7 +353,7 @@ private boolean moveItems(double gameTime) {
 
         for (int i = SEGMENTS - 2; i >= 0; i--) {
             ItemStack cur = belt[i];
-            if (cur.isEmpty()) continue;
+            if (cur.isEmpty() || isHeldForProcessing(cur)) continue;
             if (i == 0 && incomingHeadGameTime != Long.MIN_VALUE
                     && gameTime - incomingHeadGameTime < ticksPerMove()) continue;
 
@@ -358,6 +499,7 @@ private boolean hasGapAtHead() {
 
         ItemStack tail = belt[SEGMENTS - 1];
         if (tail.isEmpty()) return false;
+    if (isHeldForProcessing(tail)) return false;
 
         ItemStack moving = tail.copy();
         boolean ok = nextBelt.tryInsertToHead(moving);
@@ -381,7 +523,8 @@ private boolean tryPullFromAbove() {
     if (level == null) return false;
 
     BlockPos inputPos = worldPosition.above();
-    if (level.getBlockEntity(inputPos) instanceof ConveyerBeltBaseBlockEntity) return false;
+    if (level.getBlockEntity(inputPos) instanceof ConveyerBeltBaseBlockEntity
+            || level.getBlockEntity(inputPos) instanceof ProcessingModuleBlockEntity) return false;
     return tryPullFrom(inputPos, Direction.DOWN, Direction.UP);
 }
 
@@ -470,17 +613,15 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
 
     private boolean tryPushToFront(IItemHandler out) {
         ItemStack tail = belt[SEGMENTS - 1];
-        if (!matchesFilter(tail)) return false;
-        ItemStack remainder = ItemHandlerHelper.insertItem(out, tail, false);
-        if (remainder.isEmpty()) {
-            belt[SEGMENTS - 1] = ItemStack.EMPTY;
-            return true;
-        }
-        if (remainder.getCount() != tail.getCount()) {
-            belt[SEGMENTS - 1] = remainder;
-            return true;
-        }
-        return false; 
+        if (!matchesFilter(tail) || isHeldForProcessing(tail)) return false;
+        ItemStack outgoing = tail.copy();
+        clearProcessingData(outgoing);
+        ItemStack remainder = ItemHandlerHelper.insertItem(out, outgoing, false);
+        int moved = tail.getCount() - remainder.getCount();
+        if (moved <= 0) return false;
+        tail.shrink(moved);
+        if (tail.isEmpty()) belt[SEGMENTS - 1] = ItemStack.EMPTY;
+        return true;
     }
 
     private boolean tryDropOffFront(Direction facing) {
@@ -490,9 +631,10 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         if (!level.hasChunkAt(frontPos) || level.getBlockEntity(frontPos) instanceof ConveyerBeltBaseBlockEntity) return false;
 
         ItemStack tail = belt[SEGMENTS - 1];
-        if (tail.isEmpty()) return false;
+        if (tail.isEmpty() || isHeldForProcessing(tail)) return false;
 
         ItemStack dropped = tail.copy();
+        clearProcessingData(dropped);
         belt[SEGMENTS - 1] = ItemStack.EMPTY;
 
         double spawnX = worldPosition.getX() + 0.5D + facing.getStepX() * 0.55D;
@@ -549,6 +691,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         if (cur.isEmpty()) return ItemStack.EMPTY;
 
         ItemStack split = cur.split(count);
+        clearProcessingData(split);
         if (cur.isEmpty()) {
             belt[index] = ItemStack.EMPTY;
             if (index == 0) incomingHeadGameTime = Long.MIN_VALUE;
@@ -562,7 +705,36 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         ItemStack cur = belt[index];
         belt[index] = ItemStack.EMPTY;
         if (index == 0) incomingHeadGameTime = Long.MIN_VALUE;
+        clearProcessingData(cur);
         return cur;
+    }
+
+    public static void clearProcessingData(ItemStack stack) {
+        if (stack.isEmpty()) return;
+        var data = stack.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+            net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+        data.remove("CrystalNexusProcessingRecipe");
+        data.remove("CrystalNexusProcessingStep");
+        data.remove("CrystalNexusProcessingTime");
+        data.remove("CrystalNexusProcessingActive");
+        data.remove("CrystalNexusProcessingLastTick");
+        data.remove("CrystalNexusProcessingCount");
+        if (data.isEmpty()) stack.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+        else stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
+    }
+
+    public void clearProcessingData() {
+        for (ItemStack stack : belt) clearProcessingData(stack);
+    }
+
+    public IItemHandler itemHandler(@Nullable Direction side) {
+        return new net.neoforged.neoforge.items.wrapper.SidedInvWrapper(this, side) {
+            @Override public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                ItemStack extracted = super.extractItem(slot, amount, simulate);
+                clearProcessingData(extracted);
+                return extracted;
+            }
+        };
     }
 
     @Override public void setItem(int index, ItemStack stack) {

@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/processing_welder_module",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/processing_welder_module",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/processing_welder_module",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/processing_welder_module",
+      "y": 270
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "crystalnexus:block/azurine_processing_side",
+    "down": "crystalnexus:block/purebottom",
+    "up": "crystalnexus:block/puretop",
+    "north": "crystalnexus:block/azurine_processing_side",
+    "south": "crystalnexus:block/azurine_processing_side",
+    "east": "crystalnexus:block/azurine_processing_side",
+    "west": "crystalnexus:block/azurine_processing_side"
+  }
+}

@@ -29,6 +29,35 @@ public final class ConveyerBeltGameTests {
     private ConveyerBeltGameTests() {}
 
     @GameTest(template = "zero_point")
+    public static void framedConveyorHitboxHasNoMiddleTopBeams(GameTestHelper helper) {
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        for (var block : new Block[] {CrystalnexusModBlocks.CONVEYER_BELT.get(),
+                CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get(), CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get()}) {
+            for (var facing : Direction.Plane.HORIZONTAL) {
+                var state = block.defaultBlockState().setValue(ConveyerBeltBlock.BLOCKSTATE, 2)
+                    .setValue(ConveyerBeltBlock.FACING, facing);
+                var outline = state.getShape(helper.getLevel(), pos);
+                var collision = state.getCollisionShape(helper.getLevel(), pos);
+                for (double cross : new double[] {5, 11}) {
+                    var probe = facing.getAxis() == Direction.Axis.Z
+                        ? new AABB((cross - .8) / 16, 14.1 / 16, 2.1 / 16, (cross + .8) / 16, 15.9 / 16, 13.9 / 16)
+                        : new AABB(2.1 / 16, 14.1 / 16, (cross - .8) / 16, 13.9 / 16, 15.9 / 16, (cross + .8) / 16);
+                    helper.assertTrue(outline.toAabbs().stream().noneMatch(box -> box.intersects(probe))
+                            && collision.toAabbs().stream().noneMatch(box -> box.intersects(probe)),
+                        "Removed middle beams must not block interaction or movement in any direction or conveyor tier");
+                }
+                for (var probe : new AABB[] {new AABB(.01, .90, .01, .10, .99, .10),
+                        new AABB(.45, .35, .45, .55, .45, .55)}) {
+                    helper.assertTrue(outline.toAabbs().stream().anyMatch(box -> box.intersects(probe))
+                            && collision.toAabbs().stream().anyMatch(box -> box.intersects(probe)),
+                        "The outer frame and belt surface must retain their hitboxes");
+                }
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void tagFiltersMatchPersistAndValidateMenuActions(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = helper.absolutePos(new BlockPos(2, 3, 2));

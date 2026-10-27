@@ -427,6 +427,11 @@
     }
   },
   "machines": {
+    "nanofabricator": {
+      "tier": 8,
+      "recipe": "nanofabricator_recipe.json",
+      "evidence": ["nanofabricator_recipe.json", "crystalnexus:hyper_machine_frame"]
+    },
     "biomatic_simulator": {"tier": 3},
     "biomatic_composter": {"tier": 2},
     "biomatic_constructor": {"tier": 2},

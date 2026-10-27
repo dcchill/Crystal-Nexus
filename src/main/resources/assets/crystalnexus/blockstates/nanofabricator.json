@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "crystalnexus:block/nanofabricator",
+      "y": 0
+    },
+    "facing=east": {
+      "model": "crystalnexus:block/nanofabricator",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "crystalnexus:block/nanofabricator",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "crystalnexus:block/nanofabricator",
+      "y": 270
+    }
+  }
+}

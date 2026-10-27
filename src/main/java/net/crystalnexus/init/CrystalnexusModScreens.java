@@ -107,6 +107,7 @@ public class CrystalnexusModScreens {
 		event.register(CrystalnexusModMenus.IRON_SMELTER_GUI.get(), IronSmelterGuiScreen::new);
 		event.register(CrystalnexusModMenus.ARC_FURNACE.get(), ArcFurnaceScreen::new);
 		event.register(CrystalnexusModMenus.PARTS_ASSEMBLER.get(), PartsAssemblerScreen::new);
+		event.register(CrystalnexusModMenus.PROCESSING_MODULE.get(), net.crystalnexus.client.gui.ProcessingModuleScreen::new);
 		event.register(CrystalnexusModMenus.TESSERACT_GUI.get(), TesseractGuiScreen::new);
 		event.register(CrystalnexusModMenus.CIRCUIT_PRESS_GUI.get(), CircuitPressGUIScreen::new);
 		event.register(CrystalnexusModMenus.FACTORY_CONTROLLER_GUI.get(), FactoryControllerGuiScreen::new);

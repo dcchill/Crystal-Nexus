@@ -51,6 +51,8 @@ import net.crystalnexus.jei_recipes.EnergyExtractionRecipe;
 import net.crystalnexus.jei_recipes.DustSeperationRecipeCategory;
 import net.crystalnexus.jei_recipes.DustSeperationRecipe;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipeCategory;
+import net.crystalnexus.jei_recipes.ProcessingLineRecipeCategory;
+import net.crystalnexus.recipe.ProcessingLineRecipe;
 import net.crystalnexus.jei_recipes.CircuitPressingRecipe;
 import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipeCategory;
 import net.crystalnexus.jei_recipes.TitaniumCarbideCircuitPressRecipe;
@@ -108,6 +110,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
         new mezz.jei.api.recipe.RecipeType<>(HeavenshatterJeiRecipeCategory.UID, HeavenshatterJeiRecipeCategory.Guide.class);
     public static final mezz.jei.api.recipe.RecipeType<CometForgeJeiRecipe> CometForge_Type =
         new mezz.jei.api.recipe.RecipeType<>(CometForgeJeiRecipeCategory.UID, CometForgeJeiRecipe.class);
+    public static final mezz.jei.api.recipe.RecipeType<ProcessingLineRecipe> ProcessingLine_Type =
+        new mezz.jei.api.recipe.RecipeType<>(ResourceLocation.parse("crystalnexus:processing_line"), ProcessingLineRecipe.class);
 
     @Override public void registerExtraIngredients(mezz.jei.api.registration.IExtraIngredientRegistration registration) {
         registration.addExtraItemStacks(ResourceCometItem.materials().stream().map(ResourceCometItem::create).toList());
@@ -190,6 +194,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCategories(new CelestialGearForgeJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CelestialGearForgeEnchantingCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new CircuitPressingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new ProcessingLineRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new TitaniumCarbideCircuitPressRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new InverterJeiRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
 		registration.addRecipeCategories(new ReactionJEIRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
@@ -248,6 +253,7 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipes(CelestialGearForge_Type, recipeManager.getAllRecipesFor(CelestialGearForgeRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 		List<CircuitPressingRecipe> CircuitPressingRecipes = recipes(recipeManager, CircuitPressingRecipe.class);
 		registration.addRecipes(CircuitPressing_Type, CircuitPressingRecipes);
+		registration.addRecipes(ProcessingLine_Type, recipeManager.getAllRecipesFor(ProcessingLineRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 		registration.addRecipes(TitaniumCarbideCircuitPress_Type, recipeManager
 			.getAllRecipesFor(TitaniumCarbideCircuitPressRecipe.Type.INSTANCE).stream().map(RecipeHolder::value).toList());
 		List<InverterJeiRecipe> InverterJeiRecipes = recipes(recipeManager, InverterJeiRecipe.class);
@@ -430,6 +436,11 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), TitaniumCarbideCircuitPress_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.NANOFABRICATOR.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get().asItem()), ProcessingLine_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.INVERTER.get().asItem()), InverterJei_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.REACTION_CHAMBER_COMPUTER.get().asItem()), ReactionJEI_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.ENERGY_EXTRACTOR.get().asItem()), EnergyExtraction_Type);

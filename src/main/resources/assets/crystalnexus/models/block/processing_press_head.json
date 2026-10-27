@@ -1,0 +1,146 @@
+{
+  "textures": {
+    "side": "crystalnexus:block/crystal_processing_side",
+    "top": "crystalnexus:block/puretop",
+    "bottom": "crystalnexus:block/purebottom",
+    "particle": "#side"
+  },
+  "elements": [
+    {
+      "from": [
+        4,
+        0,
+        4
+      ],
+      "to": [
+        12,
+        2,
+        12
+      ],
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            4.0,
+            4.0,
+            12.0,
+            12.0
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            4.0,
+            4.0,
+            12.0,
+            12.0
+          ]
+        },
+        "north": {
+          "texture": "#side",
+          "uv": [
+            4.0,
+            7.0,
+            12.0,
+            9.0
+          ]
+        },
+        "south": {
+          "texture": "#side",
+          "uv": [
+            4.0,
+            7.0,
+            12.0,
+            9.0
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            4.0,
+            7.0,
+            12.0,
+            9.0
+          ]
+        },
+        "east": {
+          "texture": "#side",
+          "uv": [
+            4.0,
+            7.0,
+            12.0,
+            9.0
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        7,
+        2,
+        7
+      ],
+      "to": [
+        9,
+        9,
+        9
+      ],
+      "faces": {
+        "down": {
+          "texture": "#bottom",
+          "uv": [
+            7.0,
+            7.0,
+            9.0,
+            9.0
+          ]
+        },
+        "up": {
+          "texture": "#top",
+          "uv": [
+            7.0,
+            7.0,
+            9.0,
+            9.0
+          ]
+        },
+        "north": {
+          "texture": "#bottom",
+          "uv": [
+            7.0,
+            4.5,
+            9.0,
+            11.5
+          ]
+        },
+        "south": {
+          "texture": "#bottom",
+          "uv": [
+            7.0,
+            4.5,
+            9.0,
+            11.5
+          ]
+        },
+        "west": {
+          "texture": "#bottom",
+          "uv": [
+            7.0,
+            4.5,
+            9.0,
+            11.5
+          ]
+        },
+        "east": {
+          "texture": "#bottom",
+          "uv": [
+            7.0,
+            4.5,
+            9.0,
+            11.5
+          ]
+        }
+      }
+    }
+  ]
+}

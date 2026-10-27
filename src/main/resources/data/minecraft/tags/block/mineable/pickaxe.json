@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
+    "crystalnexus:processing_press_module",
+    "crystalnexus:processing_engraver_module",
+    "crystalnexus:processing_drill_module",
+    "crystalnexus:nanofabricator",
+    "crystalnexus:processing_welder_module",
     "crystalnexus:heavenshatter_beam_controller",
     "crystalnexus:invertium_ore",
     "crystalnexus:node_extractor",

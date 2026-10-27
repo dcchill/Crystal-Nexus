@@ -113,8 +113,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
         ItemStack stack = be.getItem(i);
         if (stack.isEmpty()) continue;
 
-        ItemStack taken = stack.split(Math.min(amount, stack.getCount()));
-        be.setItem(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
+        ItemStack taken = be.removeItem(i, amount);
 
         if (!player.getInventory().add(taken)) {
             player.drop(taken, false);
@@ -188,6 +187,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 			ConveyorGeometry.scheduleUpdates(world, pos);
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof ConveyerBeltInputBlockEntity be) {
+				be.clearProcessingData();
 				Containers.dropContents(world, pos, be);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}

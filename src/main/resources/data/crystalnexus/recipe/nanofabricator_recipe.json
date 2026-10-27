@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "cpc",
+    "mfm",
+    "lel"
+  ],
+  "key": {
+    "c": {
+      "item": "crystalnexus:omega_chip"
+    },
+    "p": {
+      "item": "crystalnexus:celestial_silicon_wafer"
+    },
+    "m": {
+      "item": "crystalnexus:ferrosteel_electric_motor"
+    },
+    "f": {
+      "item": "crystalnexus:hyper_machine_frame"
+    },
+    "l": {
+      "item": "crystalnexus:laser_diode"
+    },
+    "e": {
+      "item": "crystalnexus:energized_silicon"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:nanofabricator",
+    "count": 1
+  }
+}

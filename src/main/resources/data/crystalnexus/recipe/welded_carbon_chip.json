@@ -1,0 +1,25 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:blank_chip"
+  },
+  "steps": [
+    {
+      "module": "weld",
+      "ingredient": {
+        "item": "crystalnexus:energized_silicon"
+      },
+      "time": 40,
+      "energy_per_tick": 20
+    },
+    {
+      "module": "engrave",
+      "time": 20,
+      "energy_per_tick": 20
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:carbon_chip",
+    "count": 1
+  }
+}

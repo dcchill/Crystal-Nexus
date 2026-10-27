@@ -487,6 +487,7 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> MULTIBLOCK_RESEARCH_STATION = block(CrystalnexusModBlocks.MULTIBLOCK_RESEARCH_STATION);
 	public static final DeferredItem<Item> SILICON = REGISTRY.register("silicon", SiliconItem::new);
 	public static final DeferredItem<Item> SILICON_WAFER = REGISTRY.register("silicon_wafer", net.crystalnexus.item.SiliconWaferItem::new);
+	public static final DeferredItem<Item> CELESTIAL_SILICON_WAFER = REGISTRY.register("celestial_silicon_wafer", net.crystalnexus.item.SiliconWaferItem::new);
 	public static final DeferredItem<Item> ENERGIZED_SILICON = REGISTRY.register("energized_silicon", EnergizedSiliconItem::new);
 	public static final DeferredItem<Item> SOLAR_SHEET = REGISTRY.register("solar_sheet", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> CARBON_SOLAR_SHEET = REGISTRY.register("carbon_solar_sheet", () -> new Item(new Item.Properties()));
@@ -579,6 +580,11 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> STEAM_CHAMBER = block(CrystalnexusModBlocks.STEAM_CHAMBER);
 	public static final DeferredItem<Item> MINING_LASER = REGISTRY.register("mining_laser", MiningLaserItem::new);
 	public static final DeferredItem<Item> CONVEYER_BELT = block(CrystalnexusModBlocks.CONVEYER_BELT);
+	public static final DeferredItem<Item> PROCESSING_PRESS_MODULE = block(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE);
+	public static final DeferredItem<Item> PROCESSING_ENGRAVER_MODULE = block(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE);
+	public static final DeferredItem<Item> PROCESSING_DRILL_MODULE = block(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE);
+	public static final DeferredItem<Item> NANOFABRICATOR = block(CrystalnexusModBlocks.NANOFABRICATOR);
+	public static final DeferredItem<Item> PROCESSING_WELDER_MODULE = block(CrystalnexusModBlocks.PROCESSING_WELDER_MODULE);
 	public static final DeferredItem<Item> TITANIUM_CONVEYER_BELT = block(CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT);
 	public static final DeferredItem<Item> METEORITE_CONVEYER_BELT = block(CrystalnexusModBlocks.METEORITE_CONVEYER_BELT);
 	public static final DeferredItem<Item> CONVEYER_BELT_INPUT = block(CrystalnexusModBlocks.CONVEYER_BELT_INPUT);

@@ -29,7 +29,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.block.entity.BlockEntity;
+
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import javax.annotation.Nullable;
@@ -74,7 +75,8 @@ public class ConveyerBeltBlock extends Block implements EntityBlock {
 	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
 		return 0;
 	}
-@Override
+
+@Override
 public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
     return (lvl, pos, st, be) -> {
         if (!lvl.isClientSide && be instanceof net.crystalnexus.block.entity.ConveyerBeltBaseBlockEntity belt) {
@@ -105,14 +107,14 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 		}
 		if (state.getValue(BLOCKSTATE) == 2) {
 			return switch (state.getValue(FACING)) {
-				default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 14, 14, 16, 16), box(0, 14, 2, 2, 16, 14), box(14, 14, 2, 16, 16, 14), box(4.01, 14.01, 2.01, 5.99, 15.99, 13.99),
-						box(10.01, 14.01, 2.01, 11.99, 15.99, 13.99), box(14, 8, 0, 16, 16, 2), box(2, 14, 0, 14, 16, 2), box(0, 8, 0, 2, 16, 2), box(14, 8, 14, 16, 16, 16), box(0, 8, 14, 2, 16, 16));
-				case NORTH -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 0, 14, 16, 2), box(14, 14, 2, 16, 16, 14), box(0, 14, 2, 2, 16, 14), box(10.01, 14.01, 2.01, 11.99, 15.99, 13.99),
-						box(4.01, 14.01, 2.01, 5.99, 15.99, 13.99), box(0, 8, 14, 2, 16, 16), box(2, 14, 14, 14, 16, 16), box(14, 8, 14, 16, 16, 16), box(0, 8, 0, 2, 16, 2), box(14, 8, 0, 16, 16, 2));
-				case EAST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(14, 14, 2, 16, 16, 14), box(2, 14, 14, 14, 16, 16), box(2, 14, 0, 14, 16, 2), box(2.01, 14.01, 10.01, 13.99, 15.99, 11.99),
-						box(2.01, 14.01, 4.01, 13.99, 15.99, 5.99), box(0, 8, 0, 2, 16, 2), box(0, 14, 2, 2, 16, 14), box(0, 8, 14, 2, 16, 16), box(14, 8, 0, 16, 16, 2), box(14, 8, 14, 16, 16, 16));
-				case WEST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(0, 14, 2, 2, 16, 14), box(2, 14, 0, 14, 16, 2), box(2, 14, 14, 14, 16, 16), box(2.01, 14.01, 4.01, 13.99, 15.99, 5.99),
-						box(2.01, 14.01, 10.01, 13.99, 15.99, 11.99), box(14, 8, 14, 16, 16, 16), box(14, 14, 2, 16, 16, 14), box(14, 8, 0, 16, 16, 2), box(0, 8, 14, 2, 16, 16), box(0, 8, 0, 2, 16, 2));
+				default -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 14, 14, 16, 16), box(0, 14, 2, 2, 16, 14), box(14, 14, 2, 16, 16, 14),
+						box(14, 8, 0, 16, 16, 2), box(2, 14, 0, 14, 16, 2), box(0, 8, 0, 2, 16, 2), box(14, 8, 14, 16, 16, 16), box(0, 8, 14, 2, 16, 16));
+				case NORTH -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(4, 0, 6, 12, 3, 10), box(2, 14, 0, 14, 16, 2), box(14, 14, 2, 16, 16, 14), box(0, 14, 2, 2, 16, 14),
+						box(0, 8, 14, 2, 16, 16), box(2, 14, 14, 14, 16, 16), box(14, 8, 14, 16, 16, 16), box(0, 8, 0, 2, 16, 2), box(14, 8, 0, 16, 16, 2));
+				case EAST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(14, 14, 2, 16, 16, 14), box(2, 14, 14, 14, 16, 16), box(2, 14, 0, 14, 16, 2),
+						box(0, 8, 0, 2, 16, 2), box(0, 14, 2, 2, 16, 14), box(0, 8, 14, 2, 16, 16), box(14, 8, 0, 16, 16, 2), box(14, 8, 14, 16, 16, 16));
+				case WEST -> Shapes.or(box(0, 5, 0, 16, 8, 16), box(7, 2, 7, 9, 5, 9), box(6, 0, 4, 10, 3, 12), box(0, 14, 2, 2, 16, 14), box(2, 14, 0, 14, 16, 2), box(2, 14, 14, 14, 16, 16),
+						box(14, 8, 14, 16, 16, 16), box(14, 14, 2, 16, 16, 14), box(14, 8, 0, 16, 16, 2), box(0, 8, 14, 2, 16, 16), box(0, 8, 0, 2, 16, 2));
 			};
 		}
 		return switch (state.getValue(FACING)) {
@@ -128,7 +130,8 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
 		super.createBlockStateDefinition(builder);
 		builder.add(FACING, BLOCKSTATE, CURVE, ConveyorGeometry.SLOPE);
 	}
-public net.minecraft.world.InteractionResult useWithoutItem(
+
+public net.minecraft.world.InteractionResult useWithoutItem(
         BlockState state,
         Level level,
         BlockPos pos,
@@ -149,8 +152,7 @@ public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, Block
         ItemStack stack = be.getItem(i);
         if (stack.isEmpty()) continue;
 
-        ItemStack taken = stack.split(Math.min(amount, stack.getCount()));
-        be.setItem(i, stack.isEmpty() ? ItemStack.EMPTY : stack);
+        ItemStack taken = be.removeItem(i, amount);
 
         if (!player.getInventory().add(taken)) {
             player.drop(taken, false);
@@ -252,6 +254,7 @@ public BlockState getStateForPlacement(BlockPlaceContext context) {
 			ConveyorGeometry.scheduleUpdates(world, pos);
 			BlockEntity blockEntity = world.getBlockEntity(pos);
 			if (blockEntity instanceof ConveyerBeltBlockEntity be) {
+				be.clearProcessingData();
 				Containers.dropContents(world, pos, be);
 				world.updateNeighbourForOutputSignal(pos, this);
 			}

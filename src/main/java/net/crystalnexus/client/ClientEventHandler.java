@@ -72,6 +72,11 @@ public class ClientEventHandler {
 	@SubscribeEvent
 	public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
 		event.register(LASER_SABER_GLOW);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.PRESS_HEAD);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.LASER_HEAD);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.DRILL_HEAD);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.NANOFABRICATOR_HEAD);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.WELDER_HEAD);
 	}
 
 	private static final class LaserSaberModel extends BakedModelWrapper<BakedModel> {
@@ -140,6 +145,11 @@ public class ClientEventHandler {
 
 @SubscribeEvent
 public static void registerBER(EntityRenderersEvent.RegisterRenderers event) {
+
+    event.registerBlockEntityRenderer(
+        (BlockEntityType<net.crystalnexus.block.entity.ProcessingModuleBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.PROCESSING_MODULE.get(),
+        net.crystalnexus.client.renderer.ProcessingModuleRenderer::new
+    );
 
     event.registerBlockEntityRenderer(
         (BlockEntityType<net.crystalnexus.block.entity.HeavenshatterBeamControllerBlockEntity>) (BlockEntityType<?>) CrystalnexusModBlockEntities.HEAVENSHATTER_BEAM_CONTROLLER.get(),

@@ -241,6 +241,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ZERO_POINT_CORE.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
+				tabData.accept(CrystalnexusModItems.CELESTIAL_SILICON_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.SOLAR_SHEET.get());
 				tabData.accept(CrystalnexusModItems.CARBON_SOLAR_SHEET.get());
@@ -455,6 +456,11 @@ public class CrystalnexusModTabs {
 			() -> CreativeModeTab.builder().title(Component.translatable("item_group.crystalnexus.crystal_nexus_logistics")).icon(() -> new ItemStack(CrystalnexusModBlocks.CONVEYER_BELT.get())).displayItems((parameters, tabData) -> {
 				tabData.accept(CrystalnexusModBlocks.CONTAINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.NANOFABRICATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().asItem());
@@ -700,6 +706,7 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.DARK_BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.SILICON.get());
 				tabData.accept(CrystalnexusModItems.SILICON_WAFER.get());
+				tabData.accept(CrystalnexusModItems.CELESTIAL_SILICON_WAFER.get());
 				tabData.accept(CrystalnexusModItems.ENERGIZED_SILICON.get());
 				tabData.accept(CrystalnexusModItems.BLANK_CHIP.get());
 				tabData.accept(CrystalnexusModItems.CARBON_CHIP.get());

@@ -116,6 +116,7 @@ public class CrystalnexusModMenus {
 	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.DroneMenu>> DRONE = REGISTRY.register("drone", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.DroneMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.AssemblyLineMenu>> ASSEMBLY_LINE = REGISTRY.register("assembly_line", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.AssemblyLineMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<PartsAssemblerMenu>> PARTS_ASSEMBLER = REGISTRY.register("parts_assembler", () -> IMenuTypeExtension.create(PartsAssemblerMenu::new));
+	public static final DeferredHolder<MenuType<?>, MenuType<net.crystalnexus.world.inventory.ProcessingModuleMenu>> PROCESSING_MODULE = REGISTRY.register("processing_module", () -> IMenuTypeExtension.create(net.crystalnexus.world.inventory.ProcessingModuleMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<TesseractGuiMenu>> TESSERACT_GUI = REGISTRY.register("tesseract_gui", () -> IMenuTypeExtension.create(TesseractGuiMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<CircuitPressGUIMenu>> CIRCUIT_PRESS_GUI = REGISTRY.register("circuit_press_gui", () -> IMenuTypeExtension.create(CircuitPressGUIMenu::new));
 	public static final DeferredHolder<MenuType<?>, MenuType<FactoryControllerGuiMenu>> FACTORY_CONTROLLER_GUI = REGISTRY.register("factory_controller_gui", () -> IMenuTypeExtension.create(FactoryControllerGuiMenu::new));

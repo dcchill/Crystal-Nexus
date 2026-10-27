@@ -39,6 +39,7 @@ import net.crystalnexus.jei_recipes.AcceleratorJeiRecipe;
 import net.crystalnexus.recipe.GravitationalArrayRecipe;
 import net.crystalnexus.recipe.CelestialGearForgeRecipe;
 import net.crystalnexus.recipe.SingularityBreakdownRecipe;
+import net.crystalnexus.recipe.ProcessingLineRecipe;
 import net.crystalnexus.CrystalnexusMod;
 
 @EventBusSubscriber(modid = CrystalnexusMod.MODID, bus = EventBusSubscriber.Bus.MOD)
@@ -105,6 +106,8 @@ public class CrystalnexusModRecipeTypes {
 			SERIALIZERS.register("accelerator_jei", () -> AcceleratorJeiRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("gravitational_array", () -> GravitationalArrayRecipe.Type.INSTANCE);
 			SERIALIZERS.register("gravitational_array", () -> GravitationalArrayRecipe.Serializer.INSTANCE);
+			RECIPE_TYPES.register("processing_line", () -> ProcessingLineRecipe.Type.INSTANCE);
+			SERIALIZERS.register("processing_line", () -> ProcessingLineRecipe.Serializer.INSTANCE);
 			RECIPE_TYPES.register("celestial_gear_forge", () -> CelestialGearForgeRecipe.Type.INSTANCE);
 			SERIALIZERS.register("celestial_gear_forge", () -> CelestialGearForgeRecipe.Serializer.INSTANCE);
 		});

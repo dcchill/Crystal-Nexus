@@ -48,7 +48,7 @@ neoForge {
         }
         gameTestServer {
             type = 'gameTestServer'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades,crystalnexus_plasma,crystalnexus_singularity,crystalnexus_zero,crystalnexus_water,crystalnexus_comet,crystalnexus_quarry,crystalnexus_conveyors,crystalnexus_routers'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.findProperty('gameTestNamespace') ?: 'crystalnexus,crystalnexus_assembly,crystalnexus_upgrades,crystalnexus_plasma,crystalnexus_singularity,crystalnexus_zero,crystalnexus_water,crystalnexus_comet,crystalnexus_quarry,crystalnexus_conveyors,crystalnexus_routers,crystalnexus_processing'
         }
 
         configureEach {
@@ -77,6 +77,9 @@ sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
 
 // Reuse the generator template in the namespace used by its focused GameTests.
 tasks.named('processResources') {
+    from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
+        into 'data/crystalnexus_processing/structure'
+    }
     from('src/main/resources/data/crystalnexus/structure/zero_point.nbt') {
         into 'data/crystalnexus_routers/structure'
     }
