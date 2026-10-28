@@ -1,0 +1,11 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "tag": "c:plates/gold" },
+  "steps": [
+    { "module": "press", "ingredient": { "tag": "c:ingots/conductive_alloy" }, "time": 40, "energy_per_tick": 80 },
+    { "module": "engrave", "time": 80, "energy_per_tick": 80 },
+    { "module": "press", "ingredient": { "tag": "c:ingots/conductive_alloy" }, "time": 40, "energy_per_tick": 80 },
+    { "module": "nanofabricate", "time": 200, "energy_per_tick": 160 }
+  ],
+  "result": { "id": "crystalnexus:omega_chip", "count": 1 }
+}

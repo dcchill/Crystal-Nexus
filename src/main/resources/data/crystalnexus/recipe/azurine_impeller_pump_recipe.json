@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "CIC",
+    " M "
+  ],
+  "key": {
+    "B": {
+      "item": "crystalnexus:azurine_machine_bolt"
+    },
+    "C": {
+      "tag": "c:plates/azurine"
+    },
+    "I": {
+      "item": "crystalnexus:diamond_impeller"
+    },
+    "M": {
+      "item": "crystalnexus:azurine_electric_motor"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:azurine_impeller_pump",
+    "count": 1
+  }
+}

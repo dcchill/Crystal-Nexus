@@ -77,6 +77,7 @@ public class ClientEventHandler {
 		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.DRILL_HEAD);
 		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.NANOFABRICATOR_HEAD);
 		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.WELDER_HEAD);
+		event.register(net.crystalnexus.client.renderer.ProcessingModuleRenderer.ASSEMBLER_ARM);
 	}
 
 	private static final class LaserSaberModel extends BakedModelWrapper<BakedModel> {

@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "tag": "c:ingots/meteorite_alloy" },
+  "steps": [
+    { "module": "press", "time": 40, "energy_per_tick": 80 },
+    { "module": "drill", "time": 80, "energy_per_tick": 80 },
+    { "module": "nanofabricate", "time": 200, "energy_per_tick": 160 }
+  ],
+  "result": { "id": "crystalnexus:meteorite_sheet", "count": 1 }
+}

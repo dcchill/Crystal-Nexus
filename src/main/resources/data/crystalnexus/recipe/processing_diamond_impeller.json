@@ -1,0 +1,25 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "minecraft:diamond"
+  },
+  "steps": [
+    {
+      "module": "press",
+      "ingredient": {
+        "tag": "c:rods/azurine"
+      },
+      "time": 80,
+      "energy_per_tick": 60
+    },
+    {
+      "module": "drill",
+      "time": 600,
+      "energy_per_tick": 60
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:diamond_impeller",
+    "count": 1
+  }
+}

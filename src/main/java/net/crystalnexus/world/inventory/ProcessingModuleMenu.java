@@ -33,6 +33,7 @@ public final class ProcessingModuleMenu extends AbstractContainerMenu {
         this.pos = module == null ? BlockPos.ZERO : module.getBlockPos();
         this.materialSlot = module != null && module.hasMaterialSlot();
         if (materialSlot) addSlot(new Slot(module, 0, MATERIAL_X, WORK_SLOT_Y));
+        if (module != null) addSlot(new MachineUpgradeSlot(new MachineItemHandler(module), 1, module.getBlockState(), 0));
         for (int row = 0; row < 3; row++) for (int column = 0; column < 9; column++)
             addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, 84 + row * 18));
         for (int column = 0; column < 9; column++) addSlot(new Slot(inventory, column, 8 + column * 18, 142));
@@ -44,8 +45,12 @@ public final class ProcessingModuleMenu extends AbstractContainerMenu {
         return entity instanceof ProcessingModuleBlockEntity module ? module : null;
     }
 
+    public boolean hasFluidTank() { return module != null && module.hasFluidTank(); }
+    public net.neoforged.neoforge.fluids.FluidStack fluid() {
+        return hasFluidTank() ? module.fluidTank().getFluid().copy() : net.neoforged.neoforge.fluids.FluidStack.EMPTY;
+    }
     public boolean hasMaterialSlot() { return materialSlot; }
-    public int beltItemX() { return materialSlot ? 116 : 80; }
+    public int beltItemX() { return materialSlot || hasFluidTank() ? 116 : 80; }
     public BlockPos guiPosition() { return pos; }
     public String machineFallbackId() {
         return module == null ? "processing_press_module"
@@ -70,9 +75,12 @@ public final class ProcessingModuleMenu extends AbstractContainerMenu {
         if (!slot.hasItem()) return ItemStack.EMPTY;
         ItemStack original = slot.getItem();
         ItemStack copy = original.copy();
-        int machineSlots = materialSlot ? 1 : 0;
+        int machineSlots = slots.size() - 36;
         if (index < machineSlots) {
             if (!moveItemStackTo(original, machineSlots, slots.size(), true)) return ItemStack.EMPTY;
+        } else if (net.crystalnexus.util.MachineUpgradeHelper.isMachineUpgrade(original)) {
+            int upgradeSlot = materialSlot ? 1 : 0;
+            if (!moveItemStackTo(original, upgradeSlot, upgradeSlot + 1, false)) return ItemStack.EMPTY;
         } else if (materialSlot && !moveItemStackTo(original, 0, 1, false)) return ItemStack.EMPTY;
         if (original.isEmpty()) slot.setByPlayer(ItemStack.EMPTY); else slot.setChanged();
         if (original.getCount() == copy.getCount()) return ItemStack.EMPTY;

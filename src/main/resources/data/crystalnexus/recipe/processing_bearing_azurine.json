@@ -1,0 +1,17 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "tag": "c:plates/azurine"
+  },
+  "steps": [
+    {
+      "module": "drill",
+      "time": 600,
+      "energy_per_tick": 60
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:azurine_bearing",
+    "count": 1
+  }
+}

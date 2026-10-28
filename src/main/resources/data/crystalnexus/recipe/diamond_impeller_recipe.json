@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "BSB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "item": "minecraft:diamond"
+    },
+    "S": {
+      "item": "crystalnexus:azurine_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:diamond_impeller",
+    "count": 1
+  }
+}

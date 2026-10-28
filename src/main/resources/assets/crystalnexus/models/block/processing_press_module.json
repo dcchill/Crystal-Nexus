@@ -1,1 +1,16 @@
-{"parent":"block/cube","textures":{"down":"crystalnexus:block/purebottom","up":"crystalnexus:block/puretop","north":"crystalnexus:block/crystal_processing_side","east":"crystalnexus:block/crystal_processing_side","south":"crystalnexus:block/crystal_processing_side","west":"crystalnexus:block/crystal_processing_side","particle":"crystalnexus:block/purebottom"},"render_type":"solid"}
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "side": "crystalnexus:block/crystal_processing_side",
+    "metal": "crystalnexus:block/purebottom",
+    "top": "crystalnexus:block/puretop",
+    "particle": "#side",
+    "down": "#metal",
+    "up": "#top",
+    "north": "#side",
+    "south": "#side",
+    "east": "#side",
+    "west": "#side"
+  },
+  "render_type": "solid"
+}

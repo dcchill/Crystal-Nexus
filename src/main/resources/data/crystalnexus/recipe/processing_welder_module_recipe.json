@@ -2,13 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    " p ",
-    "blb",
+    "plp",
+    "bfb",
     " p "
   ],
   "key": {
     "p": {
       "tag": "c:plates/azurine"
+    },
+    "f": {
+      "item": "crystalnexus:azurine_machine_frame"
     },
     "b": {
       "item": "crystalnexus:azurine_bearing"

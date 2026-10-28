@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "BSB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "tag": "c:plates/ferrosteel"
+    },
+    "S": {
+      "item": "crystalnexus:ferrosteel_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:ferrosteel_impeller",
+    "count": 1
+  }
+}

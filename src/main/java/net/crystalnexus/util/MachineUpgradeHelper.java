@@ -40,6 +40,7 @@ public final class MachineUpgradeHelper {
     }
 
     public static int upgradeSlots(BlockState state) {
+        if (state.getBlock() instanceof net.crystalnexus.block.ProcessingModuleBlock) return 1;
         if (state.getBlock() instanceof net.crystalnexus.block.ParticleAcceleratorControllerBlock) return 0;
         if (state.getBlock() instanceof net.crystalnexus.block.PartsAssemblerBlock)
             return state.getBlock() instanceof net.crystalnexus.processing.TieredMachineBlock ? MachineTier.from(state).upgradeSlots() : 2;

@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "tag": "c:plates/iron" },
+  "steps": [
+    { "module": "press", "ingredient": { "tag": "c:rods/copper" }, "time": 20, "energy_per_tick": 40 },
+    { "module": "assemble", "ingredient": { "tag": "c:rods/iron" }, "time": 40, "energy_per_tick": 80 },
+    {"module": "weld", "time": 40, "energy_per_tick": 40}
+  ],
+  "result": { "id": "crystalnexus:stator", "count": 1 }
+}

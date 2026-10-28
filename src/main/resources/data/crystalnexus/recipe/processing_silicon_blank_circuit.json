@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "item": "crystalnexus:silicon" },
+  "steps": [
+    { "module": "press", "time": 20, "energy_per_tick": 40 },
+    { "module": "engrave", "time": 40, "energy_per_tick": 40 }
+  ],
+  "result": { "id": "crystalnexus:blank_chip", "count": 1 }
+}

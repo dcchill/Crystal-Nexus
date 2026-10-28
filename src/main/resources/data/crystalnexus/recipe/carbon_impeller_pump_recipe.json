@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "CIC",
+    " M "
+  ],
+  "key": {
+    "B": {
+      "item": "crystalnexus:machine_bolt"
+    },
+    "C": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "I": {
+      "item": "crystalnexus:ferrosteel_impeller"
+    },
+    "M": {
+      "item": "crystalnexus:ferrosteel_electric_motor"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:carbon_impeller_pump",
+    "count": 1
+  }
+}

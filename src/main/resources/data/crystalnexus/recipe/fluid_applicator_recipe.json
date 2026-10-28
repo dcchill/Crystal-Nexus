@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "plp",
+    "bfb",
+    " p "
+  ],
+  "key": {
+    "p": {
+      "tag": "c:plates/azurine"
+    },
+    "f": {
+      "item": "crystalnexus:azurine_machine_frame"
+    },
+    "b": {
+      "item": "crystalnexus:azurine_bearing"
+    },
+    "l": {
+      "item": "crystalnexus:azurine_impeller_pump"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:fluid_applicator",
+    "count": 1
+  }
+}

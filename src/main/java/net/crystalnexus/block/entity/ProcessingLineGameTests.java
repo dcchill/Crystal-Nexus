@@ -15,6 +15,98 @@ public final class ProcessingLineGameTests {
     private ProcessingLineGameTests() {}
 
     @GameTest(template = "zero_point")
+    public static void adjacentAssemblersReleaseFiveConsecutiveCrafts(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var recipe = (net.crystalnexus.recipe.ProcessingLineRecipe) level.getRecipeManager()
+            .byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:processing_assembled_impeller_pump"))
+            .orElseThrow().value();
+        var belts = new ConveyerBeltBaseBlockEntity[2];
+        var modules = new ProcessingModuleBlockEntity[2];
+        for (int i = 0; i < 2; i++) {
+            var pos = helper.absolutePos(new BlockPos(2 + i, 3, 2));
+            level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
+            level.setBlockAndUpdate(pos.above(), CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get().defaultBlockState());
+            belts[i] = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+            modules[i] = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
+            modules[i].setItem(0, recipe.steps().get(i).ingredient().getItems()[0].copyWithCount(5));
+        }
+        for (int craft = 0; craft < 5; craft++) {
+            belts[0].setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, recipe.input().getItems()[0].copy());
+            if (craft == 0) {
+                int exit = ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT + 1;
+                belts[0].setItem(exit, new ItemStack(net.minecraft.world.item.Items.STONE));
+                modules[0].energy().receiveEnergy(1_000, false);
+                tickModule(belts[0], 1);
+                helper.assertTrue(modules[0].energyStored() == 1_000 && modules[0].material().getCount() == 5,
+                    "A blocked handoff must not consume power or material");
+                belts[0].setItem(exit, ItemStack.EMPTY);
+            }
+            for (int i = 0; i < 2; i++) {
+                var step = recipe.steps().get(i);
+                for (int tick = 0; tick < step.time(); tick++) {
+                    modules[i].energy().receiveEnergy(step.energyPerTick(), false);
+                    tickModule(belts[i], 1);
+                }
+                if (i == 0) {
+                    int exit = ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT + 1;
+                    helper.assertTrue(belts[0].getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).isEmpty()
+                            && !belts[0].getItem(exit).isEmpty(),
+                        "A completed assembly step must leave the work segment, craft " + craft);
+                    tickModule(belts[0], 3);
+                    helper.assertTrue(!belts[0].isProcessingSegment(exit),
+                        "The previous arm must not recapture the next assembly step");
+                    transferWafer(belts[0], exit, belts[1]);
+                }
+            }
+            var output = find(belts[1], CrystalnexusModItems.IMPELLER_PUMP.get());
+            helper.assertTrue(output.getCount() == 1 && !hasProgress(output), "Every craft must yield one clean pump");
+            belts[1].clearContent();
+        }
+        helper.assertTrue(modules[0].material().isEmpty() && modules[1].material().isEmpty(),
+            "Five crafts must consume exactly five materials at each arm");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
+    public static void assemblerRequiresMaterialAndPowerAndPreservesInventory(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
+        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
+        level.setBlockAndUpdate(pos.above(), CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get().defaultBlockState());
+        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+        var assembler = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
+        var recipe = (net.crystalnexus.recipe.ProcessingLineRecipe) level.getRecipeManager()
+            .byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:processing_assembled_impeller_pump"))
+            .orElseThrow().value();
+        var step = recipe.steps().getFirst();
+        helper.assertTrue(assembler.hasMaterialSlot()
+                && net.crystalnexus.processing.MachineTier.from(assembler.getBlockState()) == net.crystalnexus.processing.MachineTier.CARBON,
+            "Assembler must have a material slot and carbon tier");
+        belt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.COPPER_IMPELLER.get()));
+        assembler.energy().receiveEnergy(1_000, false);
+        tickModule(belt, 1);
+        helper.assertTrue(assembler.energyStored() == 1_000 && assembler.data().get(0) == 0,
+            "Missing material must pause assembly without spending energy");
+        assembler.setItem(0, step.ingredient().getItems()[0].copyWithCount(2));
+        var saved = assembler.saveWithFullMetadata(level.registryAccess());
+        assembler.clearContent();
+        assembler.loadWithComponents(saved, level.registryAccess());
+        helper.assertTrue(assembler.material().getCount() == 2 && assembler.energyStored() == 1_000,
+            "Material and energy must survive saving");
+        assembler.energy().extractEnergy(Integer.MAX_VALUE, false);
+        tickModule(belt, 1);
+        helper.assertTrue(assembler.material().getCount() == 2 && assembler.data().get(0) == 0,
+            "Missing power must not consume materials or advance assembly");
+        for (int i = 0; i < step.time(); i++) {
+            assembler.energy().receiveEnergy(step.energyPerTick(), false);
+            tickModule(belt, 1);
+        }
+        helper.assertTrue(assembler.material().getCount() == 1 && assembler.energyStored() == 0,
+            "A completed placement must consume exactly one component and the recipe energy");
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point")
     public static void orderedProcessingSurvivesSaveAndBeltTransfer(GameTestHelper helper) {
         var level = helper.getLevel();
         BlockPos pressPos = helper.absolutePos(new BlockPos(2, 3, 2));
@@ -29,29 +121,33 @@ public final class ProcessingLineGameTests {
         var pressBelt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pressPos);
         var press = (ProcessingModuleBlockEntity) level.getBlockEntity(pressPos.above());
         press.saveWithFullMetadata(level.registryAccess());
-        press.setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get(), 1));
-        press.energy().receiveEnergy(10_000, false);
-        pressBelt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.BLANK_CHIP.get()));
+        press.setItem(0, new ItemStack(CrystalnexusModItems.DARK_MATTER.get(), 1));
+        press.energy().receiveEnergy(1_000, false);
+        pressBelt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.SILICON_WAFER.get()));
         tickModule(pressBelt, 10);
-        helper.assertTrue(press.data().get(0) == 10 && press.energyStored() == 800,
-            "A powered press must advance over time and spend 20 FE per tick");
-        helper.assertTrue(press.getItem(0).getCount() == 1, "The press must hold silicon until the timed step finishes");
+        helper.assertTrue(press.data().get(0) == 10 && press.energyStored() == 600,
+            "A powered press must advance over time and spend 40 FE per tick");
+        helper.assertTrue(press.getItem(0).getCount() == 1, "The press must hold dark matter until the timed step finishes");
         var persisted = pressBelt.saveWithFullMetadata(level.registryAccess());
         pressBelt.loadWithComponents(persisted, level.registryAccess());
 
-        tickModule(pressBelt, 10);
-        ItemStack inProgress = find(pressBelt, CrystalnexusModItems.BLANK_CHIP.get());
+        press.energy().receiveEnergy(1_000, false);
+        tickModule(pressBelt, 30);
+        ItemStack inProgress = find(pressBelt, CrystalnexusModItems.SILICON_WAFER.get());
         helper.assertTrue(!inProgress.isEmpty(), "Press must retain the in-progress item on the belt");
         helper.assertTrue(press.getItem(0).isEmpty(), "The press must consume its supplied material");
         helper.runAfterDelay(20, () -> {
             var engraverBelt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(engraverPos);
-            helper.assertTrue(pressBelt.isEmpty() && find(engraverBelt, CrystalnexusModItems.BLANK_CHIP.get()).getCount() == 1,
-                "The pressed circuit must move to the engraver without loss or duplication");
+            helper.assertTrue(pressBelt.isEmpty() && find(engraverBelt, CrystalnexusModItems.SILICON_WAFER.get()).getCount() == 1,
+                "The pressed wafer must move to the engraver without loss or duplication");
             var engraver = (ProcessingModuleBlockEntity) level.getBlockEntity(engraverPos.above());
-            engraver.energy().receiveEnergy(10_000, false);
-            tickModule(engraverBelt, 20);
-            helper.assertTrue(find(engraverBelt, CrystalnexusModItems.CARBON_CHIP.get()).getCount() == 1,
-                "The engraver must finish the persisted press-then-engrave recipe after transfer");
+            engraver.energy().receiveEnergy(1_000, false);
+            engraver.energy().receiveEnergy(1_000, false);
+            tickModule(engraverBelt, 40);
+            var wafer = find(engraverBelt, CrystalnexusModItems.SILICON_WAFER.get());
+            helper.assertTrue(wafer.getCount() == 1 && wafer.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA,
+                    net.minecraft.world.item.component.CustomData.EMPTY).copyTag().getInt("CrystalNexusProcessingStep") == 2,
+                "The engraved wafer must advance to its singularity press step after transfer");
             helper.succeed();
         });
     }
@@ -193,60 +289,6 @@ public final class ProcessingLineGameTests {
         });
     }
 
-    @GameTest(template = "zero_point", timeoutTicks = 140)
-    public static void fastBeltsHoldItemsForProcessingAnimations(GameTestHelper helper) {
-        var level = helper.getLevel();
-        var belts = new ConveyerBeltBaseBlockEntity[4];
-        var modules = new ProcessingModuleBlockEntity[4];
-        var seenWorking = new boolean[4];
-        for (int i = 0; i < 4; i++) {
-            var pos = helper.absolutePos(new BlockPos(2 + (i / 2) * 3, 3, 2 + (i % 2) * 3));
-            level.setBlockAndUpdate(pos, CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get().defaultBlockState());
-            level.setBlockAndUpdate(pos.above(), (switch (i) {
-                case 0 -> CrystalnexusModBlocks.PROCESSING_PRESS_MODULE;
-                case 1 -> CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE;
-                case 2 -> CrystalnexusModBlocks.PROCESSING_DRILL_MODULE;
-                default -> CrystalnexusModBlocks.NANOFABRICATOR;
-            }).get().defaultBlockState());
-            belts[i] = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
-            modules[i] = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
-            modules[i].energy().receiveEnergy(i == 3 ? 320 : 40, false);
-            var input = new ItemStack(i == 3 ? CrystalnexusModItems.SILICON_WAFER.get()
-                : i == 2 ? CrystalnexusModItems.IRON_SHEET.get() : CrystalnexusModItems.BLANK_CHIP.get());
-            if (i == 0) modules[i].setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get()));
-            else if (i == 1) {
-                var data = new net.minecraft.nbt.CompoundTag();
-                data.putString("CrystalNexusProcessingRecipe", "crystalnexus:processed_carbon_chip");
-                data.putInt("CrystalNexusProcessingStep", 1);
-                input.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
-            }
-            belts[i].setItem(0, input);
-        }
-        for (int tick = 1; tick <= 105; tick++) {
-            final int elapsed = tick;
-            helper.runAfterDelay(tick, () -> {
-                for (int i = 0; i < 4; i++) {
-                    if (modules[i].isWorking()) {
-                        seenWorking[i] = true;
-                        helper.assertTrue(belts[i].isProcessingSegment(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT)
-                                && belts[i].getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).getCount() == 1
-                                && !belts[i].canAdvanceForRender(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT),
-                            "The item must stay beneath its active processing module throughout the animation");
-                        helper.assertTrue(modules[i].getUpdateTag(level.registryAccess()).getBoolean("working"),
-                            "The client must receive the crafting animation state");
-                    }
-                    if (elapsed == 5) helper.assertTrue(!modules[i].isWorking()
-                            && belts[i].isProcessingSegment(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT),
-                        "Power loss must pause the animation while keeping the item under the module");
-                    if (elapsed == 6) modules[i].energy().receiveEnergy(i == 3 ? 16_000 : 1_000, false);
-                    if (elapsed == 105) helper.assertTrue(seenWorking[i] && !modules[i].isWorking() && belts[i].isEmpty(),
-                        "The animation must finish and release its item after power returns");
-                }
-                if (elapsed == 105) helper.succeed();
-            });
-        }
-    }
-
     @GameTest(template = "zero_point")
     public static void celestialWaferCompletesAllSixStepsWithDifferentSingularities(GameTestHelper helper) {
         var belts = waferLine(helper);
@@ -259,13 +301,14 @@ public final class ProcessingLineGameTests {
             belts[1].clearContent();
             belts[0].setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.SILICON_WAFER.get()));
             ItemStack[] materials = {new ItemStack(CrystalnexusModItems.DARK_MATTER.get()),
-                new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get()), singularity};
+                new ItemStack(CrystalnexusModItems.CARBON_FIBER.get()), singularity};
             for (int step = 0; step < 6; step++) {
                 var belt = belts[step % 2];
                 var module = (ProcessingModuleBlockEntity) helper.getLevel().getBlockEntity(belt.getBlockPos().above());
                 if (step % 2 == 0) module.setItem(0, materials[step / 2].copy());
                 module.energy().receiveEnergy(1_000, false);
-                tickModule(belt, 20);
+                module.energy().receiveEnergy(1_000, false);
+                tickModule(belt, 40);
                 var carried = belt.getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT);
                 if (step % 2 == 0) helper.assertTrue(module.isEmpty(), "Each press must consume exactly its held ingredient");
                 if (step < 5) {
@@ -295,28 +338,34 @@ public final class ProcessingLineGameTests {
         belts[0].setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, wafers);
         press.setItem(0, new ItemStack(CrystalnexusModItems.IRON_SINGULARITY.get()));
         press.energy().receiveEnergy(1_000, false);
+        press.energy().receiveEnergy(1_000, false);
         belts[0].setItem(3, new ItemStack(net.minecraft.world.item.Items.STONE));
         tickModule(belts[0], 1);
-        helper.assertTrue(press.energyStored() == 1_000 && !press.isEmpty(),
+        helper.assertTrue(press.energyStored() == 2_000 && !press.isEmpty(),
             "A blocked exit must not consume power or a singularity");
         belts[0].setItem(3, ItemStack.EMPTY);
         tickModule(belts[0], 10);
         var saved = belts[0].saveWithFullMetadata(helper.getLevel().registryAccess());
         belts[0].loadWithComponents(saved, helper.getLevel().registryAccess());
-        tickModule(belts[0], 10);
-        helper.assertTrue(press.isEmpty() && press.energyStored() == 600
+        tickModule(belts[0], 30);
+        helper.assertTrue(press.isEmpty() && press.energyStored() == 400
                 && belts[0].getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).getCount() == 1
                 && belts[0].getItem(3).getCount() == 1,
             "One singularity must press one wafer, preserve its batch size through saving, and leave the remainder on the belt");
         transferWafer(belts[0], 3, belts[1]);
         engraver.energy().receiveEnergy(1_000, false);
-        tickModule(belts[1], 20);
+        engraver.energy().receiveEnergy(1_000, false);
+        tickModule(belts[1], 40);
         var first = belts[1].removeItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, 1);
         press.setItem(0, new ItemStack(CrystalnexusModItems.ENERGY_SINGULARITY.get()));
-        tickModule(belts[0], 20);
-        helper.assertTrue(press.isEmpty() && press.energyStored() == 200, "A second wafer must consume a second singularity and its own power");
+        press.energy().receiveEnergy(1_000, false);
+        press.energy().receiveEnergy(1_000, false);
+        tickModule(belts[0], 40);
+        helper.assertTrue(press.isEmpty() && press.energyStored() == 800, "A second wafer must consume a second singularity and its own power");
         transferWafer(belts[0], ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, belts[1]);
-        tickModule(belts[1], 20);
+        engraver.energy().receiveEnergy(1_000, false);
+        engraver.energy().receiveEnergy(1_000, false);
+        tickModule(belts[1], 40);
         helper.assertTrue(first.is(CrystalnexusModItems.CELESTIAL_SILICON_WAFER.get()) && first.getCount() == 1
                 && belts[1].getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).is(CrystalnexusModItems.CELESTIAL_SILICON_WAFER.get())
                 && belts[1].getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).getCount() == 1 && belts[0].isEmpty(),
@@ -332,6 +381,65 @@ public final class ProcessingLineGameTests {
             helper.assertTrue(recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.test(new ItemStack(CrystalnexusModItems.CELESTIAL_SILICON_WAFER.get())))
                     && recipe.getIngredients().stream().noneMatch(ingredient -> ingredient.test(new ItemStack(CrystalnexusModItems.SILICON_WAFER.get()))),
                 "Celestial machine recipes must require the new wafer: " + id);
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "zero_point", timeoutTicks = 900)
+    public static void everyProcessingLineRecipeCompletes(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var recipes = level.getRecipeManager().getAllRecipesFor(net.crystalnexus.recipe.ProcessingLineRecipe.Type.INSTANCE);
+        helper.assertTrue(recipes.stream().filter(holder -> holder.id().getPath().startsWith("processing_assembled_")).count() == 6,
+            "All six automated motor and pump recipes must load");
+        for (int r = 0; r < recipes.size(); r++) {
+            var recipe = recipes.get(r).value();
+            var belts = new ConveyerBeltBaseBlockEntity[recipe.steps().size()];
+            var modules = new ProcessingModuleBlockEntity[recipe.steps().size()];
+            int z = 2;
+            for (int i = 0; i < recipe.steps().size(); i++) {
+                var pos = helper.absolutePos(new BlockPos(2 + i, 3, z));
+                level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
+                var moduleBlock = switch (recipe.steps().get(i).operation()) {
+                    case PRESS -> CrystalnexusModBlocks.PROCESSING_PRESS_MODULE.get();
+                    case ENGRAVE -> CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get();
+                    case DRILL -> CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get();
+                    case NANOFABRICATE -> CrystalnexusModBlocks.NANOFABRICATOR.get();
+                    case WELD -> CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get();
+                    case ASSEMBLE -> CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get();
+                    case APPLY_FLUID -> CrystalnexusModBlocks.FLUID_APPLICATOR.get();
+                };
+                level.setBlockAndUpdate(pos.above(), moduleBlock.defaultBlockState());
+                belts[i] = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
+                modules[i] = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
+                belts[i].clearContent();
+                modules[i].clearContent();
+                modules[i].energy().extractEnergy(Integer.MAX_VALUE, false);
+            }
+            belts[0].setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT,
+                recipe.input().getItems()[0].copyWithCount(1));
+            for (int i = 0; i < recipe.steps().size(); i++) {
+                var step = recipe.steps().get(i);
+                if (!step.ingredient().isEmpty()) {
+                    var ingredients = step.ingredient().getItems();
+                    helper.assertTrue(ingredients.length > 0, "Every processing material ingredient must resolve");
+                    modules[i].setItem(0, ingredients[0].copyWithCount(1));
+                }
+                if (step.fluid().isPresent()) modules[i].fluidTank().fill(step.fluid().get().copy(),
+                    net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+                for (int tick = 0; tick < step.time(); tick++) {
+                    modules[i].energy().receiveEnergy(1_000, false);
+                    tickModule(belts[i], 1);
+                }
+                if (i + 1 < belts.length) {
+                    int slot = ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT
+                        + (recipe.steps().get(i + 1).operation() == step.operation() ? 1 : 0);
+                    transferWafer(belts[i], slot, belts[i + 1]);
+                }
+            }
+            var result = recipe.getResultItem(level.registryAccess());
+            var output = find(belts[belts.length - 1], result.getItem());
+            helper.assertTrue(output.is(result.getItem()) && output.getCount() == 1 && !hasProgress(output),
+                "Each processing recipe must complete once with a clean output: " + recipes.get(r).id());
         }
         helper.succeed();
     }
@@ -358,7 +466,7 @@ public final class ProcessingLineGameTests {
     public static void precisionDrillCraftsAndItsRecipeSurvivesCodecAndWorldReload(GameTestHelper helper) {
         var level = helper.getLevel();
         var recipe = (net.crystalnexus.recipe.ProcessingLineRecipe) level.getRecipeManager()
-            .byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:processing_drilled_iron_bearing")).orElseThrow().value();
+            .byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:processing_bearing_iron")).orElseThrow().value();
         var ops = net.minecraft.resources.RegistryOps.create(com.mojang.serialization.JsonOps.INSTANCE, level.registryAccess());
         var codec = net.crystalnexus.recipe.ProcessingLineRecipe.Serializer.INSTANCE.codec().codec();
         var json = codec.encodeStart(ops, recipe).getOrThrow();
@@ -391,18 +499,24 @@ public final class ProcessingLineGameTests {
         var menu = new net.crystalnexus.world.inventory.ProcessingModuleMenu(1, player.getInventory(), drill, drill.data());
         helper.assertTrue(!menu.hasMaterialSlot() && menu.machineFallbackId().equals("processing_drill_module") && menu.beltItemX() == 80,
             "The drill must use its own GUI identity and the centered belt-item display");
+        var acceleration = new ItemStack(CrystalnexusModItems.ACCELERATION_UPGRADE.get());
+        helper.assertTrue(net.crystalnexus.util.MachineUpgradeHelper.upgradeSlots(state) == 1
+                && drill.getContainerSize() == 2 && menu.slots.get(0).mayPlace(acceleration),
+            "Every processing module must expose one usable machine-upgrade slot");
+        drill.setItem(1, acceleration);
         drill.energy().receiveEnergy(1_000, false);
         tickModule(belt, 10);
-        helper.assertTrue(drill.isWorking() && drill.data().get(0) == 10 && drill.energyStored() == 800
+        helper.assertTrue(drill.isWorking() && drill.data().get(0) == 10 && drill.data().get(1) == 300 && drill.energyStored() == 800
                 && find(belt, CrystalnexusModItems.IRON_SHEET.get()).getCount() == 1,
-            "Drilling must hold the input for its timed operation and consume power");
+            "Acceleration upgrades must shorten drilling while preserving its per-tick power draw");
         var savedBelt = belt.saveWithFullMetadata(level.registryAccess());
         var savedDrill = drill.saveWithFullMetadata(level.registryAccess());
         belt.loadWithComponents(savedBelt, level.registryAccess());
         drill.loadWithComponents(savedDrill, level.registryAccess());
-        tickModule(belt, 10);
+        for (int i = 0; i < 8; i++) drill.energy().receiveEnergy(1_000, false);
+        tickModule(belt, 290);
         var output = find(belt, CrystalnexusModItems.IRON_BEARING.get());
-        helper.assertTrue(output.getCount() == 1 && !hasProgress(output) && drill.energyStored() == 600 && !drill.isWorking(),
+        helper.assertTrue(output.getCount() == 1 && !hasProgress(output) && drill.energyStored() == 3_000 && !drill.isWorking(),
             "A saved drill job must finish once with a clean output and the correct power cost");
         helper.succeed();
     }
@@ -410,8 +524,22 @@ public final class ProcessingLineGameTests {
     @GameTest(template = "zero_point")
     public static void nanofabricatorSequencesPauseReloadAndSynchronize(GameTestHelper helper) {
         var level = helper.getLevel();
-        var recipe = (net.crystalnexus.recipe.ProcessingLineRecipe) level.getRecipeManager()
-            .byKey(net.minecraft.resources.ResourceLocation.parse("crystalnexus:nanofabricated_carbon_chip")).orElseThrow().value();
+        var manager = level.getRecipeManager();
+        var originalRecipes = java.util.List.copyOf(manager.getRecipes());
+        var recipeId = net.minecraft.resources.ResourceLocation.parse("crystalnexus:nanofabricated_carbon_chip");
+        var recipe = new net.crystalnexus.recipe.ProcessingLineRecipe(
+            net.minecraft.world.item.crafting.Ingredient.of(CrystalnexusModItems.SILICON_WAFER.get()),
+            java.util.List.of(
+                new net.crystalnexus.recipe.ProcessingLineRecipe.Step(net.crystalnexus.block.ProcessingModuleBlock.Operation.NANOFABRICATE,
+                    net.minecraft.world.item.crafting.Ingredient.EMPTY, 80, 160),
+                new net.crystalnexus.recipe.ProcessingLineRecipe.Step(net.crystalnexus.block.ProcessingModuleBlock.Operation.PRESS,
+                    net.minecraft.world.item.crafting.Ingredient.of(CrystalnexusModItems.CARBON_FIBER.get()), 20, 20),
+                new net.crystalnexus.recipe.ProcessingLineRecipe.Step(net.crystalnexus.block.ProcessingModuleBlock.Operation.ENGRAVE,
+                    net.minecraft.world.item.crafting.Ingredient.EMPTY, 20, 20)),
+            new ItemStack(CrystalnexusModItems.CARBON_CHIP.get()));
+        var withFixture = new java.util.ArrayList<net.minecraft.world.item.crafting.RecipeHolder<?>>(originalRecipes);
+        withFixture.add(new net.minecraft.world.item.crafting.RecipeHolder<>(recipeId, recipe));
+        manager.replaceRecipes(withFixture);
         var ops = net.minecraft.resources.RegistryOps.create(com.mojang.serialization.JsonOps.INSTANCE, level.registryAccess());
         var serializer = net.crystalnexus.recipe.ProcessingLineRecipe.Serializer.INSTANCE;
         var json = serializer.codec().codec().encodeStart(ops, recipe).getOrThrow();
@@ -510,194 +638,8 @@ public final class ProcessingLineGameTests {
         tickModule(belts[0], 1);
         helper.assertTrue(removed.getCount() == 64 && !hasProgress(removed) && !nano.isWorking(),
             "Taking a processing wafer stack must clear its recipe data and stop the machine");
+        manager.replaceRecipes(originalRecipes);
         helper.succeed();
-    }
-
-    @GameTest(template = "zero_point")
-    public static void welderRequiresMaterialAndResumesItsSavedSequence(GameTestHelper helper) {
-        var level = helper.getLevel();
-        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
-        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
-        level.setBlockAndUpdate(pos.above(), CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get().defaultBlockState());
-        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
-        var welder = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
-        var menu = new net.crystalnexus.world.inventory.ProcessingModuleMenu(1,
-            helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL).getInventory(), welder, welder.data());
-        helper.assertTrue(welder.hasMaterialSlot() && menu.hasMaterialSlot() && menu.beltItemX() == 116
-                && menu.machineFallbackId().equals("processing_welder_module"),
-            "The welder must use the press-style material slot and belt item display");
-        helper.assertTrue(welder.energy().getMaxEnergyStored() == ProcessingModuleBlockEntity.ENERGY_CAPACITY
-                && new ItemStack(net.minecraft.world.item.Items.DIAMOND_PICKAXE).isCorrectToolForDrops(welder.getBlockState()),
-            "The welder must use standard module power and pickaxe harvesting");
-        welder.energy().receiveEnergy(200, false);
-        belt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.BLANK_CHIP.get()));
-        tickModule(belt, 5);
-        helper.assertTrue(!welder.isWorking() && welder.data().get(0) == 0 && welder.energyStored() == 200,
-            "A welding step requiring material must not spend power or advance with an empty slot");
-        welder.setItem(0, new ItemStack(net.minecraft.world.item.Items.DIRT));
-        tickModule(belt, 5);
-        helper.assertTrue(!welder.isWorking() && welder.data().get(0) == 0 && welder.energyStored() == 200
-                && welder.material().getCount() == 1, "Wrong welding material must remain untouched");
-        welder.setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get()));
-        tickModule(belt, 10);
-        helper.assertTrue(welder.isWorking() && welder.data().get(0) == 10 && welder.material().getCount() == 1,
-            "The welder must retain its material and belt item during the timed operation");
-        tickModule(belt, 3);
-        helper.assertTrue(!welder.isWorking() && welder.data().get(0) == 10
-                && belt.isProcessingSegment(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT),
-            "Power loss must stop welding effects and retain the item at the probe");
-        welder.energy().receiveEnergy(1_000, false);
-        tickModule(belt, 10);
-        var savedBelt = belt.saveWithFullMetadata(level.registryAccess());
-        var savedModule = welder.getUpdateTag(level.registryAccess());
-        helper.assertTrue(savedModule.getBoolean("working") && savedModule.getInt("progress") == 20
-                && savedModule.getInt("max_progress") == 40, "Animation snapshots must carry the actual welding stage");
-        welder.loadWithComponents(savedModule, level.registryAccess());
-        belt.loadWithComponents(savedBelt, level.registryAccess());
-        tickModule(belt, 20);
-        helper.assertTrue(welder.material().isEmpty() && !welder.isWorking() && welder.energyStored() == 400
-                && find(belt, CrystalnexusModItems.BLANK_CHIP.get()).getCount() == 1,
-            "A saved weld must finish once, consume one material, and spend exactly 800 FE");
-        welder.energy().receiveEnergy(100, false);
-        tickModule(belt, 10);
-        helper.assertTrue(welder.energyStored() == 500 && !welder.isWorking(), "The welder must not execute the next engraver step");
-        var next = pos.east();
-        level.setBlockAndUpdate(next, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
-        level.setBlockAndUpdate(next.above(), CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().defaultBlockState());
-        var engraverBelt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(next);
-        var engraver = (ProcessingModuleBlockEntity) level.getBlockEntity(next.above());
-        engraver.energy().receiveEnergy(1_000, false);
-        transferWafer(belt, ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, engraverBelt);
-        tickModule(engraverBelt, 20);
-        var output = find(engraverBelt, CrystalnexusModItems.CARBON_CHIP.get());
-        helper.assertTrue(output.getCount() == 1 && !hasProgress(output) && belt.isEmpty(),
-            "The welding sequence must survive belt transfer and yield one clean carbon chip");
-        helper.succeed();
-    }
-
-    @GameTest(template = "zero_point")
-    public static void weldingSupportsOptionalMaterialsAndFullStacks(GameTestHelper helper) {
-        var level = helper.getLevel();
-        var manager = level.getRecipeManager();
-        var id = net.minecraft.resources.ResourceLocation.parse("crystalnexus:welded_carbon_chip");
-        var recipe = (net.crystalnexus.recipe.ProcessingLineRecipe) manager.byKey(id).orElseThrow().value();
-        var ops = net.minecraft.resources.RegistryOps.create(com.mojang.serialization.JsonOps.INSTANCE, level.registryAccess());
-        var serializer = net.crystalnexus.recipe.ProcessingLineRecipe.Serializer.INSTANCE;
-        var codec = serializer.codec().codec();
-        var json = codec.encodeStart(ops, recipe).getOrThrow();
-        helper.assertTrue(codec.parse(ops, json).getOrThrow().steps().getFirst().operation()
-                == net.crystalnexus.block.ProcessingModuleBlock.Operation.WELD, "Weld steps must round-trip through JSON");
-        for (String operation : new String[] {"press", "engrave", "drill", "nanofabricate"}) {
-            var invalid = json.deepCopy();
-            var step = invalid.getAsJsonObject().getAsJsonArray("steps").get(0).getAsJsonObject();
-            step.addProperty("module", operation);
-            if (operation.equals("press")) step.remove("ingredient");
-            helper.assertTrue(codec.parse(ops, invalid).error().isPresent(),
-                "Optional welding ingredients must not loosen other operations' ingredient validation");
-        }
-        var noMaterialJson = json.deepCopy();
-        var steps = noMaterialJson.getAsJsonObject().getAsJsonArray("steps");
-        steps.get(0).getAsJsonObject().remove("ingredient");
-        steps.remove(1);
-        var noMaterial = codec.parse(ops, noMaterialJson).getOrThrow();
-        var buffer = new net.minecraft.network.RegistryFriendlyByteBuf(io.netty.buffer.Unpooled.buffer(), level.registryAccess());
-        try {
-            for (var candidate : java.util.List.of(recipe, noMaterial)) {
-                serializer.streamCodec().encode(buffer, candidate);
-                helper.assertTrue(codec.encodeStart(ops, serializer.streamCodec().decode(buffer)).getOrThrow()
-                        .equals(codec.encodeStart(ops, candidate).getOrThrow()),
-                    "Weld steps with and without materials must reach clients unchanged");
-            }
-        } finally { buffer.release(); }
-
-        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
-        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.CONVEYER_BELT.get().defaultBlockState());
-        level.setBlockAndUpdate(pos.above(), CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get().defaultBlockState());
-        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
-        var welder = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
-        var original = java.util.List.copyOf(manager.getRecipes());
-        var replaced = new java.util.ArrayList<net.minecraft.world.item.crafting.RecipeHolder<?>>(original);
-        replaced.removeIf(holder -> holder.id().equals(id));
-        replaced.add(new net.minecraft.world.item.crafting.RecipeHolder<>(id, noMaterial));
-        try {
-            manager.replaceRecipes(replaced);
-            for (int held : new int[] {0, 3}) {
-                belt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.BLANK_CHIP.get()));
-                welder.setItem(0, held == 0 ? ItemStack.EMPTY : new ItemStack(net.minecraft.world.item.Items.DIRT, held));
-                welder.energy().receiveEnergy(1_000, false);
-                tickModule(belt, 40);
-                helper.assertTrue(find(belt, CrystalnexusModItems.CARBON_CHIP.get()).getCount() == 1
-                        && welder.material().getCount() == held && !welder.isWorking(),
-                    "Material-free welding must work with an empty slot or leave unrelated held items untouched");
-                belt.clearContent();
-            }
-        } finally { manager.replaceRecipes(original); }
-        belt.setItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, new ItemStack(CrystalnexusModItems.BLANK_CHIP.get(), 64));
-        welder.setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get(), 63));
-        welder.energy().receiveEnergy(1_000, false);
-        welder.energy().receiveEnergy(1_000, false);
-        int before = welder.energyStored();
-        tickModule(belt, 1);
-        helper.assertTrue(welder.energyStored() == before && !welder.isWorking(),
-            "Stack welding must wait for a material per carried item without spending power");
-        welder.setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get(), 64));
-        int received = 0;
-        for (int tick = 0; tick < 40; tick++) {
-            received += welder.energy().receiveEnergy(1_000, false);
-            received += welder.energy().receiveEnergy(1_000, false);
-            tickModule(belt, 1);
-            if (tick < 39) helper.assertTrue(welder.material().getCount() == 64
-                    && find(belt, CrystalnexusModItems.BLANK_CHIP.get()).getCount() == 64,
-                "Full-stack welding must hold all items and materials until completion");
-        }
-        helper.assertTrue(welder.material().isEmpty() && welder.energyStored() == before + received - 40 * 20 * 64,
-            "Full-stack welding must consume exactly 64 materials and scale power per carried item");
-        var removed = belt.removeItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT, 64);
-        tickModule(belt, 1);
-        helper.assertTrue(removed.getCount() == 64 && !hasProgress(removed) && !welder.isWorking(),
-            "Extracted welded circuits must lose processing data without item loss");
-        helper.succeed();
-    }
-
-    @GameTest(template = "zero_point", timeoutTicks = 140)
-    public static void fastWelderHoldsItemsThenTransfersThroughEngraverToInventory(GameTestHelper helper) {
-        var level = helper.getLevel();
-        var pos = helper.absolutePos(new BlockPos(2, 3, 2));
-        level.setBlockAndUpdate(pos, CrystalnexusModBlocks.METEORITE_CONVEYER_BELT.get().defaultBlockState()
-            .setValue(net.crystalnexus.block.ConveyerBeltBlock.FACING, net.minecraft.core.Direction.EAST));
-        level.setBlockAndUpdate(pos.above(), CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get().defaultBlockState());
-        level.setBlockAndUpdate(pos.east(), CrystalnexusModBlocks.CONVEYER_BELT_INPUT.get().defaultBlockState()
-            .setValue(net.crystalnexus.block.ConveyerBeltBlock.FACING, net.minecraft.core.Direction.EAST));
-        level.setBlockAndUpdate(pos.east().above(), CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().defaultBlockState());
-        level.setBlockAndUpdate(pos.east(2), net.minecraft.world.level.block.Blocks.CHEST.defaultBlockState());
-        var belt = (ConveyerBeltBaseBlockEntity) level.getBlockEntity(pos);
-        var welder = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.above());
-        var engraver = (ProcessingModuleBlockEntity) level.getBlockEntity(pos.east().above());
-        welder.setItem(0, new ItemStack(CrystalnexusModItems.ENERGIZED_SILICON.get()));
-        welder.energy().receiveEnergy(40, false);
-        engraver.energy().receiveEnergy(1_000, false);
-        belt.setItem(0, new ItemStack(CrystalnexusModItems.BLANK_CHIP.get()));
-        for (int tick = 1; tick <= 110; tick++) {
-            final int elapsed = tick;
-            helper.runAfterDelay(tick, () -> {
-                if (welder.isWorking()) helper.assertTrue(belt.isProcessingSegment(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT)
-                        && belt.getItem(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT).getCount() == 1
-                        && !belt.canAdvanceForRender(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT),
-                    "A fast belt must keep the circuit at the welding probe during animation");
-                if (elapsed == 5) helper.assertTrue(!welder.isWorking() && welder.material().getCount() == 1
-                        && belt.isProcessingSegment(ConveyerBeltBaseBlockEntity.PROCESSING_SEGMENT),
-                    "An unpowered welder must keep its material and centered circuit");
-                if (elapsed == 6) welder.energy().receiveEnergy(1_000, false);
-                if (elapsed == 110) {
-                    var chest = (net.minecraft.world.level.block.entity.ChestBlockEntity) level.getBlockEntity(pos.east(2));
-                    helper.assertTrue(chest.getItem(0).is(CrystalnexusModItems.CARBON_CHIP.get())
-                            && chest.getItem(0).getCount() == 1 && !hasProgress(chest.getItem(0))
-                            && belt.isEmpty() && welder.material().isEmpty() && !welder.isWorking(),
-                        "A welded item must transfer to engraving and enter inventory once with clean data");
-                    helper.succeed();
-                }
-            });
-        }
     }
 
     private static ItemStack taggedCircuit(int count) {

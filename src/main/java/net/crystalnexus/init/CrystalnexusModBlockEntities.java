@@ -217,7 +217,7 @@ public class CrystalnexusModBlockEntities {
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT = registerMany("conveyer_belt", ConveyerBeltBlockEntity::new,
 		CrystalnexusModBlocks.CONVEYER_BELT, CrystalnexusModBlocks.TITANIUM_CONVEYER_BELT, CrystalnexusModBlocks.METEORITE_CONVEYER_BELT);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> PROCESSING_MODULE = registerMany("processing_module", ProcessingModuleBlockEntity::new,
-		CrystalnexusModBlocks.PROCESSING_PRESS_MODULE, CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE, CrystalnexusModBlocks.PROCESSING_DRILL_MODULE, CrystalnexusModBlocks.NANOFABRICATOR, CrystalnexusModBlocks.PROCESSING_WELDER_MODULE);
+		CrystalnexusModBlocks.FLUID_APPLICATOR, CrystalnexusModBlocks.AUTOMATED_ASSEMBLER, CrystalnexusModBlocks.PROCESSING_PRESS_MODULE, CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE, CrystalnexusModBlocks.PROCESSING_DRILL_MODULE, CrystalnexusModBlocks.NANOFABRICATOR, CrystalnexusModBlocks.PROCESSING_WELDER_MODULE);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_INPUT = register("conveyer_belt_input", CrystalnexusModBlocks.CONVEYER_BELT_INPUT, ConveyerBeltInputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> CONVEYER_BELT_OUTPUT = register("conveyer_belt_output", CrystalnexusModBlocks.CONVEYER_BELT_OUTPUT, ConveyerBeltOutputBlockEntity::new);
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<?>> ITEM_ELEVATOR = register("item_elevator", CrystalnexusModBlocks.ITEM_ELEVATOR, ItemElevatorBlockEntity::new);
@@ -302,7 +302,9 @@ public class CrystalnexusModBlockEntities {
 
 	@SubscribeEvent
 	public static void registerCapabilities(RegisterCapabilitiesEvent event) {
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PROCESSING_MODULE.get(), (be, side) -> ((ProcessingModuleBlockEntity) be).energy());
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, PROCESSING_MODULE.get(), (be, side) ->
+            ((ProcessingModuleBlockEntity) be).hasFluidTank() ? ((ProcessingModuleBlockEntity) be).fluidTank() : null);
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, PROCESSING_MODULE.get(), (be, side) -> ((ProcessingModuleBlockEntity) be).energy());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, PROCESSING_MODULE.get(), (be, side) ->
 			be instanceof ProcessingModuleBlockEntity module && module.hasMaterialSlot() ? new SidedInvWrapper(module, side) : null);
 		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, MASTICATOR.get(), (blockEntity, side) -> ((MasticatorBlockEntity) blockEntity).getAutomationFluidHandler());

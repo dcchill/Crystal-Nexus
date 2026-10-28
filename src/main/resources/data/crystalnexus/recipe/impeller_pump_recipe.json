@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "BCB",
+    "CIC",
+    " M "
+  ],
+  "key": {
+    "B": {
+      "item": "crystalnexus:iron_machine_bolt"
+    },
+    "C": {
+      "tag": "c:plates/iron"
+    },
+    "I": {
+      "item": "crystalnexus:copper_impeller"
+    },
+    "M": {
+      "item": "crystalnexus:electric_motor"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:impeller_pump",
+    "count": 1
+  }
+}

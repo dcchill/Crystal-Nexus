@@ -260,6 +260,13 @@ boolean processProcessingModules() {
         if (stepIndex == recipe.steps().size() - 1
                 && stack.getCount() > recipe.getResultItem(level.registryAccess()).getMaxStackSize()) continue;
         if (!data.getBoolean("CrystalNexusProcessingActive")) data.putBoolean("CrystalNexusProcessingActive", true);
+        final String durationKey = "CrystalNexusProcessingDuration";
+        if (!data.contains(durationKey)) {
+            double duration = net.crystalnexus.util.MachineUpgradeHelper.processingTime(module.upgrade(), step.time(),
+                step.time() * .75, step.time() * .5);
+            data.putInt(durationKey, Math.max(1, (int) Math.ceil(duration)));
+        }
+        int duration = Math.max(1, data.getInt(durationKey));
         dataChanged = true;
 
         long gameTime = level.getGameTime();
@@ -269,11 +276,14 @@ boolean processProcessingModules() {
         }
         int count = data.contains("CrystalNexusProcessingCount")
             ? Math.clamp(data.getInt("CrystalNexusProcessingCount"), 1, stack.getCount())
-            : !step.ingredient().isEmpty() && module.material().getMaxStackSize() == 1 ? 1 : stack.getCount();
+            : !step.ingredient().isEmpty() && module.material().getMaxStackSize() == 1 ? 1 : Math.min(stack.getCount(), module.batchLimit(step));
         boolean partialBatch = count < stack.getCount();
-        int energyCost = step.energyPerTick() * count;
-        if (!module.canSupply(step, count) || partialBatch && !belt[i + 1].isEmpty() || !module.consumeEnergy(energyCost)) {
-            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), data.getInt("CrystalNexusProcessingTime"), step.time(), false);
+        // Consecutive identical modules must hand off before starting the next step.
+        boolean handoff = partialBatch || stepIndex + 1 < recipe.steps().size()
+            && recipe.steps().get(stepIndex + 1).operation() == operation;
+        int energyCost = net.crystalnexus.util.MachineUpgradeHelper.energyCost(module.upgrade(), step.energyPerTick() * count);
+        if (!module.canSupply(step, count) || handoff && !belt[i + 1].isEmpty() || !module.consumeEnergy(energyCost)) {
+            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), data.getInt("CrystalNexusProcessingTime"), duration, false);
             stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
             setChanged();
             continue;
@@ -281,9 +291,9 @@ boolean processProcessingModules() {
         data.putInt("CrystalNexusProcessingCount", count);
         data.putLong("CrystalNexusProcessingLastTick", gameTime);
         int progress = data.getInt("CrystalNexusProcessingTime") + 1;
-        if (progress < step.time()) {
+        if (progress < duration) {
             data.putInt("CrystalNexusProcessingTime", progress);
-            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), progress, step.time(), true);
+            module.setProcessing(net.minecraft.resources.ResourceLocation.tryParse(recipeId), progress, duration, true);
             stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
             setChanged();
             continue;
@@ -300,14 +310,17 @@ boolean processProcessingModules() {
         } else {
             data.putInt("CrystalNexusProcessingStep", stepIndex);
             data.putInt("CrystalNexusProcessingTime", 0);
+            data.remove(durationKey);
             data.remove("CrystalNexusProcessingActive");
             processed = stack.copyWithCount(count);
             processed.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(data));
         }
-        if (partialBatch) {
-            // Unstackable press materials apply to one carried item per cycle; keep the rest on the belt.
-            stack.shrink(count);
-            stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(remainingData));
+        if (handoff) {
+            if (partialBatch) {
+                // Keep items that exceed the material or tank capacity for the next cycle.
+                stack.shrink(count);
+                stack.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.of(remainingData));
+            } else belt[i] = ItemStack.EMPTY;
             belt[i + 1] = processed;
         } else belt[i] = processed;
         module.setProcessing(null, 0, 1, false);
@@ -716,6 +729,7 @@ private boolean tryPullFrom(BlockPos inputPos, Direction primarySide, Direction 
         data.remove("CrystalNexusProcessingRecipe");
         data.remove("CrystalNexusProcessingStep");
         data.remove("CrystalNexusProcessingTime");
+        data.remove("CrystalNexusProcessingDuration");
         data.remove("CrystalNexusProcessingActive");
         data.remove("CrystalNexusProcessingLastTick");
         data.remove("CrystalNexusProcessingCount");

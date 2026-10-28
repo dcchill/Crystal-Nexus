@@ -33,7 +33,7 @@ public final class ProcessingLineRecipeCategory implements IRecipeCategory<Proce
 
     @Override public void setRecipe(IRecipeLayoutBuilder builder, ProcessingLineRecipe recipe, IFocusGroup focuses) {
         boolean[] materials = new boolean[recipe.steps().size()];
-        for (int i = 0; i < materials.length; i++) materials[i] = !recipe.steps().get(i).ingredient().isEmpty();
+        for (int i = 0; i < materials.length; i++) materials[i] = !recipe.steps().get(i).ingredient().isEmpty() || recipe.steps().get(i).fluid().isPresent();
         var layout = new ProcessingChainLayout(materials);
         ISlottedWidgetFactory<ProcessingLineRecipe> factory = (extras, displayedRecipe, slots) -> {
             var widget = new ProcessingChainWidget(layout, slots);
@@ -54,7 +54,12 @@ public final class ProcessingLineRecipeCategory implements IRecipeCategory<Proce
                     tooltip.add(text("time", step.time(), String.format(Locale.ROOT, "%.1f", step.time() / 20.0)));
                     tooltip.add(text("energy", step.energyPerTick(), (long) step.time() * step.energyPerTick()));
                 });
-            if (position.hasMaterial()) builder.addSlotToWidget(RecipeIngredientRole.INPUT, factory)
+            if (step.fluid().isPresent()) builder.addSlotToWidget(RecipeIngredientRole.INPUT, factory)
+                .setPosition(position.materialX() + 1, ProcessingChainLayout.SLOT_Y).setStandardSlotBackground()
+                .addFluidStack(step.fluid().get().getFluid(), step.fluid().get().getAmount())
+                .setFluidRenderer(step.fluid().get().getAmount(), false, 16, 16)
+                .addRichTooltipCallback((slot, tooltip) -> tooltip.add(Component.literal(step.fluid().get().getAmount() + " mB / item")));
+            else if (position.hasMaterial()) builder.addSlotToWidget(RecipeIngredientRole.INPUT, factory)
                 .setPosition(position.materialX() + 1, ProcessingChainLayout.SLOT_Y).setStandardSlotBackground()
                 .addIngredients(step.ingredient())
                 .addRichTooltipCallback((slot, tooltip) -> tooltip.add(text("material")));
@@ -72,6 +77,8 @@ public final class ProcessingLineRecipeCategory implements IRecipeCategory<Proce
             case DRILL -> CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get();
             case NANOFABRICATE -> CrystalnexusModBlocks.NANOFABRICATOR.get();
             case WELD -> CrystalnexusModBlocks.PROCESSING_WELDER_MODULE.get();
+            case ASSEMBLE -> CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get();
+            case APPLY_FLUID -> CrystalnexusModBlocks.FLUID_APPLICATOR.get();
         };
     }
 

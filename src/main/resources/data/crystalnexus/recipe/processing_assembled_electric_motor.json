@@ -1,0 +1,44 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:iron_bearing"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:rods/iron"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:stator"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:plates/iron"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "minecraft:redstone"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:electric_motor",
+    "count": 1
+  }
+}

@@ -11,6 +11,9 @@ import net.crystalnexus.block.entity.ProcessingModuleBlockEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -32,6 +35,9 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
     public static final ModelResourceLocation WELDER_HEAD = ModelResourceLocation.standalone(
         ResourceLocation.parse("crystalnexus:block/processing_welder_head"));
 
+    public static final ModelResourceLocation ASSEMBLER_ARM = ModelResourceLocation.standalone(
+        ResourceLocation.parse("crystalnexus:block/automated_assembler_arm"));
+
     public ProcessingModuleRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override public void render(ProcessingModuleBlockEntity module, float partialTick, PoseStack poses,
@@ -44,6 +50,7 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
         boolean running = held && module.isWorking();
         float animationProgress = module.animationProgress(partialTick);
         float progress = held ? animationProgress : 0;
+        boolean assemble = module.operation() == ProcessingModuleBlock.Operation.ASSEMBLE;
         boolean press = module.operation() == ProcessingModuleBlock.Operation.PRESS;
         boolean drill = module.operation() == ProcessingModuleBlock.Operation.DRILL;
         boolean nano = module.operation() == ProcessingModuleBlock.Operation.NANOFABRICATE;
@@ -61,9 +68,24 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
         }
         if (nano) headY = -ProcessingModuleAnimation.fabricationStroke(progress) * Math.max(0, .66 - point.y);
 
+        if (assemble) {
+            headY = -ProcessingModuleAnimation.pressStroke(progress) * Math.max(0, .94 - point.y - .085);
+            double reach = .25 * (1 - ProcessingModuleAnimation.pressStroke(progress));
+            scanX = reach * facing.getStepZ();
+            scanZ = reach * facing.getStepX();
+        }
+
+        if (module.operation() == ProcessingModuleBlock.Operation.APPLY_FLUID) {
+            if (!module.fluidTank().isEmpty()) application(module, poses, buffers, point, progress, running, light, overlay);
+            return;
+        }
         var minecraft = Minecraft.getInstance();
         poses.pushPose();
         poses.translate(point.x + scanX, headY, point.z + scanZ);
+        if (assemble) {
+            poses.mulPose(Axis.YP.rotationDegrees(-facing.toYRot()));
+            poses.translate(-.25, 0, 0);
+        }
         if (drill) poses.mulPose(Axis.YP.rotationDegrees(ProcessingModuleAnimation.drillRotation(progress)));
         poses.translate(-.5, 0, -.5);
         var head = switch (module.operation()) {
@@ -72,6 +94,8 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
             case DRILL -> DRILL_HEAD;
             case NANOFABRICATE -> NANOFABRICATOR_HEAD;
             case WELD -> WELDER_HEAD;
+            case ASSEMBLE -> ASSEMBLER_ARM;
+            case APPLY_FLUID -> throw new IllegalStateException("Applicator has a static nozzle");
         };
         var model = minecraft.getModelManager().getModel(head);
         minecraft.getBlockRenderer().getModelRenderer().renderModel(poses.last(), buffers.getBuffer(RenderType.solid()),
@@ -86,9 +110,9 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
         if (!running) return;
         if (weld) {
             welding(module, poses, buffers, point, progress);
-        } else if (press && !module.material().isEmpty()) {
+        } else if ((press || assemble && progress < .55F) && !module.material().isEmpty()) {
             poses.pushPose();
-            poses.translate(point.x, headY - .015, point.z);
+            poses.translate(point.x + scanX, headY - (assemble ? .075 : .015), point.z + scanZ);
             poses.mulPose(Axis.XP.rotationDegrees(90));
             poses.scale(.25F, .25F, .25F);
             minecraft.getItemRenderer().renderStatic(module.material(), ItemDisplayContext.FIXED, light, overlay,
@@ -103,6 +127,65 @@ public final class ProcessingModuleRenderer implements BlockEntityRenderer<Proce
             beam(vertices, poses.last().pose(), emitter, target, .025, 70, 180, 255, 95);
             beam(vertices, poses.last().pose(), emitter, target, .006, 190, 245, 255, 255);
         }
+    }
+
+    private static void application(ProcessingModuleBlockEntity module, PoseStack poses, MultiBufferSource buffers,
+            Vec3 point, float progress, boolean running, int light, int overlay) {
+        var fluid = module.fluidTank().getFluid();
+        var extension = IClientFluidTypeExtensions.of(fluid.getFluid());
+        var texture = extension.getStillTexture(fluid);
+        if (texture == null) return;
+        var sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(texture);
+        int tint = extension.getTintColor(fluid);
+        var vertices = buffers.getBuffer(RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS));
+
+        poses.pushPose();
+        poses.translate(.5, 0, .5);
+        poses.mulPose(Axis.YP.rotationDegrees(-module.getBlockState().getValue(ProcessingModuleBlock.FACING).toYRot() + 180));
+        poses.translate(-.5, 0, -.5);
+        float bottom = 1f / 16, top = bottom + 9f / 16 * module.fluidTank().getFluidAmount() / module.fluidTank().getCapacity();
+        for (float z : new float[] {-.001f, 1.001f}) {
+            fluidVertex(vertices, poses.last(), .25f, bottom, z, sprite.getU0(), sprite.getV1(), tint, 255, light, overlay);
+            fluidVertex(vertices, poses.last(), .25f, top, z, sprite.getU0(), sprite.getV0(), tint, 255, light, overlay);
+            fluidVertex(vertices, poses.last(), .75f, top, z, sprite.getU1(), sprite.getV0(), tint, 255, light, overlay);
+            fluidVertex(vertices, poses.last(), .75f, bottom, z, sprite.getU1(), sprite.getV1(), tint, 255, light, overlay);
+        }
+        poses.popPose();
+
+        if (!running) return;
+        double targetY = point.y - 1 + .065;
+        double pulse = progress * 8;
+        double phase = pulse - Math.floor(pulse);
+        if (phase > .65) return;
+        fluidBeam(vertices, poses.last(), sprite, tint, light, overlay,
+            point.x, -.001, point.z, point.x, targetY, point.z, .012);
+        for (int i = 0; i < 6; i++) {
+            double angle = i * Math.PI / 3 + pulse;
+            double dx = Math.cos(angle), dz = Math.sin(angle), radius = .025 + phase * .16;
+            double x = point.x + dx * radius, z = point.z + dz * radius;
+            double y = targetY + Math.sin(phase / .65 * Math.PI) * .06;
+            fluidBeam(vertices, poses.last(), sprite, tint, light, overlay,
+                x, y, z, x + dx * .018, y + .012, z + dz * .018, .008);
+        }
+    }
+
+    private static void fluidBeam(VertexConsumer vertices, PoseStack.Pose pose,
+            TextureAtlasSprite sprite, int tint, int light, int overlay,
+            double x, double y, double z, double tx, double ty, double tz, double width) {
+        for (int axis = 0; axis < 2; axis++) {
+            double dx = axis == 0 ? width : 0, dz = axis == 1 ? width : 0;
+            fluidVertex(vertices, pose, (float) (x - dx), (float) y, (float) (z - dz), sprite.getU0(), sprite.getV0(), tint, 190, light, overlay);
+            fluidVertex(vertices, pose, (float) (x + dx), (float) y, (float) (z + dz), sprite.getU1(), sprite.getV0(), tint, 190, light, overlay);
+            fluidVertex(vertices, pose, (float) (tx + dx), (float) ty, (float) (tz + dz), sprite.getU1(), sprite.getV1(), tint, 190, light, overlay);
+            fluidVertex(vertices, pose, (float) (tx - dx), (float) ty, (float) (tz - dz), sprite.getU0(), sprite.getV1(), tint, 190, light, overlay);
+        }
+    }
+
+    static void fluidVertex(VertexConsumer vertices, PoseStack.Pose pose, float x, float y, float z,
+            float u, float v, int tint, int alpha, int light, int overlay) {
+        vertices.addVertex(pose.pose(), x, y, z)
+            .setColor((tint >> 16) & 255, (tint >> 8) & 255, tint & 255, (tint >>> 24) * alpha / 255)
+            .setUv(u, v).setOverlay(overlay).setLight(light).setNormal(pose, 0, 1, 0);
     }
 
     private static void welding(ProcessingModuleBlockEntity module, PoseStack poses, MultiBufferSource buffers,

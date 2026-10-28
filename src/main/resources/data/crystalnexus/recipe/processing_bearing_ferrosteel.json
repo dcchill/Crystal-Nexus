@@ -1,0 +1,17 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "tag": "c:plates/ferrosteel"
+  },
+  "steps": [
+    {
+      "module": "drill",
+      "time": 800,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:ferrosteel_bearing",
+    "count": 1
+  }
+}

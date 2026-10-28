@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "aba",
+    "aPa",
     "bcb",
     "aba"
   ],
@@ -15,6 +15,9 @@
     },
     "c": {
       "item": "crystalnexus:steam_engine"
+    },
+    "P": {
+      "item": "crystalnexus:azurine_impeller_pump"
     }
   },
   "result": {

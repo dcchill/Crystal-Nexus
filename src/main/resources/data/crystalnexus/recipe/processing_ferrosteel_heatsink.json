@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "item": "crystalnexus:ferrosteel_block" },
+  "steps": [
+    { "module": "drill", "time": 80, "energy_per_tick": 80 },
+    { "module": "press", "time": 40, "energy_per_tick": 80 },
+    { "module": "engrave", "time": 80, "energy_per_tick": 80 }
+  ],
+  "result": { "id": "crystalnexus:ferrosteel_heatsink", "count": 1 }
+}

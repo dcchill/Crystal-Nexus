@@ -1,0 +1,28 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:copper_impeller"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:electric_motor"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:plates/iron"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:impeller_pump",
+    "count": 1
+  }
+}

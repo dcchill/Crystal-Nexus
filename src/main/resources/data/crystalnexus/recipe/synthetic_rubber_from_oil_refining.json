@@ -1,0 +1,7 @@
+{
+  "type": "crystalnexus:refining",
+  "fluid_input": { "fluid": "crystalnexus:crude_oil", "amount": 100 },
+  "item_input": { "item": "minecraft:slime_ball" },
+  "item_output": { "id": "crystalnexus:synthetic_rubber", "count": 1 },
+  "minimum_machine_tier": 2
+}

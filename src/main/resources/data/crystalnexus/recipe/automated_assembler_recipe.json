@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "bmb",
+    "cfc",
+    " s "
+  ],
+  "key": {
+    "b": {
+      "item": "crystalnexus:azurine_bearing"
+    },
+    "m": {
+      "item": "crystalnexus:azurine_electric_motor"
+    },
+    "c": {
+      "item": "crystalnexus:carbon_fiber"
+    },
+    "f": {
+      "item": "crystalnexus:carbon_machine_frame"
+    },
+    "s": {
+      "item": "crystalnexus:carbon_chip"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:automated_assembler",
+    "count": 1
+  }
+}

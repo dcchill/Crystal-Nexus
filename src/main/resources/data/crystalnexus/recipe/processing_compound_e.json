@@ -1,0 +1,12 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "item": "crystalnexus:ee_matter" },
+  "steps": [
+    { "module": "assemble", "ingredient": { "item": "crystalnexus:carbon_fiber" }, "time": 40, "energy_per_tick": 80 },
+    { "module": "weld", "time": 80, "energy_per_tick": 80 },
+    { "module": "assemble", "ingredient": { "item": "crystalnexus:carbon_fiber" }, "time": 40, "energy_per_tick": 80 },
+    { "module": "weld", "time": 80, "energy_per_tick": 80 },
+    { "module": "nanofabricate", "time": 200, "energy_per_tick": 160 }
+  ],
+  "result": { "id": "crystalnexus:compound_e", "count": 1 }
+}

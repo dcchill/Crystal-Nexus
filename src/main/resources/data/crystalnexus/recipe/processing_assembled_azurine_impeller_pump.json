@@ -1,0 +1,28 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:diamond_impeller"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:azurine_electric_motor"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:plates/azurine"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:azurine_impeller_pump",
+    "count": 1
+  }
+}

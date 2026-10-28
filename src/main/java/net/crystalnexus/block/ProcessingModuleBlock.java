@@ -22,7 +22,7 @@ import net.crystalnexus.init.CrystalnexusModBlockEntities;
 import javax.annotation.Nullable;
 
 public final class ProcessingModuleBlock extends Block implements EntityBlock, net.crystalnexus.processing.TieredMachineBlock {
-    public enum Operation { PRESS, ENGRAVE, DRILL, NANOFABRICATE, WELD }
+    public enum Operation { PRESS, ENGRAVE, DRILL, NANOFABRICATE, WELD, ASSEMBLE, APPLY_FLUID }
     public static final net.minecraft.world.level.block.state.properties.DirectionProperty FACING =
         net.minecraft.world.level.block.state.properties.BlockStateProperties.HORIZONTAL_FACING;
 
@@ -37,6 +37,8 @@ public final class ProcessingModuleBlock extends Block implements EntityBlock, n
     public Operation operation() { return operation; }
 
     @Override public net.crystalnexus.processing.MachineTier machineTier() {
+        if (operation == Operation.APPLY_FLUID) return net.crystalnexus.processing.MachineTier.TITANIUM;
+        if (operation == Operation.ASSEMBLE) return net.crystalnexus.processing.MachineTier.CARBON;
         return operation == Operation.NANOFABRICATE ? net.crystalnexus.processing.MachineTier.HYPER : net.crystalnexus.processing.MachineTier.IRON;
     }
 
@@ -60,6 +62,15 @@ public final class ProcessingModuleBlock extends Block implements EntityBlock, n
 
     @Override @Nullable public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return null;
+    }
+
+    @Override protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack,
+            BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, BlockHitResult hit) {
+        if (operation == Operation.APPLY_FLUID && net.neoforged.neoforge.fluids.FluidUtil.getFluidHandler(stack).isPresent()) {
+            if (level.isClientSide || net.neoforged.neoforge.fluids.FluidUtil.interactWithFluidHandler(player, hand, level, pos, hit.getDirection()))
+                return net.minecraft.world.ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
+        return super.useItemOn(stack, state, level, pos, player, hand, hit);
     }
 
     @Override protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {

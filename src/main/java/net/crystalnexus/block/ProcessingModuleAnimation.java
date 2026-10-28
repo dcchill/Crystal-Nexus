@@ -4,6 +4,7 @@ import java.util.Objects;
 
 /** Client animation time follows recipe snapshots without restarting at tick or packet boundaries. */
 public final class ProcessingModuleAnimation {
+    private static final int CYCLE_TICKS = 20;
     private static final float[] CNC_X = {0, -.09F, .09F, .09F, -.09F, -.09F, .09F, 0};
     private static final float[] CNC_Z = {0, -.08F, -.08F, 0, 0, .08F, .08F, 0};
     private String recipe;
@@ -13,6 +14,10 @@ public final class ProcessingModuleAnimation {
     private double visualTicks;
 
     public float progress(String recipe, int progress, int duration, boolean working, double time) {
+        return progress(recipe, progress, duration, working, time, true);
+    }
+
+    public float progress(String recipe, int progress, int duration, boolean working, double time, boolean loop) {
         if (recipe == null) {
             this.recipe = null;
             visualTicks = 0;
@@ -31,7 +36,8 @@ public final class ProcessingModuleAnimation {
         this.duration = duration;
         lastProgress = progress;
         lastTime = time;
-        return (float) Math.clamp(visualTicks / duration, 0, 1);
+        return (float) (loop && duration > CYCLE_TICKS ? visualTicks % CYCLE_TICKS / CYCLE_TICKS
+            : Math.clamp(visualTicks / duration, 0, 1));
     }
 
     public static float pressStroke(float progress) {

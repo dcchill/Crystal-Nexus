@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "ccc",
+    "Pcc",
     "ded"
   ],
   "key": {
@@ -21,6 +21,9 @@
     },
     "e": {
       "item": "crystalnexus:crystal_machine_frame"
+    },
+    "P": {
+      "item": "crystalnexus:impeller_pump"
     }
   },
   "result": {

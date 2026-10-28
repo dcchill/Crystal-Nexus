@@ -1,0 +1,44 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:ferrosteel_bearing"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:rods/ferrosteel"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:stator"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:plates/ferrosteel"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:ee_matter"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:ferrosteel_electric_motor",
+    "count": 1
+  }
+}

@@ -712,12 +712,15 @@ public class TooltipInfoHandler {
 				event.getToolTip().set(i, GradientItemName.rainbow(line));
 		}
 		ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(stack.getItem());
+        if (itemId.toString().equals("crystalnexus:fluid_applicator")) event.getToolTip().add(
+            Component.translatable("tooltip.crystalnexus.fluid_applicator"));
 		String path = itemId.getPath();
 		boolean tierX = itemId.getNamespace().equals(CrystalnexusMod.MODID)
 				&& (path.equals("zero_point") || path.equals("zero_point_core") || path.equals("zero_star") || path.equals("bear")
                 || path.equals("zero_chip") || path.equals("zero_cable"));
 		FrameColors colors = tierX ? null : nameColors(stack.getItem(), Minecraft.getInstance().level);
 		MachineTier tier = stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof TieredMachineBlock machine
+				&& (!(blockItem.getBlock() instanceof net.crystalnexus.block.ProcessingModuleBlock module) || module.operation() == net.crystalnexus.block.ProcessingModuleBlock.Operation.APPLY_FLUID)
 				? machine.machineTier() : null;
 		if (tier != null) {
 			event.getToolTip().add(Math.min(1, event.getToolTip().size()),

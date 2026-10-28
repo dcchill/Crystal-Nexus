@@ -3,10 +3,13 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
+    "Pdc",
     "aba"
   ],
   "key": {
+    "P": {
+      "item": "crystalnexus:impeller_pump"
+    },
     "a": {
       "item": "crystalnexus:iron_machine_bolt"
     },

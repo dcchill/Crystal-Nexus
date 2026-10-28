@@ -3,7 +3,7 @@
   "category": "misc",
   "pattern": [
     "aba",
-    "cdc",
+    "Pdc",
     "efe"
   ],
   "key": {
@@ -24,6 +24,9 @@
     },
     "f": {
       "item": "crystalnexus:invertium_machine_frame"
+    },
+    "P": {
+      "item": "crystalnexus:impeller_pump"
     }
   },
   "result": {

@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "item": "crystalnexus:copper_sheet" },
+  "steps": [
+    { "module": "press", "ingredient": { "item": "crystalnexus:iron_sheet" }, "time": 20, "energy_per_tick": 40 },
+    { "module": "weld", "time": 40, "energy_per_tick": 40 }
+  ],
+  "result": { "id": "crystalnexus:battery_part", "count": 1 }
+}

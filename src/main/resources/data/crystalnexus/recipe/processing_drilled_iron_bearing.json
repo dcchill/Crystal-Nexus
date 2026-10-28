@@ -1,6 +1,0 @@
-{
-  "type": "crystalnexus:processing_line",
-  "input": {"item": "crystalnexus:iron_sheet"},
-  "steps": [{"module": "drill", "time": 20, "energy_per_tick": 20}],
-  "result": {"id": "crystalnexus:iron_bearing", "count": 1}
-}

@@ -1,0 +1,16 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "side": "crystalnexus:block/carbon_processing_side",
+    "metal": "crystalnexus:block/purebottom",
+    "top": "crystalnexus:block/puretop",
+    "particle": "#side",
+    "down": "#metal",
+    "up": "#top",
+    "north": "#side",
+    "south": "#side",
+    "east": "#side",
+    "west": "#side"
+  },
+  "render_type": "solid"
+}

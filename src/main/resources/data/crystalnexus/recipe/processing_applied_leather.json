@@ -1,0 +1,21 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "minecraft:rotten_flesh"
+  },
+  "steps": [
+    {
+      "module": "apply_fluid",
+      "fluid": {
+        "fluid": "crystalnexus:resin",
+        "amount": 100
+      },
+      "time": 40,
+      "energy_per_tick": 40
+    }
+  ],
+  "result": {
+    "id": "minecraft:leather",
+    "count": 1
+  }
+}

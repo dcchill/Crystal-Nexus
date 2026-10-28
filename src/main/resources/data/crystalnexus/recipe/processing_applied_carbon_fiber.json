@@ -1,0 +1,26 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:carbon_composite"
+  },
+  "steps": [
+    {
+      "module": "apply_fluid",
+      "fluid": {
+        "fluid": "crystalnexus:resin",
+        "amount": 50
+      },
+      "time": 40,
+      "energy_per_tick": 40
+    },
+    {
+      "module": "press",
+      "time": 20,
+      "energy_per_tick": 40
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:carbon_fiber",
+    "count": 1
+  }
+}

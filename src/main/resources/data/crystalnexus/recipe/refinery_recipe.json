@@ -11,7 +11,7 @@
     "m": { "item": "crystalnexus:crystal_machine_frame" },
     "s": { "tag": "c:stones" },
     "h": { "item": "crystalnexus:heating_coil" },
-    "e": { "item": "crystalnexus:electric_motor" },
+    "e": { "item": "crystalnexus:impeller_pump" },
     "t": { "item": "crystalnexus:ceramic_plate" }
   },
   "result": {

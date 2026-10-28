@@ -1,0 +1,9 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "tag": "c:plates/azurine" },
+  "steps": [
+    { "module": "press", "time": 20, "energy_per_tick": 40 },
+    { "module": "drill", "time": 40, "energy_per_tick": 40 }
+  ],
+  "result": { "id": "crystalnexus:reactor_fuel_cell", "count": 1 }
+}

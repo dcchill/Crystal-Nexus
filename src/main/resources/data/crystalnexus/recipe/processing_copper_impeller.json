@@ -1,25 +1,25 @@
 {
   "type": "crystalnexus:processing_line",
   "input": {
-    "item": "crystalnexus:blank_chip"
+    "tag": "c:ingots/copper"
   },
   "steps": [
     {
-      "module": "weld",
+      "module": "press",
       "ingredient": {
-        "item": "crystalnexus:energized_silicon"
+        "tag": "c:rods/copper"
       },
-      "time": 40,
+      "time": 60,
       "energy_per_tick": 20
     },
     {
-      "module": "engrave",
-      "time": 20,
+      "module": "drill",
+      "time": 400,
       "energy_per_tick": 20
     }
   ],
   "result": {
-    "id": "crystalnexus:carbon_chip",
+    "id": "crystalnexus:copper_impeller",
     "count": 1
   }
 }

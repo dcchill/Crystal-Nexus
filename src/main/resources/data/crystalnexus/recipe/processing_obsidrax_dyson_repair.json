@@ -1,0 +1,10 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": { "tag": "c:plates/obsidrax" },
+  "steps": [
+    { "module": "press", "ingredient": { "tag": "c:rods/azurine" }, "time": 40, "energy_per_tick": 80 },
+    { "module": "weld", "time": 80, "energy_per_tick": 80 },
+    { "module": "nanofabricate", "time": 200, "energy_per_tick": 160 }
+  ],
+  "result": { "id": "crystalnexus:dyson_repair", "count": 1 }
+}

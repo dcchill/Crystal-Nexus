@@ -1,0 +1,28 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:ferrosteel_impeller"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:ferrosteel_electric_motor"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:carbon_fiber"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:carbon_impeller_pump",
+    "count": 1
+  }
+}

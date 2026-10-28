@@ -399,6 +399,8 @@ public class CrystalnexusModBlocks {
 	public static final DeferredBlock<Block> STEAM_COLLECTOR = REGISTRY.register("steam_collector", SteamCollectorBlock::new);
 	public static final DeferredBlock<Block> STEAM_CHAMBER = REGISTRY.register("steam_chamber", SteamChamberBlock::new);
 	public static final DeferredBlock<Block> CONVEYER_BELT = REGISTRY.register("conveyer_belt", ConveyerBeltBlock::new);
+	public static final DeferredBlock<Block> FLUID_APPLICATOR = REGISTRY.register("fluid_applicator", () -> new net.crystalnexus.block.ProcessingModuleBlock(net.crystalnexus.block.ProcessingModuleBlock.Operation.APPLY_FLUID));
+	public static final DeferredBlock<Block> AUTOMATED_ASSEMBLER = REGISTRY.register("automated_assembler", () -> new net.crystalnexus.block.ProcessingModuleBlock(net.crystalnexus.block.ProcessingModuleBlock.Operation.ASSEMBLE));
 	public static final DeferredBlock<Block> PROCESSING_PRESS_MODULE = REGISTRY.register("processing_press_module", () -> new net.crystalnexus.block.ProcessingModuleBlock(net.crystalnexus.block.ProcessingModuleBlock.Operation.PRESS));
 	public static final DeferredBlock<Block> PROCESSING_ENGRAVER_MODULE = REGISTRY.register("processing_engraver_module", () -> new net.crystalnexus.block.ProcessingModuleBlock(net.crystalnexus.block.ProcessingModuleBlock.Operation.ENGRAVE));
 	public static final DeferredBlock<Block> PROCESSING_DRILL_MODULE = REGISTRY.register("processing_drill_module", () -> new net.crystalnexus.block.ProcessingModuleBlock(net.crystalnexus.block.ProcessingModuleBlock.Operation.DRILL));

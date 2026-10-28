@@ -1,0 +1,17 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "tag": "c:plates/iron"
+  },
+  "steps": [
+    {
+      "module": "drill",
+      "time": 400,
+      "energy_per_tick": 20
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:iron_bearing",
+    "count": 1
+  }
+}

@@ -1,1 +1,16 @@
-{"parent":"crystalnexus:block/processing_press_module"}
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "side": "crystalnexus:block/crystal_processing_side_cnc",
+    "metal": "crystalnexus:block/purebottom",
+    "top": "crystalnexus:block/puretop",
+    "particle": "#side",
+    "down": "#metal",
+    "up": "#top",
+    "north": "#side",
+    "south": "#side",
+    "east": "#side",
+    "west": "#side"
+  },
+  "render_type": "solid"
+}

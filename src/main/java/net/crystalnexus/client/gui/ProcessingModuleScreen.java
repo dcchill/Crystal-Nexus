@@ -18,6 +18,8 @@ public final class ProcessingModuleScreen extends HolographicMachineScreen<Proce
         machineProgress(graphics, (double) menu.progress() / menu.maxProgress());
         MachineGuiTheme.slotFrame(graphics, leftPos + menu.beltItemX() - 1,
             topPos + ProcessingModuleMenu.WORK_SLOT_Y - 1, MachineGuiTheme.accent(machineTier()));
+        if (menu.hasFluidTank()) machineTank(graphics, menu.fluid(),
+            net.crystalnexus.block.entity.ProcessingModuleBlockEntity.FLUID_CAPACITY, leftPos + 44, topPos + 22, 18, 42);
         MachineGuiWidgets.finishBackground(graphics);
     }
 
@@ -32,7 +34,7 @@ public final class ProcessingModuleScreen extends HolographicMachineScreen<Proce
     private void label(GuiGraphics graphics, String key, int slotX) {
         var label = Component.translatable("gui.crystalnexus.processing_module." + key);
         graphics.drawString(font, label, slotX + 8 - font.width(label) / 2,
-            ProcessingModuleMenu.WORK_SLOT_Y - 18, 0x88E8FF, false);
+            ProcessingModuleMenu.WORK_SLOT_Y - 18, MachineGuiTheme.accent(machineTier()), false);
     }
 
     @Override protected void renderMachine(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

@@ -427,6 +427,36 @@
     }
   },
   "machines": {
+    "automated_assembler": {
+      "tier": 5,
+      "recipe": "automated_assembler_recipe.json",
+      "evidence": ["automated_assembler_recipe.json", "crystalnexus:carbon_machine_frame"]
+    },
+    "processing_press_module": {
+      "tier": 1,
+      "recipe": "processing_press_module_recipe.json",
+      "evidence": ["processing_press_module_recipe.json", "crystalnexus:crystal_machine_frame"]
+    },
+    "processing_drill_module": {
+      "tier": 1,
+      "recipe": "processing_drill_module_recipe.json",
+      "evidence": ["processing_drill_module_recipe.json", "crystalnexus:crystal_machine_frame"]
+    },
+    "processing_engraver_module": {
+      "tier": 4,
+      "recipe": "processing_engraver_module_recipe.json",
+      "evidence": ["processing_engraver_module_recipe.json", "crystalnexus:azurine_machine_frame"]
+    },
+    "fluid_applicator": {
+      "tier": 4,
+      "recipe": "fluid_applicator_recipe.json",
+      "evidence": ["fluid_applicator_recipe.json", "crystalnexus:azurine_machine_frame"]
+    },
+    "processing_welder_module": {
+      "tier": 4,
+      "recipe": "processing_welder_module_recipe.json",
+      "evidence": ["processing_welder_module_recipe.json", "crystalnexus:azurine_machine_frame"]
+    },
     "nanofabricator": {
       "tier": 8,
       "recipe": "nanofabricator_recipe.json",

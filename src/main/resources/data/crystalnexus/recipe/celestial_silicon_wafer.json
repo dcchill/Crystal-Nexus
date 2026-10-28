@@ -2,12 +2,12 @@
   "type": "crystalnexus:processing_line",
   "input": {"item": "crystalnexus:silicon_wafer"},
   "steps": [
-    {"module": "press", "ingredient": {"item": "crystalnexus:dark_matter"}, "time": 20, "energy_per_tick": 20},
-    {"module": "engrave", "time": 20, "energy_per_tick": 20},
-    {"module": "press", "ingredient": {"item": "crystalnexus:energized_silicon"}, "time": 20, "energy_per_tick": 20},
-    {"module": "engrave", "time": 20, "energy_per_tick": 20},
-    {"module": "press", "ingredient": {"tag": "crystalnexus:singularities"}, "time": 20, "energy_per_tick": 20},
-    {"module": "engrave", "time": 20, "energy_per_tick": 20}
+    {"module": "assemble", "ingredient": {"item": "crystalnexus:dark_matter"}, "time": 40, "energy_per_tick": 80},
+    {"module": "weld", "time": 40, "energy_per_tick": 40},
+    {"module": "engrave", "time": 40, "energy_per_tick": 40},
+    {"module": "assemble", "ingredient": {"tag": "crystalnexus:singularities"}, "time": 40, "energy_per_tick": 80},
+    {"module": "weld", "time": 40, "energy_per_tick": 40},
+    {"module": "press", "time": 20, "energy_per_tick": 40}
   ],
   "result": {"id": "crystalnexus:celestial_silicon_wafer", "count": 1}
 }

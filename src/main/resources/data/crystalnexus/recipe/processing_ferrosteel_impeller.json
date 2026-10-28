@@ -1,0 +1,25 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "tag": "c:ingots/ferrosteel"
+  },
+  "steps": [
+    {
+      "module": "press",
+      "ingredient": {
+        "tag": "c:rods/ferrosteel"
+      },
+      "time": 100,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "drill",
+      "time": 800,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:ferrosteel_impeller",
+    "count": 1
+  }
+}

@@ -314,6 +314,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ELECTRIC_MOTOR.get());
+				tabData.accept(CrystalnexusModItems.IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.AZURINE_IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.CARBON_IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.COPPER_IMPELLER.get());
+				tabData.accept(CrystalnexusModItems.DIAMOND_IMPELLER.get());
+				tabData.accept(CrystalnexusModItems.FERROSTEEL_IMPELLER.get());
 				tabData.accept(CrystalnexusModBlocks.TITANIUM_BLOCK.get().asItem());
 				tabData.accept(CrystalnexusModItems.BIOMASS.get());
 				tabData.accept(CrystalnexusModItems.CARBON_COMPOSITE.get());
@@ -457,6 +463,8 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModBlocks.CONTAINER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.CONVEYER_BELT.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.FLUID_APPLICATOR.get().asItem());
+				tabData.accept(CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get().asItem());
 				tabData.accept(CrystalnexusModBlocks.NANOFABRICATOR.get().asItem());
@@ -699,6 +707,12 @@ public class CrystalnexusModTabs {
 				tabData.accept(CrystalnexusModItems.ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_ELECTRIC_MOTOR.get());
 				tabData.accept(CrystalnexusModItems.TITANIUM_CARBIDE_ELECTRIC_MOTOR.get());
+				tabData.accept(CrystalnexusModItems.IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.AZURINE_IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.CARBON_IMPELLER_PUMP.get());
+				tabData.accept(CrystalnexusModItems.COPPER_IMPELLER.get());
+				tabData.accept(CrystalnexusModItems.DIAMOND_IMPELLER.get());
+				tabData.accept(CrystalnexusModItems.FERROSTEEL_IMPELLER.get());
 				tabData.accept(CrystalnexusModItems.BATTERY_PART.get());
 				tabData.accept(CrystalnexusModItems.BATTERY_CELL.get());
 				tabData.accept(CrystalnexusModItems.DENSE_BATTERY_CELL.get());

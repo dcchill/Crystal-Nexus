@@ -437,6 +437,8 @@ public class CrystalnexusModJeiPlugin implements IModPlugin {
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), CircuitPressing_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.TITANIUM_CARBIDE_CIRCUIT_PRESS.get().asItem()), TitaniumCarbideCircuitPress_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.FLUID_APPLICATOR.get().asItem()), ProcessingLine_Type);
+		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.AUTOMATED_ASSEMBLER.get().asItem()), ProcessingLine_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE.get().asItem()), ProcessingLine_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE.get().asItem()), ProcessingLine_Type);
 		registration.addRecipeCatalyst(new ItemStack(CrystalnexusModBlocks.NANOFABRICATOR.get().asItem()), ProcessingLine_Type);

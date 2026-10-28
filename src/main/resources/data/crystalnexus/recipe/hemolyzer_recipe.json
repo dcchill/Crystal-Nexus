@@ -2,11 +2,12 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "pattern": [
-    "fbf",
+    "fPf",
     "btb",
     "fmf"
   ],
   "key": {
+    "P": { "item": "crystalnexus:impeller_pump" },
     "b": { "item": "crystalnexus:copper_fluid_pipe" },
     "f": { "item": "crystalnexus:flesh_block" },
     "m": { "item": "crystalnexus:flesh_machine_frame" },

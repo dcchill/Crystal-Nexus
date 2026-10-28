@@ -414,6 +414,12 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> ELECTRIC_MOTOR = REGISTRY.register("electric_motor", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_ELECTRIC_MOTOR = REGISTRY.register("azurine_electric_motor", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_CARBIDE_ELECTRIC_MOTOR = REGISTRY.register("ferrosteel_electric_motor", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> IMPELLER_PUMP = REGISTRY.register("impeller_pump", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> AZURINE_IMPELLER_PUMP = REGISTRY.register("azurine_impeller_pump", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> CARBON_IMPELLER_PUMP = REGISTRY.register("carbon_impeller_pump", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> COPPER_IMPELLER = REGISTRY.register("copper_impeller", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> DIAMOND_IMPELLER = REGISTRY.register("diamond_impeller", () -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> FERROSTEEL_IMPELLER = REGISTRY.register("ferrosteel_impeller", () -> new Item(new Item.Properties()));
 	public static final DeferredItem<Item> TITANIUM_SHEET = REGISTRY.register("azurine_sheet", TitaniumSheetItem::new);
 	public static final DeferredItem<Item> TITANIUM_INGOT = REGISTRY.register("azurine_ingot", TitaniumIngotItem::new);
 	public static final DeferredItem<Item> FISSILE_AZURINE_INGOT = REGISTRY.register("fissile_azurine_ingot", () -> new Item(new Item.Properties()));
@@ -580,6 +586,8 @@ public class CrystalnexusModItems {
 	public static final DeferredItem<Item> STEAM_CHAMBER = block(CrystalnexusModBlocks.STEAM_CHAMBER);
 	public static final DeferredItem<Item> MINING_LASER = REGISTRY.register("mining_laser", MiningLaserItem::new);
 	public static final DeferredItem<Item> CONVEYER_BELT = block(CrystalnexusModBlocks.CONVEYER_BELT);
+	public static final DeferredItem<Item> FLUID_APPLICATOR = block(CrystalnexusModBlocks.FLUID_APPLICATOR);
+	public static final DeferredItem<Item> AUTOMATED_ASSEMBLER = block(CrystalnexusModBlocks.AUTOMATED_ASSEMBLER);
 	public static final DeferredItem<Item> PROCESSING_PRESS_MODULE = block(CrystalnexusModBlocks.PROCESSING_PRESS_MODULE);
 	public static final DeferredItem<Item> PROCESSING_ENGRAVER_MODULE = block(CrystalnexusModBlocks.PROCESSING_ENGRAVER_MODULE);
 	public static final DeferredItem<Item> PROCESSING_DRILL_MODULE = block(CrystalnexusModBlocks.PROCESSING_DRILL_MODULE);

@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "pattern": [" i ", "bdb", " i "],
+  "pattern": [" i ", "bfb", " d "],
   "key": {
     "i": {"item": "minecraft:iron_ingot"},
     "b": {"item": "crystalnexus:iron_bearing"},
-    "d": {"item": "minecraft:diamond_pickaxe"}
+    "d": {"item": "minecraft:diamond_pickaxe"},
+    "f": {"item": "crystalnexus:crystal_machine_frame"}
   },
   "result": {"id": "crystalnexus:processing_drill_module", "count": 1}
 }

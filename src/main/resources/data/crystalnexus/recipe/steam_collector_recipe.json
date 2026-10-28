@@ -3,10 +3,13 @@
   "category": "misc",
   "pattern": [
     "aaa",
-    "bcb",
+    "Pcb",
     "ded"
   ],
   "key": {
+    "P": {
+      "item": "crystalnexus:impeller_pump"
+    },
     "a": {
       "tag": "c:plates/iron"
     },

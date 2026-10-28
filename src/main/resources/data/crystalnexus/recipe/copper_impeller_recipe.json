@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " B ",
+    "BSB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "tag": "c:plates/copper"
+    },
+    "S": {
+      "item": "crystalnexus:copper_rod"
+    }
+  },
+  "result": {
+    "id": "crystalnexus:copper_impeller",
+    "count": 1
+  }
+}

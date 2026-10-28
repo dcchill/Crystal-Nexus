@@ -1,11 +1,5 @@
 {
   "parent": "crystalnexus:block/processing_welder_module",
-  "textures": {
-    "side": "crystalnexus:block/azurine_processing_side",
-    "metal": "crystalnexus:block/purebottom",
-    "top": "crystalnexus:block/puretop",
-    "particle": "#metal"
-  },
   "elements": [
     {
       "from": [
@@ -22,55 +16,55 @@
         "down": {
           "texture": "#metal",
           "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
+            0,
+            0,
+            16,
+            16
           ]
         },
         "up": {
           "texture": "#top",
           "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
+            0,
+            0,
+            16,
+            16
           ]
         },
         "north": {
           "texture": "#side",
           "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
+            0,
+            0,
+            16,
+            16
           ]
         },
         "south": {
           "texture": "#side",
           "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
-          ]
-        },
-        "west": {
-          "texture": "#side",
-          "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
+            0,
+            0,
+            16,
+            16
           ]
         },
         "east": {
           "texture": "#side",
           "uv": [
-            0.0,
-            0.0,
-            16.0,
-            16.0
+            0,
+            0,
+            16,
+            16
+          ]
+        },
+        "west": {
+          "texture": "#side",
+          "uv": [
+            0,
+            0,
+            16,
+            16
           ]
         }
       }

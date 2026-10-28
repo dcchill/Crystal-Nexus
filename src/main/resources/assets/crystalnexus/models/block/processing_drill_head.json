@@ -1,6 +1,6 @@
 {
   "textures": {
-    "side": "crystalnexus:block/crystal_processing_side",
+    "side": "crystalnexus:block/crystal_processing_side_cnc",
     "top": "crystalnexus:block/puretop",
     "metal": "crystalnexus:block/purebottom",
     "particle": "#side"

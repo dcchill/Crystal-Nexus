@@ -1,0 +1,44 @@
+{
+  "type": "crystalnexus:processing_line",
+  "input": {
+    "item": "crystalnexus:azurine_bearing"
+  },
+  "steps": [
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:rods/azurine"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "item": "crystalnexus:stator"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:plates/azurine"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    },
+    {
+      "module": "assemble",
+      "ingredient": {
+        "tag": "c:ingots/conductive_alloy"
+      },
+      "time": 40,
+      "energy_per_tick": 80
+    }
+  ],
+  "result": {
+    "id": "crystalnexus:azurine_electric_motor",
+    "count": 1
+  }
+}
